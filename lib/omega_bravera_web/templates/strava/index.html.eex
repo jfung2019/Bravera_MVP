@@ -1,0 +1,34 @@
+<h2>Listing Stravas</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Athlete</th>
+      <th>Firstname</th>
+      <th>Lastname</th>
+      <th>Token</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for strava <- @stravas do %>
+    <tr>
+      <td><%= strava.email %></td>
+      <td><%= strava.athlete_id %></td>
+      <td><%= strava.firstname %></td>
+      <td><%= strava.lastname %></td>
+      <td><%= strava.token %></td>
+
+      <td class="text-right">
+        <span><%= link "Show", to: strava_path(@conn, :show, strava), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Edit", to: strava_path(@conn, :edit, strava), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: strava_path(@conn, :delete, strava), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Strava", to: strava_path(@conn, :new) %></span>

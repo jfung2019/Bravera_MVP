@@ -1,0 +1,33 @@
+<h2>Show Ngo</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @ngo.name %>
+  </li>
+
+  <li>
+    <strong>Desc:</strong>
+    <%= @ngo.desc %>
+  </li>
+
+  <li>
+    <strong>Logo:</strong>
+    <%= @ngo.logo %>
+  </li>
+
+  <li>
+    <strong>Stripe:</strong>
+    <%= @ngo.stripe_id %>
+  </li>
+
+  <li>
+    <strong>Slug:</strong>
+    <%= @ngo.slug %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: ngo_path(@conn, :edit, @ngo) %></span>
+<span><%= link "Back", to: ngo_path(@conn, :index) %></span>

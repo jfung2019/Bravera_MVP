@@ -1,0 +1,33 @@
+<h2>Show Strava</h2>
+
+<ul>
+
+  <li>
+    <strong>Email:</strong>
+    <%= @strava.email %>
+  </li>
+
+  <li>
+    <strong>Athlete:</strong>
+    <%= @strava.athlete_id %>
+  </li>
+
+  <li>
+    <strong>Firstname:</strong>
+    <%= @strava.firstname %>
+  </li>
+
+  <li>
+    <strong>Lastname:</strong>
+    <%= @strava.lastname %>
+  </li>
+
+  <li>
+    <strong>Token:</strong>
+    <%= @strava.token %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: strava_path(@conn, :edit, @strava) %></span>
+<span><%= link "Back", to: strava_path(@conn, :index) %></span>
