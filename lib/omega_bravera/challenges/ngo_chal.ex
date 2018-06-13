@@ -22,7 +22,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
   @doc false
   def changeset(ngo_chal, attrs) do
     ngo_chal
-    |> cast(attrs, [:activity, :money_target, :distance_target, :slug, :start_date, :status, :duration])
-    |> validate_required([:activity, :money_target, :distance_target, :slug, :start_date, :status, :duration])
+    |> cast(attrs, [:activity, :money_target, :distance_target, :slug, :start_date, :status, :duration, :milestones])
+    |> validate_required([:activity, :money_target, :distance_target, :slug, :start_date, :status, :duration, :milestones])
   end
 end
