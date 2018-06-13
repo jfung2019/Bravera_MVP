@@ -10,6 +10,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateNgoChals do
       add :start_date, :utc_datetime
       add :status, :string
       add :duration, :integer
+      add :milestones, :integer
       add :user_id, references(:user, on_delete: :nothing)
       add :ngo_id, references(:ngo, on_delete: :nothing)
 

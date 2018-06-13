@@ -8,6 +8,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field :activity, :string
     field :distance_target, :decimal
     field :duration, :integer
+    field :milestones, :integer, default: 3
     field :money_target, :decimal
     field :slug, :string
     field :start_date, :utc_datetime
