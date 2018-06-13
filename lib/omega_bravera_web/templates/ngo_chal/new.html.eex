@@ -1,0 +1,5 @@
+<h2>New Ngo chal</h2>
+
+<%= render "form.html", Map.put(assigns, :action, ngo_chal_path(@conn, :create)) %>
+
+<span><%= link "Back", to: ngo_chal_path(@conn, :index) %></span>

@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.PageController do
+defmodule OmegaBraveraWeb.HomeController do
   use OmegaBraveraWeb, :controller
 
   def index(conn, _params) do

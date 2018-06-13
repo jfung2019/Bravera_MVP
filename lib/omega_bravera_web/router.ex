@@ -17,7 +17,12 @@ defmodule OmegaBraveraWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     resources "/users", UserController
-    get "/", PageController, :index
+    resources "/ngos", NGOController
+    resources "/ngo_chals", NGOChalController
+    resources "/strava", StravaController
+
+
+    get "/", HomeController, :index
   end
 
   # Other scopes may use custom stacks.
