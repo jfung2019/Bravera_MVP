@@ -3,6 +3,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
   import Ecto.Changeset
 
   alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Challenges.NGOChal
 
   schema "ngos" do
     field :desc, :string
@@ -11,6 +12,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field :slug, :string
     field :stripe_id, :string
     belongs_to :user, User
+    has_many :ngo_chals, NGOChal
 
     timestamps()
   end

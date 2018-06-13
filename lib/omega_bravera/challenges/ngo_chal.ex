@@ -2,6 +2,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias OmegaBravera.Accounts.User
 
   schema "ngo_chals" do
     field :activity, :string
@@ -11,8 +12,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field :slug, :string
     field :start_date, :utc_datetime
     field :status, :string
-    field :user_id, :id
-    field :ngo_id, :id
+    belongs_to :user, User
+    belongs_to :ngo, NGO
 
     timestamps()
   end

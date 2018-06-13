@@ -4,6 +4,7 @@ defmodule OmegaBravera.Accounts.User do
 
   alias OmegaBravera.Trackers.Strava
   alias OmegaBravera.Fundraisers.NGO
+  alias OmegaBravera.Challenges.NGOChal
 
   schema "users" do
     field :email, :string
@@ -11,6 +12,7 @@ defmodule OmegaBravera.Accounts.User do
     field :lastname, :string
     has_one :strava, Strava
     has_many :ngos, NGO
+    has_many :ngo_chals, NGOChal
 
     timestamps()
   end

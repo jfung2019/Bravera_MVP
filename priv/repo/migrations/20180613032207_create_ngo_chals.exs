@@ -13,7 +13,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateNgoChals do
       add :user_id, references(:user, on_delete: :nothing)
       add :ngo_id, references(:ngo, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
 
     create index(:ngo_chals, [:user_id])

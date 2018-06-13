@@ -21,7 +21,6 @@ defmodule OmegaBraveraWeb.Router do
     resources "/ngo_chals", NGOChalController
     resources "/strava", StravaController
 
-
     get "/", HomeController, :index
   end
 
