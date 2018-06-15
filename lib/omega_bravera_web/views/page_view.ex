@@ -1,3 +1,3 @@
-defmodule OmegaBraveraWeb.HomeView do
+defmodule OmegaBraveraWeb.PageView do
   use OmegaBraveraWeb, :view
 end

@@ -30,8 +30,18 @@ defmodule OmegaBraveraWeb.Router do
 
     # maybe add: challenge data
 
-    get "/", HomeController, :index
+    get "/", PageController, :index
   end
+
+  scope "/pass-reset", BraveraWeb do
+    pipe_through :browser
+
+    resources "/", PasswordController, only: [:new, :create]
+
+    get "/:token/edit", PasswordController, :edit
+    put "/:token", PasswordController, :update
+  end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", OmegaBraveraWeb do
