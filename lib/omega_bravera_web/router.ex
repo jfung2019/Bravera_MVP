@@ -17,9 +17,18 @@ defmodule OmegaBraveraWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     resources "/users", UserController
+    #donations nested here?
+    # (donations given + paid)
     resources "/ngos", NGOController
+    #donations (ngo total raised) nested here?
     resources "/ngo_chals", NGOChalController
+    # donations (chal_total) nested here?
+    resources "/donations", DonationController
+
+    # for callbacks
     resources "/strava", StravaController
+
+    # maybe add: challenge data
 
     get "/", HomeController, :index
   end
