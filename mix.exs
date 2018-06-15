@@ -43,7 +43,9 @@ defmodule OmegaBravera.Mixfile do
       {:cowboy, "~> 1.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 4.0"},
-
+      {:guardian, "~> 1.0"},
+      {:timex, "~> 3.1"},
+      {:bamboo, "~> 0.8"},
     ]
   end
 
