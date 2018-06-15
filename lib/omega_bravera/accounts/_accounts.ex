@@ -4,9 +4,101 @@ defmodule OmegaBravera.Accounts do
   """
 
   import Ecto.Query, warn: false
+  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
+  alias Ecto.Multi
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Accounts.{User, Credential}
+
+
+  @doc """
+    Creates User with a credential
+  """
+
+  def create_credentialed_user(%{"user" => %{"email" => email, "password" => password, "password_confirmation" => password_confirmation}}) do
+
+    Multi.new
+    |> Multi.run(:user, fn %{} -> create_user(%{"email" => email}) end)
+    |> Multi.run(:credential, fn %{user: %{id: user_id}} ->
+       create_credential(user_id, %{"password" => password, "password_confirmation" => password_confirmation})
+       end)
+    |> Repo.transaction()
+  end
+
+
+  @doc """
+    Looks for credential based on user email
+  """
+
+  def get_user_credential(email) do
+    credential = case email do
+      nil ->
+        nil
+      email ->
+        %{id: user_id} = User |> Repo.get_by(email: email)
+
+        query = from c in Credential,
+          where: c.user_id == ^user_id
+
+        query |> Repo.one
+    end
+  end
+
+  @doc """
+    Looks for credential based on reset token
+  """
+
+  def get_credential_by_token(token) do
+    query = from c in Credential,
+      where: c.reset_token == ^token
+
+    query |> Repo.one
+  end
+
+  @doc """
+    Inserts or returns an email user (if email is not already registered, insert it)
+  """
+
+  def insert_or_return_email_user(email) do
+    case Repo.get_by(User, email: email) do
+      nil ->
+        create_user(email)
+      user ->
+        user
+    end
+  end
+
+  @doc """
+  Functions for password-based user credentials
+  """
+
+  def email_password_auth(email, password) when is_binary(email) and is_binary(password) do
+    with {:ok, user} <- get_by_email(email),
+    do: verify_password(password, user)
+  end
+
+  defp get_by_email(email) when is_binary(email) do
+    case Repo.get_by(User, email: email) do
+      nil ->
+        dummy_checkpw()
+        {:error, "Login error."}
+      user ->
+        {:ok, user}
+    end
+  end
+
+  defp verify_password(password, user) when is_binary(password) do
+    query = from c in Credential,
+      where: c.user_id == ^user.id
+
+    credential = Repo.one(query)
+
+    if checkpw(password, credential.password_hash) do
+      {:ok, user}
+    else
+      {:error, :invalid_password}
+    end
+  end
 
   @doc """
   Returns the list of users.
@@ -101,4 +193,95 @@ defmodule OmegaBravera.Accounts do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  @doc """
+  Gets a single credential.
+
+  Raises `Ecto.NoResultsError` if the Credential does not exist.
+
+  ## Examples
+
+      iex> get_credential!(123)
+      %Credential{}
+
+      iex> get_credential!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_credential!(id), do: Repo.get!(Credential, id)
+
+  @doc """
+  Creates a credential.
+
+  ## Examples
+
+      iex> create_credential(%{field: value})
+      {:ok, %Credential{}}
+
+      iex> create_credential(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_credential(user_id, attrs \\ %{}) do
+    %Credential{user_id: user_id}
+    |> Credential.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  # Check to see if email is taken by User
+  # If not, create User and create Associated Credential (passwords)
+
+  @doc """
+  Updates a credential.
+
+  ## Examples
+
+      iex> update_credential(credential, %{field: new_value})
+      {:ok, %Credential{}}
+
+      iex> update_credential(credential, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_credential(%Credential{} = credential, attrs) do
+    credential
+    |> Credential.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_credential_token(%Credential{} = credential, attrs) do
+    credential
+    |> Credential.token_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Credential.
+
+  ## Examples
+
+      iex> delete_credential(credential)
+      {:ok, %Credential{}}
+
+      iex> delete_credential(credential)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_credential(%Credential{} = credential) do
+    Repo.delete(credential)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking credential changes.
+
+  ## Examples
+
+      iex> change_credential(credential)
+      %Ecto.Changeset{source: %Credential{}}
+
+  """
+  def change_credential(%Credential{} = credential) do
+    Credential.changeset(credential, %{})
+  end
+
 end
