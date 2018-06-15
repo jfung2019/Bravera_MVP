@@ -6,11 +6,14 @@ defmodule OmegaBravera.Repo.Migrations.CreateNgoChals do
       add :activity, :string
       add :money_target, :decimal
       add :distance_target, :decimal
+      add :distance_covered, :decimal
       add :slug, :string
       add :start_date, :utc_datetime
       add :status, :string
       add :duration, :integer
       add :milestones, :integer
+      add :total_pledged, :decimal
+      add :total_secured, :decimal
       add :user_id, references(:user, on_delete: :nothing)
       add :ngo_id, references(:ngo, on_delete: :nothing)
 
