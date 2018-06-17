@@ -7,6 +7,7 @@ defmodule OmegaBraveraWeb.DonationController do
   alias OmegaBravera.Challenges
   alias OmegaBravera.Accounts
   alias OmegaBravera.Stripe
+  alias OmegaBravera.StripeHelpers
 
   def index(conn, _params) do
     donations = Money.list_donations()

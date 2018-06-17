@@ -1,8 +1,8 @@
-defmodule BraveraWeb.StripeHelpers do
+defmodule OmegaBravera.StripeHelpers do
   require Logger
-  alias Bravera.Stripe
-  alias Bravera.Orgs
-  alias Bravera.Money
+  alias OmegaBravera.Stripe
+  alias OmegaBravera.Fundraisers
+  alias OmegaBravera.Money
 
   defp centify(amount) do
     amount
@@ -90,8 +90,6 @@ defmodule BraveraWeb.StripeHelpers do
 
     description = "Donation to " <> ngo_name <> " via Bravera"
 
-    ngo_amount = destination_amount(amount)
-
     charge_params = %{
       "amount" => total_amount(amount),
       "currency" => currency,
@@ -136,33 +134,6 @@ defmodule BraveraWeb.StripeHelpers do
     {:ok, response} ->
       %{body: response_body} = response
       body = Poison.decode!(response_body)
-
-      %{ "id" => cus_id,
-         "sources" => %{"data" =>
-         [%{
-           "card" => %{
-             "brand" => brand,
-             "funding" => funding,
-             "last4" => last4
-           }
-          }]
-        }
-      } = body
-
-      case Stripe.create_str_customer(user_id, %{"cus_id" => cus_id}) do
-        {:ok, str_customer} ->
-          %{id: str_customer_id} = str_customer
-          case Stripe.create_str_source(str_customer_id, %{"src_id" => src_id, "funding" => funding, "brand" => brand, "last4" => last4}) do
-            {:ok, str_source} ->
-              str_source
-              str_customer
-            {:error, reason} ->
-              IO.inspect(reason)
-          end
-
-        {:error, reason} ->
-          IO.inspect(reason)
-      end
 
     {:error, reason} ->
       IO.inspect(reason)
