@@ -21,6 +21,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
   def changeset(ngo, attrs) do
     ngo
     |> cast(attrs, [:name, :desc, :logo, :stripe_id, :slug])
-    |> validate_required([:name, :desc, :logo, :stripe_id, :slug])
+    |> validate_required([:name, :stripe_id, :slug])
   end
 end

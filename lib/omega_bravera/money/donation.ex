@@ -6,11 +6,14 @@ defmodule OmegaBravera.Money.Donation do
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Fundraisers.NGO
 
+  # TODO do we need str_source or str_customer here ?
+  # I think we do...
+   
   schema "donations" do
     field :amount, :decimal
     field :currency, :string
     field :milestone, :integer
-    field :status, :string
+    field :status, :string, default: "pending"
     field :str_src, :string
     belongs_to :user, User
     belongs_to :ngo_chal, NGOChal
