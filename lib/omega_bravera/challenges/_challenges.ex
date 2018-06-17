@@ -7,6 +7,39 @@ defmodule OmegaBravera.Challenges do
   alias OmegaBravera.Repo
 
   alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Fundraisers.NGO
+
+  @doc """
+  Creates a ngo_chal.
+
+  ## Examples
+
+      iex> create_ngo_chal(%{field: value})
+      {:ok, %NGOChal{}}
+
+      iex> create_ngo_chal(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_ngo_chal(%NGO{} = ngo, %User{} = user, attrs \\ %{}) do
+    %{"id" => ngo_id} = ngo
+    %{"id" => user_id} = user
+
+    %NGOChal{}
+    |> NGOChal.changeset(attrs)
+    |> Ecto.Changeset.put_change(:user_id, user_id)
+    |> Ecto.Changeset.put_change(:ngo_id, ngo_id)
+    |> Repo.insert()
+  end
+
+  def insert_ngo_chal(params, ngo_id, user_id) do
+    %NGOChal{ngo_id: ngo_id, user_id: user_id}
+    |> NGOChal.changeset(params)
+    |> Repo.insert()
+  end
+
 
   @doc """
   Returns the list of ngo_chals.
@@ -37,23 +70,7 @@ defmodule OmegaBravera.Challenges do
   """
   def get_ngo_chal!(id), do: Repo.get!(NGOChal, id)
 
-  @doc """
-  Creates a ngo_chal.
 
-  ## Examples
-
-      iex> create_ngo_chal(%{field: value})
-      {:ok, %NGOChal{}}
-
-      iex> create_ngo_chal(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_ngo_chal(attrs \\ %{}) do
-    %NGOChal{}
-    |> NGOChal.changeset(attrs)
-    |> Repo.insert()
-  end
 
   @doc """
   Updates a ngo_chal.

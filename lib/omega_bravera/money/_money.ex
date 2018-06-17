@@ -49,10 +49,39 @@ defmodule OmegaBravera.Money do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_donation(attrs \\ %{}) do
-    %Donation{}
-    |> Donation.changeset(attrs)
+
+  def create_donation(rel_params, params) do
+    %{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id} = rel_params
+
+    %Donation{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id}
+    |> Donation.changeset(params)
     |> Repo.insert()
+  end
+
+  def create_donations(rel_params, milestones, kickstarter, currency, str_src) do
+    multi =
+      Multi.new
+      |> Multi.run(:kickstarter, fn %{} ->
+          create_donation(rel_params, %{amount: Decimal.new(kickstarter), milestone: 0, currency: currency, str_src: str_src, status: "charged"})
+        end)
+      |> Multi.run(:milestones, fn %{} ->
+          insert_milestones(rel_params, milestones, currency, str_src)
+          {:ok, %{"message" => "milestones inserted"}}
+        end)
+
+      case Repo.transaction(multi) do
+        {:ok, message} ->
+          {:ok, message}
+        {:error, _} ->
+          {:error, "Error"}
+      end
+  end
+
+  defp insert_milestones(rel_params, milestones, currency, str_src) do
+    Enum.each(milestones, fn {milestone, amount} ->
+      create_donation(rel_params, %{amount: Decimal.new(amount), milestone: milestone, currency: currency, str_src: str_src, status: "pending"})
+    end)
+    {:ok, "milestones created"}
   end
 
   @doc """

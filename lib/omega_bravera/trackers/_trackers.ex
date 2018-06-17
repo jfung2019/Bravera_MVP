@@ -7,6 +7,20 @@ defmodule OmegaBravera.Trackers do
   alias OmegaBravera.Repo
 
   alias OmegaBravera.Trackers.Strava
+  alias OmegaBravera.Challenges.NGOChal
+
+  def get_strava_ngo_chals(athlete_id) do
+  query = from s in Strava,
+    where: s.athlete_id == ^athlete_id,
+    join: nc in NGOChal, where: s.user_id == nc.user_id and nc.status == "Active",
+    select: {
+      nc.id,
+      s.token
+    }
+
+    query
+    |> Repo.all()
+  end
 
   @doc """
   Returns the list of stravas.
