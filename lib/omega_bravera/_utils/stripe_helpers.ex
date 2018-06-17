@@ -4,27 +4,6 @@ defmodule OmegaBravera.StripeHelpers do
   alias OmegaBravera.Fundraisers
   alias OmegaBravera.Money
 
-  defp centify(amount) do
-    amount
-    |> Decimal.new
-    |> Numbers.mult(100)
-  end
-
-  defp total_amount(amount) do
-    amount
-    |> centify
-    |> Decimal.round
-    |> Decimal.to_string
-  end
-
-  defp destination_amount(amount) do
-    amount
-    |> centify
-    |> Numbers.mult(0.90)
-    |> Decimal.round
-    |> Decimal.to_string
-  end
-
   # TODO fix this charge thing
 
   def charge_multiple_donations(donations) do
@@ -138,6 +117,27 @@ defmodule OmegaBravera.StripeHelpers do
     {:error, reason} ->
       IO.inspect(reason)
     end
+  end
+
+  defp centify(amount) do
+    amount
+    |> Decimal.new
+    |> Numbers.mult(100)
+  end
+
+  defp total_amount(amount) do
+    amount
+    |> centify
+    |> Decimal.round
+    |> Decimal.to_string
+  end
+
+  defp destination_amount(amount) do
+    amount
+    |> centify
+    |> Numbers.mult(0.90)
+    |> Decimal.round
+    |> Decimal.to_string
   end
 
 end
