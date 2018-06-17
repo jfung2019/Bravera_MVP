@@ -4,7 +4,7 @@ defmodule OmegaBravera.Mixfile do
   def project do
     [
       app: :omega_bravera,
-      version: "0.1.8",
+      version: "0.1.9",
       elixir: "~> 1.6.4",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -46,6 +46,7 @@ defmodule OmegaBravera.Mixfile do
       {:guardian, "~> 1.0"},
       {:timex, "~> 3.1"},
       {:bamboo, "~> 0.8"},
+      {:strava, "~> 0.6"},
     ]
   end
 

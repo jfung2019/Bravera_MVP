@@ -1,4 +1,4 @@
-defmodule Bravera.Emails do
+defmodule OmegaBravera.Emails do
   import Bamboo.Email
 
   def welcome_email(recipient) do

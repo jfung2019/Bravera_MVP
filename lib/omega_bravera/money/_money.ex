@@ -5,6 +5,7 @@ defmodule OmegaBravera.Money do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
+  alias Ecto.Multi
 
   alias OmegaBravera.Money.Donation
 
@@ -63,6 +64,7 @@ defmodule OmegaBravera.Money do
     |> Repo.insert()
   end
 
+# create donations with kickstarter
   def create_donations(rel_params, milestones, kickstarter, currency, str_src) do
     multi =
       Multi.new
@@ -80,6 +82,16 @@ defmodule OmegaBravera.Money do
         {:error, _} ->
           {:error, "Error"}
       end
+  end
+
+# for no kickstarter
+  def create_donations(rel_params, milestones, currency, str_src) do
+    case insert_milestones(rel_params, milestones, currency, str_src) do
+      {:ok, result} ->
+        {:ok, result}
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 
   defp insert_milestones(rel_params, milestones, currency, str_src) do

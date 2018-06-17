@@ -10,10 +10,50 @@ defmodule OmegaBravera.Accounts do
 
   alias OmegaBravera.Accounts.{User, Credential}
   alias OmegaBravera.Trackers
+  alias OmegaBravera.Trackers.Strava
+
+  # TODO Optimize the preload below
+
+  def get_user_with_strava!(user_id) do
+    user = User
+
+    user
+    |> where([user], user.id == ^user_id)
+    |> join(:left, [user], ngo_chals in assoc(user, :ngo_chals))
+    |> join(:left, [user, ngo_chals], donations in assoc(ngo_chals, :donations))
+    |> preload([user, ngo_chals, donations], [ngo_chals: {ngo_chals, donations: donations}])
+    |> Repo.one
+    |> Repo.preload(:strava)
+  end
 
   @doc """
-    Creates User with a credential
+  Inserts or updates strava user with create_strava_user func below
   """
+
+  def insert_or_update_strava_user(changeset) do
+    %{email: email, firstname: firstname, lastname: lastname, token: token, athlete_id: athlete_id} = changeset
+
+    user_changeset = %{"email" => email, "firstname" => firstname, "lastname" => lastname}
+
+    strava_changeset = %{"token" => token, "email" => email, "firstname" => firstname, "lastname" => lastname, "athlete_id" => athlete_id}
+
+    case Repo.get_by(User, email: email) do
+      nil ->
+         create_strava_user(user_changeset, strava_changeset)
+      user ->
+        %{id: user_id} = user
+        case Repo.get_by(Strava, user_id: user_id) do
+          nil ->
+            Trackers.create_strava(user_id, strava_changeset)
+          strava ->
+            %{token: strava_token} = strava
+            unless strava_token == token do
+              Trackers.update_strava(strava, strava_changeset)
+            end
+            {:ok, user}
+        end
+    end
+  end
 
   def create_strava_user(user_changeset, strava_changeset) do
 
@@ -45,7 +85,8 @@ defmodule OmegaBravera.Accounts do
   """
 
   def get_user_credential(email) do
-    credential = case email do
+    #  there used to be credential = here, don't think it is used
+    case email do
       nil ->
         nil
       email ->

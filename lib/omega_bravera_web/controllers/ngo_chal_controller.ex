@@ -14,11 +14,19 @@ defmodule OmegaBraveraWeb.NGOChalController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"ngo_chal" => ngo_chal_params}) do
-    case Challenges.create_ngo_chal(ngo_chal_params) do
+  def create(conn, %{"ngo_id" => ngo_id, "ngo_chal" => ngo_chal_params}) do
+
+    current_user = Guardian.Plug.current_resource(conn)
+
+    user_id = current_user.id
+
+    ngo = String.to_integer(ngo_id)
+
+    case Challenges.insert_ngo_chal(ngo_chal_params, ngo, user_id) do
       {:ok, ngo_chal} ->
+        # TODO put the social share link in the put_flash?!
         conn
-        |> put_flash(:info, "Ngo chal created successfully.")
+        |> put_flash(:info, "Success! You have registered for the challenge!")
         |> redirect(to: ngo_chal_path(conn, :show, ngo_chal))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)

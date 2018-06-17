@@ -1,5 +1,0 @@
-<h2>Edit Strava</h2>
-
-<%= render "form.html", Map.put(assigns, :action, strava_path(@conn, :update, @strava)) %>
-
-<span><%= link "Back", to: strava_path(@conn, :index) %></span>

@@ -31,6 +31,13 @@ defmodule OmegaBraveraWeb.Router do
     # maybe add: challenge data
 
     get "/", PageController, :index
+
+    resources "/", NGOController, only: [:show] do
+      resources "/", NGOChalController, only: [:show, :new, :create] do
+        resources "/donate", DonationController, only: [:show, :new, :create]
+      end
+    end
+
   end
 
   scope "/pass-reset", BraveraWeb do

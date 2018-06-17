@@ -3,6 +3,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
   import Ecto.Changeset
 
   alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Fundraisers.NGO
 
   schema "ngo_chals" do
     field :activity, :string

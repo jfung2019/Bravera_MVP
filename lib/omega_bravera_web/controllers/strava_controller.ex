@@ -1,60 +1,67 @@
 defmodule OmegaBraveraWeb.StravaController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.Trackers
-  alias OmegaBravera.Trackers.Strava
+  alias OmegaBravera.Guardian
+  alias OmegaBravera.Accounts
 
-  def index(conn, _params) do
-    stravas = Trackers.list_stravas()
-    render(conn, "index.html", stravas: stravas)
+  def authenticate(conn, _params) do
+    redirect conn, external: Strava.Auth.authorize_url!(scope: "view_private")
   end
 
-  def new(conn, _params) do
-    changeset = Trackers.change_strava(%Strava{})
-    render(conn, "new.html", changeset: changeset)
-  end
+  @doc """
+  This action is reached via `/auth/callback` and is the the callback URL that Strava will redirect the user back to with a `code` that will be used to request an access token.
+  The access token will then be used to access protected resources on behalf of the user.
+  """
 
-  def create(conn, %{"strava" => strava_params}) do
-    case Trackers.create_strava(strava_params) do
-      {:ok, strava} ->
-        conn
-        |> put_flash(:info, "Strava created successfully.")
-        |> redirect(to: strava_path(conn, :show, strava))
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
-  end
+  # Make separate Strava params for a Strava record, create email if email doesn't exist?
 
-  def show(conn, %{"id" => id}) do
-    strava = Trackers.get_strava!(id)
-    render(conn, "show.html", strava: strava)
-  end
+  # Would have to make function to check if user is logged in already to add Strava to fitness provider
 
-  def edit(conn, %{"id" => id}) do
-    strava = Trackers.get_strava!(id)
-    changeset = Trackers.change_strava(strava)
-    render(conn, "edit.html", strava: strava, changeset: changeset)
-  end
+  def strava_callback(conn, %{"code" => code}) do
+    client = Strava.Auth.get_token!(code: code)
+    athlete = Strava.Auth.get_athlete!(client)
 
-  def update(conn, %{"id" => id, "strava" => strava_params}) do
-    strava = Trackers.get_strava!(id)
+    %{token: %{access_token: access_token}} = client
 
-    case Trackers.update_strava(strava, strava_params) do
-      {:ok, strava} ->
-        conn
-        |> put_flash(:info, "Strava updated successfully.")
-        |> redirect(to: strava_path(conn, :show, strava))
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", strava: strava, changeset: changeset)
-    end
-  end
+    %{email: athlete_email, firstname: athlete_firstname, lastname: athlete_lastname, id: athlete_id_int} = athlete
 
-  def delete(conn, %{"id" => id}) do
-    strava = Trackers.get_strava!(id)
-    {:ok, _strava} = Trackers.delete_strava(strava)
+    athlete_id = to_string(athlete_id_int)
+
+    params = %{token: access_token, email: athlete_email, firstname: athlete_firstname, lastname: athlete_lastname, athlete_id: athlete_id}
 
     conn
-    |> put_flash(:info, "Strava deleted successfully.")
-    |> redirect(to: strava_path(conn, :index))
+      |> login(params)
+      |> redirect(to: "/")
+  end
+
+# have to do a case to handle user connecting strava
+
+  defp login(conn, changeset) do
+    case Accounts.insert_or_update_strava_user(changeset) do
+      {:ok, result} ->
+        # NOTE what does match? do and is it optimal?
+        cond do
+        match?(%{id: _}, result) ->
+          conn
+          |> put_flash(:info, "Welcome!")
+          |> Guardian.Plug.sign_in(result)
+        match?(%{strava: _}, result) ->
+          %{user: result_user} = result
+
+          conn
+          |> put_flash(:info, "Welcome!")
+          |> Guardian.Plug.sign_in(result_user)
+        end
+      {:error, _reason} ->
+        conn
+        |> put_flash(:error, "Error signing in")
+    end
+  end
+
+  def logout(conn, _params) do
+    conn
+    |> Guardian.Plug.sign_out()
+    |> put_flash(:info, "Successfully signed out")
+    |> redirect(to: "/")
   end
 end

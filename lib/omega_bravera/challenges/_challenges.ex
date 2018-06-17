@@ -49,7 +49,7 @@ defmodule OmegaBravera.Challenges do
       {:error, %Ecto.Changeset{}}
 
   """
-
+  # TODO I don't think this is used anywhere, this might be an NGO thing, not an ngo_chal thing, misported
   def create_ngo_chal(%NGO{} = ngo, %User{} = user, attrs \\ %{}) do
     %{"id" => ngo_id} = ngo
     %{"id" => user_id} = user
