@@ -63,12 +63,13 @@ defmodule OmegaBravera.Trackers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_strava(attrs \\ %{}) do
-    %Strava{}
+
+  def create_strava(user_id, attrs \\ %{}) do
+    %Strava{user_id: user_id}
     |> Strava.changeset(attrs)
     |> Repo.insert()
   end
-
+  
   @doc """
   Updates a strava.
 

@@ -10,6 +10,33 @@ defmodule OmegaBravera.Challenges do
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Fundraisers.NGO
 
+  def get_user_ngo_chals(user_id) do
+    query = from nc in NGOChal, where: nc.user_id == ^user_id
+    Repo.all(query)
+  end
+
+  def get_ngo_ngo_chals(ngo_id, order_by) do
+
+    query = from nc in NGOChal,
+          where: nc.ngo_id == ^ngo_id,
+          join: u in User, where: u.id == nc.user_id
+
+    query = from [nc, u] in query,
+      select: { nc.id, nc.total_pledged, nc.total_secured, u.firstname, u.lastname}
+
+    case order_by do
+      "total_pledged" ->
+        query = from q in query, order_by: [desc: q.total_pledged]
+
+        query
+        |> Repo.all
+      "total_secured" ->
+        query = from q in query, order_by: [desc: q.total_secured]
+
+        query
+        |> Repo.all
+    end
+  end
   @doc """
   Creates a ngo_chal.
 
@@ -39,7 +66,6 @@ defmodule OmegaBravera.Challenges do
     |> NGOChal.changeset(params)
     |> Repo.insert()
   end
-
 
   @doc """
   Returns the list of ngo_chals.

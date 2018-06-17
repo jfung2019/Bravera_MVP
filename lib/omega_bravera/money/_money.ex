@@ -8,6 +8,11 @@ defmodule OmegaBravera.Money do
 
   alias OmegaBravera.Money.Donation
 
+  def get_ngo_chal_sponsors(ngo_chal_id) do
+    query = from d in Donation, where: d.ngo_chal_id == ^ngo_chal_id
+    Repo.all(query)
+  end
+
   @doc """
   Returns the list of donations.
 

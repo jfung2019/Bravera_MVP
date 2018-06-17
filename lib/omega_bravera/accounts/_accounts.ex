@@ -9,7 +9,21 @@ defmodule OmegaBravera.Accounts do
   alias OmegaBravera.Repo
 
   alias OmegaBravera.Accounts.{User, Credential}
+  alias OmegaBravera.Trackers
 
+  @doc """
+    Creates User with a credential
+  """
+
+  def create_strava_user(user_changeset, strava_changeset) do
+
+    Multi.new
+    |> Multi.run(:user, fn %{} -> create_user(user_changeset) end)
+    |> Multi.run(:strava, fn %{user: user} ->
+       Trackers.create_strava(user.id, strava_changeset)
+       end)
+    |> Repo.transaction()
+  end
 
   @doc """
     Creates User with a credential
