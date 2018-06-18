@@ -9,6 +9,17 @@ defmodule OmegaBravera.Money do
 
   alias OmegaBravera.Money.Donation
 
+  # for charging from strava webhooks
+
+  def get_donations_by_milestone(participant, milestone_limit) do
+    query = from d in Donation,
+      where: d.status == "pending" and d.milestone <= ^milestone_limit and d.participant_id == ^participant
+
+    Repo.all(query)
+  end
+
+  # get all da donations
+
   def get_ngo_chal_sponsors(ngo_chal_id) do
     query = from d in Donation, where: d.ngo_chal_id == ^ngo_chal_id
     Repo.all(query)

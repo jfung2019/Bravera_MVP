@@ -4,7 +4,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateStrCustomers do
   def change do
     create table(:str_customers) do
       add :cus_id, :string
-      add :user_id, references(:user, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
 
       timestamps(type: :timestamptz)
     end

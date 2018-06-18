@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateNgos do
 
   def change do
     create table(:ngos) do
-      add :user_id, references(:user, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
       add :name, :string
       add :desc, :string
       add :logo, :string
@@ -13,6 +13,6 @@ defmodule OmegaBravera.Repo.Migrations.CreateNgos do
       timestamps(type: :timestamptz)
     end
 
-    create unique_index(:charities, [:slug])
+    create unique_index(:ngos, [:slug])
   end
 end

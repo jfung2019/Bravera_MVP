@@ -40,6 +40,7 @@ defmodule OmegaBraveraWeb do
       import OmegaBraveraWeb.Router.Helpers
       import OmegaBraveraWeb.ErrorHelpers
       import OmegaBraveraWeb.Gettext
+      import OmegaBraveraWeb.ViewHelpers
     end
   end
 
