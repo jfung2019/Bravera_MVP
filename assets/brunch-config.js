@@ -20,7 +20,10 @@ exports.config = {
       // }
     },
     stylesheets: {
-      joinTo: "css/app.css"
+      joinTo: "css/app.css",
+      order: {
+        after: ["web/static/css/app.scss"] // concat app.css last
+      }
     },
     templates: {
       joinTo: "js/app.js"
@@ -47,7 +50,16 @@ exports.config = {
     babel: {
       // Do not use ES6 compiler in vendor code
       ignore: [/vendor/]
-    }
+    },
+    sass: {
+     options: {
+       includePaths: ["node_modules/bootstrap/scss","node_modules/font-awesome/scss"], // Tell sass-brunch where to look for files to @import
+       precision: 8 // Minimum precision required by bootstrap-sass
+      }
+    },
+    copycat: {
+      "fonts": ["node_modules/font-awesome/fonts"] // copy node_modules/font-awesome/fonts/* to priv/static/fonts/
+    },
   },
 
   modules: {
@@ -57,6 +69,13 @@ exports.config = {
   },
 
   npm: {
-    enabled: true
+    enabled: true,
+    globals: {
+      $: 'jquery',
+      jQuery: 'jquery',
+      Popper: 'popper.js',
+      bootstrap: 'bootstrap',
+      moment: 'moment'
+    }
   }
 };

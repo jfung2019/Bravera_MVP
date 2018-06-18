@@ -1,0 +1,416 @@
+$theme-colors: (
+  "secondary": #871B2D,
+  "danger": #d21034,
+  "bravera": #F5274B,
+  "background": #F9F5F5
+);
+
+.halfway-down{
+  margin-top: 50%;
+}
+
+.scroll-col{
+  max-height: 800px;
+  overflow-y: scroll;
+}
+
+.nonscroll-col{
+  position: sticky;
+}
+
+@import "bootstrap";
+@import "font-awesome";
+
+.nav-logo{
+  color: black;
+}
+
+.nav-logo:hover{
+  color: lightblue;
+}
+
+.fa-nav{
+  font-size: 1.5em;
+  vertical-align: middle;
+}
+
+.milestone-label{
+  width: 250px;
+}
+
+// Progress circle
+.strava-avatar-progress{
+  max-width: 100%;
+}
+
+.circle-progress-container{
+  margin: 15px 0px;
+}
+
+.circle-progress{
+    width: 150px;
+    height: 150px;
+    line-height: 150px;
+    background: none;
+    margin: 0 auto;
+    box-shadow: none;
+    position: relative;
+}
+
+.circle-progress:after{
+    content: "";
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 12px solid #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.circle-progress > span{
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+}
+.circle-progress .circle-progress-left{
+    left: 0;
+}
+.circle-progress .circle-progress-bar{
+    width: 100%;
+    height: 100%;
+    background: none;
+    border-width: 12px;
+    border-style: solid;
+    position: absolute;
+    top: 0;
+}
+.circle-progress .circle-progress-left .circle-progress-bar{
+    left: 100%;
+    border-top-right-radius: 80px;
+    border-bottom-right-radius: 80px;
+    border-left: 0;
+    -webkit-transform-origin: center left;
+    transform-origin: center left;
+}
+.circle-progress .circle-progress-right{
+    right: 0;
+}
+.circle-progress .circle-progress-right .circle-progress-bar{
+    left: -100%;
+    border-top-left-radius: 80px;
+    border-bottom-left-radius: 80px;
+    border-right: 0;
+    -webkit-transform-origin: center right;
+    transform-origin: center right;
+    animation: loading-1 1.8s linear forwards;
+}
+.circle-progress .circle-progress-value{
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    background: theme-color("background");
+    font-size: 24px;
+    color: #fff;
+    line-height: 135px;
+    text-align: center;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+.circle-progress.progress-fill .circle-progress-bar{
+    border-color: theme-color("bravera");
+}
+.circle-progress.progress-fill .circle-progress-left .circle-progress-bar{
+    animation: loading-2 1.5s linear forwards 1.8s;
+}
+
+@keyframes loading-1{
+    0%{
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100%{
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+}
+
+@keyframes loading-2{
+    0%{
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100%{
+        -webkit-transform: rotate(144deg);
+        transform: rotate(144deg);
+    }
+}
+
+@keyframes loading-3{
+    0%{
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100%{
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+}
+
+@keyframes loading-4{
+    0%{
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100%{
+        -webkit-transform: rotate(36deg);
+        transform: rotate(36deg);
+    }
+}
+
+@keyframes loading-5{
+    0%{
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100%{
+        -webkit-transform: rotate(126deg);
+        transform: rotate(126deg);
+    }
+}
+
+@media only screen and (max-width: 990px){
+    .circle-progress{ margin-bottom: 20px; }
+}
+
+.charity-desc{
+  margin: 20px 0px;
+}
+
+.money-progress{
+  height: 35px;
+  border-radius: 100px;
+}
+
+h1{
+  font-weight: 300;
+}
+
+.text-400{
+  font-weight: 400;
+}
+
+.text-420{
+  font-weight: 420;
+}
+
+.text-500{
+  font-weight: 500;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.redbar{
+  text-align: center;
+}
+
+.card{
+    -webkit-box-shadow: 0px 2px 15px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 2px 15px rgba(0,0,0,0.2);
+    box-shadow: 0px 2px 15px rgba(0,0,0,0.2);
+    border: none;
+}
+
+.inset-box-shadow{
+  -webkit-box-shadow: inset 0px 0px 12px rgba(0,0,0,0.2);
+  -moz-box-shadow: inset 0px 0px 12px rgba(0,0,0,0.2);
+  box-shadow: inset 0px 0px 10px rgba(0,0,0,0.2);
+  border: none;
+}
+
+.gray-background{
+  background-color: #F9F5F5;
+}
+
+.leaderboard-name{
+  color: gray;
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 22px;
+}
+
+.challenge-img-left{
+  max-width: 600px
+}
+
+.challenge-img-right{
+  max-width: 600px
+}
+
+/* Dot style for toggle button */
+
+.dotstyle ul {
+	position: relative;
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	cursor: default;
+}
+
+.dotstyle li {
+	position: relative;
+	display: block;
+	float: left;
+	margin: 0 16px;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}
+
+.dotstyle li button {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	outline: none;
+	border-radius: 50%;
+	background-color: #fff;
+	background-color: rgba(255,255,255,0.3);
+	text-indent: -999em;
+	cursor: pointer;
+	position: absolute;
+}
+
+.dotstyle-fillup li button {
+	overflow: hidden;
+	background-color: rgba(0,0,0,0);
+	box-shadow: inset 0 0 0 2px rgba(255,255,255,1);
+	transition: background 0.3s;
+}
+
+.dotstyle-fillup li button::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	height: 0;
+	left: 0;
+	width: 100%;
+	background-color: #fff;
+	box-shadow: 0 0 1px #fff;
+	transition: height 0.3s;
+}
+
+.dotstyle-fillup li button:hover,
+.dotstyle-fillup li button:focus {
+	background-color: theme-color("bravera");
+}
+
+.dotstyle-fillup li.current button::after {
+	height: 100%;
+}
+
+// Default phoenix styles below
+
+/* Phoenix flash messages */
+.alert:empty { display: none; }
+
+/* Custom page header */
+.header {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.big-logo {
+  width: 221px;
+  height: 46px;
+  display: inline-block;
+  margin-bottom: 0.2em;
+  background-image: url("/images/bravera-logo-2x.png");
+  background-size: 221px 46px;
+}
+
+.lil-logo {
+  width: 150px;
+  height: 31px;
+  display: inline-block;
+  background-image: url("/images/150px-bravera-white-logo.png");
+  background-size: 150px 31px;
+}
+
+// Sign in/register form styles
+
+.signin {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  -ms-flex-align: center;
+  -ms-flex-pack: center;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin input[type="confirm-password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+
+}
+
+// TODO Fix the footer at bottom BS
+
+.flex-grow{
+  flex: 1;
+}
+
+.vh-top{
+  min-height: 80vh;
+}
+
+footer{
+  margin-top: 25px;
+  min-height: 20vh;
+}

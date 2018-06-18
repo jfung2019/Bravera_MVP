@@ -13,6 +13,16 @@ defmodule OmegaBraveraWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # Strava OAuth Routes
+  scope "/strava", OmegaBraveraWeb do
+    pipe_through :browser
+
+    get "/login", StravaController, :authenticate
+    get "/callback", StravaController, :strava_callback
+    get "/logout", StravaController, :logout
+
+  end
+
   scope "/", OmegaBraveraWeb do
     pipe_through :browser # Use the default browser stack
 
@@ -40,7 +50,7 @@ defmodule OmegaBraveraWeb.Router do
 
   end
 
-  scope "/pass-reset", BraveraWeb do
+  scope "/pass-reset", OmegaBraveraWeb do
     pipe_through :browser
 
     resources "/", PasswordController, only: [:new, :create]
