@@ -7,6 +7,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Money.Donation
+  alias OmegaBravera.Stripe.StrCustomer
 
   schema "users" do
     field :email, :string
@@ -17,6 +18,7 @@ defmodule OmegaBravera.Accounts.User do
     has_many :ngos, NGO
     has_many :ngo_chals, NGOChal
     has_many :donations, Donation
+    has_many :str_customers, StrCustomer
 
     timestamps()
   end

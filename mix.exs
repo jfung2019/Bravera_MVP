@@ -47,6 +47,9 @@ defmodule OmegaBravera.Mixfile do
       {:timex, "~> 3.1"},
       {:bamboo, "~> 0.8"},
       {:strava, "~> 0.6"},
+      {:stripy, "~> 1.0"},
+      {:decimal, "~> 1.0", override: true},
+      {:numbers, "~> 5.1.0"},
     ]
   end
 

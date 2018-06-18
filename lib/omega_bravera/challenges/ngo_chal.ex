@@ -4,14 +4,15 @@ defmodule OmegaBravera.Challenges.NGOChal do
 
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Fundraisers.NGO
+  alias OmegaBravera.Money.Donation
 
   schema "ngo_chals" do
-    field :activity, :string
+    field :activity, :string, default: "all"
     field :distance_target, :decimal, default: 100
     field :distance_covered, :decimal, default: 0
     field :duration, :integer
     field :milestones, :integer, default: 3
-    field :money_target, :decimal
+    field :money_target, :decimal, default: 2000
     field :slug, :string
     field :start_date, :utc_datetime
     field :status, :string, default: "Active"
@@ -19,6 +20,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field :total_secured, :decimal, default: 0
     belongs_to :user, User
     belongs_to :ngo, NGO
+    has_many :donations, Donation
 
     timestamps()
   end
@@ -27,6 +29,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
   def changeset(ngo_chal, attrs) do
     ngo_chal
     |> cast(attrs, [:activity, :money_target, :distance_target, :distance_covered, :slug, :start_date, :status, :duration, :milestones, :total_pledged, :total_secured])
-    |> validate_required([:activity, :money_target, :distance_target, :slug, :start_date, :status, :duration, :milestones])
+    |> validate_required([:activity, :money_target, :distance_target, :start_date, :status, :duration, :milestones])
   end
 end
