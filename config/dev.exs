@@ -1,5 +1,32 @@
 use Mix.Config
 
+# Strava dev config
+
+config :strava,
+  client_id: "23267",
+  client_secret: "508d46fce35e03a657546bf62283543c9ffe330f",
+  access_token: "8830cb6e827146658aa034027d8d399ef1267b46",
+  redirect_uri: "http://localhost:4000/strava/callback"
+
+# Stripy dev config
+
+config :stripy,
+  secret_key: "sk_test_PkM3TZK4TbRhGGWlmgQwNCoX",
+  endpoint: "https://api.stripe.com/v1/"
+
+# Guardian config
+
+config :omega_bravera, OmegaBravera.Guardian,
+       issuer: "bravera",
+       secret_key: "TVCFw5ZzCC5gqI8FeRUg3jT7U578dbb4gGjBXq8Zt1Rk4ctVFj/zTRn6gfGOXiU0"
+
+ # Email config
+
+ config :omega_bravera, OmegaBravera.Mailer,
+  adapter: Bamboo.SendgridAdapter,
+  api_key: "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"
+
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

@@ -2,7 +2,7 @@ defmodule OmegaBravera.Stripe.StrCustomer do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Bravera.Accounts.User
+  alias OmegaBravera.Accounts.User
 
   schema "str_customers" do
     field :cus_id, :string
