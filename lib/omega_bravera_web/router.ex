@@ -1,6 +1,8 @@
 defmodule OmegaBraveraWeb.Router do
   use OmegaBraveraWeb, :router
 
+  alias OmegaBravera.Guardian
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,6 +10,12 @@ defmodule OmegaBraveraWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
+
+  pipeline :jwt_authenticated do
+    plug Guardian.AuthPipeline
+    plug :put_layout, {BraveraWeb.LayoutView, "auth.html"}
+  end
+
 
   pipeline :api do
     plug :accepts, ["json"]
