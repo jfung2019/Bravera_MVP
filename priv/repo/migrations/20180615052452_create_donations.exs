@@ -8,9 +8,9 @@ defmodule OmegaBravera.Repo.Migrations.CreateDonations do
       add :str_src, :string
       add :milestone, :integer
       add :status, :string
-      add :user_id, references(:user, on_delete: :nothing)
-      add :ngo_chal_id, references(:ngo_chal, on_delete: :nothing)
-      add :ngo, references(:ngo, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
+      add :ngo_chal_id, references(:ngo_chals, on_delete: :nothing)
+      add :ngo, references(:ngos, on_delete: :nothing)
 
       timestamps(type: :timestamptz)
     end

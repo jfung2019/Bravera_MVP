@@ -8,7 +8,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateStravas do
       add :firstname, :string
       add :lastname, :string
       add :token, :string
-      add :user_id, references(:user, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
 
       timestamps(type: :timestamptz)
     end

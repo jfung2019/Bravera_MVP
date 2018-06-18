@@ -14,8 +14,8 @@ defmodule OmegaBravera.Repo.Migrations.CreateNgoChals do
       add :milestones, :integer
       add :total_pledged, :decimal
       add :total_secured, :decimal
-      add :user_id, references(:user, on_delete: :nothing)
-      add :ngo_id, references(:ngo, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
+      add :ngo_id, references(:ngos, on_delete: :nothing)
 
       timestamps(type: :timestamptz)
     end

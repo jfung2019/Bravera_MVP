@@ -59,9 +59,4 @@ defmodule OmegaBraveraWeb.Router do
     put "/:token", PasswordController, :update
   end
 
-
-  # Other scopes may use custom stacks.
-  # scope "/api", OmegaBraveraWeb do
-  #   pipe_through :api
-  # end
 end
