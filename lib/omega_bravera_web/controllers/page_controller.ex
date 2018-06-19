@@ -13,7 +13,5 @@ defmodule OmegaBraveraWeb.PageController do
     changeset = Challenges.change_ngo_chal(%NGOChal{})
 
     render(conn, "index.html", ngos: ngos, user: user, changeset: changeset)
-
-    render conn, "index.html"
   end
 end

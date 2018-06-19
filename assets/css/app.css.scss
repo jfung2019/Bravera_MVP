@@ -18,6 +18,11 @@ $theme-colors: (
   position: sticky;
 }
 
+.cat-img{
+  min-height: 200px;
+  min-width: 300px;
+}
+
 @import "bootstrap";
 @import "font-awesome";
 

@@ -1,26 +1,16 @@
-<%= if logged_in?(@conn) do %>
-  <%= for ngo <- @ngos do %>
-  <div class="container flex-grow mt-4 mb-4">
+<div class="container-fluid">
 
+<%= for ngo <- @ngos do %>
+
+  <div class="card mt-4">
     <div class="row">
-      <div class="card text-center">
-
-        <div class="d-flex border-bottom border-dark">
-          <div class="challenge-img-left">
-            <%= img_tag( ngo.logo, class: "card-img-top", alt: ngo.name) %>
-          </div>
-          <div class="challenge-img-right">
-            <%= img_tag(ngo.logo, class: "card-img-top", alt: ngo.name) %>
-          </div>
-        </div>
-
+      <div class="col-lg-4 col-sm-6 md-border-right">
+        <%= img_tag( ngo.logo, class: "card-img-top cat-img", alt: ngo.name) %>
+      </div>
+      <div class="col-lg-8 col-sm-6">
         <div class="card-body">
-          <h2 class="card-title"><%= ngo.name %></h2>
-          <p><%= ngo.desc %></p>
-        <div>
-
-        <!-- TODO If has active participant, show link to "My participant page" -->
-
+          <h3 class="card-title"><%= ngo.name %></h3>
+          <h5 class="text-420"><%= ngo.desc %></h5>
           <%= if has_tracker?(@conn) do %>
               <p>
                 <button class="btn btn-bravera" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
@@ -43,7 +33,7 @@
             <% else %>
 
               <p>Connect a Tracker to
-              Participate</p>
+              take the Challenge!</p>
 
               <a href="/strava/login" class="mb-1">
                 <img src="/images/strava/btn_strava_connect-orange.png" />
@@ -53,80 +43,11 @@
                 <img src="/images/btn_fitbit_white.png" />
               </a>
             <% end %>
-          </div>
 
         </div>
-
-      </div>
-
-    </div>
-  </div>
-  <% end %>
-
-<% else %>
-
-<div class="gray-background pt-4">
-
-  <div class="container">
-
-    <div class="row">
-      <div class="col-lg-6">
-          <div class="card">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </div>
-
-      </div>
-
-      <div class="col-lg-6">
-        <%= for ngo <- @ngos do %>
-        <div class="container flex-grow mb-4">
-
-          <div class="row">
-            <div class="card text-center">
-
-              <div class="d-flex border-bottom border-dark">
-
-                <div class="challenge-img-left">
-                  <%= img_tag( ngo.logo, class: "card-img-top", alt: ngo.name) %>
-                </div>
-                <div class="challenge-img-right">
-                  <%= img_tag(ngo.logo, class: "card-img-top", alt: ngo.name) %>
-                </div>
-
-              </div>
-
-              <div class="card-body pt-1">
-                <h2 class="card-title my-0"><%= ngo.name %></h2>
-                <p><%= ngo.desc %></p>
-              <div>
-
-              <!-- TODO If has active participant, show link to "My participant page" -->
-
-                  <p>
-                    <button class="btn btn-bravera" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
-                    aria-expanded="false" aria-controls="Show-challenge-form">
-                      Sign up
-                    </button>
-                  </p>
-
-                  <div id="participant-signup" class="mx-auto" style="max-width: 420px;">
-                    <div class="collapse"
-                      id=<%= ngo.slug %>
-                    >
-                      <div class="card card-body inset-box-shadow">
-                          <%= render "signup_form.html", Map.put(assigns, :action, ngo_ngo_chal_path(@conn, :create, ngo.id)) %>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <% end %>
       </div>
     </div>
-  </div>
-</div>
 
+  </div>
 <% end %>
+</div>
