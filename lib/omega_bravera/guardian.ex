@@ -22,7 +22,7 @@ defmodule OmegaBravera.Guardian do
     # found in the `"sub"` key. In `above subject_for_token/2` we returned
     # the resource id so here we'll rely on that to look it up.
     %{"sub" => id} = claims
-    resource = OmegaBravera.Accounts.get_user_with_strava!(id)
+    resource = OmegaBravera.Accounts.get_user_with_everything!(id)
     {:ok,  resource}
 
   end
