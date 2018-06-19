@@ -11,7 +11,7 @@
       <div class="col-lg-8 col-md-7 col-sm-6 ">
         <div class="card-body">
 
-          <h3 class="">
+          <h3 class="text-500">
             <%= ngo.name %>
           </h3>
 
@@ -21,25 +21,25 @@
 
           <%= if has_tracker?(@conn) do %>
 
-          <p>
-            <button class="btn btn-bravera" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
+          <div class="text-center text-md-left">
+            <button class="btn btn-bravera mt-md-5" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
             aria-expanded="false" aria-controls="Show-challenge-form">
               Sign up
             </button>
-          </p>
+          </div>
         </div>
       </div>
     </div> <!-- end row 1 -->
 
-      <div id="participant-signup" class="mx-auto" style="max-width: 420px;">
-        <div class="collapse"
+    <div id="participant-signup" class="mx-auto" style="max-width: 420px;">
+      <div class="collapse"
           id=<%= ngo.slug %>
         >
-          <div class="card card-body inset-box-shadow gray-background">
+        <div class="card card-body inset-box-shadow gray-background">
             <%= render "challenge_form.html", Map.put(assigns, :action, ngo_ngo_chal_path(@conn, :create, ngo.id)) %>
-          </div>
         </div>
       </div>
+    </div>
 
             <% else %>
 
@@ -53,9 +53,12 @@
               <a href="#" class="mb-1">
                 <img src="/images/btn_fitbit_white.png" />
               </a>
+            </div>
+          </div>
+        </div>
             <% end %>
 
-        </div>
+      </div>
 
 <% end %>
 </div>
