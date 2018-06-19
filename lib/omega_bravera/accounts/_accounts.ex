@@ -28,11 +28,20 @@ defmodule OmegaBravera.Accounts do
 
   # TODO Optimize the preload below
 
+  # def get_user_with_strava!(user_id) do
+  #   query = from u in User,
+  #     where: u.id == ^user_id,
+  #     join: s in Strava, where: s.user_id == ^user_id
+  #
+  #   query |> Repo.one()
+  # end
+
   def get_user_with_strava!(user_id) do
     user = User
 
     user
     |> where([user], user.id == ^user_id)
+    |> join(:left, [user], ngo_chals in assoc(user, :ngo_chals))
     |> join(:left, [user], ngo_chals in assoc(user, :ngo_chals))
     |> join(:left, [user, ngo_chals], donations in assoc(ngo_chals, :donations))
     |> preload([user, ngo_chals, donations], [ngo_chals: {ngo_chals, donations: donations}])
