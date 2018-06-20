@@ -61,8 +61,8 @@ defmodule OmegaBravera.Challenges do
     |> Repo.insert()
   end
 
-  def insert_ngo_chal(params, ngo_id, user_id) do
-    %NGOChal{ngo_id: ngo_id, user_id: user_id}
+  def insert_ngo_chal(params, ngo_id, user_id, slug) do
+    %NGOChal{ngo_id: ngo_id, user_id: user_id, slug: slug}
     |> NGOChal.changeset(params)
     |> Repo.insert()
   end

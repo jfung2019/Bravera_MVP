@@ -11,8 +11,8 @@ defmodule OmegaBravera.Accounts.User do
 
   schema "users" do
     field :email, :string
-    field :firstname, :string
-    field :lastname, :string
+    field :firstname, :string, default: "Hao"
+    field :lastname, :string, default: "Doe"
     has_one :credential, Credential
     has_one :strava, Strava
     has_many :ngos, NGO

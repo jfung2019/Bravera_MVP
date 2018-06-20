@@ -3,6 +3,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
   alias OmegaBravera.Challenges
   alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Slugify
 
   def index(conn, _params) do
     ngo_chals = Challenges.list_ngo_chals()
@@ -18,11 +19,15 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     current_user = Guardian.Plug.current_resource(conn)
 
-    user_id = current_user.id
+    IO.inspect(current_user)
+
+    %{id: user_id, firstname: firstname} = current_user
 
     ngo = String.to_integer(ngo_id)
 
-    case Challenges.insert_ngo_chal(ngo_chal_params, ngo, user_id) do
+    slug = Slugify.gen_random_slug(firstname)
+
+    case Challenges.insert_ngo_chal(ngo_chal_params, ngo, user_id, slug) do
       {:ok, ngo_chal} ->
         # TODO put the social share link in the put_flash?!
         conn
