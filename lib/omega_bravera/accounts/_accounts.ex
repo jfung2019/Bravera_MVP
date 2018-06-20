@@ -28,13 +28,20 @@ defmodule OmegaBravera.Accounts do
 
   # TODO Optimize the preload below
 
-  def get_user_strava!(user_id) do
-    query = from u in User,
-      where: u.id == ^user_id,
-      join: s in Strava, where: s.user_id == ^user_id
-
-    query |> Repo.one()
+  def get_user_strava(user_id) do
+    query = from s in Strava, where: s.user_id == ^user_id
+    Repo.one(query)
   end
+
+  # TODO I think I was being cute with this, do we use? 
+  #
+  # def get_user_strava!(user_id) do
+  #   query = from u in User,
+  #     where: u.id == ^user_id,
+  #     join: s in Strava, where: s.user_id == ^user_id
+  #
+  #   query |> Repo.one()
+  # end
 
   def get_user_with_everything!(user_id) do
     user = User

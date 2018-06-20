@@ -1,8 +1,9 @@
 defmodule OmegaBraveraWeb.NGOChalController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.Challenges
+  alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money}
   alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Money.Donation
   alias OmegaBravera.Slugify
 
   def index(conn, _params) do
@@ -32,15 +33,26 @@ defmodule OmegaBraveraWeb.NGOChalController do
         # TODO put the social share link in the put_flash?!
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
-        |> redirect(to: ngo_chal_path(conn, :show, ngo_chal))
+        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo, ngo_chal))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
   end
 
   def show(conn, %{"id" => id}) do
+    # TODO optimize all of the maps being passed thru into one map
+
     ngo_chal = Challenges.get_ngo_chal!(id)
-    render(conn, "show.html", ngo_chal: ngo_chal)
+    IO.inspect(ngo_chal)
+    %{user_id: user_id, ngo_id: ngo_id} = ngo_chal
+
+    user = Accounts.get_user!(user_id)
+    ngo = Fundraisers.get_ngo!(ngo_id)
+    strava = Accounts.get_user_strava(user_id)
+    changeset = Money.change_donation(%Donation{})
+
+    render(conn, "show.html", ngo_chal: ngo_chal, user: user, ngo: ngo, strava: strava, changeset: changeset)
   end
 
   def edit(conn, %{"id" => id}) do
