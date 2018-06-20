@@ -50,8 +50,9 @@ defmodule OmegaBraveraWeb.Router do
 
     # for callbacks
     resources "/strava", StravaController
-
     # maybe add: challenge data
+
+    resources "/settings", SettingController
 
     get "/", PageController, :index
 
