@@ -1,0 +1,18 @@
+<h2>Show Tip</h2>
+
+<ul>
+
+  <li>
+    <strong>Amount:</strong>
+    <%= @tip.amount %>
+  </li>
+
+  <li>
+    <strong>Currency:</strong>
+    <%= @tip.currency %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: tip_path(@conn, :edit, @tip) %></span>
+<span><%= link "Back", to: tip_path(@conn, :index) %></span>

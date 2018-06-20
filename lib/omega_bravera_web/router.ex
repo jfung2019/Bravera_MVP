@@ -44,6 +44,10 @@ defmodule OmegaBraveraWeb.Router do
     # donations (chal_total) nested here?
     resources "/donations", DonationController
 
+    resources "/teams", TeamController
+
+    resources "/tips", TipController
+
     # for callbacks
     resources "/strava", StravaController
 

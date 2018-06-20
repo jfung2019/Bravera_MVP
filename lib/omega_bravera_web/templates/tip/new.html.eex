@@ -1,0 +1,5 @@
+<h2>New Tip</h2>
+
+<%= render "form.html", Map.put(assigns, :action, tip_path(@conn, :create)) %>
+
+<span><%= link "Back", to: tip_path(@conn, :index) %></span>

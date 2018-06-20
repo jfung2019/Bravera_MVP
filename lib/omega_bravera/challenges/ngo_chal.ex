@@ -5,6 +5,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Money.Donation
+  alias OmegaBravera.Challenges.Team
 
   schema "ngo_chals" do
     field :activity, :string, default: "all"
@@ -20,6 +21,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field :total_secured, :decimal, default: 0
     belongs_to :user, User
     belongs_to :ngo, NGO
+    belongs_to :team, Team
     has_many :donations, Donation
 
     timestamps()

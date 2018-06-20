@@ -6,12 +6,13 @@ defmodule OmegaBravera.Repo.Migrations.CreateTeams do
       add :activity, :string
       add :name, :string
       add :location, :string
-      add :user_id, references(:user, on_delete: :nothing)
-      add :ngo_id, references(:ngo, on_delete: :nothing)
+      add :user_id, references(:users, on_delete: :nothing)
+      add :ngo_id, references(:ngos, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :timestamptz)
     end
 
+    create unique_index(:teams, [:name])
     create index(:teams, [:user_id])
     create index(:teams, [:ngo_id])
   end

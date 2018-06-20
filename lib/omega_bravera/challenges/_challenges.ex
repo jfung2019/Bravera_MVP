@@ -6,10 +6,9 @@ defmodule OmegaBravera.Challenges do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Challenges.{NGOChal, Team}
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Fundraisers.NGO
-  alias OmegaBravera.Challenges.Team
 
   def get_user_ngo_chals(user_id) do
     query = from nc in NGOChal, where: nc.user_id == ^user_id
