@@ -14,9 +14,7 @@ defmodule OmegaBraveraWeb.Router do
 
   pipeline :jwt_authenticated do
     plug Guardian.AuthPipeline
-    plug :put_layout, {BraveraWeb.LayoutView, "auth.html"}
   end
-
 
   pipeline :api do
     plug :accepts, ["json"]

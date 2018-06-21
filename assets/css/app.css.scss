@@ -5,6 +5,9 @@ $theme-colors: (
   "background": #F9F5F5
 );
 
+@import "bootstrap";
+@import "font-awesome";
+
 .halfway-down{
   margin-top: 50%;
 }
@@ -22,9 +25,6 @@ $theme-colors: (
   min-height: 200px;
   min-width: 300px;
 }
-
-@import "bootstrap";
-@import "font-awesome";
 
 .nav-logo{
   color: black;
