@@ -9,13 +9,12 @@ defmodule OmegaBraveraWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Guardian.MaybeAuthPipeline
   end
 
   pipeline :jwt_authenticated do
     plug Guardian.AuthPipeline
-    plug :put_layout, {BraveraWeb.LayoutView, "auth.html"}
   end
-
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -43,10 +42,15 @@ defmodule OmegaBraveraWeb.Router do
     # donations (chal_total) nested here?
     resources "/donations", DonationController
 
+    resources "/teams", TeamController
+
+    resources "/tips", TipController
+
     # for callbacks
     resources "/strava", StravaController
-
     # maybe add: challenge data
+
+    resources "/settings", SettingController
 
     get "/", PageController, :index
 

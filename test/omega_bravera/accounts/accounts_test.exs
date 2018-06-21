@@ -66,4 +66,76 @@ defmodule OmegaBravera.AccountsTest do
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
   end
+
+  describe "settings" do
+    alias OmegaBravera.Accounts.Setting
+
+    @valid_attrs %{email_notifications: true, facebook: "some facebook", instagram: "some instagram", location: "some location", request_delete: true, show_lastname: true, twitter: "some twitter"}
+    @update_attrs %{email_notifications: false, facebook: "some updated facebook", instagram: "some updated instagram", location: "some updated location", request_delete: false, show_lastname: false, twitter: "some updated twitter"}
+    @invalid_attrs %{email_notifications: nil, facebook: nil, instagram: nil, location: nil, request_delete: nil, show_lastname: nil, twitter: nil}
+
+    def setting_fixture(attrs \\ %{}) do
+      {:ok, setting} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Accounts.create_setting()
+
+      setting
+    end
+
+    test "list_settings/0 returns all settings" do
+      setting = setting_fixture()
+      assert Accounts.list_settings() == [setting]
+    end
+
+    test "get_setting!/1 returns the setting with given id" do
+      setting = setting_fixture()
+      assert Accounts.get_setting!(setting.id) == setting
+    end
+
+    test "create_setting/1 with valid data creates a setting" do
+      assert {:ok, %Setting{} = setting} = Accounts.create_setting(@valid_attrs)
+      assert setting.email_notifications == true
+      assert setting.facebook == "some facebook"
+      assert setting.instagram == "some instagram"
+      assert setting.location == "some location"
+      assert setting.request_delete == true
+      assert setting.show_lastname == true
+      assert setting.twitter == "some twitter"
+    end
+
+    test "create_setting/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_setting(@invalid_attrs)
+    end
+
+    test "update_setting/2 with valid data updates the setting" do
+      setting = setting_fixture()
+      assert {:ok, setting} = Accounts.update_setting(setting, @update_attrs)
+      assert %Setting{} = setting
+      assert setting.email_notifications == false
+      assert setting.facebook == "some updated facebook"
+      assert setting.instagram == "some updated instagram"
+      assert setting.location == "some updated location"
+      assert setting.request_delete == false
+      assert setting.show_lastname == false
+      assert setting.twitter == "some updated twitter"
+    end
+
+    test "update_setting/2 with invalid data returns error changeset" do
+      setting = setting_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_setting(setting, @invalid_attrs)
+      assert setting == Accounts.get_setting!(setting.id)
+    end
+
+    test "delete_setting/1 deletes the setting" do
+      setting = setting_fixture()
+      assert {:ok, %Setting{}} = Accounts.delete_setting(setting)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_setting!(setting.id) end
+    end
+
+    test "change_setting/1 returns a setting changeset" do
+      setting = setting_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_setting(setting)
+    end
+  end
 end

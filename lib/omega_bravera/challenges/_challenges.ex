@@ -6,7 +6,7 @@ defmodule OmegaBravera.Challenges do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Challenges.{NGOChal, Team}
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Fundraisers.NGO
 
@@ -61,8 +61,8 @@ defmodule OmegaBravera.Challenges do
     |> Repo.insert()
   end
 
-  def insert_ngo_chal(params, ngo_id, user_id) do
-    %NGOChal{ngo_id: ngo_id, user_id: user_id}
+  def insert_ngo_chal(params, ngo_id, user_id, slug) do
+    %NGOChal{ngo_id: ngo_id, user_id: user_id, slug: slug}
     |> NGOChal.changeset(params)
     |> Repo.insert()
   end
@@ -143,5 +143,99 @@ defmodule OmegaBravera.Challenges do
   """
   def change_ngo_chal(%NGOChal{} = ngo_chal) do
     NGOChal.changeset(ngo_chal, %{})
+  end
+
+  @doc """
+  Returns the list of teams.
+
+  ## Examples
+
+      iex> list_teams()
+      [%Team{}, ...]
+
+  """
+  def list_teams do
+    Repo.all(Team)
+  end
+
+  @doc """
+  Gets a single team.
+
+  Raises `Ecto.NoResultsError` if the Team does not exist.
+
+  ## Examples
+
+      iex> get_team!(123)
+      %Team{}
+
+      iex> get_team!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_team!(id), do: Repo.get!(Team, id)
+
+  @doc """
+  Creates a team.
+
+  ## Examples
+
+      iex> create_team(%{field: value})
+      {:ok, %Team{}}
+
+      iex> create_team(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_team(attrs \\ %{}) do
+    %Team{}
+    |> Team.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a team.
+
+  ## Examples
+
+      iex> update_team(team, %{field: new_value})
+      {:ok, %Team{}}
+
+      iex> update_team(team, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_team(%Team{} = team, attrs) do
+    team
+    |> Team.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Team.
+
+  ## Examples
+
+      iex> delete_team(team)
+      {:ok, %Team{}}
+
+      iex> delete_team(team)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_team(%Team{} = team) do
+    Repo.delete(team)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking team changes.
+
+  ## Examples
+
+      iex> change_team(team)
+      %Ecto.Changeset{source: %Team{}}
+
+  """
+  def change_team(%Team{} = team) do
+    Team.changeset(team, %{})
   end
 end

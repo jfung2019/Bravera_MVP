@@ -4,6 +4,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
 
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Money.Donation
 
   schema "ngos" do
     field :desc, :string
@@ -13,6 +14,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field :stripe_id, :string
     belongs_to :user, User
     has_many :ngo_chals, NGOChal
+    has_many :donations, Donation
 
     timestamps()
   end

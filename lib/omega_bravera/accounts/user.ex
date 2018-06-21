@@ -2,7 +2,7 @@ defmodule OmegaBravera.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.Accounts.Credential
+  alias OmegaBravera.Accounts.{Credential, Setting}
   alias OmegaBravera.Trackers.Strava
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Challenges.NGOChal
@@ -11,10 +11,11 @@ defmodule OmegaBravera.Accounts.User do
 
   schema "users" do
     field :email, :string
-    field :firstname, :string
-    field :lastname, :string
+    field :firstname, :string, default: "Hao"
+    field :lastname, :string, default: "Doe"
     has_one :credential, Credential
     has_one :strava, Strava
+    has_one :setting, Setting
     has_many :ngos, NGO
     has_many :ngo_chals, NGOChal
     has_many :donations, Donation

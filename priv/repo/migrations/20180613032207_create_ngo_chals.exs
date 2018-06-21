@@ -16,11 +16,13 @@ defmodule OmegaBravera.Repo.Migrations.CreateNgoChals do
       add :total_secured, :decimal
       add :user_id, references(:users, on_delete: :nothing)
       add :ngo_id, references(:ngos, on_delete: :nothing)
+      add :team_id, references(:teams, on_delete: :nothing)
 
       timestamps(type: :timestamptz)
     end
 
     create index(:ngo_chals, [:user_id])
     create index(:ngo_chals, [:ngo_id])
+    create index(:ngo_chals, [:team_id])
   end
 end
