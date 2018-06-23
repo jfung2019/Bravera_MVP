@@ -37,21 +37,16 @@ defmodule OmegaBraveraWeb.Router do
     post "/webhook-callback", StravaController, :post_webhook_callback
   end
 
-  scope "/", BraveraWeb do
+  scope "/dashboard" do
     pipe_through [:browser, :jwt_authenticated]
 
-    scope "/dashboard" do
-      get "/", UserController, :dashboard
+    get "/", UserController, :dashboard
+    get "/donations", UserController, :donations
+    get "/causes", UserController, :causes
 
-      resources "/account", UserController, only: [:show, :edit, :update]
-      
-      resources "/settings", SettingController, only: [:show, :edit, :update]
+    resources "/account", UserController, only: [:show, :edit, :update]
 
-      get "/donations", UserController, :donations
-
-      get "/causes", UserController, :causes
-    end
-
+    resources "/settings", SettingController, only: [:show, :edit, :update]
   end
 
   scope "/", OmegaBraveraWeb do

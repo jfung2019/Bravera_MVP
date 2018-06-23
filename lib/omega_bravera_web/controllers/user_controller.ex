@@ -4,6 +4,17 @@ defmodule OmegaBraveraWeb.UserController do
   alias OmegaBravera.Accounts
   alias OmegaBravera.Accounts.User
 
+  def dashboard(conn, _params) do
+
+  end
+
+  def donations(conn, _params) do
+
+  end
+
+  def causes(conn, _params) do
+
+  end
 
   def new(conn, _params) do
     changeset = Accounts.change_user(%User{})
