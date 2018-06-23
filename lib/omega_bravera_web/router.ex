@@ -43,20 +43,21 @@ defmodule OmegaBraveraWeb.Router do
     scope "/dashboard" do
       get "/", UserController, :dashboard
 
-      get "/settings", UserController, :settings
-      get "/challenges", UserController, :challenges
+      resources "/account", UserController, only: [:show, :edit, :update]
+      
+      resources "/settings", SettingController, only: [:show, :edit, :update]
+
       get "/donations", UserController, :donations
+
       get "/causes", UserController, :causes
     end
 
   end
 
   scope "/", OmegaBraveraWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
-    resources "/users", UserController
-    #donations nested here?
-    # (donations given + paid)
+    resources "/users", UserController, only: [:new, :create]
 
     resources "/teams", TeamController
 
@@ -65,8 +66,6 @@ defmodule OmegaBraveraWeb.Router do
     # for callbacks
     resources "/strava", StravaController
     # maybe add: challenge data
-
-    resources "/settings", SettingController, only: [:show, :edit, :update]
 
     get "/", PageController, :index
 

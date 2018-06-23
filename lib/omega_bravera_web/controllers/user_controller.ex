@@ -4,10 +4,6 @@ defmodule OmegaBraveraWeb.UserController do
   alias OmegaBravera.Accounts
   alias OmegaBravera.Accounts.User
 
-  def index(conn, _params) do
-    users = Accounts.list_users()
-    render(conn, "index.html", users: users)
-  end
 
   def new(conn, _params) do
     changeset = Accounts.change_user(%User{})
@@ -49,12 +45,4 @@ defmodule OmegaBraveraWeb.UserController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
-    {:ok, _user} = Accounts.delete_user(user)
-
-    conn
-    |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
-  end
 end
