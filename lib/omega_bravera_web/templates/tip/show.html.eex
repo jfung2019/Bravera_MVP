@@ -13,6 +13,3 @@
   </li>
 
 </ul>
-
-<span><%= link "Edit", to: tip_path(@conn, :edit, @tip) %></span>
-<span><%= link "Back", to: tip_path(@conn, :index) %></span>

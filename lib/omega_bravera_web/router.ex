@@ -56,7 +56,7 @@ defmodule OmegaBraveraWeb.Router do
 
     resources "/teams", TeamController
 
-    resources "/tips", TipController
+    resources "/tips", TipController, only: [:new, :create, :show]
 
     get "/", PageController, :index
 
