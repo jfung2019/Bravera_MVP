@@ -28,6 +28,3 @@
   </li>
 
 </ul>
-
-<span><%= link "Edit", to: ngo_path(@conn, :edit, @ngo) %></span>
-<span><%= link "Back", to: ngo_path(@conn, :index) %></span>

@@ -128,19 +128,10 @@ defmodule OmegaBraveraWeb.DonationController do
       {:ok, donation} ->
         conn
         |> put_flash(:info, "Donation updated successfully.")
-        |> redirect(to: donation_path(conn, :show, donation))
+        |> redirect(to: user_path(conn, :donations, donation))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", donation: donation, changeset: changeset)
     end
-  end
-
-  def delete(conn, %{"id" => id}) do
-    donation = Money.get_donation!(id)
-    {:ok, _donation} = Money.delete_donation(donation)
-
-    conn
-    |> put_flash(:info, "Donation deleted successfully.")
-    |> redirect(to: donation_path(conn, :index))
   end
 
   defp create_milestone_map(donation_params) do

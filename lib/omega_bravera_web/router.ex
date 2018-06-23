@@ -27,6 +27,27 @@ defmodule OmegaBraveraWeb.Router do
     get "/login", StravaController, :authenticate
     get "/callback", StravaController, :strava_callback
     get "/logout", StravaController, :logout
+  end
+
+  # Strava API Endpoints
+  scope "/strava", BraveraWeb do
+    pipe_through :api
+
+    get "/webhook-callback", StravaController, :get_webhook_callback
+    post "/webhook-callback", StravaController, :post_webhook_callback
+  end
+
+  scope "/", BraveraWeb do
+    pipe_through [:browser, :jwt_authenticated]
+
+    scope "/dashboard" do
+      get "/", UserController, :dashboard
+
+      get "/settings", UserController, :settings
+      get "/challenges", UserController, :challenges
+      get "/donations", UserController, :donations
+      get "/causes", UserController, :causes
+    end
 
   end
 
@@ -36,11 +57,6 @@ defmodule OmegaBraveraWeb.Router do
     resources "/users", UserController
     #donations nested here?
     # (donations given + paid)
-    resources "/ngos", NGOController
-    #donations (ngo total raised) nested here?
-    resources "/ngo_chals", NGOChalController
-    # donations (chal_total) nested here?
-    resources "/donations", DonationController
 
     resources "/teams", TeamController
 
@@ -50,7 +66,7 @@ defmodule OmegaBraveraWeb.Router do
     resources "/strava", StravaController
     # maybe add: challenge data
 
-    resources "/settings", SettingController
+    resources "/settings", SettingController, only: [:show, :edit, :update]
 
     get "/", PageController, :index
 
