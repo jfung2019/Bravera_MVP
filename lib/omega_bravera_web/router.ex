@@ -29,7 +29,7 @@ defmodule OmegaBraveraWeb.Router do
     get "/logout", StravaController, :logout
   end
 
-  # Strava API Endpoints
+  # Strava API Endpoints for Webhooks
   scope "/strava", BraveraWeb do
     pipe_through :api
 
@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.Router do
     post "/webhook-callback", StravaController, :post_webhook_callback
   end
 
-  scope "/dashboard" do
+  scope "/dashboard", OmegaBraveraWeb do
     pipe_through [:browser, :jwt_authenticated]
 
     get "/", UserController, :dashboard
@@ -57,10 +57,6 @@ defmodule OmegaBraveraWeb.Router do
     resources "/teams", TeamController
 
     resources "/tips", TipController
-
-    # for callbacks
-    resources "/strava", StravaController
-    # maybe add: challenge data
 
     get "/", PageController, :index
 

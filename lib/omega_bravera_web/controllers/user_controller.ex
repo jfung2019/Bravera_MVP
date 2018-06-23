@@ -5,15 +5,21 @@ defmodule OmegaBraveraWeb.UserController do
   alias OmegaBravera.Accounts.User
 
   def dashboard(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
 
+    render(conn, "dashboard.html", user: user)
   end
 
   def donations(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
 
+    render(conn, "dashboard.html", user: user)
   end
 
   def causes(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
 
+    render(conn, "dashboard.html", user: user)
   end
 
   def new(conn, _params) do
