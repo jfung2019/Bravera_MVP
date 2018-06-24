@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.UserController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.{Accounts, Money, Fundraisers}
   alias OmegaBravera.Accounts.User
 
   def dashboard(conn, _params) do
@@ -10,16 +10,22 @@ defmodule OmegaBraveraWeb.UserController do
     render(conn, "dashboard.html", user: user)
   end
 
-  def donations(conn, _params) do
+  def user_donations(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
 
-    render(conn, "dashboard.html", user: user)
+    %{id: user_id} = user
+
+    donations = Money.get_donations_by_user(user_id)
+
+    render(conn, "user_donations.html", donations: donations)
   end
 
-  def causes(conn, _params) do
+  def ngos(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
 
-    render(conn, "dashboard.html", user: user)
+    ngos = Fundraisers.get_ngos_by_user(user_id)
+
+    render(conn, "causes.html", ngos: ngos)
   end
 
   def new(conn, _params) do

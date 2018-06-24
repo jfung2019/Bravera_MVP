@@ -41,8 +41,11 @@ defmodule OmegaBraveraWeb.Router do
     pipe_through [:browser, :jwt_authenticated]
 
     get "/", UserController, :dashboard
-    get "/donations", UserController, :donations
-    get "/causes", UserController, :causes
+    get "/donations", UserController, :user_donations
+
+    scope "/ngos" do
+      get "/", UserController, :ngos
+    end
 
     resources "/account", UserController, only: [:show, :edit, :update]
 
