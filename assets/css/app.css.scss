@@ -420,24 +420,37 @@ input[type=number]::-webkit-outer-spin-button {
   padding: 5px 18px;
 }
 // TODO Add media queries for Paragraph tags <p>
-h1, h2, h3, h4, h5, h6 {
-  font-size: 0.8rem;
+h3 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.2rem;
 }
 
 @include media-breakpoint-up(sm) {
-  h1, h2, h3, h4, h5, h6 {
-    font-size: 1.0rem;
+  h3 {
+      font-size: 1.8rem;
+    }
+  h5 {
+      font-size: 1.5rem;
   }
 }
 
 @include media-breakpoint-up(md) {
-  h1, h2, h3, h4, h5, h6 {
-    font-size: 1.2rem;
+  h3 {
+      font-size: 2.0rem;
+    }
+  h5 {
+      font-size: 1.7rem;
   }
 }
 
 @include media-breakpoint-up(lg) {
-  h1, h2, h3, h4, h5, h6 {
-    font-size: 1.4rem;
+  h3 {
+      font-size: 2.2rem;
+    }
+  h5 {
+    font-size: 1.9rem;
   }
 }
