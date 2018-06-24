@@ -9,6 +9,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
   schema "ngos" do
     field :desc, :string
     field :logo, :string
+    field :image, :string
     field :name, :string
     field :slug, :string
     field :stripe_id, :string
@@ -22,7 +23,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
   @doc false
   def changeset(ngo, attrs) do
     ngo
-    |> cast(attrs, [:name, :desc, :logo, :stripe_id, :slug])
+    |> cast(attrs, [:name, :desc, :logo, :image, :stripe_id, :slug])
     |> validate_required([:name, :stripe_id, :slug])
   end
 end
