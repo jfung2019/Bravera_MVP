@@ -16,6 +16,10 @@ defmodule OmegaBraveraWeb.Router do
     plug Guardian.AuthPipeline
   end
 
+  pipeline :dashboard do
+    plug :put_layout, {OmegaBraveraWeb.LayoutView, "dashboard.html"}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -38,7 +42,7 @@ defmodule OmegaBraveraWeb.Router do
   end
 
   scope "/dashboard", OmegaBraveraWeb do
-    pipe_through [:browser, :jwt_authenticated]
+    pipe_through [:browser, :jwt_authenticated, :dashboard]
 
     get "/", UserController, :dashboard
     get "/donations", UserController, :user_donations

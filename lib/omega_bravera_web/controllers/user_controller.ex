@@ -12,9 +12,8 @@ defmodule OmegaBraveraWeb.UserController do
 
   def user_donations(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
-
     %{id: user_id} = user
-
+    
     donations = Money.get_donations_by_user(user_id)
 
     render(conn, "user_donations.html", donations: donations)
@@ -22,6 +21,7 @@ defmodule OmegaBraveraWeb.UserController do
 
   def ngos(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
+    %{id: user_id} = user
 
     ngos = Fundraisers.get_ngos_by_user(user_id)
 
