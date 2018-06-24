@@ -22,7 +22,7 @@
           <%= if has_tracker?(@conn) do %>
 
           <div class="text-center text-md-left">
-            <button class="btn btn-bravera mt-md-5" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
+            <button class="btn btn-bravera mt-md-5 sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
             aria-expanded="false" aria-controls="Show-challenge-form">
               Sign up
             </button>

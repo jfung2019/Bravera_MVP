@@ -419,7 +419,10 @@ input[type=number]::-webkit-outer-spin-button {
   border-radius: 20px;
   padding: 5px 18px;
 }
-// TODO Add media queries for Paragraph tags <p>
+////////////////////////////////
+// $$$ TEXT MEDIA QUERIES $$$ //
+////////////////////////////////
+
 h3 {
   font-size: 1.5rem;
 }
@@ -427,13 +430,18 @@ h3 {
 h5 {
   font-size: 1.2rem;
 }
-
+.sign-up{
+  font-size: 1.2rem;
+}
 @include media-breakpoint-up(sm) {
   h3 {
       font-size: 1.8rem;
     }
   h5 {
       font-size: 1.5rem;
+  }
+  .sign-up{
+    font-size: 1.2rem;
   }
 }
 
@@ -443,6 +451,9 @@ h5 {
     }
   h5 {
       font-size: 1.7rem;
+  }
+  .sign-up{
+    font-size: 1.4rem;
   }
 }
 
