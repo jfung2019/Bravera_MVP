@@ -8,6 +8,15 @@ defmodule OmegaBravera.Fundraisers do
 
   alias OmegaBravera.Fundraisers.NGO
 
+  # Get a user's causes by user_id
+
+  def get_ngos_by_user(user_id) do
+    query = from n in NGO,
+      where: n.user_id == ^user_id
+
+    Repo.all(query)
+  end
+
   @doc """
   Returns the list of ngos.
 

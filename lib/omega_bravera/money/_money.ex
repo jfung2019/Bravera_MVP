@@ -10,11 +10,20 @@ defmodule OmegaBravera.Money do
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Money.Tip
 
+  # for listing a user's donations
+
+  def get_donations_by_user(user_id) do
+    query = from d in Donation,
+      where: d.user_id == ^user_id
+
+    Repo.all(query)
+  end
+
   # for charging from strava webhooks
 
-  def get_donations_by_milestone(participant, milestone_limit) do
+  def get_donations_by_milestone(ngo_chal, milestone_limit) do
     query = from d in Donation,
-      where: d.status == "pending" and d.milestone <= ^milestone_limit and d.participant_id == ^participant
+      where: d.status == "pending" and d.milestone <= ^milestone_limit and d.ngo_chal_id == ^ngo_chal
 
     Repo.all(query)
   end

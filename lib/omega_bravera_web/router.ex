@@ -16,6 +16,10 @@ defmodule OmegaBraveraWeb.Router do
     plug Guardian.AuthPipeline
   end
 
+  pipeline :dashboard do
+    plug :put_layout, {OmegaBraveraWeb.LayoutView, "dashboard.html"}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -27,30 +31,39 @@ defmodule OmegaBraveraWeb.Router do
     get "/login", StravaController, :authenticate
     get "/callback", StravaController, :strava_callback
     get "/logout", StravaController, :logout
+  end
 
+  # Strava API Endpoints for Webhooks
+  scope "/strava", BraveraWeb do
+    pipe_through :api
+
+    get "/webhook-callback", StravaController, :get_webhook_callback
+    post "/webhook-callback", StravaController, :post_webhook_callback
+  end
+
+  scope "/dashboard", OmegaBraveraWeb do
+    pipe_through [:browser, :jwt_authenticated, :dashboard]
+
+    get "/", UserController, :dashboard
+    get "/donations", UserController, :user_donations
+
+    scope "/ngos" do
+      get "/", UserController, :ngos
+    end
+
+    resources "/account", UserController, only: [:show, :edit, :update]
+
+    resources "/settings", SettingController, only: [:show, :edit, :update]
   end
 
   scope "/", OmegaBraveraWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
-    resources "/users", UserController
-    #donations nested here?
-    # (donations given + paid)
-    resources "/ngos", NGOController
-    #donations (ngo total raised) nested here?
-    resources "/ngo_chals", NGOChalController
-    # donations (chal_total) nested here?
-    resources "/donations", DonationController
+    resources "/users", UserController, only: [:new, :create]
 
     resources "/teams", TeamController
 
-    resources "/tips", TipController
-
-    # for callbacks
-    resources "/strava", StravaController
-    # maybe add: challenge data
-
-    resources "/settings", SettingController
+    resources "/tips", TipController, only: [:new, :create, :show]
 
     get "/", PageController, :index
 

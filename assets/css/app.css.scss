@@ -405,22 +405,39 @@ input[type=number]::-webkit-outer-spin-button {
 
 }
 
-// TODO Fix the footer at bottom BS
-
-.flex-grow{
-  flex: 1;
-}
-
+//  TODO VH Top and Footer for screens with footer
 // .vh-top{
 //   min-height: 80vh;
 // }
-
-footer{
-  margin-top: 25px;
-  min-height: 20vh;
-}
+//
+// footer{
+//   margin-top: 25px;
+//   min-height: 20vh;
+// }
 
 .btn{
   border-radius: 20px;
   padding: 5px 18px;
+}
+
+html {
+  font-size: 0.8rem;
+}
+
+@include media-breakpoint-up(sm) {
+  html {
+    font-size: 1.0rem;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  html {
+    font-size: 1.2rem;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  html {
+    font-size: 1.4rem;
+  }
 }

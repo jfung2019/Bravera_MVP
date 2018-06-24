@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="card mt-4">
+    <div class="card-body">
+      <h3 class="card-title text-420 border-bottom">
+        Donations
+      </h3>
+      <div class="table-responsive">
+        <table class="table">
+          <caption>donations</caption>
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

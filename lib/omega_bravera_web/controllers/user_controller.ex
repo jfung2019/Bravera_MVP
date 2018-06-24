@@ -1,12 +1,31 @@
 defmodule OmegaBraveraWeb.UserController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.{Accounts, Money, Fundraisers}
   alias OmegaBravera.Accounts.User
 
-  def index(conn, _params) do
-    users = Accounts.list_users()
-    render(conn, "index.html", users: users)
+  def dashboard(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
+
+    render(conn, "dashboard.html", user: user)
+  end
+
+  def user_donations(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
+    %{id: user_id} = user
+    
+    donations = Money.get_donations_by_user(user_id)
+
+    render(conn, "user_donations.html", donations: donations)
+  end
+
+  def ngos(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
+    %{id: user_id} = user
+
+    ngos = Fundraisers.get_ngos_by_user(user_id)
+
+    render(conn, "causes.html", ngos: ngos)
   end
 
   def new(conn, _params) do
@@ -49,12 +68,4 @@ defmodule OmegaBraveraWeb.UserController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
-    {:ok, _user} = Accounts.delete_user(user)
-
-    conn
-    |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
-  end
 end

@@ -68,18 +68,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
       {:ok, ngo_chal} ->
         conn
         |> put_flash(:info, "Ngo chal updated successfully.")
-        |> redirect(to: ngo_chal_path(conn, :show, ngo_chal))
+        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_chal))
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", ngo_chal: ngo_chal, changeset: changeset)
     end
   end
-
-  def delete(conn, %{"id" => id}) do
-    ngo_chal = Challenges.get_ngo_chal!(id)
-    {:ok, _ngo_chal} = Challenges.delete_ngo_chal(ngo_chal)
-
-    conn
-    |> put_flash(:info, "Ngo chal deleted successfully.")
-    |> redirect(to: ngo_chal_path(conn, :index))
-  end
+  
 end
