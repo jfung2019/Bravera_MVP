@@ -57,7 +57,7 @@
 
     </div>
 
-    <footer class="p-3 bg-bravera">
+    <!-- <footer class="p-3 bg-bravera">
       <div class="container-fluid text-center">
         <span class="center-text text-white">
           <span>©</span>
@@ -75,7 +75,7 @@
 
     </div>
 
-    </footer>
+    </footer> -->
     <!-- © 2018 Bravera™ | devMail: nickw (at) bravera.co -->
   </body>
 </html>
