@@ -430,8 +430,34 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .chal-header{
-  max-height: 250px;
+  max-height: 140px;
 }
+.card-img-overlay{
+  padding-top: 5px;
+}
+
+// TODO RESPONSIVE PROGRESS CIRCLE
+
+@media only screen and (max-width: 420px){
+  .container-fluid{
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+
+}
+@include media-breakpoint-up(md) {
+  .chal-header{
+    max-height: 250px;
+  }
+
+  .card-img-overlay{
+    padding-top: 10px;
+  }
+}
+
 
 ////////////////////////////////
 // $$$ TEXT MEDIA QUERIES $$$ //
@@ -443,6 +469,7 @@ h3 {
 h5 {
   font-size: 1.2rem;
 }
+
 .sign-up{
   font-size: 1.2rem;
 }
