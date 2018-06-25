@@ -21,11 +21,6 @@ $theme-colors: (
   position: sticky;
 }
 
-.cat-img{
-  min-height: 200px;
-  min-width: 300px;
-}
-
 .nav-logo{
   color: black;
 }
@@ -435,8 +430,9 @@ input[type=number]::-webkit-outer-spin-button {
 .card-img-overlay{
   padding-top: 5px;
 }
-
-// TODO RESPONSIVE PROGRESS CIRCLE
+// $$
+// TODO RESPONSIVE PROGRESS CIRCLE IMAGE AND STUFF
+// $$
 
 @media only screen and (max-width: 420px){
   .container-fluid{
@@ -448,6 +444,7 @@ input[type=number]::-webkit-outer-spin-button {
 @include media-breakpoint-up(sm) {
 
 }
+
 @include media-breakpoint-up(md) {
   .chal-header{
     max-height: 250px;
@@ -473,6 +470,13 @@ h5 {
 .sign-up{
   font-size: 1.2rem;
 }
+
+// TODO Fix this bs feed image stuff with responsibe images :D
+.cat-img{
+  max-height: 200px;
+  max-width: 200px;
+}
+
 @include media-breakpoint-up(sm) {
   h3 {
       font-size: 1.8rem;
@@ -482,6 +486,10 @@ h5 {
   }
   .sign-up{
     font-size: 1.2rem;
+  }
+  .cat-img{
+    min-height: 200px;
+    min-width: 300px;
   }
 }
 
