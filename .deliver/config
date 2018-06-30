@@ -2,7 +2,7 @@ APP="omega_bravera"
 
 BUILD_HOST="ec2-54-179-162-54.ap-southeast-1.compute.amazonaws.com"
 BUILD_USER="ubuntu"
-BUILD_AT="/tmp/edeliver/$APP/builds"
+BUILD_AT="/tmp/edeliver/omega_bravera/builds"
 
 # STAGING_HOSTS="ec2-54-179-162-54.ap-southeast-1.compute.amazonaws.com"
 # STAGING_USER="ubuntu"
@@ -14,32 +14,9 @@ PRODUCTION_USER="ubuntu"
 DELIVER_TO="/home/ubuntu"
 
 pre_erlang_clean_compile() {
-  status "Installing NPM dependencies"
-  __sync_remote "
-    [ -f ~/.profile ] && source ~/.profile
-    set -e
-
-    cd '$BUILD_AT/assets'
-    npm install $SILENCE
-  "
-
-  status "Building static files"
+  if [ "$TARGET_MIX_ENV" = "prod" ]; then
     __sync_remote "
-      [ -f ~/.profile ] && source ~/.profile
-      set -e
-
-      cd '$BUILD_AT'
-      mkdir -p priv/static
-      cd '$BUILD_AT/assets'
-      npm run deploy $SILENCE
-   "
-
-  status "Running phx.digest"
-  __sync_remote "
-    [ -f ~/.profile ] && source ~/.profile
-    set -e
-
-    cd '$BUILD_AT'
-    APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phx.digest $SILENCE
-  "
+      ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'
+    "
+  fi
 }
