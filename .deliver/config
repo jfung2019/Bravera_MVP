@@ -7,7 +7,6 @@ BUILD_AT="/tmp/edeliver/omega_bravera/builds"
 # STAGING_HOSTS="ec2-54-179-162-54.ap-southeast-1.compute.amazonaws.com"
 # STAGING_USER="ubuntu"
 # TEST_AT="/home/ubuntu/staging"
-GIT_CLEAN_PATHS="_build rel priv/static"
 
 PRODUCTION_HOSTS="ec2-54-179-162-54.ap-southeast-1.compute.amazonaws.com"
 PRODUCTION_USER="ubuntu"
