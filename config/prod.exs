@@ -15,7 +15,11 @@ use Mix.Config
 # which you typically run after static files are built.
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "example.com", port: 80],
+  http: [port: {:system, "PORT"}],
+  url: [host: "54.179.162.54",  port: {:system, "PORT"}],
+  server: true,
+  root: ".",
+  version: Mix.Project.config[:version],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
