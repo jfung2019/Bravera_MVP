@@ -37,6 +37,6 @@ defmodule OmegaBravera.Emails do
     |> to(recipient)
     |> from("no-reply@bravera.co")
     |> subject("Reset Password Instructions")
-    |> text_body("Please visit https://bravera.co/pass-reset/#{token}/edit to reset your password")
+    |> text_body("Please visit http://54.179.162.54/pass-reset/#{token}/edit to reset your password")
   end
 end
