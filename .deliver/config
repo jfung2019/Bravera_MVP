@@ -1,14 +1,15 @@
 APP="omega_bravera"
 
-BUILD_HOST="54.179.162.54"
+BUILD_HOST="ec2-54-179-162-54.ap-southeast-1.compute.amazonaws.com"
 BUILD_USER="ubuntu"
-BUILD_AT="/home/ubuntu/omega_bravera/builds"
+BUILD_AT="/tmp/edeliver/$APP/builds"
 
-# STAGING_HOSTS="54.179.162.54"
+# STAGING_HOSTS="ec2-54-179-162-54.ap-southeast-1.compute.amazonaws.com"
 # STAGING_USER="ubuntu"
 # TEST_AT="/home/ubuntu/staging"
+GIT_CLEAN_PATHS="_build rel priv/static"
 
-PRODUCTION_HOSTS="54.179.162.54"
+PRODUCTION_HOSTS="ec2-54-179-162-54.ap-southeast-1.compute.amazonaws.com"
 PRODUCTION_USER="ubuntu"
 DELIVER_TO="/home/ubuntu"
 
@@ -18,19 +19,20 @@ pre_erlang_clean_compile() {
     [ -f ~/.profile ] && source ~/.profile
     set -e
 
-    cd '$BUILD_AT'
+    cd '$BUILD_AT/assets'
     npm install $SILENCE
   "
 
   status "Building static files"
-  __sync_remote "
-    [ -f ~/.profile ] && source ~/.profile
-    set -e
+    __sync_remote "
+      [ -f ~/.profile ] && source ~/.profile
+      set -e
 
-    cd '$BUILD_AT'
-    mkdir -p priv/static
-    npm run deploy $SILENCE
-  "
+      cd '$BUILD_AT'
+      mkdir -p priv/static
+      cd '$BUILD_AT/assets'
+      npm run deploy $SILENCE
+   "
 
   status "Running phx.digest"
   __sync_remote "
@@ -38,6 +40,6 @@ pre_erlang_clean_compile() {
     set -e
 
     cd '$BUILD_AT'
-    APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phoenix.digest $SILENCE
+    APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phx.digest $SILENCE
   "
 }
