@@ -50,8 +50,8 @@ defmodule OmegaBravera.Mixfile do
       {:stripy, "~> 1.0"},
       {:decimal, "~> 1.0", override: true},
       {:numbers, "~> 5.1.0"},
-      {:edeliver, "~> 1.4.0"},
-      {:distillery, ">= 0.8.0", warn_missing: false}
+      {:edeliver, "~> 1.5.0"},
+      {:distillery, "~> 1.0.0", warn_missing: false}
     ]
   end
 
