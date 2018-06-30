@@ -10,7 +10,7 @@ use Mix.Config
 # or recreate for your teammates (or yourself later on).
 
 config :omega_bravera, OmegaBravera.Endpoint,
-  secret_key_base: System.get_env("SECRETE_KEY_BASE")
+  secret_key_base: System.get_env("BASE_SEC")
 
 # Configure your database
 config :omega_bravera, OmegaBravera.Repo,
