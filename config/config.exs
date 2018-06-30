@@ -9,18 +9,6 @@ use Mix.Config
   config :omega_bravera,
     ecto_repos: [OmegaBravera.Repo]
 
-  # Guardian config
-
-  config :omega_bravera, OmegaBravera.Guardian,
-         issuer: "omega_bravera",
-         secret_key: "TVCFw5ZzCC5gqI8FeRUg3jT7U578dbb4gGjBXq8Zt1Rk4ctVFj/zTRn6gfGOXiU0"
-
-   # Email config
-
-   config :omega_bravera, OmegaBravera.Mailer,
-    adapter: Bamboo.SendgridAdapter,
-    api_key: "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"
-
 
 # Configures the endpoint
 config :omega_bravera, OmegaBraveraWeb.Endpoint,

@@ -14,9 +14,32 @@ PRODUCTION_USER="ubuntu"
 DELIVER_TO="/home/ubuntu"
 
 pre_erlang_clean_compile() {
-  if [ "$TARGET_MIX_ENV" = "prod" ]; then
+  status "Installing NPM dependencies"
+  __sync_remote "
+    [ -f ~/.profile ] && source ~/.profile
+    set -e
+
+    cd '$BUILD_AT/assets'
+    npm install $SILENCE
+  "
+
+  status "Building static files"
     __sync_remote "
-      ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'
+      [ -f ~/.profile ] && source ~/.profile
+      set -e
+
+      cd '$BUILD_AT'
+      mkdir -p priv/static
+      cd '$BUILD_AT/assets'
+      npm run deploy $SILENCE
+   "
+
+  status "Running phx.digest"
+    __sync_remote "
+      [ -f ~/.profile ] && source ~/.profile
+      set -e
+
+      cd '$BUILD_AT'
+      APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phx.digest $SILENCE
     "
-  fi
 }
