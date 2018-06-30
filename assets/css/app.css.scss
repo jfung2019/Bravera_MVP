@@ -2,6 +2,7 @@ $theme-colors: (
   "secondary": #871B2D,
   "danger": #d21034,
   "bravera": #F5274B,
+  "green": #3FA83C,
   "background": #F9F5F5
 );
 
@@ -434,15 +435,11 @@ input[type=number]::-webkit-outer-spin-button {
 // TODO RESPONSIVE PROGRESS CIRCLE IMAGE AND STUFF
 // $$
 
-@media only screen and (max-width: 420px){
+@media only screen and (max-width: 575px){
   .container-fluid{
     padding-right: 0px;
     padding-left: 0px;
   }
-}
-
-@include media-breakpoint-up(sm) {
-
 }
 
 @include media-breakpoint-up(md) {
