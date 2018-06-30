@@ -1,0 +1,43 @@
+APP="omega_bravera"
+
+BUILD_HOST="54.179.162.54"
+BUILD_USER="ubuntu"
+BUILD_AT="/home/ubuntu/omega_bravera/builds"
+
+# STAGING_HOSTS="54.179.162.54"
+# STAGING_USER="ubuntu"
+# TEST_AT="/home/ubuntu/staging"
+
+PRODUCTION_HOSTS="54.179.162.54"
+PRODUCTION_USER="ubuntu"
+DELIVER_TO="/home/ubuntu"
+
+pre_erlang_clean_compile() {
+  status "Installing NPM dependencies"
+  __sync_remote "
+    [ -f ~/.profile ] && source ~/.profile
+    set -e
+
+    cd '$BUILD_AT'
+    npm install $SILENCE
+  "
+
+  status "Building static files"
+  __sync_remote "
+    [ -f ~/.profile ] && source ~/.profile
+    set -e
+
+    cd '$BUILD_AT'
+    mkdir -p priv/static
+    npm run deploy $SILENCE
+  "
+
+  status "Running phx.digest"
+  __sync_remote "
+    [ -f ~/.profile ] && source ~/.profile
+    set -e
+
+    cd '$BUILD_AT'
+    APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phoenix.digest $SILENCE
+  "
+}
