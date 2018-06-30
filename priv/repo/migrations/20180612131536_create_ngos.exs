@@ -7,6 +7,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateNgos do
       add :name, :string
       add :desc, :string
       add :logo, :string
+      add :image, :string
       add :stripe_id, :string
       add :slug, :string
 

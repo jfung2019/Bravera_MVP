@@ -1,64 +1,67 @@
 <div class="container-fluid">
 
 <%= for ngo <- @ngos do %>
+<div class="row">
+  <div class="card chal-header">
+    <img class="card-img" src="<%="../../" <> @ngo.image%>" alt="Card image">
+    <div class="card-img-overlay text-white card-img-text-shadow">
+      <div class="row">
+        <div class="col-4 col-sm-3">
+          <%= img_tag( ngo.logo, class: "img-thumbnail float-left", alt: ngo.name) %>
+        </div>
 
-  <div class="card mt-4">
-    <div class="row">
-      <div class="col-lg-4 col-md-5 col-sm-6">
-        <%= img_tag( ngo.logo, class: "card-img-top cat-img", alt: ngo.name) %>
-      </div>
-
-      <div class="col-lg-8 col-md-7 col-sm-6 ">
-        <div class="card-body mt-md-2 mt-0">
-
+        <div class="col-8 col-sm-9">
           <h3 class="text-500">
             <%= ngo.name %>
           </h3>
-
           <h5 class="text-420">
             <%= ngo.desc %>
           </h5>
-
-          <%= if has_tracker?(@conn) do %>
-
-          <div class="text-center text-md-left">
-            <button class="btn btn-bravera mt-md-5 sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
-            aria-expanded="false" aria-controls="Show-challenge-form">
-              Sign up
-            </button>
-          </div>
+          <p class="card-text">Last updated 3 mins ago</p>
         </div>
       </div>
-    </div> <!-- end row 1 -->
 
-    <div id="participant-signup" class="mx-auto" style="max-width: 420px;">
-      <div class="collapse"
-          id=<%= ngo.slug %>
-        >
-        <div class="card card-body inset-box-shadow gray-background">
-            <%= render "challenge_form.html", Map.put(assigns, :action, ngo_ngo_chal_path(@conn, :create, ngo.id)) %>
-        </div>
-      </div>
     </div>
 
-            <% else %>
+    <div class="card-body mt-md-2 mt-0">
 
-              <p>Connect a Tracker to
-              take the Challenge!</p>
+      <%= if has_tracker?(@conn) do %>
 
-              <a href="/strava/login" class="mb-1">
-                <img src="/images/strava/btn_strava_connect-orange.png" />
-              </a>
-
-              <a href="#" class="mb-1">
-                <img src="/images/btn_fitbit_white.png" />
-              </a>
-            </div>
-          </div>
-        </div>
-      <% end %>
-
+      <div class="text-center text-md-left">
+        <button class="btn btn-bravera mt-md-5 sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
+        aria-expanded="false" aria-controls="Show-challenge-form">
+          Sign up
+        </button>
       </div>
 
+      <div id="participant-signup" class="mx-auto" style="max-width: 420px;">
+        <div class="collapse"
+            id=<%= ngo.slug %>
+          >
+          <div class="card card-body inset-box-shadow gray-background">
+              <%= render "challenge_form.html", Map.put(assigns, :action, ngo_ngo_chal_path(@conn, :create, ngo.id)) %>
+          </div>
+        </div>
+      </div>
+
+      <% else %>
+
+      <p>Connect a Tracker to
+      take the Challenge!</p>
+
+      <a href="/strava/login" class="mb-1">
+        <img src="/images/strava/btn_strava_connect-orange.png" />
+      </a>
+
+      <a href="#" class="mb-1">
+        <img src="/images/btn_fitbit_white.png" />
+      </a>
+
+      <% end %>
+
+    </div>
+
+  </div> <!-- End of Challenge Card -->
+</div> <!-- End of Row -->
 <% end %>
 </div>

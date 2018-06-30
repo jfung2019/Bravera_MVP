@@ -2,6 +2,7 @@ $theme-colors: (
   "secondary": #871B2D,
   "danger": #d21034,
   "bravera": #F5274B,
+  "green": #3FA83C,
   "background": #F9F5F5
 );
 
@@ -19,11 +20,6 @@ $theme-colors: (
 
 .nonscroll-col{
   position: sticky;
-}
-
-.cat-img{
-  min-height: 200px;
-  min-width: 300px;
 }
 
 .nav-logo{
@@ -420,9 +416,46 @@ input[type=number]::-webkit-outer-spin-button {
   padding: 5px 18px;
 }
 ////////////////////////////////
-// $$$ TEXT MEDIA QUERIES $$$ //
+// $$$$ PARTICIPANT PAGE $$$$ //
 ////////////////////////////////
 
+// text-shadow: horizontal-offset vertical-offset blur color;
+.card-img-text-shadow{
+  text-shadow: 2px 2px 2px rgba(0,0,0,0.6);
+  background-color: rgba(0,0,0,0.3);
+}
+
+.chal-header{
+  max-height: 140px;
+}
+.card-img-overlay{
+  padding-top: 5px;
+}
+// $$
+// TODO RESPONSIVE PROGRESS CIRCLE IMAGE AND STUFF
+// $$
+
+@media only screen and (max-width: 575px){
+  .container-fluid{
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  .chal-header{
+    max-height: 250px;
+  }
+
+  .card-img-overlay{
+    padding-top: 10px;
+  }
+}
+
+
+////////////////////////////////
+// $$$ TEXT MEDIA QUERIES $$$ //
+////////////////////////////////
 h3 {
   font-size: 1.5rem;
 }
@@ -430,9 +463,17 @@ h3 {
 h5 {
   font-size: 1.2rem;
 }
+
 .sign-up{
   font-size: 1.2rem;
 }
+
+// TODO Fix this bs feed image stuff with responsibe images :D
+.cat-img{
+  max-height: 200px;
+  max-width: 200px;
+}
+
 @include media-breakpoint-up(sm) {
   h3 {
       font-size: 1.8rem;
@@ -442,6 +483,10 @@ h5 {
   }
   .sign-up{
     font-size: 1.2rem;
+  }
+  .cat-img{
+    min-height: 200px;
+    min-width: 300px;
   }
 }
 
