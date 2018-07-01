@@ -1,5 +1,13 @@
 use Mix.Config
 
+# Configures the endpoint
+config :omega_bravera, OmegaBraveraWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "iKoMsrgx4QISCepc7OH9B5FUWQ0xTtHPQr8bChKjP5Z98pwVRIn9/lMax8nflh9v",
+  render_errors: [view: OmegaBraveraWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: OmegaBravera.PubSub,
+           adapter: Phoenix.PubSub.PG2]
+
 # Guardian config
 
 config :omega_bravera, OmegaBravera.Guardian,

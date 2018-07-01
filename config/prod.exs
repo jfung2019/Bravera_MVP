@@ -16,11 +16,14 @@ use Mix.Config
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
   load_from_system_env: true,
   http: [port: {:system, "PORT"}],
-  url: [host: "54.179.162.54",  port: {:system, "PORT"}],
+  url: [host: "ec2-54-179-162-54.ap-southeast-1.compute.amazonaws.com",  port: {:system, "PORT"}],
   server: true,
   root: ".",
   version: Mix.Project.config[:version],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  render_errors: [view: OmegaBraveraWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: OmegaBravera.PubSub,
+           adapter: Phoenix.PubSub.PG2]
 
 # Do not print debug messages in production
 config :logger, level: :info
