@@ -16,7 +16,7 @@ use Mix.Config
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
   load_from_system_env: true,
   http: [port: {:system, "PORT"}],
-  url: [host: "ec2-54-179-162-54.ap-southeast-1.compute.amazonaws.com",  port: {:system, "PORT"}],
+  url: [host: "...",  port: {:system, "PORT"}],
   server: true,
   root: ".",
   version: Mix.Project.config[:version],
@@ -58,7 +58,7 @@ config :logger, level: :info
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start the server for all endpoints:
 #
-#     config :phoenix, :serve_endpoints, true
+    config :phoenix, :serve_endpoints, true
 #
 # Alternatively, you can configure exactly which server to
 # start per endpoint:
