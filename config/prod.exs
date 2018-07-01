@@ -58,6 +58,7 @@ config :logger, level: :info
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start the server for all endpoints:
 #
+# TODO do I need this for AWS?
     config :phoenix, :serve_endpoints, true
 #
 # Alternatively, you can configure exactly which server to
