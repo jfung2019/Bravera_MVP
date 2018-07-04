@@ -32,21 +32,22 @@ pre_erlang_clean_compile() {
   "
 
   status "Building static files"
-  __sync_remote "
-    [ -f ~/.profile ] && source ~/.profile
-    set -e
+    __sync_remote "
+      [ -f ~/.profile ] && source ~/.profile
+      set -e
 
-    cd '$BUILD_AT/assets'
-    mkdir -p priv/static
-    npm run deploy $SILENCE
-  "
+      cd '$BUILD_AT'
+      mkdir -p priv/static
+      cd '$BUILD_AT/assets'
+      npm run deploy $SILENCE
+   "
 
-  status "Running phx.digest"
-  __sync_remote "
-    [ -f ~/.profile ] && source ~/.profile
-    set -e
+   status "Running phx.digest"
+   __sync_remote "
+     [ -f ~/.profile ] && source ~/.profile
+     set -e
 
-    cd '$BUILD_AT'
-    APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phx.digest $SILENCE
-  "
+     cd '$BUILD_AT'
+     APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phx.digest $SILENCE
+   "
 }
