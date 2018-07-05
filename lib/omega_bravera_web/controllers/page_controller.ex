@@ -16,6 +16,13 @@ defmodule OmegaBraveraWeb.PageController do
   end
 
   def signup(conn, _params) do
-    render(conn, "signup.html")
+    user = Guardian.Plug.current_resource(conn)
+
+    cond do
+      user !== nil ->
+        redirect conn, to: "/ngos"
+      true ->
+        render(conn, "signup.html")
+    end
   end
 end

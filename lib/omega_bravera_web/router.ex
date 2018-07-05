@@ -63,11 +63,13 @@ defmodule OmegaBraveraWeb.Router do
 
     resources "/email-signup", UserController, only: [:new, :create]
 
-    resources "/teams", TeamController
+    resources "/teams", TeamController, only: [:new, :create, :show]
 
     resources "/tips", TipController, only: [:new, :create, :show]
 
     get "/", PageController, :index
+
+    get "/ngos", NGOController, :index
 
     resources "/", NGOController, only: [:show] do
       resources "/", NGOChalController, only: [:show, :new, :create] do
