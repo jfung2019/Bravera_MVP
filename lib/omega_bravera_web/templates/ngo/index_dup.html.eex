@@ -47,11 +47,11 @@
               take the Challenge!</p>
 
               <a href="/strava/login" class="mb-1">
-                <img src="/img/strava/btn_strava_connect-orange.png" />
+                <img src="/images/strava/btn_strava_connect-orange.png" />
               </a>
 
               <a href="#" class="mb-1">
-                <img src="/img/btn_fitbit_white.png" />
+                <img src="/images/btn_fitbit_white.png" />
               </a>
             </div>
           </div>

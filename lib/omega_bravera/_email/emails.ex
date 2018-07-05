@@ -10,6 +10,7 @@ defmodule OmegaBravera.Emails do
     |> text_body("Thanks for joining!")
   end
 
+  # TODO refactor below
   def participant_registration(recipient, challenge_params) do
     %{"challenge" => challenge, "challenge_slug" => challenge_slug, "participant_slug" => participant_slug} = challenge_params
 
@@ -37,6 +38,6 @@ defmodule OmegaBravera.Emails do
     |> to(recipient)
     |> from("no-reply@bravera.co")
     |> subject("Reset Password Instructions")
-    |> text_body("Please visit http://54.179.162.54/pass-reset/#{token}/edit to reset your password")
+    |> text_body("Please visit https://www.dev.bravera.co/pass-reset/#{token}/edit to reset your password")
   end
 end
