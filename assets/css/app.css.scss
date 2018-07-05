@@ -510,3 +510,43 @@ h5 {
     font-size: 1.9rem;
   }
 }
+
+// homepage
+
+.card3bottom {
+    background-color: #f1eeee;
+    margin-right: 0px!important;
+    margin-left: 0px!important;
+}
+
+.card3right {
+    padding: 75px;
+}
+
+.card3right button{
+     border-radius:20px;
+     background-color:#ff2048;
+     color:#ffffff;
+}
+
+.card3bottomright {
+    padding: 20px 10px 10px 60px;
+    display: inline-block;
+    background-color: #f1eeee;
+}
+
+.card3bottomright img{
+    width:30px;
+    display: inline-block;
+}
+
+.card3bottomright p{
+    font-size:10px;
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.home-bottom{
+  margin-bottom: 200px;
+}

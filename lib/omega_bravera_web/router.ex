@@ -59,7 +59,9 @@ defmodule OmegaBraveraWeb.Router do
   scope "/", OmegaBraveraWeb do
     pipe_through :browser
 
-    resources "/users", UserController, only: [:new, :create]
+    get "/signup", PageController, :signup
+
+    resources "/email-signup", UserController, only: [:new, :create]
 
     resources "/teams", TeamController
 

@@ -1,41 +1,60 @@
-<div class="container">
-  <div class="row">
-    <div class="card col-md-6">
-      <div class="card-body mt-md-2 mt-0">
+<!-- TODO Fix image -->
 
-      </div>
-
-    </div>
-    <div class="card col-md-6">
-      <div class="card-body mt-md-2 mt-0">
-
-        <%= if has_tracker?(@conn) do %>
-
-        <div class="text-center text-md-left">
-          <button class="btn btn-bravera mt-md-5 sign-up" type="button" data-toggle="collapse" data-target="fuck-yeah"
-          aria-expanded="false" aria-controls="Show-challenge-form">
-            Lit
-          </button>
+<div class="container mt-3">
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <img src="images/landing/landing-left.jpg" alt="Bravera" width="100%">
         </div>
-
-        <% else %>
-
-        <p>Connect a Tracker to
-        take the Challenge!</p>
-
-        <a href="/strava/login" class="mb-1">
-          <img src="/images/strava/btn_strava_connect-orange.png" />
-        </a>
-
-        <a href="#" class="mb-1">
-          <img src="/images/btn_fitbit_white.png" />
-        </a>
-
-        <% end %>
-
+        <div class="col-md-6 card3right">
+          <h3>Milestones that matter</h3>
+          <p>Bravera is a platform that creates social impact through fitness with fundraising milestones.</p>
+          <a class="btn btn-bravera" href="/signup/" role="button">
+            Sign up
+          </a>
+        </div>
       </div>
-
+    </div>
+    <div class="card-footer card3bottom">
+      <div class="row card3bottom">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+              <div class="card3bottomright">
+                <img src="images/landing/card-3-logo-strava.png" alt="Strava">
+                <p>STRAVA COMPATIBLE</p>
+              </div>
+              <div class="card3bottomright">
+                <img src="images/landing/card-3-logo-fitbit.jpg" alt="Fitbit">
+                <p>FITBIT COMING SOON</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  </div> <!-- End of Row -->
+
+</div>
+<div class="container home-bottom">
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+      <img src="images/landing/card-4-explainer.png" alt="Bravera" style="width:100%;height:auto;margin:auto;padding-top:70px;padding-bottom:50px;"/>
+    </div>
+    <div class="col-md-3"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <h3 style="text-align: center;padding:20px;">Challenges for good</h3>
+      <p style="text-align: left;padding-left:10%;padding-right:10%;">This is how we help you achieve your goals.</p>
+      <p style="text-align: left;padding-left:10%;padding-right:10%;">We combine fitness and fundraising so you raise money while you train.
+      We break down the journey into achievable milestones.
+      Charity donations are released automatically when you reach your milestones.</p>
+    </div>
+    <div class="col-md-8"></div>
+  </div>
 </div>
