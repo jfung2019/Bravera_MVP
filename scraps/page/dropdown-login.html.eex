@@ -1,0 +1,18 @@
+<div class="dropdown">
+  <button class="btn btn-bravera dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Log in
+  </button>
+  <div class="dropdown-menu text-center p-2">
+    <a href="/strava/login" class="mb-1">
+      <img src="/images/strava/btn_strava_connect-orange.png" />
+    </a>
+
+    <a href="#" class="mb-1">
+      <img src="/images/btn_fitbit_white.png" />
+    </a>
+
+    <div class="dropdown-divider"></div>
+
+    <a class="dropdown-item" href="#">Email Login</a>
+  </div>
+</div>

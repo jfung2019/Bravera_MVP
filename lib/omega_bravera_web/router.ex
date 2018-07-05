@@ -61,6 +61,8 @@ defmodule OmegaBraveraWeb.Router do
 
     get "/signup", PageController, :signup
 
+    get "/login", PageController, :login
+
     resources "/email-signup", UserController, only: [:new, :create]
 
     resources "/teams", TeamController, only: [:new, :create, :show]
