@@ -31,28 +31,19 @@
 
           <div class="text-center">
             <a class="btn btn-bravera sign-up" href=<%= "/" <> ngo.slug <> "/new" %>>
-              Join
+              Join the Challenge
             </a>
-            <button class="btn btn-bravera sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
-            aria-expanded="false" aria-controls="Show-challenge-form">
-              Join the challenge!
-            </button>
           </div>
-
-          <div id="participant-signup" class="mx-auto" style="max-width: 420px;">
-            <div class="collapse"
-                id=<%= ngo.slug %>
-              >
-              <div class="card card-body">
-                <%= render "challenge_form.html", Map.put(assigns, :action, ngo_ngo_chal_path(@conn, :create, ngo.id)) %>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>  <!-- end of card -->
 
     <% else %>
+    <h4>
+      Connect a Fitness Tracker to Continue
+    </h4>
+    <a href="/strava/login" class="mb-1">
+      <img src="/images/strava/btn_strava_connect-orange.png" />
+    </a>
 
     <% end%>
   </div> <!-- end col -->

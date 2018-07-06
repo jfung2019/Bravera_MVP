@@ -1,30 +1,52 @@
-<h2>Show Ngo</h2>
+<div class="container-fluid">
+  <div class="row">
+      <div class="col-12">
+        <div class="card mt-3">
+          <img class="card-img-top" src=<%= @ngo.image %> alt=<%= @ngo.name %>/>
+          <div class="card-img-overlay text-white card-img-text-shadow cause-cover">
+            <div class="row">
+              <div class="thumbnail-container ml-3">
+                <%= img_tag( @ngo.logo, class: "img-thumbnail float-left cause-thumb mt-2", alt: @ngo.name) %>
+              </div>
+            </div>
+          </div>
+        </div>
+          <div class="card">
+            <div class="card-body text-center">
+              <h2 class="card-title text-420">
+                <%= @ngo.name %>
+              </h2>
+              <p class="card-text">
+                <%= @ngo.desc %>
+              </p>
 
-<ul>
+      <%= if has_tracker?(@conn) do %>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @ngo.name %>
-  </li>
+            <div class="text-center">
+              <a class="btn btn-bravera sign-up" href=<%= "/" <> @ngo.slug <> "/new" %>>
+                Join the Challenge
+              </a>
+            </div>
+          </div>
 
-  <li>
-    <strong>Desc:</strong>
-    <%= @ngo.desc %>
-  </li>
+      <% else %>
+      <h4>
+        Connect a Fitness Tracker to Continue
+      </h4>
+      <a href="/strava/login" class="mb-1">
+        <img src="/images/strava/btn_strava_connect-orange.png" />
+      </a>
 
-  <li>
-    <strong>Logo:</strong>
-    <%= @ngo.logo %>
-  </li>
+      <% end %>
+      <%= if @ngo.url do %>
+        <div class="card-footer text-center">
 
-  <li>
-    <strong>Stripe:</strong>
-    <%= @ngo.stripe_id %>
-  </li>
+          <a href=<%= @ngo.url %> target="_blank" rel="noreferrer">Click here to visit <%= @ngo.name %> online!</a>
+        </div>
+      <% end %>
+    </div>  <!-- end of card -->
 
-  <li>
-    <strong>Slug:</strong>
-    <%= @ngo.slug %>
-  </li>
+    </div> <!-- end col -->
+  </div>
 
-</ul>
+</div>
