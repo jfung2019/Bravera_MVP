@@ -1,44 +1,44 @@
-<div class="container mt-3">
-    <div class="card mt-4 mt-lg-0">
+<div class="container-fluid mt-3">
+  <div class="card mt-4 mt-lg-0">
 
-        <div class="border-bottom d-flex">
-            <div class="challenge-img-right d-none d-md-block">
-              <img src="images/landing/landing-left.jpg" alt="Bravera"
-              class="img-fluid">
-            </div>
-            <div class="challenge-img-left">
-              <div class="card-body pt-sm-2 pt-md-3">
-                <h3>Milestones that matter</h3>
-                <p>Bravera is a platform that creates social impact through fitness fundraising.</p>
-                <p>Connect a fitness tracker, take a challenge, and get sponsors today!</p>
-                <a class="btn btn-bravera" href="/signup/" role="button">
-                  Sign up
-                </a>
-              </div>
-            </div>
+    <div class="border-bottom d-flex">
+      <div class="challenge-img-right d-none d-sm-block">
+        <img src="images/landing/landing-left.jpg" alt="Bravera"
+        class="img-fluid"/>
+      </div>
+      <div class="challenge-img-left">
+        <div class="card-body pt-sm-2 pt-md-3 pt-lg-5">
+          <h3>Milestones that matter</h3>
+          <p>Bravera is a platform that creates social impact through fitness fundraising.</p>
+          <p>Connect a fitness tracker, take a challenge, and get sponsors today!</p>
+          <a class="btn btn-bravera" href="/signup/" role="button">
+            Sign up
+          </a>
         </div>
+      </div>
+    </div>
 
 
-    <div class="card-footer card3bottom">
-      <div class="row card3bottom">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-6"></div>
-            <div class="col-md-6">
-              <div class="card3bottomright">
-                <img src="images/landing/card-3-logo-strava.png" alt="Strava">
-                <p>STRAVA COMPATIBLE</p>
-              </div>
-              <div class="card3bottomright">
-                <img src="images/landing/card-3-logo-fitbit.jpg" alt="Fitbit">
-                <p>FITBIT COMING SOON</p>
-              </div>
+  <div class="card-footer card3bottom">
+    <div class="row card3bottom">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-6"></div>
+          <div class="col-md-6">
+            <div class="card3bottomright">
+              <img src="images/landing/card-3-logo-strava.png" alt="Strava">
+              <p>STRAVA COMPATIBLE</p>
+            </div>
+            <div class="card3bottomright">
+              <img src="images/landing/card-3-logo-fitbit.jpg" alt="Fitbit">
+              <p>FITBIT COMING SOON</p>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
 <div class="container home-bottom">
   <div class="row">

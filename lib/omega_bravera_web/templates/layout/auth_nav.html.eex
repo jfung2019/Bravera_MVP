@@ -14,11 +14,6 @@
       </ul>
 
       <ul class="navbar-nav">
-        <li class="nav-item btn">
-          <a href="#" class="nav-logo">
-            <i class="fa fa-nav fa-users black"></i>
-          </a>
-        </li>
 
         <li class="nav-item btn">
           <a href="#" class="nav-logo">
@@ -43,10 +38,7 @@
             Log Out
           </a>
         </div>
-
       </ul>
-
-
     </div>
   </div>
 </nav>
