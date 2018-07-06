@@ -413,7 +413,7 @@ input[type=number]::-webkit-outer-spin-button {
 // }
 
 .btn{
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 5px 18px;
 }
 ////////////////////////////////
@@ -434,11 +434,10 @@ input[type=number]::-webkit-outer-spin-button {
 }
 // maybe change to flex at some point
 .cause-cover {
-  // max-width: 675px;
+  max-width: 600px;
+  max-height: 200px;
 }
 
-.card-img-container{
-}
 // $$
 // TODO RESPONSIVE PROGRESS CIRCLE IMAGE AND STUFF
 // $$

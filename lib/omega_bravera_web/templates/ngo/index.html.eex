@@ -1,11 +1,10 @@
 <div class="container-fluid">
-
-<%= for ngo <- @ngos do %>
+  <%= for ngo <- @ngos do %>
 <div class="row">
-  <div class="col-sm-12 col-md-6">
-    <div class="card mt-3">
+  <div class="col-sm-12 col-md-6 col-xl-4">
+    <div class="card cause-cover mt-3">
       <img class="card-img cause-cover" src=<%= ngo.image %> alt=<%= ngo.name %> />
-      <div class="card-img-overlay text-white card-img-text-shadow chal-header">
+      <div class="card-img-overlay text-white card-img-text-shadow">
         <div class="row">
           <div class="col-4 col-sm-3">
             <%= img_tag( ngo.logo, class: "img-thumbnail float-left", alt: ngo.name) %>
@@ -14,25 +13,25 @@
             <h3 class="text-500">
               <%= ngo.name %>
             </h3>
-            <h6 class="">
+            <h5 class="">
               <%= ngo.desc %>
-            </h6>
-            <p class="card-text">Last updated 3 mins ago</p>
+            </h5>
           </div>
         </div>
       </div>
+    </div>
+    <div class="card">
       <div class="card-body mt-md-2 mt-0">
         <div class="text-center text-md-left">
           <button class="btn btn-bravera mt-md-5 sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
           aria-expanded="false" aria-controls="Show-challenge-form">
-            Sign up
+            Join the challenge!
           </button>
         </div>
       </div>
     </div>
+    </div>
   </div>
-</div>
-
 
   <div class="card mt-4">
     <div class="row">
@@ -56,7 +55,7 @@
           <div class="text-center text-md-left">
             <button class="btn btn-bravera mt-md-5 sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
             aria-expanded="false" aria-controls="Show-challenge-form">
-              Sign up
+              Join the challenge!
             </button>
           </div>
         </div>
@@ -93,4 +92,5 @@
       </div>
 
 <% end %>
+</div>
 </div>
