@@ -1,9 +1,8 @@
-<div class="container-fluid">
   <%= for ngo <- @ngos do %>
 <div class="row">
   <div class="col-sm-12 col-md-6 col-xl-4">
-    <div class="card cause-cover mt-3">
-      <img class="card-img cause-cover" src=<%= ngo.image %> alt=<%= ngo.name %> />
+    <div class="card mt-3">
+      <img class="card-img card-img-top" src=<%= ngo.image %> alt=<%= ngo.name %> />
       <div class="card-img-overlay text-white card-img-text-shadow">
         <div class="row">
           <div class="col-4 col-sm-3">
@@ -13,15 +12,15 @@
             <h3 class="text-500">
               <%= ngo.name %>
             </h3>
-            <h5 class="">
-              <%= ngo.desc %>
-            </h5>
           </div>
         </div>
       </div>
     </div>
     <div class="card">
       <div class="card-body mt-md-2 mt-0">
+        <h5 class="text-420">
+          <%= ngo.desc %>
+        </h5>
         <div class="text-center text-md-left">
           <button class="btn btn-bravera mt-md-5 sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
           aria-expanded="false" aria-controls="Show-challenge-form">
@@ -92,5 +91,4 @@
       </div>
 
 <% end %>
-</div>
 </div>
