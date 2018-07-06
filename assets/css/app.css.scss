@@ -432,6 +432,13 @@ input[type=number]::-webkit-outer-spin-button {
 .card-img-overlay{
   padding-top: 5px;
 }
+// maybe change to flex at some point
+.cause-cover {
+  // max-width: 675px;
+}
+
+.card-img-container{
+}
 // $$
 // TODO RESPONSIVE PROGRESS CIRCLE IMAGE AND STUFF
 // $$
@@ -512,7 +519,7 @@ h5 {
   }
 }
 
-// homepage
+// homepage kiki
 
 .card3bottom {
     background-color: #f1eeee;
