@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <div class="card mt-3">
+  <div class="card my-4">
       <%= render "challenge_form.html", Map.put(assigns, :action, ngo_ngo_chal_path(@conn, :create, @ngo.id)) %>
   </div>
 </div>

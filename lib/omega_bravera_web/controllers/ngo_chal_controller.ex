@@ -29,7 +29,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       end
   end
 
-  def create(conn, %{"ngo_id" => ngo_id, "ngo_chal" => ngo_chal_params}) do
+  def create(conn, %{"ngo_slug" => ngo_id, "ngo_chal" => ngo_chal_params}) do
 
     current_user = Guardian.Plug.current_resource(conn)
 
