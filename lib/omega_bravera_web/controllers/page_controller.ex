@@ -22,7 +22,7 @@ defmodule OmegaBraveraWeb.PageController do
       user !== nil ->
         redirect conn, to: "/ngos"
       true ->
-        render(conn, "signup.html")
+        render(conn, "signup.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
   end
 
@@ -33,7 +33,7 @@ defmodule OmegaBraveraWeb.PageController do
       user !== nil ->
         redirect conn, to: "/ngos"
       true ->
-        render(conn, "login.html")
+        render(conn, "login.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
   end
 end

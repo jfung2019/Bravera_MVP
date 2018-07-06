@@ -10,6 +10,7 @@
         <div class="col-md-6 card3right">
           <h3>Milestones that matter</h3>
           <p>Bravera is a platform that creates social impact through fitness with fundraising milestones.</p>
+          <p>Connect a fitness tracker, take a challenge, and get sponsors today!</p>
           <a class="btn btn-bravera" href="/signup/" role="button">
             Sign up
           </a>
@@ -50,11 +51,14 @@
     <div class="col-md-2"></div>
     <div class="col-md-8">
       <h3 style="text-align: center;padding:20px;">Challenges for good</h3>
-      <p style="text-align: left;padding-left:10%;padding-right:10%;">This is how we help you achieve your goals.</p>
-      <p style="text-align: left;padding-left:10%;padding-right:10%;">We combine fitness and fundraising so you raise money while you train.
-      We break down the journey into achievable milestones.
-      Charity donations are released automatically when you reach your milestones.</p>
-    </div>
+      <div style="text-align: left;padding-left:10%;padding-right:10%;">
+        <p>
+          Bravera helps you achieve your goals. We combine fitness and fundraising: Connect your fitness tracker, accept a charity fundraising fitness challenge, invite sponsors, and raise money while you train!
+        </p>
+        <p>
+          Your challenge is broken down into attainable milestones that automatically unlock funds for causes as you achieve them.
+        </p>
+      </div>
     <div class="col-md-8"></div>
   </div>
 </div>

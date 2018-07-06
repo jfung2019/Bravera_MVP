@@ -34,7 +34,7 @@ defmodule OmegaBraveraWeb.Router do
   end
 
   # Strava API Endpoints for Webhooks
-  scope "/strava", BraveraWeb do
+  scope "/strava", OmegaBraveraWeb do
     pipe_through :api
 
     get "/webhook-callback", StravaController, :get_webhook_callback

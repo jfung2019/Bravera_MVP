@@ -19,12 +19,6 @@
 
   <body class="gray-background">
     <div class="vh-top">
-    <%= if logged_in?(@conn) do %>
-      <%= render "auth_nav.html" %>
-    <% else %>
-      <%= render "unauth_nav.html" %>
-    <% end %>
-
     <div class="text-center">
       <p class="alert alert-success" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>

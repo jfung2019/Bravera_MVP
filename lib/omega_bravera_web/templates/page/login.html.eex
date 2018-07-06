@@ -1,5 +1,5 @@
     <form class="form-signin text-center">
-      <img class="" src="/images/bravera-logo-circle.png" alt="Bravera">
+      <img class="circle-logo" src="/images/bravera-logo-circle.png" alt="Bravera">
       <h1 class="my-3">
         Log in
       </h1>

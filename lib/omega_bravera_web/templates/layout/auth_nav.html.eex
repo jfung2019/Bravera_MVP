@@ -38,35 +38,6 @@
           </a>
         </li>
 
-        <li class="nav-item dropdown btn btn-bravera p-0">
-          <a class="nav-link dropdown-toggle text-white" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">EN</a>
-
-          <div class="dropdown-menu">
-            <a class="dropdown-item lang-nav" href="/">
-              EN
-              <span class="sr-only">
-                English / 英語 / 英語
-              </span>
-            </a>
-
-            <a class="dropdown-item lang-nav" href="/" id="jp-lang">
-              中文
-              <span class="sr-only">
-                Chinese / 中文 / 中国語
-              </span>
-            </a>
-
-            <a class="dropdown-item lang-nav" href="/" id="jp-lang">
-              日本
-              <span class="sr-only">
-                Japanese / 日本語  / 日本
-              </span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>
-          </div>
-
-        </li> <!-- End of language dropdown -->
         <div class="ml-md-4">
           <a href="/strava/logout" class="btn btn-background">
             Log Out
