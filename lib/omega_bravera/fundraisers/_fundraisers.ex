@@ -46,6 +46,13 @@ defmodule OmegaBravera.Fundraisers do
   """
   def get_ngo!(id), do: Repo.get!(NGO, id)
 
+
+  def get_ngo_by_slug(slug) do
+    query = from n in NGO,
+      where: n.slug == ^slug
+
+    Repo.one(query)
+  end
   @doc """
   Creates a ngo.
 

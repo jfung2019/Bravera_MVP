@@ -30,6 +30,9 @@
     <%= if has_tracker?(@conn) do %>
 
           <div class="text-center">
+            <a class="btn btn-bravera sign-up" href=<%= "/" <> ngo.slug <> "/new" %>>
+              Join
+            </a>
             <button class="btn btn-bravera sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
             aria-expanded="false" aria-controls="Show-challenge-form">
               Join the challenge!

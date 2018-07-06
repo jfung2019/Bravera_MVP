@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.PageController do
 
     cond do
       user !== nil ->
-        redirect conn, to: "/signup"
+        redirect conn, to: "/ngos"
       true ->
         render(conn, "index.html")
     end

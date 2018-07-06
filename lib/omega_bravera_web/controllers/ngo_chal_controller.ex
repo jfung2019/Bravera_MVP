@@ -12,13 +12,21 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, _params) do
-    # TODO slugify this ngo_id request
-    %{params: %{"ngo_id" => ngo_id}} = conn
+    user = Guardian.Plug.current_resource(conn)
 
-    ngo = Fundraisers.get_ngo!(ngo_id)
+    cond do
+      user !== nil ->
+        # TODO slugify this ngo_id request
+        IO.inspect(conn)
+        %{params: %{"ngo_slug" => ngo_slug}} = conn
 
-    changeset = Challenges.change_ngo_chal(%NGOChal{})
-    render(conn, "new.html", changeset: changeset, ngo: ngo)
+        ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
+
+        changeset = Challenges.change_ngo_chal(%NGOChal{})
+        render(conn, "new.html", changeset: changeset, ngo: ngo)
+      true ->
+        redirect conn, to: "/login"
+      end
   end
 
   def create(conn, %{"ngo_id" => ngo_id, "ngo_chal" => ngo_chal_params}) do
