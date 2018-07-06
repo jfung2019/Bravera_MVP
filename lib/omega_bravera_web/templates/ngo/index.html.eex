@@ -1,94 +1,59 @@
-  <%= for ngo <- @ngos do %>
-<div class="row">
-  <div class="col-sm-12 col-md-6 col-xl-4">
-    <div class="card mt-3">
-      <img class="card-img card-img-top" src=<%= ngo.image %> alt=<%= ngo.name %> />
-      <div class="card-img-overlay text-white card-img-text-shadow">
-        <div class="row">
-          <div class="col-4 col-sm-3">
-            <%= img_tag( ngo.logo, class: "img-thumbnail float-left", alt: ngo.name) %>
-          </div>
-          <div class="col-8 col-sm-9">
-            <h3 class="text-500">
-              <%= ngo.name %>
-            </h3>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-body mt-md-2 mt-0">
-        <h5 class="text-420">
-          <%= ngo.desc %>
-        </h5>
-        <div class="text-center text-md-left">
-          <button class="btn btn-bravera mt-md-5 sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
-          aria-expanded="false" aria-controls="Show-challenge-form">
-            Join the challenge!
-          </button>
-        </div>
-      </div>
-    </div>
-    </div>
+<div class="container-fluid">
+  <div class="mt-3">
+    <h2 class="text-center text-420">
+      Select a Cause
+    </h2>
   </div>
 
-  <div class="card mt-4">
-    <div class="row">
-      <div class="col-lg-4 col-md-5 col-sm-5 col-3">
-        <%= img_tag( ngo.logo, class: "card-img-top cat-img", alt: ngo.name) %>
+  <div class="row">
+  <%= for ngo <- @ngos do %>
+    <div class="col-s-12 col-md-6 col-xl-4">
+      <div class="card mt-3">
+        <img class="card-img-top" src=<%= ngo.image %> alt=<%= ngo.name %>/>
+        <div class="card-img-overlay text-white card-img-text-shadow cause-cover">
+          <div class="row">
+            <div class="thumbnail-container ml-3">
+              <%= img_tag( ngo.logo, class: "img-thumbnail float-left cause-thumb mt-2", alt: ngo.name) %>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="col-lg-8 col-md-7 col-sm-7 col-9">
-        <div class="card-body mt-md-2 mt-0">
-
-          <h3 class="text-500">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title text-420">
             <%= ngo.name %>
-          </h3>
-
-          <h5 class="text-420">
+          </h2>
+          <p class="card-text">
             <%= ngo.desc %>
-          </h5>
+          </p>
 
-          <%= if has_tracker?(@conn) do %>
+    <%= if has_tracker?(@conn) do %>
 
-          <div class="text-center text-md-left">
-            <button class="btn btn-bravera mt-md-5 sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
+          <div class="text-center">
+            <button class="btn btn-bravera sign-up" type="button" data-toggle="collapse" data-target=<%= "#" <> ngo.slug %>
             aria-expanded="false" aria-controls="Show-challenge-form">
               Join the challenge!
             </button>
           </div>
-        </div>
-      </div>
-    </div> <!-- end row 1 -->
 
-    <div id="participant-signup" class="mx-auto" style="max-width: 420px;">
-      <div class="collapse"
-          id=<%= ngo.slug %>
-        >
-        <div class="card card-body inset-box-shadow gray-background">
-            <%= render "challenge_form.html", Map.put(assigns, :action, ngo_ngo_chal_path(@conn, :create, ngo.id)) %>
-        </div>
-      </div>
-    </div>
-
-            <% else %>
-
-              <p>Connect a Tracker to
-              take the Challenge!</p>
-
-              <a href="/strava/login" class="mb-1">
-                <img src="/images/strava/btn_strava_connect-orange.png" />
-              </a>
-
-              <a href="#" class="mb-1">
-                <img src="/images/btn_fitbit_white.png" />
-              </a>
+          <div id="participant-signup" class="mx-auto" style="max-width: 420px;">
+            <div class="collapse"
+                id=<%= ngo.slug %>
+              >
+              <div class="card card-body">
+                <%= render "challenge_form.html", Map.put(assigns, :action, ngo_ngo_chal_path(@conn, :create, ngo.id)) %>
+              </div>
             </div>
           </div>
+
         </div>
-      <% end %>
+      </div>  <!-- end of card -->
 
-      </div>
+    <% else %>
 
-<% end %>
+    <% end%>
+  </div> <!-- end col -->
+  <% end %>
+</div>
+
 </div>

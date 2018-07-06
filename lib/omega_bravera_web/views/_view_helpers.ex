@@ -11,4 +11,5 @@ defmodule OmegaBraveraWeb.ViewHelpers do
       if strava !== nil, do: true
     end
   end
+
 end

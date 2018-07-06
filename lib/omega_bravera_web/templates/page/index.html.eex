@@ -2,10 +2,9 @@
 
 <div class="container mt-3">
   <div class="card">
-    <div class="card-body">
       <div class="row">
         <div class="col-md-6">
-          <img src="images/landing/landing-left.jpg" alt="Bravera" width="100%">
+          <img src="images/landing/landing-left.jpg" alt="Bravera" class="img-fluid">
         </div>
         <div class="col-md-6 card3right">
           <h3>Milestones that matter</h3>
@@ -15,7 +14,6 @@
             Sign up
           </a>
         </div>
-      </div>
     </div>
     <div class="card-footer card3bottom">
       <div class="row card3bottom">

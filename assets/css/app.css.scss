@@ -423,7 +423,6 @@ input[type=number]::-webkit-outer-spin-button {
 // text-shadow: horizontal-offset vertical-offset blur color;
 .card-img-text-shadow{
   text-shadow: 2px 2px 2px rgba(0,0,0,0.6);
-  background-color: rgba(0,0,0,0.3);
 }
 
 .chal-header{
@@ -434,20 +433,65 @@ input[type=number]::-webkit-outer-spin-button {
 }
 // maybe change to flex at some point
 .cause-cover {
-  max-width: 600px;
-  max-height: 200px;
 }
+
+@include media-breakpoint-up(lg){
+  .cause-card {
+    width: 600px;
+    height: 200px;
+    margin: 0 auto;
+  }
+}
+@include media-breakpoint-up(sm){
+  .cause-card {
+    width: 350px;
+    height: 200px;
+    margin: 0 auto;
+  }
+}
+
+.cause-img {
+  max-width: 704px;
+  max-height: 175px;
+}
+
+.cause-thumb{
+  position: absolute;
+  width: 125px;
+  height: 125px;
+  z-index: 3;
+}
+
+// @media (min-width: 767px){
+//   .cause-thumb {
+//     position: absolute;
+//     width: 125px;
+//     height: 125px;
+//     z-index: 2;
+//   }
+// }
+//
+// @media (max-width: 767px){
+//   .cause-thumb {
+//     position: absolute;
+//     width: 125px;
+//     height: 125px;
+//     z-index: 2;
+//   }
+// }
+//
+// @media (max-width: 500px){
+//   .cause-thumb {
+//     position: absolute;
+//     width: 115px;
+//     height: 115px;
+//     z-index: 2;
+//   }
+// }
 
 // $$
 // TODO RESPONSIVE PROGRESS CIRCLE IMAGE AND STUFF
 // $$
-
-@media only screen and (max-width: 575px){
-  .container-fluid{
-    padding-right: 0px;
-    padding-left: 0px;
-  }
-}
 
 @include media-breakpoint-up(md) {
   .chal-header{
@@ -458,7 +502,6 @@ input[type=number]::-webkit-outer-spin-button {
     padding-top: 10px;
   }
 }
-
 
 ////////////////////////////////
 // $$$ TEXT MEDIA QUERIES $$$ //
@@ -473,12 +516,6 @@ h5 {
 
 .sign-up{
   font-size: 1.2rem;
-}
-
-// TODO Fix this bs feed image stuff with responsibe images :D
-.cat-img{
-  max-height: 200px;
-  max-width: 200px;
 }
 
 @include media-breakpoint-up(sm) {
@@ -561,4 +598,43 @@ h5 {
 .circle-logo{
   width: 150px;
   height: 150px;
+}
+
+// Challenge Signup Form
+
+.checkboxgroup{
+    display:inline-block;
+    text-align:center;
+}
+.checkboxgroup label {
+    display:block;
+}
+
+.btn-sq-lg {
+  width: 150px !important;
+  height: 150px !important;
+}
+
+.btn-sq-lg.focus,
+.btn-sq-lg:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+
+.btn-sq {
+  width: 100px !important;
+  height: 100px !important;
+  font-size: 10px;
+}
+
+.btn-sq-sm {
+  width: 50px !important;
+  height: 50px !important;
+  font-size: 10px;
+}
+
+.btn-sq-xs {
+  width: 25px !important;
+  height: 25px !important;
+  padding:2px;
 }

@@ -12,15 +12,18 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, _params) do
+    # TODO slugify this ngo_id request
+    %{params: %{"ngo_id" => ngo_id}} = conn
+
+    ngo = Fundraisers.get_ngo!(ngo_id)
+
     changeset = Challenges.change_ngo_chal(%NGOChal{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: changeset, ngo: ngo)
   end
 
   def create(conn, %{"ngo_id" => ngo_id, "ngo_chal" => ngo_chal_params}) do
 
     current_user = Guardian.Plug.current_resource(conn)
-
-    IO.inspect(current_user)
 
     %{id: user_id, firstname: firstname} = current_user
 
@@ -44,7 +47,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     # TODO optimize all of the maps being passed thru into one map
 
     ngo_chal = Challenges.get_ngo_chal!(id)
-    IO.inspect(ngo_chal)
+
     %{user_id: user_id, ngo_id: ngo_id} = ngo_chal
 
     user = Accounts.get_user!(user_id)
@@ -73,5 +76,5 @@ defmodule OmegaBraveraWeb.NGOChalController do
         render(conn, "edit.html", ngo_chal: ngo_chal, changeset: changeset)
     end
   end
-  
+
 end

@@ -1,0 +1,11 @@
+<div class="container">
+  <div class="text-center mt-3">
+    <h2>Configure your Challenge</h2>
+  </div>
+
+  <div class="card mt-3">
+    <div class="card-body">
+      <%= render "challenge_form.html", Map.put(assigns, :action, ngo_ngo_chal_path(@conn, :create, @ngo.id)) %>
+    </div>
+  </div>
+</div>
