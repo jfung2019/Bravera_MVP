@@ -2,7 +2,7 @@
   <div class="card-body border-bottom pb-0 mb-3">
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+      <p class="text-center">Oops, something went wrong! Please check the errors below.</p>
     </div>
   <% end %>
 
@@ -83,6 +83,7 @@
 
       <div class="distance-select">
         <%= error_tag f, :duration %>
+        <%= error_tag f, :distance_target %>
         <div class="form-group form-inline text-center justify-content-center">
           <div class="input-group">
             <select
@@ -98,7 +99,6 @@
             <div class="input-group-append">
               <label class="input-group-text" for="ngo_chal_distance_target">KM</label>
             </div>
-            <%= error_tag f, :distance_target %>
           </div>
 
           <h4 class="mx-3 my-3 text-center text-green">

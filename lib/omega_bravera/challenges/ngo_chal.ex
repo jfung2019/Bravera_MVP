@@ -8,7 +8,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
   alias OmegaBravera.Challenges.Team
 
   schema "ngo_chals" do
-    field :activity, :string, default: "all"
+    field :activity, :string
     field :distance_target, :decimal, default: 100
     field :distance_covered, :decimal, default: 0
     field :duration, :integer
