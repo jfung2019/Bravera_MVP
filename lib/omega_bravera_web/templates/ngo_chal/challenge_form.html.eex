@@ -29,7 +29,7 @@
             Select an Activity
           </h4>
           <div class="form-group" id="ngo_chal_activity" name="ngo_chal[activity]">
-            <button type="button" class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" value="all">
+            <button type="button" class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" value="foot">
               <i class="fa fa-user fa"></i><br/>
               <span class="activity-text">
                 Run
@@ -41,13 +41,13 @@
                 Cycle
               </span>
             </button>
-            <button type="button" class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" value="all">
+            <button type="button" class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" value="foot">
               <i class="fa fa-user fa"></i><br/>
               <span class="activity-text">
                 Walk
               </span>
             </button>
-            <button type="button" class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" value="all">
+            <button type="button" class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" value="foot">
               <i class="fa fa-user fa"></i><br/>
               <span class="activity-text">
                 Hike

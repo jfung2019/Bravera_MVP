@@ -51,10 +51,11 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"slug" => slug}) do
+    IO.inspect(conn)
     # TODO optimize all of the maps being passed thru into one map
 
-    ngo_chal = Challenges.get_ngo_chal!(id)
+    ngo_chal = Challenges.get_ngo_chal_by_slug(slug)
 
     %{user_id: user_id, ngo_id: ngo_id} = ngo_chal
 

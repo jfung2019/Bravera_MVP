@@ -15,6 +15,13 @@ defmodule OmegaBravera.Challenges do
     Repo.all(query)
   end
 
+  def get_ngo_chal_by_slug(slug) do
+    query = from nc in NGOChal,
+      where: nc.slug == ^slug
+
+    Repo.one(query)
+  end
+
   def get_ngo_ngo_chals(ngo_id, order_by) do
 
     query = from nc in NGOChal,
