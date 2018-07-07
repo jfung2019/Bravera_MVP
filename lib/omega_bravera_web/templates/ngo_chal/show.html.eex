@@ -31,13 +31,21 @@
           <p class="text-center" id="date-range">
           </p>
 
+          <div class="progress chal-progress">
+            <div class="progress-bar bg-success" role="progressbar"  aria-valuenow="<@= @ngo_chal.total_secured %>" aria-valuemin="0" aria-valuemax="<@= @ngo_chal.money_target %>"
+            id="money-progress"
+            ></div>
+          </div>
+          <h5 class="text-420 mt-0 mb-3 text-center">
+            <%= @ngo_chal.distance_covered %> KM of <%= @ngo_chal.distance_target %> KM Completed
+          </h5>
 
 
-          <div class="progress distance-progress">
-            <div class="progress-bar progress-bar bg-bravera"
+          <div class="progress chal-progress">
+            <div class="progress-bar bg-bravera"
             id="distance-progress" role="progressbar" style="width: 0%;" aria-valuenow=<%= @ngo_chal.distance_covered %> aria-valuemin="0" aria-valuemax=<%= @ngo_chal.distance_target %>></div>
           </div>
-          <h5 class="text-420 mt-0 mb-1 text-center">
+          <h5 class="text-420 mt-0 mb-3 text-center">
             <%= @ngo_chal.distance_covered %> KM of <%= @ngo_chal.distance_target %> KM Completed
           </h5>
 
@@ -55,8 +63,10 @@
       <div class="card-body border-top">
 
         <div class="stats text-center">
-          <div class="progress money-progress mx-3">
-            <div class="progress-bar bg-success" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar"  aria-valuenow="<@= @ngo_chal.total_secured %>" aria-valuemin="0" aria-valuemax="<@= @ngo_chal.money_target %>"
+            id="money-progress"
+            >
               $<%= @ngo_chal.total_secured %> Raised
             </div>
             <p class="m-2">$<%= @ngo_chal.total_pledged %> Pledged</p>
@@ -140,23 +150,34 @@
 
   var endDate = moment('<%= @ngo_chal.end_date %>').format('DD/MM/YYYY');
 
-  var a = moment(<%= @ngo_chal.end_date %>);
-  var b = moment(<%= @ngo_chal.start_date %>);
+  var a = moment('<%= @ngo_chal.end_date %>');
+  var b = moment('<%= @ngo_chal.start_date %>');
   var daysLeft = a.diff(b, 'days');
 
   document.getElementById('date-range').innerHTML = startDate + " - " + endDate;
 
   document.getElementById('days-left').append(daysLeft);
 
-  var distPerc = <%= @ngo_chal.distance_covered %> / <%= @ngo_chal.distance_target %> * 100,
-      widthStr;
+  var moneyPerc = <%= @ngo_chal.total_secured %> / <%= @ngo_chal.money_target %> * 100,
+      moneyWidth;
 
-  if (distPerc <= 100){
-    widthStr = "width:" + distPerc  + "%;";
+  if (moneyPerc <= 100){
+    moneyWidth = "width:" + moneyPerc  + "%;";
   } else {
-    widthStr = "width: 100%;";
+    moneyWidth = "width: 100%;";
   }
 
-  document.getElementById('distance-progress').setAttribute("style", widthStr)
+  document.getElementById('money-progress').setAttribute("style", moneyWidth);
+
+  var distPerc = <%= @ngo_chal.distance_covered %> / <%= @ngo_chal.distance_target %> * 100,
+      distWidth;
+
+  if (distPerc <= 100){
+    distWidth = "width:" + distPerc  + "%;";
+  } else {
+    distWidth = "width: 100%;";
+  }
+
+  document.getElementById('distance-progress').setAttribute("style", distWidth);
 
 </script>
