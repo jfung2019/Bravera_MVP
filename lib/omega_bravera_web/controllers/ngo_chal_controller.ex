@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.NGOChalController do
   use OmegaBraveraWeb, :controller
+  use Timex
 
   alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money}
   alias OmegaBravera.Challenges.NGOChal
@@ -39,8 +40,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
     %{slug: ngo_slug, id: ngo_id} = ngo
 
     slug = Slugify.gen_random_slug(firstname)
+    start_date = Timex.now
 
-    case Challenges.insert_ngo_chal(ngo_chal_params, ngo_id, user_id, slug) do
+    case Challenges.insert_ngo_chal(ngo_chal_params, ngo_id, user_id, slug, start_date) do
       {:ok, ngo_chal} ->
         # TODO put the social share link in the put_flash?!
         conn
@@ -48,7 +50,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
         |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        render(conn, "new.html", changeset: changeset, ngo: ngo)
     end
   end
 

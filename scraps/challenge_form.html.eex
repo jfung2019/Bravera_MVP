@@ -9,7 +9,7 @@
 
     <div class="row text-center">
       <div class="col-lg-12">
-        <p>
+        <div class="form-group">
           <button type="button" class="btn btn-sq-lg btn-outline-secondary" value="all">
             <i class="fa fa-user fa"></i><br/>
             <span style="color:orange;">One</span>
@@ -26,7 +26,7 @@
             <i class="fa fa-user fa"></i><br/>
             Four
           </button>
-        </p>
+        </div>
       </div>
   	</div>
 

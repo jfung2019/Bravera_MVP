@@ -636,6 +636,24 @@ h5 {
   background-color: #f6f6f6;
 }
 
+.btn-sq-lg.active,
+.btn-sq-lg:active {
+  box-shadow: none;
+  border-color: #3aaa35;
+  background-color: #f6f6f6;
+}
+
+.radio-img{
+  visibility: hidden; /* Makes input not-clickable */
+  position: absolute; /* Remove input from document flow */
+}
+
+.radio-btn-selected{
+  box-shadow: none;
+  border-color: #3aaa35;
+  background-color: #f6f6f6;
+}
+
 .activity-text{
   color: black;
 }
