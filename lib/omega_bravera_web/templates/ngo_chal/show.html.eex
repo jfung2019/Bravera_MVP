@@ -3,7 +3,7 @@
 <div class="container-fluid">
 <!-- TODO give the cards min/max widths/heights maybe -->
   <div class="row">
-    <!-- col 2 of 2 -->
+  <!-- col-lg 2 of 2 -->
   <div class="col-lg-8 order-lg-2 max-w-775 margin-auto">
     <div class="card chal-header">
       <img class="card-img" src="<%= @ngo.image %>" alt="Card image">
@@ -51,10 +51,12 @@
             <div class="progress-bar bg-bravera"
             id="distance-progress" role="progressbar" style="width: 0%;" aria-valuenow=<%= @ngo_chal.distance_covered %> aria-valuemin="0" aria-valuemax=<%= @ngo_chal.distance_target %>></div>
           </div>
-          <h5 class="text-420 mt-0 mb-3 text-center">
+          <h5 class="text-420 mt-0 mb-2 text-center">
             <strong><%= @ngo_chal.distance_covered %> KM</strong> of <strong><%= @ngo_chal.distance_target %> KM</strong> Completed
           </h5>
-
+        </div>
+        <div class=" img-fluid margin-auto mb-3">
+          <img src="/images/strava/powered-by.png" alt="Fitness Data Powered by Strava"/>
         </div>
 
 

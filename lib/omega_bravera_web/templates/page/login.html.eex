@@ -1,3 +1,4 @@
+<div class="signin">
     <form class="form-signin text-center">
       <img class="circle-logo" src="/images/bravera-logo-circle.png" alt="Bravera">
       <h1 class="my-3">
@@ -9,11 +10,6 @@
         </a>
       </div>
 
-      <label for="inputEmail" class="sr-only">Email address</label>
-      <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
-
-      <button class="btn btn-lg btn-bravera btn-block" type="submit">Log in</button>
       <p class="mt-5 mb-3 text-muted">© 2018 Bravera</p>
     </form>
+  </div>
