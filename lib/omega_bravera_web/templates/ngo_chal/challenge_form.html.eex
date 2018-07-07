@@ -26,10 +26,11 @@
     <div class="row text-center">
       <div class="col-lg-12">
         <label for="ngo_chal_activity">
-          <h4 class="text-green">
+          <h4 class="text-green mb-0">
             Select an Activity
           </h4>
         </label>
+        <%= error_tag f, :activity %>
         <div class="form-group" id="ngo_chal_activity">
           <label
             class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" >
@@ -81,6 +82,7 @@
   	</div>
 
       <div class="distance-select">
+        <%= error_tag f, :duration %>
         <div class="form-group form-inline text-center justify-content-center">
           <div class="input-group">
             <select
@@ -96,12 +98,12 @@
             <div class="input-group-append">
               <label class="input-group-text" for="ngo_chal_distance_target">KM</label>
             </div>
+            <%= error_tag f, :distance_target %>
           </div>
 
           <h4 class="mx-3 my-3 text-center text-green">
             in
           </h4>
-
           <div class="input-group">
             <select
               class="custom-select"
@@ -130,8 +132,9 @@
           for="ngo_chal_default_currency">
           <h4 class="currency-select-label text-green">Select a Currency</h4>
         </label>
+        <%= error_tag f, :default_currency %>
         <select
-          class="custom-select custom-select-lg my-3"
+          class="custom-select custom-select-lg mt-2 mb-3"
           name="ngo_chal[default_currency]"
           id="ngo_chal_default_currency">
           <option selected value="hkd">
@@ -146,9 +149,9 @@
         </select>
       </div>
 
-      <div class="mb-3 text-center fund-input-container">
+      <div class="mb-4 text-center fund-input-container">
         <label for="ngo_chal_money_target">
-          <h4 class="text-green">Set Fundraising Target</h4>
+          <h4 class="text-green my-2">Set Fundraising Target</h4>
         </label>
         <div class="input-group">
           <div class="input-group-prepend">
@@ -164,9 +167,8 @@
             <span class="input-group-text">.00</span>
           </div>
         </div>
+        <%= error_tag f, :money_target %>
       </div>
-
-
 
       <div class="form-button">
         <button type="submit" class="btn btn-bravera btn-lg btn-block form-button">
@@ -184,9 +186,11 @@
 
       $('#ngo_chal_default_currency').change(function() {
         if ($(this).val() === "hkd") {
-          $('#ngo_chal_money_target').val(10000)
+          $('#ngo_chal_money_target').val(10000);
+          $('#currencyPrepend').html("$");
         } else if($(this).val() === "usd"){
-          $('#ngo_chal_money_target').val(1500)
+          $('#ngo_chal_money_target').val(1500);
+          $('#currencyPrepend').html("$");
         } else if($(this).val() === "gbp"){
           $('#ngo_chal_money_target').val(1500);
           $('#currencyPrepend').html("£");
