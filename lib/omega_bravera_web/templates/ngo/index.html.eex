@@ -9,7 +9,7 @@
   <%= for ngo <- @ngos do %>
     <div class="col-s-12 col-md-6 max-w-775">
       <div class="card mt-3 chal-header">
-        <img class="card-img-top" src=<%= ngo.image %> alt=<%= ngo.name %>/>
+        <img class="card-img-top" src=<%= ngo.image %> alt=<%= ngo.name %> />
         <div class="card-img-overlay text-white card-img-text-shadow">
           <div class="row">
             <div class="col-4 col-sm-3">

@@ -37,8 +37,9 @@
           </div>
         </div>
         <div class="container mt-4">
-            <div class="progress chal-progress">
-            <div class="progress-bar bg-success" role="progressbar"  aria-valuenow="<@= @ngo_chal.total_secured %>" aria-valuemin="0" aria-valuemax="<@= @ngo_chal.money_target %>"
+          <div class="progress chal-progress">
+            <div class="progress-bar bg-success"
+            style="width: 0%;" role="progressbar"  aria-valuenow="<@= @ngo_chal.total_secured %>" aria-valuemin="0" aria-valuemax="<@= @ngo_chal.money_target %>"
             id="money-progress"
             ></div>
           </div>
@@ -64,7 +65,7 @@
           <p class="text-400">
             Nick has unlocked
             <strong>
-              $<%= @ngo_chal.total_secured %> <%= @ngo_chal.default_currency %>
+              <%= @ngo_chal.total_secured %> <%= @ngo_chal.default_currency %>
             </strong> of<strong>
               <%= @ngo_chal.total_pledged %> <%= @ngo_chal.default_currency %>
             </strong> in pledged sponsorships.
@@ -85,35 +86,28 @@
     <!-- col 1 of 2 -->
     <div class="col-lg-4 order-lg-1 max-w-775 margin-auto">
       <div class="card mt-4 mt-lg-0">
-
-        <div class="card-body">
-          <h3 class="text-center mb-2  text-420">
-            <%= @ngo.name %>
-          </h3>
-        </div>
-
-        <div class="card-footer">
-          <h4 class="text-center text-420">
-            Charity Challenge
+        <div class="card-body pb-3">
+          <h4 class="text-center mb-0 text-420">
+            Share <%= @user.firstname %>'s <br/> Challenge Page
           </h4>
         </div>
 
-      </div>
-
-      <div class="card mt-4">
-        <div class="card-body text-center mx-3">
-          <h5 style="font-weight: 400">
-            <%= @ngo.desc %>
-          </h5>
-
-          <button class="btn btn-bravera">
-            Participate
-          </button>
-        </div>
         <div class="card-body text-center border-top">
           [social sharing logos go here]
         </div>
+      </div>
 
+      <div class="card mt-4">
+        <div class="card-body text-center mx-3 pb-2">
+          <h4 style="font-weight: 300">
+            Join Bravera now and fundraise while you train!
+          </h4>
+        </div>
+        <div class="card-footer text-center">
+          <button class="btn btn-bravera" href="/ngos">
+            Join a Challenge
+          </button>
+        </div>
       </div>
 
     </div>

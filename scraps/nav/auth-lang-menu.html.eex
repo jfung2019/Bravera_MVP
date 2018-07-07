@@ -1,3 +1,21 @@
+<li class="nav-item btn">
+  <a href="#" class="nav-logo">
+    <i class="fa fa-nav fa-user-circle black"></i>
+  </a>
+</li>
+
+<li class="nav-item btn">
+  <a href="#" class="nav-logo">
+    <i class="fa fa-nav fa-question-circle black"></i>
+  </a>
+</li>
+
+<li class="nav-item btn">
+  <a href="#" class="nav-logo">
+    <i class="fa fa-nav fa-cog black"></i>
+  </a>
+</li>
+
 <li class="nav-item dropdown btn btn-bravera p-0">
   <a class="nav-link dropdown-toggle text-white" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">EN</a>
 
