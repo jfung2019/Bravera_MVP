@@ -10,13 +10,13 @@
       <div class="card-img-overlay text-white card-img-text-shadow">
         <div class="row">
           <div class="col-4 col-sm-3">
-            <div class="mb-0 ml-md-3   mt-1 mt-sm-1 mt-md-3 mt-lg-4 mt-xl-4">
+            <div class="mb-0 ml-md-3 mt-1 mt-sm-1 mt-md-3 mt-lg-4 mt-xl-4">
               <%= img_tag(("https://www.strava.com/athletes/" <> Integer.to_string(@strava.athlete_id) <> "/avatar?size=large"), class: "thumbnail img-fluid  rounded-circle border border-bravera", alt: (@user.firstname <> " " <> @user.lastname)) %>
             </div>
           </div>
 
           <div class="col-8 col-sm-9">
-            <h3 class="mb-0 mt-1 mt-sm-3 mt-md-5 mt-lg-4 mt-xl-5"><%= @user.firstname %>'s <%= @ngo_chal.distance_target %>km <%= @ngo_chal.activity %> Challenge</h5>
+            <h3 class="mb-0 mt-1 mt-sm-4 mt-md-5"><%= @user.firstname %>'s <%= @ngo_chal.distance_target %>km <%= @ngo_chal.activity %> Challenge</h5>
             <h5 class="card-text text-420">for <strong class="text-500"><%= @ngo.name %></strong></h5>
           </div>
         </div>
@@ -25,78 +25,54 @@
     </div>
       <div class="card">
 
-        <div class="container">
+        <div class="container border-bottom">
           <h5 class=" text-500 text-center mt-2 mb-0"> <strong id="days-left" class="text-success"></strong> Days Left
           </h5>
-          <p class="text-center" id="date-range">
+          <p class="text-center mb-0" id="date-range">
           </p>
+          <p style="font-size: 12px;" class="text-420 text-center mb-3">(Day/Month/Year)</h6>
 
-          <div class="progress chal-progress">
+          <div class="mb-3 text-center">
+            <a type="button" class="btn-lg btn-bravera donate-btn"  name="button" href="#sponsor">Donate</a>
+          </div>
+        </div>
+        <div class="container mt-4">
+            <div class="progress chal-progress">
             <div class="progress-bar bg-success" role="progressbar"  aria-valuenow="<@= @ngo_chal.total_secured %>" aria-valuemin="0" aria-valuemax="<@= @ngo_chal.money_target %>"
             id="money-progress"
             ></div>
           </div>
-          <h5 class="text-420 mt-0 mb-3 text-center">
-            <%= @ngo_chal.distance_covered %> KM of <%= @ngo_chal.distance_target %> KM Completed
-          </h5>
 
+          <h5 class="text-420 mt-0 mb-4 text-center">
+            <strong><%= @ngo_chal.total_secured %></strong> of <strong><%= @ngo_chal.money_target %> <%= @ngo_chal.default_currency %></strong> Raised
+          </h5>
 
           <div class="progress chal-progress">
             <div class="progress-bar bg-bravera"
             id="distance-progress" role="progressbar" style="width: 0%;" aria-valuenow=<%= @ngo_chal.distance_covered %> aria-valuemin="0" aria-valuemax=<%= @ngo_chal.distance_target %>></div>
           </div>
           <h5 class="text-420 mt-0 mb-3 text-center">
-            <%= @ngo_chal.distance_covered %> KM of <%= @ngo_chal.distance_target %> KM Completed
+            <strong><%= @ngo_chal.distance_covered %> KM</strong> of <strong><%= @ngo_chal.distance_target %> KM</strong> Completed
           </h5>
 
         </div>
 
-        <label id="days-left">
-        </label>
 
-        <div class="text-center mx-5 mt-2">
-
-          <h5 class="text-success" div="#percent-complete"></h5>
-
-        </div>
-
-      <div class="card-body border-top">
-
-        <div class="stats text-center">
-          <div class="progress">
-            <div class="progress-bar bg-success" role="progressbar"  aria-valuenow="<@= @ngo_chal.total_secured %>" aria-valuemin="0" aria-valuemax="<@= @ngo_chal.money_target %>"
-            id="money-progress"
-            >
-              $<%= @ngo_chal.total_secured %> Raised
-            </div>
-            <p class="m-2">$<%= @ngo_chal.total_pledged %> Pledged</p>
-          </div>
-
-          <h5 class="text-400 mt-3">
+      <div class="card-footer border-top text-center mb-0 pb-0">
+          <p class="text-400">
+            Nick has unlocked
             <strong>
               $<%= @ngo_chal.total_secured %> <%= @ngo_chal.default_currency %>
+            </strong> of<strong>
+              <%= @ngo_chal.total_pledged %> <%= @ngo_chal.default_currency %>
             </strong> in pledged sponsorships.
-            <strong>
-              $<%= @ngo_chal.money_target %> <%= @ngo_chal.default_currency %>
-            </strong> unlocked.
-          </h5>
-
-          <h5 class="text-400 mt-3">
-            Nick has
-            <strong>
-              $<%= @ngo_chal.total_pledged %> <%= @ngo_chal.default_currency %>
-            </strong> in pledged sponsorships.
-            <strong>
-              $<%= @ngo_chal.total_secured %> <%= @ngo_chal.default_currency %>
-            </strong> unlocked.
-          </h5>
-        </div>
-
+          </p>
       </div>
     </div>  <!-- End of top card -->
-    <h3 class="text-center p-4">
-      Sponsor <%= @user.firstname %>
-    </h3>
+    <a name="sponsor"></a>
+    <h4 class="text-center pt-4 pb-3">
+      Donate
+    </h4>
 
     <div class="card">
       <%= render "bs4_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @ngo.id, @ngo_chal.id)) %>
