@@ -146,13 +146,13 @@
           class="custom-select custom-select-lg mt-2 mb-3"
           name="ngo_chal[default_currency]"
           id="ngo_chal_default_currency">
-          <option selected value="hkd">
+          <option selected value="HKD">
             Hong Kong Dollar
           </option>
-          <option value="usd">
+          <option value="USD">
             US Dollar
           </option>
-          <option value="gbp">
+          <option value="GBP">
             British Pound
           </option>
         </select>
@@ -193,15 +193,15 @@
       var selectedCurrency = $('#ngo_chal_default_currency').val();
 
       $('#ngo_chal_default_currency').change(function() {
-        if ($(this).val() === "hkd") {
+        if ($(this).val() === "HKD") {
           $('#ngo_chal_money_target').val(10000);
-          $('#currencyPrepend').html("$");
-        } else if($(this).val() === "usd"){
+          $('#currencyPrepend').html("HKD $");
+        } else if($(this).val() === "USD"){
           $('#ngo_chal_money_target').val(1500);
-          $('#currencyPrepend').html("$");
-        } else if($(this).val() === "gbp"){
+          $('#currencyPrepend').html("USD $");
+        } else if($(this).val() === "GBP"){
           $('#ngo_chal_money_target').val(1500);
-          $('#currencyPrepend').html("£");
+          $('#currencyPrepend').html("GBP £");
         }
       }).change();
     });
