@@ -30,7 +30,7 @@
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
     </div>
 
-    <section class="container-fluid flex-grow">
+    <section class="container-fluid flex-grow px-0 px-sm-3">
 
       <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 

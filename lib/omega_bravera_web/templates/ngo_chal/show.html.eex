@@ -2,12 +2,12 @@
 
 <div class="container-fluid">
 
-  <div class="row">
+  <div class="row ">
     <!-- col 2 of 2 -->
   <div class="col-lg-8 order-lg-2">
     <div class="card chal-header">
       <img class="card-img" src="<%="../../" <> @ngo.image%>" alt="Card image">
-      <div class="card-img-overlay text-white card-img-text-shadow">
+      <div class="card-img-overlay text-white card-img-text-shadow" style="min-height:">
         <div class="row">
           <div class="col-4 col-sm-3">
             <div class="circle-progress-container">
@@ -25,11 +25,9 @@
             </div>
 
           </div>
-
           <div class="col-8 col-sm-9">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            <p class="card-text">Last updated 3 mins ago</p>
+            <h3 class="mb-0 mt-sm-3 mt-xs-1 mt-md-5 mt-lg-5"><%= @user.firstname <> " " <> @user.lastname %>'s <%= @ngo_chal.distance_target %>km <%= @ngo_chal.activity %> Challenge</h5>
+            <h5 class="card-text text-420">for <strong class="text-500"><%= @ngo.name %></strong></h5>
           </div>
         </div>
 
@@ -38,37 +36,7 @@
       <div class="card">
 
         <div class="text-center mx-5 mt-2">
-
-        <div class="participant-title mt-2  mb-3">
-          <h2 class="text-center mb-0">
-            <%= @user.firstname <> " " <> @user.lastname %>
-          </h2>
-
-          <h4 class="card-title text-420">
-            is fundraising for <br />
-            <strong class="text-500">
-              <%= @ngo.name %>
-            </strong>
-          </h4>
-        </div>
-
-          <div class="circle-progress-container">
-            <div class="circle-progress progress-fill">
-              <span class="circle-progress-left">
-                  <span class="circle-progress-bar"></span>
-              </span>
-              <span class="circle-progress-right">
-                  <span class="circle-progress-bar"></span>
-              </span>
-              <div class="circle-progress-value">
-                <%= img_tag(("https://www.strava.com/athletes/" <> Integer.to_string(@strava.athlete_id) <> "/avatar?size=large"), class: "strava-avatar-progress rounded-circle", alt: (@user.firstname <> " " <> @user.lastname)) %>
-              </div>
-            </div>
-          </div>
-
-          <h5 class="text-success">
-            90.5% Complete
-          </h5>
+          <h5 class="text-success" div="#percent-complete"></h5>
           <p id="start">
 
           </p>
@@ -175,7 +143,7 @@
 
 <script>
 
-  let startDate = moment('<%= @ngo_chal.start_date %>').format('MMMM Do YYYY, h:mm a');
+  let startDate = moment('<%= @ngo_chal.start_date %>').format('MMMM Do YYYY');
 
   document.getElementById('start').innerHTML = startDate;
 

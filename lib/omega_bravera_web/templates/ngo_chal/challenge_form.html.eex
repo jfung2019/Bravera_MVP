@@ -40,7 +40,7 @@
             </span>
             <br/>
             <input
-             id="ngo_chal_activity_run" class="radio-img" name="ngo_chal[activity]" type="radio" value="run"/>
+             id="ngo_chal_activity_run" class="radio-img" name="ngo_chal[activity]" type="radio" value="Run" checked="checked"/>
           </label>
           <label
             name="ngo_chal[activity]"
@@ -52,11 +52,11 @@
             </span>
             <br/>
             <input
-             id="ngo_chal_activity_cycle" class="radio-img" name="ngo_chal[activity]" type="radio" value="cycle"/>
+             id="ngo_chal_activity_cycle" class="radio-img" name="ngo_chal[activity]" type="radio" value="Cycle"/>
           </label>
           <label
             name="ngo_chal[activity]"
-            value="walk"
+            value="Walk"
             class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3"
             >
             <i class="fa fa-user fa"></i><br/>
@@ -66,12 +66,12 @@
             <br/>
             <input
              id="ngo_chal_activity_walk" class="radio-img" name="ngo_chal[activity]"
-             type="radio" value="walk"/>
+             type="radio" value="Walk"/>
 
           </label>
           <label
             name="ngo_chal[activity]"
-            value="hike"
+            value="Hike"
             class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3">
             <i class="fa fa-user fa"></i><br/>
             <span class="activity-text">
@@ -80,7 +80,7 @@
             <br/>
             <input
              id="ngo_chal_activity_hike" class="radio-img" name="ngo_chal[activity]"
-             type="radio" value="hike"/>
+             type="radio" value="Hike"/>
           </label>
         </div>
       </div>
@@ -184,7 +184,6 @@
           Submit
         </button>
       </div>
-
   </div>
 
 <% end %>

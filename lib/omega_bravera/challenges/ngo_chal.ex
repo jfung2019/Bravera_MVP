@@ -17,6 +17,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field :default_currency, :string, default: "hkd"
     field :slug, :string
     field :start_date, :utc_datetime
+    field :end_date, :utc_datetime
     field :status, :string, default: "Active"
     field :total_pledged, :decimal, default: 0
     field :total_secured, :decimal, default: 0
@@ -31,7 +32,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
   @doc false
   def changeset(ngo_chal, attrs) do
     ngo_chal
-    |> cast(attrs, [:activity, :money_target, :distance_target, :distance_covered, :slug, :start_date, :status, :duration, :milestones, :total_pledged, :total_secured, :default_currency])
-    |> validate_required([:activity, :money_target, :distance_target, :start_date, :status, :duration, :milestones])
+    |> cast(attrs, [:activity, :money_target, :distance_target, :distance_covered, :slug, :start_date, :end_date, :status, :duration, :milestones, :total_pledged, :total_secured, :default_currency])
+    |> validate_required([:activity, :money_target, :distance_target, :start_date, :end_date, :status, :duration, :milestones])
   end
 end
