@@ -36,22 +36,6 @@
 
     </div>
 
-    <!-- <footer class="p-3 bg-bravera">
-      <div class="container-fluid text-center">
-        <span class="center-text text-white">
-          <span>©</span>
-            2018 Bravera
-        </span>
-
-        <div class="powered-by text-center mt-2">
-          <img src="/images/strava/powered-by.png" />
-        </div>
-
-        <div class="bravera-white text-center">
-          <img src="/images/bravera-logo-w-1x.png" />
-        </div>
-      </div>
-    </footer> -->
     <!-- © 2018 Bravera™ | devMail: nickw (at) bravera.co -->
   </body>
 </html>

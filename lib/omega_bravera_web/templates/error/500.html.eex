@@ -1,15 +1,55 @@
-<div class="align-items-center text-center">
-  <div class="mb-3">
-    <a href="https://www.linkedin.com/in/alyn-watkins-4253b4b/" target="_blank" rel="noopener noreferrer">
-      <img class="img-fluid" src="/images/lost.jpg" />
-    </a>
-  </div>
-  <h1 class="my-3">
-    You look lost, Mate.
-  </h1>
-  <p>The page you are looking for either doesn't exist or there was an error.</p>
-  <a href="/"><h5>Let's get back on the trail.</h5></a>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <p class="mt-5 mb-3 text-muted">© 2018 Bravera <br/>
-  Photo of Alyn by Fox @ CountryOfOrigin.asia</p>
-</div>
+    <title>Bravera</title>
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+
+    <!--
+      © 2018 Bravera™
+      Engineered by Nick West
+      devMail: nickw (at) bravera.co
+    -->
+  </head>
+
+  <body class="gray-background">
+    <div class="vh-top">
+    <div class="text-center">
+      <p class="alert alert-success" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    </div>
+
+    <section class="container-fluid flex-grow">
+
+      <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+
+      <main role="main">
+        <div class="align-items-center text-center">
+          <div class="mb-3">
+            <a href="https://www.linkedin.com/in/alyn-watkins-4253b4b/" target="_blank" rel="noopener noreferrer">
+              <img class="img-fluid" src="/images/lost.jpg" />
+            </a>
+          </div>
+          <h1 class="my-3">
+            You look lost, Mate.
+          </h1>
+          <p>The page you are looking for either doesn't exist or there was an error.</p>
+          <a href="/"><h5>Let's get back on the trail.</h5></a>
+
+          <p class="mt-5 mb-3 text-muted">© 2018 Bravera <br/>
+          Photo of Alyn by Fox @ CountryOfOrigin.asia</p>
+        </div>
+      </main>
+
+    </section> <!-- /container -->
+
+    </div>
+
+    <!-- © 2018 Bravera™ | devMail: nickw (at) bravera.co -->
+  </body>
+</html>
