@@ -41,7 +41,9 @@
       <%= if @ngo.url do %>
         <div class="card-footer text-center">
 
-          <a href=<%= @ngo.url %> target="_blank" rel="noreferrer">Click here to visit <%= @ngo.name %> online!</a>
+          <a href=<%= @ngo.url %> target="_blank" rel="noopener noreferrer">
+            Click here to visit <%= @ngo.name %> online!
+          </a>
         </div>
       <% end %>
     </div>  <!-- end of card -->
