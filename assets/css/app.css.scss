@@ -426,6 +426,14 @@ input[type=number]::-webkit-outer-spin-button {
   background-color: rgba(0,0,0,0.5);
 }
 
+.max-w-775{
+  max-width: 775px;
+}
+
+.margin-auto{
+  margin: 0 auto;
+}
+
 .chal-header{
   max-height: 140px;
 }
@@ -510,7 +518,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 @include media-breakpoint-up(md) {
   .chal-header{
-    max-height: 250px;
+    max-height: 200px;
   }
 
   .card-img-overlay{

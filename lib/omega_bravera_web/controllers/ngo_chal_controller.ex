@@ -39,11 +39,20 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     %{slug: ngo_slug, id: ngo_id} = ngo
 
+    %{"duration" => duration_str} = ngo_chal_params
+
     slug = Slugify.gen_random_slug(firstname)
+
     start_date = Timex.now
 
-    case Challenges.insert_ngo_chal(ngo_chal_params, ngo_id, user_id, slug, start_date) do
-      {:ok, ngo_chal} ->
+    {duration, _} = Integer.parse(duration_str)
+
+    end_date = Timex.shift(start_date, days: duration)
+
+    # TODO pass a map below and simplify the insert
+
+    case Challenges.insert_ngo_chal(ngo_chal_params, ngo_id, user_id, slug, start_date, end_date) do
+      {:ok, _ngo_chal} ->
         # TODO put the social share link in the put_flash?!
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")

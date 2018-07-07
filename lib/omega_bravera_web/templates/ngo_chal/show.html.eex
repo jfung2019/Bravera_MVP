@@ -1,13 +1,13 @@
 <div class="gray-background pt-3 pb-3">
 
 <div class="container-fluid">
-
-  <div class="row ">
+<!-- TODO give the cards min/max widths/heights maybe -->
+  <div class="row">
     <!-- col 2 of 2 -->
-  <div class="col-lg-8 order-lg-2">
+  <div class="col-lg-8 order-lg-2 max-w-775 margin-auto">
     <div class="card chal-header">
       <img class="card-img" src="<%="../../" <> @ngo.image%>" alt="Card image">
-      <div class="card-img-overlay text-white card-img-text-shadow" style="min-height:">
+      <div class="card-img-overlay text-white card-img-text-shadow">
         <div class="row">
           <div class="col-4 col-sm-3">
             <div class="circle-progress-container">
@@ -26,7 +26,7 @@
 
           </div>
           <div class="col-8 col-sm-9">
-            <h3 class="mb-0 mt-sm-3 mt-xs-1 mt-md-5 mt-lg-5"><%= @user.firstname <> " " <> @user.lastname %>'s <%= @ngo_chal.distance_target %>km <%= @ngo_chal.activity %> Challenge</h5>
+            <h3 class="mb-0 mt-sm-3 mt-xs-1 mt-md-5 mt-lg-4 mt-xl-5"><%= @user.firstname <> " " <> @user.lastname %>'s <%= @ngo_chal.distance_target %>km <%= @ngo_chal.activity %> Challenge</h5>
             <h5 class="card-text text-420">for <strong class="text-500"><%= @ngo.name %></strong></h5>
           </div>
         </div>
@@ -82,27 +82,9 @@
 
   </div>     <!-- End Col 2/2 -->
 
-
     <!-- col 1 of 2 -->
-    <div class="col-lg-4 order-lg-1 ">
+    <div class="col-lg-4 order-lg-1 max-w-775 margin-auto">
       <div class="card mt-4 mt-lg-0">
-
-        <!-- Single image -->
-        <div class="border-bottom d-flex d-sm-none d-md-none d-lg-flex">
-            <div class="charity-img">
-              <%= img_tag("../../" <> @ngo.logo, class: "card-img-top", alt: @ngo.name) %>
-            </div>
-        </div>
-
-        <!-- Double image -->
-        <div class="border-bottom d-none d-sm-flex d-lg-none">
-            <div class="challenge-img-right">
-              <%= img_tag("../../" <> @ngo.logo, class: "card-img-top", alt: @ngo.name) %>
-            </div>
-            <div class="challenge-img-left">
-              <%= img_tag("../../" <> @ngo.logo, class: "card-img-top", alt: @ngo.name) %>
-            </div>
-        </div>
 
         <div class="card-body">
           <h3 class="text-center mb-2  text-420">
