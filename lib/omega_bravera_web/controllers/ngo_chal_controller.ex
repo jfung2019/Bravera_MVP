@@ -17,7 +17,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
     cond do
       user !== nil ->
         # TODO slugify this ngo_id request
-        IO.inspect(conn)
         %{params: %{"ngo_slug" => ngo_slug}} = conn
 
         ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
@@ -29,22 +28,24 @@ defmodule OmegaBraveraWeb.NGOChalController do
       end
   end
 
-  def create(conn, %{"ngo_slug" => ngo_id, "ngo_chal" => ngo_chal_params}) do
-
+  def create(conn, %{"ngo_slug" => ngo_id_string, "ngo_chal" => ngo_chal_params}) do
+    # Oddly, ngo_slug = ngo_id here...
     current_user = Guardian.Plug.current_resource(conn)
 
     %{id: user_id, firstname: firstname} = current_user
 
-    ngo = String.to_integer(ngo_id)
+    ngo = Fundraisers.get_ngo!(ngo_id_string)
+
+    %{slug: ngo_slug, id: ngo_id} = ngo
 
     slug = Slugify.gen_random_slug(firstname)
 
-    case Challenges.insert_ngo_chal(ngo_chal_params, ngo, user_id, slug) do
+    case Challenges.insert_ngo_chal(ngo_chal_params, ngo_id, user_id, slug) do
       {:ok, ngo_chal} ->
         # TODO put the social share link in the put_flash?!
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
-        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo, ngo_chal))
+        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -52,10 +53,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def show(conn, %{"slug" => slug}) do
-    IO.inspect(conn)
     # TODO optimize all of the maps being passed thru into one map
-
+    IO.inspect(slug)
     ngo_chal = Challenges.get_ngo_chal_by_slug(slug)
+    IO.inspect(ngo_chal)
 
     %{user_id: user_id, ngo_id: ngo_id} = ngo_chal
 
