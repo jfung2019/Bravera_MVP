@@ -21,10 +21,7 @@ defmodule OmegaBraveraWeb.DonationController do
 
   def create(conn, %{"donation" => donation_params, "ngo_chal_slug" => ngo_chal_slug}) do
   # TODO re-implement the SECURED/PLEDGED LOGIC
-  # TODO Do all the form validations for this
   # TODO simplify kickstarter logic since all have kickstarter now
-
-  IO.inspect(donation_params)
 
     # TODO change milestone logic to programmatically generate milestones based on one value
     milestones = create_milestone_map(donation_params)
@@ -49,7 +46,7 @@ defmodule OmegaBraveraWeb.DonationController do
 
     %{id: user_id} = user
 
-    kickstarter = donation_params["kickstarter"]
+    kickstarter = donation_params["milestone_1"]
 
     # TODO examine the following code, Do we just need customers, not SRCs?
     # Do we just create customers every time rather than managing sources?
@@ -62,7 +59,7 @@ defmodule OmegaBraveraWeb.DonationController do
     #       customer
     #   end
 
-    str_customer = StripeHelpers.create_stripe_customer(email, str_src, user_id)
+    str_customer = StripeHelpers.create_stripe_customer(email, str_src)
 
     IO.inspect(str_customer)
 
@@ -76,10 +73,10 @@ defmodule OmegaBraveraWeb.DonationController do
           "amount" => kickstarter,
           "currency" => currency,
           "customer" => cus_id,
-          "source" => str_src,
+          "source" => str_src
         }
 
-        case StripeHelpers.charge_stripe_customer(ngo, charge_params) do
+        case StripeHelpers.charge_stripe_customer(ngo, charge_params, ngo_chal_id) do
           {:ok, response} ->
             %{body: response_body} = response
             body = Poison.decode!(response_body)
@@ -89,11 +86,15 @@ defmodule OmegaBraveraWeb.DonationController do
                 case Money.create_donations(rel_params, milestones, kickstarter, currency, str_src, cus_id) do
                   {:ok, _response} ->
                     conn
-                    |> put_flash(:info, "Donation created successfully.")
+                    |> put_flash(:info, "Donations processed! Check your email for more information.")
                     |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, ngo_chal_slug))
 
-                  {:error, %Ecto.Changeset{} = changeset} ->
-                    render(conn, :new, changeset: changeset)
+                  :error ->
+                    changeset = Money.change_donation(%Donation{})
+
+                    conn
+                    |> put_flash(:error, "There was an error on the form.")
+                    |> render(conn, :new, changeset: changeset)
                 end
 
               body["error"] ->

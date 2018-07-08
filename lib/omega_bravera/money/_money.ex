@@ -90,7 +90,7 @@ defmodule OmegaBravera.Money do
     multi =
       Multi.new
       |> Multi.run(:kickstarter, fn %{} ->
-          create_donation(rel_params, %{amount: Decimal.new(kickstarter), milestone: 0, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "charged"})
+          create_donation(rel_params, %{amount: Decimal.new(kickstarter), milestone: 1, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "charged"})
         end)
       |> Multi.run(:milestones, fn %{} ->
           insert_milestones(rel_params, milestones, currency, str_src, cus_id)
