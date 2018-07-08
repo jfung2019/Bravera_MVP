@@ -162,6 +162,35 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript">
+  $(function(){
+    var selectedAmount = $('#amount').val();
+    console.log(selectedAmount);
+    $('#amount').change(function(){
+      if ($(this).val() == 500){
+        $('#kickstarter').val(125);
+        $('#milestone_1').val(125);
+        $('#milestone_2').val(125);
+        $('#milestone_3').val(125);
+      } else if ($(this).val() == 360){
+        $('#kickstarter').val(90);
+        $('#milestone_1').val(90);
+        $('#milestone_2').val(90);
+        $('#milestone_3').val(90);
+      } else if ($(this).val() == 260){
+        $('#kickstarter').val(65);
+        $('#milestone_1').val(65);
+        $('#milestone_2').val(65);
+        $('#milestone_3').val(65);
+      } else if ($(this).val() == 100){
+        $('#kickstarter').val(25);
+        $('#milestone_1').val(25);
+        $('#milestone_2').val(25);
+        $('#milestone_3').val(25);
+      }
+    }).change();
+  });
+</script>
+<script type="text/javascript">
   document.addEventListener("DOMContentLoaded",   function(event) {
     // stripe def - pk_test_4aCmLebabvMfey4rz4KGMshO
     // stage - pk_test_PdzEmOebU7GrEatz3iKFyLSc
