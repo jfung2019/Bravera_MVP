@@ -33,7 +33,7 @@
           <p style="font-size: 12px;" class="text-420 text-center mb-3">(Day/Month/Year)</h6>
 
           <div class="mb-3 text-center">
-            <a type="button" class="btn btn-lg btn-bravera donate-btn"  name="button" href="#sponsor">Donate</a>
+            <a class="btn btn-lg btn-bravera donate-btn"  name="button" href="#sponsor">Donate</a>
           </div>
         </div>
         <div class="container mt-4">

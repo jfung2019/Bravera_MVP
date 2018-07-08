@@ -24,6 +24,9 @@ defmodule OmegaBraveraWeb.DonationController do
   # TODO Do all the form validations for this
   # TODO simplify kickstarter logic since all have kickstarter now
 
+  IO.inspect(donation_params)
+  IO.inspect(ngo_chal_slug)
+
     # TODO change milestone logic to programmatically generate milestones based on one value
     milestones = create_milestone_map(donation_params)
 
