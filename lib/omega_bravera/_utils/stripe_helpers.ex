@@ -19,10 +19,9 @@ defmodule OmegaBravera.StripeHelpers do
         currency: currency,
         ngo_id: ngo_id,
         user_id: user_id,
-        ngo_chal_id: ngo_chal_id
+        ngo_chal_id: ngo_chal_id,
+        str_cust_id: customer
         } = donation
-
-      %{cus_id: customer} = Stripe.get_user_str_customer(user_id)
 
       %{"name" => ngo_name, "stripe_id" => ngo_connected_acct} = Fundraisers.get_ngo!(ngo_id)
 

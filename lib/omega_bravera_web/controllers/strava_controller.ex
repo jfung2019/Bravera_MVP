@@ -61,54 +61,62 @@ defmodule OmegaBraveraWeb.StravaController do
           Enum.each(relevant_challengers, fn {id, _token} ->
             ngo_chal = Challenges.get_ngo_chal!(id)
 
-            %{id: nc_id,
-            distance_covered: nc_distance_covered,
-            distance_target: nc_distance_target,
+            %{id: ngo_chal_id,
+            distance_covered: distance_covered,
+            distance_target: distance_target,
             milestones: milestone_count
             } = ngo_chal
 
-            # TODO abstract this milestone distance bit out since it is used multiple times
-            # TODO round properly
+            new_distance = Decimal.add(distance_covered, distance_km)
 
-            milestone_distance = Numbers.div(nc_distance_target, milestone_count)
+            donations = Money.get_unch_donat_by_ngo_chal(ngo_chal_id)
 
-            new_distance = Decimal.add(nc_distance_covered, distance_km)
+            Enum.each donations, fn donation ->
+              %{ngo_id: ngo_id,
+                ngo_chal_id: ngo_chal_id,
+               milestone_distance: milestone_distance,
+               str_cust_id: str_cust_id,
+               amount: amount,
+               currency: currency,
+               } = donation
+
+               params = %{"amount" => amount, "currency" => currency, "customer" => str_cust_id}
+
+               cond do
+                 Decimal.cmp(new_distance, milestone_distance) == :gt || Decimal.cmp(new_distance, milestone_distance) == :eq ->
+                   ngo = Fundraisers.get_ngo!(ngo_id)
+
+                   case Stripe_Helpers.charge_stripe_customer(ngo, params, ngo_chal_id) do
+                     {:ok, _response} ->
+                       Money.update_donation(donation, %{status: "charged"})
+
+                       :error ->
+                         Logger.error fn ->
+                           "Donation inside strava controller update failed"
+                        end
+                   end
+                  true ->
+                    Logger.info fn ->
+                      "No new milestones hit"
+                   end
+                end
+                # end of cond do
+            end
+            # end of enum donations
 
             # TODO evaluate Rounding in this less than/greater than nested conditional,
             # milestones may be charged prematurely due to rounding upwards?
             cond do
-              Decimal.cmp(new_distance, nc_distance_target) == :lt ->
+              Decimal.cmp(new_distance, distance_covered) == :gt ->
                 Challenges.update_ngo_chal(ngo_chal, %{distance_covered: new_distance})
-                cond do
-                  Decimal.cmp(new_distance, milestone_distance) == :gt || Decimal.cmp(new_distance, milestone_distance) == :eq ->
-                    # TODO Will rounding here ever round up? Should always round to floor?
-                    d_milestones_completed = Decimal.round(Decimal.div(new_distance, milestone_distance))
 
-                    milestones_completed = Decimal.to_integer(d_milestones_completed)
-
-                    IO.inspect("milestones completed")
-                    IO.inspect(milestones_completed)
-
-                    # TODO charge uncharged milestones
-
-                    donations_to_charge = Money.get_donations_by_milestone(nc_id, milestones_completed)
-
-                    StripeHelpers.charge_multiple_donations(donations_to_charge)
-
-                    # TODO email the donors on charge in charge function a single email?
-                  true ->
-                    # todo get rid of this IO
-                    IO.inspect("no new milestones unlocked")
+                true ->
+                  Logger.info fn ->
+                    "No distance change"
+                  end
                 end
 
                 # TODO email everyone
-              true ->
-
-                Challenges.update_ngo_chal(ngo_chal, %{distance_covered: nc_distance_target, status: "Complete"})
-
-                # TODO email everyone
-            end
-
           end)
         end
       true ->

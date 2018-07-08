@@ -20,6 +20,14 @@ defmodule OmegaBravera.Money do
     Repo.all(query)
   end
 
+  def get_unch_donat_by_ngo_chal(ngo_chal_id) do
+    query = from d in Donation,
+      where: d.ngo_chal_id == ^ngo_chal_id,
+      where: d.status == "pending"
+
+    Repo.all(query)
+  end
+
   # for charging from strava webhooks
 
   def get_donations_by_milestone(ngo_chal, milestone_limit) do
@@ -132,8 +140,6 @@ defmodule OmegaBravera.Money do
     ngo_chal = Challenges.get_ngo_chal!(ngo_chal_id)
 
     Enum.each(milestones, fn {milestone, amount} ->
-      IO.inspect("milestones")
-      IO.inspect(milestone)
       %{distance_target: distance_target} = ngo_chal
 
       targets = case distance_target do
