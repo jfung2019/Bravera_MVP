@@ -81,7 +81,6 @@ defmodule OmegaBraveraWeb.DonationController do
           "customer" => cus_id,
           "source" => str_src,
           "receipt_email" => email,
-          "description" => "#{kickstarter} #{currency} for #{ngo_name} charged, in support of #{nc_fullname}'s Bravera.co challenge!"
         }
 
         case StripeHelpers.charge_stripe_customer(ngo, charge_params, ngo_chal_id) do
@@ -102,7 +101,7 @@ defmodule OmegaBraveraWeb.DonationController do
 
                     conn
                     |> put_flash(:error, "There was an error on the form.")
-                    |> render(conn, :new, changeset: changeset)
+                    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, ngo_chal_slug))
                 end
 
               body["error"] ->

@@ -1,4 +1,10 @@
+## TODO
+
+Deal with user going "back" and seeing cached pages
+
 # OmegaBravera
+
+
 
 Got to
 mix local.hex

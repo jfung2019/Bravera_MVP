@@ -38,13 +38,13 @@
       <div class="currency-selector">
         <label
           class="control-label"
-          for="currency">
+          for="amount">
           <h4 class="currency-select-label text-green">Donation Amount</h4>
         </label>
         <%= error_tag f, :currency %>
         <select
           class="custom-select custom-select-lg mt-2 mb-3"
-          name="donation[currency]"
+          name="amount"
           id="amount">
           <option selected value="500">
             $500
@@ -165,7 +165,7 @@
   document.addEventListener("DOMContentLoaded",   function(event) {
     // stripe def - pk_test_4aCmLebabvMfey4rz4KGMshO
     // stage - pk_test_PdzEmOebU7GrEatz3iKFyLSc
-    var stripe = Stripe('pk_test_PdzEmOebU7GrEatz3iKFyLSc');
+    var stripe = Stripe('pk_test_4aCmLebabvMfey4rz4KGMshO');
     var elements = stripe.elements();
 
     // Custom styling can be passed to options when creating an Element.

@@ -63,7 +63,7 @@
 
       <div class="card-footer border-top text-center mb-0 pb-0">
           <p class="text-400">
-            Nick has unlocked
+            <%= @user.firstname %> has unlocked
             <strong>
               <%= @ngo_chal.total_secured %> <%= @ngo_chal.default_currency %>
             </strong> of<strong>
