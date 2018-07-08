@@ -46,7 +46,7 @@ defmodule OmegaBraveraWeb.DonationController do
 
     %{id: user_id} = user
 
-    kickstarter = donation_params["milestone_1"]
+    kickstarter = donation_params["kickstarter"]
 
     # TODO examine the following code, Do we just need customers, not SRCs?
     # Do we just create customers every time rather than managing sources?

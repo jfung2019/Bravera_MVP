@@ -22,7 +22,7 @@ defmodule OmegaBraveraWeb.DonationView do
 
     defp milestoneInputs(f, n, _distance_targets) when n <= 1 do
 
-      m = :milestone_1
+      m = :kickstarter
       [
         [
           label(f, "Starting donation", class: "control-label"),
@@ -39,9 +39,9 @@ defmodule OmegaBraveraWeb.DonationView do
     defp milestoneInputs(f, n, distance_targets) do
       IO.inspect(n)
       m = case n do
-            4 -> :milestone_4
-            3 -> :milestone_3
-            2 -> :milestone_2
+            4 -> :milestone_3
+            3 -> :milestone_2
+            2 -> :milestone_1
           end
 
       %{^n => target} = distance_targets
