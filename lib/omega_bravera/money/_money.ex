@@ -9,6 +9,7 @@ defmodule OmegaBravera.Money do
 
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Money.Tip
+  alias OmegaBravera.Challenges
 
   # for listing a user's donations
 
@@ -79,6 +80,16 @@ defmodule OmegaBravera.Money do
 
   def create_donation(rel_params, params) do
     %{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id} = rel_params
+
+    ngo_chal = Challenges.get_ngo_chal!(ngo_chal_id)
+
+    %{total_pledged: total_pledged} = ngo_chal
+
+    %{amount: amount} = params
+
+    new_pledged = Decimal.add(total_pledged, amount)
+
+    Challenges.update_ngo_chal(ngo_chal, %{total_pledged: new_pledged})
 
     %Donation{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id}
     |> Donation.changeset(params)

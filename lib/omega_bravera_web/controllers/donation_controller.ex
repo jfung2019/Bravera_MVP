@@ -9,6 +9,8 @@ defmodule OmegaBraveraWeb.DonationController do
   alias OmegaBravera.Stripe
   alias OmegaBravera.StripeHelpers
 
+# TODO Total Pledged logic in milestone generators
+
   def index(conn, _params) do
     donations = Money.list_donations()
     render(conn, "index.html", donations: donations)

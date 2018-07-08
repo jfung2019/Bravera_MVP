@@ -164,7 +164,7 @@ defmodule OmegaBravera.StripeHelpers do
   defp destination_amount(amount) do
     amount
     |> centify
-    |> Numbers.mult(0.90)
+    |> Numbers.mult(0.94)
     |> Decimal.round
     |> Decimal.to_string
   end
