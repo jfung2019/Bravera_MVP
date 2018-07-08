@@ -1,6 +1,5 @@
 defmodule OmegaBravera.StripeHelpers do
   require Logger
-  alias OmegaBravera.Stripe
   alias OmegaBravera.Fundraisers
   alias OmegaBravera.Money
   alias OmegaBravera.Challenges
