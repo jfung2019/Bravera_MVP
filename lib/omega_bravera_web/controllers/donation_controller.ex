@@ -25,18 +25,19 @@ defmodule OmegaBraveraWeb.DonationController do
   # TODO simplify kickstarter logic since all have kickstarter now
 
   IO.inspect(donation_params)
-  IO.inspect(ngo_chal_slug)
 
     # TODO change milestone logic to programmatically generate milestones based on one value
     milestones = create_milestone_map(donation_params)
 
     nc = Challenges.get_ngo_chal_by_slug(ngo_chal_slug)
 
-    %{ngo_id: ngo_id, id: ngo_chal_id} = nc
-
-    %{"str_src" => str_src, "currency" => currency, "email" => email} = donation_params
+    %{id: ngo_chal_id, ngo_id: ngo_id} = nc
 
     ngo = Fundraisers.get_ngo!(ngo_id)
+
+    %{slug: ngo_slug} = ngo
+
+    %{"str_src" => str_src, "currency" => currency, "email" => email} = donation_params
 
     user =
       cond do
@@ -53,15 +54,19 @@ defmodule OmegaBraveraWeb.DonationController do
     # TODO examine the following code, Do we just need customers, not SRCs?
     # Do we just create customers every time rather than managing sources?
 
-    str_customer =
-      case Stripe.get_user_str_customer(user_id) do
-        nil ->
-          StripeHelpers.create_stripe_customer(email, str_src, user_id)
-        customer ->
-          customer
-      end
+    # str_customer =
+    #   case Stripe.get_user_str_customer(user_id) do
+    #     nil ->
+    #       StripeHelpers.create_stripe_customer(email, str_src, user_id)
+    #     customer ->
+    #       customer
+    #   end
 
-    %{id: str_customer_id, cus_id: cus_id} = str_customer
+    str_customer = StripeHelpers.create_stripe_customer(email, str_src, user_id)
+
+    IO.inspect(str_customer)
+
+    %{"id" => cus_id} = str_customer
 
     rel_params = %{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id}
 
@@ -81,11 +86,11 @@ defmodule OmegaBraveraWeb.DonationController do
 
             cond do
               body["source"] ->
-                case Money.create_donations(rel_params, milestones, kickstarter, currency, str_src) do
-                  {:ok, response} ->
+                case Money.create_donations(rel_params, milestones, kickstarter, currency, str_src, cus_id) do
+                  {:ok, _response} ->
                     conn
                     |> put_flash(:info, "Donation created successfully.")
-                    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_id, ngo_chal_id))
+                    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, ngo_chal_slug))
 
                   {:error, %Ecto.Changeset{} = changeset} ->
                     render(conn, :new, changeset: changeset)
@@ -100,11 +105,11 @@ defmodule OmegaBraveraWeb.DonationController do
         end
 
       true ->
-        case Money.create_donations(rel_params, milestones, currency, str_src) do
-          {:ok, response} ->
+        case Money.create_donations(rel_params, milestones, currency, str_src, cus_id) do
+          {:ok, _response} ->
             conn
             |> put_flash(:info, "Donation created successfully.")
-            |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_id, ngo_chal_id))
+            |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, ngo_chal_slug))
 
           {:error, %Ecto.Changeset{} = changeset} ->
             render(conn, :show, changeset: changeset)

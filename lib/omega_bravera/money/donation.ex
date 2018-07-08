@@ -8,13 +8,14 @@ defmodule OmegaBravera.Money.Donation do
 
   # TODO do we need str_source or str_customer here ?
   # I think we do...
-   
+
   schema "donations" do
     field :amount, :decimal
     field :currency, :string
     field :milestone, :integer
     field :status, :string, default: "pending"
     field :str_src, :string
+    field :str_cus_id, :string
     belongs_to :user, User
     belongs_to :ngo_chal, NGOChal
     belongs_to :ngo, NGO
@@ -25,7 +26,7 @@ defmodule OmegaBravera.Money.Donation do
   @doc false
   def changeset(donation, attrs) do
     donation
-    |> cast(attrs, [:amount, :currency, :str_src, :milestone, :status])
-    |> validate_required([:amount, :currency, :str_src, :milestone, :status])
+    |> cast(attrs, [:amount, :currency, :str_src, :str_cus_id, :milestone, :status])
+    |> validate_required([:amount, :currency, :str_src, :str_cus_id, :milestone, :status])
   end
 end

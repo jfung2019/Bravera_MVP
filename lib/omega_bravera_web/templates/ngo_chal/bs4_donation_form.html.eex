@@ -31,14 +31,15 @@
       <div class="col-md-12">
         <form class="needs-validation" novalidate="">
           <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3 form-group">
               <label for="firstName">First name</label>
               <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
               <div class="invalid-feedback">
                 Valid first name is required.
               </div>
             </div>
-            <div class="col-md-6 mb-3">
+
+            <div class="col-md-6 mb-3 form-group">
               <label for="lastName">Last name</label>
               <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
               <div class="invalid-feedback">
@@ -49,15 +50,15 @@
 
           <div class="mb-3">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" placeholder="you@example.com">
+            <input type="email" class="form-control" id="email" placeholder="you@example.com" name="donation[email]">
             <div class="invalid-feedback">
               Please enter a valid email address for shipping updates.
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="address">Street Address</label>
-            <input type="text" class="form-control" id="street-address-1" placeholder="1234 Main St" required="">
+            <label for="donation_street_address">Street Address</label>
+            <input type="text" name="donation[street_address]" class="form-control" id="street-address-1" placeholder="1234 Main St" required="">
             <div class="invalid-feedback">
               Please enter your street address.
             </div>
@@ -71,21 +72,22 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="city">City</label>
-              <input type="text" name="city" id="city" class="form-control d-block w-100" />
+              <input type="text" name="donation[city]" id="city" class="form-control d-block w-100" />
               <div class="invalid-feedback">
                 Please enter a valid city.
               </div>
             </div>
             <div class="col-md-6 mb-3">
               <label for="postal-code">Postal Code</label>
-              <input type="text" name="postal-code" id="postal-code" class="form-control d-block w-100" />
+              <input type="text" name="donation[postal_code]" id="postal-code" class="form-control d-block w-100" />
               <div class="invalid-feedback">
-                Please enter a valid city.
+                Please enter a valid postal code.
               </div>
             </div>
+
             <div class="col-md-6 mb-3">
               <label for="country">Country</label>
-              <select class="custom-select d-block w-100" id="country" required="">
+              <select class="custom-select d-block w-100" id="country" required="" name="donation[country]">
                 <option value="HK">Hong Kong</option>
                 <option value="US" disabled>United States</option>
                 <option value="GB" disabled>Great Britain</option>
@@ -105,7 +107,8 @@
           <div class="row">
             <div class="col mb-3">
               <label for="name">Name on Card</label>
-              <input type="text" class="form-control" id="name" placeholder="" required="">
+              <input type="text" class="form-control" id="name" placeholder=""
+              name="donation[name]" required="">
               <small class="text-muted">Full name as displayed on card</small>
               <div class="invalid-feedback">
                 Name on card is required
@@ -124,22 +127,21 @@
               <div id="card-errors" role="alert"></div>
             </div>
           <hr class="mb-4">
-          <div class="text-center">
-            <button class="btn btn-bravera" style="width:250px;">Sponsor</button>
+          <div class="form-group">
+            <div>
+              <%= label f, :str_src, class: "control-label" %>
+              <%= text_input f, :str_src, class: "form-control", id: "source-input" %>
+            </div>
           </div>
 
-          <input type="text" name="src_id" class="d-none" id="source-input"/>
-          <div class="form-group d-none">
-          <div>
-            <%= label f, :str_src, class: "control-label" %>
-            <%= text_input f, :str_src, class: "form-control, d-none", id: "source-input" %>
+          <div class="text-center">
+            <button class="btn btn-bravera" style="width:250px;">Sponsor</button>
           </div>
 
         </form>
       </div>
     </div>
   </div>
-</div>
 
 
   <!-- TODO sort this JS -->

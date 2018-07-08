@@ -86,14 +86,14 @@ defmodule OmegaBravera.Money do
   end
 
 # create donations with kickstarter
-  def create_donations(rel_params, milestones, kickstarter, currency, str_src) do
+  def create_donations(rel_params, milestones, kickstarter, currency, str_src, cus_id) do
     multi =
       Multi.new
       |> Multi.run(:kickstarter, fn %{} ->
-          create_donation(rel_params, %{amount: Decimal.new(kickstarter), milestone: 0, currency: currency, str_src: str_src, status: "charged"})
+          create_donation(rel_params, %{amount: Decimal.new(kickstarter), milestone: 0, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "charged"})
         end)
       |> Multi.run(:milestones, fn %{} ->
-          insert_milestones(rel_params, milestones, currency, str_src)
+          insert_milestones(rel_params, milestones, currency, str_src, cus_id)
           {:ok, %{"message" => "milestones inserted"}}
         end)
 
@@ -106,8 +106,8 @@ defmodule OmegaBravera.Money do
   end
 
 # for no kickstarter
-  def create_donations(rel_params, milestones, currency, str_src) do
-    case insert_milestones(rel_params, milestones, currency, str_src) do
+  def create_donations(rel_params, milestones, currency, str_src, cus_id) do
+    case insert_milestones(rel_params, milestones, currency, str_src, cus_id) do
       {:ok, result} ->
         {:ok, result}
       {:error, reason} ->
@@ -115,9 +115,9 @@ defmodule OmegaBravera.Money do
     end
   end
 
-  defp insert_milestones(rel_params, milestones, currency, str_src) do
+  defp insert_milestones(rel_params, milestones, currency, str_src, cus_id) do
     Enum.each(milestones, fn {milestone, amount} ->
-      create_donation(rel_params, %{amount: Decimal.new(amount), milestone: milestone, currency: currency, str_src: str_src, status: "pending"})
+      create_donation(rel_params, %{amount: Decimal.new(amount), milestone: milestone, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "pending"})
     end)
     {:ok, "milestones created"}
   end
