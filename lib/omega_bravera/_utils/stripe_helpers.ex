@@ -78,7 +78,9 @@ defmodule OmegaBravera.StripeHelpers do
   def charge_stripe_customer(ngo, params, ngo_chal_id) do
     %{name: ngo_name, stripe_id: ngo_connected_acct} = ngo
 
-    %{"amount" => amount, "currency" => currency, "customer" => customer} = params
+    %{"amount" => amount, "currency" => currency, "customer" => customer,
+    "receipt_email" => email
+    } = params
 
     description = "Donation to " <> ngo_name <> " via Bravera"
 
@@ -88,7 +90,8 @@ defmodule OmegaBravera.StripeHelpers do
       "customer" => customer,
       "description" => description,
       "destination[account]" => ngo_connected_acct,
-      "destination[amount]" => destination_amount(amount)
+      "destination[amount]" => destination_amount(amount),
+      "receipt_email" => email
     }
 
     case Stripy.req(:post, "charges", charge_params) do

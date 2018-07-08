@@ -1,3 +1,5 @@
+
+
 cond do
   Decimal.cmp(new_distance, milestone_distance) == :gt || Decimal.cmp(new_distance, milestone_distance) == :eq ->
     # TODO Will rounding here ever round up? Should always round to floor?

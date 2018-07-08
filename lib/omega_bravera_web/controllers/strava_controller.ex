@@ -53,10 +53,13 @@ defmodule OmegaBraveraWeb.StravaController do
 
         if activity.distance > 0.0 do
           distance_meters = Decimal.new(activity.distance)
-
+          IO.inspect("distance in meters")
+          IO.inspect(distance_meters)
           d_thousand = Decimal.new(1000)
-
+          IO.inspect("distance in meters")
           distance_km = Decimal.div(distance_meters, d_thousand)
+
+          IO.inspect(distance_km)
 
           Enum.each(relevant_challengers, fn {id, _token} ->
             ngo_chal = Challenges.get_ngo_chal!(id)
@@ -68,6 +71,8 @@ defmodule OmegaBraveraWeb.StravaController do
             } = ngo_chal
 
             new_distance = Decimal.add(distance_covered, distance_km)
+            IO.inspect(new_distance)
+            IO.inspect(new_distance)
 
             donations = Money.get_unch_donat_by_ngo_chal(ngo_chal_id)
 
@@ -79,9 +84,10 @@ defmodule OmegaBraveraWeb.StravaController do
                  str_cus_id: str_cus_id,
                  amount: amount,
                  currency: currency,
+                 email: receipt_email
                } = donation
 
-               params = %{"amount" => amount, "currency" => currency, "customer" => str_cus_id}
+               params = %{"amount" => amount, "currency" => currency, "customer" => str_cus_id, "receipt_email" => receipt_email}
 
                cond do
                  Decimal.cmp(new_distance, milestone_distance) == :gt || Decimal.cmp(new_distance, milestone_distance) == :eq ->

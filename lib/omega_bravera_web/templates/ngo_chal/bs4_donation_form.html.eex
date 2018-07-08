@@ -8,9 +8,49 @@
   <div class="card-body">
 
     <div class="form-group">
-      <%= label f, :currency, class: "control-label" %>
-      <%= text_input f, :currency, class: "form-control" %>
       <%= error_tag f, :currency %>
+      <div class="currency-selector">
+        <label
+          class="control-label"
+          for="currency">
+          <h4 class="currency-select-label text-green">Select a Currency</h4>
+        </label>
+        <%= error_tag f, :currency %>
+        <select
+          class="custom-select custom-select-lg mt-2 mb-3"
+          name="donation[currency]"
+          id="currency">
+          <option selected value="HKD">
+            Hong Kong Dollars
+          </option>
+          <option value="USD" disabled>
+            US Dollars
+          </option>
+          <option value="GBP" disabled>
+            British Pounds
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-4 text-center fund-input-container">
+      <label for="donation_total">
+        <h4 class="text-green my-2">Donation Amount</h4>
+      </label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="currencyPrepend">
+            $
+          </span>
+        </div>
+        <input
+          type="number" class="form-control money-input" aria-label="Amount(to the nearest dollar)" id="donation_total"
+          >
+        <div class="input-group-append">
+          <span class="input-group-text">.00</span>
+        </div>
+      </div>
+      <%= error_tag f, :money_target %>
     </div>
 
     <%= for element <- Enum.reverse(OmegaBraveraWeb.DonationView.FormBuilder.build_milestones(f, @ngo_chal.milestones, @ngo_chal.distance_target)) do %>
@@ -58,12 +98,9 @@
             </div>
           </div>
 
-          <h4 class="mb-3">Credit/Debit Card Info</h4>
-
             <div class="form-group">
               <label for="card-element">
-                Credit or debit card
-              </label>
+          <h4 class="mb-3">Credit/Debit Card Info</h4>              </label>
               <div id="card-element">
                 <!-- A Stripe Element will be inserted here. -->
               </div>
@@ -72,10 +109,10 @@
               <div id="card-errors" role="alert"></div>
             </div>
           <hr class="mb-4">
-          <div class="form-group">
+          <div class="form-group d-none">
             <div>
               <%= label f, :str_src, class: "control-label" %>
-              <%= text_input f, :str_src, class: "form-control", id: "source-input" %>
+              <%= text_input f, :str_src, class: "form-control invisible", id: "source-input" %>
             </div>
           </div>
 

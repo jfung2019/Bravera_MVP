@@ -33,7 +33,7 @@
           <p style="font-size: 12px;" class="text-420 text-center mb-3">(Day/Month/Year)</h6>
 
           <div class="mb-3 text-center">
-            <a class="btn btn-lg btn-bravera donate-btn"  name="button" href="#sponsor">Donate</a>
+            <a class="btn btn-lg btn-bravera donate-btn"  name="button" href="#sponsor">Support Now</a>
           </div>
         </div>
         <div class="container mt-4">
@@ -74,7 +74,7 @@
     </div>  <!-- End of top card -->
     <a name="sponsor"></a>
     <h4 class="text-center pt-4 pb-3">
-      Donate
+      Support
     </h4>
 
     <div class="card">

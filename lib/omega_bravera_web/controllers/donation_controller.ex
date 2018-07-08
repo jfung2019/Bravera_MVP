@@ -30,11 +30,17 @@ defmodule OmegaBraveraWeb.DonationController do
 
     nc = Challenges.get_ngo_chal_by_slug(ngo_chal_slug)
 
-    %{id: ngo_chal_id, ngo_id: ngo_id} = nc
+    %{id: ngo_chal_id, ngo_id: ngo_id, user_id: nc_user_id} = nc
+
+    chal_user = Accounts.get_user!(nc_user_id)
+
+    %{firstname: nc_firstname, lastname: nc_lastname} = chal_user
+
+    nc_fullname = nc_firstname <> " " <> nc_lastname
 
     ngo = Fundraisers.get_ngo!(ngo_id)
 
-    %{slug: ngo_slug} = ngo
+    %{slug: ngo_slug, name: ngo_name} = ngo
 
     %{"str_src" => str_src, "currency" => currency, "email" => email} = donation_params
 
@@ -63,8 +69,6 @@ defmodule OmegaBraveraWeb.DonationController do
 
     str_customer = StripeHelpers.create_stripe_customer(email, str_src)
 
-    IO.inspect(str_customer)
-
     %{"id" => cus_id} = str_customer
 
     rel_params = %{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id}
@@ -75,7 +79,9 @@ defmodule OmegaBraveraWeb.DonationController do
           "amount" => kickstarter,
           "currency" => currency,
           "customer" => cus_id,
-          "source" => str_src
+          "source" => str_src,
+          "receipt_email" => email,
+          "description" => "#{kickstarter} #{currency} for #{ngo_name} charged, in support of #{nc_fullname}'s Bravera.co challenge!"
         }
 
         case StripeHelpers.charge_stripe_customer(ngo, charge_params, ngo_chal_id) do
