@@ -85,7 +85,7 @@
 
     <!-- col 1 of 2 -->
     <div class="col-lg-4 order-lg-1 max-w-775 margin-auto">
-      <div class="card mt-4 mt-lg-0">
+      <!-- <div class="card mt-4 mt-lg-0">
         <div class="card-body pb-3">
           <h4 class="text-center mb-0 text-350" style="font-weight: 350;">
             Share <%= @user.firstname %>'s <br/> Challenge Page
@@ -95,9 +95,9 @@
         <div class="card-body text-center border-top">
           [social sharing logos go here]
         </div>
-      </div>
+      </div> -->
 
-      <div class="card mt-4">
+      <div class="card">
         <div class="card-body text-center mx-3 pb-2">
           <h4 style="font-weight: 350;">
             Join Bravera now and fundraise while you train!

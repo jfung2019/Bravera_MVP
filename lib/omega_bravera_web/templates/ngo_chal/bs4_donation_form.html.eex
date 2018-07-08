@@ -55,19 +55,19 @@
           <option value="260">
             $260
           </option>
-          <option value="260">
+          <option value="100">
             $100
           </option>
         </select>
       </div>
     </div>
-
-    <%= for element <- Enum.reverse(OmegaBraveraWeb.DonationView.FormBuilder.build_milestones(f, @ngo_chal.milestones, @ngo_chal.distance_target)) do %>
-      <div class="form-group">
-        <%= element %>
-      </div>
-    <% end %>
-
+    <div class="text-center margin-auto" style="width: 250px;">
+      <%= for element <- Enum.reverse(OmegaBraveraWeb.DonationView.FormBuilder.build_milestones(f, @ngo_chal.milestones, @ngo_chal.distance_target)) do %>
+        <div class="form-group">
+          <%= element %>
+        </div>
+      <% end %>
+    </div>
   </div> <!-- End Milestone Form -->
 
   <!-- Billing form -->
@@ -164,7 +164,11 @@
 <script type="text/javascript">
   $(function(){
     var selectedAmount = $('#amount').val();
-    console.log(selectedAmount);
+    $('#kickstarter').attr('readonly', true);
+    $('#milestone_1').attr('readonly', true);
+    $('#milestone_2').attr('readonly', true);
+    $('#milestone_3').attr('readonly', true);
+
     $('#amount').change(function(){
       if ($(this).val() == 500){
         $('#kickstarter').val(125);

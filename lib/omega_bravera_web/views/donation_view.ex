@@ -27,7 +27,7 @@ defmodule OmegaBraveraWeb.DonationView do
         [
           label(f, "Starting donation", class: "control-label"),
 
-          number_input(f, m, step: "any", class: "form-control", min: "25", id: "kickstarter"),
+          number_input(f, m, step: "any", class: "form-control text-center", min: "25", id: "kickstarter"),
 
           error_tag(f, m)
         ]
@@ -50,7 +50,7 @@ defmodule OmegaBraveraWeb.DonationView do
         [
           label(f, "Milestone #{n - 1} at #{target}km", class: "control-label"),
 
-          number_input(f, m, step: "any", class: "form-control", min: "25", id: "milestone_#{n - 1}"),
+          number_input(f, m, step: "any", class: "form-control text-center", min: "25", id: "milestone_#{n - 1}"),
 
           error_tag(f, m)
         ] | milestoneInputs(f, n - 1, distance_targets)]
