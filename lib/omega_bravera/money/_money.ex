@@ -85,13 +85,13 @@ defmodule OmegaBravera.Money do
 
     %{total_pledged: total_pledged} = ngo_chal
 
-    %{amount: amount} = params
+    %{amount: amount, milestone_distance: milestone_distance} = params
 
     new_pledged = Decimal.add(total_pledged, amount)
 
     Challenges.update_ngo_chal(ngo_chal, %{total_pledged: new_pledged})
 
-    %Donation{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id}
+    %Donation{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id, milestone_distance: milestone_distance}
     |> Donation.changeset(params)
     |> Repo.insert()
   end
@@ -101,7 +101,7 @@ defmodule OmegaBravera.Money do
     multi =
       Multi.new
       |> Multi.run(:kickstarter, fn %{} ->
-          create_donation(rel_params, %{amount: Decimal.new(kickstarter), milestone: 0, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "charged"})
+          create_donation(rel_params, %{amount: Decimal.new(kickstarter), milestone: 0, currency: currency, milestone_distance: 0, str_src: str_src, str_cus_id: cus_id, status: "charged"})
         end)
       |> Multi.run(:milestones, fn %{} ->
           insert_milestones(rel_params, milestones, currency, str_src, cus_id)
@@ -127,8 +127,23 @@ defmodule OmegaBravera.Money do
   end
 
   defp insert_milestones(rel_params, milestones, currency, str_src, cus_id) do
+    %{ngo_chal_id: ngo_chal_id} = rel_params
+
+    ngo_chal = Challenges.get_ngo_chal!(ngo_chal_id)
+
     Enum.each(milestones, fn {milestone, amount} ->
-      create_donation(rel_params, %{amount: Decimal.new(amount), milestone: milestone, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "pending"})
+      %{distance_target: distance_target} = ngo_chal
+
+      targets = case distance_target do
+          50 -> %{1 => 0, 2 => 15, 3 => 25, 4 => 50}
+          75 -> %{1 => 0, 2 => 25, 3 => 45, 4 => 75}
+          150 -> %{1 => 0, 2 => 50, 3 => 100, 4 => 150}
+          250 -> %{1 => 0, 2 => 75, 3 => 150, 4 => 250}
+        end
+
+        %{^milestone => milestone_distance} = targets
+
+      create_donation(rel_params, %{amount: Decimal.new(amount), milestone: milestone, milestone_distance: milestone_distance, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "pending"})
     end)
     {:ok, "milestones created"}
   end

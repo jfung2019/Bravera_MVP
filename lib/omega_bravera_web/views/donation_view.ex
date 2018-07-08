@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.DonationView do
 # TODO stop creating atoms
 
     defp milestoneInputs(f, n, distance_targets) do
-      IO.inspect(n)
+
       m = case n do
             4 -> :milestone_3
             3 -> :milestone_2

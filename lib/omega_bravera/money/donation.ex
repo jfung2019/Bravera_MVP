@@ -16,6 +16,7 @@ defmodule OmegaBravera.Money.Donation do
     field :status, :string, default: "pending"
     field :str_src, :string
     field :str_cus_id, :string
+    field :milestone_distance, :integer
     belongs_to :user, User
     belongs_to :ngo_chal, NGOChal
     belongs_to :ngo, NGO
@@ -26,7 +27,7 @@ defmodule OmegaBravera.Money.Donation do
   @doc false
   def changeset(donation, attrs) do
     donation
-    |> cast(attrs, [:amount, :currency, :str_src, :str_cus_id, :milestone, :status])
+    |> cast(attrs, [:amount, :currency, :str_src, :str_cus_id, :milestone, :status, :milestone_distance])
     |> validate_required([:amount, :currency, :str_src, :str_cus_id, :milestone, :status])
   end
 end
