@@ -9,10 +9,10 @@ defmodule OmegaBravera.Challenges.NGOChal do
 
   schema "ngo_chals" do
     field :activity, :string
-    field :distance_target, :decimal, default: 100
+    field :distance_target, :integer, default: 100
     field :distance_covered, :decimal, default: 0
     field :duration, :integer
-    field :milestones, :integer, default: 3
+    field :milestones, :integer, default: 4
     field :money_target, :decimal, default: 2000
     field :default_currency, :string, default: "hkd"
     field :slug, :string
