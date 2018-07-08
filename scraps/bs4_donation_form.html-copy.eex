@@ -7,42 +7,39 @@
 
   <div class="card-body">
 
-    <div class="input-group input-group-lg">
-      <div class="milestone-label">
-        <h5 class="mr-3 my-2">Milestone 1 at 25km</h5>
-      </div>
-      <div class="input-group-prepend">
-        <div class="input-group-text currency-symbol"></div>
-      </div>
-      <input type="number" class="form-control" value="150" >
-      <div class="input-group-append">
-        <button class="btn btn-outline-danger" type="button">-</button>
-        <button class="btn btn-outline-success" type="button">+</button>
-      </div>
+    <div class="form-group">
+      <%= label f, :currency, class: "control-label" %>
+      <%= text_input f, :currency, class: "form-control" %>
+      <%= error_tag f, :currency %>
     </div>
+
+    <%= for element <- Enum.reverse(OmegaBraveraWeb.DonationView.FormBuilder.build_milestones(f, @ngo_chal.milestones, @ngo_chal.distance_target)) do %>
+      <div class="form-group">
+        <%= element %>
+      </div>
+    <% end %>
 
   </div> <!-- End Milestone Form -->
 
   <!-- Billing form -->
   <div class="card-body border-top">
     <div class="text-center">
-      <h3>Billing Information</h3>
+      <h5>Billing Information</h5>
     </div>
 
     <div class="row">
       <div class="col-md-12">
-        <h4 class="mb-3">Billing address</h4>
-
         <form class="needs-validation" novalidate="">
           <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3 form-group">
               <label for="firstName">First name</label>
               <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
               <div class="invalid-feedback">
                 Valid first name is required.
               </div>
             </div>
-            <div class="col-md-6 mb-3">
+
+            <div class="col-md-6 mb-3 form-group">
               <label for="lastName">Last name</label>
               <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
               <div class="invalid-feedback">
@@ -53,55 +50,52 @@
 
           <div class="mb-3">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" placeholder="you@example.com">
+            <input type="email" class="form-control" id="email" placeholder="you@example.com" name="donation[email]">
             <div class="invalid-feedback">
               Please enter a valid email address for shipping updates.
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="address">Address</label>
-            <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
+            <label for="donation_street_address">Street Address</label>
+            <input type="text" name="donation[street_address]" class="form-control" id="street-address-1" placeholder="1234 Main St" required="">
             <div class="invalid-feedback">
-              Please enter your shipping address.
+              Please enter your street address.
             </div>
           </div>
 
           <div class="mb-3">
             <label for="address2">Address Line 2 <span class="text-muted">(Optional)</span></label>
-            <input type="text" class="form-control" id="address2" placeholder="Apartment/Flat/Suite #">
+            <input type="text" class="form-control" id="street-address-2" placeholder="Apartment/Flat/Suite #" value=" ">
           </div>
 
           <div class="row">
-            <div class="col-md-5 mb-3">
+            <div class="col-md-6 mb-3">
+              <label for="city">City</label>
+              <input type="text" name="donation[city]" id="city" class="form-control d-block w-100" />
+              <div class="invalid-feedback">
+                Please enter a valid city.
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="postal-code">Postal Code</label>
+              <input type="text" name="donation[postal_code]" id="postal-code" class="form-control d-block w-100" />
+              <div class="invalid-feedback">
+                Please enter a valid postal code.
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
               <label for="country">Country</label>
-              <select class="custom-select d-block w-100" id="country" required="">
-                <option value="">Choose...</option>
-                <option>Hong Kong</option>
-                <option>United States</option>
-                <option>Great Britain</option>
-                <option>Australia</option>
-                <option>Japan</option>
+              <select class="custom-select d-block w-100" id="country" required="" name="donation[country]">
+                <option value="HK">Hong Kong</option>
+                <option value="US" disabled>United States</option>
+                <option value="GB" disabled>Great Britain</option>
+                <option value="AUS"  disabled>Australia</option>
+                <option value="JP" disabled>Japan</option>
               </select>
               <div class="invalid-feedback">
                 Please select a valid country.
-              </div>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label for="state">State</label>
-              <select class="custom-select d-block w-100" id="state" required="">
-                <option value="">Choose...</option>
-                <option>California</option>
-              </select>
-              <div class="invalid-feedback">
-                Please provide a valid state.
-              </div>
-            </div>
-            <div class="col-md-3 mb-3">
-              <label for="zip">Zip</label>
-              <input type="text" class="form-control" id="zip" placeholder="" required="">
-              <div class="invalid-feedback">
-                Zip code required.
               </div>
             </div>
           </div>
@@ -111,45 +105,44 @@
           <h4 class="mb-3">Credit/Debit Card Info</h4>
 
           <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="cc-name">Name on Card</label>
-              <input type="text" class="form-control" id="cc-name" placeholder="" required="">
+            <div class="col mb-3">
+              <label for="name">Name on Card</label>
+              <input type="text" class="form-control" id="name" placeholder=""
+              name="donation[name]" required="">
               <small class="text-muted">Full name as displayed on card</small>
               <div class="invalid-feedback">
                 Name on card is required
               </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="cc-number">Card Number</label>
-              <input type="text" class="form-control" id="cc-number" placeholder="" required="">
-              <div class="invalid-feedback">
-                Credit card number is required
-              </div>
-            </div>
           </div>
-          <div class="row">
-            <div class="col-md-3 mb-3">
-              <label for="cc-expiration">Expiration</label>
-              <input type="text" class="form-control" id="cc-expiration" placeholder="" required="">
-              <div class="invalid-feedback">
-                Expiration date required
+            <div class="form-group">
+              <label for="card-element">
+                Credit or debit card
+              </label>
+              <div id="card-element">
+                <!-- A Stripe Element will be inserted here. -->
               </div>
+
+              <!-- Used to display Element errors. -->
+              <div id="card-errors" role="alert"></div>
             </div>
-            <div class="col-md-3 mb-3">
-              <label for="cc-expiration">CVV</label>
-              <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
-              <div class="invalid-feedback">
-                Security code required
-              </div>
-            </div>
-          </div>
           <hr class="mb-4">
-          <button class="btn btn-bravera btn-block">Sponsor</button>
+          <div class="form-group">
+            <div>
+              <%= label f, :str_src, class: "control-label" %>
+              <%= text_input f, :str_src, class: "form-control", id: "source-input" %>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <button class="btn btn-bravera" style="width:250px;">Sponsor</button>
+          </div>
 
         </form>
       </div>
     </div>
   </div>
+
 
   <!-- TODO sort this JS -->
     <script>
@@ -179,7 +172,7 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript">
   document.addEventListener("DOMContentLoaded",   function(event) {
-    var stripe = Stripe('pk_test_4aCmLebabvMfey4rz4KGMshO');
+    var stripe = Stripe('pk_test_PdzEmOebU7GrEatz3iKFyLSc');
     var elements = stripe.elements();
 
     // Custom styling can be passed to options when creating an Element.
@@ -214,7 +207,8 @@
         owner: {
           name: document.getElementById('name').value,
           address: {
-            line1: document.getElementById('street-address').value,
+            line1: document.getElementById('street-address-1').value,
+            line2: document.getElementById('street-address-2').value,
             city: document.getElementById('city').value,
             postal_code: document.getElementById('postal-code').value,
             country: document.getElementById('country').value,
