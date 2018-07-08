@@ -4,7 +4,7 @@ defmodule OmegaBravera.Mixfile do
   def project do
     [
       app: :omega_bravera,
-      version: "0.2.13",
+      version: "0.2.14",
       elixir: "~> 1.6.4",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -51,7 +51,8 @@ defmodule OmegaBravera.Mixfile do
       {:decimal, "~> 1.0", override: true},
       {:numbers, "~> 5.1.0"},
       {:edeliver, "~> 1.5.0"},
-      {:distillery, "~> 1.5.3", runtime: false}
+      {:distillery, "~> 1.5.3", runtime: false},
+      {:coerce, "~> 1.0.0"}
     ]
   end
 
