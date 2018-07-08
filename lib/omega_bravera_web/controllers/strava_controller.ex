@@ -53,13 +53,9 @@ defmodule OmegaBraveraWeb.StravaController do
 
         if activity.distance > 0.0 do
           distance_meters = Decimal.new(activity.distance)
-          IO.inspect("distance in meters")
-          IO.inspect(distance_meters)
-          d_thousand = Decimal.new(1000)
-          IO.inspect("distance in meters")
-          distance_km = Decimal.div(distance_meters, d_thousand)
 
-          IO.inspect(distance_km)
+          d_thousand = Decimal.new(1000)
+          distance_km = Decimal.div(distance_meters, d_thousand)
 
           Enum.each(relevant_challengers, fn {id, _token} ->
             ngo_chal = Challenges.get_ngo_chal!(id)
@@ -78,14 +74,16 @@ defmodule OmegaBraveraWeb.StravaController do
 
             Enum.each donations, fn donation ->
               %{
+                user_id: user_id,
                  ngo_id: ngo_id,
                  ngo_chal_id: ngo_chal_id,
                  milestone_distance: milestone_distance,
                  str_cus_id: str_cus_id,
                  amount: amount,
-                 currency: currency,
-                 email: receipt_email
+                 currency: currency
                } = donation
+
+               %{email: receipt_email} = Accounts.get_user!(id)
 
                params = %{"amount" => amount, "currency" => currency, "customer" => str_cus_id, "receipt_email" => receipt_email}
 
