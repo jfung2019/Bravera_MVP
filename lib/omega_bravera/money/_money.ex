@@ -132,13 +132,15 @@ defmodule OmegaBravera.Money do
     ngo_chal = Challenges.get_ngo_chal!(ngo_chal_id)
 
     Enum.each(milestones, fn {milestone, amount} ->
+      IO.inspect("milestones")
+      IO.inspect(milestone)
       %{distance_target: distance_target} = ngo_chal
 
       targets = case distance_target do
-          50 -> %{1 => 0, 2 => 15, 3 => 25, 4 => 50}
-          75 -> %{1 => 0, 2 => 25, 3 => 45, 4 => 75}
-          150 -> %{1 => 0, 2 => 50, 3 => 100, 4 => 150}
-          250 -> %{1 => 0, 2 => 75, 3 => 150, 4 => 250}
+          50 -> %{ 1 => 15, 2 => 25, 3 => 50}
+          75 -> %{ 1 => 25, 2 => 45, 3 => 75}
+          150 -> %{ 1 => 50, 2 => 100, 3 => 150}
+          250 -> %{ 1 => 75, 2 => 150, 3 => 250}
         end
 
         %{^milestone => milestone_distance} = targets
