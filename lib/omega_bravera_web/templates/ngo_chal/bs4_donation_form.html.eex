@@ -117,7 +117,9 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script type="text/javascript">
   document.addEventListener("DOMContentLoaded",   function(event) {
-    var stripe = Stripe('pk_test_4aCmLebabvMfey4rz4KGMshO');
+    // stripe def - pk_test_4aCmLebabvMfey4rz4KGMshO
+    // stage - pk_test_PdzEmOebU7GrEatz3iKFyLSc
+    var stripe = Stripe('pk_test_PdzEmOebU7GrEatz3iKFyLSc');
     var elements = stripe.elements();
 
     // Custom styling can be passed to options when creating an Element.
