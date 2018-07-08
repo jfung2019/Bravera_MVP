@@ -109,31 +109,31 @@ Distance is in meters
 
 ```
 curl -X POST https://api.strava.com/api/v3/push_subscriptions \
-  -F 'client_id=23267' \
-  -F 'client_secret=508d46fce35e03a657546bf62283543c9ffe330f' \
-  -F 'callback_url=https://b2265418.ngrok.io/strava/webhook-callback' \
+  -F 'client_id=20262' \
+  -F 'client_secret=1237745af2602357935a1b78f16d1eb2f68c4ac0' \
+  -F 'callback_url=https://www.dev.bravera.co/strava/webhook-callback' \
   -F 'verify_token=STRAVA'
 ```
 
 #### Response to Successful Subscription
 ```JSON
-{"id":122449,"resource_state":2,"application_id":23267,"callback_url":"https://cc2e5478.ngrok.io/strava/webhook-callback","created_at":"2018-04-06T02:40:42.64449054Z","updated_at":"2018-04-06T02:40:42.644488062Z"}
+{"id":126328,"resource_state":2,"application_id":20262,"callback_url":"https://www.dev.bravera.co/strava/webhook-callback","created_at":"2018-07-08T15:07:06.081298498Z","updated_at":"2018-07-08T15:07:06.081297386Z"}
 ```
 
 ### `GET` an Existing Webhook Subscription for a client
 ```
 curl -G https://api.strava.com/api/v3/push_subscriptions \
-      -d client_id=23267 \
-      -d client_secret="508d46fce35e03a657546bf62283543c9ffe330f"
+      -d client_id=20262 \
+      -d client_secret="1237745af2602357935a1b78f16d1eb2f68c4ac0"
 ```
 
 The above `GET` will retrieve the subscription "id", which can be used in a `DELETE` request to delete a subscription
 
 ### `DELETE` a Strava Webhook Subscription
 ```
-curl -X DELETE https://api.strava.com/api/v3/push_subscriptions/{id} \
-    -F client_id=23267 \
-    -F client_secret=508d46fce35e03a657546bf62283543c9ffe330f
+curl -X DELETE https://api.strava.com/api/v3/push_subscriptions/109051 \
+    -F client_id=20262 \
+    -F client_secret=1237745af2602357935a1b78f16d1eb2f68c4ac0
 ```
 Where `{id}` is the subscription id returned by `GET` an existing subscription
 
