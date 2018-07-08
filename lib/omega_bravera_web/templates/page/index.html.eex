@@ -8,12 +8,17 @@
       </div>
       <div class="challenge-img-left">
         <div class="card-body pt-sm-2 pt-md-3 pt-lg-5">
-          <h3>Milestones that matter</h3>
-          <p>Bravera is a platform that creates social impact through fitness fundraising.</p>
-          <p>Connect a fitness tracker, take a challenge, and get sponsors today!</p>
-          <a class="btn btn-bravera" href="/signup/" role="button">
-            Sign up
-          </a>
+          <div class="mx-lg-5 mx-xl-6">
+            <h3 class="text-center">Milestones that matter</h3>
+            <p>Bravera is a platform that creates social impact through fitness fundraising.</p>
+            <p>Connect a fitness tracker, take a challenge, and get sponsors today!</p>
+          </div>
+
+          <div class="text-center">
+            <a class="btn btn-bravera mt-lg-3" style="width: 175px;" href="/signup/" role="button">
+              Connect
+            </a>
+          </div>
         </div>
       </div>
     </div>

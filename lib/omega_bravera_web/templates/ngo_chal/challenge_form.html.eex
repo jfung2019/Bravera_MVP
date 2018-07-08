@@ -147,13 +147,13 @@
           name="ngo_chal[default_currency]"
           id="ngo_chal_default_currency">
           <option selected value="HKD">
-            Hong Kong Dollar
+            Hong Kong Dollars
           </option>
-          <option value="USD">
-            US Dollar
+          <option value="USD" disabled>
+            US Dollars
           </option>
-          <option value="GBP">
-            British Pound
+          <option value="GBP" disabled>
+            British Pounds
           </option>
         </select>
       </div>

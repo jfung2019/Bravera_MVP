@@ -40,13 +40,17 @@
               Join the Challenge
             </a>
           </div>
+
         <% else %>
-      <h4>
-        Connect a Fitness Tracker to Continue
-      </h4>
-      <a href="/strava/login" class="mb-1">
-        <img src="/images/strava/btn_strava_connect-orange.png" />
-      </a>
+
+        <div class="text-center">
+          <h5 class="text-420">
+            Connect a Fitness Tracker <br/>to Continue
+          </h5>
+          <a href="/strava/login" class="mb-1">
+            <img src="/images/strava/btn_strava_connect-orange.png" />
+          </a>
+        </div>
 
       <% end %>
     </div> <!-- end of foot -->

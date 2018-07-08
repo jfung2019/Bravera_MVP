@@ -7,19 +7,7 @@
 
   <div class="card-body">
 
-    <div class="input-group input-group-lg">
-      <div class="milestone-label">
-        <h5 class="mr-3 my-2">Milestone 1 at 25km</h5>
-      </div>
-      <div class="input-group-prepend">
-        <div class="input-group-text currency-symbol"></div>
-      </div>
-      <input type="number" class="form-control" value="150" >
-      <div class="input-group-append">
-        <button class="btn btn-outline-danger" type="button">-</button>
-        <button class="btn btn-outline-success" type="button">+</button>
-      </div>
-    </div>
+    
 
   </div> <!-- End Milestone Form -->
 
