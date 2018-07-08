@@ -78,7 +78,7 @@
     </h4>
 
     <div class="card">
-      <%= render "bs4_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @ngo.id, @ngo_chal.id)) %>
+      <%= render "bs4_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @ngo.slug, @ngo_chal.slug)) %>
     </div>
 
   </div>     <!-- End Col 2/2 -->

@@ -10,7 +10,9 @@
       <h2 class="text-420">Configure your Challenge</h2>
 
       <div>
-        <%= img_tag( @ngo.logo, class: "img-thumbnail form-thumb mt-2 mb-3", alt: @ngo.name) %>
+        <a href="<%= @ngo.url %>">
+          <%= img_tag( @ngo.logo, class: "img-thumbnail form-thumb mt-2 mb-3", alt: @ngo.name) %>
+        </a>
       </div>
 
       <h4 class="text-420">

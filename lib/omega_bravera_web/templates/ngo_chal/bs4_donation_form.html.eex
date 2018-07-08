@@ -7,20 +7,28 @@
 
   <div class="card-body">
 
-    
+    <div class="form-group">
+      <%= label f, :currency, class: "control-label" %>
+      <%= text_input f, :currency, class: "form-control" %>
+      <%= error_tag f, :currency %>
+    </div>
+
+    <%= for element <- Enum.reverse(OmegaBraveraWeb.DonationView.FormBuilder.build_milestones(f, @ngo_chal.milestones, @ngo_chal.distance_target)) do %>
+      <div class="form-group">
+        <%= element %>
+      </div>
+    <% end %>
 
   </div> <!-- End Milestone Form -->
 
   <!-- Billing form -->
   <div class="card-body border-top">
     <div class="text-center">
-      <h3>Billing Information</h3>
+      <h5>Billing Information</h5>
     </div>
 
     <div class="row">
       <div class="col-md-12">
-        <h4 class="mb-3">Billing address</h4>
-
         <form class="needs-validation" novalidate="">
           <div class="row">
             <div class="col-md-6 mb-3">
@@ -48,48 +56,44 @@
           </div>
 
           <div class="mb-3">
-            <label for="address">Address</label>
-            <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
+            <label for="address">Street Address</label>
+            <input type="text" class="form-control" id="street-address-1" placeholder="1234 Main St" required="">
             <div class="invalid-feedback">
-              Please enter your shipping address.
+              Please enter your street address.
             </div>
           </div>
 
           <div class="mb-3">
             <label for="address2">Address Line 2 <span class="text-muted">(Optional)</span></label>
-            <input type="text" class="form-control" id="address2" placeholder="Apartment/Flat/Suite #">
+            <input type="text" class="form-control" id="street-address-2" placeholder="Apartment/Flat/Suite #" value=" ">
           </div>
 
           <div class="row">
-            <div class="col-md-5 mb-3">
+            <div class="col-md-6 mb-3">
+              <label for="city">City</label>
+              <input type="text" name="city" id="city" class="form-control d-block w-100" />
+              <div class="invalid-feedback">
+                Please enter a valid city.
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="postal-code">Postal Code</label>
+              <input type="text" name="postal-code" id="postal-code" class="form-control d-block w-100" />
+              <div class="invalid-feedback">
+                Please enter a valid city.
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
               <label for="country">Country</label>
               <select class="custom-select d-block w-100" id="country" required="">
-                <option value="">Choose...</option>
-                <option>Hong Kong</option>
-                <option>United States</option>
-                <option>Great Britain</option>
-                <option>Australia</option>
-                <option>Japan</option>
+                <option value="HK">Hong Kong</option>
+                <option value="US" disabled>United States</option>
+                <option value="GB" disabled>Great Britain</option>
+                <option value="AUS"  disabled>Australia</option>
+                <option value="JP" disabled>Japan</option>
               </select>
               <div class="invalid-feedback">
                 Please select a valid country.
-              </div>
-            </div>
-            <div class="col-md-4 mb-3">
-              <label for="state">State</label>
-              <select class="custom-select d-block w-100" id="state" required="">
-                <option value="">Choose...</option>
-                <option>California</option>
-              </select>
-              <div class="invalid-feedback">
-                Please provide a valid state.
-              </div>
-            </div>
-            <div class="col-md-3 mb-3">
-              <label for="zip">Zip</label>
-              <input type="text" class="form-control" id="zip" placeholder="" required="">
-              <div class="invalid-feedback">
-                Zip code required.
               </div>
             </div>
           </div>
@@ -99,40 +103,37 @@
           <h4 class="mb-3">Credit/Debit Card Info</h4>
 
           <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="cc-name">Name on Card</label>
-              <input type="text" class="form-control" id="cc-name" placeholder="" required="">
+            <div class="col mb-3">
+              <label for="name">Name on Card</label>
+              <input type="text" class="form-control" id="name" placeholder="" required="">
               <small class="text-muted">Full name as displayed on card</small>
               <div class="invalid-feedback">
                 Name on card is required
               </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="cc-number">Card Number</label>
-              <input type="text" class="form-control" id="cc-number" placeholder="" required="">
-              <div class="invalid-feedback">
-                Credit card number is required
-              </div>
-            </div>
           </div>
-          <div class="row">
-            <div class="col-md-3 mb-3">
-              <label for="cc-expiration">Expiration</label>
-              <input type="text" class="form-control" id="cc-expiration" placeholder="" required="">
-              <div class="invalid-feedback">
-                Expiration date required
+            <div class="form-group">
+              <label for="card-element">
+                Credit or debit card
+              </label>
+              <div id="card-element">
+                <!-- A Stripe Element will be inserted here. -->
               </div>
+
+              <!-- Used to display Element errors. -->
+              <div id="card-errors" role="alert"></div>
             </div>
-            <div class="col-md-3 mb-3">
-              <label for="cc-expiration">CVV</label>
-              <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
-              <div class="invalid-feedback">
-                Security code required
-              </div>
-            </div>
-          </div>
           <hr class="mb-4">
-          <button class="btn btn-bravera btn-block">Sponsor</button>
+          <div class="text-center">
+            <button class="btn btn-bravera" style="width:250px;">Sponsor</button>
+          </div>
+
+          <input type="text" name="src_id" class="d-none" id="source-input"/>
+          <div class="form-group d-none">
+          <div>
+            <%= label f, :str_src, class: "control-label" %>
+            <%= text_input f, :str_src, class: "form-control, d-none", id: "source-input" %>
+          </div>
 
         </form>
       </div>
@@ -202,7 +203,8 @@
         owner: {
           name: document.getElementById('name').value,
           address: {
-            line1: document.getElementById('street-address').value,
+            line1: document.getElementById('street-address-1').value,
+            line2: document.getElementById('street-address-2').value,
             city: document.getElementById('city').value,
             postal_code: document.getElementById('postal-code').value,
             country: document.getElementById('country').value,

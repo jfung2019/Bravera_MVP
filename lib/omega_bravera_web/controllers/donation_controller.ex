@@ -19,7 +19,7 @@ defmodule OmegaBraveraWeb.DonationController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"donation" => donation_params, "ngo_chal_id" => ngo_chal_id_int}) do
+  def create(conn, %{"donation" => donation_params, "ngo_chal_slug" => ngo_chal_slug}) do
   # TODO re-implement the SECURED/PLEDGED LOGIC
   # TODO Do all the form validations for this
   # TODO simplify kickstarter logic since all have kickstarter now
@@ -27,12 +27,11 @@ defmodule OmegaBraveraWeb.DonationController do
     # TODO change milestone logic to programmatically generate milestones based on one value
     milestones = create_milestone_map(donation_params)
 
-    ngo_chal_id = String.to_integer(ngo_chal_id_int)
-    nc = Challenges.get_ngo_chal!(ngo_chal_id)
+    nc = Challenges.get_ngo_chal_by_slug(ngo_chal_slug)
 
-    %{ngo_id: ngo_id} = nc
+    %{ngo_id: ngo_id, id: ngo_chal_id} = nc
 
-    %{"src_id" => src_id, "currency" => currency, "email" => email} = donation_params
+    %{"str_src" => str_src, "currency" => currency, "email" => email} = donation_params
 
     ngo = Fundraisers.get_ngo!(ngo_id)
 
@@ -54,7 +53,7 @@ defmodule OmegaBraveraWeb.DonationController do
     str_customer =
       case Stripe.get_user_str_customer(user_id) do
         nil ->
-          StripeHelpers.create_stripe_customer(email, src_id, user_id)
+          StripeHelpers.create_stripe_customer(email, str_src, user_id)
         customer ->
           customer
       end
@@ -69,7 +68,7 @@ defmodule OmegaBraveraWeb.DonationController do
           "amount" => kickstarter,
           "currency" => currency,
           "customer" => cus_id,
-          "source" => src_id,
+          "source" => str_src,
         }
 
         case StripeHelpers.charge_stripe_customer(ngo, charge_params) do
@@ -79,7 +78,7 @@ defmodule OmegaBraveraWeb.DonationController do
 
             cond do
               body["source"] ->
-                case Money.create_donations(rel_params, milestones, kickstarter, currency, src_id) do
+                case Money.create_donations(rel_params, milestones, kickstarter, currency, str_src) do
                   {:ok, response} ->
                     conn
                     |> put_flash(:info, "Donation created successfully.")
@@ -98,7 +97,7 @@ defmodule OmegaBraveraWeb.DonationController do
         end
 
       true ->
-        case Money.create_donations(rel_params, milestones, currency, src_id) do
+        case Money.create_donations(rel_params, milestones, currency, str_src) do
           {:ok, response} ->
             conn
             |> put_flash(:info, "Donation created successfully.")
