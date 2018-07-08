@@ -33,7 +33,7 @@ defmodule OmegaBravera.Accounts do
     Repo.one(query)
   end
 
-  # TODO I think I was being cute with this, do we use? 
+  # TODO I think I was being cute with this, do we use?
   #
   # def get_user_strava!(user_id) do
   #   query = from u in User,
@@ -147,7 +147,11 @@ defmodule OmegaBravera.Accounts do
   def insert_or_return_email_user(email) do
     case Repo.get_by(User, email: email) do
       nil ->
-        create_user(email)
+        create_user(%{"email" => email})
+        case Repo.get_by(User, email: email) do
+          user ->
+            user
+        end
       user ->
         user
     end

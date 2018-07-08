@@ -36,23 +36,19 @@
         <div class="form-group" id="ngo_chal_activity">
           <label
             class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" >
-            <i class="fa fa-user fa"></i><br/>
-            <span class="activity-text">
+            <h4 class="activity-text mb-0 mt-4 pt-2">
               Run
-            </span>
-            <br/>
+            </h4>
             <input
              id="ngo_chal_activity_run" class="radio-img" name="ngo_chal[activity]" type="radio" value="Run" checked="checked"/>
           </label>
           <label
             name="ngo_chal[activity]"
             value="cycle"
-            class="btn btn-sq-lg btn-outline-secondary mx-md-2 my-md-2 my-1 mx-lg-3">
-            <i class="fa fa-user fa"></i><br/>
-            <span class="activity-text">
+            class="btn btn-sq-lg btn-outline-secondary mx-md-2 my-md-2 mx-lg-3">
+            <h4 class="activity-text mb-0 mt-4 pt-2">
               Cycle
-            </span>
-            <br/>
+            </h4>
             <input
              id="ngo_chal_activity_cycle" class="radio-img" name="ngo_chal[activity]" type="radio" value="Cycle"/>
           </label>
@@ -61,11 +57,9 @@
             value="Walk"
             class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3"
             >
-            <i class="fa fa-user fa"></i><br/>
-            <span class="activity-text">
+            <h4 class="activity-text mb-0 mt-4 pt-2">
               Walk
-            </span>
-            <br/>
+            </h4>
             <input
              id="ngo_chal_activity_walk" class="radio-img" name="ngo_chal[activity]"
              type="radio" value="Walk"/>
@@ -75,11 +69,9 @@
             name="ngo_chal[activity]"
             value="Hike"
             class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3">
-            <i class="fa fa-user fa"></i><br/>
-            <span class="activity-text">
+            <h4 class="activity-text mb-0 mt-4 pt-2">
               Hike
-            </span>
-            <br/>
+            </h4>
             <input
              id="ngo_chal_activity_hike" class="radio-img" name="ngo_chal[activity]"
              type="radio" value="Hike"/>
