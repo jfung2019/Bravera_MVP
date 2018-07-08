@@ -32,16 +32,18 @@
         <form class="needs-validation" novalidate="">
           <div class="row">
             <div class="col-md-6 mb-3 form-group">
-              <label for="firstName">First name</label>
-              <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
+              <label for="first-name">First name</label>
+              <input type="text" class="form-control"
+              name="donation[first_name]" id="first-name" placeholder="" value="" required="">
               <div class="invalid-feedback">
                 Valid first name is required.
               </div>
             </div>
 
             <div class="col-md-6 mb-3 form-group">
-              <label for="lastName">Last name</label>
-              <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
+              <label for="first-name">Last name</label>
+              <input type="text" class="form-control"
+              name="donation[last_name]" id="last-name" placeholder="" value="" required="">
               <div class="invalid-feedback">
                 Valid last name is required.
               </div>
@@ -58,17 +60,6 @@
 
           <h4 class="mb-3">Credit/Debit Card Info</h4>
 
-          <div class="row">
-            <div class="col mb-3">
-              <label for="name">Name on Card</label>
-              <input type="text" class="form-control" id="name" placeholder=""
-              name="donation[name]" required="">
-              <small class="text-muted">Full name as displayed on card</small>
-              <div class="invalid-feedback">
-                Name on card is required
-              </div>
-            </div>
-          </div>
             <div class="form-group">
               <label for="card-element">
                 Credit or debit card
@@ -155,18 +146,13 @@
 
     var form = document.getElementById('payment-form');
 
+    var fullName = document.getElementById('first-name').value + " " + document.getElementById('last-name').value;
+
     form.addEventListener('submit', function(event) {
       event.preventDefault();
       var ownerInfo = {
         owner: {
-          name: document.getElementById('name').value,
-          address: {
-            line1: document.getElementById('street-address-1').value,
-            line2: document.getElementById('street-address-2').value,
-            city: document.getElementById('city').value,
-            postal_code: document.getElementById('postal-code').value,
-            country: document.getElementById('country').value,
-          },
+          name: fullName,
           email: document.getElementById('email').value
         },
       };
