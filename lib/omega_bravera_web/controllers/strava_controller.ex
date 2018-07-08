@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.StravaController do
   use OmegaBraveraWeb, :controller
   require Logger
 
-  alias OmegaBravera.{Guardian, Challenges, Accounts, Money, StripeHelpers}
+  alias OmegaBravera.{Guardian, Challenges, Accounts, Money, StripeHelpers, Fundraisers}
 
   # TODO Check if activity was manual update or GPS upload
   # Is upload_id only for file uploads?
@@ -72,21 +72,22 @@ defmodule OmegaBraveraWeb.StravaController do
             donations = Money.get_unch_donat_by_ngo_chal(ngo_chal_id)
 
             Enum.each donations, fn donation ->
-              %{ngo_id: ngo_id,
-                ngo_chal_id: ngo_chal_id,
-               milestone_distance: milestone_distance,
-               str_cust_id: str_cust_id,
-               amount: amount,
-               currency: currency,
+              %{
+                 ngo_id: ngo_id,
+                 ngo_chal_id: ngo_chal_id,
+                 milestone_distance: milestone_distance,
+                 str_cus_id: str_cus_id,
+                 amount: amount,
+                 currency: currency,
                } = donation
 
-               params = %{"amount" => amount, "currency" => currency, "customer" => str_cust_id}
+               params = %{"amount" => amount, "currency" => currency, "customer" => str_cus_id}
 
                cond do
                  Decimal.cmp(new_distance, milestone_distance) == :gt || Decimal.cmp(new_distance, milestone_distance) == :eq ->
                    ngo = Fundraisers.get_ngo!(ngo_id)
 
-                   case Stripe_Helpers.charge_stripe_customer(ngo, params, ngo_chal_id) do
+                   case StripeHelpers.charge_stripe_customer(ngo, params, ngo_chal_id) do
                      {:ok, _response} ->
                        Money.update_donation(donation, %{status: "charged"})
 
