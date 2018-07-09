@@ -111,7 +111,7 @@ Distance is in meters
 curl -X POST https://api.strava.com/api/v3/push_subscriptions \
   -F 'client_id=20262' \
   -F 'client_secret=1237745af2602357935a1b78f16d1eb2f68c4ac0' \
-  -F 'callback_url=https://www.dev.bravera.co/strava/webhook-callback' \
+  -F 'callback_url=https://www.bravera.co/strava/webhook-callback' \
   -F 'verify_token=STRAVA'
 ```
 
@@ -131,7 +131,7 @@ The above `GET` will retrieve the subscription "id", which can be used in a `DEL
 
 ### `DELETE` a Strava Webhook Subscription
 ```
-curl -X DELETE https://api.strava.com/api/v3/push_subscriptions/109051 \
+curl -X DELETE https://api.strava.com/api/v3/push_subscriptions/126328 \
     -F client_id=20262 \
     -F client_secret=1237745af2602357935a1b78f16d1eb2f68c4ac0
 ```

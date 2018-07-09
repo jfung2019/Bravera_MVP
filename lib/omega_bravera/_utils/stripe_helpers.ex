@@ -24,7 +24,9 @@ defmodule OmegaBravera.StripeHelpers do
 
       %{"name" => ngo_name, "stripe_id" => ngo_connected_acct} = Fundraisers.get_ngo!(ngo_id)
 
-      description = "Donation to " <> ngo_name <> " via Bravera"
+      %{email: recpt_email} = Accounts.get_user!(user_id)
+
+      description = "Donation to " <> ngo_name <> " via Bravera.co"
 
       charge_params = %{
         "amount" => total_amount(amount),
@@ -32,7 +34,8 @@ defmodule OmegaBravera.StripeHelpers do
         "customer" => customer,
         "description" => description,
         "destination[account]" => ngo_connected_acct,
-        "destination[amount]" => destination_amount(amount)
+        "destination[amount]" => destination_amount(amount),
+        "receipt_email" => recpt_email
       }
 
       case Stripy.req(:post, "charges", charge_params) do
@@ -81,7 +84,7 @@ defmodule OmegaBravera.StripeHelpers do
     "receipt_email" => email
     } = params
 
-    description = "Donation to " <> ngo_name <> " via Bravera"
+    description = "Donation to " <> ngo_name <> " via Bravera.co"
 
     charge_params = %{
       "amount" => total_amount(amount),

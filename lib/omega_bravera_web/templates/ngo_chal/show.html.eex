@@ -114,7 +114,7 @@
 
             <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
               Distance Completed:
-              <span style="float:right;"><strong class="text-500"><%= @ngo_chal.distance_covered %>/<%= @ngo_chal.distance_target %>km</strong></span>
+              <span style="float:right;"><strong class="text-500"><span id="distance-covered"></span>/<%= @ngo_chal.distance_target %>km</strong></span>
             </h5>
             <div style="clear: both;"></div>
           </div>
@@ -507,27 +507,8 @@
     }).change();
   }
 
-  // $('#m1-donation').change(function(){
-  //   totalSupport = parseInt($('#kickstarter').val()) +
-  //   parseInt($('#m1-donation').val()) +
-  //   parseInt($('#m2-donation').val()) +
-  //   parseInt($('#m3-donation').val());
-  //   $('#donation-total').text("$" + totalSupport);
-  // }).change();
-  //
-  // $('#m2-donation').change(function(){
-  //   totalSupport = parseInt($('#kickstarter').val()) +
-  //   parseInt($('#m1-donation').val()) +
-  //   parseInt($('#m2-donation').val()) +
-  //   parseInt($('#m3-donation').val());
-  //   $('#donation-total').text("$" + totalSupport);
-  // }).change();
-  // $('#m3-donation').change(function(){
-  //   totalSupport = parseInt($('#kickstarter').val()) +
-  //   parseInt($('#m1-donation').val()) +
-  //   parseInt($('#m2-donation').val()) +
-  //   parseInt($('#m3-donation').val());
-  //   $('#donation-total').text("$" + totalSupport);
-  // }).change();
+  var distanceCovered = Math.floor(<%= @ngo_chal.distance_covered %>);
+
+  document.getElementById('distance-covered').append(distanceCovered);
 
 </script>
