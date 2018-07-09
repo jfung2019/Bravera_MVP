@@ -158,6 +158,8 @@ defmodule OmegaBravera.Money do
   end
 
   defp insert_milestones(rel_params, milestones, currency, str_src, cus_id) do
+    IO.inspect("milestones")
+    IO.inspect(milestones)
     %{ngo_chal_id: ngo_chal_id} = rel_params
 
     ngo_chal = Challenges.get_ngo_chal!(ngo_chal_id)
@@ -171,10 +173,11 @@ defmodule OmegaBravera.Money do
           150 -> %{ 1 => 50, 2 => 100, 3 => 150}
           250 -> %{ 1 => 75, 2 => 150, 3 => 250}
         end
-
         %{^milestone => milestone_distance} = targets
 
-      create_donation(rel_params, %{amount: Decimal.new(amount), milestone: milestone, milestone_distance: milestone_distance, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "pending"})
+        if amount != nil do
+          create_donation(rel_params, %{amount: Decimal.new(amount), milestone: milestone, milestone_distance: milestone_distance, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "pending"})
+        end
     end)
     {:ok, "milestones created"}
   end

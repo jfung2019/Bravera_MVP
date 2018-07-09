@@ -9,7 +9,7 @@
 
     <div class="form-group">
       <%= error_tag f, :currency %>
-      <div class="currency-selector">
+      <div class="currency-selector max-w-300">
         <label
           class="control-label"
           for="currency">
@@ -17,7 +17,7 @@
         </label>
         <%= error_tag f, :currency %>
         <select
-          class="custom-select custom-select-lg mt-2 mb-3"
+          class="custom-select custom-select-lg mt-3 mb-1"
           name="donation[currency]"
           id="currency">
           <option selected value="HKD">
@@ -35,7 +35,7 @@
 
     <div class="form-group">
       <%= error_tag f, :currency %>
-      <div class="currency-selector">
+      <div class="currency-selector max-w-300">
         <label
           class="control-label"
           for="amount">
@@ -43,31 +43,69 @@
         </label>
         <%= error_tag f, :currency %>
         <select
-          class="custom-select custom-select-lg mt-2 mb-3"
+          class="custom-select custom-select-lg mt-1 mb-1"
           name="amount"
           id="amount">
-          <option selected value="500">
-            $500
+          <option selected value="600">
+            $600
           </option>
-          <option value="360">
-            $360
+          <option value="400">
+            $400
           </option>
-          <option value="260">
-            $260
+          <option value="320">
+            $320
           </option>
-          <option value="100">
-            $100
+          <option value="160">
+            $160
           </option>
         </select>
       </div>
     </div>
-    <div class="text-center margin-auto" style="width: 250px;">
-      <%= for element <- Enum.reverse(OmegaBraveraWeb.DonationView.FormBuilder.build_milestones(f, @ngo_chal.milestones, @ngo_chal.distance_target)) do %>
-        <div class="form-group">
-          <%= element %>
-        </div>
-      <% end %>
+
+  <div class="mx-auto" style="max-width: 300px;">
+
+    <div class="form-group row">
+      <label for="starter-donation" class="col-sm-8 col-form-label">Starter Donation</label>
+      <div class="col-sm-4">
+        <input type="number" class="form-control" id="kickstarter" min="25" name="donation[kickstarter]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+        >
+      </div>
     </div>
+    <div class="form-group row" id="m1-donation-group">
+      <label for="milestone-1-donation" class="col-sm-8 col-form-label">
+        Charged at <span id="m2-dist-label" class="text-500"><%= @m_targets["2"] %>km</span>
+      </label>
+      <div class="col-sm-4">
+        <input type="number" class="form-control" id="m1-donation" min="25" name="donation[milestone_1]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+        >
+      </div>
+    </div>
+    <div class="form-group row" id="m2-donation-group">
+      <label for="milestone-2-donation" class="col-sm-8 col-form-label">
+        Charged at <span id="m2-dist-label" class="text-500"><%= @m_targets["3"] %>km</span>
+      </label>
+      <div class="col-sm-4">
+        <input type="number" class="form-control" id="m2-donation" min="25" name="donation[milestone_2]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+        >
+      </div>
+    </div>
+    <div class="form-group row" id="m3-donation-group">
+      <label for="milestone-3-donation" class="col-sm-8 col-form-label">
+        Charged at <span id="m3-dist-label" class="text-500"><%= @m_targets["4"] %>km</span>
+      </label>
+      <div class="col-sm-4">
+        <input type="number" class="form-control" id="m3-donation" min="25" name="donation[milestone_3]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+        >
+      </div>
+    </div>
+    <h5 class="text-420 mt-2 mb-1" style="text-align: left;">
+      Total Support:
+      <span style="float:right;" id="donation-total"></span>
+    </h5>
+    <div style="clear: both;"></div>
+
+  </div>
+
   </div> <!-- End Milestone Form -->
 
   <!-- Billing form -->
@@ -127,7 +165,7 @@
           </div>
 
           <div class="text-center">
-            <button class="btn btn-bravera" style="width:250px;">Sponsor</button>
+            <button class="btn btn-bravera" style="width:250px;">Submit</button>
           </div>
 
         </form>
@@ -162,39 +200,7 @@
   <% end %>
 
 <script src="https://js.stripe.com/v3/"></script>
-<script type="text/javascript">
-  $(function(){
-    var selectedAmount = $('#amount').val();
-    $('#kickstarter').attr('readonly', true);
-    $('#milestone_1').attr('readonly', true);
-    $('#milestone_2').attr('readonly', true);
-    $('#milestone_3').attr('readonly', true);
 
-    $('#amount').change(function(){
-      if ($(this).val() == 500){
-        $('#kickstarter').val(125);
-        $('#milestone_1').val(125);
-        $('#milestone_2').val(125);
-        $('#milestone_3').val(125);
-      } else if ($(this).val() == 360){
-        $('#kickstarter').val(90);
-        $('#milestone_1').val(90);
-        $('#milestone_2').val(90);
-        $('#milestone_3').val(90);
-      } else if ($(this).val() == 260){
-        $('#kickstarter').val(65);
-        $('#milestone_1').val(65);
-        $('#milestone_2').val(65);
-        $('#milestone_3').val(65);
-      } else if ($(this).val() == 100){
-        $('#kickstarter').val(25);
-        $('#milestone_1').val(25);
-        $('#milestone_2').val(25);
-        $('#milestone_3').val(25);
-      }
-    }).change();
-  });
-</script>
 <script type="text/javascript">
   document.addEventListener("DOMContentLoaded",   function(event) {
     // stripe dev - pk_test_4aCmLebabvMfey4rz4KGMshO
@@ -246,7 +252,6 @@
           errorElement.textContent = result.error.message;
         } else {
           // Send the token to your server.
-          console.log(result.source);
           stripeSourceHandler(result.source);
         }
       });
