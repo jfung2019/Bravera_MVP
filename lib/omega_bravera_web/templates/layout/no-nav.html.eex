@@ -4,8 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Bravera: Fundraise while you Train with Milestones that Matter">
+    <meta name="author" content="Bravera.co">
+    <meta property="og:title" content="Bravera.co | Milestones that Matter" />
+    <meta property="og:type" content="fitness.fundraising" />
+    <meta property="og:url" content="https://www.bravera.co" />
+    <meta property="og:image" content="https://bravera.co/images/bravera-cover.png" />
 
     <title>Bravera</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
