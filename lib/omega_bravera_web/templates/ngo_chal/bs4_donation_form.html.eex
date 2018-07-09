@@ -65,7 +65,7 @@
   <div class="mx-auto" style="max-width: 300px;">
 
     <div class="form-group row">
-      <label for="starter-donation" class="col-sm-8 col-form-label">Starter Donation</label>
+      <label for="starter-donation" class="col-sm-8 col-form-label">Charged Now</label>
       <div class="col-sm-4">
         <input type="number" class="form-control" id="kickstarter" min="25" name="donation[kickstarter]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         >
@@ -113,7 +113,7 @@
     <div class="text-center">
       <h5>Billing Information</h5>
     </div>
-
+    <div class="max-w-500 mx-auto">
     <div class="row">
       <div class="col-md-12">
         <form class="needs-validation" novalidate="">
@@ -163,9 +163,11 @@
               <%= text_input f, :str_src, class: "form-control invisible", id: "source-input" %>
             </div>
           </div>
+        </div>
 
-          <div class="text-center">
-            <button class="btn btn-bravera" style="width:250px;">Submit</button>
+
+          <div class="text-center mx-auto">
+            <button class="btn btn-bravera btn-block" style="width:200px;">Submit</button>
           </div>
 
         </form>
