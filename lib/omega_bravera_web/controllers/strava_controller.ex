@@ -83,7 +83,7 @@ defmodule OmegaBraveraWeb.StravaController do
                  currency: currency
                } = donation
 
-               %{email: receipt_email} = Accounts.get_user!(id)
+               %{email: receipt_email} = Accounts.get_user!(user_id)
 
                params = %{"amount" => amount, "currency" => currency, "customer" => str_cus_id, "receipt_email" => receipt_email}
 
