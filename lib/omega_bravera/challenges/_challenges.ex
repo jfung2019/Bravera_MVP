@@ -15,6 +15,24 @@ defmodule OmegaBravera.Challenges do
     Repo.all(query)
   end
 
+  def get_user_active_ngo_chals(user_id) do
+    query = from nc in NGOChal,
+      where: nc.user_id == ^user_id,
+      where: nc.status == "Active"
+
+    Repo.all(query)
+  end
+
+  def get_one_user_active_chal(user_id) do
+    query = from nc in NGOChal,
+      where: nc.user_id == ^user_id,
+      where: nc.status == "Active",
+      order_by: nc.inserted_at,
+      limit: 1
+
+    Repo.one(query)
+  end
+
   def get_ngo_chal_by_slug(slug) do
     query = from nc in NGOChal,
       where: nc.slug == ^slug

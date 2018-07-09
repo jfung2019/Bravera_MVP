@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.PageController do
   use OmegaBraveraWeb, :controller
 
-  # alias OmegaBravera.{Challenges, Fundraisers}
+  alias OmegaBravera.{Challenges,Fundraisers}
   # alias OmegaBravera.Challenges.NGOChal
 
   def notFound(conn, _params) do
@@ -13,7 +13,22 @@ defmodule OmegaBraveraWeb.PageController do
 
     cond do
       user !== nil ->
-        redirect conn, to: "/ngos"
+        %{id: user_id} = user
+
+        active_chal = Challenges.get_one_user_active_chal(user_id)
+
+        cond do
+          active_chal !== nil ->
+            %{slug: chal_slug, ngo_id: ngo_id} = active_chal
+
+            ngo = Fundraisers.get_ngo!(ngo_id)
+
+            %{slug: ngo_slug} = ngo
+
+            redirect conn, to: "/" <> ngo_slug <> "/" <> chal_slug
+          true ->
+            redirect conn, to: "/ngos"
+        end
       true ->
         render(conn, "index.html")
     end
@@ -24,7 +39,22 @@ defmodule OmegaBraveraWeb.PageController do
 
     cond do
       user !== nil ->
-        redirect conn, to: "/ngos"
+        %{id: user_id} = user
+
+        active_chal = Challenges.get_one_user_active_chal(user_id)
+
+        cond do
+          active_chal !== nil ->
+            %{slug: chal_slug, ngo_id: ngo_id} = active_chal
+
+            ngo = Fundraisers.get_ngo!(ngo_id)
+
+            %{slug: ngo_slug} = ngo
+
+            redirect conn, to: "/" <> ngo_slug <> "/" <> chal_slug
+          true ->
+            redirect conn, to: "/ngos"
+        end
       true ->
         render(conn, "signup.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
@@ -35,7 +65,22 @@ defmodule OmegaBraveraWeb.PageController do
 
     cond do
       user !== nil ->
-        redirect conn, to: "/ngos"
+        %{id: user_id} = user
+
+        active_chal = Challenges.get_one_user_active_chal(user_id)
+
+        cond do
+          active_chal !== nil ->
+            %{slug: chal_slug, ngo_id: ngo_id} = active_chal
+
+            ngo = Fundraisers.get_ngo!(ngo_id)
+
+            %{slug: ngo_slug} = ngo
+
+            redirect conn, to: "/" <> ngo_slug <> "/" <> chal_slug
+          true ->
+            redirect conn, to: "/ngos"
+        end
       true ->
         render(conn, "login.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
