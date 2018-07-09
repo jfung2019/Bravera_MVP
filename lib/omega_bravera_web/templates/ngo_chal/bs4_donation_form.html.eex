@@ -99,20 +99,13 @@
             </div>
           </div>
 
-          <div class="row">
-            <div class="mb-3 col-md-6">
+            <div class="mb-3">
               <label for="email">Email</label>
               <input type="email" class="form-control" id="email" placeholder="you@example.com" name="donation[email]">
               <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
               </div>
             </div>
-
-            <div class="mb-3 col-md-6">
-              <label for="postal-code">Postal Code</label>
-              <input type="text" class="form-control" id="postal-code" placeholder="" name="donation[postal_code]" value="">
-            </div>
-          </div>
 
 
             <div class="form-group">

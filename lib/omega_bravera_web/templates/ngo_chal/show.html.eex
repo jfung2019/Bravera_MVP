@@ -37,14 +37,64 @@
           </div>
         </div>
 
-        <div class="milestones">
-          <%= @kickstarters["charged"] %>
-        </div>
+        <div class="container">
 
-        <div class="container mt-4">
-          <div class="progress chal-progress">
+          <h5 class="text-420 mt-3 mb-1 ml-1" style="text-align: left;">
+            Challenge Starter
+            <span style="float:right;" class="text-bravera"><strong>$<%= @kickstarters["charged"] %></strong> </span>
+          </h5>
+          <div style="clear: both;"></div>
+
+          <div class="progress chal-progress mb-2">
+            <div class="progress-bar bg-bravera"
+            style="width: 100%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
+            id="kick-progress"
+            ></div>
+          </div>
+
+          <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
+            Milestone 1: <%= @m_targets["2"] %>km
+            <span style="float:right;" class="text-bravera"><strong>$<%= @m1s["total"] %></strong> </span>
+          </h5>
+          <div style="clear: both;"></div>
+
+          <div class="progress chal-progress mb-2">
+            <div class="progress-bar bg-bravera"
+            style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
+            id="m1-progress"
+            ></div>
+          </div>
+
+          <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
+            Milestone 2: <%= @m_targets["3"] %>km
+            <span style="float:right;" class="text-bravera" id="m2-total"><strong>$<%= @m2s["total"]  %></strong> </span>
+          </h5>
+          <div style="clear: both;"></div>
+
+          <div class="progress chal-progress mb-2">
+            <div class="progress-bar bg-bravera"
+            style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
+            id="m2-progress"
+            ></div>
+          </div>
+
+          <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
+            Milestone 3: <%= @m_targets["4"] %>km
+            <span style="float:right;" class="text-bravera"><strong>$<%= @m3s["total"] %></strong> </span>
+          </h5>
+          <div style="clear: both;"></div>
+
+          <div class="progress chal-progress mb-2">
+            <div class="progress-bar bg-bravera"
+            style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
+            id="m3-progress"
+            ></div>
+          </div>
+
+
+          <div class="progress chal-progress mt-5">
             <div class="progress-bar bg-success"
-            style="width: 0%;" role="progressbar"  aria-valuenow="<@= @ngo_chal.total_secured %>" aria-valuemin="0" aria-valuemax="<@= @ngo_chal.money_target %>"
+            style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
             id="money-progress"
             ></div>
           </div>
@@ -55,7 +105,7 @@
 
           <div class="progress chal-progress">
             <div class="progress-bar bg-bravera"
-            id="distance-progress" role="progressbar" style="width: 0%;" aria-valuenow=<%= @ngo_chal.distance_covered %> aria-valuemin="0" aria-valuemax=<%= @ngo_chal.distance_target %>></div>
+            id="distance-progress" role="progressbar" style="width: 0%;" aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
           </div>
           <h5 class="text-420 mt-0 mb-2 text-center">
             <strong><%= @ngo_chal.distance_covered %> KM</strong> of <strong><%= @ngo_chal.distance_target %> KM</strong> Completed
@@ -157,4 +207,41 @@
 
   document.getElementById('distance-progress').setAttribute("style", distWidth);
 
+  var distCovered = <%= @ngo_chal.distance_covered %>,
+      m1Dist = <%= @m_targets["2"] %>,
+      m2Dist = <%= @m_targets["3"] %>,
+      m3Dist = <%= @m_targets["4"] %>;
+
+  var m1Perc = distCovered / m1Dist * 100,
+      m1Width;
+
+  if (m1Perc <= 100){
+    m1Width = "width:" + m1Perc  + "%;";
+  } else {
+    m1Width = "width: 100%;";
+  }
+
+  document.getElementById('m1-progress').setAttribute("style", m1Width);
+
+  var m2Perc = distCovered / m2Dist * 100,
+      m2Width;
+
+  if (m2Perc <= 100){
+    m2Width = "width:" + m2Perc  + "%;";
+  } else {
+    m2Width = "width: 100%;";
+  }
+
+  document.getElementById('m2-progress').setAttribute("style", m2Width);
+
+  var m3Perc = distCovered / m3Dist * 100,
+      m3Width;
+
+  if (m3Perc <= 100){
+    m3Width = "width:" + m3Perc  + "%;";
+  } else {
+    m3Width = "width: 100%;";
+  }
+
+  document.getElementById('m3-progress').setAttribute("style", m3Width);
 </script>

@@ -2,6 +2,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
   use OmegaBraveraWeb, :controller
   use Timex
   alias Decimal
+  alias Numbers
 
   alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money}
   alias OmegaBravera.Challenges.NGOChal
@@ -68,31 +69,35 @@ defmodule OmegaBraveraWeb.NGOChalController do
     # TODO optimize all of the maps being passed thru into one map
     ngo_chal = Challenges.get_ngo_chal_by_slug(slug)
 
-    %{id: ngo_chal_id, user_id: user_id, ngo_id: ngo_id} = ngo_chal
+    %{id: ngo_chal_id, user_id: user_id, ngo_id: ngo_id, distance_target: distance_target} = ngo_chal
 
     user = Accounts.get_user!(user_id)
     ngo = Fundraisers.get_ngo!(ngo_id)
     strava = Accounts.get_user_strava(user_id)
 
+    # Begin milestone donation aggregators
+
     charged_kickstarters = Money.get_charged_milestones(ngo_chal_id, 0)
 
     pending_kickstarters = Money.get_uncharged_milestones(ngo_chal_id, 0)
+    pending_kicks =
+      case pending_kickstarters do
+        [nil] ->
+          "0"
+        _ ->
+          [pk_decimal] = pending_kickstarters
 
-    case pending_kickstarters do
-      [nil] ->
-        pending_kicks = "0"
-      _ ->
-        [pk_decimal] = pending_kickstarters
-        pending_kicks = Decimal.to_string(pk_decimal)
-    end
+          Decimal.to_string(pk_decimal)
+      end
+    charged_kicks =
+      case charged_kickstarters do
+        [nil] ->
+          "0"
+        _ ->
+          [ck_decimal] = charged_kickstarters
 
-    case charged_kickstarters do
-      [nil] ->
-        charged_kicks = "0"
-      _ ->
-        [ck_decimal] = charged_kickstarters
-        charged_kicks = Decimal.to_string(ck_decimal)
-    end
+          Decimal.to_string(ck_decimal)
+      end
 
     kickstarters = %{"charged" => charged_kicks, "pending" => pending_kicks}
 
@@ -119,8 +124,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
           Decimal.to_string(cm1_decimal)
       end
 
-    milestone_1s = %{"charged" => charged_m1, "pending" => pending_m1}
-
     charged_m_two = Money.get_charged_milestones(ngo_chal_id, 2)
 
     pending_m_two = Money.get_uncharged_milestones(ngo_chal_id, 2)
@@ -144,8 +147,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
           Decimal.to_string(cm2_decimal)
       end
-
-    milestone_2s = %{"charged" => charged_m2, "pending" => pending_m2}
 
     charged_m_three = Money.get_charged_milestones(ngo_chal_id, 3)
 
@@ -171,16 +172,25 @@ defmodule OmegaBraveraWeb.NGOChalController do
           Decimal.to_string(cm3_decimal)
       end
 
-    milestone_3s = %{"charged" => charged_m3, "pending" => pending_m3}
+      milestone_1s = %{"charged" => charged_m1, "pending" => pending_m1, "total" => Decimal.to_string(Decimal.add(charged_m1, pending_m1))}
 
-    IO.inspect(kickstarters)
-    IO.inspect(milestone_1s)
-    IO.inspect(milestone_2s)
+      milestone_2s = %{"charged" => charged_m2, "pending" => pending_m2, "total" => Decimal.to_string(Decimal.add(charged_m2, pending_m2))}
+
+      milestone_3s = %{"charged" => charged_m3, "pending" => pending_m3, "total" => Decimal.to_string(Decimal.add(charged_m3, pending_m3))}
+
     IO.inspect(milestone_3s)
+
+
+    milestone_targets = case distance_target do
+        50 -> %{"1" => 0, "2" => 15, "3" => 25, "4" => 50}
+        75 -> %{"1" => 0, "2" => 25, "3" => 45, "4" => 75}
+        150 -> %{"1" => 0, "2" => 50, "3" => 100, "4" => 150}
+        250 -> %{"1" => 0, "2" => 75, "3" => 150, "4" => 250}
+      end
 
     changeset = Money.change_donation(%Donation{})
 
-    render(conn, "show.html", ngo_chal: ngo_chal, user: user, ngo: ngo, strava: strava, kickstarters: kickstarters, m1s: milestone_1s, m2s: milestone_2s, m3s: milestone_3s, changeset: changeset)
+    render(conn, "show.html", ngo_chal: ngo_chal, user: user, ngo: ngo, strava: strava, kickstarters: kickstarters, m1s: milestone_1s, m2s: milestone_2s, m3s: milestone_3s, m_targets: milestone_targets, changeset: changeset)
   end
 
   def edit(conn, %{"id" => id}) do

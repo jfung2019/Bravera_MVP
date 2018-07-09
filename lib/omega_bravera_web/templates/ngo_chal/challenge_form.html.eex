@@ -44,7 +44,7 @@
           <label
             name="ngo_chal[activity]"
             value="cycle"
-            class="btn btn-sq-lg btn-outline-secondary mx-md-2 my-md-2 mx-lg-3">
+            class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3">
             <h4 class="activity-text mb-0 mt-4 pt-2">
               Cycle
             </h4>

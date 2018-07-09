@@ -48,7 +48,7 @@ defmodule OmegaBraveraWeb.DonationView do
 
       [
         [
-          label(f, "Milestone #{n - 1} at #{target}km", class: "control-label"),
+          label(f, "Milestone #{n - 1}: #{target}km", class: "control-label", value: "Milestone #{n - 1}: #{target}km"),
 
           number_input(f, m, step: "any", class: "form-control text-center milestone-donations", min: "25", id: "milestone_#{n - 1}"),
 

@@ -20,7 +20,7 @@ defmodule OmegaBravera.Money do
       where: d.status == "charged",
       select: sum(d.amount)
 
-    Repo.all(query)    
+    Repo.all(query)
   end
 
   def get_uncharged_milestones(ngo_chal_id, milestone) do
@@ -30,7 +30,7 @@ defmodule OmegaBravera.Money do
       where: d.status == "pending",
       select: sum(d.amount)
 
-    result = Repo.all(query)
+    Repo.all(query)
   end
 
 
