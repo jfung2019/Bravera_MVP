@@ -55,6 +55,7 @@ defmodule OmegaBraveraWeb.StravaController do
         # TODO %{"distance" => distance}
         activity = Strava.Activity.retrieve(object_id, client)
 
+        # TODO cycly
         Logger.info fn ->
           "STRAVA ACTIVITY RECEIVED: #{inspect(activity)}"
         end
@@ -71,7 +72,6 @@ defmodule OmegaBraveraWeb.StravaController do
             %{id: ngo_chal_id,
             distance_covered: distance_covered,
             distance_target: distance_target,
-            milestones: milestone_count
             } = ngo_chal
 
             new_distance = Decimal.add(distance_covered, distance_km)
