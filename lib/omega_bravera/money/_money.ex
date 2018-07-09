@@ -11,6 +11,16 @@ defmodule OmegaBravera.Money do
   alias OmegaBravera.Money.Tip
   alias OmegaBravera.Challenges
 
+  # getting milestones
+
+  def get_donations_by_milestone(ngo_chal_id, milestone) do
+    query = from d in Donation,
+      where: d.milestone == ^milestone,
+      where: d.ngo_chal_id == ^ngo_chal_id
+
+    Repo.all(query)
+  end
+
   # for listing a user's donations
 
   def get_donations_by_user(user_id) do
