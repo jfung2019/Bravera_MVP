@@ -13,13 +13,26 @@ defmodule OmegaBravera.Money do
 
   # getting milestones
 
-  def get_donations_by_milestone(ngo_chal_id, milestone) do
+  def get_charged_milestones(ngo_chal_id, milestone) do
     query = from d in Donation,
       where: d.milestone == ^milestone,
-      where: d.ngo_chal_id == ^ngo_chal_id
+      where: d.ngo_chal_id == ^ngo_chal_id,
+      where: d.status == "charged",
+      select: sum(d.amount)
 
-    Repo.all(query)
+    Repo.all(query)    
   end
+
+  def get_uncharged_milestones(ngo_chal_id, milestone) do
+    query = from d in Donation,
+      where: d.milestone == ^milestone,
+      where: d.ngo_chal_id == ^ngo_chal_id,
+      where: d.status == "pending",
+      select: sum(d.amount)
+
+    result = Repo.all(query)
+  end
+
 
   # for listing a user's donations
 

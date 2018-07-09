@@ -36,6 +36,11 @@
             <a class="btn btn-lg btn-bravera donate-btn"  name="button" href="#sponsor">Support Now</a>
           </div>
         </div>
+
+        <div class="milestones">
+          <%= @kickstarters["charged"] %>
+        </div>
+
         <div class="container mt-4">
           <div class="progress chal-progress">
             <div class="progress-bar bg-success"

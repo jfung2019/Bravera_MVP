@@ -26,6 +26,14 @@ defmodule OmegaBraveraWeb.StravaController do
         cond do
           aspect_type == "create" ->
             get_new_activity(params)
+          aspect_type == "delete" ->
+            Logger.info fn ->
+              "Delete request"
+            end
+          true ->
+            Logger.info fn ->
+              "Neither delete nor create"
+            end
         end
     end
 
@@ -67,8 +75,6 @@ defmodule OmegaBraveraWeb.StravaController do
             } = ngo_chal
 
             new_distance = Decimal.add(distance_covered, distance_km)
-            IO.inspect(new_distance)
-            IO.inspect(new_distance)
 
             donations = Money.get_unch_donat_by_ngo_chal(ngo_chal_id)
 
