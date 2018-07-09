@@ -178,8 +178,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
       milestone_3s = %{"charged" => charged_m3, "pending" => pending_m3, "total" => Decimal.to_string(Decimal.add(charged_m3, pending_m3))}
 
-    IO.inspect(milestone_3s)
-
 
     milestone_targets = case distance_target do
         50 -> %{"1" => 0, "2" => 15, "3" => 25, "4" => 50}
