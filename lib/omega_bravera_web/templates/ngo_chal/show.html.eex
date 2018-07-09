@@ -54,7 +54,7 @@
 
           <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
             Milestone 1: <%= @m_targets["2"] %>km
-            <span style="float:right;" class="text-bravera"><strong>$<%= @m1s["total"] %></strong> </span>
+            <span style="float:right;" class="text-secondary" id="m1-total"><strong>$<%= @m1s["total"] %></strong> </span>
           </h5>
           <div style="clear: both;"></div>
 
@@ -67,7 +67,7 @@
 
           <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
             Milestone 2: <%= @m_targets["3"] %>km
-            <span style="float:right;" class="text-bravera" id="m2-total"><strong>$<%= @m2s["total"]  %></strong> </span>
+            <span style="float:right;" class="text-secondary" id="m2-total"><strong>$<%= @m2s["total"]  %></strong> </span>
           </h5>
           <div style="clear: both;"></div>
 
@@ -80,7 +80,7 @@
 
           <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
             Milestone 3: <%= @m_targets["4"] %>km
-            <span style="float:right;" class="text-bravera"><strong>$<%= @m3s["total"] %></strong> </span>
+            <span style="float:right;" class="text-secondary" id="m3-total"><strong>$<%= @m3s["total"] %></strong> </span>
           </h5>
           <div style="clear: both;"></div>
 
@@ -215,10 +215,12 @@
   var m1Perc = distCovered / m1Dist * 100,
       m1Width;
 
-  if (m1Perc <= 100){
+  if (m1Perc < 100){
     m1Width = "width:" + m1Perc  + "%;";
   } else {
     m1Width = "width: 100%;";
+    document.getElementById('m1-total').setAttribute("class", "text-bravera")
+
   }
 
   document.getElementById('m1-progress').setAttribute("style", m1Width);
@@ -226,10 +228,11 @@
   var m2Perc = distCovered / m2Dist * 100,
       m2Width;
 
-  if (m2Perc <= 100){
+  if (m2Perc < 100){
     m2Width = "width:" + m2Perc  + "%;";
   } else {
     m2Width = "width: 100%;";
+    document.getElementById('m2-total').setAttribute("class", "text-bravera")
   }
 
   document.getElementById('m2-progress').setAttribute("style", m2Width);
@@ -237,10 +240,11 @@
   var m3Perc = distCovered / m3Dist * 100,
       m3Width;
 
-  if (m3Perc <= 100){
+  if (m3Perc < 100){
     m3Width = "width:" + m3Perc  + "%;";
   } else {
     m3Width = "width: 100%;";
+    document.getElementById('m3-total').setAttribute("class", "text-bravera")
   }
 
   document.getElementById('m3-progress').setAttribute("style", m3Width);
