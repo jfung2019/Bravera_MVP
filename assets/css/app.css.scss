@@ -1,5 +1,5 @@
 $theme-colors: (
-  "secondary": #dcdcdc,
+  "secondary": #c0c0c0,
   "danger": #d21034,
   "bravera": #F5274B,
   "green": #3FA83C,
@@ -44,11 +44,12 @@ $theme-colors: (
 #money-progress{}
 
 .donate-btn{
-  width: 175px;
+  min-width: 200px;
+  max-width: 500px;
 }
 
 .chal-progress{
-  height: 24px;
+  height: 18px;
   border-radius: 20px;
 }
 
@@ -562,4 +563,16 @@ h5 {
 
 .milestone-donations{
   color: black;
+}
+
+#m1-label{
+  color: #c0c0c0;
+}
+
+#m2-label{
+  color: #c0c0c0;
+}
+
+#m3-label{
+  color: #c0c0c0;
 }

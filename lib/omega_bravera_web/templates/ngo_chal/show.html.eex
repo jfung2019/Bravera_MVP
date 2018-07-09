@@ -26,22 +26,28 @@
       <div class="card">
 
         <div class="container border-bottom">
-          <h5 class=" text-500 text-center mt-2 mb-0"> <strong id="days-left" class="text-success"></strong> Days Left
+
+          <h5 class=" text-500 text-center mt-2 mb-0"> <strong id="days-left" class="text-success"></strong> Days, <strong id="hours-left" class="text-success"></strong> Hours, <strong id="mins-left" class="text-success"></strong>  Minutes Left
           </h5>
+
           <p class="text-center mb-0" id="date-range">
           </p>
           <p style="font-size: 12px;" class="text-420 text-center mb-3">(Day/Month/Year)</h6>
 
-          <div class="mb-3 text-center">
-            <a class="btn btn-lg btn-bravera donate-btn"  name="button" href="#sponsor">Support Now</a>
+          <div class="mb-3 text-center mx-auto">
+            <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#sponsor">Support Now</a>
           </div>
         </div>
 
         <div class="container">
 
-          <h5 class="text-420 mt-3 mb-1 ml-1" style="text-align: left;">
+          <h2 class="mb-0 mt-2 text-center">
+            Milestones
+          </h2>
+
+          <h5 class="text-420 mt-1 mb-1 ml-1" style="text-align: left;">
             Challenge Starter
-            <span style="float:right;" class="text-bravera"><strong>$<%= @kickstarters["charged"] %></strong> </span>
+            <span style="float:right;" class="text-success"><strong>$<%= @kickstarters["charged"] %></strong> </span>
           </h5>
           <div style="clear: both;"></div>
 
@@ -53,7 +59,7 @@
           </div>
 
           <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
-            Milestone 1: <%= @m_targets["2"] %>km
+            <span id="m1-label"><%= @m_targets["2"] %>km</span>
             <span style="float:right;" class="text-secondary" id="m1-total"><strong>$<%= @m1s["total"] %></strong> </span>
           </h5>
           <div style="clear: both;"></div>
@@ -66,7 +72,7 @@
           </div>
 
           <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
-            Milestone 2: <%= @m_targets["3"] %>km
+            <span id="m2-label"><%= @m_targets["3"] %>km</span>
             <span style="float:right;" class="text-secondary" id="m2-total"><strong>$<%= @m2s["total"]  %></strong> </span>
           </h5>
           <div style="clear: both;"></div>
@@ -79,7 +85,7 @@
           </div>
 
           <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
-            Milestone 3: <%= @m_targets["4"] %>km
+            <span id="m3-label"><%= @m_targets["4"] %>km</span>
             <span style="float:right;" class="text-secondary" id="m3-total"><strong>$<%= @m3s["total"] %></strong> </span>
           </h5>
           <div style="clear: both;"></div>
@@ -90,41 +96,31 @@
             id="m3-progress"
             ></div>
           </div>
-
-
-          <div class="progress chal-progress mt-5">
-            <div class="progress-bar bg-success"
-            style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
-            id="money-progress"
-            ></div>
-          </div>
-
-          <h5 class="text-420 mt-0 mb-4 text-center">
-            <strong><%= @ngo_chal.total_secured %></strong> of <strong><%= @ngo_chal.money_target %> <%= @ngo_chal.default_currency %></strong> Raised
+          <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
+            Total Pledged:
+            <span style="float:right;" class="text-bravera"><strong>$<%= @ngo_chal.total_pledged %></strong> </span>
           </h5>
 
-          <div class="progress chal-progress">
-            <div class="progress-bar bg-bravera"
-            id="distance-progress" role="progressbar" style="width: 0%;" aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
-          </div>
-          <h5 class="text-420 mt-0 mb-2 text-center">
-            <strong><%= @ngo_chal.distance_covered %> KM</strong> of <strong><%= @ngo_chal.distance_target %> KM</strong> Completed
-          </h5>
+          <div style="clear: both;"></div>
+
         </div>
-        <div class=" img-fluid margin-auto mb-3">
-          <img src="/images/strava/powered-by.png" alt="Fitness Data Powered by Strava"/>
+
+        <div class="progress chal-progress mt-3 mx-3">
+          <div class="progress-bar bg-success"
+          style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
+          id="money-progress"
+          ></div>
         </div>
+
+        <h5 class="text-420 mt-0 mb-4 text-center mx-auto">
+          <strong>$<%= @ngo_chal.total_secured %></strong> of <strong>$<%= @ngo_chal.money_target %> <%= @ngo_chal.default_currency %></strong> Raised
+        </h5>
 
 
       <div class="card-footer border-top text-center mb-0 pb-0">
-          <p class="text-400">
-            <%= @user.firstname %> has unlocked
-            <strong>
-              <%= @ngo_chal.total_secured %> <%= @ngo_chal.default_currency %>
-            </strong> of<strong>
-              <%= @ngo_chal.total_pledged %> <%= @ngo_chal.default_currency %>
-            </strong> in pledged sponsorships.
-          </p>
+        <div class=" img-fluid margin-auto mb-3">
+          <img src="/images/strava/powered-by.png" alt="Fitness Data Powered by Strava"/>
+        </div>
       </div>
     </div>  <!-- End of top card -->
     <a name="sponsor"></a>
@@ -177,13 +173,22 @@
 
   var endDate = moment('<%= @ngo_chal.end_date %>').format('DD/MM/YYYY');
 
-  var a = moment('<%= @ngo_chal.end_date %>');
   var b = moment('<%= @ngo_chal.start_date %>');
-  var daysLeft = a.diff(b, 'days');
 
-  document.getElementById('date-range').innerHTML = startDate + " - " + endDate;
+  var now = moment();
+  var exp = moment('<%= @ngo_chal.end_date %>');
+
+  var daysLeft = exp.diff(now, 'days');
+
+  var hours = exp.subtract(daysLeft, 'days').diff(now, 'hours');
+
+  var minutes = exp.subtract(hours, 'hours').diff(now, 'minutes');
 
   document.getElementById('days-left').append(daysLeft);
+  document.getElementById('hours-left').append(hours);
+  document.getElementById('mins-left').append(minutes);
+
+  document.getElementById('date-range').innerHTML = startDate + " - " + endDate;
 
   var moneyPerc = <%= @ngo_chal.total_secured %> / <%= @ngo_chal.money_target %> * 100,
       moneyWidth;
@@ -196,21 +201,12 @@
 
   document.getElementById('money-progress').setAttribute("style", moneyWidth);
 
-  var distPerc = <%= @ngo_chal.distance_covered %> / <%= @ngo_chal.distance_target %> * 100,
-      distWidth;
-
-  if (distPerc <= 100){
-    distWidth = "width:" + distPerc  + "%;";
-  } else {
-    distWidth = "width: 100%;";
-  }
-
-  document.getElementById('distance-progress').setAttribute("style", distWidth);
-
   var distCovered = <%= @ngo_chal.distance_covered %>,
       m1Dist = <%= @m_targets["2"] %>,
       m2Dist = <%= @m_targets["3"] %>,
       m3Dist = <%= @m_targets["4"] %>;
+
+  var mComplete = 0;
 
   var m1Perc = distCovered / m1Dist * 100,
       m1Width;
@@ -219,8 +215,9 @@
     m1Width = "width:" + m1Perc  + "%;";
   } else {
     m1Width = "width: 100%;";
-    document.getElementById('m1-total').setAttribute("class", "text-bravera")
-
+    document.getElementById('m1-total').setAttribute("class", "text-success");
+    document.getElementById('m1-label').setAttribute("class", "text-bravera text-500");
+    mComplete = 1;
   }
 
   document.getElementById('m1-progress').setAttribute("style", m1Width);
@@ -232,7 +229,9 @@
     m2Width = "width:" + m2Perc  + "%;";
   } else {
     m2Width = "width: 100%;";
-    document.getElementById('m2-total').setAttribute("class", "text-bravera")
+    document.getElementById('m2-total').setAttribute("class", "text-success");
+    document.getElementById('m2-label').setAttribute("class", "text-bravera text-500");
+    mComplete = 2;
   }
 
   document.getElementById('m2-progress').setAttribute("style", m2Width);
@@ -244,8 +243,13 @@
     m3Width = "width:" + m3Perc  + "%;";
   } else {
     m3Width = "width: 100%;";
-    document.getElementById('m3-total').setAttribute("class", "text-bravera")
+    document.getElementById('m3-total').setAttribute("class", "text-success");
+    document.getElementById('m3-label').setAttribute("class", "text-bravera text-500");
+    mComplete = 3;
   }
 
   document.getElementById('m3-progress').setAttribute("style", m3Width);
+
+  console.log(mComplete);
+
 </script>
