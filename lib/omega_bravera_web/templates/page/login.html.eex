@@ -6,9 +6,12 @@
       </h1>
       <div class="mb-3">
         <a href="/strava/login" class="mb-1">
-          <img src="/images/strava/btn_strava_connect-orange.png" />
+          <img src="/images/strava/btn_strava_connect-orange.png" alt="Connect with Strava"/>
         </a>
       </div>
+
+      <img src="/images/fitbit-coming-soon.png"  alt="Fitbit coming soon!"/>
+
 
       <p class="mt-5 mb-3 text-muted">© 2018 Bravera</p>
     </form>
