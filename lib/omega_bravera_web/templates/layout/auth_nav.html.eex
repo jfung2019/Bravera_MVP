@@ -14,7 +14,19 @@
       </ul>
 
       <ul class="navbar-nav">
-        <div class="ml-md-4">
+        <li class="nav-item btn">
+          <a href="https://www.bravera.tech" class="nav-logo" target="_blank" rel="noreferrer noopener">
+            <i class="fa fa-nav fa-question-circle black"></i>
+          </a>
+        </li>
+
+        <li class="nav-item btn">
+          <a href="mailto:support@bravera.co" class="nav-logo">
+            <i class="fa fa-nav fa-envelope black"></i>
+          </a>
+        </li>
+
+        <div class="ml-md-4 pt-1">
           <a href="/strava/logout" class="btn btn-background">
             Log Out
           </a>

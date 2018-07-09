@@ -174,19 +174,13 @@
       </div>
     </div>
   </div>
-
-
-  <!-- TODO sort this JS -->
     <script>
-      // Example starter JavaScript for disabling form submissions if there are invalid fields
       (function() {
         'use strict';
 
         window.addEventListener('load', function() {
-          // Fetch all the forms we want to apply custom Bootstrap validation styles to
           var forms = document.getElementsByClassName('needs-validation');
 
-          // Loop over them and prevent submission
           var validation = Array.prototype.filter.call(forms, function(form) {
             form.addEventListener('submit', function(event) {
               if (form.checkValidity() === false) {
@@ -208,19 +202,15 @@
     var stripe = Stripe('pk_live_71nuYtFi1xwRKQfijxwGT1iG');
     var elements = stripe.elements();
 
-    // Custom styling can be passed to options when creating an Element.
     var style = {
       base: {
-        // Add your base input styles here. For example:
         fontSize: '16px',
         color: "#32325d",
       }
     };
 
-    // Create an instance of the card Element.
     var card = elements.create('card', {style: style});
 
-    // Add an instance of the card Element into the `card-element` <div>.
     card.mount('#card-element');
 
     card.addEventListener('change', function(event) {
@@ -247,24 +237,20 @@
 
       stripe.createSource(card, ownerInfo).then(function(result) {
         if (result.error) {
-          // Inform the customer that there was an error.
           var errorElement = document.getElementById('card-errors');
           errorElement.textContent = result.error.message;
         } else {
-          // Send the token to your server.
           stripeSourceHandler(result.source);
         }
       });
     });
 
     function stripeSourceHandler(source) {
-      // Insert the token ID into the form so it gets submitted to the server
       var form = document.getElementById('payment-form');
       var sourceInput = document.getElementById('source-input');
       sourceInput.setAttribute('value', source.id);
       form.appendChild(sourceInput);
 
-      // Submit the form
       form.submit();
     }
   });
