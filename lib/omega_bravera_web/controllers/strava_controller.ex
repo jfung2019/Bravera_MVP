@@ -121,13 +121,21 @@ defmodule OmegaBraveraWeb.StravaController do
               Decimal.cmp(new_distance, distance_covered) == :gt ->
                 Challenges.update_ngo_chal(ngo_chal, %{distance_covered: new_distance})
 
-                true ->
-                  Logger.info fn ->
-                    "No distance change"
-                  end
+              true ->
+                Logger.info fn ->
+                  "No distance change"
                 end
+            end
+            cond do
+              Decimal.cmp(new_distance, distance_target) == :gt || Decimal.cmp(new_distance, distance_target) == :eq ->
+                Challenges.update_ngo_chal(ngo_chal, %{status: "Complete"})
+                # TODO email congrats email
+              true ->
+                Logger.info fn ->
+                  "Challenge continues"
+                end
+            end
 
-                # TODO email everyone
           end)
         end
       true ->
