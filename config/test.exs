@@ -10,10 +10,11 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
 config :logger, level: :warn
 
 # Configure your database
+host = System.get_env("BRAVERA_DB_HOST") || "localhost"
 config :omega_bravera, OmegaBravera.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
   database: "omega_bravera_test",
-  hostname: "localhost",
+  hostname: host,
   pool: Ecto.Adapters.SQL.Sandbox

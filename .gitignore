@@ -6,6 +6,7 @@
 
 scraps/_DB
 .DS_Store
+.elixir_ls/*
 
 # Generated on crash by the VM
 erl_crash.dump
