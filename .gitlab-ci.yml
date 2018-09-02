@@ -11,7 +11,6 @@ before_script:
   - apt-get update
   - apt-get install -y postgresql-client
   - mix do local.hex --force, local.rebar --force, deps.get --only test
-  - mix do ecto.drop, ecto.create, ecto.load, ecto.migrate
 
 test:
   script:

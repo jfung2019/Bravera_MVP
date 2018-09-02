@@ -12,33 +12,26 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     ngo_chal
   end
 
-  describe "index" do
-    test "lists all ngo_chals", %{conn: conn} do
-      conn = get conn, ngo_chal_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Ngo chals"
-    end
-  end
-
   describe "new ngo_chal" do
     test "renders form", %{conn: conn} do
-      conn = get conn, ngo_chal_path(conn, :new)
+      conn = get conn, ngo_ngo_chal_path(conn, :new, slug: "foo")
       assert html_response(conn, 200) =~ "New Ngo chal"
     end
   end
 
   describe "create ngo_chal" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post conn, ngo_chal_path(conn, :create), ngo_chal: @create_attrs
+      conn = post conn, ngo_ngo_chal_path(conn, :create, ngo_slug: "foo"), ngo_chal: @create_attrs
 
       assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == ngo_chal_path(conn, :show, id)
+      assert redirected_to(conn) == ngo_ngo_chal_path(conn, :show, ngo_slug: "foo", slug: "bar")
 
-      conn = get conn, ngo_chal_path(conn, :show, id)
+      conn = get conn, ngo_ngo_chal_path(conn, :show, id)
       assert html_response(conn, 200) =~ "Show Ngo chal"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post conn, ngo_chal_path(conn, :create), ngo_chal: @invalid_attrs
+      conn = post conn, ngo_ngo_chal_path(conn, :create, ngo_slug: "foo"), ngo_chal: @invalid_attrs
       assert html_response(conn, 200) =~ "New Ngo chal"
     end
   end
@@ -47,7 +40,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     setup [:create_ngo_chal]
 
     test "renders form for editing chosen ngo_chal", %{conn: conn, ngo_chal: ngo_chal} do
-      conn = get conn, ngo_chal_path(conn, :edit, ngo_chal)
+      conn = get conn, ngo_ngo_chal_path(conn, :edit, ngo_chal)
       assert html_response(conn, 200) =~ "Edit Ngo chal"
     end
   end
@@ -56,28 +49,16 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     setup [:create_ngo_chal]
 
     test "redirects when data is valid", %{conn: conn, ngo_chal: ngo_chal} do
-      conn = put conn, ngo_chal_path(conn, :update, ngo_chal), ngo_chal: @update_attrs
-      assert redirected_to(conn) == ngo_chal_path(conn, :show, ngo_chal)
+      conn = put conn, ngo_ngo_chal_path(conn, :update, ngo_chal), ngo_chal: @update_attrs
+      assert redirected_to(conn) == ngo_ngo_chal_path(conn, :show, ngo_chal)
 
-      conn = get conn, ngo_chal_path(conn, :show, ngo_chal)
+      conn = get conn, ngo_ngo_chal_path(conn, :show, ngo_chal)
       assert html_response(conn, 200) =~ "some updated activity"
     end
 
     test "renders errors when data is invalid", %{conn: conn, ngo_chal: ngo_chal} do
-      conn = put conn, ngo_chal_path(conn, :update, ngo_chal), ngo_chal: @invalid_attrs
+      conn = put conn, ngo_ngo_chal_path(conn, :update, ngo_chal), ngo_chal: @invalid_attrs
       assert html_response(conn, 200) =~ "Edit Ngo chal"
-    end
-  end
-
-  describe "delete ngo_chal" do
-    setup [:create_ngo_chal]
-
-    test "deletes chosen ngo_chal", %{conn: conn, ngo_chal: ngo_chal} do
-      conn = delete conn, ngo_chal_path(conn, :delete, ngo_chal)
-      assert redirected_to(conn) == ngo_chal_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get conn, ngo_chal_path(conn, :show, ngo_chal)
-      end
     end
   end
 
