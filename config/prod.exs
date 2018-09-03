@@ -99,4 +99,4 @@ config :omega_bravera, OmegaBravera.Guardian,
 
 config :omega_bravera, OmegaBravera.Mailer,
        adapter: Bamboo.SendgridAdapter,
-       api_key:System.get_env("SENDGRID_API_KEY")
+       api_key: System.get_env("SENDGRID_API_KEY")
