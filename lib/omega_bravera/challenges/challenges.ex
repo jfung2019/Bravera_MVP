@@ -74,15 +74,10 @@ defmodule OmegaBravera.Challenges do
       {:error, %Ecto.Changeset{}}
 
   """
-  # TODO I don't think this is used anywhere, this might be an NGO thing, not an ngo_chal thing, misported
-  def create_ngo_chal(%NGO{} = ngo, %User{} = user, attrs \\ %{}) do
-    %{"id" => ngo_id} = ngo
-    %{"id" => user_id} = user
+  def create_ngo_chal(%NGOChal{} = chal, attrs \\ %{}) do
 
-    %NGOChal{}
+    chal
     |> NGOChal.changeset(attrs)
-    |> Ecto.Changeset.put_change(:user_id, user_id)
-    |> Ecto.Changeset.put_change(:ngo_id, ngo_id)
     |> Repo.insert()
   end
 
