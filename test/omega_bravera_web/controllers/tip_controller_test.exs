@@ -12,13 +12,6 @@ defmodule OmegaBraveraWeb.TipControllerTest do
     tip
   end
 
-  describe "index" do
-    test "lists all tips", %{conn: conn} do
-      conn = get conn, tip_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Tips"
-    end
-  end
-
   describe "new tip" do
     test "renders form", %{conn: conn} do
       conn = get conn, tip_path(conn, :new)
@@ -40,44 +33,6 @@ defmodule OmegaBraveraWeb.TipControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post conn, tip_path(conn, :create), tip: @invalid_attrs
       assert html_response(conn, 200) =~ "New Tip"
-    end
-  end
-
-  describe "edit tip" do
-    setup [:create_tip]
-
-    test "renders form for editing chosen tip", %{conn: conn, tip: tip} do
-      conn = get conn, tip_path(conn, :edit, tip)
-      assert html_response(conn, 200) =~ "Edit Tip"
-    end
-  end
-
-  describe "update tip" do
-    setup [:create_tip]
-
-    test "redirects when data is valid", %{conn: conn, tip: tip} do
-      conn = put conn, tip_path(conn, :update, tip), tip: @update_attrs
-      assert redirected_to(conn) == tip_path(conn, :show, tip)
-
-      conn = get conn, tip_path(conn, :show, tip)
-      assert html_response(conn, 200) =~ "some updated currency"
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, tip: tip} do
-      conn = put conn, tip_path(conn, :update, tip), tip: @invalid_attrs
-      assert html_response(conn, 200) =~ "Edit Tip"
-    end
-  end
-
-  describe "delete tip" do
-    setup [:create_tip]
-
-    test "deletes chosen tip", %{conn: conn, tip: tip} do
-      conn = delete conn, tip_path(conn, :delete, tip)
-      assert redirected_to(conn) == tip_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get conn, tip_path(conn, :show, tip)
-      end
     end
   end
 

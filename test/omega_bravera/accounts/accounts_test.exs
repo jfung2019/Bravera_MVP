@@ -6,8 +6,8 @@ defmodule OmegaBravera.AccountsTest do
   describe "users" do
     alias OmegaBravera.Accounts.User
 
-    @valid_attrs %{email: "some email", firstname: "some firstname", lastname: "some lastname"}
-    @update_attrs %{email: "some updated email", firstname: "some updated firstname", lastname: "some updated lastname"}
+    @valid_attrs %{email: "test@test.com", firstname: "some firstname", lastname: "some lastname"}
+    @update_attrs %{email: "updated_test@test.com", firstname: "some updated firstname", lastname: "some updated lastname"}
     @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
 
     def user_fixture(attrs \\ %{}) do
@@ -31,7 +31,7 @@ defmodule OmegaBravera.AccountsTest do
 
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
-      assert user.email == "some email"
+      assert user.email == "test@test.com"
       assert user.firstname == "some firstname"
       assert user.lastname == "some lastname"
     end
@@ -44,7 +44,7 @@ defmodule OmegaBravera.AccountsTest do
       user = user_fixture()
       assert {:ok, user} = Accounts.update_user(user, @update_attrs)
       assert %User{} = user
-      assert user.email == "some updated email"
+      assert user.email == "updated_test@test.com"
       assert user.firstname == "some updated firstname"
       assert user.lastname == "some updated lastname"
     end

@@ -8,7 +8,6 @@ defmodule OmegaBravera.Challenges do
 
   alias OmegaBravera.Challenges.{NGOChal, Team}
   alias OmegaBravera.Accounts.User
-  alias OmegaBravera.Fundraisers.NGO
 
   def get_user_ngo_chals(user_id) do
     query = from nc in NGOChal, where: nc.user_id == ^user_id

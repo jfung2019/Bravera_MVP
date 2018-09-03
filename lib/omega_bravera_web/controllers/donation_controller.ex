@@ -163,6 +163,8 @@ defmodule OmegaBraveraWeb.DonationController do
         %{2 => donation_params["milestone_2"], 1 => donation_params["milestone_1"]}
       donation_params["milestone_1"] ->
         %{1 => donation_params["milestone_1"]}
+      true ->
+        %{}
     end
   end
 
