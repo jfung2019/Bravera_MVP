@@ -64,4 +64,39 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
-import_config "prod.secret.exs"
+# import_config "prod.secret.exs"
+
+config :omega_bravera, OmegaBraveraWeb.Endpoint,
+       secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE")
+
+config :omega_bravera, OmegaBravera.Repo,
+       adapter: Ecto.Adapters.Postgres,
+       url: System.get_env("DATABASE_URL"),
+       ssl: true,
+       pool_size: 1
+
+# Strava dev config
+
+config :strava,
+       client_id: "23267",
+       client_secret: System.get_env("STRAVA_CLIENT_SECRET"),
+       access_token: System.get_env("STRAVA_ACCESS_TOKEN"),
+       redirect_uri: System.get_env("STRAVA_REDIRECT_URI")
+
+# Stripy dev config
+
+config :stripy,
+       secret_key: System.get_env("DATABASE_URL"),
+       endpoint: "https://api.stripe.com/v1/"
+
+# Guardian config
+
+config :omega_bravera, OmegaBravera.Guardian,
+       issuer: "bravera",
+       secret_key: System.get_env("GUARDIAN_SECRET_KEY")
+
+# Email config
+
+config :omega_bravera, OmegaBravera.Mailer,
+       adapter: Bamboo.SendgridAdapter,
+       api_key:System.get_env("SENDGRID_API_KEY")
