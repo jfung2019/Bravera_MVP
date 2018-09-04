@@ -10,6 +10,7 @@ defmodule OmegaBraveraWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Guardian.MaybeAuthPipeline
+    plug OmegaBraveraWeb.GoogleAnalytics
   end
 
   pipeline :jwt_authenticated do
