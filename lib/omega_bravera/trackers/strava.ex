@@ -15,10 +15,12 @@ defmodule OmegaBravera.Trackers.Strava do
     timestamps()
   end
 
+  @required_attributes [:email, :athlete_id, :firstname, :lastname, :token]
+
   @doc false
   def changeset(strava, attrs) do
     strava
-    |> cast(attrs, [:email, :athlete_id, :firstname, :lastname, :token])
-    |> validate_required([:email, :athlete_id, :firstname, :lastname, :token])
+    |> cast(attrs, @required_attributes)
+    |> validate_required(@required_attributes)
   end
 end

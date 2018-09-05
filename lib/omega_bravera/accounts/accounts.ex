@@ -8,7 +8,7 @@ defmodule OmegaBravera.Accounts do
   alias Ecto.Multi
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Accounts.{User, Credential}
+  alias OmegaBravera.{Accounts, Accounts.User, Accounts.Credential}
   alias OmegaBravera.Trackers
   alias OmegaBravera.Trackers.Strava
   alias OmegaBravera.Challenges.NGOChal
@@ -61,38 +61,15 @@ defmodule OmegaBravera.Accounts do
   """
 
   def insert_or_update_strava_user(changeset) do
-    %{email: email, firstname: firstname, lastname: lastname, token: token, athlete_id: athlete_id} = changeset
-
-    user_changeset = %{"email" => email, "firstname" => firstname, "lastname" => lastname}
-
-    strava_changeset = %{"token" => token, "email" => email, "firstname" => firstname, "lastname" => lastname, "athlete_id" => athlete_id}
+    %{token: token, email: email} = changeset
 
     case Repo.get_by(User, email: email) do
       nil ->
-         create_strava_user(user_changeset, strava_changeset)
+        Accounts.Strava.create_user_with_tracker_and_email(changeset)
       user ->
-        %{id: user_id} = user
-        case Repo.get_by(Strava, user_id: user_id) do
-          nil ->
-            Trackers.create_strava(user_id, strava_changeset)
-          strava ->
-            %{token: strava_token} = strava
-            unless strava_token == token do
-              Trackers.update_strava(strava, strava_changeset)
-            end
-            {:ok, user}
-        end
+        Trackers.create_or_update_tracker(user, changeset)
+        {:ok, user}
     end
-  end
-
-  def create_strava_user(user_changeset, strava_changeset) do
-
-    Multi.new
-    |> Multi.run(:user, fn %{} -> create_user(user_changeset) end)
-    |> Multi.run(:strava, fn %{user: user} ->
-       Trackers.create_strava(user.id, strava_changeset)
-       end)
-    |> Repo.transaction()
   end
 
   @doc """

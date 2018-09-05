@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.StravaController do
         end
     end
 
-    conn |> render("webhook_callback.json", status: "200")
+    render(conn, "webhook_callback.json", status: "200")
   end
 
 # TODO Add guards for starting date
@@ -159,46 +159,26 @@ defmodule OmegaBraveraWeb.StravaController do
   This action is reached via `/auth/callback` and is the the callback URL that Strava will redirect the user back to with a `code` that will be used to request an access token.
   The access token will then be used to access protected resources on behalf of the user.
   """
-
   # Make separate Strava params for a Strava record, create email if email doesn't exist?
-
   # Would have to make function to check if user is logged in already to add Strava to fitness provider
-
-  def strava_callback(conn, %{"code" => code}) do
-    client = Strava.Auth.get_token!(code: code)
-    athlete = Strava.Auth.get_athlete!(client)
-
-    %{token: %{access_token: access_token}} = client
-
-    %{email: athlete_email, firstname: athlete_firstname, lastname: athlete_lastname, id: athlete_id_int} = athlete
-
-    athlete_id = to_string(athlete_id_int)
-
-    params = %{token: access_token, email: athlete_email, firstname: athlete_firstname, lastname: athlete_lastname, athlete_id: athlete_id}
-
+  def strava_callback(conn, params) do
     conn
-      |> login(params)
-      |> redirect(to: "/")
+    |> login(Accounts.Strava.login_changeset(params))
+    |> redirect(to: "/")
   end
 
-# have to do a case to handle user connecting strava
-
+  # have to do a case to handle user connecting strava
   defp login(conn, changeset) do
     case Accounts.insert_or_update_strava_user(changeset) do
       {:ok, result} ->
-        # NOTE what does match? do and is it optimal?
-        cond do
-        match?(%{id: _}, result) ->
-          conn
-          |> put_flash(:info, "Welcome!")
-          |> Guardian.Plug.sign_in(result)
-        match?(%{strava: _}, result) ->
-          %{user: result_user} = result
-
-          conn
-          |> put_flash(:info, "Welcome!")
-          |> Guardian.Plug.sign_in(result_user)
+        login_params = cond do
+          match?(%{id: _}, result) -> result
+          match?(%{strava: _}, result) -> result[:user]
         end
+
+        conn
+        |> put_flash(:info, "Welcome!")
+        |> Guardian.Plug.sign_in(login_params)
       {:error, _reason} ->
         conn
         |> put_flash(:error, "Error signing in")

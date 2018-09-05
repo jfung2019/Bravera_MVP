@@ -9,6 +9,9 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Stripe.StrCustomer
 
+  @required_attributes [:email]
+  @allowed_attributes [:email, :firstname, :lastname]
+
   schema "users" do
     field :email, :string
     field :firstname, :string, default: "No Name"
@@ -27,8 +30,8 @@ defmodule OmegaBravera.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :firstname, :lastname])
-    |> validate_required([:email])
+    |> cast(attrs, @allowed_attributes)
+    |> validate_required(@required_attributes)
     |> validate_format(:email, ~r/@/)
     |> validate_length(:email, max: 254)
     |> unique_constraint(:email)
