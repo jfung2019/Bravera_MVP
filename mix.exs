@@ -20,7 +20,7 @@ defmodule OmegaBravera.Mixfile do
   def application do
     [
       mod: {OmegaBravera.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :sendgrid]
     ]
   end
 
@@ -53,7 +53,9 @@ defmodule OmegaBravera.Mixfile do
       {:edeliver, "~> 1.5.0"},
       {:distillery, "~> 1.5.3", runtime: false},
       {:coerce, "~> 1.0.0"},
-      {:logger_file_backend, "0.0.4"}
+      {:logger_file_backend, "0.0.4"},
+      {:exvcr, "~> 0.10", only: :test},
+      {:sendgrid, "~> 1.8.0"}
     ]
   end
 

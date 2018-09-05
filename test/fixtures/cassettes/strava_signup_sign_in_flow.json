@@ -1,0 +1,35 @@
+[
+  {
+    "request": {
+      "body": "client_id=23267&client_secret=508d46fce35e03a657546bf62283543c9ffe330f&code=ddca33888c1a5abaf14259adaae4da42398ec2ba&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fstrava%2Fcallback",
+      "headers": {
+        "content-type": "application/x-www-form-urlencoded",
+        "accept": "application/json"
+      },
+      "method": "post",
+      "options": [],
+      "request_body": "",
+      "url": "https://www.strava.com/oauth/token"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\"token_type\":\"Bearer\",\"access_token\":\"87318aaded9cdeb99a1a3c20c6af26ccf059de30\",\"athlete\":{\"id\":33762738,\"username\":null,\"resource_state\":2,\"firstname\":\"Rafael\",\"lastname\":\"Garcia\",\"city\":null,\"state\":null,\"country\":null,\"sex\":\"M\",\"premium\":false,\"created_at\":\"2018-08-14T11:52:19Z\",\"updated_at\":\"2018-08-14T11:52:37Z\",\"badge_type_id\":0,\"profile_medium\":\"https://graph.facebook.com/10160635840075043/picture?height=256\\u0026width=256\",\"profile\":\"https://graph.facebook.com/10160635840075043/picture?height=256\\u0026width=256\",\"friend\":null,\"follower\":null,\"email\":\"simon.garciar@gmail.com\"}}",
+      "headers": {
+        "Date": "Wed, 05 Sep 2018 16:23:41 GMT",
+        "Content-Type": "application/json; charset=UTF-8",
+        "Transfer-Encoding": "chunked",
+        "Connection": "keep-alive",
+        "Cache-Control": "max-age=0, private, must-revalidate",
+        "Via": "1.1 linkerd",
+        "Status": "200 OK",
+        "X-Request-Id": "d03718ac-1284-4287-a8eb-1e2c15ef9cad",
+        "ETag": "W/\"178ef6b28a7e6fcfaa8aa1e0b73f795b\"",
+        "X-Frame-Options": "SAMEORIGIN,DENY",
+        "X-Content-Type-Options": "nosniff",
+        "X-XSS-Protection": "1; mode=block"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]

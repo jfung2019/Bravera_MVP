@@ -18,3 +18,13 @@ config :omega_bravera, OmegaBravera.Repo,
   database: "omega_bravera_test",
   hostname: host,
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :strava,
+  client_id: "23267",
+  client_secret: "508d46fce35e03a657546bf62283543c9ffe330f",
+  access_token: "8830cb6e827146658aa034027d8d399ef1267b46",
+  redirect_uri: "http://localhost:4000/strava/callback"
+
+config :sendgrid,
+  api_key: "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",
+  sandbox_enable: true

@@ -33,11 +33,8 @@ config :omega_bravera, OmegaBravera.Guardian,
        secret_key: "TVCFw5ZzCC5gqI8FeRUg3jT7U578dbb4gGjBXq8Zt1Rk4ctVFj/zTRn6gfGOXiU0"
 
  # Email config
-
- config :omega_bravera, OmegaBravera.Mailer,
-  adapter: Bamboo.SendgridAdapter,
-  api_key: "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"
-
+config :sendgrid,
+  api_key: "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"
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
