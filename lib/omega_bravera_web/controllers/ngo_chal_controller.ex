@@ -31,35 +31,23 @@ defmodule OmegaBraveraWeb.NGOChalController do
       end
   end
 
-  def create(conn, %{"ngo_slug" => ngo_id_string, "ngo_chal" => ngo_chal_params}) do
-    # Oddly, ngo_slug = ngo_id here...
+  def create(conn, %{"ngo_slug" => ngo_id, "ngo_chal" => chal_params}) do
     current_user = Guardian.Plug.current_resource(conn)
+    sluggified_username = Slugify.gen_random_slug(current_user.first_name)
 
-    %{id: user_id, firstname: firstname} = current_user
+    # Oddly, ngo_slug = ngo_id here...
+    ngo = Fundraisers.get_ngo!(ngo_id)
 
-    ngo = Fundraisers.get_ngo!(ngo_id_string)
+    changeset_params = Map.merge(chal_params, %{user_id: current_user.id, ngo_id: ngo.id, slug: sluggified_username})
 
-    %{slug: ngo_slug, id: ngo_id} = ngo
+    case Challenges.create_ngo_chal(%NGOChal{}, changeset_params) do
+      {:ok, challenge} ->
+        challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
+        Challenge.send_challenge_signup_email(challenge, challenge_path)
 
-    %{"duration" => duration_str} = ngo_chal_params
-
-    slug = Slugify.gen_random_slug(firstname)
-
-    start_date = Timex.now
-
-    {duration, _} = Integer.parse(duration_str)
-
-    end_date = Timex.shift(start_date, days: duration)
-
-    # TODO pass a map below and simplify the insert
-
-    case Challenges.insert_ngo_chal(ngo_chal_params, ngo_id, user_id, slug, start_date, end_date) do
-      {:ok, _ngo_chal} ->
-        # TODO put the social share link in the put_flash?!
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
-        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
-
+        |> redirect(to: challenge_path)
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset, ngo: ngo)
     end
@@ -179,12 +167,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       milestone_3s = %{"charged" => charged_m3, "pending" => pending_m3, "total" => Decimal.to_string(Decimal.add(charged_m3, pending_m3))}
 
 
-    milestone_targets = case distance_target do
-        50 -> %{"1" => 0, "2" => 15, "3" => 25, "4" => 50}
-        75 -> %{"1" => 0, "2" => 25, "3" => 45, "4" => 75}
-        150 -> %{"1" => 0, "2" => 50, "3" => 100, "4" => 150}
-        250 -> %{"1" => 0, "2" => 75, "3" => 150, "4" => 250}
-      end
+    milestone_targets = Challenges.milestones_for_challenge(ngo_chal)
 
     changeset = Money.change_donation(%Donation{})
 

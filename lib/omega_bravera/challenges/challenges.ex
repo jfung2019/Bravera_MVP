@@ -8,6 +8,39 @@ defmodule OmegaBravera.Challenges do
 
   alias OmegaBravera.Challenges.{NGOChal, Team}
   alias OmegaBravera.Accounts.User
+  alias SendGrid.{Email, Mailer}
+
+  def send_challenge_signup_email(%NGOChal{} = challenge, path) do
+    milestones = Map.take(milestones_for_challenge(challenge), ["2", "3", "4"])
+
+    milestones_string =
+      milestones
+      |> Map.values()
+      |> Enum.map(&("#{&1} Km"))
+      |> Enum.join(",")
+
+    Email.build()
+    |> Email.put_template("e5402f0b-a2c2-4786-955b-21d1cac6211d")
+    |> Email.add_substitution("-firstName-", challenge.user.first_name)
+    |> Email.add_substitution("-challengeURL-", "http://bravera.co/#{path}")
+    |> Email.add_substitution("-challengeName-", challenge.slug)
+    |> Email.add_substitution("-ngoName-", challenge.ngo.name)
+    |> Email.add_substitution("-daysDuration-", "#{challenge.duration} days")
+    |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
+    |> Email.add_substitution("-challengeMilestones-", "#{milestones_string}")
+    |> Email.put_from("admin@bravera.co")
+    |> Email.add_to(challenge.user.email)
+    |> Mailer.send()
+  end
+
+  def milestones_for_challenge(%NGOChal{distance_target: distance}) do
+    case distance do
+      50 -> %{"1" => 0, "2" => 15, "3" => 25, "4" => 50}
+      75 -> %{"1" => 0, "2" => 25, "3" => 45, "4" => 75}
+      150 -> %{"1" => 0, "2" => 50, "3" => 100, "4" => 150}
+      250 -> %{"1" => 0, "2" => 75, "3" => 150, "4" => 250}
+    end
+  end
 
   def get_user_ngo_chals(user_id) do
     query = from nc in NGOChal, where: nc.user_id == ^user_id
@@ -40,7 +73,6 @@ defmodule OmegaBravera.Challenges do
   end
 
   def get_ngo_ngo_chals(ngo_id, order_by) do
-
     query = from nc in NGOChal,
           where: nc.ngo_id == ^ngo_id,
           join: u in User, where: u.id == nc.user_id
@@ -61,6 +93,7 @@ defmodule OmegaBravera.Challenges do
         |> Repo.all
     end
   end
+
   @doc """
   Creates a ngo_chal.
 
@@ -74,17 +107,11 @@ defmodule OmegaBravera.Challenges do
 
   """
   def create_ngo_chal(%NGOChal{} = chal, attrs \\ %{}) do
-
     chal
     |> NGOChal.changeset(attrs)
     |> Repo.insert()
   end
 
-  def insert_ngo_chal(params, ngo_id, user_id, slug, start_date, end_date) do
-    %NGOChal{ngo_id: ngo_id, user_id: user_id, slug: slug, start_date: start_date, end_date: end_date}
-    |> NGOChal.changeset(params)
-    |> Repo.insert()
-  end
 
   @doc """
   Returns the list of ngo_chals.

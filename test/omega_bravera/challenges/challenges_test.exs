@@ -6,8 +6,8 @@ defmodule OmegaBravera.ChallengesTest do
   describe "ngo_chals" do
     alias OmegaBravera.Challenges.NGOChal
 
-    @valid_attrs %{activity: "some activity", distance_target: 120, duration: 42, money_target: "120.5", slug: "some slug", start_date: "2010-04-17 14:00:00.000000Z", status: "some status", end_date: "2010-04-18 14:00:00.000000Z"}
-    @update_attrs %{activity: "some updated activity", distance_target: 456, duration: 43, money_target: "456.7", slug: "some updated slug", start_date: "2011-05-18 15:01:01.000000Z", status: "some updated status"}
+    @valid_attrs %{activity: "some activity", distance_target: 120, duration: "42", money_target: "120.5", slug: "some slug", start_date: "2010-04-17 14:00:00.000000Z", status: "some status", end_date: "2010-04-18 14:00:00.000000Z"}
+    @update_attrs %{activity: "some updated activity", distance_target: 456, duration: "43", money_target: "456.7", slug: "some updated slug", start_date: "2011-05-18 15:01:01.000000Z", status: "some updated status"}
     @invalid_attrs %{activity: nil, distance_target: "invalid", duration: "invalid", money_target: nil, slug: nil, start_date: nil, status: nil}
 
     def ngo_chal_fixture(attrs \\ %{}) do

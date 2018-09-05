@@ -29,10 +29,35 @@ defmodule OmegaBravera.Challenges.NGOChal do
     timestamps()
   end
 
+  @allowed_attributes [
+    :activity, :money_target, :distance_target, :distance_covered, :slug, :start_date, :end_date,
+    :status, :duration, :milestones, :total_pledged, :total_secured, :default_currency,
+    :user_id, :ngo_id
+  ]
+
+  @required_attributes [
+    :activity, :money_target, :distance_target,
+    :start_date, :end_date, :status, :duration,
+    :milestones, :user_id, :ngo_id, :slug
+  ]
+
   @doc false
   def changeset(ngo_chal, attrs) do
     ngo_chal
-    |> cast(attrs, [:activity, :money_target, :distance_target, :distance_covered, :slug, :start_date, :end_date, :status, :duration, :milestones, :total_pledged, :total_secured, :default_currency])
-    |> validate_required([:activity, :money_target, :distance_target, :start_date, :end_date, :status, :duration, :milestones])
+    |> cast(attrs, @allowed_attributes)
+    |> validate_required(@required_attributes)
+    |> add_start_and_end_dates(attrs)
   end
+
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %{duration: duration_str}) do
+    {duration, _} = Integer.parse(duration_str)
+    start_date = Timex.now
+    end_date = Timex.shift(start_date, days: duration)
+
+
+    changeset
+    |> change(start_date: start_date)
+    |> change(end_date: end_date)
+  end
+
 end
