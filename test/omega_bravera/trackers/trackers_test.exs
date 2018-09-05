@@ -1,20 +1,19 @@
 defmodule OmegaBravera.TrackersTest do
   use OmegaBravera.DataCase
 
-  alias OmegaBravera.Trackers
+  alias OmegaBravera.{Accounts, Trackers}
 
   describe "stravas" do
     alias OmegaBravera.Trackers.Strava
 
-    @valid_attrs %{athlete_id: 42, email: "some email", firstname: "some firstname", lastname: "some lastname", token: "some token"}
-    @update_attrs %{athlete_id: 43, email: "some updated email", firstname: "some updated firstname", lastname: "some updated lastname", token: "some updated token"}
+    @valid_attrs %{athlete_id: 42, email: "someone@email.com", firstname: "firstname", lastname: "lastname", token: "token"}
+    @update_attrs %{athlete_id: 43, email: "someone@updatedemail.com", firstname: "updated firstname", lastname: "updated lastname", token: "updated token"}
     @invalid_attrs %{athlete_id: nil, email: nil, firstname: nil, lastname: nil, token: nil}
 
     def strava_fixture(attrs \\ %{}) do
-      {:ok, strava} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Trackers.create_strava()
+      changeset_attrs = Map.merge(@valid_attrs, attrs)
+      changeset = Strava.changeset(%Strava{}, changeset_attrs)
+      {:ok, strava} = Repo.insert(changeset)
 
       strava
     end
@@ -30,12 +29,17 @@ defmodule OmegaBravera.TrackersTest do
     end
 
     test "create_strava/1 with valid data creates a strava" do
-      assert {:ok, %Strava{} = strava} = Trackers.create_strava(@valid_attrs)
+      {:ok, user} = Accounts.create_user(%{email: "someone@email.com", firstname: "firstname", lastname: "lastname"})
+      {:ok, strava} = Trackers.create_strava(user.id, @valid_attrs)
+
+
+      assert match?(%Trackers.Strava{}, strava) == true
+
       assert strava.athlete_id == 42
-      assert strava.email == "some email"
-      assert strava.firstname == "some firstname"
-      assert strava.lastname == "some lastname"
-      assert strava.token == "some token"
+      assert strava.email == "someone@email.com"
+      assert strava.firstname == "firstname"
+      assert strava.lastname == "lastname"
+      assert strava.token == "token"
     end
 
     test "create_strava/1 with invalid data returns error changeset" do
@@ -44,13 +48,16 @@ defmodule OmegaBravera.TrackersTest do
 
     test "update_strava/2 with valid data updates the strava" do
       strava = strava_fixture()
+
       assert {:ok, strava} = Trackers.update_strava(strava, @update_attrs)
-      assert %Strava{} = strava
+
+      assert match?(%Trackers.Strava{}, strava) == true
+
       assert strava.athlete_id == 43
-      assert strava.email == "some updated email"
-      assert strava.firstname == "some updated firstname"
-      assert strava.lastname == "some updated lastname"
-      assert strava.token == "some updated token"
+      assert strava.email == "someone@updatedemail.com"
+      assert strava.firstname == "updated firstname"
+      assert strava.lastname == "updated lastname"
+      assert strava.token == "updated token"
     end
 
     test "update_strava/2 with invalid data returns error changeset" do
