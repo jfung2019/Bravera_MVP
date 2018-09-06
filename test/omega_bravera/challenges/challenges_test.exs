@@ -19,7 +19,7 @@ defmodule OmegaBravera.ChallengesTest do
     test "build_challenge_signup_email" do
       challenge = insert(:ngo_challenge)
 
-      email = Challenges.build_challenge_signup_email(challenge, "swcc/John-582")
+      email = Challenges.build_challenge_signup_email(challenge, "/swcc/John-582")
 
       assert email == %SendGrid.Email{
         __phoenix_layout__: nil,
