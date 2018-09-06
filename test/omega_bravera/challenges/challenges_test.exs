@@ -1,20 +1,52 @@
 defmodule OmegaBravera.ChallengesTest do
   use OmegaBravera.DataCase
 
+  import OmegaBravera.Factory
+
   alias OmegaBravera.Challenges
 
   describe "ngo_chals" do
     alias OmegaBravera.Challenges.NGOChal
 
-    @valid_attrs %{activity: "some activity", distance_target: 120, duration: "42", money_target: "120.5", slug: "some slug", start_date: "2010-04-17 14:00:00.000000Z", status: "some status", end_date: "2010-04-18 14:00:00.000000Z"}
-    @update_attrs %{activity: "some updated activity", distance_target: 456, duration: "43", money_target: "456.7", slug: "some updated slug", start_date: "2011-05-18 15:01:01.000000Z", status: "some updated status"}
-    @invalid_attrs %{activity: nil, distance_target: "invalid", duration: "invalid", money_target: nil, slug: nil, start_date: nil, status: nil}
+    @valid_attrs %{"activity" => "some activity", "distance_target" => 120, "duration" => 42, "money_target" => "120.5", "slug" => "some slug", "status" => "some status"}
+    @update_attrs %{"activity" => "some updated activity", "distance_target" => 456, "duration" => 43, "money_target" => "456.7", "slug" => "some updated slug", "status" => "some updated status"}
+    @invalid_attrs %{"activity" => nil, "distance_target" => "invalid", "duration" => "invalid", "money_target" => nil, "slug" => nil, "status" => nil}
 
     def ngo_chal_fixture(attrs \\ %{}) do
-      attrs = Enum.into(attrs, @valid_attrs)
-      {:ok, ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, attrs)
+      insert(:ngo_challenge)
+    end
 
-      ngo_chal
+    test "build_challenge_signup_email" do
+      challenge = insert(:ngo_challenge)
+
+      email = Challenges.build_challenge_signup_email(challenge, "swcc/John-582")
+
+      assert email == %SendGrid.Email{
+        __phoenix_layout__: nil,
+        __phoenix_view__: nil,
+        attachments: nil,
+        bcc: nil,
+        cc: nil,
+        content: nil,
+        custom_args: nil,
+        headers: nil,
+        reply_to: nil,
+        send_at: nil,
+        subject: nil,
+        from: %{email: "admin@bravera.co"},
+        substitutions: %{
+          "-challengeDistance-" => "#{challenge.distance_target} Km",
+          "-challengeMilestones-" => NGOChal.milestones_string(challenge),
+          "-challengeName-" => nil,
+          "-challengeURL-" => "http://bravera.co/swcc/John-582",
+          "-startDate-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
+          "-daysDuration-" => "5 days",
+          "-firstName-" => "John",
+          "-ngoName-" => "Save the children worldwide"
+        },
+        template_id: "e5402f0b-a2c2-4786-955b-21d1cac6211d",
+        to: [%{email: challenge.user.email}]
+      }
     end
 
     test "list_ngo_chals/0 returns all ngo_chals" do
@@ -29,13 +61,18 @@ defmodule OmegaBravera.ChallengesTest do
     end
 
     test "create_ngo_chal/1 with valid data creates a ngo_chal" do
-      assert {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, @valid_attrs)
+      user = insert(:user)
+      ngo = insert(:ngo)
+
+      attrs = Map.merge(@valid_attrs, %{"user_id" => user.id, "ngo_id" => ngo.id})
+
+      {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, attrs)
+
       assert ngo_chal.activity == "some activity"
       assert ngo_chal.distance_target == 120
       assert ngo_chal.duration == 42
       assert ngo_chal.money_target == Decimal.new("120.5")
       assert ngo_chal.slug == "some slug"
-      assert ngo_chal.start_date == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
       assert ngo_chal.status == "some status"
     end
 
@@ -45,14 +82,16 @@ defmodule OmegaBravera.ChallengesTest do
 
     test "update_ngo_chal/2 with valid data updates the ngo_chal" do
       ngo_chal = ngo_chal_fixture()
-      assert {:ok, ngo_chal} = Challenges.update_ngo_chal(ngo_chal, @update_attrs)
-      assert %NGOChal{} = ngo_chal
+
+      {:ok, ngo_chal} = Challenges.update_ngo_chal(ngo_chal, @update_attrs)
+
+      assert match?(%NGOChal{}, ngo_chal) == true
+
       assert ngo_chal.activity == "some updated activity"
       assert ngo_chal.distance_target == 456
       assert ngo_chal.duration == 43
       assert ngo_chal.money_target == Decimal.new("456.7")
       assert ngo_chal.slug == "some updated slug"
-      assert ngo_chal.start_date == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
       assert ngo_chal.status == "some updated status"
     end
 

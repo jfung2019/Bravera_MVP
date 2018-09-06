@@ -22,10 +22,13 @@ defmodule OmegaBravera.Fundraisers.NGO do
     timestamps()
   end
 
+  @allowed_attributes [:name, :desc, :logo, :image, :stripe_id, :slug, :url, :full_desc]
+  @required_attributes [:name, :stripe_id, :slug]
+
   @doc false
   def changeset(ngo, attrs) do
     ngo
-    |> cast(attrs, [:name, :desc, :logo, :image, :stripe_id, :slug, :url, :full_desc])
-    |> validate_required([:name, :stripe_id, :slug])
+    |> cast(attrs, @allowed_attributes)
+    |> validate_required(@required_attributes)
   end
 end

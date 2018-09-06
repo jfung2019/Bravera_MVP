@@ -37,8 +37,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
 
   @required_attributes [
     :activity, :money_target, :distance_target,
-    :start_date, :end_date, :status, :duration,
-    :milestones, :user_id, :ngo_id, :slug
+    :status, :duration, :user_id, :ngo_id, :slug
   ]
 
   @doc false
@@ -46,18 +45,53 @@ defmodule OmegaBravera.Challenges.NGOChal do
     ngo_chal
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
-    |> add_start_and_end_dates(attrs)
+    |> validate_number(:distance_target, greater_than: 0)
+    |> validate_number(:money_target, greater_than: 0)
   end
 
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %{duration: duration_str}) do
-    {duration, _} = Integer.parse(duration_str)
+  def create_changeset(ngo_chal, attrs) do
+    ngo_chal
+    |> changeset(attrs)
+    |> add_start_and_end_dates(attrs)
+    |> validate_required([:start_date, :end_date])
+  end
+
+  def milestones_string(%__MODULE__{} = challenge) do
+    challenge
+    |> milestones_for_challenge()
+    |> Map.take(["2", "3", "4"])
+    |> Map.values()
+    |> Enum.map(&("#{&1} Km"))
+    |> Enum.join(", ")
+  end
+
+  def milestones_for_challenge(%__MODULE__{} = challenge) do
+    case challenge.distance_target do
+      50 -> %{"1" => 0, "2" => 15, "3" => 25, "4" => 50}
+      75 -> %{"1" => 0, "2" => 25, "3" => 45, "4" => 75}
+      150 -> %{"1" => 0, "2" => 50, "3" => 100, "4" => 150}
+      250 -> %{"1" => 0, "2" => 75, "3" => 150, "4" => 250}
+    end
+  end
+
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %{"duration" => duration_str} = attrs) when is_binary(duration_str) do
+    duration = case Integer.parse(duration_str) do
+                 {duration, _} -> duration
+                 _ -> nil
+               end
+    add_start_and_end_dates(changeset, Map.put(attrs, "duration", duration))
+  end
+
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %{"duration" => duration}) when is_number(duration) do
     start_date = Timex.now
     end_date = Timex.shift(start_date, days: duration)
-
 
     changeset
     |> change(start_date: start_date)
     |> change(end_date: end_date)
   end
 
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _) do
+    changeset
+  end
 end

@@ -11,35 +11,25 @@ defmodule OmegaBravera.Challenges do
   alias SendGrid.{Email, Mailer}
 
   def send_challenge_signup_email(%NGOChal{} = challenge, path) do
-    milestones = Map.take(milestones_for_challenge(challenge), ["2", "3", "4"])
+    challenge
+    |> Repo.preload([:user, :ngo])
+    |> build_challenge_signup_email(path)
+    |> Mailer.send()
+  end
 
-    milestones_string =
-      milestones
-      |> Map.values()
-      |> Enum.map(&("#{&1} Km"))
-      |> Enum.join(",")
-
+  def build_challenge_signup_email(%NGOChal{} = challenge, path) do
     Email.build()
     |> Email.put_template("e5402f0b-a2c2-4786-955b-21d1cac6211d")
-    |> Email.add_substitution("-firstName-", challenge.user.first_name)
+    |> Email.add_substitution("-firstName-", challenge.user.firstname)
     |> Email.add_substitution("-challengeURL-", "http://bravera.co/#{path}")
+    |> Email.add_substitution("-startDate-", Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime))
     |> Email.add_substitution("-challengeName-", challenge.slug)
     |> Email.add_substitution("-ngoName-", challenge.ngo.name)
     |> Email.add_substitution("-daysDuration-", "#{challenge.duration} days")
     |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
-    |> Email.add_substitution("-challengeMilestones-", "#{milestones_string}")
+    |> Email.add_substitution("-challengeMilestones-", "#{NGOChal.milestones_string(challenge)}")
     |> Email.put_from("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
-    |> Mailer.send()
-  end
-
-  def milestones_for_challenge(%NGOChal{distance_target: distance}) do
-    case distance do
-      50 -> %{"1" => 0, "2" => 15, "3" => 25, "4" => 50}
-      75 -> %{"1" => 0, "2" => 25, "3" => 45, "4" => 75}
-      150 -> %{"1" => 0, "2" => 50, "3" => 100, "4" => 150}
-      250 -> %{"1" => 0, "2" => 75, "3" => 150, "4" => 250}
-    end
   end
 
   def get_user_ngo_chals(user_id) do
@@ -108,7 +98,7 @@ defmodule OmegaBravera.Challenges do
   """
   def create_ngo_chal(%NGOChal{} = chal, attrs \\ %{}) do
     chal
-    |> NGOChal.changeset(attrs)
+    |> NGOChal.create_changeset(attrs)
     |> Repo.insert()
   end
 

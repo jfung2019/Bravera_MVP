@@ -13,5 +13,4 @@ defmodule OmegaBraveraWeb.NGOController do
     ngo = Fundraisers.get_ngo_by_slug(slug)
     render(conn, "show.html", ngo: ngo)
   end
-
 end

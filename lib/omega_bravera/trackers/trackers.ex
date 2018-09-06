@@ -14,7 +14,7 @@ defmodule OmegaBravera.Trackers do
       nil ->
         create_strava(user_id, changeset)
       strava ->
-        unless strava[:token] == token do #is this some convoluted way of saying to update it when the token's been refreshed?
+        unless strava.token == token do #is this some convoluted way of saying to update it when the token's been refreshed?
           update_strava(strava, changeset)
         end
     end

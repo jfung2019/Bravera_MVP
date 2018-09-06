@@ -33,17 +33,17 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
   def create(conn, %{"ngo_slug" => ngo_id, "ngo_chal" => chal_params}) do
     current_user = Guardian.Plug.current_resource(conn)
-    sluggified_username = Slugify.gen_random_slug(current_user.first_name)
+    sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
     # Oddly, ngo_slug = ngo_id here...
     ngo = Fundraisers.get_ngo!(ngo_id)
 
-    changeset_params = Map.merge(chal_params, %{user_id: current_user.id, ngo_id: ngo.id, slug: sluggified_username})
+    changeset_params = Map.merge(chal_params, %{"user_id" => current_user.id, "ngo_id" => ngo.id, "slug" => sluggified_username})
 
     case Challenges.create_ngo_chal(%NGOChal{}, changeset_params) do
       {:ok, challenge} ->
         challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
-        Challenge.send_challenge_signup_email(challenge, challenge_path)
+        Challenges.send_challenge_signup_email(challenge, challenge_path)
 
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
@@ -167,11 +167,13 @@ defmodule OmegaBraveraWeb.NGOChalController do
       milestone_3s = %{"charged" => charged_m3, "pending" => pending_m3, "total" => Decimal.to_string(Decimal.add(charged_m3, pending_m3))}
 
 
-    milestone_targets = Challenges.milestones_for_challenge(ngo_chal)
+    milestone_targets = NGOChal.milestones_for_challenge(ngo_chal)
 
     changeset = Money.change_donation(%Donation{})
 
-    render(conn, "show.html", ngo_chal: ngo_chal, user: user, ngo: ngo, strava: strava, kickstarters: kickstarters, m1s: milestone_1s, m2s: milestone_2s, m3s: milestone_3s, m_targets: milestone_targets, changeset: changeset)
+    render_attrs = %{ngo_chal: ngo_chal, user: user, ngo: ngo, strava: strava, kickstarters: kickstarters, m1s: milestone_1s, m2s: milestone_2s, m3s: milestone_3s, m_targets: milestone_targets, changeset: changeset}
+
+    render(conn, "show.html", render_attrs)
   end
 
   def edit(conn, %{"id" => id}) do

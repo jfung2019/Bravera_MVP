@@ -163,18 +163,13 @@
 
 <script>
   var startDate = moment('<%= @ngo_chal.start_date %>').format('DD/MM/YYYY');
-
   var endDate = moment('<%= @ngo_chal.end_date %>').format('DD/MM/YYYY');
-
   var b = moment('<%= @ngo_chal.start_date %>');
-
   var now = moment();
   var exp = moment('<%= @ngo_chal.end_date %>');
 
   var daysLeft = exp.diff(now, 'days');
-
   var hours = exp.subtract(daysLeft, 'days').diff(now, 'hours');
-
   var minutes = exp.subtract(hours, 'hours').diff(now, 'minutes');
 
   document.getElementById('days-left').append(daysLeft);
