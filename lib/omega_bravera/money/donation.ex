@@ -24,10 +24,13 @@ defmodule OmegaBravera.Money.Donation do
     timestamps()
   end
 
+  @allowed_attributes [:amount, :currency, :str_src, :str_cus_id, :milestone, :status, :milestone_distance]
+  @required_attributes [:amount, :currency, :str_src, :str_cus_id, :milestone, :status]
+
   @doc false
   def changeset(donation, attrs) do
     donation
-    |> cast(attrs, [:amount, :currency, :str_src, :str_cus_id, :milestone, :status, :milestone_distance])
-    |> validate_required([:amount, :currency, :str_src, :str_cus_id, :milestone, :status])
+    |> cast(attrs, @allowed_attributes)
+    |> validate_required(@required_attributes)
   end
 end

@@ -1,13 +1,9 @@
+require IEx
 defmodule OmegaBraveraWeb.DonationController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.Money
-  alias OmegaBravera.Money.Donation
-  alias OmegaBravera.Fundraisers
-  alias OmegaBravera.Challenges
-  alias OmegaBravera.Accounts
-  alias OmegaBravera.Stripe
-  alias OmegaBravera.StripeHelpers
+  alias OmegaBravera.{Money, Money.Donation, Fundraisers, Challenges, Accounts, Stripe, StripeHelpers}
+  alias OmegaBravera.Donations.Processor
 
 # TODO Total Pledged logic in milestone generators
 
@@ -22,29 +18,23 @@ defmodule OmegaBraveraWeb.DonationController do
   end
 
   def create(conn, %{"donation" => donation_params, "ngo_chal_slug" => ngo_chal_slug}) do
-  # TODO re-implement the SECURED/PLEDGED LOGIC
-  # TODO simplify kickstarter logic since all have kickstarter now
+    # TODO re-implement the SECURED/PLEDGED LOGIC
+    # TODO simplify kickstarter logic since all have kickstarter now
 
-    # TODO change milestone logic to programmatically generate milestones based on one value
+    # TODO change milestone logic to programmatically generate them based on one value
+
     milestones = create_milestone_map(donation_params)
-
     nc = Challenges.get_ngo_chal_by_slug(ngo_chal_slug)
+    chal_user = Accounts.get_user!(nc.user_id)
+    ngo = Fundraisers.get_ngo!(nc.ngo_id)
+    stripe_customer = StripeHelpers.create_stripe_customer(donation_params)
 
-    %{id: ngo_chal_id, ngo_id: ngo_id, user_id: nc_user_id} = nc
-
-    chal_user = Accounts.get_user!(nc_user_id)
-
-    %{firstname: nc_firstname, lastname: nc_lastname} = chal_user
-
-    nc_fullname = nc_firstname <> " " <> nc_lastname
-
-    ngo = Fundraisers.get_ngo!(ngo_id)
-
-    %{slug: ngo_slug, name: ngo_name} = ngo
+    require IEx
+    IEx.pry
 
     %{"str_src" => str_src, "currency" => currency, "email" => email} = donation_params
 
-    user =
+    current_user =
       cond do
         Guardian.Plug.current_resource(conn) ->
           Guardian.Plug.current_resource(conn)
@@ -52,75 +42,33 @@ defmodule OmegaBraveraWeb.DonationController do
           Accounts.insert_or_return_email_user(email)
       end
 
-    %{id: user_id} = user
+    if donation_params["kickstarter"] do
+      case Processor.handle_donation(current_user, ngo, nc, donation_params, stripe_customer, milestones) do
+        {:ok, :donations_and_pledges_created} ->
+          conn
+          |> put_flash(:info, "Donations processed! Check your email for more information.")
+          |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo.slug, nc.slug))
+        {:error, :donation_model_couldnt_be_created} ->
+          changeset = Money.change_donation(%Donation{})
 
-    kickstarter = donation_params["kickstarter"]
+          conn
+          |> put_flash(:error, "There was an error on the form.")
+          |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo.slug, ngo_chal_slug))
+        {:error, :stripe_api_error}
+          conn
+          |> put_flash(:error, "Initial donation couldn't be processed.")
+          |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo.slug, ngo_chal_slug))
+      end
+    else
+      rel_params = %{user_id: current_user.id, ngo_chal_id: nc.id, ngo_id: nc.ngo_id}
+      case Money.create_donations(rel_params, milestones, currency, str_src, stripe_customer["id"]) do
+        {:ok, _response} ->
+          conn
+          |> put_flash(:info, "Donation created successfully.")
+          |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo.slug, ngo_chal_slug))
 
-    # TODO examine the following code, Do we just need customers, not SRCs?
-    # Do we just create customers every time rather than managing sources?
-
-    # str_customer =
-    #   case Stripe.get_user_str_customer(user_id) do
-    #     nil ->
-    #       StripeHelpers.create_stripe_customer(email, str_src, user_id)
-    #     customer ->
-    #       customer
-    #   end
-
-    str_customer = StripeHelpers.create_stripe_customer(email, str_src)
-
-    %{"id" => cus_id} = str_customer
-
-    rel_params = %{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id}
-
-    cond do
-      kickstarter ->
-        charge_params = %{
-          "amount" => kickstarter,
-          "currency" => currency,
-          "customer" => cus_id,
-          "source" => str_src,
-          "receipt_email" => email,
-        }
-
-        case StripeHelpers.charge_stripe_customer(ngo, charge_params, ngo_chal_id) do
-          {:ok, response} ->
-            %{body: response_body} = response
-            body = Poison.decode!(response_body)
-
-            cond do
-              body["source"] ->
-                case Money.create_donations(rel_params, milestones, kickstarter, currency, str_src, cus_id) do
-                  {:ok, _response} ->
-                    conn
-                    |> put_flash(:info, "Donations processed! Check your email for more information.")
-                    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, ngo_chal_slug))
-
-                  :error ->
-                    changeset = Money.change_donation(%Donation{})
-
-                    conn
-                    |> put_flash(:error, "There was an error on the form.")
-                    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, ngo_chal_slug))
-                end
-
-              body["error"] ->
-                render(conn, :new)
-            end
-
-          :error ->
-            render(conn, :new)
-        end
-
-      true ->
-        case Money.create_donations(rel_params, milestones, currency, str_src, cus_id) do
-          {:ok, _response} ->
-            conn
-            |> put_flash(:info, "Donation created successfully.")
-            |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, ngo_chal_slug))
-
-          {:error, %Ecto.Changeset{} = changeset} ->
-            render(conn, :show, changeset: changeset)
+        {:error, %Ecto.Changeset{} = changeset} ->
+          render(conn, :show, changeset: changeset)
       end
     end
   end
@@ -151,10 +99,6 @@ defmodule OmegaBraveraWeb.DonationController do
 
   defp create_milestone_map(donation_params) do
     cond do
-      donation_params["milestone_6"] ->
-        %{6 => donation_params["milestone_6"],5 => donation_params["milestone_5"],4 => donation_params["milestone_4"],3 => donation_params["milestone_3"],2 => donation_params["milestone_2"],1 => donation_params["milestone_1"]}
-      donation_params["milestone_5"] ->
-        %{5 => donation_params["milestone_5"],4 => donation_params["milestone_4"],3 => donation_params["milestone_3"],2 => donation_params["milestone_2"],1 => donation_params["milestone_1"]}
       donation_params["milestone_4"] ->
         %{4 => donation_params["milestone_4"],3 => donation_params["milestone_3"],2 => donation_params["milestone_2"],1 => donation_params["milestone_1"]}
       donation_params["milestone_3"] ->
