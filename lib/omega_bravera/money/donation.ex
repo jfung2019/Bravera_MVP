@@ -24,8 +24,8 @@ defmodule OmegaBravera.Money.Donation do
     timestamps()
   end
 
-  @allowed_attributes [:amount, :currency, :str_src, :str_cus_id, :milestone, :status, :milestone_distance]
-  @required_attributes [:amount, :currency, :str_src, :str_cus_id, :milestone, :status]
+  @allowed_attributes [:amount, :currency, :str_src, :str_cus_id, :milestone, :status, :milestone_distance, :user_id, :ngo_chal_id, :ngo_id]
+  @required_attributes [:amount, :currency, :str_src, :str_cus_id, :milestone, :status, :user_id, :ngo_chal_id, :ngo_id]
 
   @doc false
   def changeset(donation, attrs) do

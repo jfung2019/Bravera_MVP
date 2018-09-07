@@ -120,14 +120,12 @@ defmodule OmegaBravera.Accounts do
   @doc """
     Inserts or returns an email user (if email is not already registered, insert it)
   """
-
-  def insert_or_return_email_user(email) do
+  def insert_or_return_email_user(%{"email" => email, "first_name" => first, "last_name" => last} = params) do
     case Repo.get_by(User, email: email) do
       nil ->
-        create_user(%{"email" => email})
-        case Repo.get_by(User, email: email) do
-          user ->
-            user
+        case create_user(%{"email" => email, "firstname" => first, "lastname" => last}) do
+          {:ok, user} -> user
+          {:error, reason} -> nil
         end
       user ->
         user

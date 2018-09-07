@@ -67,7 +67,7 @@
     <div class="form-group row">
       <label for="starter-donation" class="col-sm-8 col-form-label">Charges Now</label>
       <div class="col-sm-4">
-        <input type="number" class="form-control" id="kickstarter" min="25" name="donation[kickstarter]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+        <input type="number" class="form-control" id="kickstarter" min="25" name="donation[milestone_1]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         >
       </div>
     </div>
@@ -76,7 +76,7 @@
         Charged at <span id="m2-dist-label" class="text-500"><%= @m_targets["2"] %>km</span>
       </label>
       <div class="col-sm-4">
-        <input type="number" class="form-control" id="m1-donation" min="25" name="donation[milestone_1]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+        <input type="number" class="form-control" id="m1-donation" min="25" name="donation[milestone_2]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         >
       </div>
     </div>
@@ -85,7 +85,7 @@
         Charged at <span id="m2-dist-label" class="text-500"><%= @m_targets["3"] %>km</span>
       </label>
       <div class="col-sm-4">
-        <input type="number" class="form-control" id="m2-donation" min="25" name="donation[milestone_2]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+        <input type="number" class="form-control" id="m2-donation" min="25" name="donation[milestone_3]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         >
       </div>
     </div>
@@ -94,7 +94,7 @@
         Charged at <span id="m3-dist-label" class="text-500"><%= @m_targets["4"] %>km</span>
       </label>
       <div class="col-sm-4">
-        <input type="number" class="form-control" id="m3-donation" min="25" name="donation[milestone_3]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+        <input type="number" class="form-control" id="m3-donation" min="25" name="donation[milestone_4]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         >
       </div>
     </div>

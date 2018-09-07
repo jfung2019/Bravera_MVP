@@ -130,11 +130,10 @@ defmodule OmegaBravera.StripeHelpers do
     end
   end
 
-  #TODO: This needs to be checked to see if it actually works. -- Simon
-  def create_stripe_customer(%{"email" => email, "str_src" => src_id}) do
-    user = Accounts.insert_or_return_email_user(email)
+  def create_stripe_customer(%{"email" => email, "str_src" => src_id} = params) do
+    donor = Accounts.insert_or_return_email_user(params)
 
-    case Stripy.req(:post, "customers", %{"email" => email, "source" => src_id, "metadata[user_id]" => user.id})  do
+    case Stripy.req(:post, "customers", %{"email" => email, "source" => src_id, "metadata[user_id]" => donor.id})  do
       {:ok, %{body: response_body}} ->
         Poison.decode!(response_body)
       {:error, reason} ->
@@ -162,5 +161,4 @@ defmodule OmegaBravera.StripeHelpers do
     |> Decimal.round
     |> Decimal.to_string
   end
-
 end

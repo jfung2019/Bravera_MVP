@@ -65,9 +65,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     # Begin milestone donation aggregators
 
-    charged_kickstarters = Money.get_charged_milestones(ngo_chal_id, 0)
+    charged_kickstarters = Money.get_charged_milestones(ngo_chal_id, 1)
 
-    pending_kickstarters = Money.get_uncharged_milestones(ngo_chal_id, 0)
+    pending_kickstarters = Money.get_uncharged_milestones(ngo_chal_id, 1)
     pending_kicks =
       case pending_kickstarters do
         [nil] ->
@@ -89,9 +89,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     kickstarters = %{"charged" => charged_kicks, "pending" => pending_kicks}
 
-    charged_m_one = Money.get_charged_milestones(ngo_chal_id, 1)
+    charged_m_one = Money.get_charged_milestones(ngo_chal_id, 2)
 
-    pending_m_one = Money.get_uncharged_milestones(ngo_chal_id, 1)
+    pending_m_one = Money.get_uncharged_milestones(ngo_chal_id, 2)
 
     pending_m1 =
       case pending_m_one do
@@ -112,9 +112,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
           Decimal.to_string(cm1_decimal)
       end
 
-    charged_m_two = Money.get_charged_milestones(ngo_chal_id, 2)
+    charged_m_two = Money.get_charged_milestones(ngo_chal_id, 3)
 
-    pending_m_two = Money.get_uncharged_milestones(ngo_chal_id, 2)
+    pending_m_two = Money.get_uncharged_milestones(ngo_chal_id, 3)
 
     pending_m2 =
       case pending_m_two do
@@ -136,9 +136,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
           Decimal.to_string(cm2_decimal)
       end
 
-    charged_m_three = Money.get_charged_milestones(ngo_chal_id, 3)
+    charged_m_three = Money.get_charged_milestones(ngo_chal_id, 4)
 
-    pending_m_three = Money.get_uncharged_milestones(ngo_chal_id, 3)
+    pending_m_three = Money.get_uncharged_milestones(ngo_chal_id, 4)
 
     pending_m3 =
       case pending_m_three do
@@ -167,7 +167,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       milestone_3s = %{"charged" => charged_m3, "pending" => pending_m3, "total" => Decimal.to_string(Decimal.add(charged_m3, pending_m3))}
 
 
-    milestone_targets = NGOChal.milestones_for_challenge(ngo_chal)
+    milestone_targets = NGOChal.milestones_distances(ngo_chal)
 
     changeset = Money.change_donation(%Donation{})
 

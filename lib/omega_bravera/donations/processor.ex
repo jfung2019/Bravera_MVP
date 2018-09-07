@@ -1,46 +1,36 @@
 defmodule OmegaBravera.Donations.Processor do
-  alias OmegaBravera.{Fundraisers.NGO, Challenges.NGOChal, Money, Accounts.User, StripeHelpers}
+  alias OmegaBravera.{Fundraisers.NGO, Challenges.NGOChal, Money, Accounts.User, StripeHelpers, Money.Donation, Repo}
 
+  def charge_donation(%Donation{} = dn, donor) do
+    donation = Repo.preload(dn, [:ngo, :ngo_chal])
 
-  def handle_donation(%User{} = current_user, %NGO{} = ngo, %NGOChal{id: challenge_id}, donation_params, stripe_customer, milestones) do
-    %{"str_src" => str_src, "currency" => currency, "email" => email} = donation_params
-
-    charge_result = StripeHelpers.charge_stripe_customer(ngo, charge_params(stripe_customer, donation_params), challenge_id)
-
-    case charge_result do
+    case StripeHelpers.charge_stripe_customer(donation.ngo, charge_params(donation, donor), donation.ngo_chal_id) do
       {:ok, %{body: response_body}} ->
-        parsed_response = Poison.decode!(response_body)
-
-        require IEx
-        IEx.pry
-
-        cond do
-          parsed_response["source"] ->
-            rel_params = %{user_id: current_user.id, ngo_chal_id: challenge_id, ngo_id: ngo.id}
-            case Money.create_donations(rel_params, milestones, donation_params["kickstarter"], currency, str_src, stripe_customer["id"]) do
-              {:ok, _response} ->
-                {:ok, :donation_and_pledges_created}
-              :error ->
-                {:error, :donation_model_couldnt_be_created}
-            end
-
-          parsed_response["error"] ->
-            {:error, :stripe_api_error}
-          true ->
-            {:ok, :donation_and_pledges_created}
+        case Poison.decode!(response_body) do
+          %{"source" => _} ->
+            Money.update_donation(donation, %{status: "charged"})
+            {:ok, :kickstarter_charged}
+          %{"error" => _} ->
+            {:error, :stripe_error}
+          _ ->
+            {:error, :unknown_error}
         end
-      :error ->
-        {:error, :stripe_api_error}
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 
-  def charge_params(stripe_customer, params) do
+  def charge_donation(_, _) do
+    {:ok, :no_kickstarter}
+  end
+
+  def charge_params(%Donation{} = donation, donor) do
     %{
-      "amount" => params["kickstarter"],
-      "currency" => params["currency"],
-      "source" => params["str_src"],
-      "receipt_email" => params["email"],
-      "customer" => stripe_customer["id"]
+      "amount" => donation.amount,
+      "currency" => donation.currency,
+      "source" => donation.str_src,
+      "receipt_email" => donor.email,
+      "customer" => donation.str_cus_id
     }
   end
 end

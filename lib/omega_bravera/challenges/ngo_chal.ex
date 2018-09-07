@@ -58,14 +58,14 @@ defmodule OmegaBravera.Challenges.NGOChal do
 
   def milestones_string(%__MODULE__{} = challenge) do
     challenge
-    |> milestones_for_challenge()
+    |> milestones_distances()
     |> Map.take(["2", "3", "4"])
     |> Map.values()
     |> Enum.map(&("#{&1} Km"))
     |> Enum.join(", ")
   end
 
-  def milestones_for_challenge(%__MODULE__{} = challenge) do
+  def milestones_distances(%__MODULE__{} = challenge) do
     case challenge.distance_target do
       50 -> %{"1" => 0, "2" => 15, "3" => 25, "4" => 50}
       75 -> %{"1" => 0, "2" => 25, "3" => 45, "4" => 75}

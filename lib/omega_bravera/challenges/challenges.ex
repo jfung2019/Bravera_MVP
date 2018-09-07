@@ -59,7 +59,9 @@ defmodule OmegaBravera.Challenges do
     query = from nc in NGOChal,
       where: nc.slug == ^slug
 
-    Repo.one(query)
+    query
+    |> Repo.one()
+    |> Repo.preload([:ngo])
   end
 
   def get_ngo_ngo_chals(ngo_id, order_by) do
