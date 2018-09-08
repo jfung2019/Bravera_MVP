@@ -2,7 +2,6 @@ defmodule OmegaBraveraWeb.NGOController do
   use OmegaBraveraWeb, :controller
 
   alias OmegaBravera.{Fundraisers}
-  # alias OmegaBravera.Fundraisers.NGO
 
   def index(conn, _params) do
     ngos = Fundraisers.list_ngos()

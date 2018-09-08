@@ -14,12 +14,6 @@
 
     <title>Bravera</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
-
-    <!--
-      © 2018 Bravera™
-      Engineered by Nick West
-      devMail: nickw (at) bravera.co
-    -->
   </head>
 
   <body class="gray-background">
@@ -37,16 +31,24 @@
 
     <section class="container-fluid flex-grow px-0 px-sm-3">
 
-      <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
-
       <main role="main">
         <%= render @view_module, @view_template, assigns %>
       </main>
 
-    </section> <!-- /container -->
-
+    </section>
+    <footer class="footer">
+      <div class="container">
+				<nav class="navbar">
+          <ul class="navbar-nav">
+	          <li class="nav-item">
+	            <%= link("Privacy", to: "https://www.bravera.fit/how/") %>
+	          </li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
     </div>
-
+		<script src="<%= static_path(@conn, "/js/app.js") %>"></script>
     <%= if assigns[:google_analytics_id] do %>
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=<%= assigns[:google_analytics_id] %>"></script>
