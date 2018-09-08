@@ -56,6 +56,10 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_required([:start_date, :end_date])
   end
 
+  def activity_completed_changeset(%__MODULE__{}, %Strava.Activity{distance: distance}) do
+    
+  end
+
   def milestones_string(%__MODULE__{} = challenge) do
     challenge
     |> milestones_distances()

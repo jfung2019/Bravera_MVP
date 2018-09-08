@@ -31,7 +31,7 @@ defmodule OmegaBraveraWeb.DonationController do
                  kickstarter_processing_result =
                    pledges
                    |> Pledges.get_kickstarter()
-                   |> Processor.charge_donation(donor)
+                   |> Processor.charge_donation()
 
                  case kickstarter_processing_result do
                    {:ok, _} -> :ok

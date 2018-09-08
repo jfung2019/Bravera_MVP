@@ -16,39 +16,6 @@ defmodule OmegaBravera.ChallengesTest do
       insert(:ngo_challenge)
     end
 
-    test "build_challenge_signup_email" do
-      challenge = insert(:ngo_challenge)
-
-      email = Challenges.build_challenge_signup_email(challenge, "/swcc/John-582")
-
-      assert email == %SendGrid.Email{
-        __phoenix_layout__: nil,
-        __phoenix_view__: nil,
-        attachments: nil,
-        bcc: nil,
-        cc: nil,
-        content: nil,
-        custom_args: nil,
-        headers: nil,
-        reply_to: nil,
-        send_at: nil,
-        subject: nil,
-        from: %{email: "admin@bravera.co"},
-        substitutions: %{
-          "-challengeDistance-" => "#{challenge.distance_target} Km",
-          "-challengeMilestones-" => NGOChal.milestones_string(challenge),
-          "-challengeName-" => nil,
-          "-challengeURL-" => "http://bravera.co/swcc/John-582",
-          "-startDate-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
-          "-daysDuration-" => "5 days",
-          "-firstName-" => "John",
-          "-ngoName-" => "Save the children worldwide"
-        },
-        template_id: "e5402f0b-a2c2-4786-955b-21d1cac6211d",
-        to: [%{email: challenge.user.email}]
-      }
-    end
-
     test "list_ngo_chals/0 returns all ngo_chals" do
       %NGOChal{id: id} = ngo_chal_fixture()
       assert [%NGOChal{id: ^id}] = Challenges.list_ngo_chals()

@@ -1,8 +1,8 @@
 defmodule OmegaBraveraWeb.StravaController do
-  use OmegaBraveraWeb, :controller
   require Logger
+  use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Guardian, Challenges, Accounts, Money, StripeHelpers, Fundraisers}
+  alias OmegaBravera.{Guardian, Accounts, Challenges.Activities}
 
   # TODO Check if activity was manual update or GPS upload
   # Is upload_id only for file uploads?
@@ -12,143 +12,14 @@ defmodule OmegaBraveraWeb.StravaController do
   # created_at: nil
 
   def post_webhook_callback(conn, params) do
-    Logger.info fn ->
-      "Strava Webhook received: #{inspect(params)}"
-    end
-
-    %{"aspect_type" => aspect_type, "object_type" => object_type} = params
-    # TODO Logic for deletion
-    # TODO Logic for removing activities
-    # TODO Logic for updating activities
-
-    cond do
-      object_type == "activity" ->
-        cond do
-          aspect_type == "create" ->
-            get_new_activity(params)
-          aspect_type == "delete" ->
-            Logger.info fn ->
-              "Delete request"
-            end
-          true ->
-            Logger.info fn ->
-              "Neither delete nor create"
-            end
-        end
-    end
+    Logger.info("Strava Webhook received: #{inspect(params)}")
+    Activities.process(params)
 
     render(conn, "webhook_callback.json", status: "200")
   end
 
-# TODO Add guards for starting date
-  def get_new_activity(params) do
-    %{"object_id" => object_id, "owner_id" => owner_id} = params
-
-    relevant_challengers = Accounts.get_strava_challengers(owner_id)
-
-    cond do
-      relevant_challengers != [] ->
-        # TODO optimize this access call
-        {_, token} = get_in(relevant_challengers, [Access.at(0)])
-
-        client = Strava.Client.new(token)
-        # TODO %{"distance" => distance}
-        activity = Strava.Activity.retrieve(object_id, client)
-
-        # TODO cycly
-        Logger.info fn ->
-          "STRAVA ACTIVITY RECEIVED: #{inspect(activity)}"
-        end
-
-        if activity.distance > 0.0 do
-          distance_meters = Decimal.new(activity.distance)
-
-          d_thousand = Decimal.new(1000)
-          distance_km = Decimal.div(distance_meters, d_thousand)
-
-          Enum.each(relevant_challengers, fn {id, _token} ->
-            ngo_chal = Challenges.get_ngo_chal!(id)
-
-            %{id: ngo_chal_id,
-            distance_covered: distance_covered,
-            distance_target: distance_target,
-            } = ngo_chal
-
-            new_distance = Decimal.add(distance_covered, distance_km)
-
-            donations = Money.get_unch_donat_by_ngo_chal(ngo_chal_id)
-
-            Enum.each donations, fn donation ->
-              %{
-                user_id: user_id,
-                 ngo_id: ngo_id,
-                 ngo_chal_id: ngo_chal_id,
-                 milestone_distance: milestone_distance,
-                 str_cus_id: str_cus_id,
-                 amount: amount,
-                 currency: currency
-               } = donation
-
-               %{email: receipt_email} = Accounts.get_user!(user_id)
-
-               params = %{"amount" => amount, "currency" => currency, "customer" => str_cus_id, "receipt_email" => receipt_email}
-
-               cond do
-                 Decimal.cmp(new_distance, milestone_distance) == :gt || Decimal.cmp(new_distance, milestone_distance) == :eq ->
-                   ngo = Fundraisers.get_ngo!(ngo_id)
-
-                   case StripeHelpers.charge_stripe_customer(ngo, params, ngo_chal_id) do
-                     {:ok, _response} ->
-                       Money.update_donation(donation, %{status: "charged"})
-
-                       :error ->
-                         Logger.error fn ->
-                           "Donation inside strava controller update failed"
-                        end
-                   end
-                  true ->
-                    Logger.info fn ->
-                      "No new milestones hit"
-                   end
-                end
-                # end of cond do
-            end
-            # end of enum donations
-
-            # TODO evaluate Rounding in this less than/greater than nested conditional,
-            # milestones may be charged prematurely due to rounding upwards?
-            cond do
-              Decimal.cmp(new_distance, distance_covered) == :gt ->
-                Challenges.update_ngo_chal(ngo_chal, %{distance_covered: new_distance})
-
-              true ->
-                Logger.info fn ->
-                  "No distance change"
-                end
-            end
-            cond do
-              Decimal.cmp(new_distance, distance_target) == :gt || Decimal.cmp(new_distance, distance_target) == :eq ->
-                Challenges.update_ngo_chal(ngo_chal, %{status: "Complete"})
-                # TODO email congrats email
-              true ->
-                Logger.info fn ->
-                  "Challenge continues"
-                end
-            end
-
-          end)
-        end
-      true ->
-        Logger.info fn ->
-          "Strava Webhook received, no active challenger found matching Strava ID #{owner_id}, for Activity ID: #{object_id}"
-        end
-    end
-  end
-
   def get_webhook_callback(conn, params) do
-    %{"hub.challenge" => hub_challenge} = params
-
-    conn |> render("hub_challenge.json", hub_challenge: hub_challenge)
+    render(conn, "hub_challenge.json", hub_challenge: params["hub.challenge"])
   end
 
   def authenticate(conn, _params) do

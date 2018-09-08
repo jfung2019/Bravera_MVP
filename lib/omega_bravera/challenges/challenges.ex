@@ -8,29 +8,6 @@ defmodule OmegaBravera.Challenges do
 
   alias OmegaBravera.Challenges.{NGOChal, Team}
   alias OmegaBravera.Accounts.User
-  alias SendGrid.{Email, Mailer}
-
-  def send_challenge_signup_email(%NGOChal{} = challenge, path) do
-    challenge
-    |> Repo.preload([:user, :ngo])
-    |> build_challenge_signup_email(path)
-    |> Mailer.send()
-  end
-
-  def build_challenge_signup_email(%NGOChal{} = challenge, path) do
-    Email.build()
-    |> Email.put_template("e5402f0b-a2c2-4786-955b-21d1cac6211d")
-    |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeURL-", "http://bravera.co#{path}")
-    |> Email.add_substitution("-startDate-", Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime))
-    |> Email.add_substitution("-challengeName-", challenge.slug)
-    |> Email.add_substitution("-ngoName-", challenge.ngo.name)
-    |> Email.add_substitution("-daysDuration-", "#{challenge.duration} days")
-    |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
-    |> Email.add_substitution("-challengeMilestones-", "#{NGOChal.milestones_string(challenge)}")
-    |> Email.put_from("admin@bravera.co")
-    |> Email.add_to(challenge.user.email)
-  end
 
   def get_user_ngo_chals(user_id) do
     query = from nc in NGOChal, where: nc.user_id == ^user_id
