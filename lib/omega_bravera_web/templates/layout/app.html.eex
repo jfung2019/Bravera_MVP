@@ -30,12 +30,9 @@
     </div>
 
     <section class="container-fluid flex-grow px-0 px-sm-3">
-
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
-
+      <%= render @view_module, @view_template, assigns %>
     </section>
+
     <footer class="footer">
       <div class="container">
 				<nav class="navbar">

@@ -1,73 +1,80 @@
-<div class="container-fluid mt-3">
-  <div class="card mt-4 mt-lg-0">
+<div class="page-index">
+	<div class="row mt-3">
+  	<div class="col">
+  		  <div class="card mt-4 mt-lg-0">
 
-    <div class="border-bottom d-flex">
-      <div class="challenge-img-right d-none d-sm-block">
-        <img src="images/landing/landing-left.jpg" alt="Bravera"
-        class="img-fluid"/>
-      </div>
-      <div class="challenge-img-left">
-        <div class="card-body pt-sm-2 pt-md-3 pt-lg-5">
-          <div class="mx-lg-5 mx-xl-6">
-            <h3 class="text-center">Milestones that matter</h3>
-            <p>Bravera is a platform that creates social impact through fitness fundraising.</p>
-            <p>Connect a fitness tracker, take a challenge, and get sponsors today!</p>
+          <div class="border-bottom d-flex">
+            <div class="challenge-img-right d-none d-sm-block">
+              <img src="images/landing/landing-left.jpg" alt="Bravera"
+              class="img-fluid"/>
+            </div>
+            <div class="challenge-img-left">
+              <div class="card-body pt-sm-2 pt-md-3 pt-lg-5">
+                <div class="mx-lg-5 mx-xl-6">
+                  <h3 class="text-center">Milestones that matter</h3>
+                  <p>Bravera is a platform that creates social impact through fitness fundraising.</p>
+                  <p>Connect a fitness tracker, take a challenge, and get sponsors today!</p>
+                </div>
+
+                <div class="text-center">
+                  <%= link("Connect", class: "btn btn-bravera mt-lg-3", to: page_path(@conn, :signup), role: "button", style: "width: 175px;") %>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="text-center">
-            <a class="btn btn-bravera mt-lg-3" style="width: 175px;" href="/signup/" role="button">
-              Connect
-            </a>
+
+        <div class="card-footer card3bottom">
+          <div class="row card3bottom">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                  <div class="card3bottomright">
+                    <img src="images/landing/card-3-logo-strava.png" alt="Strava">
+                    <p>STRAVA COMPATIBLE</p>
+                  </div>
+                  <div class="card3bottomright">
+                    <img src="images/landing/card-3-logo-fitbit.jpg" alt="Fitbit">
+                    <p>FITBIT COMING SOON</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+  	</div>
+  </div>
 
-
-  <div class="card-footer card3bottom">
-    <div class="row card3bottom">
-      <div class="col-md-12">
+	<div class="row challenge-section">
+    	<div class="col-md-8 offset-md-2">
         <div class="row">
-          <div class="col-md-6"></div>
-          <div class="col-md-6">
-            <div class="card3bottomright">
-              <img src="images/landing/card-3-logo-strava.png" alt="Strava">
-              <p>STRAVA COMPATIBLE</p>
-            </div>
-            <div class="card3bottomright">
-              <img src="images/landing/card-3-logo-fitbit.jpg" alt="Fitbit">
-              <p>FITBIT COMING SOON</p>
+            <div class="col-md-6 offset-md-3">
+              <img src="images/landing/card-4-explainer.png" alt="Bravera">
             </div>
           </div>
-        </div>
-      </div>
+          <div class="row">
+            <div class="col-md-4 offset-md-4 challenge-text">
+              <h3>Challenges for good</h3>
+              <h5 class="text-center mb-3">
+                Bravera helps you achieve your goals meaningfully.
+              </h5>
+              <p>
+                We combine fitness and fundraising: Connect your fitness tracker, accept a charity fundraising fitness challenge, invite sponsors, and raise money while you train!
+              </p>
+              <p>
+                Your challenge is broken down into attainable milestones that automatically unlock funds for causes as you achieve them.
+              </p>
+            </div>
+          </div>
     </div>
   </div>
-</div>
-
-<div class="container home-bottom">
-  <div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
-      <img src="images/landing/card-4-explainer.png" alt="Bravera" style="width:100%;height:auto;margin:auto;padding-top:70px;padding-bottom:50px;"/>
-    </div>
-    <div class="col-md-3"></div>
-  </div>
-  <div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
-      <h3 style="text-align: center;padding:20px;">Challenges for good</h3>
-      <div style="text-align: left;padding-left:10%;padding-right:10%;">
-        <h5 class="text-center mb-3">
-          Bravera helps you achieve your goals meaningfully.
-        </h5>
-        <p>
-          We combine fitness and fundraising: Connect your fitness tracker, accept a charity fundraising fitness challenge, invite sponsors, and raise money while you train!
-        </p>
-        <p>
-          Your challenge is broken down into attainable milestones that automatically unlock funds for causes as you achieve them.
-        </p>
+   <div class="row">
+    <div class="col-10 offset-1 col-md-6 offset-md-3">
+      <div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/qBvp_A0ffUo?rel=0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
       </div>
-    <div class="col-md-8"></div>
+    </div>
   </div>
 </div>
