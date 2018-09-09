@@ -13,7 +13,16 @@
           <%= img_tag( @ngo.logo, class: "img-thumbnail form-thumb mt-2 mb-3", alt: @ngo.name) %>
         </a>
       </div>
-
+      <p>
+        <%= link(@ngo.url, to: @ngo.url) %>
+      </p>
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <p>
+            <%= @ngo.desc %>
+          </p>
+        </div>
+      </div>
       <h4 class="text-420">
         You are fundraising for
         <span class="text-500">
