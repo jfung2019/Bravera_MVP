@@ -16,6 +16,42 @@ defmodule OmegaBravera.ChallengesTest do
       insert(:ngo_challenge)
     end
 
+    test "inactive_for_five_days/0 returns the challenges that have been inactive for five days or more" do
+      ngo = insert(:ngo)
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo})
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -8), slug: "John-515", ngo: ngo})
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -2), slug: "Peter-411", ngo: ngo})
+
+      result = Challenges.inactive_for_five_days()
+
+      assert length(result) == 2
+    end
+
+    test "inactive_for_five_days/0 ignores the already notified challenges" do
+      ngo = insert(:ngo)
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo, participant_notified_of_inactivity: true})
+
+      assert Challenges.inactive_for_five_days() == []
+    end
+
+    test "inactive_for_seven_days/0 returns the challenges that have been inactive for seven days or more" do
+      ngo = insert(:ngo)
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo})
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -8), slug: "John-325", ngo: ngo})
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -2), slug: "Peter-411", ngo: ngo})
+
+      result = Challenges.inactive_for_seven_days()
+
+      assert length(result) == 1
+    end
+
+    test "inactive_for_seven_days/0 ignores the already notified challenges" do
+      ngo = insert(:ngo)
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -10), slug: "John-325", ngo: ngo, donor_notified_of_inactivity: true})
+
+      assert Challenges.inactive_for_seven_days() == []
+    end
+
     test "list_ngo_chals/0 returns all ngo_chals" do
       %NGOChal{id: id} = ngo_chal_fixture()
       assert [%NGOChal{id: ^id}] = Challenges.list_ngo_chals()

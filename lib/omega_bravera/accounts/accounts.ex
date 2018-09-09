@@ -6,12 +6,19 @@ defmodule OmegaBravera.Accounts do
   import Ecto.Query, warn: false
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias Ecto.Multi
-  alias OmegaBravera.Repo
 
-  alias OmegaBravera.{Accounts, Accounts.User, Accounts.Credential}
-  alias OmegaBravera.Trackers
-  alias OmegaBravera.Trackers.Strava
-  alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.{
+    Repo,
+    Accounts,
+    Accounts.User,
+    Accounts.Credential,
+    Money.Donation,
+    Trackers,
+    Trackers.Strava,
+    Challenges.NGOChal,
+    Money.Donation
+  }
+
 
   def get_strava_challengers(athlete_id) do
     query = from s in Strava,
@@ -24,6 +31,16 @@ defmodule OmegaBravera.Accounts do
 
     query
     |> Repo.all()
+  end
+
+  def donors_for_challenge(%NGOChal{} = challenge) do
+    query = from u in User,
+      join: d in Donation, on: d.user_id == u.id,
+      where: d.ngo_chal_id == ^challenge.id,
+      distinct: d.user_id,
+      order_by: u.id
+
+    Repo.all(query)
   end
 
   # TODO Optimize the preload below

@@ -56,7 +56,8 @@ defmodule OmegaBravera.Mixfile do
       {:logger_file_backend, "0.0.4"},
       {:exvcr, "~> 0.10", only: :test},
       {:sendgrid, "~> 1.8.0"},
-      {:ex_machina, "~> 2.2"}
+      {:ex_machina, "~> 2.2"},
+      {:sched_ex, "~> 1.0"}
     ]
   end
 

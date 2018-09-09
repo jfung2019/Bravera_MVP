@@ -8,6 +8,9 @@ defmodule OmegaBravera.Application do
 
     # Define workers and child supervisors to be supervised
     children = [
+      #Challenges.InactivityWorker cron schedule
+      %{id: "daily", start: {SchedEx, :run_every, [OmegaBravera.Challenges.InactivityWorker, :process_inactive_challenges, [], "15 0 * * *"]}},
+
       # Start the Ecto repository
       supervisor(OmegaBravera.Repo, []),
       # Start the endpoint when the application starts

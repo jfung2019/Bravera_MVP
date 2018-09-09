@@ -1,5 +1,5 @@
 defmodule OmegaBravera.Challenges.Notifier do
-  alias OmegaBravera.{Challenges.NGOChal, Repo, Money.Donation}
+  alias OmegaBravera.{Challenges.NGOChal, Repo, Money.Donation, Accounts.User}
   alias SendGrid.{Email, Mailer}
 
   def send_challenge_signup_email(%NGOChal{} = challenge, path) do
@@ -76,7 +76,40 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def remaining_time(%NGOChal{end_date: end_date}) do
+  def send_participant_inactivity_email(%NGOChal{} = challenge) do
+    challenge
+    |> Repo.preload([:user, :ngo])
+    |> participant_inactivity_email()
+    |> Mailer.send()
+  end
+
+  def participant_inactivity_email(%NGOChal{} = challenge) do
+    Email.build()
+    |> Email.put_template("1395a042-ef5a-48a5-b890-c6340dd8eeff")
+    |> Email.add_substitution("-firstName-", challenge.user.firstname)
+    |> Email.add_substitution("-challengeURL-", "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}")
+    |> Email.put_from("admin@bravera.co")
+    |> Email.add_to(challenge.user.email)
+  end
+
+  def send_donor_inactivity_email(%NGOChal{} = challenge, %User{} = donor) do
+    challenge
+    |> Repo.preload([:user, :ngo])
+    |> donor_inactivity_email(donor)
+    |> Mailer.send()
+  end
+
+  def donor_inactivity_email(%NGOChal{} = challenge, %User{} = donor) do
+    Email.build()
+    |> Email.put_template("b91a66e1-d7f5-404f-804a-9a21f4ec70d4")
+    |> Email.add_substitution("-donorName-", donor.firstname)
+    |> Email.add_substitution("-participantName-", User.full_name(challenge.user))
+    |> Email.add_substitution("-challengeURL-", "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}")
+    |> Email.put_from("admin@bravera.co")
+    |> Email.add_to(donor.email)
+  end
+
+  defp remaining_time(%NGOChal{end_date: end_date}) do
     now = Timex.now
     remaining_days = Timex.diff(end_date, now, :days)
 

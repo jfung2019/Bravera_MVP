@@ -21,6 +21,9 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field :status, :string, default: "Active"
     field :total_pledged, :decimal, default: 0
     field :total_secured, :decimal, default: 0
+    field :last_activity_received, :utc_datetime
+    field :participant_notified_of_inactivity, :boolean, default: false
+    field :donor_notified_of_inactivity, :boolean, default: false
     belongs_to :user, User
     belongs_to :ngo, NGO
     belongs_to :team, Team
@@ -61,7 +64,16 @@ defmodule OmegaBravera.Challenges.NGOChal do
   def activity_completed_changeset(%__MODULE__{} = challenge, %Strava.Activity{distance: distance}) do
     challenge
     |> update_covered_distance(distance)
+    |> change(%{last_activity_received: Timex.now, participant_notified_of_inactivity: false, donor_notified_of_inactivity: false})
     |> update_challenge_status(challenge)
+  end
+
+  def participant_inactivity_notification_changeset(%__MODULE__{} = challenge) do
+    change(challenge, %{participant_notified_of_inactivity: true})
+  end
+
+  def donor_inactivity_notification_changeset(%__MODULE__{} = challenge) do
+    change(challenge, %{donor_notified_of_inactivity: true})
   end
 
   def milestones_string(%__MODULE__{} = challenge) do

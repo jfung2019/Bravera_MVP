@@ -9,6 +9,24 @@ defmodule OmegaBravera.Challenges do
   alias OmegaBravera.Challenges.{NGOChal, Team}
   alias OmegaBravera.Accounts.User
 
+  def inactive_for_five_days() do
+    query = from challenge in NGOChal,
+      where: challenge.status == "Active",
+      where: challenge.last_activity_received <= fragment("now() - interval '5 days'"),
+      where: challenge.participant_notified_of_inactivity == false
+
+    Repo.all(query)
+  end
+
+  def inactive_for_seven_days() do
+    query = from challenge in NGOChal,
+      where: challenge.status == "Active",
+      where: challenge.last_activity_received <= fragment("now() - interval '7 days'"),
+      where: challenge.donor_notified_of_inactivity == false
+
+    Repo.all(query)
+  end
+
   def get_user_ngo_chals(user_id) do
     query = from nc in NGOChal, where: nc.user_id == ^user_id
     Repo.all(query)

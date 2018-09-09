@@ -1,10 +1,11 @@
 defmodule OmegaBravera.AccountsTest do
   use OmegaBravera.DataCase
 
-  alias OmegaBravera.Accounts
+  import OmegaBravera.Factory
+
+  alias OmegaBravera.{Accounts, Accounts.User, Challenges.NGOChal}
 
   describe "users" do
-    alias OmegaBravera.Accounts.User
 
     @valid_attrs %{email: "test@test.com", firstname: "some firstname", lastname: "some lastname"}
     @update_attrs %{email: "updated_test@test.com", firstname: "some updated firstname", lastname: "some updated lastname"}
@@ -17,6 +18,22 @@ defmodule OmegaBravera.AccountsTest do
         |> Accounts.create_user()
 
       user
+    end
+
+    test "donors_for_challenge/1 returns all donors for a challenge" do
+      user = insert(:user)
+      ngo = insert(:ngo, %{slug: "swcc-1"})
+      challenge = insert(:ngo_challenge, %{ngo: ngo, user: user})
+
+      # 2 famous runners
+      matthew_wells = insert(:user, %{firstname: "Matthew", lastname: "Wells", email: "matthew.wells@test.com"})
+      carlos_cordero = insert(:user, %{firstname: "Carlos", lastname: "Cordero", email: "carlos.cordero@test.com"})
+      insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: carlos_cordero})
+      insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: matthew_wells})
+
+      donors = Accounts.donors_for_challenge(challenge)
+
+      assert donors == [matthew_wells, carlos_cordero]
     end
 
     test "list_users/0 returns all users" do

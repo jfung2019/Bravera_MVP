@@ -4,6 +4,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   import OmegaBravera.Factory
 
   alias OmegaBravera.Challenges.{NGOChal, Notifier}
+  alias OmegaBravera.Accounts.User
 
   test "challenge_signup_email" do
     challenge = insert(:ngo_challenge)
@@ -151,5 +152,72 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     donation = insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: donor})
 
     assert Notifier.send_donor_milestone_email(donation) == :ok
+  end
+
+  test "participant_inactivity_email/1" do
+    challenge = insert(:ngo_challenge)
+
+    email = Notifier.participant_inactivity_email(challenge)
+
+    assert email == %SendGrid.Email{
+      __phoenix_layout__: nil,
+      __phoenix_view__: nil,
+      attachments: nil,
+      bcc: nil,
+      cc: nil,
+      content: nil,
+      custom_args: nil,
+      headers: nil,
+      reply_to: nil,
+      send_at: nil,
+      subject: nil,
+      from: %{email: "admin@bravera.co"},
+      substitutions: %{
+        "-firstName-" => challenge.user.firstname,
+        "-challengeURL-" => "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+      },
+      template_id: "1395a042-ef5a-48a5-b890-c6340dd8eeff",
+      to: [%{email: challenge.user.email}]
+    }
+  end
+
+  test "send_participant_inactivity_email/1 sends the email" do
+    challenge = insert(:ngo_challenge)
+    assert Notifier.send_participant_inactivity_email(challenge) == :ok
+  end
+
+  test "donor_inactivity_email/1" do
+    challenge = insert(:ngo_challenge)
+    donor = insert(:user)
+
+    email = Notifier.donor_inactivity_email(challenge, donor)
+
+    assert email == %SendGrid.Email{
+      __phoenix_layout__: nil,
+      __phoenix_view__: nil,
+      attachments: nil,
+      bcc: nil,
+      cc: nil,
+      content: nil,
+      custom_args: nil,
+      headers: nil,
+      reply_to: nil,
+      send_at: nil,
+      subject: nil,
+      from: %{email: "admin@bravera.co"},
+      substitutions: %{
+        "-donorName-" => donor.firstname,
+        "-participantName-" => User.full_name(challenge.user),
+        "-challengeURL-" => "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+      },
+      template_id: "b91a66e1-d7f5-404f-804a-9a21f4ec70d4",
+      to: [%{email: donor.email}]
+    }
+  end
+
+  test "send_donor_inactivity_email/1 sends the email" do
+    challenge = insert(:ngo_challenge)
+    donor = insert(:user)
+    assert Notifier.send_donor_inactivity_email(challenge, donor) == :ok
   end
 end
