@@ -40,6 +40,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :status, :duration, :user_id, :ngo_id, :slug
   ]
 
+  @meters_per_km 1000
+
   @doc false
   def changeset(ngo_chal, attrs) do
     ngo_chal
@@ -56,8 +58,10 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_required([:start_date, :end_date])
   end
 
-  def activity_completed_changeset(%__MODULE__{}, %Strava.Activity{distance: distance}) do
-    
+  def activity_completed_changeset(%__MODULE__{} = challenge, %Strava.Activity{distance: distance}) do
+    challenge
+    |> update_covered_distance(distance)
+    |> update_challenge_status(challenge)
   end
 
   def milestones_string(%__MODULE__{} = challenge) do
@@ -98,4 +102,18 @@ defmodule OmegaBravera.Challenges.NGOChal do
   defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _) do
     changeset
   end
+
+  defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do
+    case Decimal.cmp(changeset.changes[:distance_covered], challenge.distance_target) do
+      :lt -> changeset
+      _ -> change(changeset, status: "Complete")
+    end
+  end
+
+  defp update_covered_distance(%__MODULE__{} = challenge, distance) do
+    challenge
+    |> change(distance_covered: Decimal.add(challenge.distance_covered, strava_distance_in_km(distance)))
+  end
+
+  defp strava_distance_in_km(distance), do: Decimal.div(distance, @meters_per_km)
 end

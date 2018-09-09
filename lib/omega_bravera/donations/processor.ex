@@ -9,7 +9,7 @@ defmodule OmegaBravera.Donations.Processor do
         case Poison.decode!(response_body) do
           %{"source" => _} ->
             Money.update_donation(donation, %{status: "charged"})
-            {:ok, :kickstarter_charged}
+            {:ok, :donation_charged}
           %{"error" => _} ->
             {:error, :stripe_error}
           _ ->
@@ -17,6 +17,9 @@ defmodule OmegaBravera.Donations.Processor do
         end
       {:error, reason} ->
         {:error, reason}
+      :error ->
+        {:error, :unknown_error}
+
     end
   end
 

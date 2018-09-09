@@ -4,12 +4,9 @@ defmodule OmegaBravera.Money do
   """
 
   import Ecto.Query, warn: false
-  alias OmegaBravera.Repo
   alias Ecto.Multi
 
-  alias OmegaBravera.Money.Donation
-  alias OmegaBravera.Money.Tip
-  alias OmegaBravera.Challenges
+  alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges, Challenges.NGOChal}
 
   # getting milestones
 
@@ -33,7 +30,6 @@ defmodule OmegaBravera.Money do
     Repo.all(query)
   end
 
-
   # for listing a user's donations
 
   def get_donations_by_user(user_id) do
@@ -47,6 +43,15 @@ defmodule OmegaBravera.Money do
     query = from d in Donation,
       where: d.ngo_chal_id == ^ngo_chal_id,
       where: d.status == "pending"
+
+    Repo.all(query)
+  end
+
+  def chargeable_donations_for_challenge(%NGOChal{} = challenge) do
+    query = from d in Donation,
+      where: d.ngo_chal_id == ^challenge.id,
+      where: d.status == "pending",
+      where: d.milestone_distance < ^Decimal.to_integer(Decimal.round(challenge.distance_covered, 0, :ceiling))
 
     Repo.all(query)
   end

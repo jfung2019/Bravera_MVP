@@ -25,6 +25,7 @@ defmodule OmegaBravera.Factory do
       end_date: Timex.shift(Timex.now, days: 5),
       duration: 5,
       status: "status",
+      slug: "John-512",
       user: build(:user),
       ngo: build(:ngo)
     }

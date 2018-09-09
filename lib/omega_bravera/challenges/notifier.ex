@@ -1,5 +1,5 @@
 defmodule OmegaBravera.Challenges.Notifier do
-  alias OmegaBravera.{Challenges.NGOChal, Repo}
+  alias OmegaBravera.{Challenges.NGOChal, Repo, Money.Donation}
   alias SendGrid.{Email, Mailer}
 
   def send_challenge_signup_email(%NGOChal{} = challenge, path) do
@@ -44,7 +44,36 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_milestone_completion_emails(_, _) do
+  def send_donor_milestone_email(%Donation{} = donation) do
+    donation
+    |> Repo.preload([ngo_chal: [:user], user: [], ngo: []])
+    |> donor_milestone_email()
+    |> Mailer.send()
+  end
+
+  def donor_milestone_email(%Donation{} = donation) do
+    Email.build()
+    |> Email.put_template("c8573175-93a6-4f8c-b1bb-9368ad75981a")
+    |> Email.add_substitution("-donorName-", donation.user.firstname)
+    |> Email.add_substitution("-participantName-", donation.ngo_chal.user.firstname)
+    |> Email.add_substitution("-challengeURL-", "http://bravera.co/#{donation.ngo.slug}/#{donation.ngo_chal.slug}")
+    |> Email.put_from("admin@bravera.co")
+    |> Email.add_to(donation.user.email)
+  end
+
+  def send_participant_milestone_email(%NGOChal{} = challenge) do
+    challenge
+    |> Repo.preload([:user])
+    |> participant_milestone_email()
+    |> Mailer.send()
+  end
+
+  def participant_milestone_email(%NGOChal{} = challenge) do
+    Email.build()
+    |> Email.put_template("e4c626a0-ad9a-4479-8228-6c02e7318789")
+    |> Email.add_substitution("-firstName-", challenge.user.firstname)
+    |> Email.put_from("admin@bravera.co")
+    |> Email.add_to(challenge.user.email)
   end
 
   def remaining_time(%NGOChal{end_date: end_date}) do
