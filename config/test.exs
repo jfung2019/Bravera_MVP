@@ -28,3 +28,7 @@ config :strava,
 config :sendgrid,
   api_key: "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",
   sandbox_enable: true
+
+config :stripy,
+  secret_key: "sk_test_PkM3TZK4TbRhGGWlmgQwNCoX",
+  endpoint: "https://api.stripe.com/v1/"
