@@ -78,7 +78,7 @@ config :omega_bravera, OmegaBravera.Repo,
 # Strava dev config
 
 config :strava,
-       client_id: "23267",
+       client_id: System.get_env("STRAVA_CLIENT_ID"),
        client_secret: System.get_env("STRAVA_CLIENT_SECRET"),
        access_token: System.get_env("STRAVA_ACCESS_TOKEN"),
        redirect_uri: System.get_env("STRAVA_REDIRECT_URI")
