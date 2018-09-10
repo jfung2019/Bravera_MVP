@@ -199,7 +199,7 @@
 
 <script type="text/javascript">
   document.addEventListener("DOMContentLoaded",   function(event) {
-    var stripe = Stripe('pk_live_71nuYtFi1xwRKQfijxwGT1iG');
+    var stripe = Stripe('<%= Application.get_env(:omega_bravera, :stripe_public_key) %>');
     var elements = stripe.elements();
 
     var style = {
