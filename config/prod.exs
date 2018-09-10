@@ -89,11 +89,9 @@ config :stripy,
        secret_key: System.get_env("DATABASE_URL"),
        endpoint: "https://api.stripe.com/v1/"
 
-config :omega_bravera, :stripe_public_key, "pk_live_71nuYtFi1xwRKQfijxwGT1iG"
-
+config :omega_bravera, :stripe_public_key, System.get_env("STRIPE_PUBLIC_KEY")
 
 # Guardian config
-
 config :omega_bravera, OmegaBravera.Guardian,
        issuer: "bravera",
        secret_key: System.get_env("GUARDIAN_SECRET_KEY")
@@ -103,3 +101,6 @@ config :omega_bravera, OmegaBravera.Guardian,
 config :omega_bravera, OmegaBravera.Mailer,
        adapter: Bamboo.SendgridAdapter,
        api_key: System.get_env("SENDGRID_API_KEY")
+
+config :sendgrid,
+  api_key: System.get_env("SENDGRID_API_KEY")
