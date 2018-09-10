@@ -4,12 +4,9 @@ defmodule OmegaBravera.Money do
   """
 
   import Ecto.Query, warn: false
-  alias OmegaBravera.Repo
   alias Ecto.Multi
 
-  alias OmegaBravera.Money.Donation
-  alias OmegaBravera.Money.Tip
-  alias OmegaBravera.Challenges
+  alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges, Challenges.NGOChal}
 
   # getting milestones
 
@@ -33,7 +30,6 @@ defmodule OmegaBravera.Money do
     Repo.all(query)
   end
 
-
   # for listing a user's donations
 
   def get_donations_by_user(user_id) do
@@ -47,6 +43,15 @@ defmodule OmegaBravera.Money do
     query = from d in Donation,
       where: d.ngo_chal_id == ^ngo_chal_id,
       where: d.status == "pending"
+
+    Repo.all(query)
+  end
+
+  def chargeable_donations_for_challenge(%NGOChal{} = challenge) do
+    query = from d in Donation,
+      where: d.ngo_chal_id == ^challenge.id,
+      where: d.status == "pending",
+      where: d.milestone_distance < ^Decimal.to_integer(Decimal.round(challenge.distance_covered, 0, :ceiling))
 
     Repo.all(query)
   end
@@ -67,47 +72,11 @@ defmodule OmegaBravera.Money do
     Repo.all(query)
   end
 
-  @doc """
-  Returns the list of donations.
-
-  ## Examples
-
-      iex> list_donations()
-      [%Donation{}, ...]
-
-  """
   def list_donations do
     Repo.all(Donation)
   end
 
-  @doc """
-  Gets a single donation.
-
-  Raises `Ecto.NoResultsError` if the Donation does not exist.
-
-  ## Examples
-
-      iex> get_donation!(123)
-      %Donation{}
-
-      iex> get_donation!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_donation!(id), do: Repo.get!(Donation, id)
-
-  @doc """
-  Creates a donation.
-
-  ## Examples
-
-      iex> create_donation(%{field: value})
-      {:ok, %Donation{}}
-
-      iex> create_donation(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
 
   def create_donation(rel_params, params) do
     %{user_id: user_id, ngo_chal_id: ngo_chal_id, ngo_id: ngo_id} = rel_params
@@ -127,7 +96,7 @@ defmodule OmegaBravera.Money do
     |> Repo.insert()
   end
 
-# create donations with kickstarter
+  # create donations with kickstarter
   def create_donations(rel_params, milestones, kickstarter, currency, str_src, cus_id) do
     multi =
       Multi.new
@@ -147,7 +116,7 @@ defmodule OmegaBravera.Money do
       end
   end
 
-# for no kickstarter
+  # for no kickstarter
   def create_donations(rel_params, milestones, currency, str_src, cus_id) do
     case insert_milestones(rel_params, milestones, currency, str_src, cus_id) do
       {:ok, result} ->
@@ -158,8 +127,6 @@ defmodule OmegaBravera.Money do
   end
 
   defp insert_milestones(rel_params, milestones, currency, str_src, cus_id) do
-    IO.inspect("milestones")
-    IO.inspect(milestones)
     %{ngo_chal_id: ngo_chal_id} = rel_params
 
     ngo_chal = Challenges.get_ngo_chal!(ngo_chal_id)
@@ -168,159 +135,59 @@ defmodule OmegaBravera.Money do
       %{distance_target: distance_target} = ngo_chal
 
       targets = case distance_target do
-          50 -> %{ 1 => 15, 2 => 25, 3 => 50}
-          75 -> %{ 1 => 25, 2 => 45, 3 => 75}
-          150 -> %{ 1 => 50, 2 => 100, 3 => 150}
-          250 -> %{ 1 => 75, 2 => 150, 3 => 250}
-        end
-        %{^milestone => milestone_distance} = targets
+                  50 -> %{ 1 => 15, 2 => 25, 3 => 50}
+                  75 -> %{ 1 => 25, 2 => 45, 3 => 75}
+                  150 -> %{ 1 => 50, 2 => 100, 3 => 150}
+                  250 -> %{ 1 => 75, 2 => 150, 3 => 250}
+                end
 
-        if amount != nil do
-          create_donation(rel_params, %{amount: Decimal.new(amount), milestone: milestone, milestone_distance: milestone_distance, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "pending"})
-        end
+      %{^milestone => milestone_distance} = targets
+
+      if amount != nil do
+        create_donation(rel_params, %{amount: Decimal.new(amount), milestone: milestone, milestone_distance: milestone_distance, currency: currency, str_src: str_src, str_cus_id: cus_id, status: "pending"})
+      end
     end)
+
     {:ok, "milestones created"}
   end
 
-  @doc """
-  Updates a donation.
-
-  ## Examples
-
-      iex> update_donation(donation, %{field: new_value})
-      {:ok, %Donation{}}
-
-      iex> update_donation(donation, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_donation(%Donation{} = donation, attrs) do
     donation
     |> Donation.changeset(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a Donation.
-
-  ## Examples
-
-      iex> delete_donation(donation)
-      {:ok, %Donation{}}
-
-      iex> delete_donation(donation)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_donation(%Donation{} = donation) do
     Repo.delete(donation)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking donation changes.
-
-  ## Examples
-
-      iex> change_donation(donation)
-      %Ecto.Changeset{source: %Donation{}}
-
-  """
   def change_donation(%Donation{} = donation) do
     Donation.changeset(donation, %{})
   end
 
+  def list_tips do
+    Repo.all(Tip)
+  end
 
-    @doc """
-    Returns the list of tips.
+  def get_tip!(id), do: Repo.get!(Tip, id)
 
-    ## Examples
+  def create_tip(attrs \\ %{}) do
+    %Tip{}
+    |> Tip.changeset(attrs)
+    |> Repo.insert()
+  end
 
-        iex> list_tips()
-        [%Tip{}, ...]
+  def update_tip(%Tip{} = tip, attrs) do
+    tip
+    |> Tip.changeset(attrs)
+    |> Repo.update()
+  end
 
-    """
-    def list_tips do
-      Repo.all(Tip)
-    end
+  def delete_tip(%Tip{} = tip) do
+    Repo.delete(tip)
+  end
 
-    @doc """
-    Gets a single tip.
-
-    Raises `Ecto.NoResultsError` if the Tip does not exist.
-
-    ## Examples
-
-        iex> get_tip!(123)
-        %Tip{}
-
-        iex> get_tip!(456)
-        ** (Ecto.NoResultsError)
-
-    """
-    def get_tip!(id), do: Repo.get!(Tip, id)
-
-    @doc """
-    Creates a tip.
-
-    ## Examples
-
-        iex> create_tip(%{field: value})
-        {:ok, %Tip{}}
-
-        iex> create_tip(%{field: bad_value})
-        {:error, %Ecto.Changeset{}}
-
-    """
-    def create_tip(attrs \\ %{}) do
-      %Tip{}
-      |> Tip.changeset(attrs)
-      |> Repo.insert()
-    end
-
-    @doc """
-    Updates a tip.
-
-    ## Examples
-
-        iex> update_tip(tip, %{field: new_value})
-        {:ok, %Tip{}}
-
-        iex> update_tip(tip, %{field: bad_value})
-        {:error, %Ecto.Changeset{}}
-
-    """
-    def update_tip(%Tip{} = tip, attrs) do
-      tip
-      |> Tip.changeset(attrs)
-      |> Repo.update()
-    end
-
-    @doc """
-    Deletes a Tip.
-
-    ## Examples
-
-        iex> delete_tip(tip)
-        {:ok, %Tip{}}
-
-        iex> delete_tip(tip)
-        {:error, %Ecto.Changeset{}}
-
-    """
-    def delete_tip(%Tip{} = tip) do
-      Repo.delete(tip)
-    end
-
-    @doc """
-    Returns an `%Ecto.Changeset{}` for tracking tip changes.
-
-    ## Examples
-
-        iex> change_tip(tip)
-        %Ecto.Changeset{source: %Tip{}}
-
-    """
-    def change_tip(%Tip{} = tip) do
-      Tip.changeset(tip, %{})
-    end
+  def change_tip(%Tip{} = tip) do
+    Tip.changeset(tip, %{})
+  end
 end

@@ -9,6 +9,24 @@ defmodule OmegaBravera.Challenges do
   alias OmegaBravera.Challenges.{NGOChal, Team}
   alias OmegaBravera.Accounts.User
 
+  def inactive_for_five_days() do
+    query = from challenge in NGOChal,
+      where: challenge.status == "Active",
+      where: challenge.last_activity_received <= fragment("now() - interval '5 days'"),
+      where: challenge.participant_notified_of_inactivity == false
+
+    Repo.all(query)
+  end
+
+  def inactive_for_seven_days() do
+    query = from challenge in NGOChal,
+      where: challenge.status == "Active",
+      where: challenge.last_activity_received <= fragment("now() - interval '7 days'"),
+      where: challenge.donor_notified_of_inactivity == false
+
+    Repo.all(query)
+  end
+
   def get_user_ngo_chals(user_id) do
     query = from nc in NGOChal, where: nc.user_id == ^user_id
     Repo.all(query)
@@ -36,11 +54,12 @@ defmodule OmegaBravera.Challenges do
     query = from nc in NGOChal,
       where: nc.slug == ^slug
 
-    Repo.one(query)
+    query
+    |> Repo.one()
+    |> Repo.preload([:ngo])
   end
 
   def get_ngo_ngo_chals(ngo_id, order_by) do
-
     query = from nc in NGOChal,
           where: nc.ngo_id == ^ngo_id,
           join: u in User, where: u.id == nc.user_id
@@ -61,6 +80,7 @@ defmodule OmegaBravera.Challenges do
         |> Repo.all
     end
   end
+
   @doc """
   Creates a ngo_chal.
 
@@ -74,17 +94,11 @@ defmodule OmegaBravera.Challenges do
 
   """
   def create_ngo_chal(%NGOChal{} = chal, attrs \\ %{}) do
-
     chal
-    |> NGOChal.changeset(attrs)
+    |> NGOChal.create_changeset(attrs)
     |> Repo.insert()
   end
 
-  def insert_ngo_chal(params, ngo_id, user_id, slug, start_date, end_date) do
-    %NGOChal{ngo_id: ngo_id, user_id: user_id, slug: slug, start_date: start_date, end_date: end_date}
-    |> NGOChal.changeset(params)
-    |> Repo.insert()
-  end
 
   @doc """
   Returns the list of ngo_chals.

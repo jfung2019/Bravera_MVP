@@ -1,20 +1,55 @@
 defmodule OmegaBravera.ChallengesTest do
   use OmegaBravera.DataCase
 
+  import OmegaBravera.Factory
+
   alias OmegaBravera.Challenges
 
   describe "ngo_chals" do
     alias OmegaBravera.Challenges.NGOChal
 
-    @valid_attrs %{activity: "some activity", distance_target: 120, duration: 42, money_target: "120.5", slug: "some slug", start_date: "2010-04-17 14:00:00.000000Z", status: "some status", end_date: "2010-04-18 14:00:00.000000Z"}
-    @update_attrs %{activity: "some updated activity", distance_target: 456, duration: 43, money_target: "456.7", slug: "some updated slug", start_date: "2011-05-18 15:01:01.000000Z", status: "some updated status"}
-    @invalid_attrs %{activity: nil, distance_target: "invalid", duration: "invalid", money_target: nil, slug: nil, start_date: nil, status: nil}
+    @valid_attrs %{"activity" => "some activity", "distance_target" => 120, "duration" => 42, "money_target" => "120.5", "slug" => "some slug", "status" => "some status"}
+    @update_attrs %{"activity" => "some updated activity", "distance_target" => 456, "duration" => 43, "money_target" => "456.7", "slug" => "some updated slug", "status" => "some updated status"}
+    @invalid_attrs %{"activity" => nil, "distance_target" => "invalid", "duration" => "invalid", "money_target" => nil, "slug" => nil, "status" => nil}
 
     def ngo_chal_fixture(attrs \\ %{}) do
-      attrs = Enum.into(attrs, @valid_attrs)
-      {:ok, ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, attrs)
+      insert(:ngo_challenge)
+    end
 
-      ngo_chal
+    test "inactive_for_five_days/0 returns the challenges that have been inactive for five days or more" do
+      ngo = insert(:ngo)
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo})
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -8), slug: "John-515", ngo: ngo})
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -2), slug: "Peter-411", ngo: ngo})
+
+      result = Challenges.inactive_for_five_days()
+
+      assert length(result) == 2
+    end
+
+    test "inactive_for_five_days/0 ignores the already notified challenges" do
+      ngo = insert(:ngo)
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo, participant_notified_of_inactivity: true})
+
+      assert Challenges.inactive_for_five_days() == []
+    end
+
+    test "inactive_for_seven_days/0 returns the challenges that have been inactive for seven days or more" do
+      ngo = insert(:ngo)
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo})
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -8), slug: "John-325", ngo: ngo})
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -2), slug: "Peter-411", ngo: ngo})
+
+      result = Challenges.inactive_for_seven_days()
+
+      assert length(result) == 1
+    end
+
+    test "inactive_for_seven_days/0 ignores the already notified challenges" do
+      ngo = insert(:ngo)
+      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -10), slug: "John-325", ngo: ngo, donor_notified_of_inactivity: true})
+
+      assert Challenges.inactive_for_seven_days() == []
     end
 
     test "list_ngo_chals/0 returns all ngo_chals" do
@@ -29,13 +64,18 @@ defmodule OmegaBravera.ChallengesTest do
     end
 
     test "create_ngo_chal/1 with valid data creates a ngo_chal" do
-      assert {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, @valid_attrs)
+      user = insert(:user)
+      ngo = insert(:ngo)
+
+      attrs = Map.merge(@valid_attrs, %{"user_id" => user.id, "ngo_id" => ngo.id})
+
+      {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, attrs)
+
       assert ngo_chal.activity == "some activity"
       assert ngo_chal.distance_target == 120
       assert ngo_chal.duration == 42
       assert ngo_chal.money_target == Decimal.new("120.5")
       assert ngo_chal.slug == "some slug"
-      assert ngo_chal.start_date == DateTime.from_naive!(~N[2010-04-17 14:00:00.000000Z], "Etc/UTC")
       assert ngo_chal.status == "some status"
     end
 
@@ -45,14 +85,16 @@ defmodule OmegaBravera.ChallengesTest do
 
     test "update_ngo_chal/2 with valid data updates the ngo_chal" do
       ngo_chal = ngo_chal_fixture()
-      assert {:ok, ngo_chal} = Challenges.update_ngo_chal(ngo_chal, @update_attrs)
-      assert %NGOChal{} = ngo_chal
+
+      {:ok, ngo_chal} = Challenges.update_ngo_chal(ngo_chal, @update_attrs)
+
+      assert match?(%NGOChal{}, ngo_chal) == true
+
       assert ngo_chal.activity == "some updated activity"
       assert ngo_chal.distance_target == 456
       assert ngo_chal.duration == 43
       assert ngo_chal.money_target == Decimal.new("456.7")
       assert ngo_chal.slug == "some updated slug"
-      assert ngo_chal.start_date == DateTime.from_naive!(~N[2011-05-18 15:01:01.000000Z], "Etc/UTC")
       assert ngo_chal.status == "some updated status"
     end
 

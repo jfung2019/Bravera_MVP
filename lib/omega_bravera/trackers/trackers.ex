@@ -9,6 +9,17 @@ defmodule OmegaBravera.Trackers do
   alias OmegaBravera.Trackers.Strava
   alias OmegaBravera.Challenges.NGOChal
 
+  def create_or_update_tracker(%{id: user_id}, %{token: token} = changeset) do
+    case Repo.get_by(Strava, user_id: user_id) do
+      nil ->
+        create_strava(user_id, changeset)
+      strava ->
+        unless strava.token == token do #is this some convoluted way of saying to update it when the token's been refreshed?
+          update_strava(strava, changeset)
+        end
+    end
+  end
+
   def get_strava_ngo_chals(athlete_id) do
   query = from s in Strava,
     where: s.athlete_id == ^athlete_id,
@@ -69,7 +80,7 @@ defmodule OmegaBravera.Trackers do
     |> Strava.changeset(attrs)
     |> Repo.insert()
   end
-  
+
   @doc """
   Updates a strava.
 

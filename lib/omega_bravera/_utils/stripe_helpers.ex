@@ -130,25 +130,14 @@ defmodule OmegaBravera.StripeHelpers do
     end
   end
 
-  #  Create a Stripe customer with Credit Card payment source
+  def create_stripe_customer(%{"email" => email, "str_src" => src_id} = params) do
+    donor = Accounts.insert_or_return_email_user(params)
 
-  # TODO Add user creation and relationship below
-
-  def create_stripe_customer(email, src_id) do
-
-    user = Accounts.insert_or_return_email_user(email)
-
-    %{id: user_id} = user
-
-    case Stripy.req(:post, "customers", %{"email" => email, "source" => src_id, "metadata[user_id]" => user_id})  do
-    {:ok, response} ->
-      %{body: response_body} = response
-      body = Poison.decode!(response_body)
-
-    {:error, reason} ->
-      Logger.error fn ->
-        "Stripe request failed: #{inspect(reason)}"
-      end
+    case Stripy.req(:post, "customers", %{"email" => email, "source" => src_id, "metadata[user_id]" => donor.id})  do
+      {:ok, %{body: response_body}} ->
+        Poison.decode!(response_body)
+      {:error, reason} ->
+        Logger.error("Stripe request failed: #{inspect(reason)}")
     end
   end
 
@@ -172,5 +161,4 @@ defmodule OmegaBravera.StripeHelpers do
     |> Decimal.round
     |> Decimal.to_string
   end
-
 end

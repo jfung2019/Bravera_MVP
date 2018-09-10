@@ -6,12 +6,19 @@ defmodule OmegaBravera.Accounts do
   import Ecto.Query, warn: false
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias Ecto.Multi
-  alias OmegaBravera.Repo
 
-  alias OmegaBravera.Accounts.{User, Credential}
-  alias OmegaBravera.Trackers
-  alias OmegaBravera.Trackers.Strava
-  alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.{
+    Repo,
+    Accounts,
+    Accounts.User,
+    Accounts.Credential,
+    Money.Donation,
+    Trackers,
+    Trackers.Strava,
+    Challenges.NGOChal,
+    Money.Donation
+  }
+
 
   def get_strava_challengers(athlete_id) do
     query = from s in Strava,
@@ -24,6 +31,16 @@ defmodule OmegaBravera.Accounts do
 
     query
     |> Repo.all()
+  end
+
+  def donors_for_challenge(%NGOChal{} = challenge) do
+    query = from u in User,
+      join: d in Donation, on: d.user_id == u.id,
+      where: d.ngo_chal_id == ^challenge.id,
+      distinct: d.user_id,
+      order_by: u.id
+
+    Repo.all(query)
   end
 
   # TODO Optimize the preload below
@@ -61,38 +78,15 @@ defmodule OmegaBravera.Accounts do
   """
 
   def insert_or_update_strava_user(changeset) do
-    %{email: email, firstname: firstname, lastname: lastname, token: token, athlete_id: athlete_id} = changeset
-
-    user_changeset = %{"email" => email, "firstname" => firstname, "lastname" => lastname}
-
-    strava_changeset = %{"token" => token, "email" => email, "firstname" => firstname, "lastname" => lastname, "athlete_id" => athlete_id}
+    %{token: token, email: email} = changeset
 
     case Repo.get_by(User, email: email) do
       nil ->
-         create_strava_user(user_changeset, strava_changeset)
+        Accounts.Strava.create_user_with_tracker_and_email(changeset)
       user ->
-        %{id: user_id} = user
-        case Repo.get_by(Strava, user_id: user_id) do
-          nil ->
-            Trackers.create_strava(user_id, strava_changeset)
-          strava ->
-            %{token: strava_token} = strava
-            unless strava_token == token do
-              Trackers.update_strava(strava, strava_changeset)
-            end
-            {:ok, user}
-        end
+        Trackers.create_or_update_tracker(user, changeset)
+        {:ok, user}
     end
-  end
-
-  def create_strava_user(user_changeset, strava_changeset) do
-
-    Multi.new
-    |> Multi.run(:user, fn %{} -> create_user(user_changeset) end)
-    |> Multi.run(:strava, fn %{user: user} ->
-       Trackers.create_strava(user.id, strava_changeset)
-       end)
-    |> Repo.transaction()
   end
 
   @doc """
@@ -143,14 +137,12 @@ defmodule OmegaBravera.Accounts do
   @doc """
     Inserts or returns an email user (if email is not already registered, insert it)
   """
-
-  def insert_or_return_email_user(email) do
+  def insert_or_return_email_user(%{"email" => email, "first_name" => first, "last_name" => last} = params) do
     case Repo.get_by(User, email: email) do
       nil ->
-        create_user(%{"email" => email})
-        case Repo.get_by(User, email: email) do
-          user ->
-            user
+        case create_user(%{"email" => email, "firstname" => first, "lastname" => last}) do
+          {:ok, user} -> user
+          {:error, reason} -> nil
         end
       user ->
         user

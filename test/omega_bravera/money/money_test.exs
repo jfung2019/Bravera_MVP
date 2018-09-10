@@ -1,22 +1,36 @@
 defmodule OmegaBravera.MoneyTest do
   use OmegaBravera.DataCase
 
+  import OmegaBravera.Factory
+
   alias OmegaBravera.Money
 
   describe "donations" do
-    alias OmegaBravera.Money.Donation
+    alias OmegaBravera.{Money.Donation, Challenges.NGOChal}
 
     @valid_attrs %{amount: "120.5", currency: "some currency", milestone: 42, status: "some status", str_src: "some str_src"}
-    @update_attrs %{amount: "456.7", currency: "some updated currency", milestone: 43, status: "some updated status", str_src: "some updated str_src"}
     @invalid_attrs %{amount: nil, currency: nil, milestone: nil, status: nil, str_src: nil}
 
     def donation_fixture(attrs \\ %{}) do
-      {:ok, donation} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Money.create_donation()
+      insert(:donation)
+    end
 
-      donation
+    test "chargeable_donations_for_challenge/1" do
+      user = insert(:user)
+      ngo = insert(:ngo, %{slug: "swcc-1"})
+      challenge = insert(:ngo_challenge, %{ngo: ngo, user: user, distance_target: 150, distance_covered: 51})
+
+      params = %{ngo_chal: challenge, ngo: ngo}
+
+
+      insert(:donation, Map.merge(params, %{status: "charged"}))
+      insert(:donation, Map.merge(params, %{milestone: 3, milestone_distance: 100}))
+      second_donation = insert(:donation, Map.merge(params, %{milestone: 2, milestone_distance: 50}))
+
+      chargeable_donations = Money.chargeable_donations_for_challenge(challenge)
+
+      assert length(chargeable_donations) == 1
+      assert hd(chargeable_donations).id == second_donation.id
     end
 
     test "list_donations/0 returns all donations" do
