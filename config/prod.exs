@@ -86,7 +86,7 @@ config :strava,
 # Stripy dev config
 
 config :stripy,
-       secret_key: System.get_env("DATABASE_URL"),
+       secret_key: System.get_env("STRIPE_SECRET_KEY"),
        endpoint: "https://api.stripe.com/v1/"
 
 config :omega_bravera, :stripe_public_key, System.get_env("STRIPE_PUBLIC_KEY")
