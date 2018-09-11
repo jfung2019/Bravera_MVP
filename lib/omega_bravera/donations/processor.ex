@@ -1,14 +1,17 @@
 defmodule OmegaBravera.Donations.Processor do
-  alias OmegaBravera.{Fundraisers.NGO, Challenges.NGOChal, Money, Accounts.User, StripeHelpers, Money.Donation, Repo}
+  alias OmegaBravera.{Money, Accounts.User, StripeHelpers, Money.Donation, Repo, Donations.Notifier}
 
   def charge_donation(%Donation{} = dn) do
     donation = Repo.preload(dn, [:ngo, :ngo_chal, :user])
 
     case StripeHelpers.charge_stripe_customer(donation.ngo, charge_params(donation), donation.ngo_chal_id) do
-      {:ok, %{body: response_body}} ->
-        case Poison.decode!(response_body) do
-          %{"source" => _} ->
-            Money.update_donation(donation, %{status: "charged"})
+      {:ok, %{body: body}} ->
+        case Poison.decode!(body) do
+          %{"source" => _} = response ->
+            donation
+            |> Donation.charge_changeset(response)
+            |> Repo.update!
+            |> Notifier.send_donation_charged_email()
             {:ok, :donation_charged}
           %{"error" => _} ->
             {:error, :stripe_error}

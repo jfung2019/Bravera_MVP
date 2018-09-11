@@ -23,7 +23,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       reply_to: nil,
       send_at: nil,
       subject: nil,
-      from: %{email: "admin@bravera.co"},
+      from: %{email: "admin@bravera.co", name: "Bravera"},
       substitutions: %{
         "-challengeDistance-" => "#{challenge.distance_target} Km",
         "-challengeMilestones-" => NGOChal.milestones_string(challenge),
@@ -62,7 +62,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       reply_to: nil,
       send_at: nil,
       subject: nil,
-      from: %{email: "admin@bravera.co"},
+      from: %{email: "admin@bravera.co", name: "Bravera"},
       substitutions: %{
         "-firstName-" => "John",
         "-activityDistance-" => "#{Decimal.new(4.215)} Km",
@@ -98,7 +98,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       reply_to: nil,
       send_at: nil,
       subject: nil,
-      from: %{email: "admin@bravera.co"},
+      from: %{email: "admin@bravera.co", name: "Bravera"},
       substitutions: %{
         "-firstName-" => challenge.user.firstname,
       },
@@ -133,7 +133,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       reply_to: nil,
       send_at: nil,
       subject: nil,
-      from: %{email: "admin@bravera.co"},
+      from: %{email: "admin@bravera.co", name: "Bravera"},
       substitutions: %{
         "-donorName-" => donation.user.firstname,
         "-participantName-" => donation.ngo_chal.user.firstname,
@@ -171,7 +171,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       reply_to: nil,
       send_at: nil,
       subject: nil,
-      from: %{email: "admin@bravera.co"},
+      from: %{email: "admin@bravera.co", name: "Bravera"},
       substitutions: %{
         "-firstName-" => challenge.user.firstname,
         "-challengeURL-" => "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
@@ -204,7 +204,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       reply_to: nil,
       send_at: nil,
       subject: nil,
-      from: %{email: "admin@bravera.co"},
+      from: %{email: "admin@bravera.co", name: "Bravera"},
       substitutions: %{
         "-donorName-" => donor.firstname,
         "-participantName-" => User.full_name(challenge.user),
