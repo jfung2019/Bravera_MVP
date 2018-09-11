@@ -6,6 +6,10 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
   http: [port: 4001],
   server: false
 
+config :omega_bravera, OmegaBravera.Guardian,
+  issuer: "omega_bravera",
+  secret_key: "TVCFw5ZzCC5gqI8FeRUg3jT7U578dbb4gGjBXq8Zt1Rk4ctVFj/zTRn6gfGOXiU0"
+
 # Print only warnings and errors during test
 config :logger, level: :warn
 

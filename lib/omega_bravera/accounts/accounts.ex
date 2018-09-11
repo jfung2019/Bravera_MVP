@@ -23,7 +23,7 @@ defmodule OmegaBravera.Accounts do
   def get_strava_challengers(athlete_id) do
     query = from s in Strava,
       where: s.athlete_id == ^athlete_id,
-      join: nc in NGOChal, where: s.user_id == nc.user_id and nc.status == "Active",
+      join: nc in NGOChal, where: s.user_id == nc.user_id and nc.status == "active",
       select: {
         nc.id,
         s.token

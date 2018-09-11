@@ -9,7 +9,8 @@ defmodule OmegaBravera.Application do
     # Define workers and child supervisors to be supervised
     children = [
       #Challenges.InactivityWorker cron schedule
-      %{id: "daily", start: {SchedEx, :run_every, [OmegaBravera.Challenges.InactivityWorker, :process_inactive_challenges, [], "15 0 * * *"]}},
+      %{id: "inactive_finder", start: {SchedEx, :run_every, [OmegaBravera.Challenges.InactivityWorker, :process_inactive_challenges, [], "15 0 * * *"]}},
+      %{id: "expirer", start: {SchedEx, :run_every, [OmegaBravera.Challenges.ExpirerWorker, :process_expired_challenges, [], "*/1 * * * *"]}},
 
       # Start the Ecto repository
       supervisor(OmegaBravera.Repo, []),

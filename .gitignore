@@ -36,3 +36,6 @@ npm-debug.log
 /config/*.secret.exs
 
 .deliver/releases/
+
+#local environment config
+.env
