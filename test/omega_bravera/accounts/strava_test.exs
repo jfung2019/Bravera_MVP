@@ -61,7 +61,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
       cc: nil,
       content: nil,
       custom_args: nil,
-      from: %{email: "admin@bravera.co"},
+      from: %{email: "admin@bravera.co", name: "Bravera"},
       headers: nil,
       reply_to: nil,
       send_at: nil,

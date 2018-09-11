@@ -34,5 +34,5 @@ config :sendgrid,
   sandbox_enable: true
 
 config :stripy,
-  secret_key: "sk_test_PkM3TZK4TbRhGGWlmgQwNCoX",
+  secret_key: "sk_test_xgwHvfr4GBgJ9wrUDHoa1E57",
   endpoint: "https://api.stripe.com/v1/"

@@ -36,7 +36,7 @@ defmodule OmegaBravera.Accounts.Strava do
     Email.build()
     |> Email.put_template("b47d2224-792a-43d8-b4b2-f53b033d2f41")
     |> Email.add_substitution("-fullName-",Accounts.User.full_name(user))
-    |> Email.put_from("admin@bravera.co")
+    |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_to(user.email)
   end
 

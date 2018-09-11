@@ -17,6 +17,17 @@ defmodule OmegaBravera.Money.Donation do
     field :str_src, :string
     field :str_cus_id, :string
     field :milestone_distance, :integer
+
+    # charge successful fields
+    field :charge_id, :string
+    field :last_digits, :string
+    field :card_brand, :string
+    field :charged_description, :string
+    field :charged_status, :string
+    field :charged_amount, :decimal
+    field :charged_at, :utc_datetime
+
+    #associations
     belongs_to :user, User
     belongs_to :ngo_chal, NGOChal
     belongs_to :ngo, NGO
@@ -33,4 +44,22 @@ defmodule OmegaBravera.Money.Donation do
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
   end
+
+  def charge_changeset(%__MODULE__{} = donation, stripe_attributes) do
+    change(donation, Map.merge(charged_attributes(stripe_attributes), %{status: "charged"}))
+  end
+
+  defp charged_attributes(stripe_attributes) do
+    %{
+      charge_id: stripe_attributes["id"],
+      last_digits: get_in(stripe_attributes, ["source", "card", "last4"]),
+      card_brand: get_in(stripe_attributes, ["source", "card", "brand"]),
+      charged_description: stripe_attributes["description"],
+      charged_status: stripe_attributes["status"],
+      charged_amount: moneyfied_stripe_amount(stripe_attributes["amount"]),
+      charged_at: DateTime.from_unix!(stripe_attributes["created"])
+    }
+  end
+
+  defp moneyfied_stripe_amount(amount), do: Decimal.new(amount / 100)
 end
