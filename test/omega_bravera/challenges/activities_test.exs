@@ -30,7 +30,7 @@ defmodule OmegaBravera.Challenges.ActivitiesTest do
       {:ok, :challenge_updated} = Activities.process_challenge({challenge.id, nil}, %Strava.Activity{distance: 4200})
       updated_challenge = Repo.get!(NGOChal, challenge.id)
 
-      assert updated_challenge.status == "Complete"
+      assert updated_challenge.status == "complete"
     end
 
     test "charges the chargeable donations" do

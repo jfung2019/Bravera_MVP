@@ -13,7 +13,7 @@ defmodule OmegaBravera.Factory do
     %OmegaBravera.Fundraisers.NGO{
       name: "Save the children worldwide",
       stripe_id: "cus_lO1DEQWBbQAACfHO",
-      slug: "scww"
+      slug: sequence(:slug, &"swcc-#{&1}")
     }
   end
 
@@ -24,7 +24,7 @@ defmodule OmegaBravera.Factory do
       start_date: Timex.now,
       end_date: Timex.shift(Timex.now, days: 5),
       duration: 5,
-      status: "Active",
+      status: "active",
       slug: "John-512",
       user: build(:user),
       ngo: build(:ngo)

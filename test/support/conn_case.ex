@@ -14,6 +14,7 @@ defmodule OmegaBraveraWeb.ConnCase do
   """
 
   use ExUnit.CaseTemplate
+  import OmegaBravera.Factory
 
   using do
     quote do
@@ -32,7 +33,19 @@ defmodule OmegaBraveraWeb.ConnCase do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(OmegaBravera.Repo, {:shared, self()})
     end
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+
+    conn = Phoenix.ConnTest.build_conn()
+
+    {conn, user} = if tags[:authenticated] do
+      user = insert(:user)
+      {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(user, %{})
+
+      {Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), user}
+    else
+      {conn, nil}
+    end
+
+    {:ok, conn: conn, user: user}
   end
 
 end
