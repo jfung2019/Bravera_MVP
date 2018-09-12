@@ -33,7 +33,6 @@ defmodule OmegaBraveraWeb.StravaController do
   # Make separate Strava params for a Strava record, create email if email doesn't exist?
   # Would have to make function to check if user is logged in already to add Strava to fitness provider
   def strava_callback(conn, params) do
-
     conn
     |> login(Accounts.Strava.login_changeset(params))
     |> redirect(to: "/")

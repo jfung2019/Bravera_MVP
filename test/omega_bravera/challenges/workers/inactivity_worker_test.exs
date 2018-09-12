@@ -7,7 +7,6 @@ defmodule OmegaBravera.Challenges.InactivityWorkerTest do
   alias OmegaBravera.Challenges.{InactivityWorker, NGOChal}
 
   describe "process_inactive_challenges/0" do
-    @tag :focus
     test "updates inactive challenges" do
       ngo = insert(:ngo)
       participant_notifiable = insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo})

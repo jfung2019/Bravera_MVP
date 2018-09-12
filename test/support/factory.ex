@@ -9,6 +9,17 @@ defmodule OmegaBravera.Factory do
     }
   end
 
+  def strava_factory do
+    %OmegaBravera.Trackers.Strava{
+      athlete_id: 12345678,
+      email: sequence(:email, &("john.doe.#{&1}@example.com")),
+      firstname: "John",
+      lastname: "Doe",
+      token: "abcdef123456",
+      user: build(:user)
+    }
+  end
+
   def ngo_factory do
     %OmegaBravera.Fundraisers.NGO{
       name: "Save the children worldwide",
