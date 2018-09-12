@@ -3,7 +3,7 @@ defmodule OmegaBravera.AccountsTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts, Accounts.User, Challenges.NGOChal}
+  alias OmegaBravera.{Accounts, Accounts.User, Challenges.NGOChal, Repo, Trackers.Strava}
 
   describe "users" do
 
@@ -34,6 +34,47 @@ defmodule OmegaBravera.AccountsTest do
       donors = Accounts.donors_for_challenge(challenge)
 
       assert donors == [matthew_wells, carlos_cordero]
+    end
+
+    test "insert_or_update_strava_user/1 creates both user and strava tracker" do
+      attrs = %{
+        athlete_id: 33762738,
+        email: "simon.garciar@gmail.com",
+        firstname: "Rafael",
+        lastname: "Garcia",
+        token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
+        additional_info: %{sex: "M", location: "Spain/Barcelona/Barcelona"}
+      }
+
+      {:ok, %{strava: %Strava{} = strava, user: %Accounts.User{} = user}} = Accounts.insert_or_update_strava_user(attrs)
+
+      assert user.email == "simon.garciar@gmail.com"
+      assert strava.athlete_id == 33762738
+    end
+
+    test "insert_or_update_strava_user/1 updates both user and strava tracker" do
+      user_attrs = %{firstname: "Rafael", lastname: "Garcia", email: "simon.garciar@gmail.com"}
+      user = insert(:user, user_attrs)
+      strava = insert(:strava, Map.merge(user_attrs, %{token: "abcdef", user: user}))
+
+      attrs = %{
+        athlete_id: 33762738,
+        email: "simon.garciar@gmail.com",
+        firstname: "Rafael",
+        lastname: "Garcia",
+        token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
+        additional_info: %{sex: "M", location: "Spain/Barcelona/Barcelona"}
+      }
+
+
+      {:ok, user} = Accounts.insert_or_update_strava_user(attrs)
+
+      user = Repo.preload(user, [:strava])
+
+      assert user.additional_info[:sex] == "M"
+      assert user.additional_info[:location] == "Spain/Barcelona/Barcelona"
+      assert user.strava.athlete_id == 33762738
+      assert user.strava.token == "87318aaded9cdeb99a1a3c20c6af26ccf059de30"
     end
 
     test "list_users/0 returns all users" do

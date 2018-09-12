@@ -78,14 +78,17 @@ defmodule OmegaBravera.Accounts do
   """
 
   def insert_or_update_strava_user(changeset) do
-    %{token: token, email: email} = changeset
-
-    case Repo.get_by(User, email: email) do
+    case Repo.get_by(User, email: changeset[:email]) do
       nil ->
         Accounts.Strava.create_user_with_tracker_and_email(changeset)
       user ->
-        Trackers.create_or_update_tracker(user, changeset)
-        {:ok, user}
+        updated_user = case Accounts.update_user(user, changeset) do
+                         {:ok, u} -> u
+                         {:error, _} -> user
+                       end
+
+        Trackers.create_or_update_tracker(updated_user, changeset)
+        {:ok, updated_user}
     end
   end
 

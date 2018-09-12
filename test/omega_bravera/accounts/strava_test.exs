@@ -12,7 +12,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
       email: "simon.garciar@gmail.com",
       firstname: "Rafael",
       lastname: "Garcia",
-      token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30"
+      token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
     }
 
     [attrs: attrs]
@@ -24,7 +24,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
     use_cassette "strava_signup_sign_in_flow" do
       result = Accounts.Strava.login_changeset(params)
 
-      assert result == attrs
+      assert result == Map.put(attrs,:additional_info, %{sex: "M", location: "//"})
     end
   end
 
@@ -48,27 +48,4 @@ defmodule OmegaBravera.Accounts.StravaTest do
     end
   end
 
-  test "build_email/1 builds the signup email for the sendgrid template", %{attrs: attrs} do
-    {:ok, user} = Accounts.create_user(Map.take(attrs, [:firstname, :lastname, :email]))
-
-    result = Accounts.Strava.build_email(user)
-
-    assert result == %SendGrid.Email{
-      __phoenix_layout__: nil,
-      __phoenix_view__: nil,
-      attachments: nil,
-      bcc: nil,
-      cc: nil,
-      content: nil,
-      custom_args: nil,
-      from: %{email: "admin@bravera.co", name: "Bravera"},
-      headers: nil,
-      reply_to: nil,
-      send_at: nil,
-      subject: nil,
-      substitutions: %{"-fullName-" => "Rafael Garcia"},
-      template_id: "b47d2224-792a-43d8-b4b2-f53b033d2f41",
-      to: [%{email: "simon.garciar@gmail.com"}]
-    }
-  end
 end
