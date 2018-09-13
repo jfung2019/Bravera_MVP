@@ -35,7 +35,8 @@ defmodule OmegaBravera.NotifierTest do
         "-participantName-" => user.firstname
       },
       template_id: "79561f40-9939-406c-bdbe-0ecca63a1e1a",
-      to: [%{email: user.email}]
+      to: [%{email: user.email}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 
@@ -64,7 +65,8 @@ defmodule OmegaBravera.NotifierTest do
         "-participantName-" => user.firstname
       },
       template_id: "4ab4a0f8-79ac-4f82-9ee2-95db6fafb986",
-      to: [%{email: donor.email}]
+      to: [%{email: donor.email}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 
@@ -119,7 +121,8 @@ defmodule OmegaBravera.NotifierTest do
         "-chargedAmount-" => "10.0 HKD"
       },
       template_id: "f9448c06-ff05-4901-bb47-f21a7848c1e7",
-      to: [%{email: donor.email}]
+      to: [%{email: donor.email}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 

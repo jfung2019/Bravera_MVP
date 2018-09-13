@@ -21,6 +21,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
     |> Email.add_substitution("-challengeMilestones-", "#{NGOChal.milestones_string(challenge)}")
     |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
   end
 
@@ -41,6 +42,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_substitution("-timeRemaining-", "#{remaining_time(challenge)}")
     |> Email.add_substitution("-challengeURL-", "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}")
     |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
   end
 
@@ -58,6 +60,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_substitution("-participantName-", donation.ngo_chal.user.firstname)
     |> Email.add_substitution("-challengeURL-", "http://bravera.co/#{donation.ngo.slug}/#{donation.ngo_chal.slug}")
     |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donation.user.email)
   end
 
@@ -73,6 +76,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.put_template("e4c626a0-ad9a-4479-8228-6c02e7318789")
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
     |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
   end
 
@@ -89,6 +93,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
     |> Email.add_substitution("-challengeURL-", "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}")
     |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
   end
 
@@ -106,6 +111,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_substitution("-participantName-", User.full_name(challenge.user))
     |> Email.add_substitution("-challengeURL-", "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}")
     |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donor.email)
   end
 

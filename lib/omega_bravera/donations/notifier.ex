@@ -32,6 +32,7 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.add_substitution("-donorPledge-", "$#{pledged_amount(pledges)} HKD")
     |> Email.add_substitution("-challengeURL-", "http://bravera.co#{challenge_path}")
     |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
   end
 
@@ -42,6 +43,7 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.add_substitution("-participantName-", challenge.user.firstname)
     |> Email.add_substitution("-challengeURL-", "http://bravera.co#{challenge_path}")
     |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donor.email)
   end
 
@@ -63,6 +65,7 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.add_substitution("-donationDate-", Timex.format!(donation.charged_at, "%Y-%m-%d %H:%M:%S", :strftime))
     |> Email.add_substitution("-chargedAmount-", "#{donation.charged_amount} #{donation.currency}")
     |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donation.user.email)
   end
 

@@ -23,7 +23,8 @@ defmodule OmegaBravera.Accounts.NotifierTest do
       subject: nil,
       substitutions: %{"-fullName-" => "Rafael Garcia"},
       template_id: "b47d2224-792a-43d8-b4b2-f53b033d2f41",
-      to: [%{email: "simon.garciar@gmail.com"}]
+      to: [%{email: "simon.garciar@gmail.com"}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 
@@ -60,7 +61,7 @@ defmodule OmegaBravera.Accounts.NotifierTest do
       attachments: [
         %{
           content: "Zmlyc3RuYW1lLGxhc3RuYW1lLGVtYWlsLHN0cmF2YV9pZCxzZXgsbG9jYXRpb24NClJhZmFlbCxHYXJjaWEsY2Ftb256QGNhbW9uei5jb20sMzM3NjI3MzggKGh0dHBzOi8vd3d3LnN0cmF2YS5jb20vYXRobGV0ZXMvMzM3NjI3MzgpLE0sTm90IHNwZWNpZmllZA0K",
-          filename: "signups_2018-09-11.csv"
+          filename: "signups_#{yesterday}.csv"
         }
       ],
       content: [
@@ -83,4 +84,6 @@ defmodule OmegaBravera.Accounts.NotifierTest do
 
     assert result == :ok
   end
+
+  defp yesterday, do: Timex.shift(Timex.today, days: -1)
 end

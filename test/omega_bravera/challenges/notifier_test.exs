@@ -35,7 +35,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
         "-ngoName-" => "Save the children worldwide"
       },
       template_id: "e5402f0b-a2c2-4786-955b-21d1cac6211d",
-      to: [%{email: challenge.user.email}]
+      to: [%{email: challenge.user.email}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 
@@ -72,7 +73,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
         "-challengeURL-" => "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}",
       },
       template_id: "d92b0884-818d-4f54-926a-a529e5caa7d8",
-      to: [%{email: challenge.user.email}]
+      to: [%{email: challenge.user.email}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 
@@ -103,7 +105,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
         "-firstName-" => challenge.user.firstname,
       },
       template_id: "e4c626a0-ad9a-4479-8228-6c02e7318789",
-      to: [%{email: challenge.user.email}]
+      to: [%{email: challenge.user.email}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 
@@ -140,7 +143,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
         "-challengeURL-" => "http://bravera.co/#{donation.ngo.slug}/#{donation.ngo_chal.slug}"
       },
       template_id: "c8573175-93a6-4f8c-b1bb-9368ad75981a",
-      to: [%{email: donation.user.email}]
+      to: [%{email: donation.user.email}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 
@@ -177,7 +181,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
         "-challengeURL-" => "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
       },
       template_id: "1395a042-ef5a-48a5-b890-c6340dd8eeff",
-      to: [%{email: challenge.user.email}]
+      to: [%{email: challenge.user.email}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 
@@ -211,7 +216,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
         "-challengeURL-" => "http://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
       },
       template_id: "b91a66e1-d7f5-404f-804a-9a21f4ec70d4",
-      to: [%{email: donor.email}]
+      to: [%{email: donor.email}],
+      bcc: [%{email: "admin@bravera.co"}]
     }
   end
 
