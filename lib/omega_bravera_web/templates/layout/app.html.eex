@@ -36,11 +36,14 @@
 
     <footer class="footer">
       <div class="container">
-				<nav class="navbar">
+				<nav class="navbar navbar-expand">
           <ul class="navbar-nav">
 	          <li class="nav-item">
 	            <%= link("Privacy", to: "https://www.bravera.fit/privacy/") %>
 	          </li>
+	          <li class="nav-item">
+	            <%= link("Terms of Use", to: "https://www.bravera.fit/terms") %>
+						</li>
           </ul>
         </nav>
       </div>

@@ -69,6 +69,11 @@ footer.footer {
       justify-content: center;
       flex-direction: column;
     }
+    @include media-breakpoint-down(xs) {
+      li.nav-item:first-child {
+        padding-right: 25%;
+      }
+    }
   }
 }
 
