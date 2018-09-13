@@ -16,15 +16,21 @@ defmodule OmegaBravera.Accounts.SignupsTrackingWorker do
     from(user in User, where: user.inserted_at >= ^start_date and user.inserted_at < ^end_date, preload: [:strava])
   end
 
-  defp start_date() do
-    Timex.today()
+  def start_date() do
+    end_date
     |> Timex.shift(days: -1)
-    |> Timex.to_datetime()
   end
 
-  defp end_date() do
-    Timex.today()
-    |> Timex.to_datetime()
+  # Returns the utc timestamp for tomorrow at 6am HKT which ends up being today at 22h
+  # I'd rather rely on timex to do the timezone calculations instead of hardcoding it in case
+  # there's ever something like DST in HK
+  def end_date do
+    tomorrow = Timex.shift(Timex.today, days: 1)
+    tuple = {Timex.to_erl(tomorrow), {6, 0, 0}}
+
+    "Asia/Hong_Kong"
+    |> Timex.Timezone.resolve(tuple)
+    |> Timex.Timezone.convert("UTC")
   end
 
   defp to_csv(users) do

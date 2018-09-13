@@ -9,7 +9,7 @@ defmodule OmegaBravera.Application do
     # Define workers and child supervisors to be supervised
     children = [
       #Challenges.InactivityWorker cron schedule
-      %{id: "signups_digest", start: {SchedEx, :run_every, [OmegaBravera.Accounts.SignupsTrackingWorker, :process_signups, [], "0 0 * * *"]}},
+      %{id: "signups_digest", start: {SchedEx, :run_every, [OmegaBravera.Accounts.SignupsTrackingWorker, :process_signups, [], "0 22 * * *"]}},
       %{id: "inactive_finder", start: {SchedEx, :run_every, [OmegaBravera.Challenges.InactivityWorker, :process_inactive_challenges, [], "15 0 * * *"]}},
       %{id: "challenge_expirer", start: {SchedEx, :run_every, [OmegaBravera.Challenges.ExpirerWorker, :process_expired_challenges, [], "*/1 * * * *"]}},
 
