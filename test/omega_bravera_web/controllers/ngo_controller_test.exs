@@ -12,6 +12,7 @@ defmodule OmegaBraveraWeb.NGOControllerTest do
     ngo
   end
 
+  @tag :skip
   describe "index" do
     test "lists all ngos", %{conn: conn} do
       conn = get conn, ngo_path(conn, :index)
@@ -19,6 +20,7 @@ defmodule OmegaBraveraWeb.NGOControllerTest do
     end
   end
 
+  @tag :skip
   describe "new ngo" do
     test "renders form", %{conn: conn} do
       conn = get conn, ngo_path(conn, :new)
@@ -27,6 +29,8 @@ defmodule OmegaBraveraWeb.NGOControllerTest do
   end
 
   describe "create ngo" do
+
+    @tag :skip
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post conn, ngo_path(conn, :create), ngo: @create_attrs
 
@@ -37,12 +41,14 @@ defmodule OmegaBraveraWeb.NGOControllerTest do
       assert html_response(conn, 200) =~ "Show Ngo"
     end
 
+    @tag :skip
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post conn, ngo_path(conn, :create), ngo: @invalid_attrs
       assert html_response(conn, 200) =~ "New Ngo"
     end
   end
 
+  @tag :skip
   describe "edit ngo" do
     setup [:create_ngo]
 
@@ -55,6 +61,7 @@ defmodule OmegaBraveraWeb.NGOControllerTest do
   describe "update ngo" do
     setup [:create_ngo]
 
+    @tag :skip
     test "redirects when data is valid", %{conn: conn, ngo: ngo} do
       conn = put conn, ngo_path(conn, :update, ngo), ngo: @update_attrs
       assert redirected_to(conn) == ngo_path(conn, :show, ngo)
@@ -63,12 +70,14 @@ defmodule OmegaBraveraWeb.NGOControllerTest do
       assert html_response(conn, 200) =~ "some updated desc"
     end
 
+    @tag :skip
     test "renders errors when data is invalid", %{conn: conn, ngo: ngo} do
       conn = put conn, ngo_path(conn, :update, ngo), ngo: @invalid_attrs
       assert html_response(conn, 200) =~ "Edit Ngo"
     end
   end
 
+  @tag :skip
   describe "delete ngo" do
     setup [:create_ngo]
 

@@ -14,4 +14,4 @@ before_script:
 
 test:
   script:
-    - mix test
+    - mix test --exclude skip

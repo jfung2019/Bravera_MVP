@@ -15,6 +15,8 @@ defmodule OmegaBraveraWeb.DonationControllerTest do
   end
 
   describe "create donation" do
+
+    @tag :skip
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post conn, ngo_ngo_chal_donation_path(conn, :create, "foo", "bar"), donation: @create_attrs
 
@@ -25,6 +27,7 @@ defmodule OmegaBraveraWeb.DonationControllerTest do
       assert html_response(conn, 200) =~ "Show Donation"
     end
 
+    @tag :skip
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post conn, ngo_ngo_chal_donation_path(conn, :create, "foo", "bar"), donation: @invalid_attrs
       assert html_response(conn, 200) =~ "New Donation"
