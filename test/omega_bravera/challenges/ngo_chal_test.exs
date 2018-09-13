@@ -32,11 +32,12 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
 
 
   describe "activity_completed_changeset/2" do
-    test "updates the distance_covered" do
-      challenge = insert(:ngo_challenge)
-      changeset = NGOChal.activity_completed_changeset(challenge, %Strava.Activity{distance: 3215})
 
-      assert changeset.changes[:distance_covered] == Decimal.new(3.215)
+    test "updates the distance_covered" do
+      challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(1.23)})
+      changeset = NGOChal.activity_completed_changeset(challenge, %{distance: Decimal.new(4.32)})
+
+      assert changeset.changes[:distance_covered] == Decimal.new(5.55)
       assert changeset.changes[:status] == nil
     end
 

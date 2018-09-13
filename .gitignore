@@ -39,3 +39,6 @@ npm-debug.log
 
 #local environment config
 .env
+
+#emacs org mode - simon
+todo.org

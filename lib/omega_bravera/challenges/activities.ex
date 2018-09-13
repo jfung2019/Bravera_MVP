@@ -16,10 +16,14 @@ defmodule OmegaBravera.Challenges.Activities do
     Enum.map(challenges, &process_challenge(&1, activity))
   end
 
-  def process_challenge({challenge_id, _}, %Strava.Activity{distance: distance} = activity) when distance > 0 and is_integer(challenge_id) do
+  def process_challenge({challenge_id, _}, %Strava.Activity{distance: distance} = strava_activity) when distance > 0 and is_integer(challenge_id) do
     challenge = Challenges.get_ngo_chal!(challenge_id)
 
-    update_ngo_challenge(challenge, activity)
+
+    activity = create_activity(strava_activity, challenge)
+    update_challenge(challenge, activity)
+
+
     Challenges.Notifier.send_activity_completed_email(challenge, activity)
 
     donations = Money.chargeable_donations_for_challenge(challenge)
@@ -53,13 +57,20 @@ defmodule OmegaBravera.Challenges.Activities do
     Processor.charge_donation(donation)
   end
 
-  defp update_ngo_challenge(%NGOChal{} = challenge, %Strava.Activity{} = activity) do
+  defp create_activity(activity, challenge) do
+    changeset = Challenges.Activity.create_changeset(activity, challenge)
+
+    case Repo.insert(changeset) do
+      {:ok, activity} -> activity
+      {:error, _} -> nil
+    end
+  end
+
+  defp update_challenge(challenge, activity) do
     challenge
     |> NGOChal.activity_completed_changeset(activity)
     |> Repo.update()
   end
 
-  defp strava_client({_, token}) do
-    Strava.Client.new(token)
-  end
+  defp strava_client({_, token}), do: Strava.Client.new(token)
 end

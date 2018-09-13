@@ -42,6 +42,19 @@ defmodule OmegaBravera.Factory do
     }
   end
 
+  def activity_factory do
+    %OmegaBravera.Challenges.Activity{
+      strava_id: 1836709368,
+      distance: Decimal.new(1.74),
+      start_date: ~N[2018-09-11 07:58:01],
+      type: "Walk",
+      name: "Morning Walk",
+      manual: false,
+      user: build(:user),
+      challenge: build(:ngo_challenge)
+    }
+  end
+
   def donation_factory do
     %OmegaBravera.Money.Donation{
       amount: Decimal.new(10),

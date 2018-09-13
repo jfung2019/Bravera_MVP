@@ -8,6 +8,17 @@ defmodule OmegaBravera.Challenges.ActivitiesTest do
 
   setup do
     ExVCR.Config.cassette_library_dir("test/fixtures/cassettes")
+
+    strava_activity = %Strava.Activity{
+      id: 1836709368,
+      distance: 1740.0,
+      start_date: ~N[2018-09-11 07:58:01],
+      type: "Walk",
+      name: "Morning Walk",
+      manual: false
+    }
+
+    {:ok, [strava_activity: strava_activity]}
   end
 
   describe "process_challenge/2" do
@@ -15,25 +26,25 @@ defmodule OmegaBravera.Challenges.ActivitiesTest do
       assert Activities.process_challenge({nil, nil}, %Strava.Activity{}) == {:ok, :nothing_done}
     end
 
-    test "updates the challenge with the new covered distance" do
+    test "updates the challenge with the new covered distance", %{strava_activity: strava_activity} do
       challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(3.2)})
 
-      {:ok, :challenge_updated} = Activities.process_challenge({challenge.id, nil}, %Strava.Activity{distance: 4200})
+      {:ok, :challenge_updated} = Activities.process_challenge({challenge.id, nil}, strava_activity)
       updated_challenge = Repo.get!(NGOChal, challenge.id)
 
-      assert updated_challenge.distance_covered == Decimal.new(7.4)
+      assert updated_challenge.distance_covered == Decimal.new(4.94)
     end
 
-    test "updates the challenge status if the covered distance is greater than the target distance" do
-      challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(46.5), distance_target: 50})
+    test "updates the challenge status if the covered distance is greater than the target distance", %{strava_activity: strava_activity} do
+      challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(49.5), distance_target: 50})
 
-      {:ok, :challenge_updated} = Activities.process_challenge({challenge.id, nil}, %Strava.Activity{distance: 4200})
+      {:ok, :challenge_updated} = Activities.process_challenge({challenge.id, nil}, strava_activity)
       updated_challenge = Repo.get!(NGOChal, challenge.id)
 
       assert updated_challenge.status == "complete"
     end
 
-    test "charges the chargeable donations" do
+    test "charges the chargeable donations", %{strava_activity: strava_activity} do
       use_cassette "process_milestone_donation" do
         user = insert(:user)
         ngo = insert(:ngo, %{slug: "swcc-1", stripe_id: "acct_1D7jlPINRN0GH189"})
@@ -51,7 +62,7 @@ defmodule OmegaBravera.Challenges.ActivitiesTest do
 
         insert(:donation, donation_params)
 
-        {:ok, :challenge_updated} = Activities.process_challenge({challenge.id, nil}, %Strava.Activity{distance: 4200})
+        {:ok, :challenge_updated} = Activities.process_challenge({challenge.id, nil}, strava_activity)
       end
     end
   end

@@ -2,10 +2,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.Accounts.User
-  alias OmegaBravera.Fundraisers.NGO
-  alias OmegaBravera.Money.Donation
-  alias OmegaBravera.Challenges.Team
+  alias OmegaBravera.{Accounts.User, Fundraisers.NGO, Money.Donation, Challenges.Team}
+
 
   schema "ngo_chals" do
     field :activity, :string
@@ -43,8 +41,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :status, :duration, :user_id, :ngo_id, :slug
   ]
 
-  @meters_per_km 1000
-
   @doc false
   def changeset(ngo_chal, attrs) do
     ngo_chal
@@ -61,9 +57,9 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_required([:start_date, :end_date])
   end
 
-  def activity_completed_changeset(%__MODULE__{} = challenge, %Strava.Activity{distance: distance}) do
+  def activity_completed_changeset(%__MODULE__{} = challenge, %{distance: distance}) do
     challenge
-    |> update_covered_distance(distance)
+    |> change(distance_covered: Decimal.add(challenge.distance_covered, distance))
     |> change(%{last_activity_received: Timex.now, participant_notified_of_inactivity: false, donor_notified_of_inactivity: false})
     |> update_challenge_status(challenge)
   end
@@ -121,11 +117,4 @@ defmodule OmegaBravera.Challenges.NGOChal do
       _ -> change(changeset, status: "complete")
     end
   end
-
-  defp update_covered_distance(%__MODULE__{} = challenge, distance) do
-    challenge
-    |> change(distance_covered: Decimal.add(challenge.distance_covered, strava_distance_in_km(distance)))
-  end
-
-  defp strava_distance_in_km(distance), do: Decimal.div(distance, @meters_per_km)
 end
