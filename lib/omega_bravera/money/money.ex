@@ -8,27 +8,22 @@ defmodule OmegaBravera.Money do
 
   alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges, Challenges.NGOChal}
 
-  # getting milestones
+  def milestones_donations(%NGOChal{} = challenge) do
+    query = from donation in Donation,
+      where: donation.ngo_chal_id == ^challenge.id,
+      group_by: [donation.status, donation.milestone],
+      select: {donation.status, donation.milestone, sum(donation.amount)}
 
-  def get_charged_milestones(ngo_chal_id, milestone) do
-    query = from d in Donation,
-      where: d.milestone == ^milestone,
-      where: d.ngo_chal_id == ^ngo_chal_id,
-      where: d.status == "charged",
-      select: sum(d.amount)
-
-    Repo.all(query)
+    query
+    |> Repo.all
+    |> Enum.group_by(&elem(&1, 1), fn({status, _, amount}) -> {status, amount} end) #group by milestone
+    |> Enum.map(fn({k, v}) -> {k, Enum.into(v, %{})} end) #turn into hash
+    |> Enum.map(fn({k, v}) -> {k, Map.merge(default_milestone_stats, v)} end) #set default values for milestones without "charged" or "pending" donations
+    |> Enum.map(fn({k, v}) -> {k, Map.put(v, "total", Decimal.add(v["pending"], v["charged"]))} end) #add charged and pending donations into total
+    |> Enum.into(%{}) #hash at the end
   end
 
-  def get_uncharged_milestones(ngo_chal_id, milestone) do
-    query = from d in Donation,
-      where: d.milestone == ^milestone,
-      where: d.ngo_chal_id == ^ngo_chal_id,
-      where: d.status == "pending",
-      select: sum(d.amount)
-
-    Repo.all(query)
-  end
+  defp default_milestone_stats, do: %{"charged" => Decimal.new(0), "pending" => Decimal.new(0)}
 
   # for listing a user's donations
 

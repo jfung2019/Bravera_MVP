@@ -11,129 +11,20 @@
         <div class="row">
           <div class="col-4 col-sm-3">
             <div class="mb-0 ml-md-3 mt-1 mt-sm-1 mt-md-3 mt-lg-4 mt-xl-4">
-              <%= img_tag(("https://www.strava.com/athletes/" <> Integer.to_string(@strava.athlete_id) <> "/avatar?size=large"), class: "thumbnail img-fluid  rounded-circle border border-bravera", alt: (@user.firstname <> " " <> @user.lastname)) %>
+              <%= img_tag(user_profile_pic(@strava), class: "thumbnail img-fluid  rounded-circle border border-bravera", alt: user_full_name(@user)) %>
             </div>
           </div>
 
           <div class="col-8 col-sm-9">
-            <h3 class="mb-0 mt-1 mt-sm-4 mt-md-5"><%= @user.firstname %>'s <%= @ngo_chal.distance_target %>km <%= @ngo_chal.activity %> Challenge</h5>
+            <h3 class="mb-0 mt-1 mt-sm-4 mt-md-5"><%= @user.firstname %>'s <%= @ngo_chal.distance_target %>km <%= @ngo_chal.activity_type %> Challenge</h5>
             <h5 class="card-text text-420">for <strong class="text-500"><%= @ngo.name %></strong></h5>
           </div>
         </div>
 
       </div>
     </div>
-      <div class="card">
 
-        <div class="container border-bottom">
-          <div id="challenge-status-container" class="<%= @ngo_chal.status %>">
-            <%= if active_challenge?(@ngo_chal) do %>
-              <h5 class=" text-500 text-center mt-2 mb-0">
-                <strong id="days-left" class="text-success"></strong> Days, <strong id="hours-left" class="text-success"></strong> Hours, <strong id="mins-left" class="text-success"></strong>  Minutes Left
-              </h5>
-
-              <p class="text-center mb-0" id="date-range">
-              </p>
-              <p style="font-size: 12px;" class="text-420 text-center mb-3">(Day/Month/Year)</h6>
-            <% else %>
-                <h5 class=" text-500 text-center mt-2 mb-0">
-                  Challenge <%= String.capitalize(@ngo_chal.status) %>
-                </h5>
-            <% end %>
-          </div>
-
-            <div class="progress chal-progress mt-3">
-              <div class="progress-bar bg-success"
-              style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
-              id="money-progress"
-              ></div>
-            </div>
-
-            <h5 class="text-420 mt-0 mb-3 text-center">
-              <strong>$<%= @ngo_chal.total_secured %></strong> of <strong>$<%= @ngo_chal.money_target %> <%= @ngo_chal.default_currency %></strong> Raised
-            </h5>
-
-          <div class="mb-3 text-center mx-auto">
-            <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
-          </div>
-        </div>
-
-        <div class="container">
-          <h2 class="mb-0 mt-2 text-center">
-            Milestones
-          </h2>
-          <div class="mb-3 mx-lg-3">
-            <h5 class="text-420 mt-1 mb-1 ml-1" style="text-align: left;">
-              Nudge Donation
-              <span style="float:right;" class="text-success"><strong>$<%= @kickstarters["charged"] %></strong> </span>
-            </h5>
-            <div style="clear: both;"></div>
-
-            <div class="progress chal-progress mb-2">
-              <div class="progress-bar bg-bravera"
-              style="width: 100%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
-              id="kick-progress"
-              ></div>
-            </div>
-
-            <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
-              <span id="m1-label"><%= @m_targets["2"] %>km</span>
-              <span style="float:right;" class="text-secondary" id="m1-total"><strong>$<%= @m1s["total"] %></strong> </span>
-            </h5>
-            <div style="clear: both;"></div>
-
-            <div class="progress chal-progress mb-2">
-              <div class="progress-bar bg-bravera"
-              style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
-              id="m1-progress"
-              ></div>
-            </div>
-
-            <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
-              <span id="m2-label"><%= @m_targets["3"] %>km</span>
-              <span style="float:right;" class="text-secondary" id="m2-total"><strong>$<%= @m2s["total"]  %></strong> </span>
-            </h5>
-            <div style="clear: both;"></div>
-
-            <div class="progress chal-progress mb-2">
-              <div class="progress-bar bg-bravera"
-              style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
-              id="m2-progress"
-              ></div>
-            </div>
-
-            <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
-              <span id="m3-label"><%= @m_targets["4"] %>km</span>
-              <span style="float:right;" class="text-secondary" id="m3-total"><strong>$<%= @m3s["total"] %></strong> </span>
-            </h5>
-            <div style="clear: both;"></div>
-
-            <div class="progress chal-progress mb-2">
-              <div class="progress-bar bg-bravera"
-              style="width: 0%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
-              id="m3-progress"
-              ></div>
-            </div>
-            <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
-              Total Pledged:
-              <span style="float:right;" class="text-success"><strong>$<%= @ngo_chal.total_pledged %></strong> </span>
-            </h5>
-
-            <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
-              Distance Completed:
-              <span style="float:right;"><strong class="text-500"><span id="distance-covered"></span>/<%= @ngo_chal.distance_target %>km</strong></span>
-            </h5>
-            <div style="clear: both;"></div>
-          </div>
-
-        </div>
-
-        <div class="card-footer border-top text-center mb-0 pb-0">
-          <div class=" img-fluid margin-auto mb-3">
-            <img src="/images/strava/powered-by.png" alt="Fitness Data Powered by Strava"/>
-          </div>
-        </div>
-      </div>  <!-- End of top card -->
+    <%= render "challenge_details.html", assigns %>
 
       <%= if active_challenge?(@ngo_chal) do %>
         <div id="donation-form">
@@ -164,6 +55,19 @@
           </a>
         </div>
       </div>
+
+      <div class="card mt-4">
+        <div class="card-body text-center mx-3 pb-2">
+          <h4>Latest Supporters</h4>
+        </div>
+        <div class="card-body text-center mx-3 pb-2">
+          <h4>Latest Activities</h4>
+        </div>
+        <div class="card-body text-center mx-3 pb-2">
+          <h6>View Leaderboard</h6>
+        </div>
+      </div>
+
 
     </div>
     <!-- End col 1/2 -->
@@ -257,12 +161,8 @@
   document.getElementById('m3-progress').setAttribute("style", m3Width);
 
   var selectedAmount = $('#amount').val();
-  // $('#kickstarter').attr('readonly', true);
-  // $('#m1-donation').attr('readonly', true);
-  // $('#m2-donation').attr('readonly', true);
-  // $('#m3-donation').attr('readonly', true);
 
-  var numInputs = document.querySelectorAll('input[type=number]');
+ var numInputs = document.querySelectorAll('input[type=number]');
 
   numInputs.forEach(function (input) {
     input.addEventListener('change', function (e) {
@@ -324,6 +224,7 @@
   } else if (mComplete === 2){
     $('#m1-donation-group').remove();
     $('#m2-donation-group').remove();
+
     $('#amount').change(function(){
       if ($(this).val() == 600){
         $('#kickstarter').val(150);
