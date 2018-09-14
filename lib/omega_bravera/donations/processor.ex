@@ -8,11 +8,14 @@ defmodule OmegaBravera.Donations.Processor do
       {:ok, %{body: body}} ->
         case Poison.decode!(body) do
           %{"source" => _} = response ->
-            donation
-            |> Donation.charge_changeset(response)
-            |> Repo.update!
-            |> Notifier.send_donation_charged_email()
-            {:ok, :donation_charged}
+            updated =
+              donation
+              |> Donation.charge_changeset(response)
+              |> Repo.update!
+
+            Notifier.send_donation_charged_email(updated)
+
+            {:ok, updated}
           %{"error" => _} ->
             {:error, :stripe_error}
           _ ->

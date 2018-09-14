@@ -10,7 +10,6 @@ defmodule OmegaBravera.Donations.ProcessorTest do
     ExVCR.Config.cassette_library_dir("test/fixtures/cassettes")
   end
 
-
   test "charge_donation/1 charges the donation and updates the schema successfully" do
     donor = insert(:user, %{email: "simon.garciar@gmail.com"})
     ngo = insert(:ngo, %{stripe_id: "acct_1D8pvmJTOgSA3tLo", slug: "stc", name: "Save the children"})
@@ -26,7 +25,7 @@ defmodule OmegaBravera.Donations.ProcessorTest do
     donation = insert(:donation, donation_attrs)
 
     use_cassette "charge_donation" do
-      {:ok, :donation_charged} = Processor.charge_donation(donation)
+      {:ok, %Donation{status: "charged"} = donation} = Processor.charge_donation(donation)
       result = Repo.get(Donation, donation.id)
       fields = [:charge_id, :last_digits, :card_brand, :charged_description, :charged_status, :charged_amount]
 

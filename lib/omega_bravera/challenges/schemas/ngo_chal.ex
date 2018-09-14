@@ -2,11 +2,11 @@ defmodule OmegaBravera.Challenges.NGOChal do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.{Accounts.User, Fundraisers.NGO, Money.Donation, Challenges.Team}
+  alias OmegaBravera.{Accounts.User, Fundraisers.NGO, Money.Donation, Challenges.Team, Challenges.Activity}
 
 
   schema "ngo_chals" do
-    field :activity, :string
+    field :activity_type, :string
     field :distance_target, :integer, default: 100
     field :distance_covered, :decimal, default: 0
     field :duration, :integer
@@ -26,18 +26,19 @@ defmodule OmegaBravera.Challenges.NGOChal do
     belongs_to :ngo, NGO
     belongs_to :team, Team
     has_many :donations, Donation
+    has_many :activities, Activity, foreign_key: :challenge_id
 
     timestamps()
   end
 
   @allowed_attributes [
-    :activity, :money_target, :distance_target, :distance_covered, :slug,
+    :activity_type, :money_target, :distance_target, :distance_covered, :slug,
     :status, :duration, :milestones, :total_pledged, :total_secured, :default_currency,
     :user_id, :ngo_id
   ]
 
   @required_attributes [
-    :activity, :money_target, :distance_target,
+    :activity_type, :money_target, :distance_target,
     :status, :duration, :user_id, :ngo_id, :slug
   ]
 
