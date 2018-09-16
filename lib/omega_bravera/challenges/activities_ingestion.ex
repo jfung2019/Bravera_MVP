@@ -2,14 +2,15 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   require Logger
   alias OmegaBravera.{Accounts, Challenges, Challenges.NGOChal, Donations.Processor, Money, Money.Donation, Repo}
 
-  def process_strava_webhook(_) do
-    {:error, :webhook_not_processed}
-  end
 
   def process_strava_webhook(%{"aspect_type" => "create", "object_type" => "activity"} = params) do
     params["owner_id"]
     |> Accounts.get_strava_challengers()
     |> process_challenges(params)
+  end
+
+  def process_strava_webhook(_) do
+    {:error, :webhook_not_processed}
   end
 
   defp process_challenges([hd | _] = challenges, params) do
@@ -80,7 +81,6 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
     params
   end
-
 
   defp charge_donations({status, _, _, donations} = params) do
     charged_donations = case status do

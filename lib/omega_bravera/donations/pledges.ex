@@ -58,6 +58,10 @@ defmodule OmegaBravera.Donations.Pledges do
     }
   end
 
+  defp pledge_attributes(_, _, _) do
+    %{}
+  end
+
   defp filter_pledge({:ok, pledge}), do: true
   defp filter_pledge({:error, _}), do: false
 

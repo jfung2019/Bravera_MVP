@@ -25,7 +25,7 @@ defmodule OmegaBravera.Challenges.Activity do
 
   def create_changeset(%Strava.Activity{} = strava_activity, %NGOChal{} = challenge) do
     %__MODULE__{}
-    |> cast(Map.take(strava_activity, @allowed_attributes), @allowed_attributes)
+    |> cast(strava_attributes(strava_activity), @allowed_attributes)
     |> change(%{strava_id: strava_activity.id, user_id: challenge.user_id, challenge_id: challenge.id, distance: to_km(strava_activity.distance)})
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)
@@ -35,4 +35,6 @@ defmodule OmegaBravera.Challenges.Activity do
   defp to_km(meters) do
     Decimal.div(Decimal.new(meters), @meters_per_km)
   end
+
+  defp strava_attributes(%Strava.Activity{} = strava_activity), do: Map.take(strava_activity, @allowed_attributes)
 end

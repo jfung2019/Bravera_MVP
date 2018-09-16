@@ -54,26 +54,19 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def show(conn, %{"slug" => slug}) do
-    ngo_chal = Challenges.get_ngo_chal_by_slug(slug, [user: [:strava], ngo: []])
-
-    user = ngo_chal.user
-    ngo = ngo_chal.ngo
-    strava = user.strava
-
-
+    challenge = Challenges.get_ngo_chal_by_slug(slug, [user: [:strava], ngo: []])
     changeset = Money.change_donation(%Donation{})
 
     render_attrs = %{
-      ngo_chal: ngo_chal,
-      user: user,
-      ngo: ngo,
-      strava: strava,
-      m_targets: NGOChal.milestones_distances(ngo_chal),
+      challenge: challenge,
+      m_targets: NGOChal.milestones_distances(challenge),
       changeset: changeset,
-      stats: milestone_stats(ngo_chal)
+      stats: milestone_stats(challenge),
+      donors: Accounts.latest_donors(challenge, 5),
+      activities: Challenges.latest_activities(challenge, 5)
     }
 
-    render(conn, "show.html", Map.merge(render_attrs, milestone_stats(ngo_chal)))
+    render(conn, "show.html", Map.merge(render_attrs, milestone_stats(challenge)))
   end
 
   def edit(conn, %{"id" => id}) do
@@ -101,7 +94,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     ngo_chal
     |> Money.milestones_donations()
-    |> map(fn({k, v}) -> {k, into(map(v, fn({kk, vv}) -> {kk, D.to_string(vv)} end), %{})} end) #strigify values
+    |> map(fn({k, v}) -> {to_string(k), into(map(v, fn({kk, vv}) -> {kk, D.to_string(vv)} end), %{})} end) #strigify values
     |> into(%{})
   end
 

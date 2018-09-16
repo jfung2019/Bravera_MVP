@@ -31,7 +31,9 @@ defmodule OmegaBravera.AccountsTest do
       insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: carlos_cordero})
       insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: matthew_wells})
 
-      donors = Accounts.donors_for_challenge(challenge)
+      donors =
+        challenge
+        |> Accounts.donors_for_challenge()
 
       assert donors == [matthew_wells, carlos_cordero]
     end

@@ -148,7 +148,8 @@
 
             <div class="form-group">
               <label for="card-element">
-          <h4 class="mb-3">Credit/Debit Card Info</h4>              </label>
+                <h4 class="mb-3">Credit/Debit Card Info</h4>
+              </label>
               <div id="card-element">
                 <!-- A Stripe Element will be inserted here. -->
               </div>
