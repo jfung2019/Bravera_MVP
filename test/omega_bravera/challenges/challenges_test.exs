@@ -8,9 +8,9 @@ defmodule OmegaBravera.ChallengesTest do
   describe "ngo_chals" do
     alias OmegaBravera.Challenges.NGOChal
 
-    @valid_attrs %{"activity" => "some activity", "distance_target" => 120, "duration" => 42, "money_target" => "120.5", "slug" => "some slug", "status" => "some status"}
-    @update_attrs %{"activity" => "some updated activity", "distance_target" => 456, "duration" => 43, "money_target" => "456.7", "slug" => "some updated slug", "status" => "some updated status"}
-    @invalid_attrs %{"activity" => nil, "distance_target" => "invalid", "duration" => "invalid", "money_target" => nil, "slug" => nil, "status" => nil}
+    @valid_attrs %{"activity_type" => "some activity", "distance_target" => 120, "duration" => 42, "money_target" => "120.5", "slug" => "some slug", "status" => "some status"}
+    @update_attrs %{"activity_type" => "some updated activity", "distance_target" => 456, "duration" => 43, "money_target" => "456.7", "slug" => "some updated slug", "status" => "some updated status"}
+    @invalid_attrs %{"activity_type" => nil, "distance_target" => "invalid", "duration" => "invalid", "money_target" => nil, "slug" => nil, "status" => nil}
 
     def ngo_chal_fixture(attrs \\ %{}) do
       insert(:ngo_challenge)
@@ -71,7 +71,7 @@ defmodule OmegaBravera.ChallengesTest do
 
       {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, attrs)
 
-      assert ngo_chal.activity == "some activity"
+      assert ngo_chal.activity_type == "some activity"
       assert ngo_chal.distance_target == 120
       assert ngo_chal.duration == 42
       assert ngo_chal.money_target == Decimal.new("120.5")
@@ -90,7 +90,7 @@ defmodule OmegaBravera.ChallengesTest do
 
       assert match?(%NGOChal{}, ngo_chal) == true
 
-      assert ngo_chal.activity == "some updated activity"
+      assert ngo_chal.activity_type == "some updated activity"
       assert ngo_chal.distance_target == 456
       assert ngo_chal.duration == 43
       assert ngo_chal.money_target == Decimal.new("456.7")

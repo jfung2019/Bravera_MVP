@@ -48,8 +48,9 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "activity_completed_email/2" do
     challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(4.215)})
+    activity = insert(:activity, %{challenge: challenge, user: challenge.user, distance: Decimal.new(4.215)})
 
-    email = Notifier.activity_completed_email(challenge, %Strava.Activity{distance: 4215})
+    email = Notifier.activity_completed_email(challenge, activity)
 
     assert email == %SendGrid.Email{
       __phoenix_layout__: nil,
@@ -80,7 +81,9 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "send_activity_completed_email/2 sends the email" do
     challenge = insert(:ngo_challenge)
-    assert Notifier.send_activity_completed_email(challenge, %Strava.Activity{distance: 4215}) == :ok
+    activity = insert(:activity, %{challenge: challenge, user: challenge.user, distance: Decimal.new(4.215)})
+
+    assert Notifier.send_activity_completed_email(challenge, activity) == :ok
   end
 
   test "participant_milestone_email/1" do

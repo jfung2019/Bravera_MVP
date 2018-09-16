@@ -6,7 +6,7 @@ defmodule OmegaBravera.Challenges do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Challenges.{NGOChal, Team}
+  alias OmegaBravera.Challenges.{NGOChal, Activity, Team}
   alias OmegaBravera.Accounts.User
 
   def inactive_for_five_days() do
@@ -23,6 +23,20 @@ defmodule OmegaBravera.Challenges do
       where: challenge.status == "active",
       where: challenge.last_activity_received <= fragment("now() - interval '7 days'"),
       where: challenge.donor_notified_of_inactivity == false
+
+    Repo.all(query)
+  end
+
+  def latest_activities(%NGOChal{} = challenge, limit \\ nil) do
+    query = from activity in Activity,
+      where: activity.challenge_id == ^challenge.id,
+      order_by: [desc: :inserted_at]
+
+    query = if !is_nil(limit) and is_number(limit) and limit > 0 do
+      limit(query, ^limit)
+    else
+      query
+    end
 
     Repo.all(query)
   end
@@ -50,13 +64,12 @@ defmodule OmegaBravera.Challenges do
     Repo.one(query)
   end
 
-  def get_ngo_chal_by_slug(slug) do
+  def get_ngo_chal_by_slug(slug, preloads \\ [:ngo]) do
     query = from nc in NGOChal,
-      where: nc.slug == ^slug
+      where: nc.slug == ^slug,
+      preload: ^preloads
 
-    query
-    |> Repo.one()
-    |> Repo.preload([:ngo])
+    Repo.one(query)
   end
 
   def get_ngo_ngo_chals(ngo_id, order_by) do

@@ -15,6 +15,7 @@ defmodule OmegaBraveraWeb.SettingControllerTest do
   describe "edit setting" do
     setup [:create_setting]
 
+    @tag :skip
     test "renders form for editing chosen setting", %{conn: conn, setting: setting} do
       conn = get conn, setting_path(conn, :edit, setting)
       assert html_response(conn, 200) =~ "Edit Setting"
@@ -24,6 +25,7 @@ defmodule OmegaBraveraWeb.SettingControllerTest do
   describe "update setting" do
     setup [:create_setting]
 
+    @tag :skip
     test "redirects when data is valid", %{conn: conn, setting: setting} do
       conn = put conn, setting_path(conn, :update, setting), setting: @update_attrs
       assert redirected_to(conn) == setting_path(conn, :show, setting)
@@ -32,6 +34,7 @@ defmodule OmegaBraveraWeb.SettingControllerTest do
       assert html_response(conn, 200) =~ "some updated facebook"
     end
 
+    @tag :skip
     test "renders errors when data is invalid", %{conn: conn, setting: setting} do
       conn = put conn, setting_path(conn, :update, setting), setting: @invalid_attrs
       assert html_response(conn, 200) =~ "Edit Setting"

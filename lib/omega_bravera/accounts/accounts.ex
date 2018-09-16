@@ -19,7 +19,6 @@ defmodule OmegaBravera.Accounts do
     Money.Donation
   }
 
-
   def get_strava_challengers(athlete_id) do
     query = from s in Strava,
       where: s.athlete_id == ^athlete_id,
@@ -29,22 +28,53 @@ defmodule OmegaBravera.Accounts do
         s.token
       }
 
-    query
-    |> Repo.all()
-  end
-
-  def donors_for_challenge(%NGOChal{} = challenge) do
-    query = from u in User,
-      join: d in Donation, on: d.user_id == u.id,
-      where: d.ngo_chal_id == ^challenge.id,
-      distinct: d.user_id,
-      order_by: u.id
-
     Repo.all(query)
   end
 
-  # TODO Optimize the preload below
+  defp donors_for_challenge_query(challenge) do
+    from user in User,
+      join: donation in Donation, on: donation.user_id == user.id,
+      where: donation.ngo_chal_id == ^challenge.id,
+      distinct: donation.user_id,
+      order_by: user.id
+  end
 
+  def donors_for_challenge(%NGOChal{} = challenge) do
+    challenge
+    |> donors_for_challenge_query
+    |> order_by(desc: :inserted_at)
+    |> Repo.all
+  end
+
+
+  def latest_donors(%NGOChal{} = challenge, limit \\ nil) do
+    query = challenge
+    |> donors_for_challenge_query
+    |> order_by(desc: :inserted_at)
+    |> group_by([user, donation], [user.id, donation.user_id])
+    |> select([user, donation], {user, sum(donation.amount)})
+
+    query = if is_number(limit) and limit > 0 do
+      limit(query, ^limit)
+    else
+      query
+    end
+
+    query
+    |> Repo.all()
+    |> Enum.map(fn({user, amount}) -> %{"user" => user, "pledged" => amount} end)
+  end
+
+  defp donors_for_ngo_query(ngo) do
+    from user in User,
+      join: donation in Donation, on: donation.user_id == user.id,
+      where: donation.ngo_chal_id == ^ngo.id,
+      distinct: donation.user_id,
+      order_by: user.id
+  end
+
+
+  # TODO Optimize the preload below
   def get_user_strava(user_id) do
     query = from s in Strava, where: s.user_id == ^user_id
     Repo.one(query)

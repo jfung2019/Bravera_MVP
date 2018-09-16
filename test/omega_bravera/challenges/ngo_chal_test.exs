@@ -6,7 +6,7 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
   alias OmegaBravera.{Challenges.NGOChal, Slugify}
 
   test "changeset/2 is invalid if not provided the required attributes" do
-    assert NGOChal.changeset(%NGOChal{}, %{"activity" => "walk"}).valid? == false
+    assert NGOChal.changeset(%NGOChal{}, %{"activity_type" => "walk"}).valid? == false
   end
 
   test "create_changeset/2 sets the start and end date based on the specified challenge duration" do
@@ -14,7 +14,7 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
     ngo = insert(:ngo, user: user)
 
     attrs = %{
-      "activity" => "walk",
+      "activity_type" => "walk",
       "money_target" => Decimal.new(10000),
       "distance_target" => 50,
       "duration" => 10,
@@ -30,13 +30,13 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
     assert changeset.changes[:end_date] != nil
   end
 
-
   describe "activity_completed_changeset/2" do
-    test "updates the distance_covered" do
-      challenge = insert(:ngo_challenge)
-      changeset = NGOChal.activity_completed_changeset(challenge, %Strava.Activity{distance: 3215})
 
-      assert changeset.changes[:distance_covered] == Decimal.new(3.215)
+    test "updates the distance_covered" do
+      challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(1.23)})
+      changeset = NGOChal.activity_completed_changeset(challenge, %{distance: Decimal.new(4.32)})
+
+      assert changeset.changes[:distance_covered] == Decimal.new(5.55)
       assert changeset.changes[:status] == nil
     end
 

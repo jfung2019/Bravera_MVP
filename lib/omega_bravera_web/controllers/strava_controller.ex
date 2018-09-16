@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.StravaController do
   require Logger
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Guardian, Accounts, Challenges.Activities}
+  alias OmegaBravera.{Guardian, Accounts, Challenges.ActivitiesIngestion}
 
   # TODO Check if activity was manual update or GPS upload
   # Is upload_id only for file uploads?
@@ -12,9 +12,7 @@ defmodule OmegaBraveraWeb.StravaController do
   # created_at: nil
 
   def post_webhook_callback(conn, params) do
-    Logger.info("Strava Webhook received: #{inspect(params)}")
-    Activities.process(params)
-
+    ActivitiesIngestion.process_strava_webhook(params)
     render(conn, "webhook_callback.json", status: "200")
   end
 

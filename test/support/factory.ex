@@ -30,7 +30,7 @@ defmodule OmegaBravera.Factory do
 
   def ngo_challenge_factory do
     %OmegaBravera.Challenges.NGOChal{
-      activity: sequence(:activity, ["walking", "biking", "running", "hiking"]),
+      activity_type: sequence(:activity, ["walking", "biking", "running", "hiking"]),
       distance_target: sequence(:distance_target, [50, 75, 150, 250]),
       start_date: Timex.now,
       end_date: Timex.shift(Timex.now, days: 5),
@@ -38,7 +38,20 @@ defmodule OmegaBravera.Factory do
       status: "active",
       slug: "John-512",
       user: build(:user),
-      ngo: build(:ngo)
+      ngo: build(:ngo),
+    }
+  end
+
+  def activity_factory do
+    %OmegaBravera.Challenges.Activity{
+      strava_id: 1836709368,
+      distance: Decimal.new(1.74),
+      start_date: ~N[2018-09-11 07:58:01],
+      type: "Walk",
+      name: "Morning Walk",
+      manual: false,
+      user: build(:user),
+      challenge: build(:ngo_challenge)
     }
   end
 
