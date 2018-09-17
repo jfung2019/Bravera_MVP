@@ -31,10 +31,10 @@
               <%= for challenge <- @challenges do %>
                 <tr>
                   <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
-                  <td><%= challenge.total_secured %></td>
-                  <td><%= challenge.total_pledged %></td>
-                  <td><%= nudge_donations_total(challenge) %></td>
-                  <td><%= milestone_donations_total(challenge) %></td>
+                  <td>$<%= challenge.total_secured %> <%= String.upcase(challenge.default_currency) %></td>
+                  <td>$<%= challenge.total_pledged %> <%= String.upcase(challenge.default_currency) %></td>
+                  <td>$<%= nudge_donations_total(challenge) %> <%= String.upcase(challenge.default_currency) %></td>
+                  <td>$<%= milestone_donations_total(challenge) %> <%= String.upcase(challenge.default_currency) %></td>
                 </tr>
               <% end %>
             </tbody>
