@@ -9,7 +9,7 @@ defmodule OmegaBravera.Challenges.InactivityWorkerTest do
   describe "process_inactive_challenges/0" do
     test "updates inactive challenges" do
       ngo = insert(:ngo)
-      participant_notifiable = insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo})
+      _participant_notifiable = insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo})
       donor_notifiable = insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -8), slug: "John-515", ngo: ngo})
       non_notifiable = insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -2), slug: "Peter-411", ngo: ngo})
 

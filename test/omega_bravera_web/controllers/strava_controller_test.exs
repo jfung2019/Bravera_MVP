@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.StravaControllerTest do
-  use OmegaBraveraWeb.ConnCase
+  use OmegaBraveraWeb.ConnCase, async: true
 
   alias OmegaBravera.Trackers
 

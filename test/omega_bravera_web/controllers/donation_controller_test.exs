@@ -1,10 +1,7 @@
 defmodule OmegaBraveraWeb.DonationControllerTest do
-  use OmegaBraveraWeb.ConnCase
-
-  alias OmegaBravera.Money
+  use OmegaBraveraWeb.ConnCase, async: true
 
   @create_attrs %{amount: "120.5", currency: "some currency", milestone: 42, status: "some status", str_src: "some str_src"}
-  @update_attrs %{amount: "456.7", currency: "some updated currency", milestone: 43, status: "some updated status", str_src: "some updated str_src"}
   @invalid_attrs %{amount: nil, currency: nil, milestone: nil, status: nil, str_src: nil}
 
   describe "create donation" do

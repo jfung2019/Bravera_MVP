@@ -1,10 +1,9 @@
 defmodule OmegaBraveraWeb.UserControllerTest do
-  use OmegaBraveraWeb.ConnCase
+  use OmegaBraveraWeb.ConnCase, async: true
 
   alias OmegaBravera.Accounts
 
   @create_attrs %{email: "test@test.com", firstname: "some firstname", lastname: "some lastname"}
-  @update_attrs %{email: "updated_test@test.com", firstname: "some updated firstname", lastname: "some updated lastname"}
   @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
 
   def fixture(:user) do
@@ -31,10 +30,5 @@ defmodule OmegaBraveraWeb.UserControllerTest do
       conn = post conn, user_path(conn, :create), user: @invalid_attrs
       assert html_response(conn, 200) =~ "New User"
     end
-  end
-
-  defp create_user(_) do
-    user = fixture(:user)
-    {:ok, user: user}
   end
 end

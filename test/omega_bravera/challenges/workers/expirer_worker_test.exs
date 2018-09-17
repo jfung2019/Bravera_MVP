@@ -2,7 +2,6 @@ defmodule OmegaBravera.Challenges.ExpirerWorkerTest do
   use OmegaBravera.DataCase
 
   import OmegaBravera.Factory
-  import Ecto.Query
 
   alias OmegaBravera.Challenges.{ExpirerWorker, NGOChal}
 

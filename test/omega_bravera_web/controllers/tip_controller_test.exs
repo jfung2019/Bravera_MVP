@@ -1,10 +1,9 @@
 defmodule OmegaBraveraWeb.TipControllerTest do
-  use OmegaBraveraWeb.ConnCase
+  use OmegaBraveraWeb.ConnCase, async: true
 
   alias OmegaBravera.Money
 
   @create_attrs %{amount: 42, currency: "some currency"}
-  @update_attrs %{amount: 43, currency: "some updated currency"}
   @invalid_attrs %{amount: nil, currency: nil}
 
   def fixture(:tip) do
@@ -34,10 +33,5 @@ defmodule OmegaBraveraWeb.TipControllerTest do
       conn = post conn, tip_path(conn, :create), tip: @invalid_attrs
       assert html_response(conn, 200) =~ "New Tip"
     end
-  end
-
-  defp create_tip(_) do
-    tip = fixture(:tip)
-    {:ok, tip: tip}
   end
 end
