@@ -1,9 +1,9 @@
 <%= for donor <- @donors do %>
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-6">
       <%= OmegaBraveraWeb.NGOChalView.user_full_name(donor["user"]) %>
     </div>
-    <div class="col-md-6">
+    <div class="col-6">
       $<%= donor["pledged"] %> HKD
     </div>
   </div>
