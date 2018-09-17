@@ -19,7 +19,6 @@ defmodule OmegaBravera.NotifierTest do
       __phoenix_layout__: nil,
       __phoenix_view__: nil,
       attachments: nil,
-      bcc: nil,
       cc: nil,
       content: nil,
       custom_args: nil,
@@ -50,7 +49,6 @@ defmodule OmegaBravera.NotifierTest do
       __phoenix_layout__: nil,
       __phoenix_view__: nil,
       attachments: nil,
-      bcc: nil,
       cc: nil,
       content: nil,
       custom_args: nil,
@@ -80,7 +78,7 @@ defmodule OmegaBravera.NotifierTest do
   end
 
 
-  test "donation_charged_email", %{challenge: challenge, user: user} do
+  test "donation_charged_email" do
     donor = insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     donation_params = %{
@@ -102,7 +100,6 @@ defmodule OmegaBravera.NotifierTest do
       __phoenix_layout__: nil,
       __phoenix_view__: nil,
       attachments: nil,
-      bcc: nil,
       cc: nil,
       content: nil,
       custom_args: nil,

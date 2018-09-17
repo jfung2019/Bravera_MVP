@@ -1,5 +1,5 @@
 defmodule OmegaBravera.TrackersTest do
-  use OmegaBravera.DataCase
+  use OmegaBravera.DataCase, async: true
 
   alias OmegaBravera.{Accounts, Trackers}
 

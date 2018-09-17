@@ -1,9 +1,9 @@
 defmodule OmegaBravera.AccountsTest do
-  use OmegaBravera.DataCase
+  use OmegaBravera.DataCase, async: true
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts, Accounts.User, Challenges.NGOChal, Repo, Trackers.Strava}
+  alias OmegaBravera.{Accounts, Accounts.User, Repo, Trackers.Strava}
 
   describe "users" do
 
@@ -57,7 +57,7 @@ defmodule OmegaBravera.AccountsTest do
     test "insert_or_update_strava_user/1 updates both user and strava tracker" do
       user_attrs = %{firstname: "Rafael", lastname: "Garcia", email: "simon.garciar@gmail.com"}
       user = insert(:user, user_attrs)
-      strava = insert(:strava, Map.merge(user_attrs, %{token: "abcdef", user: user}))
+      _strava = insert(:strava, Map.merge(user_attrs, %{token: "abcdef", user: user}))
 
       attrs = %{
         athlete_id: 33762738,

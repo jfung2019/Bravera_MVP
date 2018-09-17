@@ -1,9 +1,7 @@
 defmodule OmegaBraveraWeb.NGOChalControllerTest do
-  use OmegaBraveraWeb.ConnCase
+  use OmegaBraveraWeb.ConnCase, async: true
 
-  alias OmegaBravera.Challenges
   import OmegaBravera.Factory
-  import OmegaBravera.Guardian
 
   @create_attrs %{activity: "some activity", distance_target: "120.5", duration: 42, money_target: "120.5", slug: "some slug", start_date: "2010-04-17 14:00:00.000000Z", status: "some status"}
   @invalid_attrs %{activity: nil, distance_target: nil, duration: nil, money_target: nil, slug: nil, start_date: nil, status: nil}

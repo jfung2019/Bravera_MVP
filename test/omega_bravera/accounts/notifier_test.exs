@@ -1,8 +1,8 @@
 defmodule OmegaBravera.Accounts.NotifierTest do
-  use OmegaBravera.DataCase
+  use OmegaBravera.DataCase, async: true
 
   import OmegaBravera.Factory
-  alias OmegaBravera.Accounts.{Notifier, User}
+  alias OmegaBravera.Accounts.Notifier
 
   test "user_signup_email/1 builds the signup email for the sendgrid template" do
     user = insert(:user, %{firstname: "Rafael", lastname: "Garcia", email: "simon.garciar@gmail.com"})
@@ -12,7 +12,6 @@ defmodule OmegaBravera.Accounts.NotifierTest do
       __phoenix_layout__: nil,
       __phoenix_view__: nil,
       attachments: nil,
-      bcc: nil,
       cc: nil,
       content: nil,
       custom_args: nil,
@@ -46,10 +45,8 @@ defmodule OmegaBravera.Accounts.NotifierTest do
     assert result == %SendGrid.Email{
       __phoenix_layout__: nil,
       __phoenix_view__: nil,
-      attachments: nil,
       bcc: nil,
       cc: nil,
-      content: nil,
       custom_args: nil,
       from: %{email: "admin@bravera.co", name: "Bravera"},
       headers: nil,

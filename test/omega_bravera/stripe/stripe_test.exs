@@ -1,5 +1,5 @@
 defmodule OmegaBravera.StripeTest do
-  use OmegaBravera.DataCase
+  use OmegaBravera.DataCase, async: true
 
   alias OmegaBravera.Stripe
 

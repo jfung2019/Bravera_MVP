@@ -35,7 +35,7 @@
     </h2>
     <div class="mb-3 mx-lg-3">
       <h5 class="text-420 mt-1 mb-1 ml-1" style="text-align: left;">
-        Nudge Donation
+        Nudge Donation (now)
         <span style="float:right;" class="text-success"><strong>$<%= @stats["1"]["charged"] %></strong> </span>
       </h5>
       <div style="clear: both;"></div>

@@ -1,12 +1,12 @@
 defmodule OmegaBravera.MoneyTest do
-  use OmegaBravera.DataCase
+  use OmegaBravera.DataCase, async: true
 
   import OmegaBravera.Factory
 
   alias OmegaBravera.Money
 
   describe "donations" do
-    alias OmegaBravera.{Money.Donation, Challenges.NGOChal}
+    alias OmegaBravera.Money.Donation
 
     @update_attrs %{amount: "100", currency: "USD", milestone: 43, status: "pending", str_src: "src_1234567"}
     @invalid_attrs %{amount: nil, currency: nil, milestone: nil, status: nil, str_src: nil}

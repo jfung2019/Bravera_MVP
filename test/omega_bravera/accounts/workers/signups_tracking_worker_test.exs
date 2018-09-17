@@ -6,9 +6,9 @@ defmodule OmegaBravera.Accounts.SignupsTrackingWorkerTest do
   alias OmegaBravera.Accounts.SignupsTrackingWorker
 
   test "process_signups/0 finds all new users details, encodes them as csv and sends the email" do
-    older_user = insert(:user, %{inserted_at: inserted_at(21, days: -2)})
+    _older_user = insert(:user, %{inserted_at: inserted_at(21, days: -2)})
     new_user = insert(:user, %{inserted_at: inserted_at(22)}) #just when the timespan starts
-    strava = insert(:strava, %{user: new_user})
+    _strava = insert(:strava, %{user: new_user})
 
     {mailer_result, users, csv} = SignupsTrackingWorker.process_signups()
 
