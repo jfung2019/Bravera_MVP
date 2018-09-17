@@ -1,0 +1,47 @@
+<div class="container-fluid mb-2">
+  <div class="row">
+    <div class="col-12 col-md-6 max-w-775 margin-auto">
+      <div class="card mt-3 chal-header">
+        <img class="card-img-top" src=<%= @ngo.image %> alt=<%= @ngo.name %> />
+        <div class="card-img-overlay text-white card-img-text-shadow cause-cover">
+          <div class="row">
+            <div class="col-4 col-sm-3">
+              <%= img_tag( @ngo.logo, class: "img-thumbnail cause-thumb mt-2", alt: @ngo.name) %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body text-center">
+          <h2 class="card-title text-420">
+            <%= @ngo.name %>
+          </h2>
+          <p class="lead">Challenges Leaderboard</p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Challenger</th>
+                <th scope="col">Total Secured</th>
+                <th scope="col">Total Pledged</th>
+                <th scope="col">Nudge Donations</th>
+                <th scope="col">Milestone Donations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for challenge <- @challenges do %>
+                <tr>
+                  <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                  <td><%= challenge.total_secured %></td>
+                  <td><%= challenge.total_pledged %></td>
+                  <td><%= nudge_donations_total(challenge) %></td>
+                  <td><%= milestone_donations_total(challenge) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          <%= link("Back to NGOs", to: ngo_path(@conn, :index)) %>
+        </div>
+      </div>  <!-- end of card -->
+    </div> <!-- end col -->
+  </div>
+</div>

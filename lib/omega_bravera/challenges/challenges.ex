@@ -7,6 +7,7 @@ defmodule OmegaBravera.Challenges do
   alias OmegaBravera.Repo
 
   alias OmegaBravera.Challenges.{NGOChal, Activity, Team}
+  alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Accounts.User
 
   def inactive_for_five_days() do
@@ -72,26 +73,14 @@ defmodule OmegaBravera.Challenges do
     Repo.one(query)
   end
 
-  def get_ngo_ngo_chals(ngo_id, order_by) do
+  def get_ngo_ngo_chals(%NGO{} = ngo, order_by \\ :total_secured) do
     query = from nc in NGOChal,
-          where: nc.ngo_id == ^ngo_id,
-          join: u in User, where: u.id == nc.user_id
+          where: nc.ngo_id == ^ngo.id,
+          join: u in User, where: u.id == nc.user_id,
+          preload: [:user, :donations],
+          order_by: [desc: ^order_by]
 
-    query = from [nc, u] in query,
-      select: { nc.id, nc.total_pledged, nc.total_secured, u.firstname, u.lastname}
-
-    case order_by do
-      "total_pledged" ->
-        query = from q in query, order_by: [desc: q.total_pledged]
-
-        query
-        |> Repo.all
-      "total_secured" ->
-        query = from q in query, order_by: [desc: q.total_secured]
-
-        query
-        |> Repo.all
-    end
+    Repo.all(query)
   end
 
   @doc """

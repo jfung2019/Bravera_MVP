@@ -78,7 +78,7 @@ defmodule OmegaBraveraWeb.Router do
     get "/ngos", NGOController, :index
 
     resources "/", NGOController, only: [:show], param: "slug" do
-      get "/leaderboard", NGOController, :leaderboard
+      get "/leaderboard", NGOController, :leaderboard, param: "slug"
       resources "/", NGOChalController, only: [:show, :new, :create], param: "slug" do
         resources "/donations", DonationController, only: [:create]
         get "/donors", DonationController, :index

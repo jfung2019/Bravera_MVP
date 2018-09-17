@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.NGOController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Fundraisers}
+  alias OmegaBravera.{Fundraisers, Challenges}
 
   def index(conn, _params) do
     ngos = Fundraisers.list_ngos()
@@ -14,7 +14,10 @@ defmodule OmegaBraveraWeb.NGOController do
     render(conn, "show.html", ngo: ngo)
   end
 
-  def leaderboard(conn, _) do
-    render(conn, "leaderboard.html")
+  def leaderboard(conn, %{"ngo_slug" => slug}) do
+    ngo = Fundraisers.get_ngo_by_slug(slug)
+    challenges = Challenges.get_ngo_ngo_chals(ngo)
+
+    render(conn, "leaderboard.html", %{ngo: ngo, challenges: challenges})
   end
 end
