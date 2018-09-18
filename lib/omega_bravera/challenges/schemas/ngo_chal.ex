@@ -28,7 +28,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     has_many :donations, Donation
     has_many :activities, Activity, foreign_key: :challenge_id
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @allowed_attributes [

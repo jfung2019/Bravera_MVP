@@ -14,7 +14,7 @@ defmodule OmegaBravera.Challenges.Team do
     belongs_to :ngo, NGO
     has_many :ngo_chals, NGOChal
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

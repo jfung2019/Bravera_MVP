@@ -12,7 +12,7 @@ defmodule OmegaBravera.Trackers.Strava do
     field :token, :string
     belongs_to :user, User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @required_attributes [:email, :athlete_id, :firstname, :lastname, :token]

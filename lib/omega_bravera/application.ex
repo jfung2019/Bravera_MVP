@@ -35,7 +35,7 @@ defmodule OmegaBravera.Application do
   end
 
   defp signups_worker_spec do
-    %{id: "signups_digest", start: {SchedEx, :run_every, [OmegaBravera.Accounts.SignupsTrackingWorker, :process_signups, [], "0 22 * * *"]}}
+    %{id: "daily_digest", start: {SchedEx, :run_every, [OmegaBravera.DailyDigest.Worker, :process_digest, [], "0 22 * * *"]}}
   end
 
   defp inactive_challenges_spec do

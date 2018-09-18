@@ -8,7 +8,7 @@ defmodule OmegaBravera.Stripe.StrCustomer do
     field :cus_id, :string
     belongs_to :user, User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
