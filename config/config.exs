@@ -38,6 +38,8 @@ config :omega_bravera, :env, Mix.env()
 # GA Key
 config :omega_bravera, :google_analytics_id, Map.get(System.get_env(), "GOOGLE_ANALYTICS_ID", "UA-123069307-1")
 
+config :omega_bravera, :app_base_url, System.get_env("APP_BASE_URL") || "https://bravera.co"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

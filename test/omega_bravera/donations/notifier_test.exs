@@ -28,7 +28,7 @@ defmodule OmegaBravera.NotifierTest do
       subject: nil,
       from: %{email: "admin@bravera.co", name: "Bravera"},
       substitutions: %{
-        "-challengeURL-" => "http://bravera.co/swcc/John-594",
+        "-challengeURL-" => "https://bravera.co/swcc/John-594",
         "-donorName-" => "#{donor.firstname} #{donor.lastname}",
         "-donorPledge-" => "$40 HKD",
         "-participantName-" => user.firstname
@@ -58,7 +58,7 @@ defmodule OmegaBravera.NotifierTest do
       subject: nil,
       from: %{email: "admin@bravera.co", name: "Bravera"},
       substitutions: %{
-        "-challengeURL-" => "http://bravera.co/swcc/John-594",
+        "-challengeURL-" => "https://bravera.co/swcc/John-594",
         "-donorName-" => "#{donor.firstname} #{donor.lastname}",
         "-participantName-" => user.firstname
       },

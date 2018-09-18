@@ -94,3 +94,5 @@ config :omega_bravera, OmegaBravera.Repo,
   database: "omega_bravera_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :omega_bravera, :app_base_url, "http://localhost:4000"

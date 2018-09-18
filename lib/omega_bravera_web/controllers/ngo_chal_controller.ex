@@ -43,7 +43,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     case Challenges.create_ngo_chal(%NGOChal{}, changeset_params) do
       {:ok, challenge} ->
         challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
-        #Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+        Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
 
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
