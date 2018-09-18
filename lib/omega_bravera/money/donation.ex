@@ -32,7 +32,7 @@ defmodule OmegaBravera.Money.Donation do
     belongs_to :ngo_chal, NGOChal
     belongs_to :ngo, NGO
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @allowed_attributes [:amount, :currency, :str_src, :str_cus_id, :milestone, :status, :milestone_distance, :user_id, :ngo_chal_id, :ngo_id]

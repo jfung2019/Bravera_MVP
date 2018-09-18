@@ -13,7 +13,7 @@ defmodule OmegaBravera.Accounts.Credential do
     field :reset_token_created, :utc_datetime, allow_nil: true
     belongs_to :user, User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

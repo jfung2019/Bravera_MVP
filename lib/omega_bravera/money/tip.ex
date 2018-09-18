@@ -9,7 +9,7 @@ defmodule OmegaBravera.Money.Tip do
     field :currency, :string
     belongs_to :user, User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

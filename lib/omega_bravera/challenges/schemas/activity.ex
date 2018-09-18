@@ -16,7 +16,7 @@ defmodule OmegaBravera.Challenges.Activity do
     belongs_to :user, User
     belongs_to :challenge, NGOChal
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @meters_per_km 1000

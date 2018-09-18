@@ -19,7 +19,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     has_many :ngo_chals, NGOChal
     has_many :donations, Donation
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @allowed_attributes [:name, :desc, :logo, :image, :stripe_id, :slug, :url, :full_desc]

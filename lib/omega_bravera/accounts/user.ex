@@ -28,7 +28,7 @@ defmodule OmegaBravera.Accounts.User do
     has_many :donations, Donation
     has_many :str_customers, StrCustomer
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

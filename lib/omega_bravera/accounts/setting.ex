@@ -14,7 +14,7 @@ defmodule OmegaBravera.Accounts.Setting do
     field :twitter, :string
     belongs_to :user, User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false
