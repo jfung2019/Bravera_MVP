@@ -3,7 +3,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-lg-8 max-w-775 margin-auto mb-3">
-      <%= if challenger_not_self_donated?(@challenge, @current_user) do %>
+      <%= if challenger_not_self_donated?(@challenge, @current_user) and @challenge.status == "active" do %>
         <div class="card mb-3">
           <div class="card-body">
             <p>
