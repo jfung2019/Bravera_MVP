@@ -58,7 +58,7 @@ defmodule OmegaBravera.Donations.Pledges do
     }
   end
 
-  defp pledge_attributes(_, _, _) do
+  defp pledge_attributes(_, _, _, _) do
     %{}
   end
 
