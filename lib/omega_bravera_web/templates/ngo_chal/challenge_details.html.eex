@@ -36,7 +36,7 @@
     <div class="mb-3 mx-lg-3">
       <h5 class="text-420 mt-1 mb-1 ml-1" style="text-align: left;">
         Nudge Donation (now)
-        <span style="float:right;" class="text-success"><strong>$<%= @stats["1"]["charged"] %></strong> </span>
+        <span style="float:right;" class="text-success"><strong>$<%= @stats["1"]["charged"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -47,7 +47,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m1-label"><%= @m_targets["2"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m1-total"><strong>$<%= @stats["2"]["total"] %></strong> </span>
+        <span style="float:right;" class="text-secondary" id="m1-total"><strong>$<%= @stats["2"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -58,7 +58,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m2-label"><%= @m_targets["3"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m2-total"><strong>$<%= @stats["3"]["total"]  %></strong> </span>
+        <span style="float:right;" class="text-secondary" id="m2-total"><strong>$<%= @stats["3"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -69,7 +69,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m3-label"><%= @m_targets["4"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m3-total"><strong>$<%= @stats["4"]["total"] %></strong> </span>
+        <span style="float:right;" class="text-secondary" id="m3-total"><strong>$<%= @stats["4"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">

@@ -20,8 +20,11 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field :total_pledged, :decimal, default: 0
     field :total_secured, :decimal, default: 0
     field :last_activity_received, :utc_datetime
+
     field :participant_notified_of_inactivity, :boolean, default: false
     field :donor_notified_of_inactivity, :boolean, default: false
+    field :self_donated, :boolean, default: false
+
     belongs_to :user, User
     belongs_to :ngo, NGO
     belongs_to :team, Team
@@ -34,7 +37,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
   @allowed_attributes [
     :activity_type, :money_target, :distance_target, :distance_covered, :slug,
     :status, :duration, :milestones, :total_pledged, :total_secured, :default_currency,
-    :user_id, :ngo_id
+    :user_id, :ngo_id, :self_donated
   ]
 
   @required_attributes [

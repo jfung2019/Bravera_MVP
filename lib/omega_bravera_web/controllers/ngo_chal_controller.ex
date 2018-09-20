@@ -19,7 +19,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     cond do
       user !== nil ->
-        # TODO slugify this ngo_id request
+        # TODO slugify this ngo_id reqest
         %{params: %{"ngo_slug" => ngo_slug}} = conn
 
         ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
@@ -63,7 +63,8 @@ defmodule OmegaBraveraWeb.NGOChalController do
       changeset: changeset,
       stats: milestone_stats(challenge),
       donors: Accounts.latest_donors(challenge, 5),
-      activities: Challenges.latest_activities(challenge, 5)
+      activities: Challenges.latest_activities(challenge, 5),
+      current_user: Guardian.Plug.current_resource(conn)
     }
 
     render(conn, "show.html", Map.merge(render_attrs, milestone_stats(challenge)))

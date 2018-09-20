@@ -11,8 +11,10 @@ defmodule OmegaBravera.Donations.Pledges do
       |> Enum.filter(&filter_pledge/1)
       |> Enum.map(&elem(&1, 1))
 
+
+
     if length(pledges) == length(Map.keys(pledged_charges)) do
-      Challenges.update_ngo_chal(challenge, %{total_pledged: pledged_total(challenge, pledges)})
+      Challenges.update_ngo_chal(challenge, %{total_pledged: pledged_total(challenge, pledges), self_donated: self_donated(challenge, donation_params)})
       {:ok, pledges}
     else
       Enum.each(pledges, &Money.delete_donation/1)
@@ -38,8 +40,10 @@ defmodule OmegaBravera.Donations.Pledges do
   end
 
   defp create_pledge({step, charge_amount} = milestone, %NGOChal{} = challenge, donation_params, stripe_customer) do
+    attrs = pledge_attributes(milestone, challenge, donation_params, stripe_customer)
+
     %Donation{}
-    |> Donation.changeset(pledge_attributes(milestone, challenge, donation_params, stripe_customer))
+    |> Donation.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -60,6 +64,10 @@ defmodule OmegaBravera.Donations.Pledges do
 
   defp pledge_attributes(_, _, _, _) do
     %{}
+  end
+
+  defp self_donated(challenge, donation_params) do
+    (challenge.self_donated || (challenge.user_id == donation_params["donor_id"]))
   end
 
   defp filter_pledge({:ok, pledge}), do: true

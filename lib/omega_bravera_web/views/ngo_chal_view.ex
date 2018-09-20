@@ -12,4 +12,12 @@ defmodule OmegaBraveraWeb.NGOChalView do
   def active_challenge?(%NGOChal{} = challenge) do
     challenge.status == "active"
   end
+
+  def challenger_not_self_donated?(%NGOChal{} = challenge, %User{} = user) when not is_nil(challenge) and not is_nil(user) do
+    challenge.user_id == user.id && !challenge.self_donated
+  end
+
+  def challenger_not_self_donated?(_, _) do
+    false
+  end
 end
