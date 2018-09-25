@@ -1,9 +1,6 @@
 defmodule OmegaBraveraWeb.DonationView do
   use OmegaBraveraWeb, :view
 
-  import Numbers
-  import Decimal
-
   defmodule FormBuilder do
     # TODO Add distance format (km/mi)
 

@@ -1,7 +1,6 @@
 defmodule OmegaBravera.Accounts.Strava do
   alias Ecto.Multi
-  alias OmegaBravera.{Repo, Accounts, Accounts.User, Trackers, Accounts.Notifier}
-  alias SendGrid.{Email, Mailer}
+  alias OmegaBravera.{Repo, Accounts, Trackers, Accounts.Notifier}
 
   def login_changeset(%{"code" => code}) do
     client = Strava.Auth.get_token!(code: code)

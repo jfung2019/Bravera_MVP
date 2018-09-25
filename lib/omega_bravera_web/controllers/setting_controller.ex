@@ -2,7 +2,6 @@ defmodule OmegaBraveraWeb.SettingController do
   use OmegaBraveraWeb, :controller
 
   alias OmegaBravera.Accounts
-  alias OmegaBravera.Accounts.Setting
 
   def show(conn, %{"id" => id}) do
     setting = Accounts.get_setting!(id)

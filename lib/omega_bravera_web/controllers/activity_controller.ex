@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.ActivityController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Challenges, Repo}
+  alias OmegaBravera.Challenges
 
   def index(conn, %{"ngo_chal_slug" => slug}) do
     challenge = Challenges.get_ngo_chal_by_slug(slug, [user: [:strava],  ngo: []])

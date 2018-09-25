@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.DonationController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Money, Money.Donation, Fundraisers, Challenges, Accounts, Stripe, StripeHelpers}
+  alias OmegaBravera.{Challenges, Accounts, StripeHelpers}
   alias OmegaBravera.Donations.{Pledges, Processor, Notifier}
 
   def index(conn, %{"ngo_chal_slug" => slug}) do

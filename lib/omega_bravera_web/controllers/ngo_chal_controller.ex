@@ -98,11 +98,4 @@ defmodule OmegaBraveraWeb.NGOChalController do
     |> map(fn({k, v}) -> {to_string(k), into(map(v, fn({kk, vv}) -> {kk, D.to_string(vv)} end), %{})} end) #strigify values
     |> into(%{})
   end
-
-  defp stringify_sum(result) do
-    case result do
-      [nil] -> "0"
-      _ -> Decimal.to_string(hd(result))
-    end
-  end
 end

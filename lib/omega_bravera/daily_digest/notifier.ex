@@ -1,6 +1,5 @@
 defmodule OmegaBravera.DailyDigest.Notifier do
 
-  alias OmegaBravera.{Challenges.NGOChal, Accounts.User}
   alias OmegaBravera.DailyDigest.Serializers.{Participant, Donor, Challenge}
   alias SendGrid.{Mailer, Email}
 
