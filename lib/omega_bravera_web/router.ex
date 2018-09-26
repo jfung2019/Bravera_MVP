@@ -83,6 +83,7 @@ defmodule OmegaBraveraWeb.Router do
         resources "/donations", DonationController, only: [:create]
         get "/donors", DonationController, :index
         get "/activities", ActivityController, :index
+        post "/invite_buddies", NGOChalController, :invite_buddies
       end
     end
 

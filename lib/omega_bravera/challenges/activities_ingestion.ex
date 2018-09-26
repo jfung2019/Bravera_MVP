@@ -22,6 +22,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     {status, challenge, activity, donations} =
       challenge_id
       |> Challenges.get_ngo_chal!
+      |> Repo.preload([:user, :ngo])
       |> create_activity(strava_activity)
       |> update_challenge
       |> notify_participant_of_activity

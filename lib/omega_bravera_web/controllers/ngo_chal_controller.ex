@@ -89,6 +89,14 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end
   end
 
+  def invite_buddies(conn, %{"ngo_chal_slug" => slug, "ngo_slug" => ngo_slug, "buddies" => buddies}) do
+    challenge = Challenges.get_ngo_chal_by_slug(slug, [:user, :ngo])
+
+    Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
+
+    redirect(conn, to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+  end
+
   defp milestone_stats(ngo_chal) do
     import Enum, only: [map: 2, into: 2]
     alias Decimal, as: D
