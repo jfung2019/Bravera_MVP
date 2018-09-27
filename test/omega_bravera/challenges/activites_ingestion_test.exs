@@ -12,7 +12,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     strava_activity = %Strava.Activity{
       id: 1836709368,
       distance: 1740.0,
-      start_date: ~N[2018-09-11 07:58:01],
+      start_date: Timex.shift(Timex.now, hours: 1), # putting it 1h into the future so its within the duration of our factory created challenges
       type: "Walk",
       name: "Morning Walk",
       manual: false
@@ -26,6 +26,21 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       challenge = insert(:ngo_challenge)
       assert ActivitiesIngestion.process_challenge({challenge.id, nil}, %Strava.Activity{distance: 0}) == {:error, :activity_not_processed}
     end
+
+    test "does nothing if the Strava activity start date is before the challenge start date", %{strava_activity: strava_activity} do
+      challenge = insert(:ngo_challenge)
+      activity = Map.put(strava_activity, :start_date, Timex.shift(Timex.now, days: -10))
+
+      assert ActivitiesIngestion.process_challenge({challenge.id, nil}, activity) == {:error, :activity_not_processed}
+    end
+
+    test "does nothing if the Strava activity start date is after the challenge end date", %{strava_activity: strava_activity} do
+      challenge = insert(:ngo_challenge)
+      activity = Map.put(strava_activity, :start_date, Timex.shift(Timex.now, days: 6))
+
+      assert ActivitiesIngestion.process_challenge({challenge.id, nil}, activity) == {:error, :activity_not_processed}
+    end
+
 
     test "does nothing if the Strava activity is missing data" do
       challenge = insert(:ngo_challenge)

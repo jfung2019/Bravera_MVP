@@ -45,9 +45,13 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   defp create_activity(challenge, activity) do
     changeset = Challenges.Activity.create_changeset(activity, challenge)
 
-    case Repo.insert(changeset) do
-      {:ok, activity} -> {:ok, challenge, activity}
-      {:error, _} -> {:error, challenge, nil}
+    if valid_activity?(activity, challenge) do
+      case Repo.insert(changeset) do
+        {:ok, activity} -> {:ok, challenge, activity}
+        {:error, _} -> {:error, challenge, nil}
+      end
+    else
+      {:error, challenge, nil}
     end
   end
 
@@ -102,4 +106,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   end
 
   defp strava_client({_, token}), do: Strava.Client.new(token)
+
+  defp valid_activity?(activity, challenge) do
+    #challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
+    Timex.compare(challenge.start_date, activity.start_date) == -1 and Timex.compare(challenge.end_date, activity.start_date) >= 0
+  end
 end

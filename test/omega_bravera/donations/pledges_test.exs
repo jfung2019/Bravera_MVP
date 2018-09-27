@@ -55,7 +55,6 @@ defmodule OmegaBravera.Donations.PledgesTest do
     assert challenge.self_donated == true
   end
 
-  @tag :focus
   test "create/3 doesn't reset the self donate column once the challenge creator has already donated", %{user: user, donation_params: params} do
     stripe_customer = %{"id" => "cus_123456"}
     challenge = insert(:ngo_challenge, %{user: user, self_donated: true})
