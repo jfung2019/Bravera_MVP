@@ -7,6 +7,8 @@ defmodule OmegaBravera.Challenges.InactivityWorker do
 
     Challenges.inactive_for_seven_days()
     |> Enum.each(&process_inactivity_for_donor/1)
+
+    :ok
   end
 
   defp process_inactivity_for_participant(%NGOChal{} = challenge) do

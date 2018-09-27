@@ -39,7 +39,7 @@ defmodule OmegaBravera.Application do
   end
 
   defp inactive_challenges_spec do
-    %{id: "inactive_finder", start: {SchedEx, :run_every, [OmegaBravera.Challenges.InactivityWorker, :process_inactive_challenges, [], "15 0 * * *"]}}
+    %{id: "inactive_finder", start: {SchedEx, :run_every, [OmegaBravera.Challenges.InactivityWorker, :process_inactive_challenges, [], "0 0 * * *"]}}
   end
 
   defp challenge_expirer_spec do
