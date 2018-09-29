@@ -15,7 +15,7 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
   describe "index" do
     test "lists all admin_users", %{conn: conn} do
       conn = get conn, admin_user_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Admin users"
+      assert html_response(conn, 200) =~ "Listing Admin Users"
     end
   end
 
@@ -34,7 +34,7 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
       assert redirected_to(conn) == admin_user_path(conn, :show, id)
 
       conn = get conn, admin_user_path(conn, :show, id)
-      assert html_response(conn, 200) =~ "Show Admin user"
+      assert html_response(conn, 200) =~ "Show Admin User"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -48,7 +48,7 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
 
     test "renders form for editing chosen admin_user", %{conn: conn, admin_user: admin_user} do
       conn = get conn, admin_user_path(conn, :edit, admin_user)
-      assert html_response(conn, 200) =~ "Edit Admin user"
+      assert html_response(conn, 200) =~ "Edit Admin User"
     end
   end
 
@@ -65,7 +65,7 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, admin_user: admin_user} do
       conn = put conn, admin_user_path(conn, :update, admin_user), admin_user: @invalid_attrs
-      assert html_response(conn, 200) =~ "Edit Admin user"
+      assert html_response(conn, 200) =~ "Edit Admin User"
     end
   end
 
