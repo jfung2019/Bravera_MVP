@@ -57,6 +57,13 @@ defmodule OmegaBraveraWeb.Router do
     resources "/settings", SettingController, only: [:show, :edit, :update]
   end
 
+
+  scope "/admin", OmegaBraveraWeb do
+    pipe_through :browser
+
+    resources "/admin_users", AdminUserController
+  end
+
   scope "/", OmegaBraveraWeb do
     pipe_through :browser
 

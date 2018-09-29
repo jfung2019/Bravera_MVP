@@ -1,0 +1,21 @@
+<div class="row">
+	<div class="col-6 offset-3">
+		<h2>Show Admin User</h2>
+
+		<ul>
+
+		  <li>
+		    <strong>Email:</strong>
+		    <%= @admin_user.email %>
+		  </li>
+
+		  <li>
+		    <strong>Created At:</strong>
+		    <%= render_datetime(@admin_user.inserted_at) %>
+		  </li>
+
+		</ul>
+
+		<span><%= link "Back", to: admin_user_path(@conn, :index) %></span>
+	</div>
+</div>

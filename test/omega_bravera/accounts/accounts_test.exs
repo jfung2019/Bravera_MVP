@@ -198,4 +198,64 @@ defmodule OmegaBravera.AccountsTest do
       assert %Ecto.Changeset{} = Accounts.change_setting(setting)
     end
   end
+
+  describe "admin_users" do
+    alias OmegaBravera.Accounts.AdminUser
+
+    @valid_attrs %{email: "some email", password: "pass1234"}
+    @update_attrs %{email: "some updated email", password_hash: "nopass1234"}
+    @invalid_attrs %{email: nil, password_hash: nil}
+
+    def admin_user_fixture(attrs \\ %{}) do
+      {:ok, admin_user} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Accounts.create_admin_user()
+
+      admin_user
+    end
+
+    test "list_admin_users/0 returns all admin_users" do
+      admin_user = %{admin_user_fixture() | password: nil}
+      assert Accounts.list_admin_users() == [admin_user]
+    end
+
+    test "get_admin_user!/1 returns the admin_user with given id" do
+      admin_user = %{admin_user_fixture() | password: nil}
+      assert Accounts.get_admin_user!(admin_user.id) == admin_user
+    end
+
+    test "create_admin_user/1 with valid data creates a admin_user" do
+      assert {:ok, %AdminUser{} = admin_user} = Accounts.create_admin_user(@valid_attrs)
+      assert admin_user.email == "some email"
+    end
+
+    test "create_admin_user/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_admin_user(@invalid_attrs)
+    end
+
+    test "update_admin_user/2 with valid data updates the admin_user" do
+      admin_user = admin_user_fixture()
+      assert {:ok, admin_user} = Accounts.update_admin_user(admin_user, @update_attrs)
+      assert %AdminUser{} = admin_user
+      assert admin_user.email == "some updated email"
+    end
+
+    test "update_admin_user/2 with invalid data returns error changeset" do
+      admin_user = %{admin_user_fixture() | password: nil}
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_admin_user(admin_user, @invalid_attrs)
+      assert admin_user == Accounts.get_admin_user!(admin_user.id)
+    end
+
+    test "delete_admin_user/1 deletes the admin_user" do
+      admin_user = admin_user_fixture()
+      assert {:ok, %AdminUser{}} = Accounts.delete_admin_user(admin_user)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_admin_user!(admin_user.id) end
+    end
+
+    test "change_admin_user/1 returns a admin_user changeset" do
+      admin_user = admin_user_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_admin_user(admin_user)
+    end
+  end
 end

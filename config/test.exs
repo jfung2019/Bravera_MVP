@@ -36,3 +36,5 @@ config :sendgrid,
 config :stripy,
   secret_key: "sk_test_xgwHvfr4GBgJ9wrUDHoa1E57",
   endpoint: "https://api.stripe.com/v1/"
+
+config :bcrypt_elixir, :log_rounds, 1

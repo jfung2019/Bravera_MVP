@@ -1,0 +1,26 @@
+<div class="row">
+	<div class="col-6 offset-3">
+		<h2>Listing Admin Users</h2>
+
+		<table class="table">
+		  <thead>
+		    <tr>
+		      <th>Email</th>
+		      <th></th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		<%= for admin_user <- @admin_users do %>
+		    <tr>
+		      <td><%= admin_user.email %></td>
+		      <td class="text-right">
+		        <span><%= link "Show", to: admin_user_path(@conn, :show, admin_user), class: "btn btn-default btn-xs" %></span>
+		      </td>
+		    </tr>
+		<% end %>
+		  </tbody>
+		</table>
+
+		<span><%= link "New Admin User", to: admin_user_path(@conn, :new) %></span>
+	</div>
+</div>
