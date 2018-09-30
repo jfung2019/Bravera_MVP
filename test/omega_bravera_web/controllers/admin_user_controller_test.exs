@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.AdminUserControllerTest do
-  use OmegaBraveraWeb.ConnCase
+  use OmegaBraveraWeb.ConnCase, async: true
 
   alias OmegaBravera.Accounts
 
@@ -10,6 +10,12 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
   def fixture(:admin_user) do
     {:ok, admin_user} = Accounts.create_admin_user(@create_attrs)
     admin_user
+  end
+
+  setup %{conn: conn} do
+    with {:ok, admin_user} <- Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
+          {:ok, token, _} <-OmegaBravera.Guardian.encode_and_sign(admin_user, %{}), do:
+      {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
   describe "index" do
@@ -32,9 +38,6 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == admin_user_path(conn, :show, id)
-
-      conn = get conn, admin_user_path(conn, :show, id)
-      assert html_response(conn, 200) =~ "Show Admin User"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -59,8 +62,8 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
       conn = put conn, admin_user_path(conn, :update, admin_user), admin_user: @update_attrs
       assert redirected_to(conn) == admin_user_path(conn, :show, admin_user)
 
-      conn = get conn, admin_user_path(conn, :show, admin_user)
-      assert html_response(conn, 200) =~ "some updated email"
+      admin_user = Accounts.get_admin_user!(admin_user.id)
+      assert admin_user.email == "some updated email"
     end
 
     test "renders errors when data is invalid", %{conn: conn, admin_user: admin_user} do
@@ -75,9 +78,7 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
     test "deletes chosen admin_user", %{conn: conn, admin_user: admin_user} do
       conn = delete conn, admin_user_path(conn, :delete, admin_user)
       assert redirected_to(conn) == admin_user_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get conn, admin_user_path(conn, :show, admin_user)
-      end
+      refute admin_user in Accounts.list_admin_users()
     end
   end
 

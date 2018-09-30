@@ -13,8 +13,13 @@ defmodule OmegaBraveraWeb.Router do
     plug OmegaBraveraWeb.GoogleAnalytics
   end
 
-  pipeline :jwt_authenticated do
+  pipeline :user_authenticated do
     plug Guardian.AuthPipeline
+  end
+
+  pipeline :admin_authenticated do
+    plug Guardian.AuthPipeline
+    plug OmegaBraveraWeb.AdminLoggedIn
   end
 
   pipeline :dashboard do
@@ -43,7 +48,7 @@ defmodule OmegaBraveraWeb.Router do
   end
 
   scope "/dashboard", OmegaBraveraWeb do
-    pipe_through [:browser, :jwt_authenticated, :dashboard]
+    pipe_through [:browser, :user_authenticated, :dashboard]
 
     get "/", UserController, :dashboard
     get "/donations", UserController, :user_donations
@@ -59,7 +64,7 @@ defmodule OmegaBraveraWeb.Router do
 
 
   scope "/admin", OmegaBraveraWeb do
-    pipe_through :browser
+    pipe_through [:browser, :admin_authenticated]
 
     resources "/admin_users", AdminUserController
   end
