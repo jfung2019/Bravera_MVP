@@ -170,12 +170,12 @@ defmodule OmegaBravera.Accounts do
   @doc """
     Inserts or returns an email user (if email is not already registered, insert it)
   """
-  def insert_or_return_email_user(%{"email" => email, "first_name" => first, "last_name" => last} = params) do
+  def insert_or_return_email_user(%{"email" => email, "first_name" => first, "last_name" => last}) do
     case Repo.get_by(User, email: email) do
       nil ->
         case create_user(%{"email" => email, "firstname" => first, "lastname" => last}) do
           {:ok, user} -> user
-          {:error, reason} -> nil
+          {:error, _reason} -> nil
         end
       user ->
         user
@@ -589,5 +589,28 @@ defmodule OmegaBravera.Accounts do
   """
   def change_admin_user(%AdminUser{} = admin_user) do
     AdminUser.changeset(admin_user, %{})
+  end
+
+  @doc """
+  Returns a user in an :ok tuple if user is found by email and correct password.
+  Otherwise an error tuple is returned.
+  """
+  def authenticate_admin_user_by_email_and_pass(email, given_pass) do
+    email = String.downcase(email)
+    user =
+      from(u in AdminUser, where: fragment("lower(?) = ?", u.email, ^email))
+      |> Repo.one()
+
+    cond do
+      user && Comeonin.Bcrypt.checkpw(given_pass, user.password_hash) ->
+        {:ok, user}
+
+      user ->
+        {:error, :unauthorized}
+
+      true ->
+        Comeonin.Bcrypt.dummy_checkpw()
+        {:error, :not_found}
+    end
   end
 end

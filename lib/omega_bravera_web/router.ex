@@ -64,9 +64,15 @@ defmodule OmegaBraveraWeb.Router do
 
 
   scope "/admin", OmegaBraveraWeb do
-    pipe_through [:browser, :admin_authenticated]
+    pipe_through :browser
+    resources "/sessions", AdminUserSessionController, only: [:new, :create, :delete]
 
-    resources "/admin_users", AdminUserController
+    scope "/" do
+      pipe_through :admin_authenticated
+      get "/", AdminUserPage, :index
+      resources "/admin_users", AdminUserController
+    end
+
   end
 
   scope "/", OmegaBraveraWeb do

@@ -258,4 +258,35 @@ defmodule OmegaBravera.AccountsTest do
       assert %Ecto.Changeset{} = Accounts.change_admin_user(admin_user)
     end
   end
+
+  describe "authenticat_admin_user_by_email_and_pass/2" do
+    @email "user@localhost"
+    @pass "123456"
+
+    alias OmegaBravera.Accounts.AdminUser
+
+    setup do
+      {:ok, user: admin_user_fixture(email: @email, password: @pass)}
+    end
+
+    test "returns user with correct password", %{user: %AdminUser{id: id}} do
+      assert {:ok, %AdminUser{id: ^id}} =
+               Accounts.authenticate_admin_user_by_email_and_pass(@email, @pass)
+    end
+
+    test "immune to mixed cased emails", %{user: %AdminUser{id: id}} do
+      assert {:ok, %AdminUser{id: ^id}} =
+               Accounts.authenticate_admin_user_by_email_and_pass(String.capitalize(@email), @pass)
+    end
+
+    test "returns unauthorized error with invalid password" do
+      assert {:error, :unauthorized} =
+               Accounts.authenticate_admin_user_by_email_and_pass(@email, "badpass")
+    end
+
+    test "returns not found error with no matching user for email" do
+      assert {:error, :not_found} =
+               Accounts.authenticate_admin_user_by_email_and_pass("bademail@localhost", @pass)
+    end
+  end
 end
