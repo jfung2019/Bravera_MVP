@@ -33,19 +33,17 @@
         <div class="card-footer">
           <%= if has_tracker?(@conn) do %>
             <div class="text-center">
-              <a class="btn btn-green sign-up" style="border-radius: 25px;" href=<%= "/" <> ngo.slug <> "/new" %>>
-                Join the Challenge
-              </a>
-              <%= link("View Leaderboard", to: ngo_ngo_path(@conn, :leaderboard, ngo.slug), class: "btn btn-green sign-up", style: "border-radius: 25px") %>
+              <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, ngo.slug), class: "btn btn-green sign-up") %>
+              <%= link("View Leaderboard", to: ngo_ngo_path(@conn, :leaderboard, ngo.slug), class: "btn btn-green sign-up") %>
             </div>
           <% else %>
             <div class="text-center">
               <h5 class="text-420">
                 Connect a Fitness Tracker <br/>to Continue
               </h5>
-              <a href="/strava/login" class="mb-1">
-                <img src="/images/strava/btn_strava_connect-orange.png" />
-              </a>
+              <%= link(to: strava_path(@conn, :authenticate), class: "mb-1") do %>
+                <%= img_tag(static_path(@conn, "/images/strava/btn_strava_connect-orange.png")) %>
+              <% end %>
               <%= link("View Leaderboard", to: ngo_ngo_path(@conn, :leaderboard, ngo.slug), class: "btn btn-green sign-up", style: "border-radius: 25px") %>
             </div>
           <% end %>

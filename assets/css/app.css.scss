@@ -47,12 +47,16 @@ $theme-colors: (
   }
 }
 
-// Footer
+// Footer / Global Styles
 html {
   position: relative;
   min-height: 100%;
   body {
     margin-bottom: 60px;
+    // Global Green Button style
+    .btn-green {
+      border-radius: 25px;
+    }
   }
 }
 footer.footer {
