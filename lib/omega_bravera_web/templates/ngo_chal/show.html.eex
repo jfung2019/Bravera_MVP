@@ -7,7 +7,7 @@
         <%= render "_self_donate_cta.html", assigns %>
       <% end %>
 
-      <%= if @challenge.user.id == @current_user.id and @challenge.status == "active" do %>
+      <%= if @current_user != nil and @challenge.user.id == @current_user.id and @challenge.status == "active" do %>
         <%= render "_invite_buddies.html", assigns %>
       <% end %>
 
