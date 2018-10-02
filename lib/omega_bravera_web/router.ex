@@ -71,6 +71,7 @@ defmodule OmegaBraveraWeb.Router do
       pipe_through :admin_authenticated
       get "/", AdminUserPage, :index
       resources "/admin_users", AdminUserController
+      resources "/users", AdminPanelUserController, only: [:index, :show]
     end
 
   end
