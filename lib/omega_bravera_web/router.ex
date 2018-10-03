@@ -63,14 +63,14 @@ defmodule OmegaBraveraWeb.Router do
   end
 
   pipeline :admin_section do
-    plug :browser
-    plug :put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
+    plug(:browser)
+    plug(:put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel})
   end
 
   scope "/admin", OmegaBraveraWeb do
-    pipe_through [:admin_section]
-    resources "/sessions", AdminUserSessionController, only: [:new, :create]
-    get "/logout", AdminUserSessionController, :logout
+    pipe_through([:admin_section])
+    resources("/sessions", AdminUserSessionController, only: [:new, :create])
+    get("/logout", AdminUserSessionController, :logout)
 
     scope "/" do
       pipe_through(:admin_authenticated)

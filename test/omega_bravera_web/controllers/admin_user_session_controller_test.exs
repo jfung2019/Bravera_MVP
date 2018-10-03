@@ -50,15 +50,17 @@ defmodule OmegaBraveraWeb.AdminUserSessionControllerTest do
     setup %{conn: conn} do
       user = fixture(:admin_user)
       {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(user, %{})
-      {:ok, user: user, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+
+      {:ok,
+       user: user, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
     end
 
     test "logs out an admin user", %{conn: conn} do
       conn =
         conn
         |> get(admin_user_session_path(conn, :logout))
+
       assert html_response(conn, 302)
     end
   end
 end
-
