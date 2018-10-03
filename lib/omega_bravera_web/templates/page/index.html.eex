@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="text-center">
-                  <%= link("Connect", class: "btn btn-bravera mt-lg-3", to: page_path(@conn, :signup), role: "button", style: "width: 175px;") %>
+                  <%= link("Get Involved", class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index), role: "button", style: "width: 175px;") %>
                 </div>
               </div>
             </div>
