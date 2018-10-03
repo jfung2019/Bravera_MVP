@@ -76,6 +76,7 @@ defmodule OmegaBraveraWeb.Router do
       get "/", AdminUserPageController, :index
       resources "/admin_users", AdminUserController
       resources "/users", AdminPanelUserController, only: [:index, :show]
+      resources "/challenges", AdminPanelChallengesController, only: [:index, :show]
     end
 
   end
