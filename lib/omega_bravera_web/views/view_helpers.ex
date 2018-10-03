@@ -1,14 +1,17 @@
 defmodule OmegaBraveraWeb.ViewHelpers do
+  alias OmegaBravera.Accounts.User
+
   def logged_in?(conn) do
     user = Guardian.Plug.current_resource(conn)
     if user !== nil, do: true
   end
 
   def has_tracker?(conn) do
-    user = Guardian.Plug.current_resource(conn)
-    if user !== nil do
-      %{strava: strava} = user
-      if strava !== nil, do: true
+    case Guardian.Plug.current_resource(conn) do
+      %User{strava: strava} when strava != nil ->
+        true
+      _ ->
+        false
     end
   end
 

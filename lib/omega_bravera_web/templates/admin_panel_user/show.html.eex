@@ -1,0 +1,16 @@
+<div class="row">
+	<div class="col-6 offset-3">
+		<h2>Show User</h2>
+
+		<ul>
+
+		  <li>
+		    <strong>Email:</strong>
+		    <%= @user.email %>
+		  </li>
+
+		</ul>
+
+		<span><%= link "Back", to: admin_panel_user_path(@conn, :index) %></span>
+	</div>
+</div>
