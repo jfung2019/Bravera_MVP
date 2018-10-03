@@ -37,4 +37,17 @@ defmodule OmegaBraveraWeb.AdminUserSessionControllerTest do
       assert html_response(conn, 200) =~ "Invalid email/password combination"
     end
   end
+
+  describe "admin user logout" do
+    setup do
+      {:ok, user: fixture(:admin_user)}
+    end
+
+    test "logs out an admin user", %{conn: conn} do
+      conn =
+        conn
+        |> get(admin_user_session_path(conn, :logout))
+      assert html_response(conn, 302)
+    end
+  end
 end
