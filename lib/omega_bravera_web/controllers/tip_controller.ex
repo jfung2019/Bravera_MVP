@@ -20,6 +20,7 @@ defmodule OmegaBraveraWeb.TipController do
         conn
         |> put_flash(:info, "Tip created successfully.")
         |> redirect(to: tip_path(conn, :show, tip))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -44,6 +45,7 @@ defmodule OmegaBraveraWeb.TipController do
         conn
         |> put_flash(:info, "Tip updated successfully.")
         |> redirect(to: tip_path(conn, :show, tip))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", tip: tip, changeset: changeset)
     end

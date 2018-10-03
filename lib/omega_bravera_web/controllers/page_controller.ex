@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.PageController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Challenges,Fundraisers}
+  alias OmegaBravera.{Challenges, Fundraisers}
   # alias OmegaBravera.Challenges.NGOChal
 
   def notFound(conn, _params) do
@@ -25,10 +25,12 @@ defmodule OmegaBraveraWeb.PageController do
 
             %{slug: ngo_slug} = ngo
 
-            redirect conn, to: "/" <> ngo_slug <> "/" <> chal_slug
+            redirect(conn, to: "/" <> ngo_slug <> "/" <> chal_slug)
+
           true ->
-            redirect conn, to: "/ngos"
+            redirect(conn, to: "/ngos")
         end
+
       true ->
         render(conn, "index.html")
     end
@@ -51,10 +53,12 @@ defmodule OmegaBraveraWeb.PageController do
 
             %{slug: ngo_slug} = ngo
 
-            redirect conn, to: "/" <> ngo_slug <> "/" <> chal_slug
+            redirect(conn, to: "/" <> ngo_slug <> "/" <> chal_slug)
+
           true ->
-            redirect conn, to: "/ngos"
+            redirect(conn, to: "/ngos")
         end
+
       true ->
         render(conn, "signup.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
@@ -77,10 +81,12 @@ defmodule OmegaBraveraWeb.PageController do
 
             %{slug: ngo_slug} = ngo
 
-            redirect conn, to: "/" <> ngo_slug <> "/" <> chal_slug
+            redirect(conn, to: "/" <> ngo_slug <> "/" <> chal_slug)
+
           true ->
-            redirect conn, to: "/ngos"
+            redirect(conn, to: "/ngos")
         end
+
       true ->
         render(conn, "login.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end

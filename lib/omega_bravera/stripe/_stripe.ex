@@ -9,11 +9,10 @@ defmodule OmegaBravera.Stripe do
   alias OmegaBravera.Stripe.StrCustomer
 
   def get_user_str_customer(user_id) do
-    query = from c in StrCustomer, where: c.user_id == ^user_id
+    query = from(c in StrCustomer, where: c.user_id == ^user_id)
 
-    query |> Repo.one
+    query |> Repo.one()
   end
-
 
   @doc """
   Returns the list of str_customers.

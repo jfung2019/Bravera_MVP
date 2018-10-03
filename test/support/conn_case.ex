@@ -27,25 +27,25 @@ defmodule OmegaBraveraWeb.ConnCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(OmegaBravera.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(OmegaBravera.Repo, {:shared, self()})
     end
 
     conn = Phoenix.ConnTest.build_conn()
 
-    {conn, user} = if tags[:authenticated] do
-      user = insert(:user)
-      {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(user, %{})
+    {conn, user} =
+      if tags[:authenticated] do
+        user = insert(:user)
+        {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(user, %{})
 
-      {Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), user}
-    else
-      {conn, nil}
-    end
+        {Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), user}
+      else
+        {conn, nil}
+      end
 
     {:ok, conn: conn, user: user}
   end
-
 end

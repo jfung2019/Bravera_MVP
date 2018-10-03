@@ -3,14 +3,13 @@ defmodule OmegaBravera.Trackers.Strava do
   import Ecto.Changeset
   alias OmegaBravera.Accounts.User
 
-
   schema "stravas" do
-    field :athlete_id, :integer
-    field :email, :string
-    field :firstname, :string
-    field :lastname, :string
-    field :token, :string
-    belongs_to :user, User
+    field(:athlete_id, :integer)
+    field(:email, :string)
+    field(:firstname, :string)
+    field(:lastname, :string)
+    field(:token, :string)
+    belongs_to(:user, User)
 
     timestamps(type: :utc_datetime)
   end

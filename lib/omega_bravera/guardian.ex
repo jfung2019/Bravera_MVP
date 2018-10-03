@@ -8,7 +8,11 @@ defmodule OmegaBravera.Guardian do
   def subject_for_token(%AdminUser{id: id}, _claims), do: {:ok, "admin_user:#{id}"}
   def subject_for_token(_resource, _claims), do: {:error, :reason_for_error}
 
-  def resource_from_claims(%{"sub" => "user:" <> id}), do: {:ok,  Accounts.get_user_with_everything!(id)}
-  def resource_from_claims(%{"sub" => "admin_user:" <> id}), do: {:ok,  Accounts.get_admin_user!(id)}
+  def resource_from_claims(%{"sub" => "user:" <> id}),
+    do: {:ok, Accounts.get_user_with_everything!(id)}
+
+  def resource_from_claims(%{"sub" => "admin_user:" <> id}),
+    do: {:ok, Accounts.get_admin_user!(id)}
+
   def resource_from_claims(_claims), do: {:error, :reason_for_error}
 end

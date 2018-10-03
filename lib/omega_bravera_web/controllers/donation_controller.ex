@@ -5,7 +5,7 @@ defmodule OmegaBraveraWeb.DonationController do
   alias OmegaBravera.Donations.{Pledges, Processor, Notifier}
 
   def index(conn, %{"ngo_chal_slug" => slug}) do
-    challenge = Challenges.get_ngo_chal_by_slug(slug, [user: [:strava], ngo: []])
+    challenge = Challenges.get_ngo_chal_by_slug(slug, user: [:strava], ngo: [])
     donors = Accounts.latest_donors(challenge)
 
     render(conn, "index.html", %{challenge: challenge, donors: donors})
@@ -17,28 +17,36 @@ defmodule OmegaBraveraWeb.DonationController do
     donor = Accounts.insert_or_return_email_user(donation_params)
     challenge_path = ngo_ngo_chal_path(conn, :show, challenge.ngo.slug, challenge.slug)
 
-    result = case Pledges.create(challenge, stripe_customer, Map.put(donation_params, "donor_id", donor.id)) do
-               {:ok, pledges} ->
-                 Notifier.email_parties(challenge, donor, pledges, challenge_path)
+    result =
+      case Pledges.create(
+             challenge,
+             stripe_customer,
+             Map.put(donation_params, "donor_id", donor.id)
+           ) do
+        {:ok, pledges} ->
+          Notifier.email_parties(challenge, donor, pledges, challenge_path)
 
-                 #TODO: kickstarter donation processing should be moved to a background process so we can have some fault tolerance - Simon
-                 kickstarter_processing_result =
-                   pledges
-                   |> Pledges.get_kickstarter()
-                   |> Processor.charge_donation()
+          # TODO: kickstarter donation processing should be moved to a background process so we can have some fault tolerance - Simon
+          kickstarter_processing_result =
+            pledges
+            |> Pledges.get_kickstarter()
+            |> Processor.charge_donation()
 
-                 case kickstarter_processing_result do
-                   {:ok, _} -> :ok
-                   {:error, _} -> :error
-                 end
-               {:error, _} -> :error
-             end
+          case kickstarter_processing_result do
+            {:ok, _} -> :ok
+            {:error, _} -> :error
+          end
+
+        {:error, _} ->
+          :error
+      end
 
     case result do
       :ok ->
         conn
         |> put_flash(:info, "Donations pledged! Check your email for more information.")
         |> redirect(to: challenge_path)
+
       :error ->
         conn
         |> put_flash(:error, "Initial donation and/or pledges couldn't be processed.")

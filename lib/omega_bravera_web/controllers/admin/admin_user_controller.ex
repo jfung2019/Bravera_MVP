@@ -20,6 +20,7 @@ defmodule OmegaBraveraWeb.AdminUserController do
         conn
         |> put_flash(:info, "Admin user created successfully.")
         |> redirect(to: admin_user_path(conn, :show, admin_user))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -44,6 +45,7 @@ defmodule OmegaBraveraWeb.AdminUserController do
         conn
         |> put_flash(:info, "Admin user updated successfully.")
         |> redirect(to: admin_user_path(conn, :show, admin_user))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", admin_user: admin_user, changeset: changeset)
     end

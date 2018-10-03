@@ -6,8 +6,20 @@ defmodule OmegaBravera.TrackersTest do
   describe "stravas" do
     alias OmegaBravera.Trackers.Strava
 
-    @valid_attrs %{athlete_id: 42, email: "someone@email.com", firstname: "firstname", lastname: "lastname", token: "token"}
-    @update_attrs %{athlete_id: 43, email: "someone@updatedemail.com", firstname: "updated firstname", lastname: "updated lastname", token: "updated token"}
+    @valid_attrs %{
+      athlete_id: 42,
+      email: "someone@email.com",
+      firstname: "firstname",
+      lastname: "lastname",
+      token: "token"
+    }
+    @update_attrs %{
+      athlete_id: 43,
+      email: "someone@updatedemail.com",
+      firstname: "updated firstname",
+      lastname: "updated lastname",
+      token: "updated token"
+    }
     @invalid_attrs %{athlete_id: nil, email: nil, firstname: nil, lastname: nil, token: nil}
 
     def strava_fixture(attrs \\ %{}) do
@@ -29,9 +41,14 @@ defmodule OmegaBravera.TrackersTest do
     end
 
     test "create_strava/1 with valid data creates a strava" do
-      {:ok, user} = Accounts.create_user(%{email: "someone@email.com", firstname: "firstname", lastname: "lastname"})
-      {:ok, strava} = Trackers.create_strava(user.id, @valid_attrs)
+      {:ok, user} =
+        Accounts.create_user(%{
+          email: "someone@email.com",
+          firstname: "firstname",
+          lastname: "lastname"
+        })
 
+      {:ok, strava} = Trackers.create_strava(user.id, @valid_attrs)
 
       assert match?(%Trackers.Strava{}, strava) == true
 

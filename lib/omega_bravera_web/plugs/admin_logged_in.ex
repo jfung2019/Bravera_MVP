@@ -8,6 +8,7 @@ defmodule OmegaBraveraWeb.AdminLoggedIn do
     case OmegaBravera.Guardian.Plug.current_resource(conn) do
       %AdminUser{} ->
         conn
+
       _ ->
         Plug.Conn.halt(conn)
     end

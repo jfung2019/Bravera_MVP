@@ -15,7 +15,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
   http: [port: 4000],
-  url: [host: "...",  port: 80],
+  url: [host: "...", port: 80],
   cache_static_manifest: "priv/static/manifest.json",
   server: true,
   code_reloader: false
@@ -54,7 +54,7 @@ config :logger, level: :info
 # to start the server for all endpoints:
 #
 # TODO do I need this for AWS?
-    config :phoenix, :serve_endpoints, true
+config :phoenix, :serve_endpoints, true
 #
 # Alternatively, you can configure exactly which server to
 # start per endpoint:
@@ -67,40 +67,40 @@ config :logger, level: :info
 # import_config "prod.secret.exs"
 
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
-       secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE")
+  secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE")
 
 config :omega_bravera, OmegaBravera.Repo,
-       adapter: Ecto.Adapters.Postgres,
-       url: System.get_env("DATABASE_URL"),
-       ssl: true,
-       pool_size: 1
+  adapter: Ecto.Adapters.Postgres,
+  url: System.get_env("DATABASE_URL"),
+  ssl: true,
+  pool_size: 1
 
 # Strava dev config
 
 config :strava,
-       client_id: System.get_env("STRAVA_CLIENT_ID"),
-       client_secret: System.get_env("STRAVA_CLIENT_SECRET"),
-       access_token: System.get_env("STRAVA_ACCESS_TOKEN"),
-       redirect_uri: System.get_env("STRAVA_REDIRECT_URI")
+  client_id: System.get_env("STRAVA_CLIENT_ID"),
+  client_secret: System.get_env("STRAVA_CLIENT_SECRET"),
+  access_token: System.get_env("STRAVA_ACCESS_TOKEN"),
+  redirect_uri: System.get_env("STRAVA_REDIRECT_URI")
 
 # Stripy dev config
 
 config :stripy,
-       secret_key: System.get_env("STRIPE_SECRET_KEY"),
-       endpoint: "https://api.stripe.com/v1/"
+  secret_key: System.get_env("STRIPE_SECRET_KEY"),
+  endpoint: "https://api.stripe.com/v1/"
 
 config :omega_bravera, :stripe_public_key, System.get_env("STRIPE_PUBLIC_KEY")
 
 # Guardian config
 config :omega_bravera, OmegaBravera.Guardian,
-       issuer: "bravera",
-       secret_key: System.get_env("GUARDIAN_SECRET_KEY")
+  issuer: "bravera",
+  secret_key: System.get_env("GUARDIAN_SECRET_KEY")
 
 # Email config
 
 config :omega_bravera, OmegaBravera.Mailer,
-       adapter: Bamboo.SendgridAdapter,
-       api_key: System.get_env("SENDGRID_API_KEY")
+  adapter: Bamboo.SendgridAdapter,
+  api_key: System.get_env("SENDGRID_API_KEY")
 
 config :sendgrid,
   api_key: System.get_env("SENDGRID_API_KEY")

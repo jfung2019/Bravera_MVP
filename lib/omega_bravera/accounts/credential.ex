@@ -6,12 +6,12 @@ defmodule OmegaBravera.Accounts.Credential do
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 
   schema "credentials" do
-    field :password_hash, :string
-    field :password, :string, virtual: true
-    field :password_confirmation, :string, virtual: true
-    field :reset_token, :string, allow_nil: true
-    field :reset_token_created, :utc_datetime, allow_nil: true
-    belongs_to :user, User
+    field(:password_hash, :string)
+    field(:password, :string, virtual: true)
+    field(:password_confirmation, :string, virtual: true)
+    field(:reset_token, :string, allow_nil: true)
+    field(:reset_token_created, :utc_datetime, allow_nil: true)
+    belongs_to(:user, User)
 
     timestamps(type: :utc_datetime)
   end
@@ -33,11 +33,11 @@ defmodule OmegaBravera.Accounts.Credential do
 
   defp put_password_hash(changeset) do
     case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{password: pass}}
-        ->
-          put_change(changeset, :password_hash, hashpwsalt(pass))
+      %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+        put_change(changeset, :password_hash, hashpwsalt(pass))
+
       _ ->
-          changeset
+        changeset
     end
   end
 end

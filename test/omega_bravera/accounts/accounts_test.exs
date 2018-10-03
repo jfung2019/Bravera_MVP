@@ -6,9 +6,12 @@ defmodule OmegaBravera.AccountsTest do
   alias OmegaBravera.{Accounts, Accounts.User, Repo, Trackers.Strava}
 
   describe "users" do
-
     @valid_attrs %{email: "test@test.com", firstname: "some firstname", lastname: "some lastname"}
-    @update_attrs %{email: "updated_test@test.com", firstname: "some updated firstname", lastname: "some updated lastname"}
+    @update_attrs %{
+      email: "updated_test@test.com",
+      firstname: "some updated firstname",
+      lastname: "some updated lastname"
+    }
     @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
 
     def user_fixture(attrs \\ %{}) do
@@ -26,8 +29,16 @@ defmodule OmegaBravera.AccountsTest do
       challenge = insert(:ngo_challenge, %{ngo: ngo, user: user})
 
       # 2 famous runners
-      matthew_wells = insert(:user, %{firstname: "Matthew", lastname: "Wells", email: "matthew.wells@test.com"})
-      carlos_cordero = insert(:user, %{firstname: "Carlos", lastname: "Cordero", email: "carlos.cordero@test.com"})
+      matthew_wells =
+        insert(:user, %{firstname: "Matthew", lastname: "Wells", email: "matthew.wells@test.com"})
+
+      carlos_cordero =
+        insert(:user, %{
+          firstname: "Carlos",
+          lastname: "Cordero",
+          email: "carlos.cordero@test.com"
+        })
+
       insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: carlos_cordero})
       insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: matthew_wells})
 
@@ -40,7 +51,7 @@ defmodule OmegaBravera.AccountsTest do
 
     test "insert_or_update_strava_user/1 creates both user and strava tracker" do
       attrs = %{
-        athlete_id: 33762738,
+        athlete_id: 33_762_738,
         email: "simon.garciar@gmail.com",
         firstname: "Rafael",
         lastname: "Garcia",
@@ -48,10 +59,11 @@ defmodule OmegaBravera.AccountsTest do
         additional_info: %{sex: "M", location: "Spain/Barcelona/Barcelona"}
       }
 
-      {:ok, %{strava: %Strava{} = strava, user: %Accounts.User{} = user}} = Accounts.insert_or_update_strava_user(attrs)
+      {:ok, %{strava: %Strava{} = strava, user: %Accounts.User{} = user}} =
+        Accounts.insert_or_update_strava_user(attrs)
 
       assert user.email == "simon.garciar@gmail.com"
-      assert strava.athlete_id == 33762738
+      assert strava.athlete_id == 33_762_738
     end
 
     test "insert_or_update_strava_user/1 updates both user and strava tracker" do
@@ -60,7 +72,7 @@ defmodule OmegaBravera.AccountsTest do
       _strava = insert(:strava, Map.merge(user_attrs, %{token: "abcdef", user: user}))
 
       attrs = %{
-        athlete_id: 33762738,
+        athlete_id: 33_762_738,
         email: "simon.garciar@gmail.com",
         firstname: "Rafael",
         lastname: "Garcia",
@@ -68,14 +80,13 @@ defmodule OmegaBravera.AccountsTest do
         additional_info: %{sex: "M", location: "Spain/Barcelona/Barcelona"}
       }
 
-
       {:ok, user} = Accounts.insert_or_update_strava_user(attrs)
 
       user = Repo.preload(user, [:strava])
 
       assert user.additional_info[:sex] == "M"
       assert user.additional_info[:location] == "Spain/Barcelona/Barcelona"
-      assert user.strava.athlete_id == 33762738
+      assert user.strava.athlete_id == 33_762_738
       assert user.strava.token == "87318aaded9cdeb99a1a3c20c6af26ccf059de30"
     end
 
@@ -130,9 +141,33 @@ defmodule OmegaBravera.AccountsTest do
   describe "settings" do
     alias OmegaBravera.Accounts.Setting
 
-    @valid_attrs %{email_notifications: true, facebook: "some facebook", instagram: "some instagram", location: "some location", request_delete: true, show_lastname: true, twitter: "some twitter"}
-    @update_attrs %{email_notifications: false, facebook: "some updated facebook", instagram: "some updated instagram", location: "some updated location", request_delete: false, show_lastname: false, twitter: "some updated twitter"}
-    @invalid_attrs %{email_notifications: nil, facebook: nil, instagram: nil, location: nil, request_delete: nil, show_lastname: nil, twitter: nil}
+    @valid_attrs %{
+      email_notifications: true,
+      facebook: "some facebook",
+      instagram: "some instagram",
+      location: "some location",
+      request_delete: true,
+      show_lastname: true,
+      twitter: "some twitter"
+    }
+    @update_attrs %{
+      email_notifications: false,
+      facebook: "some updated facebook",
+      instagram: "some updated instagram",
+      location: "some updated location",
+      request_delete: false,
+      show_lastname: false,
+      twitter: "some updated twitter"
+    }
+    @invalid_attrs %{
+      email_notifications: nil,
+      facebook: nil,
+      instagram: nil,
+      location: nil,
+      request_delete: nil,
+      show_lastname: nil,
+      twitter: nil
+    }
 
     def setting_fixture(attrs \\ %{}) do
       {:ok, setting} =
@@ -276,7 +311,10 @@ defmodule OmegaBravera.AccountsTest do
 
     test "immune to mixed cased emails", %{user: %AdminUser{id: id}} do
       assert {:ok, %AdminUser{id: ^id}} =
-               Accounts.authenticate_admin_user_by_email_and_pass(String.capitalize(@email), @pass)
+               Accounts.authenticate_admin_user_by_email_and_pass(
+                 String.capitalize(@email),
+                 @pass
+               )
     end
 
     test "returns unauthorized error with invalid password" do

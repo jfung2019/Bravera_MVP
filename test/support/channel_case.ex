@@ -25,13 +25,13 @@ defmodule OmegaBraveraWeb.ChannelCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(OmegaBravera.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(OmegaBravera.Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end

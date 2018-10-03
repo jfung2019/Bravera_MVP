@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Admin.UserControllerTest do
+defmodule OmegaBraveraWeb.Admin.ChallengesControllerTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
   alias OmegaBravera.Accounts
@@ -24,14 +24,9 @@ defmodule OmegaBraveraWeb.Admin.UserControllerTest do
   describe "index" do
     setup [:create_user]
 
-    test "lists all users in admin panel", %{conn: conn} do
-      conn = get(conn, admin_panel_user_path(conn, :index))
-      assert html_response(conn, 200) =~ "Listing Users"
-    end
-
-    test "shows a specific user", %{conn: conn, user: user} do
-      conn = get(conn, admin_panel_user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Show User"
+    test "lists all challenges in admin panel", %{conn: conn} do
+      conn = get(conn, admin_panel_challenges_path(conn, :index))
+      assert html_response(conn, 200) =~ "Listing Challenges"
     end
   end
 

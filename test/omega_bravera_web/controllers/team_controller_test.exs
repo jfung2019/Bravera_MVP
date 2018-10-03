@@ -4,7 +4,11 @@ defmodule OmegaBraveraWeb.TeamControllerTest do
   alias OmegaBravera.Challenges
 
   @create_attrs %{activity: "some activity", location: "some location", name: "some name"}
-  @update_attrs %{activity: "some updated activity", location: "some updated location", name: "some updated name"}
+  @update_attrs %{
+    activity: "some updated activity",
+    location: "some updated location",
+    name: "some updated name"
+  }
   @invalid_attrs %{activity: nil, location: nil, name: nil}
 
   def fixture(:team) do
@@ -15,36 +19,34 @@ defmodule OmegaBraveraWeb.TeamControllerTest do
   describe "index" do
     @tag :skip
     test "lists all teams", %{conn: conn} do
-      conn = get conn, team_path(conn, :index)
+      conn = get(conn, team_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing Teams"
     end
   end
 
   describe "new team" do
-
     @tag :skip
     test "renders form", %{conn: conn} do
-      conn = get conn, team_path(conn, :new)
+      conn = get(conn, team_path(conn, :new))
       assert html_response(conn, 200) =~ "New Team"
     end
   end
 
   describe "create team" do
-
     @tag :skip
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post conn, team_path(conn, :create), team: @create_attrs
+      conn = post(conn, team_path(conn, :create), team: @create_attrs)
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == team_path(conn, :show, id)
 
-      conn = get conn, team_path(conn, :show, id)
+      conn = get(conn, team_path(conn, :show, id))
       assert html_response(conn, 200) =~ "Show Team"
     end
 
     @tag :skip
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post conn, team_path(conn, :create), team: @invalid_attrs
+      conn = post(conn, team_path(conn, :create), team: @invalid_attrs)
       assert html_response(conn, 200) =~ "New Team"
     end
   end
@@ -54,7 +56,7 @@ defmodule OmegaBraveraWeb.TeamControllerTest do
 
     @tag :skip
     test "renders form for editing chosen team", %{conn: conn, team: team} do
-      conn = get conn, team_path(conn, :edit, team)
+      conn = get(conn, team_path(conn, :edit, team))
       assert html_response(conn, 200) =~ "Edit Team"
     end
   end
@@ -64,16 +66,16 @@ defmodule OmegaBraveraWeb.TeamControllerTest do
 
     @tag :skip
     test "redirects when data is valid", %{conn: conn, team: team} do
-      conn = put conn, team_path(conn, :update, team), team: @update_attrs
+      conn = put(conn, team_path(conn, :update, team), team: @update_attrs)
       assert redirected_to(conn) == team_path(conn, :show, team)
 
-      conn = get conn, team_path(conn, :show, team)
+      conn = get(conn, team_path(conn, :show, team))
       assert html_response(conn, 200) =~ "some updated activity"
     end
 
     @tag :skip
     test "renders errors when data is invalid", %{conn: conn, team: team} do
-      conn = put conn, team_path(conn, :update, team), team: @invalid_attrs
+      conn = put(conn, team_path(conn, :update, team), team: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Team"
     end
   end
@@ -83,11 +85,12 @@ defmodule OmegaBraveraWeb.TeamControllerTest do
 
     @tag :skip
     test "deletes chosen team", %{conn: conn, team: team} do
-      conn = delete conn, team_path(conn, :delete, team)
+      conn = delete(conn, team_path(conn, :delete, team))
       assert redirected_to(conn) == team_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get conn, team_path(conn, :show, team)
-      end
+
+      assert_error_sent(404, fn ->
+        get(conn, team_path(conn, :show, team))
+      end)
     end
   end
 

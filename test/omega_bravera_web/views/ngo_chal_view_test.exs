@@ -14,11 +14,24 @@ defmodule OmegaBraveraWeb.NGOChalViewTest do
   end
 
   test "challenger_not_self_donated?/2 returns whether the challenge owner has donated to the challenge" do
-    assert NGOChalView.challenger_not_self_donated?(%NGOChal{self_donated: false, user_id: 1}, %User{id: 1}) == true
-    assert NGOChalView.challenger_not_self_donated?(%NGOChal{self_donated: true, user_id: 1}, %User{id: 1}) == false
+    assert NGOChalView.challenger_not_self_donated?(
+             %NGOChal{self_donated: false, user_id: 1},
+             %User{id: 1}
+           ) == true
 
-    assert NGOChalView.challenger_not_self_donated?(%NGOChal{self_donated: true, user_id: 2}, %User{id: 1}) == false
+    assert NGOChalView.challenger_not_self_donated?(
+             %NGOChal{self_donated: true, user_id: 1},
+             %User{id: 1}
+           ) == false
 
-    assert NGOChalView.challenger_not_self_donated?(%NGOChal{self_donated: true, user_id: 2}, false) == false
+    assert NGOChalView.challenger_not_self_donated?(
+             %NGOChal{self_donated: true, user_id: 2},
+             %User{id: 1}
+           ) == false
+
+    assert NGOChalView.challenger_not_self_donated?(
+             %NGOChal{self_donated: true, user_id: 2},
+             false
+           ) == false
   end
 end

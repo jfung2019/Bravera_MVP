@@ -10,24 +10,26 @@ defmodule OmegaBraveraWeb.PasswordController do
 
   def new(conn, _params) do
     changeset = Accounts.change_user(%User{})
-    render conn, "new.html", changeset: changeset, action: password_path(conn, :create)
+    render(conn, "new.html", changeset: changeset, action: password_path(conn, :create))
   end
 
   def create(conn, %{"user" => %{"email" => email}}) do
-    credential = case email do
-      nil ->
-        nil
-      email ->
-        Accounts.get_user_credential(email)
-    end
+    credential =
+      case email do
+        nil ->
+          nil
+
+        email ->
+          Accounts.get_user_credential(email)
+      end
 
     case credential do
       nil ->
         conn
         |> put_flash(:error, "Could not send reset email.")
         |> redirect(to: password_path(conn, :new))
-      credential ->
 
+      credential ->
         case reset_password_token(credential) do
           {:ok, %{reset_token: reset_token}} ->
             Emails.send_reset_email(email, reset_token)
@@ -35,7 +37,12 @@ defmodule OmegaBraveraWeb.PasswordController do
         end
 
         conn
-        |> put_flash(:info, "If your email address exists in our database, you will receive a password reset link in your #{email} inbox soon.")
+        |> put_flash(
+          :info,
+          "If your email address exists in our database, you will receive a password reset link in your #{
+            email
+          } inbox soon."
+        )
         |> redirect(to: page_path(conn, :index))
     end
   end
@@ -48,6 +55,7 @@ defmodule OmegaBraveraWeb.PasswordController do
         conn
         |> put_flash(:error, "Invalid reset token")
         |> redirect(to: password_path(conn, :new))
+
       credential ->
         %{reset_token_created: reset_token_created} = credential
 
@@ -59,6 +67,7 @@ defmodule OmegaBraveraWeb.PasswordController do
           |> redirect(to: password_path(conn, :new))
         else
           changeset = Accounts.change_credential(%Credential{})
+
           conn
           |> render("edit.html", changeset: changeset, token: token)
         end
@@ -73,8 +82,10 @@ defmodule OmegaBraveraWeb.PasswordController do
         conn
         |> put_flash(:error, "Invalid reset token")
         |> redirect(to: password_path(conn, :new))
+
       credential ->
         %{reset_token_created: reset_token_created} = credential
+
         if expired?(reset_token_created) do
           nullify_token(credential)
 
@@ -89,6 +100,7 @@ defmodule OmegaBraveraWeb.PasswordController do
               conn
               |> put_flash(:info, "Password reset successfully!")
               |> redirect(to: page_path(conn, :index))
+
             {:error, changeset} ->
               conn
               |> render("edit.html", changeset: changeset, token: token)
@@ -104,25 +116,25 @@ defmodule OmegaBraveraWeb.PasswordController do
     })
   end
 
-# sets the token & sent at in the database for the credential
+  # sets the token & sent at in the database for the credential
   defp reset_password_token(credential) do
     token = random_string(64)
-    now = DateTime.utc_now
+    now = DateTime.utc_now()
 
     credential
     |> Accounts.update_credential_token(%{reset_token: token, reset_token_created: now})
   end
 
-# sets the token to a random string or whatever length is input
+  # sets the token to a random string or whatever length is input
   defp random_string(length) do
     length
-    |> :crypto.strong_rand_bytes
-    |> Base.url_encode64
+    |> :crypto.strong_rand_bytes()
+    |> Base.url_encode64()
     |> binary_part(0, length)
   end
 
-# checks if now is later than 1 day from the reset_token_sent_at
+  # checks if now is later than 1 day from the reset_token_sent_at
   defp expired?(datetime) do
-    Timex.after?(Timex.now, Timex.shift(datetime, days: 1))
+    Timex.after?(Timex.now(), Timex.shift(datetime, days: 1))
   end
 end

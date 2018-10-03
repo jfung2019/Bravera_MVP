@@ -26,9 +26,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
         changeset = Challenges.change_ngo_chal(%NGOChal{})
         render(conn, "new.html", changeset: changeset, ngo: ngo)
+
       true ->
-        redirect conn, to: "/login"
-      end
+        redirect(conn, to: "/login")
+    end
   end
 
   def create(conn, %{"ngo_slug" => ngo_id, "ngo_chal" => chal_params}) do
@@ -38,7 +39,12 @@ defmodule OmegaBraveraWeb.NGOChalController do
     # Oddly, ngo_slug = ngo_id here...
     ngo = Fundraisers.get_ngo!(ngo_id)
 
-    changeset_params = Map.merge(chal_params, %{"user_id" => current_user.id, "ngo_id" => ngo.id, "slug" => sluggified_username})
+    changeset_params =
+      Map.merge(chal_params, %{
+        "user_id" => current_user.id,
+        "ngo_id" => ngo.id,
+        "slug" => sluggified_username
+      })
 
     case Challenges.create_ngo_chal(%NGOChal{}, changeset_params) do
       {:ok, challenge} ->
@@ -48,13 +54,14 @@ defmodule OmegaBraveraWeb.NGOChalController do
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
         |> redirect(to: challenge_path)
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset, ngo: ngo)
     end
   end
 
   def show(conn, %{"slug" => slug}) do
-    challenge = Challenges.get_ngo_chal_by_slug(slug, [user: [:strava], ngo: []])
+    challenge = Challenges.get_ngo_chal_by_slug(slug, user: [:strava], ngo: [])
     changeset = Money.change_donation(%Donation{})
 
     render_attrs = %{
@@ -84,12 +91,17 @@ defmodule OmegaBraveraWeb.NGOChalController do
         conn
         |> put_flash(:info, "Ngo chal updated successfully.")
         |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_chal))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", ngo_chal: ngo_chal, changeset: changeset)
     end
   end
 
-  def invite_buddies(conn, %{"ngo_chal_slug" => slug, "ngo_slug" => ngo_slug, "buddies" => buddies}) do
+  def invite_buddies(conn, %{
+        "ngo_chal_slug" => slug,
+        "ngo_slug" => ngo_slug,
+        "buddies" => buddies
+      }) do
     challenge = Challenges.get_ngo_chal_by_slug(slug, [:user, :ngo])
 
     Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
@@ -103,7 +115,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     ngo_chal
     |> Money.milestones_donations()
-    |> map(fn({k, v}) -> {to_string(k), into(map(v, fn({kk, vv}) -> {kk, D.to_string(vv)} end), %{})} end) #strigify values
+    # strigify values
+    |> map(fn {k, v} ->
+      {to_string(k), into(map(v, fn {kk, vv} -> {kk, D.to_string(vv)} end), %{})}
+    end)
     |> into(%{})
   end
 end

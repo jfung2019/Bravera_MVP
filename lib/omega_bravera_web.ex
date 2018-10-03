@@ -28,8 +28,9 @@ defmodule OmegaBraveraWeb do
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/omega_bravera_web/templates",
-                        namespace: OmegaBraveraWeb
+      use Phoenix.View,
+        root: "lib/omega_bravera_web/templates",
+        namespace: OmegaBraveraWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]

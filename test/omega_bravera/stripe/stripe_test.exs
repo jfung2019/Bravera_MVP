@@ -52,7 +52,10 @@ defmodule OmegaBravera.StripeTest do
     @tag :skip
     test "update_str_customer/2 with invalid data returns error changeset" do
       str_customer = str_customer_fixture()
-      assert {:error, %Ecto.Changeset{}} = Stripe.update_str_customer(str_customer, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Stripe.update_str_customer(str_customer, @invalid_attrs)
+
       assert str_customer == Stripe.get_str_customer!(str_customer.id)
     end
 

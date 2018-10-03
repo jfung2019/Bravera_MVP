@@ -3,12 +3,12 @@ use Mix.Config
 # Guardian config
 
 config :omega_bravera, OmegaBravera.Guardian,
-       issuer: "omega_bravera",
-       secret_key: "TVCFw5ZzCC5gqI8FeRUg3jT7U578dbb4gGjBXq8Zt1Rk4ctVFj/zTRn6gfGOXiU0"
+  issuer: "omega_bravera",
+  secret_key: "TVCFw5ZzCC5gqI8FeRUg3jT7U578dbb4gGjBXq8Zt1Rk4ctVFj/zTRn6gfGOXiU0"
 
- # Email config
+# Email config
 
- config :omega_bravera, OmegaBravera.Mailer,
+config :omega_bravera, OmegaBravera.Mailer,
   adapter: Bamboo.SendgridAdapter,
   api_key: "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"
 
@@ -31,10 +31,10 @@ config :omega_bravera, :stripe_public_key, "pk_test_RM9ht2ztt3dMgpvjPAtpHOx6"
 # Guardian config
 
 config :omega_bravera, OmegaBravera.Guardian,
-       issuer: "bravera",
-       secret_key: "TVCFw5ZzCC5gqI8FeRUg3jT7U578dbb4gGjBXq8Zt1Rk4ctVFj/zTRn6gfGOXiU0"
+  issuer: "bravera",
+  secret_key: "TVCFw5ZzCC5gqI8FeRUg3jT7U578dbb4gGjBXq8Zt1Rk4ctVFj/zTRn6gfGOXiU0"
 
- # Email config
+# Email config
 config :sendgrid,
   api_key: "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"
 
@@ -49,8 +49,14 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
-                    cd: Path.expand("../assets", __DIR__)]]
+  watchers: [
+    node: [
+      "node_modules/brunch/bin/brunch",
+      "watch",
+      "--stdin",
+      cd: Path.expand("../assets", __DIR__)
+    ]
+  ]
 
 # ## SSL Support
 #

@@ -7,11 +7,13 @@ defmodule OmegaBravera.Challenges.ExpirerWorkerTest do
 
   describe "process_inactive_challenges/0" do
     test "updates inactive challenges" do
-      two_months_ago = Timex.shift(Timex.now, days: -60)
-      one_month_ago = Timex.shift(Timex.now, days: -30)
+      two_months_ago = Timex.shift(Timex.now(), days: -60)
+      one_month_ago = Timex.shift(Timex.now(), days: -30)
 
       active_challenge = insert(:ngo_challenge)
-      expired_challenge = insert(:ngo_challenge, %{start_date: two_months_ago, end_date: one_month_ago})
+
+      expired_challenge =
+        insert(:ngo_challenge, %{start_date: two_months_ago, end_date: one_month_ago})
 
       assert expired_challenge.status == "active"
 

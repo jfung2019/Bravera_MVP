@@ -13,7 +13,7 @@ defmodule OmegaBraveraWeb.UserController do
   def user_donations(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
     %{id: user_id} = user
-    
+
     donations = Money.get_donations_by_user(user_id)
 
     render(conn, "user_donations.html", donations: donations)
@@ -39,6 +39,7 @@ defmodule OmegaBraveraWeb.UserController do
         conn
         |> put_flash(:info, "User created successfully.")
         |> redirect(to: user_path(conn, :show, user))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -63,9 +64,9 @@ defmodule OmegaBraveraWeb.UserController do
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: user_path(conn, :show, user))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)
     end
   end
-
 end

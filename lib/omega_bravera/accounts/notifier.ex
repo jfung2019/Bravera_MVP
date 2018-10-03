@@ -1,5 +1,4 @@
 defmodule OmegaBravera.Accounts.Notifier do
-
   alias OmegaBravera.Accounts.User
   alias SendGrid.{Mailer, Email}
 

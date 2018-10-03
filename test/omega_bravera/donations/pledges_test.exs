@@ -7,7 +7,9 @@ defmodule OmegaBravera.Donations.PledgesTest do
 
   setup do
     donor = insert(:user)
-    user = insert(:user, %{email: "simon.garciar@gmail.com", firstname: "Simon", lastname: "Garcia"})
+
+    user =
+      insert(:user, %{email: "simon.garciar@gmail.com", firstname: "Simon", lastname: "Garcia"})
 
     donation_params = %{
       "currency" => "HKD",
@@ -25,7 +27,10 @@ defmodule OmegaBravera.Donations.PledgesTest do
     {:ok, [user: user, donor: donor, donation_params: donation_params]}
   end
 
-  test "create/3 creates the pledges and updates the challenge", %{user: user, donation_params: params} do
+  test "create/3 creates the pledges and updates the challenge", %{
+    user: user,
+    donation_params: params
+  } do
     stripe_customer = %{"id" => "cus_123456"}
     challenge = insert(:ngo_challenge, %{user: user})
 
@@ -37,15 +42,28 @@ defmodule OmegaBravera.Donations.PledgesTest do
     assert challenge.self_donated == false
   end
 
-  test "create/3 returns and error tuple when the stripe customer creation fails", %{user: user, donation_params: params} do
+  test "create/3 returns and error tuple when the stripe customer creation fails", %{
+    user: user,
+    donation_params: params
+  } do
     stripe_customer = %{"error" => %{"code" => "card_declined"}}
     challenge = insert(:ngo_challenge, %{user: user})
 
     assert Pledges.create(challenge, stripe_customer, params) == {:error, :pledge_creation_error}
   end
 
-  test "create/3 sets the challenge to self donated once the challenge creator donates", %{user: user, donation_params: p} do
-    params = Map.merge(p, %{"donor_id" => user.id, "email" => user.email, "first_name" => user.firstname, "last_name" => user.lastname})
+  test "create/3 sets the challenge to self donated once the challenge creator donates", %{
+    user: user,
+    donation_params: p
+  } do
+    params =
+      Map.merge(p, %{
+        "donor_id" => user.id,
+        "email" => user.email,
+        "first_name" => user.firstname,
+        "last_name" => user.lastname
+      })
+
     stripe_customer = %{"id" => "cus_123456"}
     challenge = insert(:ngo_challenge, %{user: user})
 
@@ -55,7 +73,8 @@ defmodule OmegaBravera.Donations.PledgesTest do
     assert challenge.self_donated == true
   end
 
-  test "create/3 doesn't reset the self donate column once the challenge creator has already donated", %{user: user, donation_params: params} do
+  test "create/3 doesn't reset the self donate column once the challenge creator has already donated",
+       %{user: user, donation_params: params} do
     stripe_customer = %{"id" => "cus_123456"}
     challenge = insert(:ngo_challenge, %{user: user, self_donated: true})
 
@@ -65,4 +84,3 @@ defmodule OmegaBravera.Donations.PledgesTest do
     assert challenge.self_donated == true
   end
 end
-

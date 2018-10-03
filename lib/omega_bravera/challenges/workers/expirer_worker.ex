@@ -4,7 +4,11 @@ defmodule OmegaBravera.Challenges.ExpirerWorker do
 
   def process_expired_challenges() do
     now = Timex.now()
-    query = from(challenge in NGOChal, where: challenge.end_date <= ^now and challenge.status == "active")
+
+    query =
+      from(challenge in NGOChal,
+        where: challenge.end_date <= ^now and challenge.status == "active"
+      )
 
     Repo.update_all(query, set: [status: "expired"])
   end

@@ -11,8 +11,10 @@ defmodule OmegaBravera.Fundraisers do
   # Get a user's causes by user_id
 
   def get_ngos_by_user(user_id) do
-    query = from n in NGO,
-      where: n.user_id == ^user_id
+    query =
+      from(n in NGO,
+        where: n.user_id == ^user_id
+      )
 
     Repo.all(query)
   end
@@ -46,13 +48,15 @@ defmodule OmegaBravera.Fundraisers do
   """
   def get_ngo!(id), do: Repo.get!(NGO, id)
 
-
   def get_ngo_by_slug(slug) do
-    query = from n in NGO,
-      where: n.slug == ^slug
+    query =
+      from(n in NGO,
+        where: n.slug == ^slug
+      )
 
     Repo.one(query)
   end
+
   @doc """
   Creates a ngo.
 

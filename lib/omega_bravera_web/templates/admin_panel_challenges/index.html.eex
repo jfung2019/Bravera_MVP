@@ -1,0 +1,46 @@
+<div class="row">
+	<div class="col-10 offset-1">
+		<h2>Listing Challenges</h2>
+
+		<table class="table">
+		  <thead>
+		    <tr>
+          <th>Activity Type</th>
+          <th>Money</th>
+          <th>Distance Target</th>
+          <th>Distance Covered</th>
+          <th>Slug</th>
+          <th>Status</th>
+          <th>Duration</th>
+          <th>Milestones</th>
+          <th>Total pledged</th>
+          <th>Total Secured</th>
+          <th>Default Currency</th>
+          <th>User</th>
+          <th>NGO</th>
+          <th>Self Donated</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		<%= for challenge <- @challenges do %>
+		    <tr>
+          <td><%= challenge.activity_type %></td>
+          <td><%= challenge.money_target %></td>
+          <td><%= challenge.distance_target %></td>
+          <td><%= challenge.distance_covered %></td>
+          <td><%= challenge.slug %></td>
+          <td><%= challenge.status %></td>
+          <td><%= challenge.duration %></td>
+          <td><%= challenge.milestones %></td>
+          <td><%= challenge.total_pledged %></td>
+          <td><%= challenge.total_secured %></td>
+          <td><%= challenge.default_currency %></td>
+          <td><%= challenge.user_id %></td>
+          <td><%= challenge.ngo_id %></td>
+          <td><%= challenge.self_donated %></td>
+		    </tr>
+		<% end %>
+		  </tbody>
+		</table>
+	</div>
+</div>

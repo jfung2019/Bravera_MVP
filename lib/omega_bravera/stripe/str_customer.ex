@@ -5,8 +5,8 @@ defmodule OmegaBravera.Stripe.StrCustomer do
   alias OmegaBravera.Accounts.User
 
   schema "str_customers" do
-    field :cus_id, :string
-    belongs_to :user, User
+    field(:cus_id, :string)
+    belongs_to(:user, User)
 
     timestamps(type: :utc_datetime)
   end

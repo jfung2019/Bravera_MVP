@@ -5,9 +5,9 @@ defmodule OmegaBravera.Money.Tip do
   alias OmegaBravera.Accounts.User
 
   schema "tips" do
-    field :amount, :integer
-    field :currency, :string
-    belongs_to :user, User
+    field(:amount, :integer)
+    field(:currency, :string)
+    belongs_to(:user, User)
 
     timestamps(type: :utc_datetime)
   end
