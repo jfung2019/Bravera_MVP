@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Bravera: Fundraise while you Train with Milestones that Matter">
+    <meta name="author" content="Bravera.co">
+
+    <meta property="og:title" content="Bravera.co | Milestones that Matter" />
+    <meta property="og:type" content="fitness.fundraising" />
+    <meta property="og:url" content="https://www.bravera.co" />
+    <meta property="og:image" content="https://bravera.co/images/bravera-cover.png" />
+
+    <title>Bravera - Admin</title>
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+  </head>
+
+  <body class="gray-background">
+    <div class="vh-top">
+    <%= if logged_in?(@conn) do %>
+      <%= render "admin_panel_nav.html", conn: @conn %>
+    <% end %>
+
+    <div class="text-center">
+      <p class="alert alert-success" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    </div>
+
+    <section class="container-fluid flex-grow px-0 px-sm-3">
+      <%= render @view_module, @view_template, assigns %>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+				<nav class="navbar navbar-expand">
+          <ul class="navbar-nav">
+	          <li class="nav-item">
+	            <%= link("Privacy", to: "https://www.bravera.fit/privacy/", target: "_blank") %>
+	          </li>
+	          <li class="nav-item">
+	            <%= link("Terms of Use", to: "https://www.bravera.fit/terms", target: "_blank") %>
+						</li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+    </div>
+    <%= if assigns[:google_analytics_id] do %>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<%= assigns[:google_analytics_id] %>"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', '<%= assigns[:google_analytics_id] %>');
+        </script>
+    <% end %>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5b971be1d33e6c39"></script>
+  </body>
+</html>

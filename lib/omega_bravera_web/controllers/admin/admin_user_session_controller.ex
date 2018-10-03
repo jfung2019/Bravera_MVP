@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.AdminUserSessionController do
   use OmegaBraveraWeb, :controller
+  alias OmegaBravera.Guardian
   alias OmegaBraveraWeb.AdminLoggedIn
 
   def new(conn, _), do: render(conn, "new.html")
@@ -16,5 +17,12 @@ defmodule OmegaBraveraWeb.AdminUserSessionController do
         |> put_flash(:error, "Invalid email/password combination")
         |> render("new.html")
     end
+  end
+
+  def logout(conn, _) do
+    conn
+    |> Guardian.Plug.sign_out()
+    |> put_flash(:info, "Successfully signed out")
+    |> redirect(to: "/")
   end
 end
