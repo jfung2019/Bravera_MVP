@@ -1,8 +1,8 @@
 defmodule OmegaBravera.Slugify do
   def gen_slug(string) do
     string
-    |> String.downcase
-    |> String.trim
+    |> String.downcase()
+    |> String.trim()
     |> String.replace(" ", "-")
     |> String.replace(~r/[!.?']/, "")
   end

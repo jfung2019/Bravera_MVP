@@ -8,20 +8,29 @@ defmodule OmegaBravera.MoneyTest do
   describe "donations" do
     alias OmegaBravera.Money.Donation
 
-    @update_attrs %{amount: "100", currency: "USD", milestone: 43, status: "pending", str_src: "src_1234567"}
+    @update_attrs %{
+      amount: "100",
+      currency: "USD",
+      milestone: 43,
+      status: "pending",
+      str_src: "src_1234567"
+    }
     @invalid_attrs %{amount: nil, currency: nil, milestone: nil, status: nil, str_src: nil}
 
     test "chargeable_donations_for_challenge/1" do
       user = insert(:user)
       ngo = insert(:ngo, %{slug: "swcc-1"})
-      challenge = insert(:ngo_challenge, %{ngo: ngo, user: user, distance_target: 150, distance_covered: 51})
+
+      challenge =
+        insert(:ngo_challenge, %{ngo: ngo, user: user, distance_target: 150, distance_covered: 51})
 
       params = %{ngo_chal: challenge, ngo: ngo}
 
-
       insert(:donation, Map.merge(params, %{status: "charged"}))
       insert(:donation, Map.merge(params, %{milestone: 3, milestone_distance: 100}))
-      second_donation = insert(:donation, Map.merge(params, %{milestone: 2, milestone_distance: 50}))
+
+      second_donation =
+        insert(:donation, Map.merge(params, %{milestone: 2, milestone_distance: 50}))
 
       chargeable_donations = Money.chargeable_donations_for_challenge(challenge)
 

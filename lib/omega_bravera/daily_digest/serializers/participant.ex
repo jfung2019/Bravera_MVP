@@ -8,7 +8,10 @@ defmodule OmegaBravera.DailyDigest.Serializers.Participant do
 
     user
     |> Map.take([:firstname, :lastname, :email])
-    |> Map.put(:strava_id, "#{user.strava.athlete_id} (https://www.strava.com/athletes/#{user.strava.athlete_id})")
+    |> Map.put(
+      :strava_id,
+      "#{user.strava.athlete_id} (https://www.strava.com/athletes/#{user.strava.athlete_id})"
+    )
     |> Map.put(:sex, user_sex(user))
     |> Map.put(:location, user_location(user))
   end

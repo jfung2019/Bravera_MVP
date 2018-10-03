@@ -7,17 +7,17 @@ defmodule OmegaBravera.Fundraisers.NGO do
   alias OmegaBravera.Money.Donation
 
   schema "ngos" do
-    field :desc, :string
-    field :logo, :string
-    field :image, :string
-    field :name, :string
-    field :slug, :string
-    field :stripe_id, :string
-    field :url, :string
-    field :full_desc, :string
-    belongs_to :user, User
-    has_many :ngo_chals, NGOChal
-    has_many :donations, Donation
+    field(:desc, :string)
+    field(:logo, :string)
+    field(:image, :string)
+    field(:name, :string)
+    field(:slug, :string)
+    field(:stripe_id, :string)
+    field(:url, :string)
+    field(:full_desc, :string)
+    belongs_to(:user, User)
+    has_many(:ngo_chals, NGOChal)
+    has_many(:donations, Donation)
 
     timestamps(type: :utc_datetime)
   end

@@ -1,5 +1,12 @@
 defmodule OmegaBravera.Challenges.Notifier do
-  alias OmegaBravera.{Challenges.NGOChal, Challenges.Activity, Repo, Money.Donation, Accounts.User}
+  alias OmegaBravera.{
+    Challenges.NGOChal,
+    Challenges.Activity,
+    Repo,
+    Money.Donation,
+    Accounts.User
+  }
+
   alias SendGrid.{Email, Mailer}
 
   def send_challenge_signup_email(%NGOChal{} = challenge, path) do
@@ -13,8 +20,14 @@ defmodule OmegaBravera.Challenges.Notifier do
     Email.build()
     |> Email.put_template("e5402f0b-a2c2-4786-955b-21d1cac6211d")
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeURL-", "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}")
-    |> Email.add_substitution("-startDate-", Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime))
+    |> Email.add_substitution(
+      "-challengeURL-",
+      "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}"
+    )
+    |> Email.add_substitution(
+      "-startDate-",
+      Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
+    )
     |> Email.add_substitution("-challengeName-", challenge.slug)
     |> Email.add_substitution("-ngoName-", challenge.ngo.name)
     |> Email.add_substitution("-daysDuration-", "#{challenge.duration} days")
@@ -48,7 +61,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_donor_milestone_email(%Donation{} = donation) do
     donation
-    |> Repo.preload([ngo_chal: [:user, :ngo], user: [], ngo: []])
+    |> Repo.preload(ngo_chal: [:user, :ngo], user: [], ngo: [])
     |> donor_milestone_email()
     |> Mailer.send()
   end
@@ -122,7 +135,8 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Enum.each(&Mailer.send/1)
   end
 
-  def buddy_invite_email(%NGOChal{} = challenge, %{"name" => name, "email" => email}) when not is_nil(name) and not is_nil(email) and name != "" and email != "" do
+  def buddy_invite_email(%NGOChal{} = challenge, %{"name" => name, "email" => email})
+      when not is_nil(name) and not is_nil(email) and name != "" and email != "" do
     Email.build()
     |> Email.put_template("58de1c57-8028-4e0d-adb2-7349c01cf233")
     |> Email.add_substitution("-buddyName-", name)
@@ -142,16 +156,19 @@ defmodule OmegaBravera.Challenges.Notifier do
   end
 
   defp remaining_time(%NGOChal{end_date: end_date}) do
-    now = Timex.now
+    now = Timex.now()
     remaining_days = Timex.diff(end_date, now, :days)
 
     cond do
       (diff = Timex.diff(end_date, now, :days)) > 0 ->
         "#{diff} days"
+
       (diff = Timex.diff(end_date, now, :hours)) > 0 ->
         "#{diff} hours"
+
       (diff = Timex.diff(end_date, now, :minutes)) > 0 ->
         "#{diff} minutes"
+
       true ->
         "0 minutes"
     end

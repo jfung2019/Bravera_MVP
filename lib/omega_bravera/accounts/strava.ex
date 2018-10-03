@@ -18,15 +18,16 @@ defmodule OmegaBravera.Accounts.Strava do
       {:ok, data} ->
         Notifier.send_user_signup_email(data[:user])
         {:ok, data}
+
       {:error, reason} ->
         {:error, reason}
     end
   end
 
   def create_user_with_tracker(attrs) do
-    Multi.new
-    |> Multi.run(:user, &(do_create_user(&1, attrs)))
-    |> Multi.run(:strava, &(do_create_tracker(&1, attrs)))
+    Multi.new()
+    |> Multi.run(:user, &do_create_user(&1, attrs))
+    |> Multi.run(:strava, &do_create_tracker(&1, attrs))
     |> Repo.transaction()
   end
 

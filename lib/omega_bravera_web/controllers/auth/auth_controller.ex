@@ -12,6 +12,7 @@ defmodule BraveraWeb.AuthController do
       Guardian.Plug.current_resource(conn) ->
         conn
         |> redirect(to: user_path(conn, :dashboard))
+
       true ->
         changeset = Accounts.change_user(%User{})
         render(conn, "register.html", changeset: changeset)
@@ -25,6 +26,7 @@ defmodule BraveraWeb.AuthController do
         |> put_flash(:info, "Welcome!")
         |> Guardian.Plug.sign_in(result.user)
         |> redirect(to: "/dashboard")
+
       {:error, _} ->
         conn
         |> put_flash(:error, "Error registering.")
@@ -39,6 +41,7 @@ defmodule BraveraWeb.AuthController do
         |> put_flash(:info, "Welcome!")
         |> Guardian.Plug.sign_in(user)
         |> redirect(to: "/dashboard")
+
       {:error, _} ->
         conn
         |> put_flash(:error, "Error signing in")
@@ -50,9 +53,9 @@ defmodule BraveraWeb.AuthController do
     case Accounts.email_password_auth(email, password) do
       {:ok, user} ->
         Guardian.encode_and_sign(user)
+
       _ ->
         {:error, "unauthorized"}
     end
   end
-
 end

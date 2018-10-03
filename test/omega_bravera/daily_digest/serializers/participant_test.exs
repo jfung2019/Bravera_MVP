@@ -9,13 +9,14 @@ defmodule OmegaBravera.DailyDigest.Serializers.ParticipantTest do
     strava = insert(:strava, %{user: user})
 
     assert Participant.serialize(user) == %{
-      firstname: user.firstname,
-      lastname: user.lastname,
-      email: user.email,
-      strava_id: "#{strava.athlete_id} (https://www.strava.com/athletes/#{strava.athlete_id})",
-      sex: "Not specified",
-      location: "Not specified"
-    }
+             firstname: user.firstname,
+             lastname: user.lastname,
+             email: user.email,
+             strava_id:
+               "#{strava.athlete_id} (https://www.strava.com/athletes/#{strava.athlete_id})",
+             sex: "Not specified",
+             location: "Not specified"
+           }
   end
 
   test "serialize/1 returns the correct sex for the user" do
@@ -44,4 +45,3 @@ defmodule OmegaBravera.DailyDigest.Serializers.ParticipantTest do
     assert Participant.serialize(non_specified)[:location] == "Not specified"
   end
 end
-

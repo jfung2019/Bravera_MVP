@@ -8,23 +8,27 @@ defmodule OmegaBravera.Accounts.StravaTest do
     ExVCR.Config.cassette_library_dir("test/fixtures/cassettes")
 
     attrs = %{
-      athlete_id: 33762738,
+      athlete_id: 33_762_738,
       email: "simon.garciar@gmail.com",
       firstname: "Rafael",
       lastname: "Garcia",
-      token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
+      token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30"
     }
 
     [attrs: attrs]
   end
 
   test "login_changeset/1 returns the login params returned by Strava", %{attrs: attrs} do
-    params = %{"code" => "ddca33888c1a5abaf14259adaae4da42398ec2ba", "scope" => "view_private", "state" => ""}
+    params = %{
+      "code" => "ddca33888c1a5abaf14259adaae4da42398ec2ba",
+      "scope" => "view_private",
+      "state" => ""
+    }
 
     use_cassette "strava_signup_sign_in_flow" do
       result = Accounts.Strava.login_changeset(params)
 
-      assert result == Map.put(attrs,:additional_info, %{sex: "M", location: "//"})
+      assert result == Map.put(attrs, :additional_info, %{sex: "M", location: "//"})
     end
   end
 
@@ -36,7 +40,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
       assert user.email == "simon.garciar@gmail.com"
 
       assert match?(%Trackers.Strava{}, strava) == true
-      assert strava.athlete_id == 33762738
+      assert strava.athlete_id == 33_762_738
     end
 
     test "fails if either the user is already on the db", %{attrs: attrs} do
@@ -47,5 +51,4 @@ defmodule OmegaBravera.Accounts.StravaTest do
       assert changeset.errors == [email: {"has already been taken", []}]
     end
   end
-
 end

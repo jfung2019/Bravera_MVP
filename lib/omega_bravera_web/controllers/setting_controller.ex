@@ -22,6 +22,7 @@ defmodule OmegaBraveraWeb.SettingController do
         conn
         |> put_flash(:info, "Setting updated successfully.")
         |> redirect(to: setting_path(conn, :show, setting))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", setting: setting, changeset: changeset)
     end

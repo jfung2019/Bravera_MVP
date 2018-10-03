@@ -10,33 +10,54 @@ defmodule OmegaBravera.Money.Donation do
   # I think we do...
 
   schema "donations" do
-    field :amount, :decimal
-    field :currency, :string
-    field :milestone, :integer
-    field :status, :string, default: "pending"
-    field :str_src, :string
-    field :str_cus_id, :string
-    field :milestone_distance, :integer
+    field(:amount, :decimal)
+    field(:currency, :string)
+    field(:milestone, :integer)
+    field(:status, :string, default: "pending")
+    field(:str_src, :string)
+    field(:str_cus_id, :string)
+    field(:milestone_distance, :integer)
 
     # charge successful fields
-    field :charge_id, :string
-    field :last_digits, :string
-    field :card_brand, :string
-    field :charged_description, :string
-    field :charged_status, :string
-    field :charged_amount, :decimal
-    field :charged_at, :utc_datetime
+    field(:charge_id, :string)
+    field(:last_digits, :string)
+    field(:card_brand, :string)
+    field(:charged_description, :string)
+    field(:charged_status, :string)
+    field(:charged_amount, :decimal)
+    field(:charged_at, :utc_datetime)
 
-    #associations
-    belongs_to :user, User
-    belongs_to :ngo_chal, NGOChal
-    belongs_to :ngo, NGO
+    # associations
+    belongs_to(:user, User)
+    belongs_to(:ngo_chal, NGOChal)
+    belongs_to(:ngo, NGO)
 
     timestamps(type: :utc_datetime)
   end
 
-  @allowed_attributes [:amount, :currency, :str_src, :str_cus_id, :milestone, :status, :milestone_distance, :user_id, :ngo_chal_id, :ngo_id]
-  @required_attributes [:amount, :currency, :str_src, :str_cus_id, :milestone, :status, :user_id, :ngo_chal_id, :ngo_id]
+  @allowed_attributes [
+    :amount,
+    :currency,
+    :str_src,
+    :str_cus_id,
+    :milestone,
+    :status,
+    :milestone_distance,
+    :user_id,
+    :ngo_chal_id,
+    :ngo_id
+  ]
+  @required_attributes [
+    :amount,
+    :currency,
+    :str_src,
+    :str_cus_id,
+    :milestone,
+    :status,
+    :user_id,
+    :ngo_chal_id,
+    :ngo_id
+  ]
 
   @doc false
   def changeset(donation, attrs) do

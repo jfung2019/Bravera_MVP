@@ -2,47 +2,69 @@ defmodule OmegaBravera.Challenges.NGOChal do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.{Accounts.User, Fundraisers.NGO, Money.Donation, Challenges.Team, Challenges.Activity}
-
+  alias OmegaBravera.{
+    Accounts.User,
+    Fundraisers.NGO,
+    Money.Donation,
+    Challenges.Team,
+    Challenges.Activity
+  }
 
   schema "ngo_chals" do
-    field :activity_type, :string
-    field :distance_target, :integer, default: 100
-    field :distance_covered, :decimal, default: 0
-    field :duration, :integer
-    field :milestones, :integer, default: 4
-    field :money_target, :decimal, default: 2000
-    field :default_currency, :string, default: "hkd"
-    field :slug, :string
-    field :start_date, :utc_datetime
-    field :end_date, :utc_datetime
-    field :status, :string, default: "active"
-    field :total_pledged, :decimal, default: 0
-    field :total_secured, :decimal, default: 0
-    field :last_activity_received, :utc_datetime
+    field(:activity_type, :string)
+    field(:distance_target, :integer, default: 100)
+    field(:distance_covered, :decimal, default: 0)
+    field(:duration, :integer)
+    field(:milestones, :integer, default: 4)
+    field(:money_target, :decimal, default: 2000)
+    field(:default_currency, :string, default: "hkd")
+    field(:slug, :string)
+    field(:start_date, :utc_datetime)
+    field(:end_date, :utc_datetime)
+    field(:status, :string, default: "active")
+    field(:total_pledged, :decimal, default: 0)
+    field(:total_secured, :decimal, default: 0)
+    field(:last_activity_received, :utc_datetime)
 
-    field :participant_notified_of_inactivity, :boolean, default: false
-    field :donor_notified_of_inactivity, :boolean, default: false
-    field :self_donated, :boolean, default: false
+    field(:participant_notified_of_inactivity, :boolean, default: false)
+    field(:donor_notified_of_inactivity, :boolean, default: false)
+    field(:self_donated, :boolean, default: false)
 
-    belongs_to :user, User
-    belongs_to :ngo, NGO
-    belongs_to :team, Team
-    has_many :donations, Donation
-    has_many :activities, Activity, foreign_key: :challenge_id
+    belongs_to(:user, User)
+    belongs_to(:ngo, NGO)
+    belongs_to(:team, Team)
+    has_many(:donations, Donation)
+    has_many(:activities, Activity, foreign_key: :challenge_id)
 
     timestamps(type: :utc_datetime)
   end
 
   @allowed_attributes [
-    :activity_type, :money_target, :distance_target, :distance_covered, :slug,
-    :status, :duration, :milestones, :total_pledged, :total_secured, :default_currency,
-    :user_id, :ngo_id, :self_donated
+    :activity_type,
+    :money_target,
+    :distance_target,
+    :distance_covered,
+    :slug,
+    :status,
+    :duration,
+    :milestones,
+    :total_pledged,
+    :total_secured,
+    :default_currency,
+    :user_id,
+    :ngo_id,
+    :self_donated
   ]
 
   @required_attributes [
-    :activity_type, :money_target, :distance_target,
-    :status, :duration, :user_id, :ngo_id, :slug
+    :activity_type,
+    :money_target,
+    :distance_target,
+    :status,
+    :duration,
+    :user_id,
+    :ngo_id,
+    :slug
   ]
 
   @doc false
@@ -64,7 +86,11 @@ defmodule OmegaBravera.Challenges.NGOChal do
   def activity_completed_changeset(%__MODULE__{} = challenge, %{distance: distance}) do
     challenge
     |> change(distance_covered: Decimal.add(challenge.distance_covered, distance))
-    |> change(%{last_activity_received: Timex.now, participant_notified_of_inactivity: false, donor_notified_of_inactivity: false})
+    |> change(%{
+      last_activity_received: Timex.now(),
+      participant_notified_of_inactivity: false,
+      donor_notified_of_inactivity: false
+    })
     |> update_challenge_status(challenge)
   end
 
@@ -81,7 +107,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> milestones_distances()
     |> Map.take(["2", "3", "4"])
     |> Map.values()
-    |> Enum.map(&("#{&1} Km"))
+    |> Enum.map(&"#{&1} Km")
     |> Enum.join(", ")
   end
 
@@ -94,16 +120,23 @@ defmodule OmegaBravera.Challenges.NGOChal do
     end
   end
 
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %{"duration" => duration_str} = attrs) when is_binary(duration_str) do
-    duration = case Integer.parse(duration_str) do
-                 {duration, _} -> duration
-                 _ -> nil
-               end
+  defp add_start_and_end_dates(
+         %Ecto.Changeset{} = changeset,
+         %{"duration" => duration_str} = attrs
+       )
+       when is_binary(duration_str) do
+    duration =
+      case Integer.parse(duration_str) do
+        {duration, _} -> duration
+        _ -> nil
+      end
+
     add_start_and_end_dates(changeset, Map.put(attrs, "duration", duration))
   end
 
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %{"duration" => duration}) when is_number(duration) do
-    start_date = Timex.now
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %{"duration" => duration})
+       when is_number(duration) do
+    start_date = Timex.now()
     end_date = Timex.shift(start_date, days: duration)
 
     changeset

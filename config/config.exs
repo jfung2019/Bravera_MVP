@@ -6,17 +6,15 @@
 use Mix.Config
 
 # General application configuration
-  config :omega_bravera,
-    ecto_repos: [OmegaBravera.Repo]
+config :omega_bravera,
+  ecto_repos: [OmegaBravera.Repo]
 
 # Configures the endpoint
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "iKoMsrgx4QISCepc7OH9B5FUWQ0xTtHPQr8bChKjP5Z98pwVRIn9/lMax8nflh9v",
   render_errors: [view: OmegaBraveraWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: OmegaBravera.PubSub,
-           adapter: Phoenix.PubSub.PG2]
-
+  pubsub: [name: OmegaBravera.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -36,10 +34,12 @@ config :logger, :info,
 config :omega_bravera, :env, Mix.env()
 
 # GA Key
-config :omega_bravera, :google_analytics_id, Map.get(System.get_env(), "GOOGLE_ANALYTICS_ID", "UA-123069307-1")
+config :omega_bravera,
+       :google_analytics_id,
+       Map.get(System.get_env(), "GOOGLE_ANALYTICS_ID", "UA-123069307-1")
 
 config :omega_bravera, :app_base_url, System.get_env("APP_BASE_URL") || "https://bravera.co"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

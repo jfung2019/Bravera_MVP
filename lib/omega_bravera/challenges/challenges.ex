@@ -11,74 +11,90 @@ defmodule OmegaBravera.Challenges do
   alias OmegaBravera.Accounts.User
 
   def inactive_for_five_days() do
-    query = from challenge in NGOChal,
-      where: challenge.status == "active",
-      where: challenge.last_activity_received <= fragment("now() - interval '5 days'"),
-      where: challenge.participant_notified_of_inactivity == false
+    query =
+      from(challenge in NGOChal,
+        where: challenge.status == "active",
+        where: challenge.last_activity_received <= fragment("now() - interval '5 days'"),
+        where: challenge.participant_notified_of_inactivity == false
+      )
 
     Repo.all(query)
   end
 
   def inactive_for_seven_days() do
-    query = from challenge in NGOChal,
-      where: challenge.status == "active",
-      where: challenge.last_activity_received <= fragment("now() - interval '7 days'"),
-      where: challenge.donor_notified_of_inactivity == false
+    query =
+      from(challenge in NGOChal,
+        where: challenge.status == "active",
+        where: challenge.last_activity_received <= fragment("now() - interval '7 days'"),
+        where: challenge.donor_notified_of_inactivity == false
+      )
 
     Repo.all(query)
   end
 
   def latest_activities(%NGOChal{} = challenge, limit \\ nil) do
-    query = from activity in Activity,
-      where: activity.challenge_id == ^challenge.id,
-      order_by: [desc: :inserted_at]
+    query =
+      from(activity in Activity,
+        where: activity.challenge_id == ^challenge.id,
+        order_by: [desc: :inserted_at]
+      )
 
-    query = if !is_nil(limit) and is_number(limit) and limit > 0 do
-      limit(query, ^limit)
-    else
-      query
-    end
+    query =
+      if !is_nil(limit) and is_number(limit) and limit > 0 do
+        limit(query, ^limit)
+      else
+        query
+      end
 
     Repo.all(query)
   end
 
   def get_user_ngo_chals(user_id) do
-    query = from nc in NGOChal, where: nc.user_id == ^user_id
+    query = from(nc in NGOChal, where: nc.user_id == ^user_id)
     Repo.all(query)
   end
 
   def get_user_active_ngo_chals(user_id) do
-    query = from nc in NGOChal,
-      where: nc.user_id == ^user_id,
-      where: nc.status == "active"
+    query =
+      from(nc in NGOChal,
+        where: nc.user_id == ^user_id,
+        where: nc.status == "active"
+      )
 
     Repo.all(query)
   end
 
   def get_one_user_active_chal(user_id) do
-    query = from nc in NGOChal,
-      where: nc.user_id == ^user_id,
-      where: nc.status == "active",
-      order_by: nc.inserted_at,
-      limit: 1
+    query =
+      from(nc in NGOChal,
+        where: nc.user_id == ^user_id,
+        where: nc.status == "active",
+        order_by: nc.inserted_at,
+        limit: 1
+      )
 
     Repo.one(query)
   end
 
   def get_ngo_chal_by_slug(slug, preloads \\ [:ngo]) do
-    query = from nc in NGOChal,
-      where: nc.slug == ^slug,
-      preload: ^preloads
+    query =
+      from(nc in NGOChal,
+        where: nc.slug == ^slug,
+        preload: ^preloads
+      )
 
     Repo.one(query)
   end
 
   def get_ngo_ngo_chals(%NGO{} = ngo, order_by \\ :total_secured) do
-    query = from nc in NGOChal,
-          where: nc.ngo_id == ^ngo.id,
-          join: u in User, where: u.id == nc.user_id,
-          preload: [:user, :donations],
-          order_by: [desc: ^order_by]
+    query =
+      from(nc in NGOChal,
+        where: nc.ngo_id == ^ngo.id,
+        join: u in User,
+        where: u.id == nc.user_id,
+        preload: [:user, :donations],
+        order_by: [desc: ^order_by]
+      )
 
     Repo.all(query)
   end
@@ -100,7 +116,6 @@ defmodule OmegaBravera.Challenges do
     |> NGOChal.create_changeset(attrs)
     |> Repo.insert()
   end
-
 
   @doc """
   Returns the list of ngo_chals.
@@ -130,8 +145,6 @@ defmodule OmegaBravera.Challenges do
 
   """
   def get_ngo_chal!(id), do: Repo.get!(NGOChal, id)
-
-
 
   @doc """
   Updates a ngo_chal.

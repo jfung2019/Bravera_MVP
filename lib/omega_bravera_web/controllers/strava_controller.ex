@@ -21,7 +21,7 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   def authenticate(conn, _params) do
-    redirect conn, external: Strava.Auth.authorize_url!(scope: "view_private")
+    redirect(conn, external: Strava.Auth.authorize_url!(scope: "view_private"))
   end
 
   @doc """
@@ -40,14 +40,16 @@ defmodule OmegaBraveraWeb.StravaController do
   defp login(conn, changeset) do
     case Accounts.insert_or_update_strava_user(changeset) do
       {:ok, result} ->
-        login_params = cond do
-          match?(%{id: _}, result) -> result
-          match?(%{strava: _}, result) -> result[:user]
-        end
+        login_params =
+          cond do
+            match?(%{id: _}, result) -> result
+            match?(%{strava: _}, result) -> result[:user]
+          end
 
         conn
         |> put_flash(:info, "Welcome!")
         |> Guardian.Plug.sign_in(login_params)
+
       {:error, _reason} ->
         conn
         |> put_flash(:error, "Error signing in")

@@ -20,6 +20,7 @@ defmodule OmegaBraveraWeb.TeamController do
         conn
         |> put_flash(:info, "Team created successfully.")
         |> redirect(to: team_path(conn, :show, team))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -44,6 +45,7 @@ defmodule OmegaBraveraWeb.TeamController do
         conn
         |> put_flash(:info, "Team updated successfully.")
         |> redirect(to: team_path(conn, :show, team))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", team: team, changeset: changeset)
     end

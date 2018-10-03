@@ -2,11 +2,10 @@ defmodule OmegaBravera.Accounts.AdminUser do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "admin_users" do
-    field :email, :string
-    field :password, :string, virtual: true
-    field :password_hash, :string
+    field(:email, :string)
+    field(:password, :string, virtual: true)
+    field(:password_hash, :string)
 
     timestamps()
   end

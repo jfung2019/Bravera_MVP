@@ -3,12 +3,17 @@ defmodule OmegaBraveraWeb.Admin.UserControllerTest do
 
   alias OmegaBravera.Accounts
 
-  @user_create_attrs %{email: "test@test.com", firstname: "some firstname", lastname: "some lastname"}
+  @user_create_attrs %{
+    email: "test@test.com",
+    firstname: "some firstname",
+    lastname: "some lastname"
+  }
 
   setup %{conn: conn} do
-    with {:ok, admin_user} <- Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
-          {:ok, token, _} <-OmegaBravera.Guardian.encode_and_sign(admin_user, %{}), do:
-      {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+    with {:ok, admin_user} <-
+           Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
+         {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(admin_user, %{}),
+         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
   def fixture(:user) do
@@ -20,12 +25,12 @@ defmodule OmegaBraveraWeb.Admin.UserControllerTest do
     setup [:create_user]
 
     test "lists all users in admin panel", %{conn: conn} do
-      conn = get conn, admin_panel_user_path(conn, :index)
+      conn = get(conn, admin_panel_user_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing Users"
     end
 
     test "shows a specific user", %{conn: conn, user: user} do
-      conn = get conn, admin_panel_user_path(conn, :show, user)
+      conn = get(conn, admin_panel_user_path(conn, :show, user))
       assert html_response(conn, 200) =~ "Show User"
     end
   end

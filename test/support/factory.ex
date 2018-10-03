@@ -5,14 +5,14 @@ defmodule OmegaBravera.Factory do
     %OmegaBravera.Accounts.User{
       firstname: "John",
       lastname: "Doe",
-      email: sequence(:email, &("john.doe.#{&1}@example.com"))
+      email: sequence(:email, &"john.doe.#{&1}@example.com")
     }
   end
 
   def strava_factory do
     %OmegaBravera.Trackers.Strava{
-      athlete_id: 12345678,
-      email: sequence(:email, &("john.doe.#{&1}@example.com")),
+      athlete_id: 12_345_678,
+      email: sequence(:email, &"john.doe.#{&1}@example.com"),
       firstname: "John",
       lastname: "Doe",
       token: "abcdef123456",
@@ -32,19 +32,19 @@ defmodule OmegaBravera.Factory do
     %OmegaBravera.Challenges.NGOChal{
       activity_type: sequence(:activity, ["walking", "biking", "running", "hiking"]),
       distance_target: sequence(:distance_target, [50, 75, 150, 250]),
-      start_date: Timex.now,
-      end_date: Timex.shift(Timex.now, days: 5),
+      start_date: Timex.now(),
+      end_date: Timex.shift(Timex.now(), days: 5),
       duration: 5,
       status: "active",
       slug: "John-512",
       user: build(:user),
-      ngo: build(:ngo),
+      ngo: build(:ngo)
     }
   end
 
   def activity_factory do
     %OmegaBravera.Challenges.Activity{
-      strava_id: 1836709368,
+      strava_id: 1_836_709_368,
       distance: Decimal.new(1.74),
       start_date: ~N[2018-09-11 07:58:01],
       type: "Walk",

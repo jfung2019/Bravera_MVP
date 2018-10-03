@@ -13,20 +13,19 @@ defmodule OmegaBravera.Accounts.User do
   @allowed_attributes [:email, :firstname, :lastname, :additional_info]
 
   schema "users" do
-    field :email, :string
-    field :firstname, :string, default: "No Name"
-    field :lastname, :string, default: "No Name"
-    field :additional_info, :map, default: %{}
+    field(:email, :string)
+    field(:firstname, :string, default: "No Name")
+    field(:lastname, :string, default: "No Name")
+    field(:additional_info, :map, default: %{})
 
-
-    #associations
-    has_one :credential, Credential
-    has_one :strava, Strava
-    has_one :setting, Setting
-    has_many :ngos, NGO
-    has_many :ngo_chals, NGOChal
-    has_many :donations, Donation
-    has_many :str_customers, StrCustomer
+    # associations
+    has_one(:credential, Credential)
+    has_one(:strava, Strava)
+    has_one(:setting, Setting)
+    has_many(:ngos, NGO)
+    has_many(:ngo_chals, NGOChal)
+    has_many(:donations, Donation)
+    has_many(:str_customers, StrCustomer)
 
     timestamps(type: :utc_datetime)
   end

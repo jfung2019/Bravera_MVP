@@ -1,7 +1,15 @@
 defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   require Logger
-  alias OmegaBravera.{Accounts, Challenges, Challenges.NGOChal, Donations.Processor, Money, Money.Donation, Repo}
 
+  alias OmegaBravera.{
+    Accounts,
+    Challenges,
+    Challenges.NGOChal,
+    Donations.Processor,
+    Money,
+    Money.Donation,
+    Repo
+  }
 
   def process_strava_webhook(%{"aspect_type" => "create", "object_type" => "activity"} = params) do
     params["owner_id"]
@@ -18,10 +26,11 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     Enum.map(challenges, &process_challenge(&1, activity))
   end
 
-  def process_challenge({challenge_id, _}, %Strava.Activity{distance: distance} = strava_activity) when distance > 0 and is_integer(challenge_id) do
+  def process_challenge({challenge_id, _}, %Strava.Activity{distance: distance} = strava_activity)
+      when distance > 0 and is_integer(challenge_id) do
     {status, challenge, activity, donations} =
       challenge_id
-      |> Challenges.get_ngo_chal!
+      |> Challenges.get_ngo_chal!()
       |> Repo.preload([:user, :ngo])
       |> create_activity(strava_activity)
       |> update_challenge
@@ -29,7 +38,6 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       |> get_donations
       |> notify_participant_of_milestone
       |> charge_donations()
-
 
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
       {:ok, :challenge_updated}
@@ -59,7 +67,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     updated =
       challenge
       |> NGOChal.activity_completed_changeset(activity)
-      |> Repo.update!
+      |> Repo.update!()
 
     {:ok, updated, activity}
   end
@@ -76,7 +84,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     params
   end
 
-  defp get_donations({:ok, challenge, _} = params), do: Tuple.append(params, Money.chargeable_donations_for_challenge(challenge))
+  defp get_donations({:ok, challenge, _} = params),
+    do: Tuple.append(params, Money.chargeable_donations_for_challenge(challenge))
+
   defp get_donations({:error, _, _} = params), do: Tuple.append(params, nil)
 
   defp notify_participant_of_milestone({status, challenge, _, donations} = params) do
@@ -88,10 +98,11 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   end
 
   defp charge_donations({status, _, _, donations} = params) do
-    charged_donations = case status do
-                          :ok -> Enum.map(donations, &notify_donor_and_charge_donation/1)
-                          :error -> []
-                        end
+    charged_donations =
+      case status do
+        :ok -> Enum.map(donations, &notify_donor_and_charge_donation/1)
+        :error -> []
+      end
 
     put_elem(params, 3, charged_donations)
   end
@@ -108,7 +119,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   defp strava_client({_, token}), do: Strava.Client.new(token)
 
   defp valid_activity?(activity, challenge) do
-    #challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
-    Timex.compare(challenge.start_date, activity.start_date) == -1 and Timex.compare(challenge.end_date, activity.start_date) >= 0
+    # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
+    Timex.compare(challenge.start_date, activity.start_date) == -1 and
+      Timex.compare(challenge.end_date, activity.start_date) >= 0
   end
 end

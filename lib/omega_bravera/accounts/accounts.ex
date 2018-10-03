@@ -20,63 +20,70 @@ defmodule OmegaBravera.Accounts do
   }
 
   def get_strava_challengers(athlete_id) do
-    query = from s in Strava,
-      where: s.athlete_id == ^athlete_id,
-      join: nc in NGOChal, where: s.user_id == nc.user_id and nc.status == "active",
-      select: {
-        nc.id,
-        s.token
-      }
+    query =
+      from(s in Strava,
+        where: s.athlete_id == ^athlete_id,
+        join: nc in NGOChal,
+        where: s.user_id == nc.user_id and nc.status == "active",
+        select: {
+          nc.id,
+          s.token
+        }
+      )
 
     Repo.all(query)
   end
 
   defp donors_for_challenge_query(challenge) do
-    from user in User,
-      join: donation in Donation, on: donation.user_id == user.id,
+    from(user in User,
+      join: donation in Donation,
+      on: donation.user_id == user.id,
       where: donation.ngo_chal_id == ^challenge.id,
       distinct: donation.user_id,
       order_by: user.id
+    )
   end
 
   def donors_for_challenge(%NGOChal{} = challenge) do
     challenge
     |> donors_for_challenge_query
     |> order_by(desc: :inserted_at)
-    |> Repo.all
+    |> Repo.all()
   end
 
-
   def latest_donors(%NGOChal{} = challenge, limit \\ nil) do
-    query = challenge
-    |> donors_for_challenge_query
-    |> order_by(desc: :inserted_at)
-    |> group_by([user, donation], [user.id, donation.user_id])
-    |> select([user, donation], {user, sum(donation.amount)})
+    query =
+      challenge
+      |> donors_for_challenge_query
+      |> order_by(desc: :inserted_at)
+      |> group_by([user, donation], [user.id, donation.user_id])
+      |> select([user, donation], {user, sum(donation.amount)})
 
-    query = if is_number(limit) and limit > 0 do
-      limit(query, ^limit)
-    else
-      query
-    end
+    query =
+      if is_number(limit) and limit > 0 do
+        limit(query, ^limit)
+      else
+        query
+      end
 
     query
     |> Repo.all()
-    |> Enum.map(fn({user, amount}) -> %{"user" => user, "pledged" => amount} end)
+    |> Enum.map(fn {user, amount} -> %{"user" => user, "pledged" => amount} end)
   end
 
   defp donors_for_ngo_query(ngo) do
-    from user in User,
-      join: donation in Donation, on: donation.user_id == user.id,
+    from(user in User,
+      join: donation in Donation,
+      on: donation.user_id == user.id,
       where: donation.ngo_chal_id == ^ngo.id,
       distinct: donation.user_id,
       order_by: user.id
+    )
   end
-
 
   # TODO Optimize the preload below
   def get_user_strava(user_id) do
-    query = from s in Strava, where: s.user_id == ^user_id
+    query = from(s in Strava, where: s.user_id == ^user_id)
     Repo.one(query)
   end
 
@@ -98,8 +105,8 @@ defmodule OmegaBravera.Accounts do
     |> join(:left, [user], ngo_chals in assoc(user, :ngo_chals))
     |> join(:left, [user], ngo_chals in assoc(user, :ngo_chals))
     |> join(:left, [user, ngo_chals], donations in assoc(ngo_chals, :donations))
-    |> preload([user, ngo_chals, donations], [ngo_chals: {ngo_chals, donations: donations}])
-    |> Repo.one
+    |> preload([user, ngo_chals, donations], ngo_chals: {ngo_chals, donations: donations})
+    |> Repo.one()
     |> Repo.preload(:strava)
   end
 
@@ -111,11 +118,13 @@ defmodule OmegaBravera.Accounts do
     case Repo.get_by(User, email: changeset[:email]) do
       nil ->
         Accounts.Strava.create_user_with_tracker_and_email(changeset)
+
       user ->
-        updated_user = case Accounts.update_user(user, changeset) do
-                         {:ok, u} -> u
-                         {:error, _} -> user
-                       end
+        updated_user =
+          case Accounts.update_user(user, changeset) do
+            {:ok, u} -> u
+            {:error, _} -> user
+          end
 
         Trackers.create_or_update_tracker(updated_user, changeset)
         {:ok, updated_user}
@@ -126,16 +135,23 @@ defmodule OmegaBravera.Accounts do
     Creates User with a credential
   """
 
-  def create_credentialed_user(%{"user" => %{"email" => email, "password" => password, "password_confirmation" => password_confirmation}}) do
-
-    Multi.new
+  def create_credentialed_user(%{
+        "user" => %{
+          "email" => email,
+          "password" => password,
+          "password_confirmation" => password_confirmation
+        }
+      }) do
+    Multi.new()
     |> Multi.run(:user, fn %{} -> create_user(%{"email" => email}) end)
     |> Multi.run(:credential, fn %{user: %{id: user_id}} ->
-       create_credential(user_id, %{"password" => password, "password_confirmation" => password_confirmation})
-       end)
+      create_credential(user_id, %{
+        "password" => password,
+        "password_confirmation" => password_confirmation
+      })
+    end)
     |> Repo.transaction()
   end
-
 
   @doc """
     Looks for credential based on user email
@@ -146,13 +162,16 @@ defmodule OmegaBravera.Accounts do
     case email do
       nil ->
         nil
+
       email ->
         %{id: user_id} = User |> Repo.get_by(email: email)
 
-        query = from c in Credential,
-          where: c.user_id == ^user_id
+        query =
+          from(c in Credential,
+            where: c.user_id == ^user_id
+          )
 
-        query |> Repo.one
+        query |> Repo.one()
     end
   end
 
@@ -161,10 +180,12 @@ defmodule OmegaBravera.Accounts do
   """
 
   def get_credential_by_token(token) do
-    query = from c in Credential,
-      where: c.reset_token == ^token
+    query =
+      from(c in Credential,
+        where: c.reset_token == ^token
+      )
 
-    query |> Repo.one
+    query |> Repo.one()
   end
 
   @doc """
@@ -177,6 +198,7 @@ defmodule OmegaBravera.Accounts do
           {:ok, user} -> user
           {:error, _reason} -> nil
         end
+
       user ->
         user
     end
@@ -188,7 +210,7 @@ defmodule OmegaBravera.Accounts do
 
   def email_password_auth(email, password) when is_binary(email) and is_binary(password) do
     with {:ok, user} <- get_by_email(email),
-    do: verify_password(password, user)
+         do: verify_password(password, user)
   end
 
   defp get_by_email(email) when is_binary(email) do
@@ -196,14 +218,17 @@ defmodule OmegaBravera.Accounts do
       nil ->
         dummy_checkpw()
         {:error, "Login error."}
+
       user ->
         {:ok, user}
     end
   end
 
   defp verify_password(password, user) when is_binary(password) do
-    query = from c in Credential,
-      where: c.user_id == ^user.id
+    query =
+      from(c in Credential,
+        where: c.user_id == ^user.id
+      )
 
     credential = Repo.one(query)
 
@@ -397,7 +422,6 @@ defmodule OmegaBravera.Accounts do
   def change_credential(%Credential{} = credential) do
     Credential.changeset(credential, %{})
   end
-
 
   alias OmegaBravera.Accounts.Setting
 
@@ -597,6 +621,7 @@ defmodule OmegaBravera.Accounts do
   """
   def authenticate_admin_user_by_email_and_pass(email, given_pass) do
     email = String.downcase(email)
+
     user =
       from(u in AdminUser, where: fragment("lower(?) = ?", u.email, ^email))
       |> Repo.one()

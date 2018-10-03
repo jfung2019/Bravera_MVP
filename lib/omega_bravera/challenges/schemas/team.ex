@@ -7,12 +7,12 @@ defmodule OmegaBravera.Challenges.Team do
   alias OmegaBravera.Challenges.NGOChal
 
   schema "teams" do
-    field :activity, :string
-    field :location, :string
-    field :name, :string
-    belongs_to :user, User
-    belongs_to :ngo, NGO
-    has_many :ngo_chals, NGOChal
+    field(:activity, :string)
+    field(:location, :string)
+    field(:name, :string)
+    belongs_to(:user, User)
+    belongs_to(:ngo, NGO)
+    has_many(:ngo_chals, NGOChal)
 
     timestamps(type: :utc_datetime)
   end

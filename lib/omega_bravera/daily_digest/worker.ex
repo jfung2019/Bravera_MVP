@@ -1,7 +1,14 @@
 defmodule OmegaBravera.DailyDigest.Worker do
   import Ecto.Query
 
-  alias OmegaBravera.{Repo, Challenges.NGOChal, Accounts.User, Money.Donation, Trackers.Strava, DailyDigest.Notifier}
+  alias OmegaBravera.{
+    Repo,
+    Challenges.NGOChal,
+    Accounts.User,
+    Money.Donation,
+    Trackers.Strava,
+    DailyDigest.Notifier
+  }
 
   def process_digest() do
     new_users = Repo.all(new_users_query())
@@ -20,29 +27,36 @@ defmodule OmegaBravera.DailyDigest.Worker do
     |> Map.put(:challenges_new_users, challenges_by_new_users)
     |> Map.put(:challenges_milestones, challenges_with_milestones)
     |> Map.put(:challenges_completed, challenges_completed)
-    |> Notifier.send_digest_email
+    |> Notifier.send_digest_email()
   end
 
   defp get_ids(things), do: Enum.map(things, &Map.get(&1, :id))
 
   def new_users_query do
-    from user in User,
-      join: strava in Strava, on: strava.user_id == user.id,
+    from(user in User,
+      join: strava in Strava,
+      on: strava.user_id == user.id,
       where: user.inserted_at >= ^start_date() and user.inserted_at < ^end_date(),
       where: strava.inserted_at >= ^start_date() and strava.inserted_at < ^end_date(),
       preload: [:strava]
+    )
   end
 
   def new_donors_query do
-    from user in User,
-      join: donation in Donation, on: donation.user_id == user.id,
+    from(user in User,
+      join: donation in Donation,
+      on: donation.user_id == user.id,
       where: donation.inserted_at >= ^start_date() and donation.inserted_at < ^end_date(),
       preload: [donations: [ngo_chal: [:ngo]]],
       distinct: true
+    )
   end
 
   def new_challenges_query do
-    from(challenge in NGOChal, where: challenge.inserted_at >= ^start_date() and challenge.inserted_at < ^end_date(), preload: [:user, :ngo])
+    from(challenge in NGOChal,
+      where: challenge.inserted_at >= ^start_date() and challenge.inserted_at < ^end_date(),
+      preload: [:user, :ngo]
+    )
   end
 
   def challenges_by_new_users_query(users) do
@@ -51,13 +65,21 @@ defmodule OmegaBravera.DailyDigest.Worker do
 
   def challenges_with_milestones_query do
     from(challenge in NGOChal,
-      join: donation in Donation, on: donation.ngo_chal_id == challenge.id,
-      where: donation.updated_at >= ^start_date() and donation.updated_at < ^end_date() and donation.milestone > 1 and donation.status == "charged",
-      distinct: true)
+      join: donation in Donation,
+      on: donation.ngo_chal_id == challenge.id,
+      where:
+        donation.updated_at >= ^start_date() and donation.updated_at < ^end_date() and
+          donation.milestone > 1 and donation.status == "charged",
+      distinct: true
+    )
   end
 
   def challenges_completed_query do
-    from(challenge in NGOChal, where: challenge.status == "complete" and challenge.updated_at >= ^start_date() and challenge.updated_at < ^end_date())
+    from(challenge in NGOChal,
+      where:
+        challenge.status == "complete" and challenge.updated_at >= ^start_date() and
+          challenge.updated_at < ^end_date()
+    )
   end
 
   def start_date() do
@@ -67,9 +89,8 @@ defmodule OmegaBravera.DailyDigest.Worker do
 
   # Returns the utc timestamp for today at 6am HKT which ends up being 22h UTC
   def end_date do
-    {Timex.to_erl(Timex.today), {22, 0, 0}}
-    |> NaiveDateTime.from_erl!
+    {Timex.to_erl(Timex.today()), {22, 0, 0}}
+    |> NaiveDateTime.from_erl!()
     |> DateTime.from_naive!("Etc/UTC")
   end
-
 end

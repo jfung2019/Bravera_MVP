@@ -8,9 +8,30 @@ defmodule OmegaBravera.ChallengesTest do
   describe "ngo_chals" do
     alias OmegaBravera.Challenges.NGOChal
 
-    @valid_attrs %{"activity_type" => "some activity", "distance_target" => 120, "duration" => 42, "money_target" => "120.5", "slug" => "some slug", "status" => "some status"}
-    @update_attrs %{"activity_type" => "some updated activity", "distance_target" => 456, "duration" => 43, "money_target" => "456.7", "slug" => "some updated slug", "status" => "some updated status"}
-    @invalid_attrs %{"activity_type" => nil, "distance_target" => "invalid", "duration" => "invalid", "money_target" => nil, "slug" => nil, "status" => nil}
+    @valid_attrs %{
+      "activity_type" => "some activity",
+      "distance_target" => 120,
+      "duration" => 42,
+      "money_target" => "120.5",
+      "slug" => "some slug",
+      "status" => "some status"
+    }
+    @update_attrs %{
+      "activity_type" => "some updated activity",
+      "distance_target" => 456,
+      "duration" => 43,
+      "money_target" => "456.7",
+      "slug" => "some updated slug",
+      "status" => "some updated status"
+    }
+    @invalid_attrs %{
+      "activity_type" => nil,
+      "distance_target" => "invalid",
+      "duration" => "invalid",
+      "money_target" => nil,
+      "slug" => nil,
+      "status" => nil
+    }
 
     def ngo_chal_fixture(_attrs \\ %{}) do
       insert(:ngo_challenge)
@@ -18,9 +39,24 @@ defmodule OmegaBravera.ChallengesTest do
 
     test "inactive_for_five_days/0 returns the challenges that have been inactive for five days or more" do
       ngo = insert(:ngo)
-      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo})
-      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -8), slug: "John-515", ngo: ngo})
-      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -2), slug: "Peter-411", ngo: ngo})
+
+      insert(:ngo_challenge, %{
+        last_activity_received: Timex.shift(Timex.now(), days: -6),
+        slug: "John-325",
+        ngo: ngo
+      })
+
+      insert(:ngo_challenge, %{
+        last_activity_received: Timex.shift(Timex.now(), days: -8),
+        slug: "John-515",
+        ngo: ngo
+      })
+
+      insert(:ngo_challenge, %{
+        last_activity_received: Timex.shift(Timex.now(), days: -2),
+        slug: "Peter-411",
+        ngo: ngo
+      })
 
       result = Challenges.inactive_for_five_days()
 
@@ -29,16 +65,37 @@ defmodule OmegaBravera.ChallengesTest do
 
     test "inactive_for_five_days/0 ignores the already notified challenges" do
       ngo = insert(:ngo)
-      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo, participant_notified_of_inactivity: true})
+
+      insert(:ngo_challenge, %{
+        last_activity_received: Timex.shift(Timex.now(), days: -6),
+        slug: "John-325",
+        ngo: ngo,
+        participant_notified_of_inactivity: true
+      })
 
       assert Challenges.inactive_for_five_days() == []
     end
 
     test "inactive_for_seven_days/0 returns the challenges that have been inactive for seven days or more" do
       ngo = insert(:ngo)
-      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -6), slug: "John-325", ngo: ngo})
-      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -8), slug: "John-325", ngo: ngo})
-      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -2), slug: "Peter-411", ngo: ngo})
+
+      insert(:ngo_challenge, %{
+        last_activity_received: Timex.shift(Timex.now(), days: -6),
+        slug: "John-325",
+        ngo: ngo
+      })
+
+      insert(:ngo_challenge, %{
+        last_activity_received: Timex.shift(Timex.now(), days: -8),
+        slug: "John-325",
+        ngo: ngo
+      })
+
+      insert(:ngo_challenge, %{
+        last_activity_received: Timex.shift(Timex.now(), days: -2),
+        slug: "Peter-411",
+        ngo: ngo
+      })
 
       result = Challenges.inactive_for_seven_days()
 
@@ -47,7 +104,13 @@ defmodule OmegaBravera.ChallengesTest do
 
     test "inactive_for_seven_days/0 ignores the already notified challenges" do
       ngo = insert(:ngo)
-      insert(:ngo_challenge, %{last_activity_received:  Timex.shift(Timex.now, days: -10), slug: "John-325", ngo: ngo, donor_notified_of_inactivity: true})
+
+      insert(:ngo_challenge, %{
+        last_activity_received: Timex.shift(Timex.now(), days: -10),
+        slug: "John-325",
+        ngo: ngo,
+        donor_notified_of_inactivity: true
+      })
 
       assert Challenges.inactive_for_seven_days() == []
     end
@@ -121,7 +184,11 @@ defmodule OmegaBravera.ChallengesTest do
     alias OmegaBravera.Challenges.Team
 
     @valid_attrs %{activity: "some activity", location: "some location", name: "some name"}
-    @update_attrs %{activity: "some updated activity", location: "some updated location", name: "some updated name"}
+    @update_attrs %{
+      activity: "some updated activity",
+      location: "some updated location",
+      name: "some updated name"
+    }
     @invalid_attrs %{activity: nil, location: nil, name: nil}
 
     def team_fixture(attrs \\ %{}) do

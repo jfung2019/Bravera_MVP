@@ -31,7 +31,6 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
   end
 
   describe "activity_completed_changeset/2" do
-
     test "updates the distance_covered" do
       challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(1.23)})
       changeset = NGOChal.activity_completed_changeset(challenge, %{distance: Decimal.new(4.32)})
@@ -42,20 +41,33 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
 
     test "sets the Challenge as completed once the distance_covered > target_distance" do
       challenge = insert(:ngo_challenge)
-      completed_distance = (challenge.distance_target * 1000) + 1
-      changeset = NGOChal.activity_completed_changeset(challenge, %Strava.Activity{distance: completed_distance})
+      completed_distance = challenge.distance_target * 1000 + 1
+
+      changeset =
+        NGOChal.activity_completed_changeset(challenge, %Strava.Activity{
+          distance: completed_distance
+        })
 
       assert changeset.changes[:status] == "complete"
     end
 
     test "resets :last_activity_received, :participant_notified_of_inactivity, :donor_notified_of_inactivity" do
-      now = Timex.now
-      challenge = insert(:ngo_challenge, %{last_activity_received: Timex.shift(now, days: -9), participant_notified_of_inactivity: true, donor_notified_of_inactivity: true})
-      changeset = NGOChal.activity_completed_changeset(challenge, %Strava.Activity{distance: 3215})
+      now = Timex.now()
+
+      challenge =
+        insert(:ngo_challenge, %{
+          last_activity_received: Timex.shift(now, days: -9),
+          participant_notified_of_inactivity: true,
+          donor_notified_of_inactivity: true
+        })
+
+      changeset =
+        NGOChal.activity_completed_changeset(challenge, %Strava.Activity{distance: 3215})
 
       assert changeset.changes[:participant_notified_of_inactivity] == false
       assert changeset.changes[:donor_notified_of_inactivity] == false
-      assert Timex.compare(changeset.changes[:last_activity_received], now) > -1 #timestamp set a bit ahead of the start of the test, 0 == equal, 1 == after
+      # timestamp set a bit ahead of the start of the test, 0 == equal, 1 == after
+      assert Timex.compare(changeset.changes[:last_activity_received], now) > -1
     end
   end
 

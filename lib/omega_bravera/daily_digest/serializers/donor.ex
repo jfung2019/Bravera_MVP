@@ -4,7 +4,7 @@ defmodule OmegaBravera.DailyDigest.Serializers.Donor do
   def fields, do: [:firstname, :lastname, :challenge_urls, :pledged_amount]
 
   def serialize(%User{} = u) do
-    user = Repo.preload(u, [donations: [ngo_chal: [:ngo]]])
+    user = Repo.preload(u, donations: [ngo_chal: [:ngo]])
 
     user
     |> Map.take([:firstname, :lastname, :email])
@@ -14,7 +14,7 @@ defmodule OmegaBravera.DailyDigest.Serializers.Donor do
 
   defp challenges_url(donations) do
     donations
-    |> Enum.group_by(fn(dn) -> dn.ngo_chal_id end, fn(dn) -> dn.ngo_chal end)
+    |> Enum.group_by(fn dn -> dn.ngo_chal_id end, fn dn -> dn.ngo_chal end)
     |> Map.values()
     |> List.flatten()
     |> Enum.uniq()
@@ -29,7 +29,7 @@ defmodule OmegaBravera.DailyDigest.Serializers.Donor do
   defp pledged_amount(donations) do
     amount =
       donations
-      |> Enum.reduce(Decimal.new(0), fn(dn, acc) -> Decimal.add(acc, Map.get(dn, :amount)) end)
+      |> Enum.reduce(Decimal.new(0), fn dn, acc -> Decimal.add(acc, Map.get(dn, :amount)) end)
       |> Decimal.to_string()
 
     "$#{amount} HKD"

@@ -9,18 +9,25 @@ defmodule OmegaBravera.Money do
   alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges, Challenges.NGOChal}
 
   def milestones_donations(%NGOChal{} = challenge) do
-    query = from donation in Donation,
-      where: donation.ngo_chal_id == ^challenge.id,
-      group_by: [donation.status, donation.milestone],
-      select: {donation.status, donation.milestone, sum(donation.amount)}
+    query =
+      from(donation in Donation,
+        where: donation.ngo_chal_id == ^challenge.id,
+        group_by: [donation.status, donation.milestone],
+        select: {donation.status, donation.milestone, sum(donation.amount)}
+      )
 
     query
-    |> Repo.all
-    |> Enum.group_by(&elem(&1, 1), fn({status, _, amount}) -> {status, amount} end) #group by milestone
-    |> Enum.map(fn({k, v}) -> {k, Enum.into(v, %{})} end) #turn into hash
-    |> Enum.map(fn({k, v}) -> {k, Map.merge(default_milestone_stats, v)} end) #set default values for milestones without "charged" or "pending" donations
-    |> Enum.map(fn({k, v}) -> {k, Map.put(v, "total", Decimal.add(v["pending"], v["charged"]))} end) #add charged and pending donations into total
-    |> Enum.into(%{}) #hash at the end
+    |> Repo.all()
+    # group by milestone
+    |> Enum.group_by(&elem(&1, 1), fn {status, _, amount} -> {status, amount} end)
+    # turn into hash
+    |> Enum.map(fn {k, v} -> {k, Enum.into(v, %{})} end)
+    # set default values for milestones without "charged" or "pending" donations
+    |> Enum.map(fn {k, v} -> {k, Map.merge(default_milestone_stats, v)} end)
+    # add charged and pending donations into total
+    |> Enum.map(fn {k, v} -> {k, Map.put(v, "total", Decimal.add(v["pending"], v["charged"]))} end)
+    # hash at the end
+    |> Enum.into(%{})
   end
 
   defp default_milestone_stats, do: %{"charged" => Decimal.new(0), "pending" => Decimal.new(0)}
@@ -28,25 +35,33 @@ defmodule OmegaBravera.Money do
   # for listing a user's donations
 
   def get_donations_by_user(user_id) do
-    query = from d in Donation,
-      where: d.user_id == ^user_id
+    query =
+      from(d in Donation,
+        where: d.user_id == ^user_id
+      )
 
     Repo.all(query)
   end
 
   def get_unch_donat_by_ngo_chal(ngo_chal_id) do
-    query = from d in Donation,
-      where: d.ngo_chal_id == ^ngo_chal_id,
-      where: d.status == "pending"
+    query =
+      from(d in Donation,
+        where: d.ngo_chal_id == ^ngo_chal_id,
+        where: d.status == "pending"
+      )
 
     Repo.all(query)
   end
 
   def chargeable_donations_for_challenge(%NGOChal{} = challenge) do
-    query = from d in Donation,
-      where: d.ngo_chal_id == ^challenge.id,
-      where: d.status == "pending",
-      where: d.milestone_distance < ^Decimal.to_integer(Decimal.round(challenge.distance_covered, 0, :ceiling))
+    query =
+      from(d in Donation,
+        where: d.ngo_chal_id == ^challenge.id,
+        where: d.status == "pending",
+        where:
+          d.milestone_distance <
+            ^Decimal.to_integer(Decimal.round(challenge.distance_covered, 0, :ceiling))
+      )
 
     Repo.all(query)
   end
@@ -54,8 +69,11 @@ defmodule OmegaBravera.Money do
   # for charging from strava webhooks
 
   def get_donations_by_milestone(ngo_chal, milestone_limit) do
-    query = from d in Donation,
-      where: d.status == "pending" and d.milestone <= ^milestone_limit and d.ngo_chal_id == ^ngo_chal
+    query =
+      from(d in Donation,
+        where:
+          d.status == "pending" and d.milestone <= ^milestone_limit and d.ngo_chal_id == ^ngo_chal
+      )
 
     Repo.all(query)
   end
@@ -63,7 +81,7 @@ defmodule OmegaBravera.Money do
   # get all da donations
 
   def get_ngo_chal_sponsors(ngo_chal_id) do
-    query = from d in Donation, where: d.ngo_chal_id == ^ngo_chal_id
+    query = from(d in Donation, where: d.ngo_chal_id == ^ngo_chal_id)
     Repo.all(query)
   end
 

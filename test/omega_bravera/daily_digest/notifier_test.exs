@@ -16,10 +16,10 @@ defmodule OmegaBravera.DailyDigest.NotifierTest do
 
     email = Notifier.signups_digest_email(params)
 
-
-    assert hd(email.content)[:value] == "In the past 24h we've had 0 signups, 0 new donors, 0 new Challenges, out of which, 0 is by new users. " <>
-      "We've also had 0 challenges with completed milestones out of which 0 reached completion. " <>
-      "Attached are the relevant CSV files for the new entries"
+    assert hd(email.content)[:value] ==
+             "In the past 24h we've had 0 signups, 0 new donors, 0 new Challenges, out of which, 0 is by new users. " <>
+               "We've also had 0 challenges with completed milestones out of which 0 reached completion. " <>
+               "Attached are the relevant CSV files for the new entries"
 
     assert email.from == %{email: "admin@bravera.co", name: "Bravera"}
     assert email.subject == "Daily Activity Digest"
@@ -43,9 +43,10 @@ defmodule OmegaBravera.DailyDigest.NotifierTest do
 
     email = Notifier.signups_digest_email(params)
 
-    assert hd(email.content)[:value] == "In the past 24h we've had 3 signups, 1 new donors, 2 new Challenges, out of which, 0 is by new users. " <>
-      "We've also had 0 challenges with completed milestones out of which 0 reached completion. " <>
-      "Attached are the relevant CSV files for the new entries"
+    assert hd(email.content)[:value] ==
+             "In the past 24h we've had 3 signups, 1 new donors, 2 new Challenges, out of which, 0 is by new users. " <>
+               "We've also had 0 challenges with completed milestones out of which 0 reached completion. " <>
+               "Attached are the relevant CSV files for the new entries"
 
     assert length(email.attachments) == 3
   end
@@ -63,4 +64,3 @@ defmodule OmegaBravera.DailyDigest.NotifierTest do
     assert Notifier.send_digest_email(params)[:mailer_result] == :ok
   end
 end
-

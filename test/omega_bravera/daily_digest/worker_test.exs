@@ -10,21 +10,58 @@ defmodule OmegaBravera.DailyDigest.WorkerTest do
 
     old_donor = insert(:user, %{inserted_at: inserted_at(21, days: -10)})
 
-    new_user = insert(:user, %{inserted_at: inserted_at(23)}) #just when the timespan starts
+    # just when the timespan starts
+    new_user = insert(:user, %{inserted_at: inserted_at(23)})
     insert(:strava, %{user: new_user})
 
     new_donor = insert(:user, %{inserted_at: inserted_at(15, days: 0)})
     challenge = insert(:ngo_challenge, %{inserted_at: inserted_at(23), user: old_user})
-    insert(:donation, %{ngo_chal: challenge, milestone: 1, status: "charged", updated_at: inserted_at(17, days: 0), user: new_donor})
 
-    challenge_by_new_user = insert(:ngo_challenge, %{inserted_at: inserted_at(14, days: 0), user: new_user})
+    insert(:donation, %{
+      ngo_chal: challenge,
+      milestone: 1,
+      status: "charged",
+      updated_at: inserted_at(17, days: 0),
+      user: new_donor
+    })
 
-    challenge_with_milestones = insert(:ngo_challenge, %{inserted_at: inserted_at(3, days: -20), user: old_user})
-    insert(:donation, %{ngo_chal: challenge_with_milestones, milestone: 2, status: "charged", updated_at: inserted_at(23), user: old_donor})
-    insert(:donation, %{ngo_chal: challenge_with_milestones, milestone: 3, status: "charged", updated_at: inserted_at(21, days: 0), user: old_donor})
+    challenge_by_new_user =
+      insert(:ngo_challenge, %{inserted_at: inserted_at(14, days: 0), user: new_user})
 
-    completed_challenge = insert(:ngo_challenge, %{inserted_at: inserted_at(3, days: -45), status: "complete", updated_at: inserted_at(5, days: 0), user: old_user})
-    insert(:donation, %{ngo_chal: completed_challenge, milestone: 4, status: "charged", updated_at: inserted_at(5, days: 0), user: old_donor})
+    challenge_with_milestones =
+      insert(:ngo_challenge, %{inserted_at: inserted_at(3, days: -20), user: old_user})
+
+    insert(:donation, %{
+      ngo_chal: challenge_with_milestones,
+      milestone: 2,
+      status: "charged",
+      updated_at: inserted_at(23),
+      user: old_donor
+    })
+
+    insert(:donation, %{
+      ngo_chal: challenge_with_milestones,
+      milestone: 3,
+      status: "charged",
+      updated_at: inserted_at(21, days: 0),
+      user: old_donor
+    })
+
+    completed_challenge =
+      insert(:ngo_challenge, %{
+        inserted_at: inserted_at(3, days: -45),
+        status: "complete",
+        updated_at: inserted_at(5, days: 0),
+        user: old_user
+      })
+
+    insert(:donation, %{
+      ngo_chal: completed_challenge,
+      milestone: 4,
+      status: "charged",
+      updated_at: inserted_at(5, days: 0),
+      user: old_donor
+    })
 
     result = Worker.process_digest()
 
@@ -56,22 +93,21 @@ defmodule OmegaBravera.DailyDigest.WorkerTest do
 
   test "end_date/0 returns the correct end_date for the window" do
     end_date =
-      {Timex.to_erl(Timex.today), {22, 0, 0}}
-      |> NaiveDateTime.from_erl!
+      {Timex.to_erl(Timex.today()), {22, 0, 0}}
+      |> NaiveDateTime.from_erl!()
       |> DateTime.from_naive!("Etc/UTC")
 
-    assert Worker.end_date == end_date
+    assert Worker.end_date() == end_date
   end
 
   test "start_date/0 returns the correct end_date for the window" do
-    start_date = Timex.shift(Worker.end_date, days: -1)
+    start_date = Timex.shift(Worker.end_date(), days: -1)
 
-    assert Worker.start_date == start_date
+    assert Worker.start_date() == start_date
   end
 
-
   def inserted_at(hour, shift \\ [days: -1]) do
-    Timex.Timezone.resolve("Etc/UTC", {Timex.to_erl(Timex.today), {hour, 0, 0}})
+    Timex.Timezone.resolve("Etc/UTC", {Timex.to_erl(Timex.today()), {hour, 0, 0}})
     |> Timex.shift(shift)
   end
 end

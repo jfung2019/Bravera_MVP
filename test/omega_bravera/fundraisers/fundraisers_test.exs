@@ -6,8 +6,20 @@ defmodule OmegaBravera.FundraisersTest do
   describe "ngos" do
     alias OmegaBravera.Fundraisers.NGO
 
-    @valid_attrs %{desc: "some desc", logo: "some logo", name: "some name", slug: "some slug", stripe_id: "some stripe_id"}
-    @update_attrs %{desc: "some updated desc", logo: "some updated logo", name: "some updated name", slug: "some updated slug", stripe_id: "some updated stripe_id"}
+    @valid_attrs %{
+      desc: "some desc",
+      logo: "some logo",
+      name: "some name",
+      slug: "some slug",
+      stripe_id: "some stripe_id"
+    }
+    @update_attrs %{
+      desc: "some updated desc",
+      logo: "some updated logo",
+      name: "some updated name",
+      slug: "some updated slug",
+      stripe_id: "some updated stripe_id"
+    }
     @invalid_attrs %{desc: nil, logo: nil, name: nil, slug: nil, stripe_id: nil}
 
     def ngo_fixture(attrs \\ %{}) do

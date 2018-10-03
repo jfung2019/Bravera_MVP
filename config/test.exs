@@ -15,6 +15,7 @@ config :logger, level: :warn
 
 # Configure your database
 host = System.get_env("BRAVERA_DB_HOST") || "localhost"
+
 config :omega_bravera, OmegaBravera.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
