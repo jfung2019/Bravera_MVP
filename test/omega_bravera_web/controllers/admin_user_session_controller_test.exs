@@ -39,8 +39,10 @@ defmodule OmegaBraveraWeb.AdminUserSessionControllerTest do
   end
 
   describe "admin user logout" do
-    setup do
-      {:ok, user: fixture(:admin_user)}
+    setup %{conn: conn} do
+      user = fixture(:admin_user)
+      {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(user, %{})
+      {:ok, user: user, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
     end
 
     test "logs out an admin user", %{conn: conn} do
