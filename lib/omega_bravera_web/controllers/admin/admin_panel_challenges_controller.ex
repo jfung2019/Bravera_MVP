@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.AdminPanelChallengesController do
   alias OmegaBravera.Challenges
 
   def index(conn, _params) do
-    challenges = Challenges.list_ngo_chals()
+    challenges = Challenges.list_ngo_chals_preload()
     render(conn, "index.html", challenges: challenges)
   end
 end
