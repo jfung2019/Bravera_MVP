@@ -23,16 +23,12 @@
           </p>
         </div>
       </div>
-      <h4 class="text-420">
-        You are fundraising for
-        <span class="text-500">
-          <%= @ngo.name %>
-        </span>
-      </h4>
     </div>
   </div>
   <%= if logged_in?(@conn) do %>
     <%= render "challenge_form_signed_in.html", f: f %>
+  <% else %>
+    <%= render "challenge_form_not_signed_in.html", conn: @conn %>
   <% end %>
 
 <% end %>
