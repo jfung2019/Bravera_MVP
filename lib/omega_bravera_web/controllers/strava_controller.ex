@@ -68,8 +68,9 @@ defmodule OmegaBraveraWeb.StravaController do
     uri =
       conn
       |> Plug.Conn.get_req_header("referer")
-      |> List.first
-      |> URI.parse
+      |> List.first()
+      |> URI.parse()
+
     uri.path
   end
 end
