@@ -6,6 +6,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Money.Donation
 
+  @derive {Phoenix.Param, key: :slug}
   schema "ngos" do
     field(:desc, :string)
     field(:logo, :string)

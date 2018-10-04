@@ -1,0 +1,12 @@
+<div class="row">
+	<div class="col-6 offset-3">
+		<h2><%= @ngo.name%>'s Challenges:</h2>
+		<ul>
+      <%= for ngo_chal <- @ngo.ngo_chals do %>
+		    <li><%= ngo_chal.slug %></li>
+      <% end %>
+      <% %>
+		</ul>
+		<span><%= link "Back", to: admin_panel_ngo_path(@conn, :index) %></span>
+	</div>
+</div>

@@ -32,6 +32,17 @@ defmodule OmegaBravera.Fundraisers do
     Repo.all(NGO)
   end
 
+  def list_ngos_preload() do
+    query =
+      from(
+        n in NGO,
+        join: user in assoc(n, :user),
+        join: strava in assoc(user, :strava),
+        preload: [user: {user, strava: strava}]
+      )
+    query |> Repo.all()
+  end
+
   @doc """
   Gets a single ngo.
 
@@ -55,6 +66,15 @@ defmodule OmegaBravera.Fundraisers do
       )
 
     Repo.one(query)
+  end
+
+  def get_ngo_by_slug(slug, :preload) do
+    query =
+      from(n in NGO,
+        where: n.slug == ^slug
+      )
+
+    Repo.one(query) |> Repo.preload(:ngo_chals)
   end
 
   @doc """
