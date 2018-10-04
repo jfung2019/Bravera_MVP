@@ -1,6 +1,7 @@
 defmodule OmegaBraveraWeb.StravaController do
   require Logger
   use OmegaBraveraWeb, :controller
+  alias URI
 
   alias OmegaBravera.{Guardian, Accounts, Challenges.ActivitiesIngestion}
 
@@ -33,7 +34,7 @@ defmodule OmegaBraveraWeb.StravaController do
   def strava_callback(conn, params) do
     conn
     |> login(Accounts.Strava.login_changeset(params))
-    |> redirect(to: "/")
+    |> redirect(to: get_redirect_url(conn))
   end
 
   # have to do a case to handle user connecting strava
@@ -61,5 +62,14 @@ defmodule OmegaBraveraWeb.StravaController do
     |> Guardian.Plug.sign_out()
     |> put_flash(:info, "Successfully signed out")
     |> redirect(to: "/")
+  end
+
+  defp get_redirect_url(conn) do
+    uri =
+      conn
+      |> Plug.Conn.get_req_header("referer")
+      |> List.first
+      |> URI.parse
+    uri.path
   end
 end

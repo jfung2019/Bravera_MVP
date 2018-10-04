@@ -13,12 +13,8 @@
         <%= img_tag(static_path(@conn, "/images/continue-icon.png"))%>
         <p>Bravera currently works with STRAVA  activity data to convert activities into fundraising.</p>
         <div class="form-button">
-          <button type="submit" class="btn btn-bravera btn-lg btn-block form-button">
-            I use Strava
-          </button>
-          <button type="submit" class="btn btn-bravera btn-lg btn-block form-button">
-            I don't use Strava
-          </button>
+          <%= link("I use Strava", to: strava_path(@conn, :authenticate), class: "btn btn-bravera btn-lg btn-block form-button") %>
+          <%= link("I don't Strava", to: "#", class: "btn btn-bravera btn-lg btn-block form-button") %>
         </div>
       </div>
     </div>
