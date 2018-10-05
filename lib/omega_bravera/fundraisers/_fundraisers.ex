@@ -40,6 +40,7 @@ defmodule OmegaBravera.Fundraisers do
         join: strava in assoc(user, :strava),
         preload: [user: {user, strava: strava}]
       )
+
     query |> Repo.all()
   end
 

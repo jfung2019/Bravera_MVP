@@ -14,9 +14,9 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
   setup %{conn: conn} do
     with {:ok, admin_user} <-
-            Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
-          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(admin_user, %{}),
-          do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+           Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
+         {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(admin_user, %{}),
+         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
   def fixture(:ngo) do
@@ -42,9 +42,28 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     end
   end
 
+  describe "new ngo" do
+    test "renders form", %{conn: conn} do
+      conn = get(conn, admin_panel_ngo_path(conn, :new))
+      assert html_response(conn, 200) =~ "New NGO"
+    end
+  end
+
+  describe "create ngo" do
+    test "redirects to show when data is valid", %{conn: conn} do
+      conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: @ngo_create_attrs)
+      assert %{slug: slug} = redirected_params(conn)
+      assert redirected_to(conn) == admin_panel_ngo_path(conn, :show, slug)
+    end
+
+    test "renders errors when data is invalid", %{conn: conn} do
+      conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: %{name: "foo name"})
+      assert html_response(conn, 200) =~ "New NGO"
+    end
+  end
+
   defp create_ngo(_) do
     ngo = fixture(:ngo)
     {:ok, ngo: ngo}
   end
-
 end

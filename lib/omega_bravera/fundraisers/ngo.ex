@@ -23,7 +23,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     timestamps(type: :utc_datetime)
   end
 
-  @allowed_attributes [:name, :desc, :logo, :image, :stripe_id, :slug, :url, :full_desc]
+  @allowed_attributes [:name, :desc, :logo, :image, :stripe_id, :slug, :url, :full_desc, :user_id]
   @required_attributes [:name, :stripe_id, :slug]
 
   @doc false
