@@ -5,6 +5,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Money.Donation
+  alias OmegaBravera.Fundraisers
 
   @derive {Phoenix.Param, key: :slug}
   schema "ngos" do
@@ -16,6 +17,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:stripe_id, :string)
     field(:url, :string)
     field(:full_desc, :string)
+    field(:currency, :string, default: "hkd")
     belongs_to(:user, User)
     has_many(:ngo_chals, NGOChal)
     has_many(:donations, Donation)
@@ -23,7 +25,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     timestamps(type: :utc_datetime)
   end
 
-  @allowed_attributes [:name, :desc, :logo, :image, :stripe_id, :slug, :url, :full_desc, :user_id]
+  @allowed_attributes [:name, :desc, :logo, :image, :stripe_id, :slug, :url, :full_desc, :user_id, :currency]
   @required_attributes [:name, :stripe_id, :slug]
 
   @doc false
@@ -31,5 +33,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     ngo
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
+    |> validate_inclusion(:currency, Fundraisers.all_currencies())
   end
 end

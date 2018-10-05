@@ -142,4 +142,15 @@ defmodule OmegaBravera.Fundraisers do
   def change_ngo(%NGO{} = ngo) do
     NGO.changeset(ngo, %{})
   end
+
+  def all_currencies() do
+    [
+      "Hong Kong Dollar (HKD)",
+      "South Korean Won (KRW)",
+      "Singapore Dollar (SGD)",
+      "Malaysian Ringgit (MYR)",
+      "United States Dollar (USD)",
+      "British Pound (GBP)"
+    ]
+  end
 end
