@@ -12,6 +12,14 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     stripe_id: "some stripe_id"
   }
 
+  @update_attrs %{
+    desc: "some updated desc",
+    logo: "some updated logo",
+    name: "some updated name",
+    slug: "some updated slug",
+    stripe_id: "some updated stripe_id"
+  }
+
   setup %{conn: conn} do
     with {:ok, admin_user} <-
            Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
@@ -59,6 +67,29 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: %{name: "foo name"})
       assert html_response(conn, 200) =~ "New NGO"
+    end
+  end
+
+  describe "edit ngo" do
+    setup [:create_ngo]
+
+    test "renders form for editing chosen ngo", %{conn: conn, ngo: ngo} do
+      conn = get(conn, admin_panel_ngo_path(conn, :edit, ngo))
+      assert html_response(conn, 200)
+    end
+  end
+
+  describe "update ngo" do
+    setup [:create_ngo]
+
+    test "redirects when data is valid after updating", %{conn: conn, ngo: ngo} do
+      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: @update_attrs)
+      assert redirected_to(conn) == admin_panel_ngo_path(conn, :index)
+    end
+
+    test "renders errors in update when data is invalid", %{conn: conn, ngo: ngo} do
+      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: %{name: nil})
+      assert html_response(conn, 200)
     end
   end
 

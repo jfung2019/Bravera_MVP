@@ -23,7 +23,6 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
   end
 
   def create(conn, %{"ngo" => ngo_params}) do
-    current_user = Guardian.Plug.current_resource(conn)
     sluggified_ngo_name = Slugify.gen_random_slug(ngo_params["name"])
 
     ngo_params =
@@ -38,6 +37,28 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
       {:error, %Ecto.Changeset{} = changeset} ->
         users = Accounts.list_users()
         render(conn, "new.html", changeset: changeset, users: users)
+    end
+  end
+
+  def edit(conn, %{"slug" => slug}) do
+    ngo = slug |> Fundraisers.get_ngo_by_slug()
+    users = Accounts.list_users()
+    changeset = ngo |> Fundraisers.change_ngo()
+    render(conn, "edit.html", ngo: ngo, users: users, changeset: changeset)
+  end
+
+  def update(conn, %{"slug" => slug, "ngo" => ngo_params}) do
+    ngo = slug |> Fundraisers.get_ngo_by_slug()
+
+    case Fundraisers.update_ngo(ngo, ngo_params) do
+      {:ok, _ngo} ->
+        conn
+        |> put_flash(:info, "NGO updated successfully.")
+        |> redirect(to: admin_panel_ngo_path(conn, :index))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        users = Accounts.list_users()
+        render(conn, "edit.html", users: users, ngo: ngo, changeset: changeset)
     end
   end
 end

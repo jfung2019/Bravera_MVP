@@ -24,6 +24,7 @@
           <td><%= ngo.user.email %></td>
           <td class="text-right">
             <span><%= link "Show", to: admin_panel_ngo_path(@conn, :show, ngo), class: "btn btn-default btn-xs"%> </span>
+            <span><%= link "Edit", to: admin_panel_ngo_path(@conn, :edit, ngo), class: "btn btn-default btn-xs"%> </span>
           </td>
         </tr>
     <% end %>
