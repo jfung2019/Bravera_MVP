@@ -15,21 +15,13 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, _params) do
-    user = Guardian.Plug.current_resource(conn)
+    # TODO slugify this ngo_id request
+    %{params: %{"ngo_slug" => ngo_slug}} = conn
 
-    cond do
-      user !== nil ->
-        # TODO slugify this ngo_id reqest
-        %{params: %{"ngo_slug" => ngo_slug}} = conn
+    ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
-        ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
-
-        changeset = Challenges.change_ngo_chal(%NGOChal{default_currency: ngo.currency})
-        render(conn, "new.html", changeset: changeset, ngo: ngo)
-
-      true ->
-        redirect(conn, to: "/login")
-    end
+    changeset = Challenges.change_ngo_chal(%NGOChal{})
+    render(conn, "new.html", changeset: changeset, ngo: ngo)
   end
 
   def create(conn, %{"ngo_slug" => ngo_id, "ngo_chal" => chal_params}) do
