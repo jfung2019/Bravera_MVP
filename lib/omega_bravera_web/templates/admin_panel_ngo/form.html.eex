@@ -31,7 +31,7 @@
 
   <div class="form-group">
     <%= label f, :currency, class: "control-label" %>
-    <%= select f, :currency, currencies(), class: "form-control" %>
+    <%= select f, :currency, @available_currencies, class: "form-control" %>
     <%= error_tag f, :currency %>
   </div>
 

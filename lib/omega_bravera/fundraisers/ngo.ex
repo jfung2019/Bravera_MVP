@@ -44,6 +44,23 @@ defmodule OmegaBravera.Fundraisers.NGO do
     ngo
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
-    |> validate_inclusion(:currency, Fundraisers.all_currencies())
+    |> validate_inclusion(:currency, valid_currencies())
   end
+
+  def currency_options do
+    %{
+      "Hong Kong Dollar (HKD)" => "hkd",
+      "South Korean Won (KRW)" => "krw",
+      "Singapore Dollar (SGD)" => "sgc",
+      "Malaysian Ringgit (MYR)" => "myr",
+      "United States Dollar (USD)" => "usd",
+      "British Pound (GBP)" => "gbp"
+    }
+  end
+
+  defp valid_currencies, do: Map.values(currency_options())
+end
+
+defimpl Phoenix.Param, for: OmegaBravera.Fundraisers.NGO do
+  def to_param(%{slug: slug}), do: slug
 end
