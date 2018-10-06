@@ -143,5 +143,7 @@ defmodule OmegaBravera.Fundraisers do
     NGO.changeset(ngo, %{})
   end
 
-  def available_currencies(), do: NGO.currency_options()
+  def available_currencies, do: NGO.currency_options()
+
+  def available_activities, do: NGO.activity_options()
 end

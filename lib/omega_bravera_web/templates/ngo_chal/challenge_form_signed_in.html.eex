@@ -8,7 +8,7 @@
       </label>
       <br/>  <%= error_tag @f, :activity_type %>
       <div class="form-group" id="ngo_chal_activity">
-        <%= for activity <- @available_activity_types do %>
+        <%= for activity <- @ngo.activities do %>
           <%= label @f, :activity_type, class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
             <h4 class="activity-text mb-0 mt-4 pt-2">
               <%= activity %>

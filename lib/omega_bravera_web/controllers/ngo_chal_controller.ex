@@ -9,8 +9,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Slugify
 
-  plug(:assign_available_activity_types when action in [:edit, :new])
-
   def index(conn, _params) do
     ngo_chals = Challenges.list_ngo_chals()
     render(conn, "index.html", ngo_chals: ngo_chals)
@@ -51,7 +49,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> assign_available_activity_types(nil)
         |> render("new.html", changeset: changeset, ngo: ngo)
     end
   end
@@ -117,6 +114,4 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end)
     |> into(%{})
   end
-
-  defp assign_available_activity_types(conn, _opts), do: Plug.Conn.assign(conn, :available_activity_types, Challenges.get_activity_types())
 end

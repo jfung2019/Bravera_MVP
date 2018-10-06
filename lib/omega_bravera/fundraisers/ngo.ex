@@ -6,6 +6,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Money.Donation
 
+  @available_activities ["Run","Cycle", "Walk", "Hike"]
+
   @derive {Phoenix.Param, key: :slug}
   schema "ngos" do
     field(:desc, :string)
@@ -17,6 +19,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:url, :string)
     field(:full_desc, :string)
     field(:currency, :string, default: "hkd")
+    field(:activities, {:array, :string}, default: @available_activities)
     belongs_to(:user, User)
     has_many(:ngo_chals, NGOChal)
     has_many(:donations, Donation)
@@ -34,7 +37,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :url,
     :full_desc,
     :user_id,
-    :currency
+    :currency,
+    :activities
   ]
   @required_attributes [:name, :stripe_id, :slug]
 
@@ -44,6 +48,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
     |> validate_inclusion(:currency, valid_currencies())
+    |> validate_subset(:activities, @available_activities)
   end
 
   def currency_options do
@@ -58,6 +63,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
   end
 
   defp valid_currencies, do: Map.values(currency_options())
+
+  def activity_options, do: @available_activities
 end
 
 defimpl Phoenix.Param, for: OmegaBravera.Fundraisers.NGO do
