@@ -26,7 +26,7 @@
     </div>
   </div>
   <%= if logged_in?(@conn) do %>
-    <%= render "challenge_form_signed_in.html", f: f %>
+    <%= render "challenge_form_signed_in.html", f: f, available_activity_types: @available_activity_types %>
   <% else %>
     <%= render "challenge_form_not_signed_in.html", conn: @conn %>
   <% end %>

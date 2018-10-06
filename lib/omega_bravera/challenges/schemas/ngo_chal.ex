@@ -67,6 +67,13 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :slug
   ]
 
+  @activity_types [
+    "Run",
+    "Cycle",
+    "Walk",
+    "Hike"
+  ]
+
   @doc false
   def changeset(ngo_chal, attrs) do
     ngo_chal
@@ -74,6 +81,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_required(@required_attributes)
     |> validate_number(:distance_target, greater_than: 0)
     |> validate_number(:money_target, greater_than: 0)
+    |> validate_inclusion(:activity_type, @activity_types)
   end
 
   def create_changeset(ngo_chal, attrs) do
@@ -119,6 +127,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
       250 -> %{"1" => 0, "2" => 75, "3" => 150, "4" => 250}
     end
   end
+
+  def activity_types, do: @activity_types
 
   defp add_start_and_end_dates(
          %Ecto.Changeset{} = changeset,

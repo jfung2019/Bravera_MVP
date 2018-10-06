@@ -8,48 +8,14 @@
       </label>
       <br/>  <%= error_tag @f, :activity_type %>
       <div class="form-group" id="ngo_chal_activity">
-        <label
-          class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" >
-          <h4 class="activity-text mb-0 mt-4 pt-2">
-            Run
-          </h4>
-          <input
-           id="ngo_chal_activity_run" class="radio-img" name="ngo_chal[activity_type]" type="radio" value="Run" checked="checked"/>
-        </label>
-        <label
-          name="ngo_chal[activity_type]"
-          value="cycle"
-          class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3">
-          <h4 class="activity-text mb-0 mt-4 pt-2">
-            Cycle
-          </h4>
-          <input
-           id="ngo_chal_activity_cycle" class="radio-img" name="ngo_chal[activity_type]" type="radio" value="Cycle"/>
-        </label>
-        <label
-          name="ngo_chal[activity_type]"
-          value="Walk"
-          class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3"
-          >
-          <h4 class="activity-text mb-0 mt-4 pt-2">
-            Walk
-          </h4>
-          <input
-           id="ngo_chal_activity_walk" class="radio-img" name="ngo_chal[activity_type]"
-           type="radio" value="Walk"/>
-
-        </label>
-        <label
-          name="ngo_chal[activity_type]"
-          value="Hike"
-          class="btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3">
-          <h4 class="activity-text mb-0 mt-4 pt-2">
-            Hike
-          </h4>
-          <input
-           id="ngo_chal_activity_hike" class="radio-img" name="ngo_chal[activity_type]"
-           type="radio" value="Hike"/>
-        </label>
+        <%= for activity <- @available_activity_types do %>
+          <%= label @f, :activity_type, class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
+            <h4 class="activity-text mb-0 mt-4 pt-2">
+              <%= activity %>
+            </h4>
+            <%= radio_button @f, :activity_type, activity, class: "radio-img" %>
+            <% end %>
+        <% end %>
       </div>
     </div>
   </div>

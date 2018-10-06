@@ -99,6 +99,8 @@ defmodule OmegaBravera.Challenges do
     Repo.all(query)
   end
 
+  def get_activity_types, do: NGOChal.activity_types()
+
   @doc """
   Creates a ngo_chal.
 
