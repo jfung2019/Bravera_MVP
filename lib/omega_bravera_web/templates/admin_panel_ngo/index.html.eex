@@ -12,6 +12,7 @@
           <th>First Name</th>
           <th>Last Name</th>
           <th>Email</th>
+          <th>Currency</th>
         </tr>
       </thead>
       <tbody>
@@ -22,6 +23,7 @@
           <td><%= ngo.user.firstname %></td>
           <td><%= ngo.user.lastname %></td>
           <td><%= ngo.user.email %></td>
+          <td><%= ngo.currency %></td>
           <td class="text-right">
             <span><%= link "Show", to: admin_panel_ngo_path(@conn, :show, ngo), class: "btn btn-default btn-xs"%> </span>
             <span><%= link "Edit", to: admin_panel_ngo_path(@conn, :edit, ngo), class: "btn btn-default btn-xs"%> </span>

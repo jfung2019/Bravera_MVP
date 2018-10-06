@@ -10,7 +10,9 @@ defmodule OmegaBraveraWeb.AdminLoggedIn do
         conn
 
       _ ->
-        Plug.Conn.halt(conn)
+        conn
+        |> Plug.Conn.halt()
+        |> Phoenix.Controller.redirect(to: "/")
     end
   end
 

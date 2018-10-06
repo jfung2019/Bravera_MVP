@@ -24,7 +24,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
         ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
-        changeset = Challenges.change_ngo_chal(%NGOChal{})
+        changeset = Challenges.change_ngo_chal(%NGOChal{default_currency: ngo.currency})
         render(conn, "new.html", changeset: changeset, ngo: ngo)
 
       true ->
@@ -62,7 +62,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
   def show(conn, %{"slug" => slug}) do
     challenge = Challenges.get_ngo_chal_by_slug(slug, user: [:strava], ngo: [])
-    changeset = Money.change_donation(%Donation{})
+    changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
     render_attrs = %{
       challenge: challenge,

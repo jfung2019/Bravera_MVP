@@ -6,6 +6,8 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
   alias OmegaBravera.Slugify
   alias OmegaBravera.Accounts
 
+  plug :assign_available_currencies when action in [:edit, :new]
+
   def index(conn, _params) do
     ngos = Fundraisers.list_ngos_preload()
     render(conn, "index.html", ngos: ngos)
@@ -37,7 +39,9 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         users = Accounts.list_users()
-        render(conn, "new.html", changeset: changeset, users: users)
+        conn
+        |> assign_available_currencies(nil)
+        |> render("new.html", changeset: changeset, users: users)
     end
   end
 
@@ -59,7 +63,11 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         users = Accounts.list_users()
-        render(conn, "edit.html", users: users, ngo: ngo, changeset: changeset)
+        conn
+        |> assign_available_currencies(nil)
+        |> render("edit.html", users: users, ngo: ngo, changeset: changeset)
     end
   end
+
+  defp assign_available_currencies(conn, _opts), do: assign(conn, :available_currencies, Fundraisers.available_currencies())
 end
