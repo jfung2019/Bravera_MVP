@@ -14,7 +14,7 @@
             Run
           </h4>
           <input
-            id="ngo_chal_activity_run" class="radio-img" name="ngo_chal[activity_type]" type="radio" value="Run" checked="checked"/>
+           id="ngo_chal_activity_run" class="radio-img" name="ngo_chal[activity_type]" type="radio" value="Run" checked="checked"/>
         </label>
         <label
           name="ngo_chal[activity_type]"
@@ -24,7 +24,7 @@
             Cycle
           </h4>
           <input
-            id="ngo_chal_activity_cycle" class="radio-img" name="ngo_chal[activity_type]" type="radio" value="Cycle"/>
+           id="ngo_chal_activity_cycle" class="radio-img" name="ngo_chal[activity_type]" type="radio" value="Cycle"/>
         </label>
         <label
           name="ngo_chal[activity_type]"
@@ -35,8 +35,8 @@
             Walk
           </h4>
           <input
-            id="ngo_chal_activity_walk" class="radio-img" name="ngo_chal[activity_type]"
-            type="radio" value="Walk"/>
+           id="ngo_chal_activity_walk" class="radio-img" name="ngo_chal[activity_type]"
+           type="radio" value="Walk"/>
 
         </label>
         <label
@@ -47,8 +47,8 @@
             Hike
           </h4>
           <input
-            id="ngo_chal_activity_hike" class="radio-img" name="ngo_chal[activity_type]"
-            type="radio" value="Hike"/>
+           id="ngo_chal_activity_hike" class="radio-img" name="ngo_chal[activity_type]"
+           type="radio" value="Hike"/>
         </label>
       </div>
     </div>
@@ -102,30 +102,7 @@
 
       </div>
     </div>
-
-    <div class="currency-selector">
-      <label
-        class="control-label"
-        for="ngo_chal_default_currency">
-        <h4 class="currency-select-label text-green">Select a Currency</h4>
-      </label>
-      <%= error_tag @f, :default_currency %>
-      <select
-        class="custom-select custom-select-lg mt-2 mb-3"
-        name="ngo_chal[default_currency]"
-        id="ngo_chal_default_currency">
-        <option selected value="HKD">
-          Hong Kong Dollars
-        </option>
-        <option value="USD" disabled>
-          US Dollars
-        </option>
-        <option value="GBP" disabled>
-          British Pounds
-        </option>
-      </select>
-    </div>
-
+    <%= hidden_input @f, :default_currency %>
     <div class="mb-4 text-center fund-input-container">
       <label for="ngo_chal_money_target">
         <h4 class="text-green my-2">Set Fundraising Target</h4>

@@ -30,24 +30,4 @@
   <% else %>
     <%= render "challenge_form_not_signed_in.html", conn: @conn %>
   <% end %>
-
 <% end %>
-
-  <script type="text/javascript">
-    $(function() {
-      var selectedCurrency = $('#ngo_chal_default_currency').val();
-
-      $('#ngo_chal_default_currency').change(function() {
-        if ($(this).val() === "HKD") {
-          $('#ngo_chal_money_target').val(10000);
-          $('#currencyPrepend').html("HKD $");
-        } else if($(this).val() === "USD"){
-          $('#ngo_chal_money_target').val(1500);
-          $('#currencyPrepend').html("USD $");
-        } else if($(this).val() === "GBP"){
-          $('#ngo_chal_money_target').val(1500);
-          $('#currencyPrepend').html("GBP £");
-        }
-      }).change();
-    });
-  </script>
