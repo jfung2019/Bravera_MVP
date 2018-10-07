@@ -49,6 +49,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_required(@required_attributes)
     |> validate_inclusion(:currency, valid_currencies())
     |> validate_subset(:activities, @available_activities)
+    |> validate_length(:desc, max: 255)
   end
 
   def currency_options do
