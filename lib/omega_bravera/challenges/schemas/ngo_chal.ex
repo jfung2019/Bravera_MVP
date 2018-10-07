@@ -174,4 +174,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
       _ -> change(changeset, status: "complete")
     end
   end
+
+  defimpl Phoenix.Param, for: OmegaBravera.Challenges.NGOChal do
+    def to_param(%{slug: slug}), do: slug
+  end
 end

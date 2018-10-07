@@ -14,8 +14,8 @@
         <p>Bravera currently works with STRAVA  activity data to convert activities into fundraising.</p>
         <div class="form-button">
           <%= link("I use Strava", to: strava_path(@conn, :authenticate), class: "btn btn-bravera btn-lg btn-block form-button") %>
-          <%= button("I don't Strava",
-            to: page_path(@conn, :signup),
+          <%= button("I don't use Strava",
+            to: "https://www.strava.com/",
             id: "no-strava",
             class: "btn btn-bravera btn-lg btn-block form-button",
             method: "get",

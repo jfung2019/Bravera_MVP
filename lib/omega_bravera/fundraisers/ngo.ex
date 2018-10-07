@@ -55,6 +55,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_required(@required_attributes)
     |> validate_inclusion(:currency, valid_currencies())
     |> validate_subset(:activities, @available_activities)
+    |> validate_length(:desc, max: 255)
     |> validate_subset(:distances, @available_distances)
     |> validate_subset(:durations, @available_durations)
   end

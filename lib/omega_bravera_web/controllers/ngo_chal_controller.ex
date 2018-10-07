@@ -24,16 +24,16 @@ defmodule OmegaBraveraWeb.NGOChalController do
     render(conn, "new.html", changeset: changeset, ngo: ngo)
   end
 
-  def create(conn, %{"ngo_slug" => ngo_id, "ngo_chal" => chal_params}) do
+  def create(conn, %{"ngo_slug" => ngo_slug, "ngo_chal" => chal_params}) do
     current_user = Guardian.Plug.current_resource(conn)
     sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
-    # Oddly, ngo_slug = ngo_id here...
-    ngo = Fundraisers.get_ngo!(ngo_id)
+    ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
     changeset_params =
       Map.merge(chal_params, %{
         "user_id" => current_user.id,
+        "ngo_slug" => ngo_slug,
         "ngo_id" => ngo.id,
         "slug" => sluggified_username
       })

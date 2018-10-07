@@ -19,13 +19,13 @@
       <div class="row">
         <div class="col-md-6 offset-md-3">
           <p>
-            <%= @ngo.desc %>
+            <%= @ngo.full_desc %>
           </p>
         </div>
       </div>
     </div>
   </div>
-  <%= if logged_in?(@conn) do %>
+  <%= if logged_in?(@conn) && has_tracker?(@conn) do %>
     <%= render "challenge_form_signed_in.html", f: f, ngo: @ngo %>
   <% else %>
     <%= render "challenge_form_not_signed_in.html", conn: @conn %>
