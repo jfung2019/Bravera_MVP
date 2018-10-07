@@ -1,10 +1,8 @@
 defmodule OmegaBraveraWeb.AdminPanelNGOController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.Fundraisers
+  alias OmegaBravera.{Accounts, Fundraisers, Slugify}
   alias OmegaBravera.Fundraisers.NGO
-  alias OmegaBravera.Slugify
-  alias OmegaBravera.Accounts
 
   plug(:assign_available_options when action in [:edit, :new])
 
@@ -75,5 +73,6 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
     conn
     |> assign(:available_currencies, Fundraisers.available_currencies())
     |> assign(:available_activities, Fundraisers.available_activities())
+    |> assign(:available_distances, Fundraisers.available_distances())
   end
 end

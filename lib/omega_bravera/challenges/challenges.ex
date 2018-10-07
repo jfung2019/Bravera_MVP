@@ -101,6 +101,8 @@ defmodule OmegaBravera.Challenges do
 
   def get_activity_types, do: NGOChal.activity_types()
 
+  def get_distances, do: NGOChal.distances_available()
+
   @doc """
   Creates a ngo_chal.
 
