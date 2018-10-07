@@ -39,16 +39,7 @@
           in
         </h4>
         <div class="input-group">
-          <select
-            class="custom-select"
-            id="ngo_chal_duration"
-            name="ngo_chal[duration]"
-            >
-            <option value="30" selected>30</option>
-            <option value="40">40</option>
-            <option value="50">50</option>
-            <option value="60">60</option>
-          </select>
+          <%= select @f, :duration, @ngo.durations, class: "custom-select" %>
           <div class="input-group-append">
             <label
               class="input-group-text" for="ngo_chal_duration">

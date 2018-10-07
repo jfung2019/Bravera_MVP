@@ -46,6 +46,11 @@
   </div>
 
   <div class="form-group">
+      <%= label f, :durations, class: "control-label" %>
+      <%= multiple_select f, :durations, @available_durations, class: "form-control" %>
+    </div>
+
+  <div class="form-group">
   <%= label f, "User", class: "control-label" %>
     <%= select(f, :user_id, Enum.map(@users,
           &{&1.firstname <> " " <> &1.lastname <> " (#{&1.email})", &1.id}
