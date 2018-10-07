@@ -74,12 +74,20 @@ defmodule OmegaBravera.Challenges.NGOChal do
     "Hike"
   ]
 
+  @available_distances %{
+    50 => %{"1" => 0, "2" => 15, "3" => 25, "4" => 50},
+    75 => %{"1" => 0, "2" => 25, "3" => 45, "4" => 75},
+    150 => %{"1" => 0, "2" => 50, "3" => 100, "4" => 150},
+    250 => %{"1" => 0, "2" => 75, "3" => 150, "4" => 250}
+  }
+
   @doc false
   def changeset(ngo_chal, attrs) do
     ngo_chal
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
     |> validate_number(:distance_target, greater_than: 0)
+    |> validate_inclusion(:distance_target, distances_available())
     |> validate_number(:money_target, greater_than: 0)
     |> validate_inclusion(:activity_type, @activity_types)
   end
@@ -129,6 +137,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
   end
 
   def activity_types, do: @activity_types
+
+  def distances_available, do: Map.keys(@available_distances)
 
   defp add_start_and_end_dates(
          %Ecto.Changeset{} = changeset,
