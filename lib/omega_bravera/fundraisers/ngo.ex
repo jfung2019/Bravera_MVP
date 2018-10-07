@@ -21,6 +21,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:url, :string)
     field(:full_desc, :string)
     field(:currency, :string, default: "hkd")
+    field(:minimum_donation, :integer, default: 0)
     field(:activities, {:array, :string}, default: @available_activities)
     field(:distances, {:array, :integer}, default: @available_distances)
     field(:durations, {:array, :integer}, default: @available_durations)
@@ -44,15 +45,17 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :currency,
     :activities,
     :distances,
-    :durations
+    :durations,
+    :minimum_donation
   ]
-  @required_attributes [:name, :stripe_id, :slug]
+  @required_attributes [:name, :stripe_id, :slug, :minimum_donation]
 
   @doc false
   def changeset(ngo, attrs) do
     ngo
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
+    |> validate_number(:minimum_donation, greater_than_or_equal_to: 0)
     |> validate_inclusion(:currency, valid_currencies())
     |> validate_subset(:activities, @available_activities)
     |> validate_length(:desc, max: 255)

@@ -62,10 +62,7 @@
             $
           </span>
         </div>
-        <input
-          type="number" class="form-control money-input" aria-label="Amount(to the nearest dollar)" id="ngo_chal_money_target"
-          name="ngo_chal[money_target]" min="500" value="1000"
-          >
+        <%= number_input @f, :money_target, min: @ngo.minimum_donation, class: "form-control money-input" %>
         <div class="input-group-append">
           <span class="input-group-text">.00</span>
         </div>
