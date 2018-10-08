@@ -135,11 +135,11 @@ defmodule OmegaBravera.Challenges do
   end
 
   def list_ngo_chals_preload() do
-      NGOChal
-      |> Repo.all()
-      |> Repo.preload(:user)
-      |> Repo.preload(:ngo)
-      |> Repo.preload(:donations)
+    NGOChal
+    |> Repo.all()
+    |> Repo.preload(:user)
+    |> Repo.preload(:ngo)
+    |> Repo.preload(:donations)
   end
 
   @doc """
