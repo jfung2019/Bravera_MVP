@@ -31,7 +31,7 @@
 		  <tbody>
 		    <%= for challenge <- @challenges do %>
 		    <tr>
-          <td><%= challenge.user_id %></td>
+          <td><%= link challenge.user_id, to: admin_panel_user_path(@conn, :show, challenge.user) %></td>
           <td><%= challenge.user.firstname %></td>
           <td><%= challenge.user.lastname %></td>
           <td><%= challenge.user.additional_info["sex"]%> </td>
@@ -50,7 +50,7 @@
           <td><%= challenge.total_pledged %></td>
           <td><%= challenge.total_secured %></td>
           <td><%= challenge.default_currency %></td>
-          <td><%= challenge.ngo_id %></td>
+          <td><%= link challenge.ngo_id, to: admin_panel_ngo_path(@conn, :show, challenge.ngo) %></td>
           <td><%= challenge.self_donated %></td>
 		    </tr>
 		    <% end %>
