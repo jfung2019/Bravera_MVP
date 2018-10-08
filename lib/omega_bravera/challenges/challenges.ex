@@ -130,8 +130,16 @@ defmodule OmegaBravera.Challenges do
       [%NGOChal{}, ...]
 
   """
-  def list_ngo_chals do
+  def list_ngo_chals() do
     Repo.all(NGOChal)
+  end
+
+  def list_ngo_chals_preload() do
+    NGOChal
+    |> Repo.all()
+    |> Repo.preload(:user)
+    |> Repo.preload(:ngo)
+    |> Repo.preload(:donations)
   end
 
   @doc """
@@ -148,7 +156,9 @@ defmodule OmegaBravera.Challenges do
       ** (Ecto.NoResultsError)
 
   """
-  def get_ngo_chal!(id), do: Repo.get!(NGOChal, id)
+  def get_ngo_chal!(id) do
+    Repo.get!(NGOChal, id) |> Repo.preload(:donations)
+  end
 
   @doc """
   Updates a ngo_chal.
