@@ -62,7 +62,7 @@
             $
           </span>
         </div>
-        <%= number_input @f, :money_target, min: @ngo.minimum_donation, class: "form-control money-input" %>
+        <%= number_input @f, :money_target, min: @ngo.minimum_donation, value: @ngo.minimum_donation, class: "form-control money-input" %>
         <div class="input-group-append">
           <span class="input-group-text">.00</span>
         </div>
