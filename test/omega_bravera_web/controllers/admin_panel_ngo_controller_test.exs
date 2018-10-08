@@ -8,7 +8,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     desc: "some desc",
     logo: "some logo",
     name: "some name",
-    slug: "some slug",
+    slug: "some-slug",
     stripe_id: "some stripe_id"
   }
 
@@ -16,7 +16,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     desc: "some updated desc",
     logo: "some updated logo",
     name: "some updated name",
-    slug: "some updated slug",
+    slug: "some-updated-slug",
     stripe_id: "some updated stripe_id"
   }
 

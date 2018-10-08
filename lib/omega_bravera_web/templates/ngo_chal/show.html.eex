@@ -35,6 +35,7 @@
         </h4>
       </div>
       <div class="card-footer text-center">
+        <%= link("Join the Challenge", to: ngo_path(@conn, :show, @challenge.ngo), class: "btn btn-bravera") %>
         <a class="btn btn-bravera" href="/ngos">
           View Challenges
         </a>

@@ -1,0 +1,30 @@
+<div class="row">
+	<div class="col-6 offset-3">
+		<h2>Show Challenge</h2>
+
+		<ul>
+          <li>User ID:  <%= link @ngo_chal.user_id, to: admin_panel_user_path(@conn, :show, @ngo_chal.user) %> </li>
+          <li>User First Name:  <%= @ngo_chal.user.firstname %> </li>
+          <li>User Last Name:  <%= @ngo_chal.user.lastname %> </li>
+          <li>Gender: <%= @ngo_chal.user.additional_info["sex"]%> </li>
+          <li>User Email:  <%= @ngo_chal.user.email %> </li>
+          <li>Challenge URL:  <%= link("URL", to: ngo_ngo_chal_path(@conn, :show, @ngo_chal.ngo.slug, @ngo_chal.slug),  target: "_blank") %> </li>
+          <li>Slug:  <%= @ngo_chal.slug %> </li>
+          <li>Activity Type:  <%= @ngo_chal.activity_type %> </li>
+          <li>Duration:  <%= @ngo_chal.duration %> </li>
+          <li>Challenge Start Date:  <%= render_datetime(@ngo_chal.start_date) %> </li>
+          <li>Challenge End Date:  <%= render_datetime(@ngo_chal.end_date) %> </li>
+          <li>Fundraise Target:  <%= @ngo_chal.money_target %> </li>
+          <li>Target Distance:  <%= @ngo_chal.distance_target %> </li>
+          <li>Distance Covered:  <%= @ngo_chal.distance_covered %> </li>
+          <li>Status:  <%= @ngo_chal.status %> </li>
+          <li>Total Milestones:  <%= @ngo_chal.milestones %> </li>
+          <li>Pledged Funds:  <%= @ngo_chal.total_pledged %> </li>
+          <li>Secured Funds:  <%= @ngo_chal.total_secured %> </li>
+          <li>Default Currency:  <%= @ngo_chal.default_currency %> </li>
+          <li>NGO:  <%= link @ngo_chal.ngo_id, to: admin_panel_ngo_path(@conn, :show, @ngo_chal.ngo) %> </li>
+          <li>Self Donated:  <%= @ngo_chal.self_donated %> </li>
+		</ul>
+    <%= link "Back", to: admin_user_path(@conn, :index) %></span>
+	</div>
+</div>
