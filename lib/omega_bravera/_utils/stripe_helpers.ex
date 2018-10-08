@@ -162,14 +162,14 @@ defmodule OmegaBravera.StripeHelpers do
 
   defp total_amount(amount) do
     amount
-    |> centify
+    |> centify()
     |> Decimal.round()
     |> Decimal.to_string()
   end
 
   defp destination_amount(amount) do
     amount
-    |> centify
+    |> centify()
     |> Numbers.mult(0.88)
     |> Decimal.round()
     |> Decimal.to_string()

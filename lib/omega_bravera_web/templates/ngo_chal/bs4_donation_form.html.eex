@@ -8,28 +8,13 @@
   <div class="card-body">
 
     <div class="form-group">
-      <%= error_tag f, :currency %>
       <div class="currency-selector max-w-300">
         <label
           class="control-label"
           for="currency">
-          <h4 class="currency-select-label text-green">Select a Currency</h4>
+          <h4 class="currency-select-label text-green">Currency</h4>
         </label>
-        <%= error_tag f, :currency %>
-        <select
-          class="custom-select custom-select-lg mt-3 mb-1"
-          name="donation[currency]"
-          id="currency">
-          <option selected value="HKD">
-            Hong Kong Dollars
-          </option>
-          <option value="USD" disabled>
-            US Dollars
-          </option>
-          <option value="GBP" disabled>
-            British Pounds
-          </option>
-        </select>
+        <%= hidden_input f, :currency %>
       </div>
     </div>
 

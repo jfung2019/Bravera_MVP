@@ -9,16 +9,16 @@ defmodule OmegaBravera.ChallengesTest do
     alias OmegaBravera.Challenges.NGOChal
 
     @valid_attrs %{
-      "activity_type" => "some activity",
-      "distance_target" => 120,
+      "activity_type" => "Walk",
+      "distance_target" => 50,
       "duration" => 42,
       "money_target" => "120.5",
       "slug" => "some slug",
       "status" => "some status"
     }
     @update_attrs %{
-      "activity_type" => "some updated activity",
-      "distance_target" => 456,
+      "activity_type" => "Run",
+      "distance_target" => 75,
       "duration" => 43,
       "money_target" => "456.7",
       "slug" => "some updated slug",
@@ -134,8 +134,8 @@ defmodule OmegaBravera.ChallengesTest do
 
       {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, attrs)
 
-      assert ngo_chal.activity_type == "some activity"
-      assert ngo_chal.distance_target == 120
+      assert ngo_chal.activity_type == "Walk"
+      assert ngo_chal.distance_target == 50
       assert ngo_chal.duration == 42
       assert ngo_chal.money_target == Decimal.new("120.5")
       assert ngo_chal.slug == "some slug"
@@ -153,8 +153,8 @@ defmodule OmegaBravera.ChallengesTest do
 
       assert match?(%NGOChal{}, ngo_chal) == true
 
-      assert ngo_chal.activity_type == "some updated activity"
-      assert ngo_chal.distance_target == 456
+      assert ngo_chal.activity_type == "Run"
+      assert ngo_chal.distance_target == 75
       assert ngo_chal.duration == 43
       assert ngo_chal.money_target == Decimal.new("456.7")
       assert ngo_chal.slug == "some updated slug"

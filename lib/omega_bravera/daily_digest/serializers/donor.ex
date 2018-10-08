@@ -32,6 +32,12 @@ defmodule OmegaBravera.DailyDigest.Serializers.Donor do
       |> Enum.reduce(Decimal.new(0), fn dn, acc -> Decimal.add(acc, Map.get(dn, :amount)) end)
       |> Decimal.to_string()
 
-    "$#{amount} HKD"
+    case Enum.take(donations, 1) do
+      [] ->
+        "$0"
+
+      [%{currency: currency}] ->
+        "$#{amount} #{currency}"
+    end
   end
 end

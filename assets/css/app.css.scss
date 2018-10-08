@@ -453,6 +453,7 @@ h5 {
 
 .sign-up{
   font-size: 1.2rem;
+  margin-bottom: 5px;
 }
 
 @include media-breakpoint-up(sm) {
@@ -648,6 +649,10 @@ div.page-index {
   font-size: 1.5rem;
   margin-top: 0.5rem;
   cursor: pointer;
+}
+
+.no-strava-btn-text {
+  display: none;
 }
 
 // Admin User Session

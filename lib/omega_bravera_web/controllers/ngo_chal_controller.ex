@@ -15,33 +15,25 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, _params) do
-    user = Guardian.Plug.current_resource(conn)
+    # TODO slugify this ngo_id request
+    %{params: %{"ngo_slug" => ngo_slug}} = conn
 
-    cond do
-      user !== nil ->
-        # TODO slugify this ngo_id reqest
-        %{params: %{"ngo_slug" => ngo_slug}} = conn
+    ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
-        ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
-
-        changeset = Challenges.change_ngo_chal(%NGOChal{})
-        render(conn, "new.html", changeset: changeset, ngo: ngo)
-
-      true ->
-        redirect(conn, to: "/login")
-    end
+    changeset = Challenges.change_ngo_chal(%NGOChal{})
+    render(conn, "new.html", changeset: changeset, ngo: ngo)
   end
 
-  def create(conn, %{"ngo_slug" => ngo_id, "ngo_chal" => chal_params}) do
+  def create(conn, %{"ngo_slug" => ngo_slug, "ngo_chal" => chal_params}) do
     current_user = Guardian.Plug.current_resource(conn)
     sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
-    # Oddly, ngo_slug = ngo_id here...
-    ngo = Fundraisers.get_ngo!(ngo_id)
+    ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
     changeset_params =
       Map.merge(chal_params, %{
         "user_id" => current_user.id,
+        "ngo_slug" => ngo_slug,
         "ngo_id" => ngo.id,
         "slug" => sluggified_username
       })
@@ -56,13 +48,14 @@ defmodule OmegaBraveraWeb.NGOChalController do
         |> redirect(to: challenge_path)
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset, ngo: ngo)
+        conn
+        |> render("new.html", changeset: changeset, ngo: ngo)
     end
   end
 
   def show(conn, %{"slug" => slug}) do
     challenge = Challenges.get_ngo_chal_by_slug(slug, user: [:strava], ngo: [])
-    changeset = Money.change_donation(%Donation{})
+    changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
     render_attrs = %{
       challenge: challenge,
