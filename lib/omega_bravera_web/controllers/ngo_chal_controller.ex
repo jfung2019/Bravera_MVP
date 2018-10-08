@@ -99,7 +99,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
 
-    redirect(conn, to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+    # To trigger social share modal on invites.
+    challenge_path = ngo_ngo_chal_path(conn, :show, ngo_slug, slug) <> "#share"
+    redirect(conn, to: challenge_path)
   end
 
   defp milestone_stats(ngo_chal) do

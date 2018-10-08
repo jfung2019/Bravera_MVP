@@ -74,7 +74,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="successful-plege" role="dialog">
+<div class="modal fade" id="share" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
 
     <!-- Modal content-->
@@ -461,10 +461,10 @@
  document.getElementById('distance-covered').append(distanceCovered);
 
 $(function() {
-  var successful_pledge = window.location.hash.substr(1);
+  var share = window.location.hash.substr(1);
 
-  if(successful_pledge !== "") {
-    $("#successful-plege").modal();
+  if(share !== "") {
+    $("#share").modal();
   }
 });
 </script>
