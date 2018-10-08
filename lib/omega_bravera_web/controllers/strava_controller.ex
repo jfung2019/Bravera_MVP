@@ -65,12 +65,17 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   defp get_redirect_url(conn) do
-    uri =
-      conn
-      |> Plug.Conn.get_req_header("referer")
-      |> List.first()
-      |> URI.parse()
+    try do
+      uri =
+        conn
+        |> Plug.Conn.get_req_header("referer")
+        |> List.first()
+        |> URI.parse()
 
-    uri.path
+      uri.path
+    rescue
+      _ ->
+        "/"
+    end
   end
 end

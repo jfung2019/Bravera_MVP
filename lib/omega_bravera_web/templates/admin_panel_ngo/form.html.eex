@@ -12,13 +12,13 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :description, class: "control-label" %>
+    <%= label f, "Description (displayed on /ngos)", class: "control-label" %>
     <%= text_input f, :desc, class: "form-control" %>
     <%= error_tag f, :desc %>
   </div>
 
   <div class="form-group">
-    <%= label f, :full_Description, class: "control-label" %>
+    <%= label f, "Full description (displayed on /ngo/new)", class: "control-label" %>
     <%= text_input f, :full_desc, class: "form-control" %>
     <%= error_tag f, :full_desc %>
   </div>
@@ -36,8 +36,24 @@
   </div>
 
   <div class="form-group">
+      <%= label f, :minimum_donation, class: "control-label" %>
+      <%= text_input f, :minimum_donation, class: "form-control" %>
+      <%= error_tag f, :minimum_donation %>
+    </div>
+
+  <div class="form-group">
     <%= label f, :activities, class: "control-label" %>
     <%= multiple_select f, :activities, @available_activities, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :distances, class: "control-label" %>
+    <%= multiple_select f, :distances, @available_distances, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :durations, class: "control-label" %>
+    <%= multiple_select f, :durations, @available_durations, class: "form-control" %>
   </div>
 
   <div class="form-group">
