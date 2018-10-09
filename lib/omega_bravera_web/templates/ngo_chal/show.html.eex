@@ -74,6 +74,26 @@
 </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="share" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Thank you. Share your pledge now!</h4>
+      </div>
+      <div class="modal-body">
+        <div class="addthis_inline_share_toolbox"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script>
 
  $("#add-buddy-button").click(function() {
@@ -440,4 +460,12 @@
 
  var distanceCovered = Math.floor(<%= @challenge.distance_covered %>);
  document.getElementById('distance-covered').append(distanceCovered);
+
+$(function() {
+  var share = window.location.hash.substr(1);
+
+  if(share !== "") {
+    $("#share").modal();
+  }
+});
 </script>
