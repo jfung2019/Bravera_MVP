@@ -17,7 +17,7 @@ defmodule OmegaBravera.Application do
     ]
 
     children =
-      case Mix.env() do
+      case Application.get_env(:omega_bravera, :env) do
         :prod ->
           [signups_worker_spec, inactive_challenges_spec, challenge_expirer_spec | children]
 
