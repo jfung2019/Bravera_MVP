@@ -51,7 +51,7 @@ defmodule OmegaBravera.Mixfile do
       {:decimal, "~> 1.0", override: true},
       {:numbers, "~> 5.1.0"},
       {:edeliver, "~> 1.5.0"},
-      {:distillery, "~> 1.5.3", runtime: false},
+      {:distillery, "~> 1.5.4", runtime: false},
       {:coerce, "~> 1.0.0"},
       {:logger_file_backend, "0.0.4"},
       {:exvcr, "~> 0.10", only: :test},
