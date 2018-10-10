@@ -23,7 +23,7 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
   end
 
   def create(conn, %{"ngo" => ngo_params}) do
-    sluggified_ngo_name = Slugify.gen_random_slug(ngo_params["name"])
+    sluggified_ngo_name = Slugify.gen_slug(ngo_params["name"])
 
     ngo_params =
       ngo_params
