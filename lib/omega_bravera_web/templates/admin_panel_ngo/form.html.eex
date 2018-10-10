@@ -24,16 +24,22 @@
   </div>
 
   <div class="form-group">
-      <%= label f, "Hero Image", class: "control-label" %>
-      <%= text_input f, :image, class: "form-control" %>
-      <%= error_tag f, :image %>
-    </div>
+    <%= label f, "Hero Image", class: "control-label" %>
+    <%= text_input f, :image, class: "form-control" %>
+    <%= error_tag f, :image %>
+  </div>
 
-    <div class="form-group">
-      <%= label f, :logo, class: "control-label" %>
-      <%= text_input f, :logo, class: "form-control" %>
-      <%= error_tag f, :logo %>
-    </div>
+  <div class="form-group">
+    <%= label f, :logo, class: "control-label" %>
+    <%= text_input f, :logo, class: "form-control" %>
+    <%= error_tag f, :logo %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :url, class: "control-label" %>
+    <%= text_input f, :url, class: "form-control" %>
+    <%= error_tag f, :url %>
+  </div>
 
   <div class="form-group">
     <%= label f, "Stripe ID", class: "control-label" %>
@@ -48,10 +54,10 @@
   </div>
 
   <div class="form-group">
-      <%= label f, :minimum_donation, class: "control-label" %>
-      <%= text_input f, :minimum_donation, class: "form-control" %>
-      <%= error_tag f, :minimum_donation %>
-    </div>
+    <%= label f, :minimum_donation, class: "control-label" %>
+    <%= text_input f, :minimum_donation, class: "form-control" %>
+    <%= error_tag f, :minimum_donation %>
+  </div>
 
   <div class="form-group">
     <%= label f, :activities, class: "control-label" %>
