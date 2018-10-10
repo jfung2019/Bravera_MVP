@@ -24,6 +24,18 @@
   </div>
 
   <div class="form-group">
+      <%= label f, "Hero Image", class: "control-label" %>
+      <%= text_input f, :image, class: "form-control" %>
+      <%= error_tag f, :image %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :logo, class: "control-label" %>
+      <%= text_input f, :logo, class: "form-control" %>
+      <%= error_tag f, :logo %>
+    </div>
+
+  <div class="form-group">
     <%= label f, "Stripe ID", class: "control-label" %>
     <%= text_input f, :stripe_id, class: "form-control" %>
     <%= error_tag f, :stripe_id %>
