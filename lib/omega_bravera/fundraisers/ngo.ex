@@ -61,6 +61,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_length(:desc, max: 255)
     |> validate_subset(:distances, @available_distances)
     |> validate_subset(:durations, @available_durations)
+    |> unique_constraint(:slug)
   end
 
   def currency_options do
