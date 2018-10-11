@@ -4,6 +4,8 @@ defmodule OmegaBravera.Slugify do
     |> String.downcase()
     |> String.trim()
     |> String.replace(" ", "-")
+    |> String.replace("(", "")
+    |> String.replace(")", "")
     |> String.replace(~r/[!.?']/, "")
   end
 
