@@ -35,7 +35,8 @@ defmodule OmegaBraveraWeb.NGOChalController do
         "user_id" => current_user.id,
         "ngo_slug" => ngo_slug,
         "ngo_id" => ngo.id,
-        "slug" => sluggified_username
+        "slug" => sluggified_username,
+        "default_currency" => ngo.currency
       })
 
     case Challenges.create_ngo_chal(%NGOChal{}, changeset_params) do

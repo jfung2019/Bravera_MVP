@@ -23,7 +23,7 @@
       ></div>
     </div>
     <h5 class="text-420 mt-0 mb-3 text-center">
-      <strong>$<%= @challenge.total_secured %></strong> of <strong>$<%= @challenge.money_target %> <%= @challenge.default_currency %></strong> Raised
+      <strong>$<%= @challenge.total_secured %></strong> of <strong>$<%= @challenge.money_target %> <%= String.upcase(@challenge.default_currency) %></strong> Raised
     </h5>
     <div class="mb-3 text-center mx-auto">
       <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>

@@ -51,7 +51,7 @@
 
       </div>
     </div>
-    <%= hidden_input @f, :default_currency %>
+
     <div class="mb-4 text-center fund-input-container">
       <label for="ngo_chal_money_target">
         <h4 class="text-green my-2">Set Fundraising Target</h4>
