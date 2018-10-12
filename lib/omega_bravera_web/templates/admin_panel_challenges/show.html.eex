@@ -25,6 +25,7 @@
           <li>NGO:  <%= link @ngo_chal.ngo_id, to: admin_panel_ngo_path(@conn, :show, @ngo_chal.ngo) %> </li>
           <li>Self Donated:  <%= @ngo_chal.self_donated %> </li>
 		</ul>
+    <%= link "Edit", to: admin_panel_challenges_path(@conn, :edit, @ngo_chal) %></span>
     <%= link "Back", to: admin_user_path(@conn, :index) %></span>
 	</div>
 </div>

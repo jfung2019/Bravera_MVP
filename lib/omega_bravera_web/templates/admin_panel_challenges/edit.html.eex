@@ -1,0 +1,5 @@
+<div class="container">
+  <h2>Edit Challenge</h2>
+  <%= render "form.html", Map.put(assigns, :action, admin_panel_challenges_path(@conn, :update, @ngo_chal)) %>
+  <span><%= link "Back", to: admin_panel_challenges_path(@conn, :index) %></span>
+  </div>
