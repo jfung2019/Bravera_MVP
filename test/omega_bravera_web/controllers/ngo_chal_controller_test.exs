@@ -48,4 +48,27 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert html_response(conn, 200) =~ "New Ngo chal"
     end
   end
+
+  describe "show ngo_chal" do
+    setup do
+      ngo_1 = insert(:ngo, %{slug: "ngo-1"})
+      ngo_2 = insert(:ngo, %{slug: "ngo-2"})
+      slug = "random-123"
+      challenge_1 = insert(:ngo_challenge, %{ngo: ngo_1, slug: slug, default_currency: "hkd"})
+      challenge_2 = insert(:ngo_challenge, %{ngo: ngo_2, slug: slug, default_currency: "myr"})
+      {:ok, %{ngo_1: ngo_1, ngo_2: ngo_2, challenge_1: challenge_1, challenge_2: challenge_2}}
+    end
+
+    test "challenge 1 renders properly", %{conn: conn, challenge_1: challenge, ngo_1: ngo} do
+      conn = get(conn, ngo_ngo_chal_path(conn, :show, ngo, challenge))
+
+      assert html_response(conn, 200) =~ "HK$"
+    end
+
+    test "challenge 2 renders properly", %{conn: conn, challenge_2: challenge, ngo_2: ngo} do
+      conn = get(conn, ngo_ngo_chal_path(conn, :show, ngo, challenge))
+
+      assert html_response(conn, 200) =~ "RM"
+    end
+  end
 end

@@ -53,8 +53,8 @@
           <td><%= link challenge.ngo_id, to: admin_panel_ngo_path(@conn, :show, challenge.ngo) %></td>
           <td><%= challenge.self_donated %></td>
           <td>
-            <%= link "show", to: admin_panel_challenges_path(@conn, :show, challenge) %>
-            <%= link "Edit", to: admin_panel_challenges_path(@conn, :edit, challenge) %>
+            <%= link "show", to: admin_panel_ngo_admin_panel_challenges_path(@conn, :show, challenge.ngo, challenge) %>
+            <%= link "Edit", to: admin_panel_ngo_admin_panel_challenges_path(@conn, :edit, challenge.ngo, challenge) %>
           </td>
 		    </tr>
 		    <% end %>

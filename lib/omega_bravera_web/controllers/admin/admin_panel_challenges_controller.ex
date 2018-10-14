@@ -12,26 +12,26 @@ defmodule OmegaBraveraWeb.AdminPanelChallengesController do
     render(conn, "index.html", challenges: challenges)
   end
 
-  def show(conn, %{"slug" => slug}) do
-    ngo_chal = Challenges.get_ngo_chal_by_slug(slug, user: [:strava], ngo: [])
+  def show(conn, %{"admin_panel_ngo_id" => ngo_slug, "id" => slug}) do
+    ngo_chal = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
     render(conn, "show.html", ngo_chal: ngo_chal)
   end
 
-  def edit(conn, %{"slug" => slug}) do
-    ngo_chal = Challenges.get_ngo_chal_by_slug(slug, user: [:strava], ngo: [])
+  def edit(conn, %{"admin_panel_ngo_id" => ngo_slug, "id" => slug}) do
+    ngo_chal = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
     users = Accounts.list_users()
     changeset = Challenges.change_ngo_chal(ngo_chal)
     render(conn, "edit.html", users: users, ngo_chal: ngo_chal, changeset: changeset)
   end
 
-  def update(conn, %{"slug" => slug, "ngo_chal" => ngo_chal_params}) do
-    ngo_chal = Challenges.get_ngo_chal_by_slug(slug, user: [:strava], ngo: [])
+  def update(conn, %{"admin_panel_ngo_id" => ngo_slug, "id" => slug, "ngo_chal" => ngo_chal_params}) do
+    ngo_chal = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
 
     case Challenges.update_ngo_chal(ngo_chal, ngo_chal_params) do
       {:ok, ngo_chal} ->
         conn
         |> put_flash(:info, "Challenge updated successfully.")
-        |> redirect(to: admin_panel_challenges_path(conn, :show, ngo_chal))
+        |> redirect(to: admin_panel_ngo_admin_panel_challenges_path(conn, :show, ngo_chal.ngo, ngo_chal))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn

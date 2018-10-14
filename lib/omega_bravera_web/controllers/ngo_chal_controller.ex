@@ -14,10 +14,8 @@ defmodule OmegaBraveraWeb.NGOChalController do
     render(conn, "index.html", ngo_chals: ngo_chals)
   end
 
-  def new(conn, _params) do
+  def new(conn, %{"ngo_slug" => ngo_slug}) do
     # TODO slugify this ngo_id request
-    %{params: %{"ngo_slug" => ngo_slug}} = conn
-
     ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
     changeset = Challenges.change_ngo_chal(%NGOChal{})
@@ -54,8 +52,8 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end
   end
 
-  def show(conn, %{"slug" => slug}) do
-    challenge = Challenges.get_ngo_chal_by_slug(slug, user: [:strava], ngo: [])
+  def show(conn, %{"ngo_slug" => ngo_slug, "slug" => slug}) do
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
     changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
     render_attrs = %{
@@ -96,7 +94,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
         "ngo_slug" => ngo_slug,
         "buddies" => buddies
       }) do
-    challenge = Challenges.get_ngo_chal_by_slug(slug, [:user, :ngo])
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, :ngo])
 
     Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
 

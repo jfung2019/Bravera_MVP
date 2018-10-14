@@ -4,15 +4,15 @@ defmodule OmegaBraveraWeb.DonationController do
   alias OmegaBravera.{Challenges, Accounts, StripeHelpers}
   alias OmegaBravera.Donations.{Pledges, Processor, Notifier}
 
-  def index(conn, %{"ngo_chal_slug" => slug}) do
-    challenge = Challenges.get_ngo_chal_by_slug(slug, user: [:strava], ngo: [])
+  def index(conn, %{"ngo_chal_slug" => slug, "ngo_slug" => ngo_slug}) do
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
     donors = Accounts.latest_donors(challenge)
 
     render(conn, "index.html", %{challenge: challenge, donors: donors})
   end
 
-  def create(conn, %{"donation" => donation_params, "ngo_chal_slug" => ngo_chal_slug}) do
-    challenge = Challenges.get_ngo_chal_by_slug(ngo_chal_slug)
+  def create(conn, %{"donation" => donation_params, "ngo_chal_slug" => ngo_chal_slug, "ngo_slug" => ngo_slug}) do
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, ngo_chal_slug)
     stripe_customer = StripeHelpers.create_stripe_customer(donation_params)
     donor = Accounts.insert_or_return_email_user(donation_params)
     challenge_path = ngo_ngo_chal_path(conn, :show, challenge.ngo.slug, challenge.slug)
