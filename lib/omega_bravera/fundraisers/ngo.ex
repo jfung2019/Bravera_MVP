@@ -68,7 +68,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     %{
       "Hong Kong Dollar (HKD)" => "hkd",
       "South Korean Won (KRW)" => "krw",
-      "Singapore Dollar (SGD)" => "sgc",
+      "Singapore Dollar (SGD)" => "sgd",
       "Malaysian Ringgit (MYR)" => "myr",
       "United States Dollar (USD)" => "usd",
       "British Pound (GBP)" => "gbp"

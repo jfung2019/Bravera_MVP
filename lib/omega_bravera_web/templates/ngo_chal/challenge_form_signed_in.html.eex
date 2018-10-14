@@ -59,7 +59,7 @@
       <div class="input-group">
         <div class="input-group-prepend">
           <span class="input-group-text" id="currencyPrepend">
-            $
+            <%= currency_to_symbol(@ngo.currency) %>
           </span>
         </div>
         <%= number_input @f, :money_target, min: @ngo.minimum_donation, value: @ngo.minimum_donation, class: "form-control money-input" %>

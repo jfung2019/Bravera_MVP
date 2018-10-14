@@ -32,16 +32,16 @@
           name="amount"
           id="amount">
           <option selected value="600">
-            $600
+            <%= currency_to_symbol(@challenge.default_currency) %>600
           </option>
           <option value="400">
-            $400
+            <%= currency_to_symbol(@challenge.default_currency) %>400
           </option>
           <option value="320">
-            $320
+            <%= currency_to_symbol(@challenge.default_currency) %>320
           </option>
           <option value="160">
-            $160
+            <%= currency_to_symbol(@challenge.default_currency) %>160
           </option>
         </select>
       </div>

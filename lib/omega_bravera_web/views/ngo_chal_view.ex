@@ -25,4 +25,15 @@ defmodule OmegaBraveraWeb.NGOChalView do
   def challenger_not_self_donated?(_, _) do
     false
   end
+
+  def currency_to_symbol(currency) do
+    case currency do
+      "myr" -> "RM"
+      "hkd" -> "HK$"
+      "krw" -> "₩"
+      "sgd" -> "S$"
+      "gbp" -> "£"
+        _ -> "$"
+    end
+  end
 end

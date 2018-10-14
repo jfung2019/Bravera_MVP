@@ -346,20 +346,17 @@
                     parseInt($('#m1-donation').val()) +
                     parseInt($('#m2-donation').val()) +
                     parseInt($('#m3-donation').val());
-     $('#donation-total').text("$" + totalSupport);
    } else if (mComplete === 1){
      totalSupport = parseInt($('#kickstarter').val()) +
                     parseInt($('#m2-donation').val()) +
                     parseInt($('#m3-donation').val());
-     $('#donation-total').text("$" + totalSupport);
    } else if (mComplete === 2){
      totalSupport = parseInt($('#kickstarter').val()) +
                     parseInt($('#m3-donation').val());
-     $('#donation-total').text("$" + totalSupport);
    } else if (mComplete === 3){
      totalSupport = parseInt($('#kickstarter').val());
-     $('#donation-total').text("$" + totalSupport);
    }
+   $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
  }).change();
  //
  $('#kickstarter').change(function(){
@@ -368,20 +365,17 @@
                     parseInt($('#m1-donation').val()) +
                     parseInt($('#m2-donation').val()) +
                     parseInt($('#m3-donation').val());
-     $('#donation-total').text("$" + totalSupport);
    } else if (mComplete === 1){
      totalSupport = parseInt($('#kickstarter').val()) +
                     parseInt($('#m2-donation').val()) +
                     parseInt($('#m3-donation').val());
-     $('#donation-total').text("$" + totalSupport);
    } else if (mComplete === 2){
      totalSupport = parseInt($('#kickstarter').val()) +
                     parseInt($('#m3-donation').val());
-     $('#donation-total').text("$" + totalSupport);
    } else if (mComplete === 3){
      totalSupport = parseInt($('#kickstarter').val());
-     $('#donation-total').text("$" + totalSupport);
    }
+   $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
  }).change();
 
  if(mComplete === 0) {
@@ -391,20 +385,17 @@
                       parseInt($('#m1-donation').val()) +
                       parseInt($('#m2-donation').val()) +
                       parseInt($('#m3-donation').val());
-       $('#donation-total').text("$" + totalSupport);
      } else if (mComplete === 1){
        totalSupport = parseInt($('#kickstarter').val()) +
                       parseInt($('#m2-donation').val()) +
                       parseInt($('#m3-donation').val());
-       $('#donation-total').text("$" + totalSupport);
      } else if (mComplete === 2){
        totalSupport = parseInt($('#kickstarter').val()) +
                       parseInt($('#m3-donation').val());
-       $('#donation-total').text("$" + totalSupport);
      } else if (mComplete === 3){
        totalSupport = parseInt($('#kickstarter').val());
-       $('#donation-total').text("$" + totalSupport);
      }
+     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
    }).change();
  }
 
@@ -415,21 +406,18 @@
                       parseInt($('#m1-donation').val()) +
                       parseInt($('#m2-donation').val()) +
                       parseInt($('#m3-donation').val());
-       $('#donation-total').text("$" + totalSupport);
      }
      if (mComplete === 1){
        totalSupport = parseInt($('#kickstarter').val()) +
                       parseInt($('#m2-donation').val()) +
-                      parseInt($('#m3-donation').val());
-       $('#donation-total').text("$" + totalSupport);
+                      parseInt($('#m3-donation').val());;
      } else if (mComplete === 2){
        totalSupport = parseInt($('#kickstarter').val()) +
                       parseInt($('#m3-donation').val());
-       $('#donation-total').text("$" + totalSupport);
      } else if (mComplete === 3){
        totalSupport = parseInt($('#kickstarter').val());
-       $('#donation-total').text("$" + totalSupport);
      }
+     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
    }).change();
  }
 
@@ -440,21 +428,18 @@
                       parseInt($('#m1-donation').val()) +
                       parseInt($('#m2-donation').val()) +
                       parseInt($('#m3-donation').val());
-       $('#donation-total').text("$" + totalSupport);
      }
      if (mComplete === 1){
        totalSupport = parseInt($('#kickstarter').val()) +
                       parseInt($('#m2-donation').val()) +
                       parseInt($('#m3-donation').val());
-       $('#donation-total').text("$" + totalSupport);
      } else if (mComplete === 2){
        totalSupport = parseInt($('#kickstarter').val()) +
                       parseInt($('#m3-donation').val());
-       $('#donation-total').text("$" + totalSupport);
      } else if (mComplete === 3){
        totalSupport = parseInt($('#kickstarter').val());
-       $('#donation-total').text("$" + totalSupport);
      }
+     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
    }).change();
  }
 

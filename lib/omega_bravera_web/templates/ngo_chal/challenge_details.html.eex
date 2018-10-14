@@ -23,7 +23,7 @@
       ></div>
     </div>
     <h5 class="text-420 mt-0 mb-3 text-center">
-      <strong>$<%= @challenge.total_secured %></strong> of <strong>$<%= @challenge.money_target %> <%= String.upcase(@challenge.default_currency) %></strong> Raised
+      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.total_secured %></strong> of <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %> <%= String.upcase(@challenge.default_currency) %></strong> Raised
     </h5>
     <div class="mb-3 text-center mx-auto">
       <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
@@ -36,7 +36,7 @@
     <div class="mb-3 mx-lg-3">
       <h5 class="text-420 mt-1 mb-1 ml-1" style="text-align: left;">
         Nudge Donation (now)
-        <span style="float:right;" class="text-success"><strong>$<%= @stats["1"]["charged"] || "0" %></strong> </span>
+        <span style="float:right;" class="text-success"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["1"]["charged"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -47,7 +47,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m1-label"><%= @m_targets["2"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m1-total"><strong>$<%= @stats["2"]["total"] || "0" %></strong> </span>
+        <span style="float:right;" class="text-secondary" id="m1-total"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["2"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -58,7 +58,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m2-label"><%= @m_targets["3"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m2-total"><strong>$<%= @stats["3"]["total"] || "0" %></strong> </span>
+        <span style="float:right;" class="text-secondary" id="m2-total"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["3"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -69,7 +69,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m3-label"><%= @m_targets["4"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m3-total"><strong>$<%= @stats["4"]["total"] || "0" %></strong> </span>
+        <span style="float:right;" class="text-secondary" id="m3-total"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["4"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -80,7 +80,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         Total Pledged:
-        <span style="float:right;" class="text-success"><strong>$<%= @challenge.total_pledged %></strong> </span>
+        <span style="float:right;" class="text-success"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.total_pledged %></strong> </span>
       </h5>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         Distance Completed:
