@@ -72,7 +72,16 @@ defmodule OmegaBraveraWeb.StravaController do
         |> List.first()
         |> URI.parse()
 
-      uri.path
+      path =
+        case uri.path do
+          "/oauth/authorize" ->
+            "/"
+
+          _ ->
+            uri.path
+        end
+
+      path
     rescue
       _ ->
         "/"
