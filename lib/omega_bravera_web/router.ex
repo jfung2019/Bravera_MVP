@@ -78,9 +78,11 @@ defmodule OmegaBraveraWeb.Router do
       resources("/admin_users", AdminUserController)
       resources("/users", AdminPanelUserController, only: [:index, :show])
       get("/challenges", AdminPanelChallengesController, :index)
+
       resources("/ngos", AdminPanelNGOController, only: [:index, :new, :create]) do
         resources("/challenges", AdminPanelChallengesController, only: [:show, :edit, :update])
       end
+
       get("/ngos/:slug", AdminPanelNGOController, :show)
       get("/ngos/:slug/edit", AdminPanelNGOController, :edit)
       put("/ngos/:slug", AdminPanelNGOController, :update)

@@ -11,7 +11,11 @@ defmodule OmegaBraveraWeb.DonationController do
     render(conn, "index.html", %{challenge: challenge, donors: donors})
   end
 
-  def create(conn, %{"donation" => donation_params, "ngo_chal_slug" => ngo_chal_slug, "ngo_slug" => ngo_slug}) do
+  def create(conn, %{
+        "donation" => donation_params,
+        "ngo_chal_slug" => ngo_chal_slug,
+        "ngo_slug" => ngo_slug
+      }) do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, ngo_chal_slug)
     stripe_customer = StripeHelpers.create_stripe_customer(donation_params)
     donor = Accounts.insert_or_return_email_user(donation_params)

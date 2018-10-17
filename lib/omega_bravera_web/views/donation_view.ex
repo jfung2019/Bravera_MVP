@@ -25,7 +25,6 @@ defmodule OmegaBraveraWeb.DonationView do
           number_input(f, m,
             step: "any",
             class: "form-control text-center milestone-donations",
-            min: "25",
             id: "kickstarter"
           ),
           error_tag(f, m)

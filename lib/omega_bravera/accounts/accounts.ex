@@ -68,7 +68,9 @@ defmodule OmegaBravera.Accounts do
 
     query
     |> Repo.all()
-    |> Enum.map(fn {user, amount, currency} -> %{"user" => user, "pledged" => amount, "currency" => currency} end)
+    |> Enum.map(fn {user, amount, currency} ->
+      %{"user" => user, "pledged" => amount, "currency" => currency}
+    end)
   end
 
   defp donors_for_ngo_query(ngo) do

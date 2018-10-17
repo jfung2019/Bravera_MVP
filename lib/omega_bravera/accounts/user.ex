@@ -40,7 +40,5 @@ defmodule OmegaBravera.Accounts.User do
     |> unique_constraint(:email)
   end
 
-  def full_name(%__MODULE__{firstname: first, lastname: last}) do
-    "#{first} #{last}"
-  end
+  def full_name(%__MODULE__{firstname: first, lastname: last}), do: "#{first} #{last}"
 end
