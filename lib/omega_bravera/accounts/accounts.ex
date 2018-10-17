@@ -46,7 +46,7 @@ defmodule OmegaBravera.Accounts do
 
   def donors_for_challenge(%NGOChal{} = challenge) do
     challenge
-    |> donors_for_challenge_query
+    |> donors_for_challenge_query()
     |> order_by(desc: :inserted_at)
     |> Repo.all()
   end
@@ -54,10 +54,10 @@ defmodule OmegaBravera.Accounts do
   def latest_donors(%NGOChal{} = challenge, limit \\ nil) do
     query =
       challenge
-      |> donors_for_challenge_query
+      |> donors_for_challenge_query()
       |> order_by(desc: :inserted_at)
-      |> group_by([user, donation], [user.id, donation.user_id])
-      |> select([user, donation], {user, sum(donation.amount)})
+      |> group_by([user, donation], [user.id, donation.user_id, donation.currency])
+      |> select([user, donation], {user, sum(donation.amount), donation.currency})
 
     query =
       if is_number(limit) and limit > 0 do
@@ -68,7 +68,7 @@ defmodule OmegaBravera.Accounts do
 
     query
     |> Repo.all()
-    |> Enum.map(fn {user, amount} -> %{"user" => user, "pledged" => amount} end)
+    |> Enum.map(fn {user, amount, currency} -> %{"user" => user, "pledged" => amount, "currency" => currency} end)
   end
 
   defp donors_for_ngo_query(ngo) do
