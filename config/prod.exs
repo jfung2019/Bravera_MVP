@@ -72,7 +72,6 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
 config :omega_bravera, OmegaBravera.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),
-  ssl: true,
   pool_size: 20
 
 # Strava dev config
