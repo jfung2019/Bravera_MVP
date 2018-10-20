@@ -1,7 +1,6 @@
 defmodule OmegaBraveraWeb.NGOChalController do
   use OmegaBraveraWeb, :controller
   use Timex
-  alias Decimal
   alias Numbers
 
   alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money}
@@ -104,15 +103,24 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   defp milestone_stats(ngo_chal) do
-    import Enum, only: [map: 2, into: 2]
-    alias Decimal, as: D
-
     ngo_chal
     |> Money.milestones_donations()
-    # strigify values
-    |> map(fn {k, v} ->
-      {to_string(k), into(map(v, fn {kk, vv} -> {kk, D.to_string(vv)} end), %{})}
+    |> Enum.map(fn {k, v} ->
+      {to_string(k), Enum.into(Enum.map(v, fn {kk, vv} -> {kk, Decimal.to_integer(vv)} end), %{})}
     end)
-    |> into(%{})
+    |> total_the_pledged_amount()
+    |> Enum.into(%{})
+    |> IO.inspect()
+  end
+
+  defp total_the_pledged_amount(tuple_list) do
+    [
+      {"total",
+       Enum.reduce(tuple_list, 0, fn
+         {_, %{"total" => total}}, acc -> total + acc
+          _, acc -> acc # Catch if no total value
+       end)}
+      | tuple_list
+    ]
   end
 end

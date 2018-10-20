@@ -127,8 +127,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> Enum.join(", ")
   end
 
-  def milestones_distances(%__MODULE__{} = challenge) do
-    case challenge.distance_target do
+  def milestones_distances(%__MODULE__{distance_target: target}) do
+    case target do
       50 -> %{"1" => 0, "2" => 15, "3" => 25, "4" => 50}
       75 -> %{"1" => 0, "2" => 25, "3" => 45, "4" => 75}
       150 -> %{"1" => 0, "2" => 50, "3" => 100, "4" => 150}

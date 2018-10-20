@@ -34,9 +34,9 @@
       Milestones
     </h2>
     <div class="mb-3 mx-lg-3">
-      <h5 class="text-420 mt-1 mb-1 ml-1" style="text-align: left;">
+      <h5 class="text-420 mt-1 mb-1 ml-1 text-left">
         Nudge Donation (now)
-        <span style="float:right;" class="text-success"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["1"]["charged"] || "0" %></strong> </span>
+        <span class="text-success"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["0"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -47,7 +47,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m1-label"><%= @m_targets["2"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m1-total"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["2"]["total"] || "0" %></strong> </span>
+        <span class="text-secondary" id="m1-total"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["1"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -58,7 +58,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m2-label"><%= @m_targets["3"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m2-total"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["3"]["total"] || "0" %></strong> </span>
+        <span style="float:right;" class="text-secondary" id="m2-total"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["2"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -67,9 +67,9 @@
              id="m2-progress"
         ></div>
       </div>
-      <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
+      <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
         <span id="m3-label"><%= @m_targets["4"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m3-total"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["4"]["total"] || "0" %></strong> </span>
+        <span class="text-secondary" id="m3-total"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["3"]["total"] || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -78,20 +78,20 @@
              id="m3-progress"
         ></div>
       </div>
-      <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
+      <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
         Total Pledged:
-        <span style="float:right;" class="text-success"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.total_pledged %></strong> </span>
+        <span class="text-success float-right"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @stats["total"] || 0 %></strong> </span>
       </h5>
-      <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
+      <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
         Distance Completed:
-        <span style="float:right;"><strong class="text-500"><span id="distance-covered"></span>/<%= @challenge.distance_target %>km</strong></span>
+        <strong class="text-500 float-right"><span id="distance-covered"></span>/<%= @challenge.distance_target %>km</strong>
       </h5>
       <div style="clear: both;"></div>
     </div>
   </div>
   <div class="card-footer border-top text-center mb-0 pb-0">
     <div class=" img-fluid margin-auto mb-3">
-      <img src="/images/strava/powered-by.png" alt="Fitness Data Powered by Strava"/>
+      <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "Fitness Data Powered by Strava") %>
     </div>
   </div>
 </div>  <!-- End of top card -->

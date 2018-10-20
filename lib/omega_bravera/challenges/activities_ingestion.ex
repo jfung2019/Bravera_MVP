@@ -11,24 +11,24 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     Repo
   }
 
-  def process_strava_webhook(%{"aspect_type" => "create", "object_type" => "activity"} = params) do
-    params["owner_id"]
+  def process_strava_webhook(
+        %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
+      ) do
+    owner_id
     |> Accounts.get_strava_challengers()
     |> process_challenges(params)
   end
 
-  def process_strava_webhook(_) do
-    {:error, :webhook_not_processed}
-  end
+  def process_strava_webhook(_), do: {:error, :webhook_not_processed}
 
-  defp process_challenges([hd | _] = challenges, params) do
-    activity = Strava.Activity.retrieve(params["object_id"], strava_client(hd))
+  defp process_challenges([hd | _] = challenges, %{"object_id" => object_id}) do
+    activity = Strava.Activity.retrieve(object_id, strava_client(hd))
     Enum.map(challenges, &process_challenge(&1, activity))
   end
 
   def process_challenge({challenge_id, _}, %Strava.Activity{distance: distance} = strava_activity)
       when distance > 0 and is_integer(challenge_id) do
-    {status, challenge, activity, donations} =
+    {status, _challenge, _activity, donations} =
       challenge_id
       |> Challenges.get_ngo_chal!()
       |> Repo.preload([:user, :ngo])

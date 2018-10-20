@@ -36,9 +36,7 @@
       </div>
       <div class="card-footer text-center">
         <%= link("Join the Challenge", to: ngo_path(@conn, :show, @challenge.ngo), class: "btn btn-bravera") %>
-        <a class="btn btn-bravera" href="/ngos">
-          View Challenges
-        </a>
+        <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera") %>
       </div>
     </div>
 
@@ -131,7 +129,7 @@
    document.getElementById('mins-left').append(minutes);
 
    document.getElementById('date-range').innerHTML = startDate + " - " + endDate;
- }
+ };
 
  if($('#challenge-status-container').hasClass('active')) {
    setRemainingTime();
@@ -153,9 +151,26 @@
      m2Dist = <%= @m_targets["3"] %>,
      m3Dist = <%= @m_targets["4"] %>;
 
+	var getPercentage = function(distanceCovered, currentTarget, previousTarget) {
+		if(distanceCovered >= currentTarget) {
+			return 100;
+		} else if(previousTarget !== undefined) {
+			if(distanceCovered >= previousTarget) {
+				var difference = distanceCovered - previousTarget;
+        if (difference >= 0) {
+          return difference / currentTarget * 100;
+        }
+        return 0;
+			} else if(distanceCovered < previousTarget) {
+				return 0;
+			}
+		}
+		return distanceCovered / currentTarget * 100;
+	};
+
  var mComplete = 0;
 
- var m1Perc = distCovered / m1Dist * 100,
+ var m1Perc = getPercentage(distCovered, m1Dist),
      m1Width;
 
  if (m1Perc < 100){
@@ -169,7 +184,7 @@
 
  document.getElementById('m1-progress').setAttribute("style", m1Width);
 
- var m2Perc = distCovered / m2Dist * 100,
+ var m2Perc = getPercentage(distCovered, m2Dist, m1Dist),
      m2Width;
 
  if (m2Perc < 100){
@@ -183,7 +198,7 @@
 
  document.getElementById('m2-progress').setAttribute("style", m2Width);
 
- var m3Perc = distCovered / m3Dist * 100,
+ var m3Perc = getPercentage(distCovered, m3Dist, m2Dist),
      m3Width;
 
  if (m3Perc < 100){

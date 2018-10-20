@@ -8,10 +8,10 @@ defmodule OmegaBravera.Money do
 
   alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges, Challenges.NGOChal}
 
-  def milestones_donations(%NGOChal{} = challenge) do
+  def milestones_donations(%NGOChal{id: challenge_id}) do
     query =
       from(donation in Donation,
-        where: donation.ngo_chal_id == ^challenge.id,
+        where: donation.ngo_chal_id == ^challenge_id,
         group_by: [donation.status, donation.milestone],
         select: {donation.status, donation.milestone, sum(donation.amount)}
       )
@@ -69,13 +69,12 @@ defmodule OmegaBravera.Money do
   # for charging from strava webhooks
 
   def get_donations_by_milestone(ngo_chal, milestone_limit) do
-    query =
       from(d in Donation,
         where:
           d.status == "pending" and d.milestone <= ^milestone_limit and d.ngo_chal_id == ^ngo_chal
       )
-
-    Repo.all(query)
+    |>
+    Repo.all()
   end
 
   # get all da donations
@@ -85,9 +84,7 @@ defmodule OmegaBravera.Money do
     Repo.all(query)
   end
 
-  def list_donations do
-    Repo.all(Donation)
-  end
+  def list_donations, do: Repo.all(Donation)
 
   def get_donation!(id), do: Repo.get!(Donation, id)
 
@@ -97,17 +94,11 @@ defmodule OmegaBravera.Money do
     |> Repo.update()
   end
 
-  def delete_donation(%Donation{} = donation) do
-    Repo.delete(donation)
-  end
+  def delete_donation(%Donation{} = donation), do: Repo.delete(donation)
 
-  def change_donation(%Donation{} = donation) do
-    Donation.changeset(donation, %{})
-  end
+  def change_donation(%Donation{} = donation), do: Donation.changeset(donation, %{})
 
-  def list_tips do
-    Repo.all(Tip)
-  end
+  def list_tips, do: Repo.all(Tip)
 
   def get_tip!(id), do: Repo.get!(Tip, id)
 
@@ -123,11 +114,7 @@ defmodule OmegaBravera.Money do
     |> Repo.update()
   end
 
-  def delete_tip(%Tip{} = tip) do
-    Repo.delete(tip)
-  end
+  def delete_tip(%Tip{} = tip), do: Repo.delete(tip)
 
-  def change_tip(%Tip{} = tip) do
-    Tip.changeset(tip, %{})
-  end
+  def change_tip(%Tip{} = tip), do: Tip.changeset(tip, %{})
 end
