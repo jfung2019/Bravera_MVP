@@ -4,9 +4,8 @@ defmodule OmegaBravera.Money do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Multi
 
-  alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges, Challenges.NGOChal}
+  alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges.NGOChal}
 
   def milestones_donations(%NGOChal{id: challenge_id}) do
     query =
@@ -23,7 +22,7 @@ defmodule OmegaBravera.Money do
     # turn into hash
     |> Enum.map(fn {k, v} -> {k, Enum.into(v, %{})} end)
     # set default values for milestones without "charged" or "pending" donations
-    |> Enum.map(fn {k, v} -> {k, Map.merge(default_milestone_stats, v)} end)
+    |> Enum.map(fn {k, v} -> {k, Map.merge(default_milestone_stats(), v)} end)
     # add charged and pending donations into total
     |> Enum.map(fn {k, v} -> {k, Map.put(v, "total", Decimal.add(v["pending"], v["charged"]))} end)
     # hash at the end
@@ -69,12 +68,11 @@ defmodule OmegaBravera.Money do
   # for charging from strava webhooks
 
   def get_donations_by_milestone(ngo_chal, milestone_limit) do
-      from(d in Donation,
-        where:
-          d.status == "pending" and d.milestone <= ^milestone_limit and d.ngo_chal_id == ^ngo_chal
-      )
-    |>
-    Repo.all()
+    from(d in Donation,
+      where:
+        d.status == "pending" and d.milestone <= ^milestone_limit and d.ngo_chal_id == ^ngo_chal
+    )
+    |> Repo.all()
   end
 
   # get all da donations

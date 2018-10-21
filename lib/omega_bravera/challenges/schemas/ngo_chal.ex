@@ -22,8 +22,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field(:start_date, :utc_datetime)
     field(:end_date, :utc_datetime)
     field(:status, :string, default: "active")
-    field(:total_pledged, :decimal, default: 0)
-    field(:total_secured, :decimal, default: 0)
     field(:last_activity_received, :utc_datetime)
 
     field(:participant_notified_of_inactivity, :boolean, default: false)
@@ -48,8 +46,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :status,
     :duration,
     :milestones,
-    :total_pledged,
-    :total_secured,
     :default_currency,
     :user_id,
     :ngo_id,
@@ -164,9 +160,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> change(end_date: end_date)
   end
 
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _) do
-    changeset
-  end
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _), do: changeset
 
   defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do
     case Decimal.cmp(changeset.changes[:distance_covered], challenge.distance_target) do

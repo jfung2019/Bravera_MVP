@@ -13,7 +13,6 @@ defmodule OmegaBravera.Donations.Pledges do
 
     if length(pledges) == length(Map.keys(pledged_charges)) do
       Challenges.update_ngo_chal(challenge, %{
-        total_pledged: pledged_total(challenge, pledges),
         self_donated: self_donated(challenge, donation_params)
       })
 
@@ -26,12 +25,6 @@ defmodule OmegaBravera.Donations.Pledges do
 
   def get_kickstarter(pledges) do
     Enum.find(pledges, fn pledge -> pledge.milestone == 1 and pledge.milestone_distance == 0 end)
-  end
-
-  defp pledged_total(%NGOChal{} = challenge, pledges) do
-    Enum.reduce(pledges, Decimal.new(challenge.total_pledged), fn pledge, acc ->
-      Decimal.add(acc, pledge.amount)
-    end)
   end
 
   defp pledged_milestones_map(donation_params) do

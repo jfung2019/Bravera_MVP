@@ -42,14 +42,6 @@ defmodule OmegaBravera.StripeHelpers do
           %{body: response_body} = response
           body = Poison.decode!(response_body)
 
-          ngo_chal = Challenges.get_ngo_chal!(ngo_chal_id)
-
-          %{total_secured: total_secured} = ngo_chal
-
-          new_total = Decimal.add(total_secured, amount)
-
-          Challenges.update_ngo_chal(ngo_chal, %{total_secured: new_total})
-
           cond do
             body["source"] ->
               Logger.info(fn ->
@@ -104,14 +96,6 @@ defmodule OmegaBravera.StripeHelpers do
       {:ok, response} ->
         %{body: response_body} = response
         body = Poison.decode!(response_body)
-
-        ngo_chal = Challenges.get_ngo_chal!(ngo_chal_id)
-
-        %{total_secured: total_secured} = ngo_chal
-
-        new_total = Decimal.add(total_secured, amount)
-
-        Challenges.update_ngo_chal(ngo_chal, %{total_secured: new_total})
 
         cond do
           body["source"] ->

@@ -135,7 +135,7 @@
    setRemainingTime();
  }
 
- var moneyPerc = <%= @challenge.total_secured %> / <%= @challenge.money_target %> * 100,
+ var moneyPerc = <%= get_in(@stats, ["total", "pending"]) %> / <%= @challenge.money_target %> * 100,
      moneyWidth;
 
  if (moneyPerc <= 100){

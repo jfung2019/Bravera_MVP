@@ -19,8 +19,6 @@
           <li>Distance Covered:  <%= @ngo_chal.distance_covered %> </li>
           <li>Status:  <%= @ngo_chal.status %> </li>
           <li>Total Milestones:  <%= @ngo_chal.milestones %> </li>
-          <li>Pledged Funds:  <%= @ngo_chal.total_pledged %> </li>
-          <li>Secured Funds:  <%= @ngo_chal.total_secured %> </li>
           <li>Default Currency:  <%= @ngo_chal.default_currency %> </li>
           <li>NGO:  <%= link @ngo_chal.ngo_id, to: admin_panel_ngo_path(@conn, :show, @ngo_chal.ngo) %> </li>
           <li>Self Donated:  <%= @ngo_chal.self_donated %> </li>

@@ -5,10 +5,10 @@ defmodule OmegaBravera.Challenges do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
-
+  alias OmegaBravera.Accounts.User
   alias OmegaBravera.Challenges.{NGOChal, Activity, Team}
   alias OmegaBravera.Fundraisers.NGO
-  alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Money.Donation
 
   def inactive_for_five_days() do
     query =
@@ -88,16 +88,16 @@ defmodule OmegaBravera.Challenges do
     Repo.one(query)
   end
 
-  def get_ngo_ngo_chals(%NGO{} = ngo, order_by \\ :total_secured) do
+  def get_ngo_ngo_chals(%NGO{} = ngo) do
     query =
       from(nc in NGOChal,
         where: nc.ngo_id == ^ngo.id,
-        join: u in User,
-        where: u.id == nc.user_id,
+        join: u in User, on: u.id == nc.user_id,
+        left_join: d in Donation, on: d.ngo_chal_id == nc.id and d.status == "charged",
         preload: [:user, :donations],
-        order_by: [desc: ^order_by]
+        group_by: [nc.id],
+        order_by: [desc: sum(fragment("coalesce(?,0)", d.amount))]
       )
-
     Repo.all(query)
   end
 

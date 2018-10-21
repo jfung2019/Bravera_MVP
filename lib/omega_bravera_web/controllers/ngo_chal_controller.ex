@@ -110,15 +110,19 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end)
     |> total_the_pledged_amount()
     |> Enum.into(%{})
-    |> IO.inspect()
   end
 
   defp total_the_pledged_amount(tuple_list) do
     [
       {"total",
-       Enum.reduce(tuple_list, 0, fn
-         {_, %{"total" => total}}, acc -> total + acc
-          _, acc -> acc # Catch if no total value
+       Enum.reduce(tuple_list, %{"pending" => 0, "charged" => 0}, fn
+         {_, %{"total" => total, "charged" => charged}},
+         %{"pending" => total_acc, "charged" => total_charged} ->
+           %{"pending" => total + total_acc, "charged" => charged + total_charged}
+
+         # Catch if no match
+         _, acc ->
+           acc
        end)}
       | tuple_list
     ]

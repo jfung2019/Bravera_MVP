@@ -21,8 +21,6 @@
           <th>Distance Covered</th> <!--Bravera/Strava-->
           <th>Status</th> <!--Bravera-->
           <th>Total Milestones</th> <!--Bravera-->
-          <th>Pledged Funds</th> <!--Bravera-->
-          <th>Secured Funds</th> <!--Bravera-->
           <th>Default Currency</th> <!--Bravera-->
           <th>NGO</th> <!--Bravera-->
           <th>Self Donated</th> <!--Bravera-->
@@ -47,8 +45,6 @@
           <td><%= challenge.distance_covered %></td>
           <td><%= challenge.status %></td>
           <td><%= challenge.milestones %></td>
-          <td><%= challenge.total_pledged %></td>
-          <td><%= challenge.total_secured %></td>
           <td><%= challenge.default_currency %></td>
           <td><%= link challenge.ngo_id, to: admin_panel_ngo_path(@conn, :show, challenge.ngo) %></td>
           <td><%= challenge.self_donated %></td>

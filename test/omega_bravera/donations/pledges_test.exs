@@ -38,7 +38,6 @@ defmodule OmegaBravera.Donations.PledgesTest do
     challenge = Repo.get(NGOChal, challenge.id)
 
     assert length(pledges) == 4
-    assert challenge.total_pledged == Decimal.new(110)
     assert challenge.self_donated == false
   end
 
