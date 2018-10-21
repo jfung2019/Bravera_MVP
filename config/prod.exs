@@ -3,7 +3,6 @@ use Mix.Config
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
   http: [port: System.get_env("PORT") || 8080],
   url: [host: "bravera-staging.plangora.com", port: 443, scheme: :https],
-  force_ssl: [hsts: true],
   cache_static_manifest: "priv/static/manifest.json",
   server: true,
   code_reloader: false
