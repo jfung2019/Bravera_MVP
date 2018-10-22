@@ -34,7 +34,7 @@ defmodule OmegaBravera.NotifierTest do
              substitutions: %{
                "-challengeURL-" => "https://bravera.co/swcc/John-594",
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
-               "-donorPledge-" => "$40 HKD",
+               "-donorPledge-" => "HK$40",
                "-participantName-" => user.firstname
              },
              template_id: "79561f40-9939-406c-bdbe-0ecca63a1e1a",
