@@ -224,110 +224,29 @@
    })
  });
 
- if (mComplete === 0){
-   $('#amount').change(function(){
-     if ($(this).val() == 600){
-       $('#kickstarter').val(150);
-       $('#m1-donation').val(150);
-       $('#m2-donation').val(150);
-       $('#m3-donation').val(150);
-     } else if ($(this).val() == 400){
-       $('#kickstarter').val(100);
-       $('#m1-donation').val(100);
-       $('#m2-donation').val(100);
-       $('#m3-donation').val(100);
-     } else if ($(this).val() == 320){
-       $('#kickstarter').val(80);
-       $('#m1-donation').val(80);
-       $('#m2-donation').val(80);
-       $('#m3-donation').val(80);
-     } else if ($(this).val() == 160){
-       $('#kickstarter').val(40);
-       $('#m1-donation').val(40);
-       $('#m2-donation').val(40);
-       $('#m3-donation').val(40);
-     }
-   }).change();
- } else if (mComplete === 1){
-   $('#m1-donation-group').remove();
-   $('#amount').change(function(){
-     if ($(this).val() == 600){
-       $('#kickstarter').val(150);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(300);
-       $('#m3-donation').val(150);
-     } else if ($(this).val() == 400){
-       $('#kickstarter').val(100);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(200);
-       $('#m3-donation').val(100);
-     } else if ($(this).val() == 320){
-       $('#kickstarter').val(80);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(160);
-       $('#m3-donation').val(80);
-     } else if ($(this).val() == 160){
-       $('#kickstarter').val(40);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(80);
-       $('#m3-donation').val(40);
-     }
-   }).change();
- } else if (mComplete === 2){
-   $('#m1-donation-group').remove();
-   $('#m2-donation-group').remove();
-
-   $('#amount').change(function(){
-     if ($(this).val() == 600){
-       $('#kickstarter').val(150);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(0);
-       $('#m3-donation').val(450);
-     } else if ($(this).val() == 400){
-       $('#kickstarter').val(100);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(0);
-       $('#m3-donation').val(300);
-     } else if ($(this).val() == 320){
-       $('#kickstarter').val(80);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(0);
-       $('#m3-donation').val(240);
-     } else if ($(this).val() == 160){
-       $('#kickstarter').val(40);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(0);
-       $('#m3-donation').val(120);
-     }
-   }).change();
- } else if (mComplete === 3){
-   $('#m1-donation-group').remove();
-   $('#m2-donation-group').remove();
-   $('#m3-donation-group').remove();
-   $('#amount').change(function(){
-     if ($(this).val() == 600){
-       $('#kickstarter').val(600);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(0);
-       $('#m3-donation').val(0);
-     } else if ($(this).val() == 400){
-       $('#kickstarter').val(400);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(0);
-       $('#m3-donation').val(0);
-     } else if ($(this).val() == 320){
-       $('#kickstarter').val(320);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(0);
-       $('#m3-donation').val(0);
-     } else if ($(this).val() == 160){
-       $('#kickstarter').val(160);
-       $('#m1-donation').val(0);
-       $('#m2-donation').val(0);
-       $('#m3-donation').val(0);
-     }
-   }).change();
- }
+$('#amount').change(function(){
+  if ($(this).val() == 600){
+    $('#kickstarter').val(150);
+    $('#m1-donation').val(150);
+    $('#m2-donation').val(150);
+    $('#m3-donation').val(150);
+  } else if ($(this).val() == 400){
+    $('#kickstarter').val(100);
+    $('#m1-donation').val(100);
+    $('#m2-donation').val(100);
+    $('#m3-donation').val(100);
+  } else if ($(this).val() == 320){
+    $('#kickstarter').val(80);
+    $('#m1-donation').val(80);
+    $('#m2-donation').val(80);
+    $('#m3-donation').val(80);
+  } else if ($(this).val() == 160){
+    $('#kickstarter').val(40);
+    $('#m1-donation').val(40);
+    $('#m2-donation').val(40);
+    $('#m3-donation').val(40);
+  }
+}).change();
 
  var kickValue = 0,
      m1Value = 0,
