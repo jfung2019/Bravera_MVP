@@ -23,13 +23,12 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Mailer.send()
   end
 
-  # TODO: Change harcoded HKD to pledged currency when supporting other currencies - Simon
   def participant_email(%NGOChal{} = challenge, %User{} = donor, pledges, challenge_path) do
     Email.build()
     |> Email.put_template("79561f40-9939-406c-bdbe-0ecca63a1e1a")
     |> Email.add_substitution("-donorName-", User.full_name(donor))
     |> Email.add_substitution("-participantName-", challenge.user.firstname)
-    |> Email.add_substitution("-donorPledge-", "$#{pledged_amount(pledges)} HKD")
+    |> Email.add_substitution("-donorPledge-", "#{OmegaBraveraWeb.NGOChalView.currency_to_symbol(challenge.default_currency)}#{pledged_amount(pledges)}")
     |> Email.add_substitution(
       "-challengeURL-",
       "#{Application.get_env(:omega_bravera, :app_base_url)}#{challenge_path}"

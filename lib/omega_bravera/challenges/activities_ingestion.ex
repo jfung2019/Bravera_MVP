@@ -14,6 +14,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def process_strava_webhook(
         %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
       ) do
+    Logger.info("Strava POST webhook processing: #{inspect(params)}")
     owner_id
     |> Accounts.get_strava_challengers()
     |> process_challenges(params)
@@ -22,12 +23,15 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def process_strava_webhook(_), do: {:error, :webhook_not_processed}
 
   defp process_challenges([hd | _] = challenges, %{"object_id" => object_id}) do
+    Logger.info("Processing challenges")
     activity = Strava.Activity.retrieve(object_id, strava_client(hd))
+    Logger.info("Processing activity: #{inspect(activity)}")
     Enum.map(challenges, &process_challenge(&1, activity))
   end
 
   def process_challenge({challenge_id, _}, %Strava.Activity{distance: distance} = strava_activity)
       when distance > 0 and is_integer(challenge_id) do
+    Logger.info("Processing challenge: #{challenge_id}")
     {status, _challenge, _activity, donations} =
       challenge_id
       |> Challenges.get_ngo_chal!()
@@ -38,17 +42,17 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       |> get_donations
       |> notify_participant_of_milestone
       |> charge_donations()
-
+    Logger.info("Processing has finished for #{challenge_id}")
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
+      Logger.info("Processing was successful")
       {:ok, :challenge_updated}
     else
+      Logger.info("Processing was not successful")
       {:error, :activity_not_processed}
     end
   end
 
-  def process_challenge(_, _) do
-    {:error, :activity_not_processed}
-  end
+  def process_challenge(_, _), do: {:error, :activity_not_processed}
 
   defp create_activity(challenge, activity) do
     changeset = Challenges.Activity.create_changeset(activity, challenge)

@@ -21,6 +21,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def challenger_not_self_donated?(_, _), do: false
 
+  # TODO: Move into app logic and delegate
   def currency_to_symbol(currency) do
     case currency do
       "myr" -> "RM"

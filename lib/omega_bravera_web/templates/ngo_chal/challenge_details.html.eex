@@ -36,7 +36,7 @@
     <div class="mb-3 mx-lg-3">
       <h5 class="text-420 mt-1 mb-1 ml-1 text-left">
         Nudge Donation (now)
-        <span class="text-success"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%=get_in(@stats, ["0", "total"]) || 0 %></strong> </span>
+        <span class="text-success"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%=get_in(@stats, ["1", "total"]) || 0 %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -47,7 +47,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m1-label"><%= @m_targets["2"] %>km</span>
-        <span class="text-secondary" id="m1-total"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["1", "total"]) || "0" %></strong> </span>
+        <span class="text-secondary" id="m1-total"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["2", "total"]) || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -58,7 +58,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1" style="text-align: left;">
         <span id="m2-label"><%= @m_targets["3"] %>km</span>
-        <span style="float:right;" class="text-secondary" id="m2-total"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["2", "total"]) || "0" %></strong> </span>
+        <span style="float:right;" class="text-secondary" id="m2-total"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["3", "total"]) || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
@@ -69,7 +69,7 @@
       </div>
       <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
         <span id="m3-label"><%= @m_targets["4"] %>km</span>
-        <span class="text-secondary" id="m3-total"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["3", "total"]) || "0" %></strong> </span>
+        <span class="text-secondary" id="m3-total"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["4", "total"]) || "0" %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
       <div class="progress chal-progress mb-2">
