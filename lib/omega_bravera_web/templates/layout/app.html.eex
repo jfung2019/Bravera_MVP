@@ -19,7 +19,7 @@
 
   <body class="gray-background">
     <div class="vh-top">
-    <%= if logged_in?(@conn) && has_tracker?(@conn) do %>
+    <%= if logged_in?(@conn) && not is_admin?(@conn) do %>
       <%= render "auth_nav.html" %>
     <% else %>
       <%= render "unauth_nav.html" %>

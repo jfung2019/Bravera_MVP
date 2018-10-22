@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.PageController do
   use OmegaBraveraWeb, :controller
 
   alias OmegaBravera.{Challenges, Fundraisers}
-  # alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Accounts.AdminUser
 
   def notFound(conn, _params) do
     render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
@@ -13,22 +13,30 @@ defmodule OmegaBraveraWeb.PageController do
 
     cond do
       user !== nil ->
-        %{id: user_id} = user
 
-        active_chal = Challenges.get_one_user_active_chal(user_id)
+        case user do
+          %AdminUser{} ->
+            redirect(conn, to: admin_user_page_path(conn, :index))
 
-        cond do
-          active_chal !== nil ->
-            %{slug: chal_slug, ngo_id: ngo_id} = active_chal
+          _ ->
+            %{id: user_id} = user
 
-            ngo = Fundraisers.get_ngo!(ngo_id)
+            active_chal = Challenges.get_one_user_active_chal(user_id)
 
-            %{slug: ngo_slug} = ngo
+            cond do
+              active_chal !== nil ->
+                %{slug: chal_slug, ngo_id: ngo_id} = active_chal
 
-            redirect(conn, to: "/" <> ngo_slug <> "/" <> chal_slug)
+                ngo = Fundraisers.get_ngo!(ngo_id)
 
-          true ->
-            redirect(conn, to: "/ngos")
+                %{slug: ngo_slug} = ngo
+
+                redirect(conn, to: "/" <> ngo_slug <> "/" <> chal_slug)
+
+              true ->
+                redirect(conn, to: "/ngos")
+            end
+
         end
 
       true ->

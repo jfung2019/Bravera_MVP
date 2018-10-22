@@ -30,6 +30,12 @@ defmodule OmegaBraveraWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  # Bravera user auth
+  scope "/user", OmegaBraveraWeb do
+    pipe_through(:browser)
+
+    resources("/sessions", UserSessionController, only: [:create])
+  end
   # Strava OAuth Routes
   scope "/strava", OmegaBraveraWeb do
     pipe_through(:browser)

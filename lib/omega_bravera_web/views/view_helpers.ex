@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.ViewHelpers do
   alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Accounts.AdminUser
 
   def logged_in?(conn) do
     user = Guardian.Plug.current_resource(conn)
@@ -11,6 +12,15 @@ defmodule OmegaBraveraWeb.ViewHelpers do
       %User{strava: strava} when strava != nil ->
         true
 
+      _ ->
+        false
+    end
+  end
+
+  def is_admin?(conn) do
+    case Guardian.Plug.current_resource(conn) do
+      %AdminUser{} ->
+        true
       _ ->
         false
     end

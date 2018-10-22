@@ -283,9 +283,20 @@ defmodule OmegaBravera.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+    case attrs do
+    %{password: password} when password != nil ->
+      %User{}
+      |> User.changeset_with_password(attrs)
+      |> Repo.insert()
+    _ ->
+      %User{}
+      |> User.changeset(attrs)
+      |> Repo.insert()
+    end
+  end
+
+  def create_bravera_user(attrs \\ %{}) do
+
   end
 
   @doc """
@@ -626,6 +637,26 @@ defmodule OmegaBravera.Accounts do
 
     user =
       from(u in AdminUser, where: fragment("lower(?) = ?", u.email, ^email))
+      |> Repo.one()
+
+    cond do
+      user && Comeonin.Bcrypt.checkpw(given_pass, user.password_hash) ->
+        {:ok, user}
+
+      user ->
+        {:error, :unauthorized}
+
+      true ->
+        Comeonin.Bcrypt.dummy_checkpw()
+        {:error, :not_found}
+    end
+  end
+
+  def authenticate_bravera_user_by_email_and_pass(email, given_pass) do
+    email = String.downcase(email)
+
+    user =
+      from(u in User, where: fragment("lower(?) = ?", u.email, ^email))
       |> Repo.one()
 
     cond do
