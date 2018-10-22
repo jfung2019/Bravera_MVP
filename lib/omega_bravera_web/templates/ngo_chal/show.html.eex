@@ -135,9 +135,9 @@
    setRemainingTime();
  }
 
- var moneyPerc = <%= get_in(@stats, ["total", "pending"]) %> / <%= @challenge.money_target %> * 100,
+ var moneyPerc = <%= get_in(@stats, ["total", "charged"]) %> / <%= @challenge.money_target %> * 100,
      moneyWidth;
-
+  debugger;
  if (moneyPerc <= 100){
    moneyWidth = "width:" + moneyPerc  + "%;";
  } else {
