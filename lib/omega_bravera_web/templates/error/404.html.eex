@@ -9,12 +9,6 @@
 
     <title>Bravera</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
-
-    <!--
-      © 2018 Bravera™
-      Engineered by Nick West
-      devMail: nickw (at) bravera.co
-    -->
   </head>
 
   <body class="gray-background">
@@ -50,7 +44,5 @@
     </section> <!-- /container -->
 
     </div>
-
-    <!-- © 2018 Bravera™ | devMail: nickw (at) bravera.co -->
   </body>
 </html>
