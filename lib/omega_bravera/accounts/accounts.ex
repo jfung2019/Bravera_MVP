@@ -295,10 +295,6 @@ defmodule OmegaBravera.Accounts do
     end
   end
 
-  def create_bravera_user(attrs \\ %{}) do
-
-  end
-
   @doc """
   Updates a user.
 
