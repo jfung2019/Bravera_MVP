@@ -44,6 +44,5 @@
           gtag('config', '<%= assigns[:google_analytics_id] %>');
         </script>
     <% end %>
-    <!-- © 2018 Bravera™ | devMail: nickw (at) bravera.co -->
   </body>
 </html>
