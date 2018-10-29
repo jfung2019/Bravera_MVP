@@ -1,5 +1,5 @@
 defmodule OmegaBravera.AccountsTest do
-  use OmegaBravera.DataCase, async: true
+  use OmegaBravera.DataCase, async: false
 
   import OmegaBravera.Factory
 
