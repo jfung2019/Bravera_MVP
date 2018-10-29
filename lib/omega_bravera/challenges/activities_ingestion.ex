@@ -24,7 +24,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   defp process_challenges([hd | _] = challenges, %{"object_id" => object_id}) do
     Logger.info("Processing challenges")
-    activity = Strava.Activity.retrieve(object_id, strava_client(hd))
+    activity = Strava.Activity.retrieve(object_id, %{}, strava_client(hd))
     Logger.info("Processing activity: #{inspect(activity)}")
     Enum.map(challenges, &process_challenge(&1, activity))
   end
