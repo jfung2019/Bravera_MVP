@@ -22,14 +22,14 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   def process_strava_webhook(_), do: {:error, :webhook_not_processed}
 
-  defp process_challenges([hd | _] = challenges, %{"object_id" => object_id}) do
+  def process_challenges([hd | _] = challenges, %{"object_id" => object_id}) do
     Logger.info("Processing challenges")
     activity = Strava.Activity.retrieve(object_id, %{}, strava_client(hd))
     Logger.info("Processing activity: #{inspect(activity)}")
     Enum.map(challenges, &process_challenge(&1, activity))
   end
 
-  defp process_challenges([], _) do
+  def process_challenges([], _) do
     Logger.info("No challengers found")
     {:error, :no_challengers_found}
   end
@@ -59,7 +59,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   def process_challenge(_, _), do: {:error, :activity_not_processed}
 
-  defp create_activity(challenge, activity) do
+  def create_activity(challenge, activity) do
     changeset = Challenges.Activity.create_changeset(activity, challenge)
 
     if valid_activity?(activity, challenge) do
