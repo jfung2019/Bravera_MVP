@@ -29,6 +29,11 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     Enum.map(challenges, &process_challenge(&1, activity))
   end
 
+  defp process_challenges([], _) do
+    Logger.info("No challengers found")
+    {:error, :no_challengers_found}
+  end
+
   def process_challenge({challenge_id, _}, %Strava.Activity{distance: distance} = strava_activity)
       when distance > 0 and is_integer(challenge_id) do
     Logger.info("Processing challenge: #{challenge_id}")
