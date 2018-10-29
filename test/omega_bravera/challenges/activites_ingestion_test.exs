@@ -4,7 +4,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Challenges.NGOChal, Challenges.ActivitiesIngestion, Repo}
+  alias OmegaBravera.{Challenges.NGOChal, Challenges.ActivitiesIngestion, Repo, Accounts}
 
   setup do
     ExVCR.Config.cassette_library_dir("test/fixtures/cassettes")
@@ -22,7 +22,49 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     {:ok, [strava_activity: strava_activity]}
   end
 
+  describe "create_activity/2" do
+    test "returns ok when activity is valid", %{
+      strava_activity: strava_activity
+    } do
+      challenge = insert(:ngo_challenge)
+      assert {:ok, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity)
+    end
+
+    test "returns error when activity is invalid", %{
+      strava_activity: strava_activity
+    } do
+      challenge = insert(:ngo_challenge)
+      activity = Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: -10))
+      assert {:error, _, _} = ActivitiesIngestion.create_activity(challenge, activity)
+    end
+  end
+
+  describe "process_challenges/2" do
+    test "returns an error when no challengers are found" do
+      user = insert(:user, strava: build(:strava, user: nil))
+      challengers = Accounts.get_strava_challengers(user.strava.athlete_id)
+
+      assert ActivitiesIngestion.process_challenges(challengers, user.strava.athlete_id) ==
+               {:error, :no_challengers_found}
+    end
+  end
+
   describe "process_challenge/2" do
+    test "processes challenges if challengers were found", %{
+      strava_activity: strava_activity
+    } do
+      user = insert(:user, strava: build(:strava, user: nil))
+      ngo = insert(:ngo, %{user: user})
+      _challenge = insert(:ngo_challenge, %{ngo: ngo, user: user})
+
+      challenger =
+        Accounts.get_strava_challengers(user.strava.athlete_id)
+        |> List.first()
+
+      assert ActivitiesIngestion.process_challenge(challenger, strava_activity) ==
+               {:ok, :challenge_updated}
+    end
+
     test "does nothing if the Strava activity distance is <= 0" do
       challenge = insert(:ngo_challenge)
 

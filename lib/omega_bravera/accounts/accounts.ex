@@ -115,7 +115,7 @@ defmodule OmegaBravera.Accounts do
   @doc """
   Inserts or updates strava user with create_strava_user func below
   """
-
+  def insert_or_update_strava_user(%{email: nil}), do: {:error, "No email"}
   def insert_or_update_strava_user(changeset) do
     case Repo.get_by(User, email: changeset[:email]) do
       nil ->
