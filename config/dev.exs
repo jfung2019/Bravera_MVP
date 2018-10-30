@@ -36,7 +36,8 @@ config :omega_bravera, OmegaBravera.Guardian,
 
 # Email config
 config :sendgrid,
-  api_key: "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"
+  api_key: "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",
+  sandbox_enable: true
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
