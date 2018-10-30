@@ -45,4 +45,5 @@ config :omega_bravera, OmegaBravera.Mailer,
   api_key: System.get_env("SENDGRID_API_KEY")
 
 config :sendgrid,
-  api_key: System.get_env("SENDGRID_API_KEY")
+  api_key: System.get_env("SENDGRID_API_KEY"),
+  sandbox_enable: true
