@@ -35,6 +35,8 @@ defmodule OmegaBravera.Challenges.Activity do
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:challenge_id)
+    |> unique_constraint(:strava_id)
+    |> unique_constraint(:challenge_id)
   end
 
   defp to_km(meters) do
