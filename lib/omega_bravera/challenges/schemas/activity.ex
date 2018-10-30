@@ -11,6 +11,7 @@ defmodule OmegaBravera.Challenges.Activity do
     field(:start_date, :utc_datetime)
     field(:manual, :boolean)
     field(:type, :string)
+    field(:object_id, :integer)
 
     # associations
     belongs_to(:user, User)
