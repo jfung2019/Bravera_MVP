@@ -5,7 +5,7 @@ defmodule OmegaBravera.ActivitySyncer do
   alias OmegaBravera.Challenges.ActivitiesIngestion
 
   def prepare_challengers() do
-    Logger.info("Preparing..")
+    Logger.info("Syncer: Preparing..")
     athletes_ids = Accounts.get_all_athlete_ids()
     challengers =
         Enum.map(athletes_ids, fn athlete_id ->
@@ -15,7 +15,7 @@ defmodule OmegaBravera.ActivitySyncer do
         |> Enum.filter(&!is_nil(&1))
         |> List.foldl([], &(&1 ++ &2))
 
-    Logger.info("I have #{length(athletes_ids)} athlete IDs and #{length(challengers)} are challengers.")
+    Logger.info("Syncer: I have #{length(athletes_ids)} athlete IDs and #{length(challengers)} are challengers.")
 
     challengers
   end
@@ -24,7 +24,7 @@ defmodule OmegaBravera.ActivitySyncer do
   def process_activities(activities_list, page \\ 1)
   def process_activities([head | tail], page) do
     activities = next_activity_page(head, page)
-    Logger.info("Got #{length(activities)} for challenge ID: #{elem(head, 0)}, page: #{page}")
+    Logger.info("Syncer: Got #{length(activities)} for challenge ID: #{elem(head, 0)}, page: #{page}")
 
     process_challenges(elem(head, 0), elem(head, 1), activities)
       if Enum.empty?(activities) do
@@ -50,14 +50,17 @@ defmodule OmegaBravera.ActivitySyncer do
 
   # Note: token is only there to satisfy pattern matching for ActivitiesIngestion.process_challenge/2
   def process_challenges(challenge_id, token, activities) do
-    Logger.info("Processing Challenge #{challenge_id}...")
+    Logger.info("Syncer: Processing Activities for Challenge #{challenge_id}...")
     for activity <- activities do
       ActivitiesIngestion.process_challenge({challenge_id, token}, activity)
     end
   end
 
   def sync() do
-    Logger.info("Starting ActivitySyncer model...")
+    Logger.info("Syncer: Dropping existing active challenges activities")
+    Accounts.drop_active_challenges_activities()
+
+    Logger.info("Syncer: Starting ActivitySyncer model...")
     prepare_challengers() |> process_activities()
   end
 end
