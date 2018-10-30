@@ -22,6 +22,12 @@ defmodule OmegaBravera.Challenges.Activity do
   @meters_per_km 1000
   @required_attributes [:distance, :start_date, :type, :user_id, :challenge_id]
   @allowed_attributes [:name, :manual | @required_attributes]
+  @activity_type [
+    "Run",
+    "Cycle",
+    "Walk",
+    "Hike"
+  ]
 
   def create_changeset(%Strava.Activity{} = strava_activity, %NGOChal{} = challenge) do
     %__MODULE__{}
@@ -37,6 +43,7 @@ defmodule OmegaBravera.Challenges.Activity do
     |> foreign_key_constraint(:challenge_id)
     |> unique_constraint(:strava_id)
     |> unique_constraint(:challenge_id)
+    |> validate_inclusion(:type, @activity_type)
   end
 
   defp to_km(meters) do
