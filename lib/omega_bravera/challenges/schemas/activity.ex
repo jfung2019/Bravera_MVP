@@ -11,7 +11,6 @@ defmodule OmegaBravera.Challenges.Activity do
     field(:start_date, :utc_datetime)
     field(:manual, :boolean)
     field(:type, :string)
-    field(:object_id, :integer)
 
     # associations
     belongs_to(:user, User)
@@ -36,6 +35,8 @@ defmodule OmegaBravera.Challenges.Activity do
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:challenge_id)
+    |> unique_constraint(:strava_id)
+    |> unique_constraint(:challenge_id)
   end
 
   defp to_km(meters) do
