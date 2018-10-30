@@ -19,6 +19,10 @@ defmodule OmegaBravera.Accounts do
     Money.Donation
   }
 
+  def get_all_athlete_ids() do
+    query = from(s in Strava, select: s.athlete_id)
+    query |> Repo.all
+  end
   def get_strava_challengers(athlete_id) do
     query =
       from(s in Strava,
