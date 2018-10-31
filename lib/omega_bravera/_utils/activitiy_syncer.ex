@@ -62,5 +62,6 @@ defmodule OmegaBravera.ActivitySyncer do
 
     Logger.info("Syncer: Starting ActivitySyncer model...")
     prepare_challengers() |> process_activities()
+    Logger.info("Syncer: Done.")
   end
 end
