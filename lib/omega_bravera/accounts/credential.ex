@@ -5,6 +5,15 @@ defmodule OmegaBravera.Accounts.Credential do
 
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 
+
+  @create_attrs [
+    :password,
+    :password_confirmation,
+    :reset_token,
+    :reset_token_created,
+    :user_id
+  ]
+
   schema "credentials" do
     field(:password_hash, :string)
     field(:password, :string, virtual: true)
@@ -19,7 +28,7 @@ defmodule OmegaBravera.Accounts.Credential do
   @doc false
   def changeset(%Credential{} = credential, attrs) do
     credential
-    |> cast(attrs, [:password, :password_confirmation, :reset_token, :reset_token_created])
+    |> cast(attrs, @create_attrs)
     |> validate_required([:password, :password_confirmation])
     |> validate_confirmation(:password)
     |> validate_length(:password, min: 6)

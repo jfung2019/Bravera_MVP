@@ -3,7 +3,7 @@ defmodule OmegaBravera.AccountsTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts, Accounts.User, Repo, Trackers.Strava}
+  alias OmegaBravera.{Accounts, Accounts.User, Repo, Trackers.Strava, Accounts.Credential}
 
   describe "users" do
     @valid_attrs %{email: "test@test.com", firstname: "some firstname", lastname: "some lastname"}
@@ -325,6 +325,37 @@ defmodule OmegaBravera.AccountsTest do
     test "returns not found error with no matching user for email" do
       assert {:error, :not_found} =
                Accounts.authenticate_admin_user_by_email_and_pass("bademail@localhost", @pass)
+    end
+  end
+
+  describe "email_password_auth/2" do
+    @password "strong password"
+
+    def credential_fixture() do
+      user = insert(:user)
+      credential_attrs = %{
+        password: @password,
+        password_confirmation: @password,
+        user_id: user.id
+      }
+
+      {:ok, credential} =
+        Credential.changeset(%Credential{}, credential_attrs)
+        |> Repo.insert()
+
+      credential |> Repo.preload(:user)
+    end
+
+    test "when correct credentials are given, {:ok, user} is returned" do
+      credential = credential_fixture()
+      {:ok, user} = Accounts.email_password_auth(credential.user.email, @password)
+
+      assert user.id == credential.user.id
+    end
+
+    test "when invalid credentials are provided, {:error, reason} is returned" do
+      credential = credential_fixture()
+      assert {:error, :invalid_password} = Accounts.email_password_auth(credential.user.email, "bad password")
     end
   end
 end

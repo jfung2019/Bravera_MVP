@@ -10,13 +10,12 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Stripe.StrCustomer
 
   @required_attributes [:email]
-  @allowed_attributes [:email, :password, :firstname, :lastname, :additional_info]
+  @allowed_attributes [:email, :firstname, :lastname, :additional_info]
 
   schema "users" do
     field(:email, :string)
     field(:firstname, :string, default: "No Name")
     field(:lastname, :string, default: "No Name")
-    field(:password, :string, virtual: true)
     field(:additional_info, :map, default: %{})
 
     # associations
