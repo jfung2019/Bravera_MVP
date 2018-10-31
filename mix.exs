@@ -58,7 +58,8 @@ defmodule OmegaBravera.Mixfile do
       {:sendgrid, "~> 1.8.0"},
       {:ex_machina, "~> 2.2"},
       {:sched_ex, "~> 1.0"},
-      {:csv, "~> 2.0.0"}
+      {:csv, "~> 2.0.0"},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 
