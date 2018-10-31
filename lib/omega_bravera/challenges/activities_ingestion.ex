@@ -15,6 +15,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
       ) do
     Logger.info("Strava POST webhook processing: #{inspect(params)}")
+
     owner_id
     |> Accounts.get_strava_challengers()
     |> process_challenges(params)
@@ -37,6 +38,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def process_challenge({challenge_id, _}, %Strava.Activity{distance: distance} = strava_activity)
       when distance > 0 and is_integer(challenge_id) do
     Logger.info("Processing challenge: #{challenge_id}")
+
     {status, _challenge, _activity, donations} =
       challenge_id
       |> Challenges.get_ngo_chal!()
@@ -47,12 +49,14 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       |> get_donations
       |> notify_participant_of_milestone
       |> charge_donations()
+
     Logger.info("Processing has finished for #{challenge_id}")
+
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
       Logger.info("Processing was successful")
       {:ok, :challenge_updated}
     else
-      Logger.info("Processing was not successful")
+      Logger.info("Processing was not successful (donation issue)")
       {:error, :activity_not_processed}
     end
   end
@@ -62,7 +66,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def create_activity(challenge, activity) do
     changeset = Challenges.Activity.create_changeset(activity, challenge)
 
-    if valid_activity?(activity, challenge) do
+    if valid_activity?(activity, challenge) and
+         activity_type_matches_challenge_type?(activity, challenge) do
       case Repo.insert(changeset) do
         {:ok, activity} -> {:ok, challenge, activity}
         {:error, _} -> {:error, challenge, nil}
@@ -131,5 +136,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
     Timex.compare(challenge.start_date, activity.start_date) == -1 and
       Timex.compare(challenge.end_date, activity.start_date) >= 0
+  end
+
+  defp activity_type_matches_challenge_type?(activity, challenge) do
+    activity.type == challenge.activity_type
   end
 end
