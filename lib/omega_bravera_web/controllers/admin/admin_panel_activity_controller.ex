@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   alias OmegaBravera.ActivitySyncer
 
   def index(conn, _params) do
-    ActivitySyncer.sync()
+    Task.async(ActivitySyncer, :sync, [])
     render(conn, "index.html")
   end
 end
