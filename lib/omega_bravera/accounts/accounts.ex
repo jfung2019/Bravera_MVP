@@ -22,7 +22,7 @@ defmodule OmegaBravera.Accounts do
 
   def get_all_athlete_ids() do
     query = from(s in Strava, select: s.athlete_id)
-    query |> Repo.all
+    query |> Repo.all()
   end
 
   def drop_active_challenges_activities() do
@@ -31,6 +31,7 @@ defmodule OmegaBravera.Accounts do
         join: c in assoc(a, :challenge),
         where: c.status == "active"
       )
+
     query |> Repo.delete_all()
   end
 
@@ -131,6 +132,7 @@ defmodule OmegaBravera.Accounts do
   Inserts or updates strava user with create_strava_user func below
   """
   def insert_or_update_strava_user(%{email: nil}), do: {:error, "No email"}
+
   def insert_or_update_strava_user(changeset) do
     case Repo.get_by(User, email: changeset[:email]) do
       nil ->
@@ -299,14 +301,15 @@ defmodule OmegaBravera.Accounts do
   """
   def create_user(attrs \\ %{}) do
     case attrs do
-    %{password: password} when password != nil ->
-      %User{}
-      |> User.changeset_with_password(attrs)
-      |> Repo.insert()
-    _ ->
-      %User{}
-      |> User.changeset(attrs)
-      |> Repo.insert()
+      %{password: password} when password != nil ->
+        %User{}
+        |> User.changeset_with_password(attrs)
+        |> Repo.insert()
+
+      _ ->
+        %User{}
+        |> User.changeset(attrs)
+        |> Repo.insert()
     end
   end
 

@@ -92,12 +92,15 @@ defmodule OmegaBravera.Challenges do
     query =
       from(nc in NGOChal,
         where: nc.ngo_id == ^ngo.id,
-        join: u in User, on: u.id == nc.user_id,
-        left_join: d in Donation, on: d.ngo_chal_id == nc.id and d.status == "charged",
+        join: u in User,
+        on: u.id == nc.user_id,
+        left_join: d in Donation,
+        on: d.ngo_chal_id == nc.id and d.status == "charged",
         preload: [:user, :donations],
         group_by: [nc.id],
         order_by: [desc: sum(fragment("coalesce(?,0)", d.amount))]
       )
+
     Repo.all(query)
   end
 

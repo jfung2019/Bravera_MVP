@@ -5,7 +5,6 @@ defmodule OmegaBravera.Accounts.Credential do
 
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 
-
   @create_attrs [
     :password,
     :password_confirmation,

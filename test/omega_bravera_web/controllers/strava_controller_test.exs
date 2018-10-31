@@ -32,13 +32,18 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
   describe "strava login" do
     setup [:create_user]
 
-    test "when the correct login params are provided, login user and redirect", %{conn: conn, user: user} do
+    test "when the correct login params are provided, login user and redirect", %{
+      conn: conn,
+      user: user
+    } do
       {:ok, _strava} = Trackers.create_strava(user.id, @create_attrs)
+
       params = %{
         "code" => "some code",
         "scope" => "view_private",
         "state" => ""
       }
+
       changeset = %{
         additional_info: %{location: "Canada/Montréal/Montréal", sex: nil},
         athlete_id: 42,

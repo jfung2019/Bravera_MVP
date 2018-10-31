@@ -36,6 +36,7 @@ defmodule OmegaBraveraWeb.Router do
 
     resources("/sessions", UserSessionController, only: [:create])
   end
+
   # Strava OAuth Routes
   scope "/strava", OmegaBraveraWeb do
     pipe_through(:browser)

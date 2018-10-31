@@ -21,6 +21,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     case Guardian.Plug.current_resource(conn) do
       %AdminUser{} ->
         true
+
       _ ->
         false
     end

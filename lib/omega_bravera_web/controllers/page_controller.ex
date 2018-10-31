@@ -13,7 +13,6 @@ defmodule OmegaBraveraWeb.PageController do
 
     cond do
       user !== nil ->
-
         case user do
           %AdminUser{} ->
             redirect(conn, to: admin_user_page_path(conn, :index))
@@ -36,7 +35,6 @@ defmodule OmegaBraveraWeb.PageController do
               true ->
                 redirect(conn, to: "/ngos")
             end
-
         end
 
       true ->
@@ -77,7 +75,6 @@ defmodule OmegaBraveraWeb.PageController do
 
     cond do
       user !== nil ->
-
         case user do
           %AdminUser{} ->
             redirect(conn, to: admin_user_page_path(conn, :index))

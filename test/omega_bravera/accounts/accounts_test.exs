@@ -333,6 +333,7 @@ defmodule OmegaBravera.AccountsTest do
 
     def credential_fixture() do
       user = insert(:user)
+
       credential_attrs = %{
         password: @password,
         password_confirmation: @password,
@@ -355,7 +356,9 @@ defmodule OmegaBravera.AccountsTest do
 
     test "when invalid credentials are provided, {:error, reason} is returned" do
       credential = credential_fixture()
-      assert {:error, :invalid_password} = Accounts.email_password_auth(credential.user.email, "bad password")
+
+      assert {:error, :invalid_password} =
+               Accounts.email_password_auth(credential.user.email, "bad password")
     end
   end
 end
