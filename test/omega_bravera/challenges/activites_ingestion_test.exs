@@ -14,8 +14,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       distance: 1740.0,
       # putting it 1h into the future so its within the duration of our factory created challenges
       start_date: Timex.shift(Timex.now(), hours: 1),
-      type: "Walk",
-      name: "Morning Walk",
+      type: "Run",
+      name: "Morning Run",
       manual: false
     }
 
@@ -27,15 +27,30 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       strava_activity: strava_activity
     } do
       challenge = insert(:ngo_challenge)
+      strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
+
       assert {:ok, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity)
     end
 
-    test "returns error when activity is invalid", %{
+    test "returns error when activity dates are invalid", %{
       strava_activity: strava_activity
     } do
       challenge = insert(:ngo_challenge)
-      activity = Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: -10))
-      assert {:error, _, _} = ActivitiesIngestion.create_activity(challenge, activity)
+
+      strava_activity =
+        Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: -10))
+        |> Map.replace!(:type, challenge.activity_type)
+
+      assert {:error, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity)
+    end
+
+    test "challenge not processed when activity type does not match challenge type", %{
+      strava_activity: strava_activity
+    } do
+      challenge = insert(:ngo_challenge)
+      strava_activity = Map.replace!(strava_activity, :type, "invalid_type")
+
+      assert {:error, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity)
     end
   end
 
@@ -55,7 +70,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     } do
       user = insert(:user, strava: build(:strava, user: nil))
       ngo = insert(:ngo, %{user: user})
-      _challenge = insert(:ngo_challenge, %{ngo: ngo, user: user})
+      challenge = insert(:ngo_challenge, %{ngo: ngo, user: user})
+      strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       challenger =
         Accounts.get_strava_challengers(user.strava.athlete_id)
@@ -69,7 +85,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       challenge = insert(:ngo_challenge)
 
       assert ActivitiesIngestion.process_challenge({challenge.id, nil}, %Strava.Activity{
-               distance: 0
+               distance: 0,
+               type: challenge.activity_type
              }) == {:error, :activity_not_processed}
     end
 
@@ -77,9 +94,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       strava_activity: strava_activity
     } do
       challenge = insert(:ngo_challenge)
-      activity = Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: -10))
 
-      assert ActivitiesIngestion.process_challenge({challenge.id, nil}, activity) ==
+      strava_activity =
+        Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: -10))
+        |> Map.replace!(:type, challenge.activity_type)
+
+      assert ActivitiesIngestion.process_challenge({challenge.id, nil}, strava_activity) ==
                {:error, :activity_not_processed}
     end
 
@@ -87,9 +107,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       strava_activity: strava_activity
     } do
       challenge = insert(:ngo_challenge)
-      activity = Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: 6))
 
-      assert ActivitiesIngestion.process_challenge({challenge.id, nil}, activity) ==
+      strava_activity =
+        Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: 6))
+        |> Map.replace!(:type, challenge.activity_type)
+
+      assert ActivitiesIngestion.process_challenge({challenge.id, nil}, strava_activity) ==
                {:error, :activity_not_processed}
     end
 
@@ -105,6 +128,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       strava_activity: strava_activity
     } do
       challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(3.2)})
+      strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       {:ok, :challenge_updated} =
         ActivitiesIngestion.process_challenge({challenge.id, nil}, strava_activity)
@@ -118,6 +142,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
          %{strava_activity: strava_activity} do
       challenge =
         insert(:ngo_challenge, %{distance_covered: Decimal.new(49.5), distance_target: 50})
+
+      strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       {:ok, :challenge_updated} =
         ActivitiesIngestion.process_challenge({challenge.id, nil}, strava_activity)
@@ -152,6 +178,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         }
 
         insert(:donation, donation_params)
+        strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
         {:ok, :challenge_updated} =
           ActivitiesIngestion.process_challenge({challenge.id, nil}, strava_activity)
