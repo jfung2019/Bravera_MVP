@@ -1,13 +1,26 @@
 defmodule OmegaBraveraWeb.UserSessionControllerTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
-  alias OmegaBravera.Accounts
+  import OmegaBravera.Factory
 
-  @create_attrs %{email: "email@example.com", password: "pass1234"}
+  alias OmegaBravera.{Repo, Accounts.Credential}
 
-  def fixture(:user) do
-    {:ok, user} = Accounts.create_user(@create_attrs)
-    user
+  @password "strong passowrd"
+
+  def credential_fixture() do
+    user = insert(:user)
+
+    credential_attrs = %{
+      password: @password,
+      password_confirmation: @password,
+      user_id: user.id
+    }
+
+    {:ok, credential} =
+      Credential.changeset(%Credential{}, credential_attrs)
+      |> Repo.insert()
+
+    credential |> Repo.preload(:user)
   end
 
   describe "new user" do
@@ -18,28 +31,41 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
   end
 
   describe "user logging in" do
-    setup do
-      {:ok, user: fixture(:user)}
-    end
-
     test "user can login", %{conn: conn} do
-      conn = post(conn, user_session_path(conn, :create), %{"session" => @create_attrs})
+      credential = credential_fixture()
+      attrs = %{
+        email: credential.user.email,
+        password: @password
+      }
+      conn = post(conn, user_session_path(conn, :create), %{"session" => attrs})
+
       assert redirected_to(conn) == "/"
     end
 
     test "bad password will send them back to login page", %{conn: conn} do
+      credential = credential_fixture()
+      attrs = %{
+        email: credential.user.email,
+        password: @password
+      }
+
       conn =
         post(conn, user_session_path(conn, :create), %{
-          "session" => %{@create_attrs | password: "badpass"}
+          "session" => %{attrs | password: "badpass"}
         })
 
       assert redirected_to(conn, 302) == page_path(conn, :login)
     end
 
     test "bad email will send them back to login page", %{conn: conn} do
+      credential = credential_fixture()
+      attrs = %{
+        email: credential.user.email,
+        password: @password
+      }
       conn =
         post(conn, user_session_path(conn, :create), %{
-          "session" => %{@create_attrs | email: "bademail"}
+          "session" => %{attrs | email: "bademail"}
         })
 
       assert redirected_to(conn, 302) == page_path(conn, :login)
@@ -48,7 +74,7 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
 
   describe "user logout" do
     setup %{conn: conn} do
-      user = fixture(:user)
+      user = insert(:user)
       {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(user, %{})
 
       {:ok,

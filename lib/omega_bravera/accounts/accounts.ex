@@ -300,17 +300,9 @@ defmodule OmegaBravera.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    case attrs do
-      %{password: password} when password != nil ->
-        %User{}
-        |> User.changeset_with_password(attrs)
-        |> Repo.insert()
-
-      _ ->
-        %User{}
-        |> User.changeset(attrs)
-        |> Repo.insert()
-    end
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """
