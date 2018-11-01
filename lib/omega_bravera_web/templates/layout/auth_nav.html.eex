@@ -28,6 +28,12 @@
         </li>
 
         <li class="nav-item btn">
+          <%= link(to: user_profile_path(@conn, :show), class: "nav-logo") do %>
+            <i class="fa fa-nav fa-user black"></i>
+          <% end %>
+        </li>
+
+        <li class="nav-item btn">
           <a href="mailto:support@bravera.co" class="nav-logo">
             <i class="fa fa-nav fa-envelope black"></i>
           </a>
