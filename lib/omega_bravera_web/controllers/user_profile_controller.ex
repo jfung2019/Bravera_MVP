@@ -12,6 +12,8 @@ defmodule OmegaBraveraWeb.UserProfileController do
           conn,
           "show.html",
           user: user,
+          total_pledged: total_for_user_challenges(user.ngo_chals, "pending"),
+          total_secured: total_for_user_challenges(user.ngo_chals, "charged"),
           num_of_activities: Challenges.get_number_of_activities_by_user(user.id),
           total_distance: Challenges.get_total_distance_by_user(user.id),
           challenges: Challenges.get_user_ngo_chals(user.id),

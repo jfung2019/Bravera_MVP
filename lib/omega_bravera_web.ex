@@ -23,6 +23,7 @@ defmodule OmegaBraveraWeb do
       import Plug.Conn
       import OmegaBraveraWeb.Router.Helpers
       import OmegaBraveraWeb.Gettext
+      import OmegaBraveraWeb.Controllers.Helpers
     end
   end
 

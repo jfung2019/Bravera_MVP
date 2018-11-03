@@ -101,30 +101,4 @@ defmodule OmegaBraveraWeb.NGOChalController do
     challenge_path = ngo_ngo_chal_path(conn, :show, ngo_slug, slug) <> "#share"
     redirect(conn, to: challenge_path)
   end
-
-  defp milestone_stats(ngo_chal) do
-    ngo_chal
-    |> Money.milestones_donations()
-    |> Enum.map(fn {k, v} ->
-      {to_string(k), Enum.into(Enum.map(v, fn {kk, vv} -> {kk, Decimal.to_integer(vv)} end), %{})}
-    end)
-    |> total_the_pledged_amount()
-    |> Enum.into(%{})
-  end
-
-  defp total_the_pledged_amount(tuple_list) do
-    [
-      {"total",
-       Enum.reduce(tuple_list, %{"pending" => 0, "charged" => 0}, fn
-         {_, %{"total" => total, "charged" => charged}},
-         %{"pending" => total_acc, "charged" => total_charged} ->
-           %{"pending" => total + total_acc, "charged" => charged + total_charged}
-
-         # Catch if no match
-         _, acc ->
-           acc
-       end)}
-      | tuple_list
-    ]
-  end
 end
