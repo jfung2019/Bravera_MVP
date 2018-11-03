@@ -35,27 +35,67 @@ defmodule OmegaBraveraWeb.NGOChalViewTest do
            ) == false
   end
 
-  test "currency_to_symbol/1 as USD returns $" do
-    assert NGOChalView.currency_to_symbol("usd") == "$"
+  describe "currency_to_symbol/1" do
+    test "as USD returns $" do
+      assert NGOChalView.currency_to_symbol("usd") == "$"
+    end
+
+    test "as MYR returns RM" do
+      assert NGOChalView.currency_to_symbol("myr") == "RM"
+    end
+
+    test "as HKD returns HK$" do
+      assert NGOChalView.currency_to_symbol("hkd") == "HK$"
+    end
+
+    test "as krw returns ₩" do
+      assert NGOChalView.currency_to_symbol("krw") == "₩"
+    end
+
+    test "as sgd returns ₩" do
+      assert NGOChalView.currency_to_symbol("sgd") == "S$"
+    end
+
+    test "as gbp returns ₩" do
+      assert NGOChalView.currency_to_symbol("gbp") == "£"
+    end
   end
 
-  test "currency_to_symbol/1 as MYR returns RM" do
-    assert NGOChalView.currency_to_symbol("myr") == "RM"
-  end
+  describe "render_percentage/3" do
+    test "0 done, against 100 km, can be any amount" do
+      assert NGOChalView.render_percentage(100, 0) == 0
+    end
 
-  test "currency_to_symbol/1 as HKD returns HK$" do
-    assert NGOChalView.currency_to_symbol("hkd") == "HK$"
-  end
+    test "60 out of 120" do
+      assert NGOChalView.render_percentage(120, 60) == 50
+    end
 
-  test "currency_to_symbol/1 as krw returns ₩" do
-    assert NGOChalView.currency_to_symbol("krw") == "₩"
-  end
+    test "120 out of 120" do
+      assert NGOChalView.render_percentage(120, 120) == 100
+    end
 
-  test "currency_to_symbol/1 as sgd returns ₩" do
-    assert NGOChalView.currency_to_symbol("sgd") == "S$"
-  end
+    test "130 out of 120" do
+      assert NGOChalView.render_percentage(120, 130) == 100
+    end
 
-  test "currency_to_symbol/1 as gbp returns ₩" do
-    assert NGOChalView.currency_to_symbol("gbp") == "£"
+    test "10 out of 120 with 20 previous" do
+      assert NGOChalView.render_percentage(120, 10, 20) == 0
+    end
+
+    test "30 out of 120 with 20 previous" do
+      assert NGOChalView.render_percentage(120, 30, 20) == 8.33
+    end
+
+    test "30 out of 120 decimal with 20 previous decimals" do
+      assert NGOChalView.render_percentage(Decimal.new(120), 30, Decimal.new(20)) == 8.33
+    end
+
+    test "30 decimal out of 120 decimal with 20 previous decimal" do
+      assert NGOChalView.render_percentage(Decimal.new(120), Decimal.new(30), Decimal.new(20)) == 8.33
+    end
+
+    test "30 out of 120 decimal with 20 previous" do
+      assert NGOChalView.render_percentage(Decimal.new(120), 30, 20) == 8.33
+    end
   end
 end

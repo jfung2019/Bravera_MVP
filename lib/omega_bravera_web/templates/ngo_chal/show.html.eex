@@ -112,107 +112,18 @@
    $(this).parent().remove()
  });
 
-
- var setRemainingTime = function() {
-   var startDate = moment('<%= @challenge.start_date %>').format('DD/MM/YYYY');
-   var endDate = moment('<%= @challenge.end_date %>').format('DD/MM/YYYY');
-   var b = moment('<%= @challenge.start_date %>');
-   var now = moment();
-   var exp = moment('<%= @challenge.end_date %>');
-
-   var daysLeft = exp.diff(now, 'days');
-   var hours = exp.subtract(daysLeft, 'days').diff(now, 'hours');
-   var minutes = exp.subtract(hours, 'hours').diff(now, 'minutes');
-
-   document.getElementById('days-left').append(daysLeft);
-   document.getElementById('hours-left').append(hours);
-   document.getElementById('mins-left').append(minutes);
-
-   document.getElementById('date-range').innerHTML = startDate + " - " + endDate;
- };
-
  if($('#challenge-status-container').hasClass('active')) {
-   setRemainingTime();
+   var now = moment();
+      var exp = moment('<%= @challenge.end_date %>');
+
+      var daysLeft = exp.diff(now, 'days');
+      var hours = exp.subtract(daysLeft, 'days').diff(now, 'hours');
+      var minutes = exp.subtract(hours, 'hours').diff(now, 'minutes');
+
+      document.getElementById('days-left').append(daysLeft);
+      document.getElementById('hours-left').append(hours);
+      document.getElementById('mins-left').append(minutes);
  }
-
- var moneyPerc = <%= get_in(@stats, ["total", "charged"]) %> / <%= @challenge.money_target %> * 100,
-     moneyWidth;
-
- if (moneyPerc <= 100){
-   moneyWidth = "width:" + moneyPerc  + "%;";
- } else {
-   moneyWidth = "width: 100%;";
- }
-
- document.getElementById('money-progress').setAttribute("style", moneyWidth);
-
- var distCovered = <%= @challenge.distance_covered %>,
-     m1Dist = <%= @m_targets["2"] %>,
-     m2Dist = <%= @m_targets["3"] %>,
-     m3Dist = <%= @m_targets["4"] %>;
-
-	var getPercentage = function(distanceCovered, currentTarget, previousTarget) {
-		if(distanceCovered >= currentTarget) {
-			return 100;
-		} else if(previousTarget !== undefined) {
-			if(distanceCovered >= previousTarget) {
-				var difference = distanceCovered - previousTarget;
-        if (difference >= 0) {
-          return difference / currentTarget * 100;
-        }
-        return 0;
-			} else if(distanceCovered < previousTarget) {
-				return 0;
-			}
-		}
-		return distanceCovered / currentTarget * 100;
-	};
-
- var mComplete = 0;
-
- var m1Perc = getPercentage(distCovered, m1Dist),
-     m1Width;
-
- if (m1Perc < 100){
-   m1Width = "width:" + m1Perc  + "%;";
- } else {
-   m1Width = "width: 100%;";
-   document.getElementById('m1-total').setAttribute("class", "text-success");
-   document.getElementById('m1-label').setAttribute("class", "text-bravera text-500");
-   mComplete = 1;
- }
-
- document.getElementById('m1-progress').setAttribute("style", m1Width);
-
- var m2Perc = getPercentage(distCovered, m2Dist, m1Dist),
-     m2Width;
-
- if (m2Perc < 100){
-   m2Width = "width:" + m2Perc  + "%;";
- } else {
-   m2Width = "width: 100%;";
-   document.getElementById('m2-total').setAttribute("class", "text-success");
-   document.getElementById('m2-label').setAttribute("class", "text-bravera text-500");
-   mComplete = 2;
- }
-
- document.getElementById('m2-progress').setAttribute("style", m2Width);
-
- var m3Perc = getPercentage(distCovered, m3Dist, m2Dist),
-     m3Width;
-
- if (m3Perc < 100){
-   m3Width = "width:" + m3Perc  + "%;";
- } else {
-   m3Width = "width: 100%;";
-   document.getElementById('m3-total').setAttribute("class", "text-success");
-   document.getElementById('m3-label').setAttribute("class", "text-bravera text-500");
-   mComplete = 3;
- }
-
- document.getElementById('m3-progress').setAttribute("style", m3Width);
-
- var selectedAmount = $('#amount').val();
 
  var numInputs = document.querySelectorAll('input[type=number]');
 
@@ -376,9 +287,6 @@ $('#amount').change(function(){
      $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
    }).change();
  }
-
- var distanceCovered = Math.floor(<%= @challenge.distance_covered %>);
- document.getElementById('distance-covered').append(distanceCovered);
 
 $(function() {
   var share = window.location.hash.substr(1);

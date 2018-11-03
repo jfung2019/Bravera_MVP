@@ -4,7 +4,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Challenges.NGOChal, Challenges.ActivitiesIngestion, Repo, Accounts}
+  alias OmegaBravera.{Challenges.NGOChal, Challenges.ActivitiesIngestion, Repo, Accounts, Challenges}
 
   setup do
     ExVCR.Config.cassette_library_dir("test/fixtures/cassettes")
@@ -71,7 +71,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       user = insert(:user, strava: build(:strava, user: nil))
       ngo = insert(:ngo, %{user: user})
       challenge = insert(:ngo_challenge, %{ngo: ngo, user: user})
-      strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
+      strava_activity = Map.put(strava_activity, :type, challenge.activity_type)
 
       challenger =
         Accounts.get_strava_challengers(user.strava.athlete_id)
@@ -127,22 +127,27 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     test "updates the challenge with the new covered distance", %{
       strava_activity: strava_activity
     } do
-      challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(3.2)})
+      challenge = insert(:ngo_challenge)
       strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       {:ok, :challenge_updated} =
         ActivitiesIngestion.process_challenge({challenge.id, nil}, strava_activity)
 
-      updated_challenge = Repo.get!(NGOChal, challenge.id)
+      updated_challenge = Challenges.get_ngo_chal_by_slugs(challenge.ngo.slug, challenge.slug)
 
-      assert updated_challenge.distance_covered == Decimal.new(4.94)
+      assert updated_challenge.distance_covered == Decimal.new(1.7)
     end
 
     test "updates the challenge status if the covered distance is greater than the target distance",
          %{strava_activity: strava_activity} do
-      challenge =
-        insert(:ngo_challenge, %{distance_covered: Decimal.new(49.5), distance_target: 50})
-
+      challenge = insert(:ngo_challenge, %{distance_target: 50})
+      activity =
+        strava_activity
+        |> Map.put(:type, challenge.activity_type)
+        |> Map.put(:distance, 49500)
+        |> Map.put(:id, 1)
+      {:ok, :challenge_updated} =
+        ActivitiesIngestion.process_challenge({challenge.id, nil}, activity)
       strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       {:ok, :challenge_updated} =
