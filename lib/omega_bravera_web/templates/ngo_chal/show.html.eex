@@ -184,7 +184,7 @@ $('#amount').change(function(){
                     m1Value +
                     m2Value +
                     m3Value;
-
+ var mComplete = 0;
  $('#amount').change(function(){
    if (mComplete === 0){
      totalSupport = parseInt($('#kickstarter').val()) +
