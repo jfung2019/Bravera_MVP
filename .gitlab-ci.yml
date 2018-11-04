@@ -20,8 +20,8 @@ staging:
   - L=/usr/local/bin/flynn && curl -sSL -A "`uname -sp`" https://dl.flynn.io/cli | zcat >$L && chmod +x $L
   - flynn cluster add -p $FLYNN_TLS_PIN $FLYNN_CLUSTER_NAME $FLYNN_CONTROLLER_URL $FLYNN_CONTROLLER_KEY --git-url=$FLYNN_GIT_URL
   - flynn -a bravera-staging remote add flynn
-  - git checkout master
-  - git push flynn master
+  - git checkout staging
+  - git push flynn staging:master
   - flynn run mix ecto.migrate
 
 
