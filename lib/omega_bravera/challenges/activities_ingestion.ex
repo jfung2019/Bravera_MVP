@@ -126,7 +126,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
     case Processor.charge_donation(donation) do
       {:ok, %Donation{status: "charged"} = charged_donation} -> charged_donation
-      {:error, _} -> nil
+      {:error, reason} ->
+        Logger.error(reason)
+        nil
     end
   end
 
