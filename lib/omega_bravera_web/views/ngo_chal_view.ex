@@ -55,11 +55,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
 
   def render_progress_bar(target, previous_target, %{default_currency: currency, distance_covered: distance}, total) do
-    IO.inspect(target)
-    IO.inspect(distance)
-    IO.inspect(previous_target)
     percentage = render_percentage(target, distance, previous_target)
-    IO.inspect(percentage)
     {label_class, total_class} =
       if percentage >= 100 do
         {"text-bravera text-500", "float-right text-success"}
