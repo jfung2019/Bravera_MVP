@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.UserProfileController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Money, Challenges}
+  alias OmegaBravera.{Money, Challenges, Accounts}
 
   def show(conn, _) do
     user = Guardian.Plug.current_resource(conn)

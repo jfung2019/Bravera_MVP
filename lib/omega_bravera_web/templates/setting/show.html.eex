@@ -1,42 +1,29 @@
-<h2>Show Setting</h2>
 
-<ul>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <h2>Profile Settings</h2>
+        <li>
+          <strong>Location:</strong>
+          <%= @setting.location %>
+        </li>
 
-  <li>
-    <strong>Email notifications:</strong>
-    <%= @setting.email_notifications %>
-  </li>
+        <li>
+          <strong>Weight:</strong>
+          <%= @setting.weight %>
+        </li>
 
-  <li>
-    <strong>Location:</strong>
-    <%= @setting.location %>
-  </li>
+        <li>
+          <strong>Date of Birth:</strong>
+          <%= render_date(@setting.date_of_birth) %>
+        </li>
 
-  <li>
-    <strong>Show lastname:</strong>
-    <%= @setting.show_lastname %>
-  </li>
-
-  <li>
-    <strong>Request delete:</strong>
-    <%= @setting.request_delete %>
-  </li>
-
-  <li>
-    <strong>Facebook:</strong>
-    <%= @setting.facebook %>
-  </li>
-
-  <li>
-    <strong>Twitter:</strong>
-    <%= @setting.twitter %>
-  </li>
-
-  <li>
-    <strong>Instagram:</strong>
-    <%= @setting.instagram %>
-  </li>
-
-</ul>
-
-<span><%= link "Edit", to: setting_path(@conn, :edit, @setting) %></span>
+        <li>
+          <strong>Gender:</strong>
+          <%= @setting.gender %>
+        </li>
+        <br />
+      <span><%= link "Edit", to: "/user/profile/settings/edit" %></span>
+    </div>
+  </div>
+</div>

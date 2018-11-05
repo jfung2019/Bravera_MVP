@@ -35,7 +35,10 @@ defmodule OmegaBraveraWeb.Router do
     pipe_through(:browser)
 
     resources("/sessions", UserSessionController, only: [:create])
+    resources("/profile/settings", SettingController, only: [:new, :create, :update])
+    get("/profile/settings", SettingController, :show)
     get("/profile", UserProfileController, :show)
+    get("/profile/settings/edit", SettingController, :edit)
   end
 
   # Strava OAuth Routes
@@ -67,7 +70,6 @@ defmodule OmegaBraveraWeb.Router do
 
     resources("/account", UserController, only: [:show, :edit, :update])
 
-    resources("/settings", SettingController, only: [:show, :edit, :update])
   end
 
   pipeline :admin_section do
