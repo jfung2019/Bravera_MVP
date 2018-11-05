@@ -32,4 +32,45 @@ defmodule OmegaBraveraWeb.NGOChalView do
       _ -> "$"
     end
   end
+
+  def render_percentage(target, current, previous \\ 0)
+  def render_percentage(%Decimal{} = target, current, previous) do
+    render_percentage(Decimal.to_float(target), current, previous)
+  end
+  def render_percentage(target, current, %Decimal{} = previous) do
+    render_percentage(target, current, Decimal.to_float(previous))
+  end
+  def render_percentage(target, %Decimal{} = current, previous) do
+    render_percentage(target, Decimal.to_float(current), previous)
+  end
+  def render_percentage(_target, current, previous) when current <= previous, do: 0
+  def render_percentage(_target, 0, _previous), do: 0
+  def render_percentage(target, current, 0) when current >= target, do: 100
+  def render_percentage(target, current, 0), do: (current / target) * 100
+  def render_percentage(target, current, _previous) when current >= target, do: 100
+  def render_percentage(target, current, previous) when previous > 0 do
+    ((current - previous) / target) * 100
+    |> Float.round(2)
+  end
+
+
+  def render_progress_bar(target, previous_target, %{default_currency: currency, distance_covered: distance}, total) do
+    percentage = render_percentage(target, distance, previous_target)
+    {label_class, total_class} =
+      if percentage >= 100 do
+        {"text-bravera text-500", "float-right text-success"}
+      else
+        {"milestone-label", "float-right"}
+      end
+      [content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1", style: "text-align: left;") do
+        [content_tag(:span, "#{target}km", class: label_class),
+        content_tag(:span, class: "text-secondary") do
+          content_tag(:strong, "#{currency_to_symbol(currency)}#{total || 0}", class: total_class)
+        end]
+      end,
+      content_tag(:div, "", style: "clear: both;"),
+      content_tag(:div, class: "progress chal-progress mb-2") do
+        content_tag(:div, "", class: "progress-bar bg-bravera", style: "width: #{percentage}%", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "")
+      end]
+    end
 end

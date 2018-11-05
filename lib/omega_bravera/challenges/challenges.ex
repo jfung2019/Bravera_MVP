@@ -94,8 +94,12 @@ defmodule OmegaBravera.Challenges do
       from(nc in NGOChal,
         join: n in NGO,
         on: nc.ngo_id == n.id,
+        left_join: a in Activity,
+        on: nc.id == a.challenge_id,
         where: nc.slug == ^slug and n.slug == ^ngo_slug,
-        preload: ^preloads
+        preload: ^preloads,
+        group_by: nc.id,
+        select: %{nc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance)}
       )
 
     Repo.one(query)
@@ -185,7 +189,14 @@ defmodule OmegaBravera.Challenges do
 
   """
   def get_ngo_chal!(id) do
-    Repo.get!(NGOChal, id) |> Repo.preload(:donations)
+    from(nc in NGOChal,
+    left_join: a in Activity,
+    on: nc.id == a.challenge_id,
+    preload: [:donations],
+    group_by: nc.id,
+    select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)},
+    where: nc.id == ^id)
+    |> Repo.one!()
   end
 
   @doc """
