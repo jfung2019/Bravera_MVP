@@ -40,6 +40,10 @@ defmodule OmegaBraveraWeb.Router do
     put("/profile/settings", SettingController, :update)
     get("/profile", UserProfileController, :show)
     get("/profile/settings/edit", SettingController, :edit)
+    resources("/password", ChangePasswordController, only: [:new, :create])
+    get("/password/edit", ChangePasswordController, :edit)
+    post("/password/update", ChangePasswordController, :update)
+    put("/password/update", ChangePasswordController, :update)
   end
 
   # Strava OAuth Routes
