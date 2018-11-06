@@ -21,6 +21,7 @@ defmodule OmegaBravera.Accounts.Setting do
   def changeset(setting, attrs) do
     setting
     |> cast(attrs, @allowed_attribs)
+    |> validate_required([:user_id])
   end
 
   def gender_options, do: @gender_list

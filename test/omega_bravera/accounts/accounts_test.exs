@@ -142,37 +142,31 @@ defmodule OmegaBravera.AccountsTest do
     alias OmegaBravera.Accounts.Setting
 
     @valid_attrs %{
-      email_notifications: true,
-      facebook: "some facebook",
-      instagram: "some instagram",
-      location: "some location",
-      request_delete: true,
-      show_lastname: true,
-      twitter: "some twitter"
+      location: "UK",
+      weight: 35,
+      date_of_birth: "1940-07-14",
+      gender: "Female"
     }
     @update_attrs %{
-      email_notifications: false,
-      facebook: "some updated facebook",
-      instagram: "some updated instagram",
-      location: "some updated location",
-      request_delete: false,
-      show_lastname: false,
-      twitter: "some updated twitter"
+      location: "US",
+      weight: 30,
+      date_of_birth: "1980-07-14",
+      gender: "Male"
     }
     @invalid_attrs %{
-      email_notifications: nil,
-      facebook: nil,
-      instagram: nil,
       location: nil,
-      request_delete: nil,
-      show_lastname: nil,
-      twitter: nil
+      weight: nil,
+      date_of_birth: nil,
+      gender: nil,
+      user_id: nil
     }
 
     def setting_fixture(attrs \\ %{}) do
+    user = insert(:user)
       {:ok, setting} =
         attrs
         |> Enum.into(@valid_attrs)
+        |> Map.put(:user_id, user.id)
         |> Accounts.create_setting()
 
       setting
@@ -189,14 +183,14 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "create_setting/1 with valid data creates a setting" do
-      assert {:ok, %Setting{} = setting} = Accounts.create_setting(@valid_attrs)
-      assert setting.email_notifications == true
-      assert setting.facebook == "some facebook"
-      assert setting.instagram == "some instagram"
-      assert setting.location == "some location"
-      assert setting.request_delete == true
-      assert setting.show_lastname == true
-      assert setting.twitter == "some twitter"
+      user = insert(:user)
+      valid_attrs = Map.put(@valid_attrs, :user_id, user.id)
+      assert {:ok, %Setting{} = setting} = Accounts.create_setting(valid_attrs)
+      assert setting.location == "UK"
+      assert setting.weight == 35
+      assert setting.date_of_birth == ~D[1940-07-14]
+      assert setting.gender == "Female"
+      assert setting.user_id == user.id
     end
 
     test "create_setting/1 with invalid data returns error changeset" do
@@ -205,15 +199,12 @@ defmodule OmegaBravera.AccountsTest do
 
     test "update_setting/2 with valid data updates the setting" do
       setting = setting_fixture()
-      assert {:ok, setting} = Accounts.update_setting(setting, @update_attrs)
+      update_attrs = Map.put(@update_attrs, :user_id, setting.user_id)
+      assert {:ok, setting} = Accounts.update_setting(setting, update_attrs)
       assert %Setting{} = setting
-      assert setting.email_notifications == false
-      assert setting.facebook == "some updated facebook"
-      assert setting.instagram == "some updated instagram"
-      assert setting.location == "some updated location"
-      assert setting.request_delete == false
-      assert setting.show_lastname == false
-      assert setting.twitter == "some updated twitter"
+      assert setting.gender == "Male"
+      assert setting.date_of_birth == ~D[1980-07-14]
+
     end
 
     test "update_setting/2 with invalid data returns error changeset" do
