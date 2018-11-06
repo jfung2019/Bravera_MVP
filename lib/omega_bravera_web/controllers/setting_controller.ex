@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.SettingController do
 
   alias OmegaBravera.Accounts
 
-  plug(:assign_options when action in [:edit, :new])
+  plug(:assign_options when action in [:edit, :new, :update])
 
   def new(conn, _) do
     user = Guardian.Plug.current_resource(conn)

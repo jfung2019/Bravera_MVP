@@ -35,8 +35,9 @@ defmodule OmegaBraveraWeb.Router do
     pipe_through(:browser)
 
     resources("/sessions", UserSessionController, only: [:create])
-    resources("/profile/settings", SettingController, only: [:new, :create, :update])
+    resources("/profile/settings", SettingController, only: [:new, :create])
     get("/profile/settings", SettingController, :show)
+    put("/profile/settings", SettingController, :update)
     get("/profile", UserProfileController, :show)
     get("/profile/settings/edit", SettingController, :edit)
   end
