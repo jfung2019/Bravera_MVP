@@ -13,8 +13,6 @@ defmodule OmegaBravera.Repo.Migrations.ChangeSettingsTable do
       add(:weight, :integer, null: true, default: nil)
       add(:date_of_birth, :date, null: true, default: nil)
       add(:gender, :string, null: true, default: nil)
-      add(:firstname, :string, null: true, default: nil)
-      add(:lastname, :string, null: true, default: nil)
     end
   end
 end

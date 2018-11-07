@@ -3,12 +3,14 @@ defmodule OmegaBraveraWeb.UserControllerTest do
 
   alias OmegaBravera.Accounts
 
-  @create_attrs %{email: "test@test.com", firstname: "some firstname", lastname: "some lastname"}
+  @update_attrs %{firstname: "sherief", lastname: "Alaa"}
   @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
 
-  def fixture(:user) do
-    {:ok, user} = Accounts.create_user(@create_attrs)
-    user
+  setup %{conn: conn} do
+    with {:ok, user} <-
+           Accounts.create_user(%{email: "user@example.com", password: "test1234"}),
+         {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
+        do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
   describe "new user" do
@@ -18,17 +20,22 @@ defmodule OmegaBraveraWeb.UserControllerTest do
     end
   end
 
-  describe "create user" do
-    test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, user_path(conn, :create), user: @create_attrs)
+  describe "edit user" do
+    test "renders form for editing chosen user", %{conn: conn} do
+      conn = get(conn, user_path(conn, :edit))
+      assert html_response(conn, 200) =~ "Edit Account"
+    end
+  end
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == user_path(conn, :show, id)
+  describe "update user" do
+    test "redirects when data is valid", %{conn: conn} do
+      conn = put(conn, user_path(conn, :update), user: @update_attrs)
+      assert redirected_to(conn) == user_path(conn, :show)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, user_path(conn, :create), user: @invalid_attrs)
-      assert html_response(conn, 200) =~ "New User"
+      conn = put(conn, user_path(conn, :update, %{"user" => @invalid_attrs}))
+      assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
     end
   end
 end

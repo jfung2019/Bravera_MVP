@@ -65,7 +65,7 @@ defmodule OmegaBraveraWeb.SettingController do
     case Accounts.update_setting(user.setting, setting_params) do
       {:ok, setting} ->
         conn
-        |> put_flash(:info, "Setting updated successfully.")
+        |> put_flash(:info, "Settings updated successfully.")
         |> redirect(to: setting_path(conn, :show, %{}))
 
       {:error, %Ecto.Changeset{} = changeset} ->

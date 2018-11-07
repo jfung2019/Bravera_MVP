@@ -23,7 +23,7 @@
           <%= @setting.gender %>
         </li>
         <br />
-      <span><%= link "Edit", to: "/user/profile/settings/edit" %></span>
+      <span><%= link "Edit", to: setting_path(@conn, :edit) %></span>
     </div>
   </div>
 </div>

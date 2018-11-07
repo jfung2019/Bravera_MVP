@@ -44,6 +44,9 @@ defmodule OmegaBraveraWeb.Router do
     get("/password/edit", ChangePasswordController, :edit)
     post("/password/update", ChangePasswordController, :update)
     put("/password/update", ChangePasswordController, :update)
+    get("/account", UserController, :show)
+    get("/account/edit", UserController, :edit)
+    put("/account", UserController, :update)
   end
 
   # Strava OAuth Routes
@@ -72,9 +75,6 @@ defmodule OmegaBraveraWeb.Router do
     scope "/ngos" do
       get("/", UserController, :ngos)
     end
-
-    resources("/account", UserController, only: [:show, :edit, :update])
-
   end
 
   pipeline :admin_section do
