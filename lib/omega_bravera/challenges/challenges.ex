@@ -49,9 +49,22 @@ defmodule OmegaBravera.Challenges do
     Repo.all(query)
   end
 
-  def get_user_ngo_chals(user_id) do
-    query = from(nc in NGOChal, where: nc.user_id == ^user_id)
-    Repo.all(query)
+  def get_user_ngo_chals(user_id, preloads \\ [:ngo]) do
+    from(
+      nc in NGOChal,
+      where: nc.user_id == ^user_id,
+      preload: ^preloads
+    )
+    |> Repo.all()
+  end
+
+  def get_user_ngo_chals_ids(user_id) do
+    from(
+      c in NGOChal,
+      where: c.user_id == ^user_id,
+      select: c.id
+    )
+    |> Repo.all()
   end
 
   def get_user_active_ngo_chals(user_id) do
@@ -96,16 +109,29 @@ defmodule OmegaBravera.Challenges do
     query =
       from(nc in NGOChal,
         where: nc.ngo_id == ^ngo.id,
-        join: u in User, on: u.id == nc.user_id,
-        left_join: d in Donation, on: d.ngo_chal_id == nc.id and d.status == "charged",
+        join: u in User,
+        on: u.id == nc.user_id,
+        left_join: d in Donation,
+        on: d.ngo_chal_id == nc.id and d.status == "charged",
         preload: [:user, :donations],
         group_by: [nc.id],
         order_by: [desc: sum(fragment("coalesce(?,0)", d.amount))]
       )
+
     Repo.all(query)
   end
 
   def get_activity_types, do: NGOChal.activity_types()
+
+  def get_number_of_activities_by_user(user_id) do
+    from(a in Activity, where: a.user_id == ^user_id, select: count(a.id))
+    |> Repo.one()
+  end
+
+  def get_total_distance_by_user(user_id) do
+    from(a in Activity, where: a.user_id == ^user_id, select: sum(a.distance))
+    |> Repo.one()
+  end
 
   def get_distances, do: NGOChal.distances_available()
 

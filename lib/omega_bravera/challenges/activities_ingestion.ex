@@ -125,7 +125,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     Challenges.Notifier.send_donor_milestone_email(donation)
 
     case Processor.charge_donation(donation) do
-      {:ok, %Donation{status: "charged"} = charged_donation} -> charged_donation
+      {:ok, %Donation{status: "charged"} = charged_donation} ->
+        charged_donation
+
       {:error, reason} ->
         Logger.error(reason)
         nil

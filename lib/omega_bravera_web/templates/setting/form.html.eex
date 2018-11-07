@@ -6,48 +6,32 @@
   <% end %>
 
   <div class="form-group">
-    <%= label f, :email_notifications, class: "control-label" %>
-    <%= checkbox f, :email_notifications, class: "checkbox" %>
-    <%= error_tag f, :email_notifications %>
-  </div>
-
-  <div class="form-group">
     <%= label f, :location, class: "control-label" %>
     <%= text_input f, :location, class: "form-control" %>
     <%= error_tag f, :location %>
   </div>
 
   <div class="form-group">
-    <%= label f, :show_lastname, class: "control-label" %>
-    <%= checkbox f, :show_lastname, class: "checkbox" %>
-    <%= error_tag f, :show_lastname %>
+    <%= label f, :weight, class: "control-label" %>
+    <%= number_input f, :weight, class: "form-control", min: 1 %>
+    <%= error_tag f, :weight %>
   </div>
 
   <div class="form-group">
-    <%= label f, :request_delete, class: "control-label" %>
-    <%= checkbox f, :request_delete, class: "checkbox" %>
-    <%= error_tag f, :request_delete %>
+    <%= label f, :gender, class: "control-label" %>
+    <%= select(f, :gender, @gender_options, class: "form-control") %>
+    <%= error_tag f, :gender %>
   </div>
 
   <div class="form-group">
-    <%= label f, :facebook, class: "control-label" %>
-    <%= text_input f, :facebook, class: "form-control" %>
-    <%= error_tag f, :facebook %>
+    <%= label f, :date_of_birth, class: "control-label" %>
+    <%= date_select f, :date_of_birth, class: "form-control", year: [options: 1930..2019] %>
+    <%= error_tag f, :date_of_birth %>
   </div>
 
-  <div class="form-group">
-    <%= label f, :twitter, class: "control-label" %>
-    <%= text_input f, :twitter, class: "form-control" %>
-    <%= error_tag f, :twitter %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :instagram, class: "control-label" %>
-    <%= text_input f, :instagram, class: "form-control" %>
-    <%= error_tag f, :instagram %>
-  </div>
 
   <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>
+<span><%= link "Back", to: setting_path(@conn, :show) %></span>
