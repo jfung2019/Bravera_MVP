@@ -27,6 +27,18 @@
           <% end %>
         </li>
 
+      <li class="nav-item btn dropdown">
+        <a href="#" class="nav-logo" data-toggle="dropdown">
+          <i class="fa fa-nav fa-user black" ></i>
+        </a>
+        <ul class="dropdown-menu">
+          <li><%= link("Account", to: user_path(@conn, :show), class: "dropdown-item") %></li>
+          <li><%= link("Profile", to: user_profile_path(@conn, :show), class: "dropdown-item") %></li>
+          <li><%= link("Settings", to: setting_path(@conn, :show), class: "dropdown-item") %></li>
+          <li><%= link("Change Password", to: change_password_path(@conn, :new), class: "dropdown-item") %></li>
+        </ul>
+      </li> 
+
         <li class="nav-item btn">
           <a href="mailto:support@bravera.co" class="nav-logo">
             <i class="fa fa-nav fa-envelope black"></i>

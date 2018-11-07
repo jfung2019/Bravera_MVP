@@ -19,7 +19,7 @@
 
   <body class="gray-background">
     <div class="vh-top">
-    <%= if logged_in?(@conn) do %>
+    <%= if logged_in?(@conn) && is_admin?(@conn) do %>
       <%= render "admin_panel_nav.html", conn: @conn %>
     <% end %>
 

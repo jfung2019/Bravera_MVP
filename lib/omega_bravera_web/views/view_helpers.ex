@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.ViewHelpers do
   alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Accounts.AdminUser
 
   def logged_in?(conn) do
     user = Guardian.Plug.current_resource(conn)
@@ -9,6 +10,16 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def has_tracker?(conn) do
     case Guardian.Plug.current_resource(conn) do
       %User{strava: strava} when strava != nil ->
+        true
+
+      _ ->
+        false
+    end
+  end
+
+  def is_admin?(conn) do
+    case Guardian.Plug.current_resource(conn) do
+      %AdminUser{} ->
         true
 
       _ ->
@@ -30,5 +41,12 @@ defmodule OmegaBraveraWeb.ViewHelpers do
          {:ok, formatted_string} <- Timex.format(hk_date_time, "{D}/{M}/{WYY} {h24}:{m}") do
       formatted_string
     end
+  end
+
+  def render_date(date_time) do
+    {:ok, formatted_date_time} =
+      date_time
+      |> Timex.format("{D}/{M}/{WYYYY}")
+    formatted_date_time
   end
 end

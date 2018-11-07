@@ -4,14 +4,14 @@ defmodule OmegaBravera.Accounts.Setting do
 
   alias OmegaBravera.Accounts.User
 
+@allowed_attribs [:location, :weight, :date_of_birth, :gender, :user_id]
+@gender_list ["Male", "Female", "Other"]
+
   schema "settings" do
-    field(:email_notifications, :boolean, default: false)
-    field(:facebook, :string)
-    field(:instagram, :string)
     field(:location, :string)
-    field(:request_delete, :boolean, default: false)
-    field(:show_lastname, :boolean, default: false)
-    field(:twitter, :string)
+    field(:weight, :integer, default: nil)
+    field(:date_of_birth, :date)
+    field(:gender, :string, default: nil)
     belongs_to(:user, User)
 
     timestamps(type: :utc_datetime)
@@ -20,23 +20,9 @@ defmodule OmegaBravera.Accounts.Setting do
   @doc false
   def changeset(setting, attrs) do
     setting
-    |> cast(attrs, [
-      :email_notifications,
-      :location,
-      :show_lastname,
-      :request_delete,
-      :facebook,
-      :twitter,
-      :instagram
-    ])
-    |> validate_required([
-      :email_notifications,
-      :location,
-      :show_lastname,
-      :request_delete,
-      :facebook,
-      :twitter,
-      :instagram
-    ])
+    |> cast(attrs, @allowed_attribs)
+    |> validate_required([:user_id])
   end
+
+  def gender_options, do: @gender_list
 end

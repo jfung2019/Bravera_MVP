@@ -30,6 +30,25 @@ defmodule OmegaBraveraWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  # Bravera user auth
+  scope "/user", OmegaBraveraWeb do
+    pipe_through(:browser)
+
+    resources("/sessions", UserSessionController, only: [:create])
+    resources("/profile/settings", SettingController, only: [:new, :create])
+    get("/profile/settings", SettingController, :show)
+    put("/profile/settings", SettingController, :update)
+    get("/profile", UserProfileController, :show)
+    get("/profile/settings/edit", SettingController, :edit)
+    resources("/password", ChangePasswordController, only: [:new, :create])
+    get("/password/edit", ChangePasswordController, :edit)
+    post("/password/update", ChangePasswordController, :update)
+    put("/password/update", ChangePasswordController, :update)
+    get("/account", UserController, :show)
+    get("/account/edit", UserController, :edit)
+    put("/account", UserController, :update)
+  end
+
   # Strava OAuth Routes
   scope "/strava", OmegaBraveraWeb do
     pipe_through(:browser)
@@ -56,10 +75,6 @@ defmodule OmegaBraveraWeb.Router do
     scope "/ngos" do
       get("/", UserController, :ngos)
     end
-
-    resources("/account", UserController, only: [:show, :edit, :update])
-
-    resources("/settings", SettingController, only: [:show, :edit, :update])
   end
 
   pipeline :admin_section do
