@@ -5,7 +5,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
   def show(conn, _) do
     user = Guardian.Plug.current_resource(conn)
-
+    get_profile_picture_link(user)
     cond do
       user != nil ->
         render(
@@ -17,7 +17,8 @@ defmodule OmegaBraveraWeb.UserProfileController do
           num_of_activities: Challenges.get_number_of_activities_by_user(user.id),
           total_distance: Challenges.get_total_distance_by_user(user.id),
           challenges: Challenges.get_user_ngo_chals(user.id),
-          num_of_supporters: get_supporters_num(user.id)
+          num_of_supporters: get_supporters_num(user.id),
+          profile_picture: get_profile_picture_link(user)
         )
 
       user == nil ->
@@ -37,5 +38,14 @@ defmodule OmegaBraveraWeb.UserProfileController do
         |> Enum.map(fn id -> Money.get_number_of_ngo_chal_sponsors(id)  end)
         |> Enum.reduce(fn id, acc -> id + acc end)
     end
+  end
+
+  defp get_profile_picture_link(user) do
+    %Strava.Athlete{profile_medium: profile_medium} = Strava.Athlete.retrieve(
+      user.strava.athlete_id,
+      Strava.Client.new(user.strava.token)
+    )
+
+    profile_medium
   end
 end

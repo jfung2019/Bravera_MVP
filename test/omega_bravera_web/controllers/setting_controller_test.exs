@@ -5,19 +5,21 @@ defmodule OmegaBraveraWeb.SettingControllerTest do
 
   @create_attrs %{
     location: "UK",
-    weight: 35,
+    weight: 31.4,
     date_of_birth: "1940-07-14",
     gender: "Female"
   }
   @update_attrs %{
     location: "US",
-    weight: 30,
+    weight: "30",
     date_of_birth: "1980-07-14",
-    gender: "Male"
+    gender: "Male",
+    weight_fraction: "0.5"
   }
   @invalid_attrs %{
     location: nil,
-    weight: nil,
+    weight: "30",
+    weight_fraction: "0.4",
     date_of_birth: nil,
     gender: nil,
     user_id: nil

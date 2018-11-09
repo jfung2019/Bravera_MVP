@@ -32,7 +32,7 @@ defmodule OmegaBraveraWeb.ChangePasswordController do
   def edit(conn, _) do
     user = Guardian.Plug.current_resource(conn)
     changeset = Accounts.change_credential(%Accounts.Credential{})
-    render(conn, "edit.html", changeset: changeset, credential: user.credential)
+    render(conn, "edit.html", changeset: changeset, credential: user.credential, user: user)
   end
 
   def update(conn, %{"credential" => credential_params}) do
@@ -45,7 +45,7 @@ defmodule OmegaBraveraWeb.ChangePasswordController do
         |> redirect(to: user_profile_path(conn, :show))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", credential: user.credential, changeset: changeset)
+        render(conn, "edit.html", credential: user.credential, changeset: changeset, user: user)
     end
   end
 end
