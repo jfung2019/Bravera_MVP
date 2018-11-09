@@ -32,13 +32,13 @@ defmodule OmegaBraveraWeb.SettingControllerTest do
 
   setup %{conn: conn} do
     with {:ok, user} <-
-           Accounts.create_user(%{email: "user@example.com", password: "test1234"}),
+           Accounts.create_user(%{email: "user@example.com"}),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
          {:ok, _setting} <- setting_fixture(user.id),
         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
-  describe "edit setting" do    
+  describe "edit setting" do
     test "renders form for editing chosen setting", %{conn: conn} do
       conn = get(conn, setting_path(conn, :edit))
       assert html_response(conn, 200) =~ "Edit Settings"

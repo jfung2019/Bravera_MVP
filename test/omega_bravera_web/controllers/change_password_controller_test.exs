@@ -1,13 +1,11 @@
 defmodule OmegaBraveraWeb.ChangePasswordControllerTest do
   use OmegaBraveraWeb.ConnCase
 
-  alias OmegaBravera.Guardian
-
   alias OmegaBravera.Accounts
 
-  @create_attrs %{
-    "password" => "strong password",
-    "password_confirmation" => "strong password"
+  @credential_arrts %{
+    password: "strong password",
+    password_confirmation: "strong password"
   }
 
   @update_attrs %{
@@ -20,17 +18,22 @@ defmodule OmegaBraveraWeb.ChangePasswordControllerTest do
     "password_confirmation" => nil
   }
 
+  def credential_fixture(user_id) do
+    {:ok, _credential} = Accounts.create_credential(user_id, @credential_arrts)
+  end
+
   setup %{conn: conn} do
     with {:ok, user} <-
-            Accounts.create_user(%{email: "user@example.com", password: "test1234"}),
-          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
+            Accounts.create_user(%{email: "user@example.com"}),
+        {:ok, _setting} <- credential_fixture(user.id),
+        {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
 
   describe "update change password" do
     test "redirects when data is valid", %{conn: conn} do
-      conn = put(conn, change_password_path(conn, :update), %{"credential" => @invalid_attrs})
+      conn = put(conn, change_password_path(conn, :update), %{"credential" => @update_attrs})
       assert redirected_to(conn) == user_profile_path(conn, :show)
     end
 
@@ -40,7 +43,7 @@ defmodule OmegaBraveraWeb.ChangePasswordControllerTest do
     end
   end
 
-  describe "edit change password" do    
+  describe "edit change password" do
     test "renders form for editing password", %{conn: conn} do
       conn = get(conn, change_password_path(conn, :edit))
       assert html_response(conn, 200) =~ "Change Password"
