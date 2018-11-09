@@ -9,7 +9,7 @@ defmodule OmegaBravera.Accounts.Setting do
 
   schema "settings" do
     field(:location, :string)
-    field(:weight, :integer, default: nil)
+    field(:weight, :decimal, default: nil)
     field(:date_of_birth, :date)
     field(:gender, :string, default: nil)
     belongs_to(:user, User)
@@ -24,5 +24,12 @@ defmodule OmegaBravera.Accounts.Setting do
     |> validate_required([:user_id])
   end
 
+  defp get_weight_whole_number(), do: Enum.to_list(30..130)
+  defp get_weight_fraction(), do: Enum.map(0..9, fn x ->
+    Decimal.new(x * 0.1) |> Decimal.round(1) |> Decimal.to_string()
+  end)
+
+  def weight_list, do: get_weight_whole_number()
+  def weight_fraction_list, do: get_weight_fraction()
   def gender_options, do: @gender_list
 end
