@@ -143,13 +143,13 @@ defmodule OmegaBravera.AccountsTest do
 
     @valid_attrs %{
       location: "UK",
-      weight: 35,
+      weight: 35.5,
       date_of_birth: "1940-07-14",
       gender: "Female"
     }
     @update_attrs %{
       location: "US",
-      weight: 30,
+      weight: 30.9,
       date_of_birth: "1980-07-14",
       gender: "Male"
     }
@@ -187,7 +187,7 @@ defmodule OmegaBravera.AccountsTest do
       valid_attrs = Map.put(@valid_attrs, :user_id, user.id)
       assert {:ok, %Setting{} = setting} = Accounts.create_setting(valid_attrs)
       assert setting.location == "UK"
-      assert setting.weight == 35
+      assert setting.weight == Decimal.new(35.5)
       assert setting.date_of_birth == ~D[1940-07-14]
       assert setting.gender == "Female"
       assert setting.user_id == user.id

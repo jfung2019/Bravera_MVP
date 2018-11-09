@@ -45,7 +45,7 @@ defmodule OmegaBraveraWeb.ChangePasswordController do
         |> redirect(to: user_profile_path(conn, :show))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", credential: user.credential, changeset: changeset)
+        render(conn, "edit.html", credential: user.credential, changeset: changeset, user: user)
     end
   end
 end
