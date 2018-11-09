@@ -10,14 +10,18 @@
         <li> <b> Funds Secured to date: </b> <%= @total_secured %> </li>
         <li> <b> Activities to date: </b> <%= @num_of_activities %> </li>
         <li> <b> Total Distance covered on Bravera Challenges: </b> <%= @total_distance %> KMs </li>
-<!--    <li> <b> Total Active Time: </b> <%= %> </li> -->
         <li> <b> Total Number of Supporters: </b> <%= @num_of_supporters %> </li>
       </ul>
 
       <br />
     </div>
+    <div class="col-sm-3 float-right profile-pic-padding">
+      <%= img_tag(@profile_picture, class: "img-thumbnail") %>
+      <div>
+        <span class="small">Note: to edit, please change from connected fitness tracker.</span>
+      </div>
+    </div>
   </div>
-
 
 
   <h5>Challenges:</h5>
@@ -29,7 +33,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-sm-3">
-              <b>Charity</b>
+              <!-- <b>Charity</b> Be-->
             </div>
             <div class="col-sm-2">
               <b> Start Date</b>
@@ -61,11 +65,11 @@
             <div class="col-sm-2">
               <%= render_datetime(challenge.end_date) %>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-3">
               <%= challenge.distance_covered %>
             </div>
-            <div class="col-sm-3">
-              <%= link("Visit " <> challenge.slug, to: ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>
+            <div class="col-sm-2">
+              <%= link("View", to: ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>
             </div>
           </div>
         </div>
