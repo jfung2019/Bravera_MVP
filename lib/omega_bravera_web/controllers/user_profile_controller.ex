@@ -41,11 +41,11 @@ defmodule OmegaBraveraWeb.UserProfileController do
   end
 
   defp get_profile_picture_link(user) do
-    %Strava.Athlete{profile_medium: profile_medium} = Strava.Athlete.retrieve(
+    %Strava.Athlete{profile_medium: profile} = Strava.Athlete.retrieve(
       user.strava.athlete_id,
       Strava.Client.new(user.strava.token)
     )
 
-    profile_medium
+    profile
   end
 end

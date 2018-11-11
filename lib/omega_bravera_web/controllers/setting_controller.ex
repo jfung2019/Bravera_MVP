@@ -20,12 +20,11 @@ defmodule OmegaBraveraWeb.SettingController do
   def create(conn, %{"setting" => settings_params}) do
     user = Guardian.Plug.current_resource(conn)
     changeset_params =
-      Map.merge(settings_params, %{
-        "user_id" => user.id,
-      })
+      Map.merge(settings_params, %{"user_id" => user.id,}) |> calculate_weight_fraction()
+
 
     case Accounts.create_setting(changeset_params) do
-      {:ok, setting} ->
+      {:ok, _setting} ->
         conn
         |> put_flash(:info, "Settings created successfully.")
         |> redirect(to: setting_path(conn, :show))
