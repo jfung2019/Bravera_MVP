@@ -12,13 +12,13 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :weight, class: "control-label" %>
+    <%= label f, "Weight - KG", class: "control-label" %>
     <%= select(f, :weight, @weight_list, class: "form-control") %>
     <%= error_tag f, :weight %>
   </div>
 
   <div class="form-group">
-    <%= label f, :weight_fraction, class: "control-label" %>
+    <%= label f, "Weight fraction - KG", class: "control-label" %>
     <%= select(f, :weight_fraction, @weight_fraction_list, class: "form-control") %>
     <%= error_tag f, :weight_fraction %>
   </div>

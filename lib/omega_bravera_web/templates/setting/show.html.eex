@@ -10,7 +10,7 @@
 
         <li>
           <strong>Weight:</strong>
-          <%= @setting.weight %>
+          <%= @setting.weight %> KG
         </li>
 
         <li>
