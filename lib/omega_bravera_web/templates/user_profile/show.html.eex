@@ -3,7 +3,7 @@
     <div class="col-sm-3 float-right profile-pic-padding">
       <%= img_tag(@profile_picture, class: "img-thumbnail") %>
       <div>
-        <span class="small">Note: to edit, please change from connected fitness tracker.</span>
+        <span class="small">Note: to edit profile picture, please change inside your connected fitness tracker account.</span>
       </div>
     </div>
   </div>
