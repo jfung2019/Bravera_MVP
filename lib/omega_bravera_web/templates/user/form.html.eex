@@ -9,6 +9,7 @@
     <%= label f, :email, class: "control-label" %>
     <%= text_input f, :email, class: "form-control", readonly: true %>
     <%= error_tag f, :email %>
+    <p>Note: to change please edit inside your connected fitness tracker.</p>
   </div>
 
   <div class="form-group">
