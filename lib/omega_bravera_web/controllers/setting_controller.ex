@@ -95,12 +95,18 @@ defmodule OmegaBraveraWeb.SettingController do
   end
 
   defp split_fraction(params) do
-    {whole, decimal} =
-      Map.get(params, :weight) |> Decimal.div_rem(1)
+      weight = Map.get(params, :weight)
 
-    {
-      Decimal.to_string(whole),
-      Decimal.to_string(decimal)
-    }
+    cond do
+      weight != nil ->
+      {whole, decimal} = weight |> Decimal.div_rem(1)
+
+      {Decimal.to_string(whole), Decimal.to_string(decimal)}
+
+      weight == nil ->
+        {"", ""}
+    end
+
+
   end
 end
