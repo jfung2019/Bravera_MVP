@@ -1,11 +1,11 @@
 defmodule OmegaBraveraWeb.UserProfileController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Money, Challenges, Accounts}
+  alias OmegaBravera.{Money, Challenges}
 
   def show(conn, _) do
     user = Guardian.Plug.current_resource(conn)
-    get_profile_picture_link(user)
+
     cond do
       user != nil ->
         render(
@@ -41,7 +41,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
   end
 
   defp get_profile_picture_link(user) do
-    %Strava.Athlete{profile_medium: profile} = Strava.Athlete.retrieve(
+    %Strava.Athlete{profile: profile} = Strava.Athlete.retrieve(
       user.strava.athlete_id,
       Strava.Client.new(user.strava.token)
     )
