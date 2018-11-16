@@ -36,14 +36,33 @@
 
     <footer class="footer">
       <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #F5274B;">
+          <div class="d-flex flex-grow-1">
+              <span class="w-100 d-lg-none d-block"><!-- hidden spacer to center brand on mobile --></span>
+
+              <div class="w-100 text-right">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+              </div>
+          </div>
+          <div class="collapse navbar-collapse flex-grow-1 text-right" id="navbarCollapse">
+            <ul class="navbar-nav ml-auto flex-nowrap">
+              <li class="nav-item pr-0">
+                <%= link("Privacy", to: "https://www.bravera.fit/privacy/", target: "_blank") %>
+              </li>
+              <li class="nav-item">
+                <%= link("Terms of Use", to: "https://www.bravera.fit/terms", target: "_blank") %>
+              </li>
+              <li class="nav-item">
+                <a href="mailto:admin@bravera.co">Contact Us</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
 				<nav class="navbar navbar-expand">
           <ul class="navbar-nav">
-	          <li class="nav-item">
-	            <%= link("Privacy", to: "https://www.bravera.fit/privacy/", target: "_blank") %>
-	          </li>
-	          <li class="nav-item">
-	            <%= link("Terms of Use", to: "https://www.bravera.fit/terms", target: "_blank") %>
-						</li>
+
           </ul>
         </nav>
       </div>
