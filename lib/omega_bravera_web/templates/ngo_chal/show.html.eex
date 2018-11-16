@@ -35,8 +35,8 @@
         </h4>
       </div>
       <div class="card-footer text-center">
-        <%= link("Join the Challenge", to: ngo_path(@conn, :show, @challenge.ngo), class: "btn btn-bravera") %>
-        <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera") %>
+        <%= link("Join the Challenge", to: ngo_path(@conn, :show, @challenge.ngo), class: "btn btn-bravera mb-2") %>
+        <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
       </div>
     </div>
 
