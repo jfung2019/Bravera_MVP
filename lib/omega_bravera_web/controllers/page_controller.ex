@@ -18,23 +18,7 @@ defmodule OmegaBraveraWeb.PageController do
             redirect(conn, to: admin_user_page_path(conn, :index))
 
           _ ->
-            %{id: user_id} = user
-
-            active_chal = Challenges.get_one_user_active_chal(user_id)
-
-            cond do
-              active_chal !== nil ->
-                %{slug: chal_slug, ngo_id: ngo_id} = active_chal
-
-                ngo = Fundraisers.get_ngo!(ngo_id)
-
-                %{slug: ngo_slug} = ngo
-
-                redirect(conn, to: "/" <> ngo_slug <> "/" <> chal_slug)
-
-              true ->
-                redirect(conn, to: "/ngos")
-            end
+            redirect(conn, to: user_profile_path(conn, :show))
         end
 
       true ->
@@ -47,23 +31,7 @@ defmodule OmegaBraveraWeb.PageController do
 
     cond do
       user !== nil ->
-        %{id: user_id} = user
-
-        active_chal = Challenges.get_one_user_active_chal(user_id)
-
-        cond do
-          active_chal !== nil ->
-            %{slug: chal_slug, ngo_id: ngo_id} = active_chal
-
-            ngo = Fundraisers.get_ngo!(ngo_id)
-
-            %{slug: ngo_slug} = ngo
-
-            redirect(conn, to: "/" <> ngo_slug <> "/" <> chal_slug)
-
-          true ->
-            redirect(conn, to: "/ngos")
-        end
+        redirect(conn, to: user_profile_path(conn, :show))
 
       true ->
         render(conn, "signup.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
@@ -80,23 +48,7 @@ defmodule OmegaBraveraWeb.PageController do
             redirect(conn, to: admin_user_page_path(conn, :index))
 
           _ ->
-            %{id: user_id} = user
-
-            active_chal = Challenges.get_one_user_active_chal(user_id)
-
-            cond do
-              active_chal !== nil ->
-                %{slug: chal_slug, ngo_id: ngo_id} = active_chal
-
-                ngo = Fundraisers.get_ngo!(ngo_id)
-
-                %{slug: ngo_slug} = ngo
-
-                redirect(conn, to: "/" <> ngo_slug <> "/" <> chal_slug)
-
-              true ->
-                redirect(conn, to: "/ngos")
-            end
+            redirect(conn, to: user_profile_path(conn, :show))
         end
 
       true ->
