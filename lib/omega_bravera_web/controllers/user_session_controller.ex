@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.UserSessionController do
         conn
         |> put_flash(:info, "Welcome back!")
         |> Guardian.Plug.sign_in(user)
-        |> redirect(to: "/")
+        |> redirect(to: user_profile_path(conn, :show))
 
       {:error, _} ->
         conn
