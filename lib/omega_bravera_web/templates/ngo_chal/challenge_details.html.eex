@@ -27,7 +27,7 @@
       <strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "charged"]) || 0 %></strong>
       raised of target
       <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %><%= String.upcase(@challenge.default_currency) %></strong>
-      <strong class="text-green">(<%= round((get_in(@stats, ["total", "charged"]) || 0) / Decimal.to_integer(@challenge.money_target) * 100) %>%)</strong>
+      <strong class="text-green">(<%= round(render_percentage(@challenge.money_target, get_in(@stats, ["total", "charged"]) || 0)) %>%)</strong>
     </h5>
     <div class="mb-3 text-center mx-auto">
       <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
