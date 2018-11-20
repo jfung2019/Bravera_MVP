@@ -74,7 +74,7 @@
               <%= render_datetime(challenge.end_date) %>
             </div>
             <div class="col-sm-3">
-              <%= challenge.distance_covered %>
+              <%= challenge.distance_covered %> KM
             </div>
             <div class="col-sm-2">
               <%= link("View", to: ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>
