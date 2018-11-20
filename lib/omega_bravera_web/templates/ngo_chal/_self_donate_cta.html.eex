@@ -1,9 +1,6 @@
-<div class="card mb-3 mt-3">
+<div class="card mb-3">
   <div class="card-body">
-    <p>
-      <%= @current_user.firstname %>, looks like you haven't donated. Challenges where the challenger donates have more donors and raise more money
-      for their cause. Put your money where your mouth is and donate to your own challenge
-    </p>
+    <p><%= @current_user.firstname %>, you haven't donated yet.</p>
     <a href="#donation-form" class="btn btn-danger">Self-Donation</a>
   </div>
 </div>
