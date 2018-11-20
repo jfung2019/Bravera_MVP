@@ -18,7 +18,7 @@ defmodule OmegaBraveraWeb.PageController do
             redirect(conn, to: admin_user_page_path(conn, :index))
 
           _ ->
-            redirect(conn, to: user_profile_path(conn, :show))
+            redirect(conn, to: "/ngos")
         end
 
       true ->
