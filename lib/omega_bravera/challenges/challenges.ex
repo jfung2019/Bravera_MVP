@@ -36,7 +36,7 @@ defmodule OmegaBravera.Challenges do
     query =
       from(activity in Activity,
         where: activity.challenge_id == ^challenge.id,
-        order_by: [desc: :inserted_at]
+        order_by: [desc: :start_date]
       )
 
     query =
