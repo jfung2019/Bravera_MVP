@@ -24,7 +24,10 @@
       ></div>
     </div>
     <h5 class="text-420 mt-0 mb-3 text-center">
-      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "charged"]) || 0 %></strong> of <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %> <%= String.upcase(@challenge.default_currency) %></strong> Raised
+      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "charged"]) || 0 %></strong>
+      raised of target
+      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %><%= String.upcase(@challenge.default_currency) %></strong>
+      <strong class="text-green">(<%= round((get_in(@stats, ["total", "charged"]) || 0) / Decimal.to_integer(@challenge.money_target) * 100) %>%)</strong>
     </h5>
     <div class="mb-3 text-center mx-auto">
       <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
