@@ -36,7 +36,7 @@
     </h2>
     <div class="mb-3 mx-lg-3">
       <h5 class="text-420 mt-1 mb-1 ml-1 text-left">
-        Nudge Donation (now)
+        Kickstarter Donation (now)
         <span class="text-success"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%=get_in(@stats, ["1", "total"]) || 0 %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
