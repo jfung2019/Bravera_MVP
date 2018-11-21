@@ -1,23 +1,29 @@
 <nav class="navbar navbar-expand-md navbar-light pb-3 pt-3 border-bottom bg-white">
-  <div class="container">
-    <a class="navbar-brand big-logo ml-2" href="/"></a>
+<div class="container">
+      <a class="navbar-brand big-logo ml-4" href="/"></a>
 
     <button
       class="navbar-toggler mr-3"
-      type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+      type="button" data-toggle="collapse" data-target="#bravera-navbar" aria-controls="bravera-navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+</div>
 
-    <div class="collapse navbar-collapse text-center" id="navbarsExample03">
+    <div class="collapse navbar-collapse text-center" id="bravera-navbar">
 
       <ul class="navbar-nav mx-auto">
       </ul>
 
-      <div class="ml-md-4">
+      <div class="ml-md-4 mb-3 mt-3">
+        <a class="btn btn-bravera" href="https://www.bravera.fit/how/" role="button">
+          About us
+        </a>
+      </div>
+
+      <div class="ml-md-4 mb-3 mt-3">
         <a class="btn btn-bravera" href="/login/" role="button">
           Log in
         </a>
       </div>
     </div>
-  </div>
 </nav>

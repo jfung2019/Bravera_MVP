@@ -1,5 +1,13 @@
 <div class="container">
   <div class="row">
+    <div class="col-sm-3 float-right profile-pic-padding">
+      <%= img_tag(@profile_picture, class: "img-thumbnail") %>
+      <div>
+        <span class="small">Note: to edit profile picture, please change inside your connected fitness tracker account.</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-sm-8">
       <br />
       <h5>Overview:</h5>
@@ -12,22 +20,23 @@
         <li> <b> Total Distance covered on Bravera Challenges: </b> <%= @total_distance %> KMs </li>
         <li> <b> Total Number of Supporters: </b> <%= @num_of_supporters %> </li>
       </ul>
-
-      <br />
-    </div>
-    <div class="col-sm-3 float-right profile-pic-padding">
-      <%= img_tag(@profile_picture, class: "img-thumbnail") %>
-      <div>
-        <span class="small">Note: to edit, please change from connected fitness tracker.</span>
-      </div>
     </div>
   </div>
 
 
-  <h5>Challenges:</h5>
+  <div class="row">
+    <div class="col-5"><h5>Your Challenges:</h5></div>
+    <div class="col-7 mt-1">
+      <%= img_tag(static_path(@conn, "/images/icons/if_ic_screen_rotation_48px.png")) %>
+      <span class="small">Turn your mobile screen for better view.</span>
+    </div>
+    <div class="col-5 ml-1"><%= link("Take another challenge", to: ngo_path(@conn, :index)) %></div>
+  </div>
+  <br />
 
 <%= unless Enum.empty?(@challenges) do %>
   <div class="row">
+
     <div class="col-md-8">
       <div class="card">
         <div class="card-body">
@@ -66,7 +75,7 @@
               <%= render_datetime(challenge.end_date) %>
             </div>
             <div class="col-sm-3">
-              <%= challenge.distance_covered %>
+              <%= challenge.distance_covered %> KM
             </div>
             <div class="col-sm-2">
               <%= link("View", to: ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>
@@ -89,3 +98,4 @@
 
 
 </div>
+<br />

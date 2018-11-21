@@ -10,8 +10,6 @@
       <%= if @current_user != nil and @challenge.user.id == @current_user.id and @challenge.status == "active" do %>
         <%= render "_invite_buddies.html", assigns %>
       <% end %>
-
-
       <%= render "challenge_header.html", assigns %>
       <%= render "challenge_details.html", assigns %>
 
@@ -35,8 +33,8 @@
         </h4>
       </div>
       <div class="card-footer text-center">
-        <%= link("Join the Challenge", to: ngo_path(@conn, :show, @challenge.ngo), class: "btn btn-bravera") %>
-        <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera") %>
+        <%= link("Join the Challenge", to: ngo_path(@conn, :show, @challenge.ngo), class: "btn btn-bravera mb-2") %>
+        <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
       </div>
     </div>
 

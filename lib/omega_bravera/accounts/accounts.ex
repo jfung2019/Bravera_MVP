@@ -250,10 +250,15 @@ defmodule OmegaBravera.Accounts do
 
     credential = Repo.one(query)
 
-    if checkpw(password, credential.password_hash) do
-      {:ok, user}
-    else
-      {:error, :invalid_password}
+    cond do
+      credential != nil ->
+        if checkpw(password, credential.password_hash) do
+          {:ok, user}
+        else
+          {:error, :invalid_password}
+        end
+      credential == nil ->
+        {:error, :user_does_not_exist}
     end
   end
 

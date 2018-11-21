@@ -1,11 +1,11 @@
-<div class="signin">
+<div class="signin mx-auto">
   <%= form_for @conn, user_session_path(@conn, :create), [class: "form-signin text-center", as: :session], fn f -> %>
     <img class="circle-logo" src="/images/bravera-logo-circle.png" alt="Bravera">
     <h1 class="my-3">
       Log in
     </h1>
 
-    <p class="mt-5 mb-3 text-muted">By logging in to Bravera you agree to our <a href="https://www.bravera.tech/privacy" target="_blank" rel="noreferrer noopener">Cookies & Privacy Policy</a></p>
+    <p class="mt-3 mb-3 text-muted">By logging in to Bravera you agree to our <a href="https://www.bravera.tech/privacy" target="_blank" rel="noreferrer noopener">Cookies & Privacy Policy</a></p>
 
     <div class="mb-3">
       <a href="/strava/login" class="mb-1">
@@ -15,9 +15,7 @@
 
     <img src="/images/fitbit-coming-soon.png"  alt="Fitbit coming soon!"/>
 
-    <p class="mt-5 mb-3 text-muted">Or using email-password combination</p>
-
-    <div class="form-group">
+    <div class="form-group mt-2">
       <%= text_input f, :email, class: "form-control", type: "email", placeholder: "Email", required: "" %>
       <%= error_tag f, :email %>
     </div>
