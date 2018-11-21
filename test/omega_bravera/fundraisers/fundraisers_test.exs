@@ -10,17 +10,15 @@ defmodule OmegaBravera.FundraisersTest do
       desc: "some desc",
       logo: "some logo",
       name: "some name",
-      slug: "some slug",
-      stripe_id: "some stripe_id"
+      slug: "some slug"
     }
     @update_attrs %{
       desc: "some updated desc",
       logo: "some updated logo",
       name: "some updated name",
-      slug: "some updated slug",
-      stripe_id: "some updated stripe_id"
+      slug: "some updated slug"
     }
-    @invalid_attrs %{desc: nil, logo: nil, name: nil, slug: nil, stripe_id: nil}
+    @invalid_attrs %{desc: nil, logo: nil, name: nil, slug: nil}
 
     def ngo_fixture(attrs \\ %{}) do
       {:ok, ngo} =
@@ -47,7 +45,6 @@ defmodule OmegaBravera.FundraisersTest do
       assert ngo.logo == "some logo"
       assert ngo.name == "some name"
       assert ngo.slug == "some slug"
-      assert ngo.stripe_id == "some stripe_id"
     end
 
     test "create_ngo/1 with invalid data returns error changeset" do
@@ -62,7 +59,6 @@ defmodule OmegaBravera.FundraisersTest do
       assert ngo.logo == "some updated logo"
       assert ngo.name == "some updated name"
       assert ngo.slug == "some updated slug"
-      assert ngo.stripe_id == "some updated stripe_id"
     end
 
     test "update_ngo/2 with invalid data returns error changeset" do

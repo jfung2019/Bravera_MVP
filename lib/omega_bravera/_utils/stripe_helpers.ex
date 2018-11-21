@@ -21,7 +21,7 @@ defmodule OmegaBravera.StripeHelpers do
         str_cust_id: customer
       } = donation
 
-      %{"name" => ngo_name, "stripe_id" => ngo_connected_acct} = Fundraisers.get_ngo!(ngo_id)
+      %{"name" => ngo_name} = Fundraisers.get_ngo!(ngo_id)
 
       %{email: recpt_email} = Accounts.get_user!(user_id)
 
@@ -32,7 +32,7 @@ defmodule OmegaBravera.StripeHelpers do
         "currency" => currency,
         "customer" => customer,
         "description" => description,
-        "destination[account]" => ngo_connected_acct,
+        "destination[account]" => get_connected_account(),
         "destination[amount]" => destination_amount(amount),
         "receipt_email" => recpt_email
       }
@@ -71,7 +71,7 @@ defmodule OmegaBravera.StripeHelpers do
   end
 
   def charge_stripe_customer(ngo, params, ngo_chal_id) do
-    %{name: ngo_name, stripe_id: ngo_connected_acct} = ngo
+    %{name: ngo_name} = ngo
 
     %{
       "amount" => amount,
@@ -87,7 +87,7 @@ defmodule OmegaBravera.StripeHelpers do
       "currency" => currency,
       "customer" => customer,
       "description" => description,
-      "destination[account]" => ngo_connected_acct,
+      "destination[account]" => get_connected_account,
       "destination[amount]" => destination_amount(amount),
       "receipt_email" => email
     }
@@ -157,5 +157,9 @@ defmodule OmegaBravera.StripeHelpers do
     |> Numbers.mult(0.88)
     |> Decimal.round()
     |> Decimal.to_string()
+  end
+
+  defp get_connected_account() do
+    Application.get_env(:stripy, :connected_account)
   end
 end

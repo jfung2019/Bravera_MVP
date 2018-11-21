@@ -24,6 +24,7 @@ config :strava,
 
 config :stripy,
   secret_key: "sk_test_xgwHvfr4GBgJ9wrUDHoa1E57",
+  connected_account: "foo",
   endpoint: "https://api.stripe.com/v1/"
 
 config :omega_bravera, :stripe_public_key, "pk_test_RM9ht2ztt3dMgpvjPAtpHOx6"
