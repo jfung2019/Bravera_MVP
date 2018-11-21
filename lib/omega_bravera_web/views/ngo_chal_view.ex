@@ -73,4 +73,16 @@ defmodule OmegaBraveraWeb.NGOChalView do
         content_tag(:div, "", class: "progress-bar bg-bravera", style: "width: #{percentage}%", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "")
       end]
     end
+
+  def render_total_secured(%Decimal{} = target, secured, default_currency) do
+    if secured < Decimal.to_integer(target) do
+      content_tag(:span, class: "text-secondary float-right") do
+        content_tag(:strong, currency_to_symbol(default_currency) <> Integer.to_string(secured))
+      end
+    else
+      content_tag(:span, class: "text-success float-right") do
+        content_tag(:strong, currency_to_symbol(default_currency) <> Integer.to_string(secured))
+      end
+    end
+  end
 end

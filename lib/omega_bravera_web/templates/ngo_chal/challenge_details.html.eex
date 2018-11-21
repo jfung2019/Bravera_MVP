@@ -48,11 +48,11 @@
       <%= render_progress_bar(@m_targets["4"], @m_targets["3"], @challenge, get_in(@stats, ["4", "total"])) %>
       <h5 class="text-420 mt-3 mb-1 ml-1 text-left">
         Total Secured:
-        <span class="text-success float-right"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "charged"]) || 0 %></strong> </span>
+        <%= render_total_secured(@challenge.money_target, get_in(@stats, ["total", "charged"]) || 0, @challenge.default_currency)%>
       </h5>
       <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
         Total Pledged:
-        <span class="text-success float-right"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "pending"]) || 0 %></strong> </span>
+        <span class="text-success float-right"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %></strong> </span>
       </h5>
       <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
         Distance Completed:
