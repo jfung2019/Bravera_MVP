@@ -74,15 +74,36 @@ defmodule OmegaBraveraWeb.NGOChalView do
       end]
     end
 
-  def render_total_secured(%Decimal{} = target, secured, default_currency) do
-    if secured < Decimal.to_integer(target) do
-      content_tag(:span, class: "text-secondary float-right") do
-        content_tag(:strong, currency_to_symbol(default_currency) <> Integer.to_string(secured))
+  def render_total_pledged(pending, secured, default_currency) do
+    color =
+      if pending <= secured and pending != 0 do
+        "text-success"
+      else
+        "text-secondary"
       end
-    else
-      content_tag(:span, class: "text-success float-right") do
-        content_tag(:strong, currency_to_symbol(default_currency) <> Integer.to_string(secured))
+
+    content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
+      ["Total Pledged:",
+        content_tag(:span, class: "float-right") do
+          content_tag(:strong,"#{currency_to_symbol(default_currency) <> Integer.to_string(pending)}")
+        end]
+    end
+  end
+
+  def render_total_secured(secured, default_currency) do
+    color =
+      if secured <= 0 do
+        "text-secondary"
+      else
+        "text-success"
+
       end
+
+    content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
+    ["Total Secured:",
+      content_tag(:span, class: "float-right") do
+        content_tag(:strong,"#{currency_to_symbol(default_currency) <> Integer.to_string(secured)}")
+      end]
     end
   end
 end
