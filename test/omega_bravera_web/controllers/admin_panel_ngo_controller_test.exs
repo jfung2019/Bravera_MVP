@@ -63,7 +63,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: %{name: "foo name"})
+      conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: %{name: ""})
       assert html_response(conn, 200) =~ "New NGO"
     end
   end
