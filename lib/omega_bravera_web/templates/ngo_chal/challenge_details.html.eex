@@ -43,9 +43,6 @@
         <span class="text-success"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%=get_in(@stats, ["1", "total"]) || 0 %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
-      <%
-        IO.inspect @stats
-      %>
       <%= render_progress_bar(@m_targets["2"], 0, @challenge, get_in(@stats, ["2", "total"])) %>
       <%= render_progress_bar(@m_targets["3"], @m_targets["2"], @challenge, get_in(@stats, ["3", "total"])) %>
       <%= render_progress_bar(@m_targets["4"], @m_targets["3"], @challenge, get_in(@stats, ["4", "total"])) %>

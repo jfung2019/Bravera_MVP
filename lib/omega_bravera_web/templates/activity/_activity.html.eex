@@ -5,6 +5,6 @@
 <%= for activity <- @activities do %>
   <div class="row">
     <div class="col-6"><%= Timex.format!(activity.start_date, "%b %d", :strftime) %></div>
-    <div class="col-6"><%= activity.distance %> Km</div>
+    <div class="col-6"><%= render_activity(activity.distance) %> Km</div>
   </div>
 <% end %>
