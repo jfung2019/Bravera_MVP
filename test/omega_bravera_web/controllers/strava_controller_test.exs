@@ -41,6 +41,7 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
       params = %{
         "code" => "some code",
         "scope" => "view_private",
+        "redirect_to" => "/",
         "state" => ""
       }
 
