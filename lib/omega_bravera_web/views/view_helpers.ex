@@ -49,4 +49,6 @@ defmodule OmegaBraveraWeb.ViewHelpers do
       |> Timex.format("{D}/{M}/{WYYYY}")
     formatted_date_time
   end
+
+  def render_activity(%Decimal{} = activity), do: Decimal.round(activity, 1)
 end

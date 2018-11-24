@@ -24,7 +24,10 @@
       ></div>
     </div>
     <h5 class="text-420 mt-0 mb-3 text-center">
-      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "charged"]) || 0 %></strong> of <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %> <%= String.upcase(@challenge.default_currency) %></strong> Raised
+      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "charged"]) || 0 %></strong>
+      raised of target
+      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %></strong>
+      <strong class="text-green">(<%= render_percentage_exceed(get_in(@stats, ["total", "charged"]) || 0, @challenge.money_target) %>%)</strong>
     </h5>
     <div class="mb-3 text-center mx-auto">
       <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
@@ -35,23 +38,16 @@
       Milestones
     </h2>
     <div class="mb-3 mx-lg-3">
-      <h5 class="text-420 mt-1 mb-1 ml-1 text-left">
-        Nudge Donation (now)
+      <h5 class="text-420 mt-1 mb-3 ml-1 text-left">
+        Kickstarter Donations
         <span class="text-success"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%=get_in(@stats, ["1", "total"]) || 0 %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
-      <div class="progress chal-progress mb-2">
-        <div class="progress-bar bg-bravera"
-             style="width: 100%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
-             id="kick-progress"></div>
-      </div>
       <%= render_progress_bar(@m_targets["2"], 0, @challenge, get_in(@stats, ["2", "total"])) %>
       <%= render_progress_bar(@m_targets["3"], @m_targets["2"], @challenge, get_in(@stats, ["3", "total"])) %>
       <%= render_progress_bar(@m_targets["4"], @m_targets["3"], @challenge, get_in(@stats, ["4", "total"])) %>
-      <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
-        Total Pledged:
-        <span class="text-success float-right"><strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "pending"]) || 0 %></strong> </span>
-      </h5>
+      <%= render_total_secured(get_in(@stats, ["total", "charged"]), @challenge.default_currency) %>
+      <%= render_total_pledged(get_in(@stats, ["total", "pending"] || 0), get_in(@stats, ["total", "charged"]) || 0, @challenge.default_currency)%>
       <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
         Distance Completed:
         <strong class="text-500 float-right"><%= @challenge.distance_covered %>/<%= @challenge.distance_target %>km</strong>

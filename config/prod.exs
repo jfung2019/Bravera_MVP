@@ -2,7 +2,7 @@ use Mix.Config
 
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
   http: [port: System.get_env("PORT") || 8080],
-  url: [host: "bravera-staging.plangora.com", port: 443, scheme: :https],
+  url: [host: System.get_env("APP_HOST"), port: 443, scheme: "https"],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/manifest.json",
   server: true,
@@ -46,4 +46,4 @@ config :omega_bravera, OmegaBravera.Mailer,
 
 config :sendgrid,
   api_key: System.get_env("SENDGRID_API_KEY"),
-  sandbox_enable: true
+  sandbox_enable: is_nil(System.get_env("ENABLE_EMAILS"))

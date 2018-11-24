@@ -6,18 +6,7 @@
   <% end %>
 
   <div class="card-body">
-
-    <div class="form-group">
-      <div class="currency-selector max-w-300">
-        <label
-          class="control-label"
-          for="currency">
-          <h4 class="currency-select-label text-green">Currency</h4>
-        </label>
-        <%= hidden_input f, :currency %>
-      </div>
-    </div>
-
+    <%= hidden_input f, :currency %>
     <div class="form-group">
       <%= error_tag f, :currency %>
       <div class="currency-selector max-w-300">
@@ -50,7 +39,7 @@
   <div class="mx-auto" style="max-width: 300px;">
 
     <div class="form-group row">
-      <label for="starter-donation" class="col-sm-8 col-form-label">Nudge Donation (now)</label>
+      <label for="starter-donation" class="col-sm-8 col-form-label">Kickstarter Donation (now)</label>
       <div class="col-sm-4">
         <input type="number" class="form-control" id="kickstarter" name="donation[milestone_1]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         >

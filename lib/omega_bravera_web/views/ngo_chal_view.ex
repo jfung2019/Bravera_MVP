@@ -53,6 +53,9 @@ defmodule OmegaBraveraWeb.NGOChalView do
     |> Float.round(2)
   end
 
+  def render_percentage_exceed(total, %Decimal{} = target), do: round((total / Decimal.to_integer(target)) * 100)
+
+
 
   def render_progress_bar(target, previous_target, %{default_currency: currency, distance_covered: distance}, total) do
     percentage = render_percentage(target, distance, previous_target)
@@ -73,4 +76,37 @@ defmodule OmegaBraveraWeb.NGOChalView do
         content_tag(:div, "", class: "progress-bar bg-bravera", style: "width: #{percentage}%", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "")
       end]
     end
+
+  def render_total_pledged(pending, secured, default_currency) do
+    color =
+      if pending <= secured and pending != 0 do
+        "text-success"
+      else
+        "text-secondary"
+      end
+
+    content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
+      ["Total Pledged:",
+        content_tag(:span, class: "float-right") do
+          content_tag(:strong,"#{currency_to_symbol(default_currency) <> Integer.to_string(pending)}")
+        end]
+    end
+  end
+
+  def render_total_secured(secured, default_currency) do
+    color =
+      if secured <= 0 do
+        "text-secondary"
+      else
+        "text-success"
+
+      end
+
+    content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
+    ["Total Secured:",
+      content_tag(:span, class: "float-right") do
+        content_tag(:strong,"#{currency_to_symbol(default_currency) <> Integer.to_string(secured)}")
+      end]
+    end
+  end
 end
