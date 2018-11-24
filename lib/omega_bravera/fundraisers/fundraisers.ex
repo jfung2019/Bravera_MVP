@@ -60,22 +60,12 @@ defmodule OmegaBravera.Fundraisers do
   """
   def get_ngo!(id), do: Repo.get!(NGO, id)
 
-  def get_ngo_by_slug(slug) do
-    query =
+  def get_ngo_by_slug(slug, preloads \\ [:ngo_chals]) do
       from(n in NGO,
-        where: n.slug == ^slug
+        where: n.slug == ^slug,
+        preload: ^preloads
       )
-
-    Repo.one(query)
-  end
-
-  def get_ngo_by_slug(slug, :preload) do
-    query =
-      from(n in NGO,
-        where: n.slug == ^slug
-      )
-
-    Repo.one(query) |> Repo.preload(:ngo_chals)
+      |> Repo.one()
   end
 
   @doc """
