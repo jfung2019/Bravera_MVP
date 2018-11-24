@@ -69,6 +69,11 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
     end
   end
 
+  def statement(conn, %{"slug" => slug}) do
+    ngo = Fundraisers.get_donations_for_ngo(slug)
+    render(conn, "statement.html", ngo: ngo, layout: {OmegaBraveraWeb.LayoutView, "print.html"})
+  end
+
   defp assign_available_options(conn, _opts) do
     conn
     |> assign(:available_currencies, Fundraisers.available_currencies())

@@ -1,0 +1,34 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col"> Challenge Name </th>
+      <th scope="col"> Transaction Reference </th>
+      <th scope="col"> Payment Date </th>
+      <th scope="col"> Challenger </th>
+      <th scope="col"> Supporter Name </th>
+      <th scope="col"> Supporter Email </th>
+      <th scope="col"> Milestone </th>
+      <th scope="col"> Donation Total </th>
+      <th scope="col"> Gateway Fee(3.4% + HKD 2.35) </th>
+      <th scope="col"> Bravera Fees(6%) </th>
+      <th scope="col"> Net Donation </th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for donation <- @ngo.donations do %>
+      <tr>
+        <th scope="row"><%= donation.ngo_chal.slug %></th>
+        <th scope="row"><%= donation.charge_id %></th>
+        <th scope="row"><%= render_datetime(donation.charged_at) %></th>
+        <th scope="row"><%= @ngo.user.firstname <> " " <> @ngo.user.lastname %></th>
+        <th scope="row"><%= donation.user.firstname <> " " <> donation.user.lastname %></th>
+        <th scope="row"><%= donation.user.email %></th>
+        <th scope="row"><%= donation.milestone %></th>
+        <th scope="row"><%= donation.amount %></th>
+        <th scope="row"><%= render_fees(donation.amount, "gateway_fee") %></th>
+        <th scope="row"><%= render_fees(donation.amount, "bravera") %></th>
+        <th scope="row"><%= render_fees(donation.amount, "net_donation") %></th>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

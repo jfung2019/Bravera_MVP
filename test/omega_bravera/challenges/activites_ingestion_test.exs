@@ -161,7 +161,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     test "charges the chargeable donations", %{strava_activity: strava_activity} do
       use_cassette "process_milestone_donation" do
         user = insert(:user)
-        ngo = insert(:ngo, %{slug: "swcc-1", stripe_id: "acct_1D7jlPINRN0GH189"})
+        ngo = insert(:ngo, %{slug: "swcc-1"})
         donor = insert(:user, %{email: "camonz@camonz.com"})
 
         challenge =

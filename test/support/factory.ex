@@ -23,7 +23,6 @@ defmodule OmegaBravera.Factory do
   def ngo_factory do
     %OmegaBravera.Fundraisers.NGO{
       name: "Save the children worldwide",
-      stripe_id: "cus_lO1DEQWBbQAACfHO",
       slug: sequence(:slug, &"swcc-#{&1}")
     }
   end

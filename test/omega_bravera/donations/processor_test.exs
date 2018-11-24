@@ -14,7 +14,7 @@ defmodule OmegaBravera.Donations.ProcessorTest do
     donor = insert(:user, %{email: "simon.garciar@gmail.com"})
 
     ngo =
-      insert(:ngo, %{stripe_id: "acct_1D8pvmJTOgSA3tLo", slug: "stc", name: "Save the children"})
+      insert(:ngo, %{slug: "stc", name: "Save the children"})
 
     challenge = insert(:ngo_challenge, %{ngo: ngo})
 

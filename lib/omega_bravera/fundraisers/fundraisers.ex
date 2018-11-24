@@ -19,6 +19,20 @@ defmodule OmegaBravera.Fundraisers do
     Repo.all(query)
   end
 
+  def get_donations_for_ngo(slug) do
+    from(
+      n in NGO,
+      where: n.slug == ^slug,
+      left_join: ngo_user in assoc(n, :user),
+      left_join: donations in assoc(n, :donations),
+      on: donations.status == "charged",
+      left_join: user in assoc(donations, :user),
+      left_join: ngo_chal in assoc(donations, :ngo_chal),
+      preload: [user: ngo_user, donations: {donations, user: user, ngo_chal: ngo_chal}]
+    )
+    |> Repo.one()
+  end
+
   @doc """
   Returns the list of ngos.
 

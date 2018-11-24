@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-6 offset-3">
+  <div class="col-8 offset-2">
     <h2>Listing NGOs</h2>
 
     <span><%= link "Create New NGO", to: admin_panel_ngo_path(@conn, :new) %></span>
@@ -26,6 +26,7 @@
           <td><%= ngo.currency %></td>
           <td class="text-right">
             <span><%= link "Show", to: admin_panel_ngo_path(@conn, :show, ngo), class: "btn btn-default btn-xs"%> </span>
+            <span><%= link "Statement", to: admin_panel_ngo_path(@conn, :statement, ngo), class: "btn btn-default btn-xs"%> </span>
             <span><%= link "Edit", to: admin_panel_ngo_path(@conn, :edit, ngo), class: "btn btn-default btn-xs"%> </span>
           </td>
         </tr>

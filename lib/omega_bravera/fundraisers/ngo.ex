@@ -17,7 +17,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:image, :string)
     field(:name, :string)
     field(:slug, :string)
-    field(:stripe_id, :string)
     field(:url, :string)
     field(:full_desc, :string)
     field(:currency, :string, default: "hkd")
@@ -37,7 +36,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :desc,
     :logo,
     :image,
-    :stripe_id,
     :slug,
     :url,
     :full_desc,
@@ -48,7 +46,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :durations,
     :minimum_donation
   ]
-  @required_attributes [:name, :stripe_id, :slug, :minimum_donation]
+  @required_attributes [:name, :slug, :minimum_donation]
 
   @doc false
   def changeset(ngo, attrs) do
