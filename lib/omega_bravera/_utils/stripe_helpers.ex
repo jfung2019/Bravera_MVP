@@ -32,8 +32,6 @@ defmodule OmegaBravera.StripeHelpers do
         "currency" => currency,
         "customer" => customer,
         "description" => description,
-        "destination[account]" => get_connected_account(),
-        "destination[amount]" => destination_amount(amount),
         "receipt_email" => recpt_email
       }
 
@@ -87,8 +85,6 @@ defmodule OmegaBravera.StripeHelpers do
       "currency" => currency,
       "customer" => customer,
       "description" => description,
-      "destination[account]" => get_connected_account,
-      "destination[amount]" => destination_amount(amount),
       "receipt_email" => email
     }
 
@@ -149,17 +145,5 @@ defmodule OmegaBravera.StripeHelpers do
     |> centify()
     |> Decimal.round()
     |> Decimal.to_string()
-  end
-
-  defp destination_amount(amount) do
-    amount
-    |> centify()
-    |> Numbers.mult(0.88)
-    |> Decimal.round()
-    |> Decimal.to_string()
-  end
-
-  defp get_connected_account() do
-    Application.get_env(:stripy, :connected_account)
   end
 end
