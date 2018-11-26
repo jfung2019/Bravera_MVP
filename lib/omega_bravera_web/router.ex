@@ -103,6 +103,7 @@ defmodule OmegaBraveraWeb.Router do
       get("/ngos/:slug/edit", AdminPanelNGOController, :edit)
       put("/ngos/:slug", AdminPanelNGOController, :update)
       get("/ngo/:slug/statement", AdminPanelNGOController, :statement)
+      get("/ngo/:slug/statement/monthly/", AdminPanelNGOController, :export_statement)
     end
   end
 

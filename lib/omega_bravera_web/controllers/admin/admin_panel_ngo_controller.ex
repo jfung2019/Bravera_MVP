@@ -4,6 +4,8 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
   alias OmegaBravera.{Accounts, Fundraisers, Slugify}
   alias OmegaBravera.Fundraisers.NGO
 
+  use Timex
+
   plug(:assign_available_options when action in [:edit, :new])
 
   def index(conn, _params) do
@@ -72,6 +74,41 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
   def statement(conn, %{"slug" => slug}) do
     ngo = Fundraisers.get_donations_for_ngo(slug)
     render(conn, "statement.html", ngo: ngo, layout: {OmegaBraveraWeb.LayoutView, "print.html"})
+  end
+
+  def export_statement(conn, %{"slug" => slug, "month" => month, "year" => year}) do
+    {:ok, start_date} = Date.new(String.to_integer(year), String.to_integer(month), 1)
+    start_datetime = Timex.to_datetime(start_date)
+    end_datetime = Timex.shift(start_datetime, months: 1)
+    csv_rows = Fundraisers.get_monthly_donations_for_ngo(slug, start_datetime, end_datetime)
+
+    conn
+    |> put_resp_content_type("text/csv")
+    |> put_resp_header("content-disposition", "attachment; filename=\"statement.csv\"")
+    |> send_resp(200, csv_content(csv_rows))
+  end
+
+  defp csv_content(rows) do
+    cols = [
+      [
+        "Challenge Name",
+        "Transaction Reference",
+        "Payment Date",
+        "Challenger",
+        "Supporter Name",
+        "Supporter Email",
+        "Milestone",
+        "Donation Total",
+        "Gateway Fee(3.4% + HKD 2.35)",
+        "Bravera Fees(6%)",
+        "Net Donation"
+      ]
+    ]
+
+    cols ++ rows
+    |> CSV.encode
+    |> Enum.to_list
+    |> to_string
   end
 
   defp assign_available_options(conn, _opts) do
