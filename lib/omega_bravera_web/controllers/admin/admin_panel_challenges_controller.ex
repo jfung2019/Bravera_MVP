@@ -40,9 +40,7 @@ defmodule OmegaBraveraWeb.AdminPanelChallengesController do
         )
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        conn
-        |> assign_available_options(nil)
-        |> render(conn, "edit.html", ngo_chal: ngo_chal, changeset: changeset)
+        conn |> render("edit.html", ngo_chal: ngo_chal, changeset: changeset)
     end
   end
 
@@ -52,5 +50,6 @@ defmodule OmegaBraveraWeb.AdminPanelChallengesController do
     |> assign(:available_activities, Fundraisers.available_activities())
     |> assign(:available_distances, Fundraisers.available_distances())
     |> assign(:available_durations, Fundraisers.available_durations())
+    |> assign(:available_challenge_types, Challenges.available_challenge_types())
   end
 end

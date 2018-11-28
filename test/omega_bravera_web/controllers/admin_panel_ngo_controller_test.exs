@@ -9,7 +9,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     logo: "some logo",
     name: "some name",
     slug: "some-slug",
-    stripe_id: "some stripe_id"
+    stripe_id: "some stripe_id",
+    type: "Per Goal"
   }
 
   @update_attrs %{
@@ -17,7 +18,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     logo: "some updated logo",
     name: "some updated name",
     slug: "some-updated-slug",
-    stripe_id: "some updated stripe_id"
+    stripe_id: "some updated stripe_id",
+    type: "Per Goal"
   }
 
   setup %{conn: conn} do

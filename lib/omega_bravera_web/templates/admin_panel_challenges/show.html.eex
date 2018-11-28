@@ -9,6 +9,7 @@
           <li>Gender: <%= @ngo_chal.user.additional_info["sex"]%> </li>
           <li>User Email:  <%= @ngo_chal.user.email %> </li>
           <li>Challenge URL:  <%= link("URL", to: ngo_ngo_chal_path(@conn, :show, @ngo_chal.ngo.slug, @ngo_chal.slug),  target: "_blank") %> </li>
+          <li>Challenge type:  <%= @ngo_chal.type %> </li>
           <li>Slug:  <%= @ngo_chal.slug %> </li>
           <li>Activity Type:  <%= @ngo_chal.activity_type %> </li>
           <li>Duration:  <%= @ngo_chal.duration %> </li>
