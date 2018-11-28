@@ -10,7 +10,8 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     money_target: "120.5",
     slug: "some slug",
     start_date: "2010-04-17 14:00:00.000000Z",
-    status: "some status"
+    status: "some status",
+    type: "Per Goal"
   }
   @invalid_attrs %{
     activity: nil,
@@ -19,7 +20,8 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     money_target: nil,
     slug: nil,
     start_date: nil,
-    status: nil
+    status: nil,
+    type: nil
   }
 
   @tag :authenticated

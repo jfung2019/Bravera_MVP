@@ -20,7 +20,8 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
       "duration" => 10,
       "ngo_id" => ngo.id,
       "user_id" => user.id,
-      "slug" => Slugify.gen_random_slug(user.firstname)
+      "slug" => Slugify.gen_random_slug(user.firstname),
+      "type" => "Per Goal"
     }
 
     changeset = NGOChal.create_changeset(%NGOChal{}, attrs)

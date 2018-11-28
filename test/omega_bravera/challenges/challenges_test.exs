@@ -14,7 +14,8 @@ defmodule OmegaBravera.ChallengesTest do
       "duration" => 42,
       "money_target" => "120.5",
       "slug" => "some slug",
-      "status" => "some status"
+      "status" => "some status",
+      "type" => "Per Goal"
     }
     @update_attrs %{
       "activity_type" => "Run",
@@ -22,7 +23,8 @@ defmodule OmegaBravera.ChallengesTest do
       "duration" => 43,
       "money_target" => "456.7",
       "slug" => "some updated slug",
-      "status" => "some updated status"
+      "status" => "some updated status",
+      "type" => "Per Goal"
     }
     @invalid_attrs %{
       "activity_type" => nil,
@@ -30,7 +32,8 @@ defmodule OmegaBravera.ChallengesTest do
       "duration" => "invalid",
       "money_target" => nil,
       "slug" => nil,
-      "status" => nil
+      "status" => nil,
+      "type" => nil
     }
 
     def ngo_chal_fixture(_attrs \\ %{}) do

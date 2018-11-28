@@ -37,6 +37,7 @@ defmodule OmegaBravera.Factory do
       duration: 5,
       status: "active",
       slug: "John-512",
+      type: "Per Goal",
       user: build(:user),
       ngo: build(:ngo)
     }
