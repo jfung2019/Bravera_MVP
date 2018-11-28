@@ -8,6 +8,8 @@ defmodule OmegaBraveraWeb.NGOChalController do
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Slugify
 
+  plug(:assign_available_options when action in [:new, :edit, :create])
+
   def index(conn, _params) do
     ngo_chals = Challenges.list_ngo_chals()
     render(conn, "index.html", ngo_chals: ngo_chals)
@@ -100,5 +102,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
     # To trigger social share modal on invites.
     challenge_path = ngo_ngo_chal_path(conn, :show, ngo_slug, slug) <> "#share"
     redirect(conn, to: challenge_path)
+  end
+
+  defp assign_available_options(conn, _opts) do
+    conn
+    |> assign(:available_challenge_types, Challenges.available_challenge_types())
   end
 end

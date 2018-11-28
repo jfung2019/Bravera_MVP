@@ -10,6 +10,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
     Challenges.Activity
   }
 
+  @available_challenge_types ["Per KM", "Per Goal"]
+
   schema "ngo_chals" do
     field(:activity_type, :string)
     field(:distance_target, :integer, default: 100)
@@ -23,6 +25,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field(:end_date, :utc_datetime)
     field(:status, :string, default: "active")
     field(:last_activity_received, :utc_datetime)
+    field(:type, :string)
 
     field(:participant_notified_of_inactivity, :boolean, default: false)
     field(:donor_notified_of_inactivity, :boolean, default: false)
@@ -49,7 +52,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :default_currency,
     :user_id,
     :ngo_id,
-    :self_donated
+    :self_donated,
+    :type
   ]
 
   @required_attributes [
@@ -60,7 +64,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :duration,
     :user_id,
     :ngo_id,
-    :slug
+    :slug,
+    :type
   ]
 
   @activity_types [
@@ -86,6 +91,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_inclusion(:distance_target, distances_available())
     |> validate_number(:money_target, greater_than: 0)
     |> validate_inclusion(:activity_type, @activity_types)
+    |> validate_inclusion(:type, @available_challenge_types)
   end
 
   def create_changeset(ngo_chal, attrs) do
@@ -168,6 +174,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
       _ -> change(changeset, status: "complete")
     end
   end
+
+  def challenge_type_options, do: @available_challenge_types
 
   defimpl Phoenix.Param, for: OmegaBravera.Challenges.NGOChal do
     def to_param(%{slug: slug}), do: slug

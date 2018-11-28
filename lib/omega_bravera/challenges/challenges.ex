@@ -344,4 +344,6 @@ defmodule OmegaBravera.Challenges do
   def change_team(%Team{} = team) do
     Team.changeset(team, %{})
   end
+
+  def available_challenge_types, do: NGOChal.challenge_type_options()
 end
