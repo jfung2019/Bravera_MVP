@@ -61,8 +61,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
   end
 
   def render_percentage_exceed(total, %Decimal{} = target), do: round((total / Decimal.to_integer(target)) * 100)
-
-
+  def render_percentage_exceed(%Decimal{} = total, target), do: round((Decimal.to_integer(total) / target) * 100)
 
   def render_progress_bar(target, previous_target, %{default_currency: currency, distance_covered: distance}, total) do
     percentage = render_percentage(target, distance, previous_target)
@@ -82,7 +81,27 @@ defmodule OmegaBraveraWeb.NGOChalView do
       content_tag(:div, class: "progress chal-progress mb-2") do
         content_tag(:div, "", class: "progress-bar bg-bravera", style: "width: #{percentage}%", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "")
       end]
-    end
+  end
+
+  def render_progress_bar(%Decimal{} = distance_covered, distance_target) do
+    percentage = render_percentage_exceed(distance_covered, distance_target)
+    {label_class, total_class} =
+      if percentage >= 100 do
+        {"text-bravera text-500", "float-right text-success"}
+      else
+        {"milestone-label", "float-right"}
+      end
+      [content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1", style: "text-align: left;") do
+        [content_tag(:span, "#{distance_covered}", class: label_class),
+        content_tag(:span, class: "text-secondary") do
+          content_tag(:strong, "#{distance_target}KM", class: total_class)
+        end]
+      end,
+      content_tag(:div, "", style: "clear: both;"),
+      content_tag(:div, class: "progress chal-progress mb-2") do
+        content_tag(:div, "", class: "progress-bar bg-bravera", style: "width: #{percentage}%", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "")
+      end]
+  end
 
   def render_total_pledged(pending, secured, default_currency) do
     color =

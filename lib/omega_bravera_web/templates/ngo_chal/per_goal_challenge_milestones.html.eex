@@ -1,0 +1,65 @@
+<div class="card challenge-details">
+  <div class="container border-bottom">
+    <div id="challenge-status-container" class="<%= @challenge.status %>">
+      <%= if active_challenge?(@challenge) do %>
+        <h5 class=" text-500 text-center mt-2 mb-0">
+          <strong id="days-left" class="text-success"></strong> Days,
+          <strong id="hours-left" class="text-success"></strong> Hours,
+          <strong id="mins-left" class="text-success"></strong>  Minutes Left
+        </h5>
+        <p class="text-center mb-0">
+          <%= render_date(@challenge.start_date) %> - <%= render_date(@challenge.end_date) %>
+        </p>
+        <p style="font-size: 12px;" class="text-420 text-center mb-3">(Day/Month/Year)</h6>
+      <% else %>
+          <h5 class=" text-500 text-center mt-2 mb-0">
+            Challenge <%= String.capitalize(@challenge.status) %>
+          </h5>
+      <% end %>
+    </div>
+    <div class="progress chal-progress mt-3">
+      <div class="progress-bar bg-success"
+           style="width: <%= render_percentage(@challenge.money_target, get_in(@stats, ["total", "charged"])) %>%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
+           id="money-progress"
+      ></div>
+    </div>
+    <h5 class="text-420 mt-0 mb-3 text-center">
+      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "charged"]) || 0 %></strong>
+      raised of target
+      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %></strong>
+      <strong class="text-green">(<%= render_percentage_exceed(get_in(@stats, ["total", "charged"]) || 0, @challenge.money_target) %>%)</strong>
+    </h5>
+    <div class="mb-3 text-center mx-auto">
+      <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2 class="mb-0 mt-2 text-center">
+      Milestones
+    </h2>
+    <div class="mb-3 mx-lg-3">
+      <h5 class="text-420 mt-1 mb-3 ml-1 text-left">
+        Kickstarter Donations
+        <span class="text-success"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%=get_in(@stats, ["1", "total"]) || 0 %></strong> </span>
+      </h5>
+      <div style="clear: both;"></div>
+      <%= render_progress_bar(@m_targets["2"], 0, @challenge, get_in(@stats, ["2", "total"])) %>
+      <%= render_progress_bar(@m_targets["3"], @m_targets["2"], @challenge, get_in(@stats, ["3", "total"])) %>
+      <%= render_progress_bar(@m_targets["4"], @m_targets["3"], @challenge, get_in(@stats, ["4", "total"])) %>
+      <%= render_total_secured(get_in(@stats, ["total", "charged"]), @challenge.default_currency) %>
+      <%= render_total_pledged(get_in(@stats, ["total", "pending"] || 0), get_in(@stats, ["total", "charged"]) || 0, @challenge.default_currency)%>
+      <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
+        Distance Completed:
+        <strong class="text-500 float-right"><%= @challenge.distance_covered %>/<%= @challenge.distance_target %>km</strong>
+      </h5>
+      <div style="clear: both;"></div>
+    </div>
+  </div>
+
+  <div class="card-footer border-top text-center mb-0 pb-0">
+    <div class=" img-fluid margin-auto mb-3">
+      <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "Fitness Data Powered by Strava") %>
+    </div>
+  </div>
+</div>  <!-- End of top card -->
