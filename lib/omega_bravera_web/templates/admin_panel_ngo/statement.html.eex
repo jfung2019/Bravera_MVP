@@ -1,8 +1,8 @@
-<div class="row mt-2 mb-2">
+<div class="row mt-2 mb-2 mx-auto">
   <div class="col-4">
     <%= form_for @conn, admin_panel_ngo_path(@conn, :export_statement, @ngo.slug), [as: :start_date, method: :get], fn f -> %>
       <select class="custom-select" name="month" required>
-        <option value="">Pick month</option>
+        <option value="">Month</option>
         <option value='1'>Janaury</option>
         <option value='2'>February</option>
         <option value='3'>March</option>
@@ -19,7 +19,7 @@
     </div>
     <div class="col-4">
       <select class="custom-select" name="year" required>
-        <option value="">Pick year</option>
+        <option value="">Year</option>
         <option value='2017'>2017</option>
         <option value='2018'>2018</option>
         <option value='2019'>2019</option>
@@ -33,7 +33,7 @@
   <% end %>
 </div>
 
-<section id="no-more-tables">
+<section class="ml-" id="no-more-tables">
   <table class="table-bordered table-striped table-condensed cf">
     <thead class="cf">
       <tr>
@@ -61,7 +61,10 @@
           <td data-title="Supporter Email"><%= donation.user.email %></td>
           <td data-title="Milestone"><%= donation.milestone %></td>
           <td data-title="Donation Total"><%= donation.amount %></td>
-          <td data-title="Gateway Fee(3.4% + HKD 2.35)"><%= render_fees(donation.amount, "gateway_fee") %></td>
+          <td style="height: 50px;" data-title="Gateway Fees
+(3.4% + HKD 2.35)"> <!-- do not add spaces before (3.4% + HKD 2.35) -->
+            <%= render_fees(donation.amount, "gateway_fee") %>
+          </td>
           <td data-title="Bravera Fees(6%)"><%= render_fees(donation.amount, "bravera") %></td>
           <td data-title="Net Donation"><%= render_fees(donation.amount, "net_donation") %></td>
         </tr>

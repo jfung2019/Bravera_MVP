@@ -689,25 +689,28 @@ div.page-index {
 		padding-left: 50%; 
 		white-space: normal;
 		text-align:left;
+		word-break: break-all;
 	}
- 
+
 	#no-more-tables td:before { 
 		/* Now like a table header */
 		position: absolute;
 		/* Top/left values mimic padding */
 		top: 6px;
 		left: 6px;
-		width: 45%; 
+		width: 45%;
 		padding-right: 10px; 
 		white-space: nowrap;
-		text-align:left;
+		text-align: left;
 		font-weight: bold;
 	}
  
 	/*
 	Label the data
 	*/
-	#no-more-tables td:before { content: attr(data-title); }
+	#no-more-tables td:before { content: attr(data-title); white-space: pre;}
+	.line-break-fix {height: 50px;}
+
 }
 
 // Admin User Session
