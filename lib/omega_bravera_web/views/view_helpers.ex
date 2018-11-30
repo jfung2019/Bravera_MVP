@@ -28,7 +28,6 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   end
 
   def render_datetime(naive_date_time) do
-    IO.inspect "Printing statement troublesome date: #{naive_date_time}"
     naive_date_time =
       try do
         naive_date_time |> DateTime.to_naive()
