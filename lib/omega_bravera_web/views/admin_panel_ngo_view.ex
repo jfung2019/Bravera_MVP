@@ -17,4 +17,8 @@ defmodule OmegaBraveraWeb.AdminPanelNGOView do
       "gateway_fee" => Decimal.add(gateway_percent, gateway_base_fee)
     } |> Map.get(opt)
   end
+
+  def render_kickstarter(nil), do: ""
+  def render_kickstarter(milestone) when milestone > 0, do: milestone
+  def render_kickstarter(milestone) when milestone == 0, do: "Kickstarter"
 end
