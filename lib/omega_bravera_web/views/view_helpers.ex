@@ -50,5 +50,6 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     formatted_date_time
   end
 
+  def render_activity(nil), do: 0
   def render_activity(%Decimal{} = activity), do: Decimal.round(activity, 1)
 end
