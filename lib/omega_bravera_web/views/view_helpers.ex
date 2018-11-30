@@ -27,6 +27,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     end
   end
 
+  def render_datetime(nil), do: ""
   def render_datetime(naive_date_time) do
     naive_date_time =
       try do
