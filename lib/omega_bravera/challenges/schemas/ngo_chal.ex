@@ -10,6 +10,9 @@ defmodule OmegaBravera.Challenges.NGOChal do
     Challenges.Activity
   }
 
+  @per_km "PER_KM"
+  @per_milestone "PER_MILESTONE"
+
   @available_challenge_types ["Per KM", "Per Goal"]
 
   schema "ngo_chals" do
@@ -91,7 +94,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_inclusion(:distance_target, distances_available())
     |> validate_number(:money_target, greater_than: 0)
     |> validate_inclusion(:activity_type, @activity_types)
-    |> validate_inclusion(:type, @available_challenge_types)
   end
 
   def create_changeset(ngo_chal, attrs) do

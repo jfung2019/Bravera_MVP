@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddChallengeTypesToNgoChal do
 
   def change do
     alter table(:ngo_chals) do
-      add :type, :string, null: false, default: "Per Goal"
+      add :type, :string, null: false, default: "PER_MILESTONE"
     end
   end
 end
