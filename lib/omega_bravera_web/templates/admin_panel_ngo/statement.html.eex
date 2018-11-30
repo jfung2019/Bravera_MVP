@@ -1,5 +1,5 @@
 <div class="row mt-2 mb-2">
-  <div class="col-2">
+  <div class="col-4">
     <%= form_for @conn, admin_panel_ngo_path(@conn, :export_statement, @ngo.slug), [as: :start_date, method: :get], fn f -> %>
       <select class="custom-select" name="month" required>
         <option value="">Pick month</option>
@@ -17,7 +17,7 @@
         <option value='12'>December</option>
       </select>
     </div>
-    <div class="col-2">
+    <div class="col-4">
       <select class="custom-select" name="year" required>
         <option value="">Pick year</option>
         <option value='2017'>2017</option>
@@ -33,37 +33,39 @@
   <% end %>
 </div>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col"> Challenge Name </th>
-      <th scope="col"> Transaction Reference </th>
-      <th scope="col"> Payment Date </th>
-      <th scope="col"> Challenger </th>
-      <th scope="col"> Supporter Name </th>
-      <th scope="col"> Supporter Email </th>
-      <th scope="col"> Milestone </th>
-      <th scope="col"> Donation Total </th>
-      <th scope="col"> Gateway Fee(3.4% + HKD 2.35) </th>
-      <th scope="col"> Bravera Fees(6%) </th>
-      <th scope="col"> Net Donation </th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for donation <- @ngo.donations do %>
+<section id="no-more-tables">
+  <table class="table-bordered table-striped table-condensed cf">
+    <thead class="cf">
       <tr>
-        <th scope="row"><%= donation.ngo_chal.slug %></th>
-        <th scope="row"><%= donation.charge_id %></th>
-        <th scope="row"><%= render_datetime(donation.charged_at) %></th>
-        <th scope="row"><%= @ngo.user.firstname <> " " <> @ngo.user.lastname %></th>
-        <th scope="row"><%= donation.user.firstname <> " " <> donation.user.lastname %></th>
-        <th scope="row"><%= donation.user.email %></th>
-        <th scope="row"><%= donation.milestone %></th>
-        <th scope="row"><%= donation.amount %></th>
-        <th scope="row"><%= render_fees(donation.amount, "gateway_fee") %></th>
-        <th scope="row"><%= render_fees(donation.amount, "bravera") %></th>
-        <th scope="row"><%= render_fees(donation.amount, "net_donation") %></th>
+        <th scope="col"> Challenge Name </th>
+        <th scope="col"> Transaction Reference </th>
+        <th scope="col"> Payment Date </th>
+        <th scope="col"> Challenger </th>
+        <th scope="col"> Supporter Name </th>
+        <th scope="col"> Supporter Email </th>
+        <th scope="col"> Milestone </th>
+        <th scope="col"> Donation Total </th>
+        <th scope="col"> Gateway Fee(3.4% + HKD 2.35) </th>
+        <th scope="col"> Bravera Fees(6%) </th>
+        <th scope="col"> Net Donation </th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <%= for donation <- @ngo.donations do %>
+        <tr>
+          <td data-title="Challenge Name"><%= donation.ngo_chal.slug %></td>
+          <td data-title="Transaction Reference"><%= donation.charge_id %></td>
+          <td data-title="Payment Date"><%= render_datetime(donation.charged_at) %></td>
+          <td data-title="Challenger"><%= @ngo.user.firstname <> " " <> @ngo.user.lastname %></td>
+          <td data-title="Supporter Name"><%= donation.user.firstname <> " " <> donation.user.lastname %></td>
+          <td data-title="Supporter Email"><%= donation.user.email %></td>
+          <td data-title="Milestone"><%= donation.milestone %></td>
+          <td data-title="Donation Total"><%= donation.amount %></td>
+          <td data-title="Gateway Fee(3.4% + HKD 2.35)"><%= render_fees(donation.amount, "gateway_fee") %></td>
+          <td data-title="Bravera Fees(6%)"><%= render_fees(donation.amount, "bravera") %></td>
+          <td data-title="Net Donation"><%= render_fees(donation.amount, "net_donation") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>
