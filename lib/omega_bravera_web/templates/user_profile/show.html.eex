@@ -17,7 +17,7 @@
         <li> <b> Funds Pledged to date: </b> <%= @total_pledged %> </li>
         <li> <b> Funds Secured to date: </b> <%= @total_secured %> </li>
         <li> <b> Activities to date: </b> <%= @num_of_activities %> </li>
-        <li> <b> Total Distance covered on Bravera Challenges: </b> <%= @total_distance %> KMs </li>
+        <li> <b> Total Distance covered on Bravera Challenges: </b> <%= render_activity(@total_distance) %> KMs </li>
         <li> <b> Total Number of Supporters: </b> <%= @num_of_supporters %> </li>
       </ul>
     </div>
