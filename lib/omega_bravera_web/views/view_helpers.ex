@@ -28,6 +28,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   end
 
   def render_datetime(naive_date_time) do
+    IO.inspect "Printing statement troublesome date: #{naive_date_time}"
     naive_date_time =
       try do
         naive_date_time |> DateTime.to_naive()
@@ -35,6 +36,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
         _ ->
           naive_date_time
       end
+
 
     with {:ok, date_time} <- DateTime.from_naive(naive_date_time, "Etc/UTC"),
          hk_date_time <- Timex.Timezone.convert(date_time, "Asia/Hong_Kong"),
