@@ -61,7 +61,7 @@
           <td data-title="Supporter Email"><%= donation.user.email %></td>
           <td data-title="Milestone"><%= donation.milestone %></td>
           <td data-title="Donation Total"><%= donation.amount %></td>
-          <td style="height: 50px;" data-title="Gateway Fees
+          <td class="line-break-fix" data-title="Gateway Fees
 (3.4% + HKD 2.35)"> <!-- do not add spaces before (3.4% + HKD 2.35) -->
             <%= render_fees(donation.amount, "gateway_fee") %>
           </td>
