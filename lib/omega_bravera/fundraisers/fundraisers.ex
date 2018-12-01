@@ -50,6 +50,7 @@ defmodule OmegaBravera.Fundraisers do
         fragment("concat(?, ' - ', ?)", user.firstname, user.lastname),
         user.email,
         donations.milestone,
+        ngo_chal.default_currency,
         donations.amount,
         fragment("(? * 0.034) + 2.35", donations.amount),
         fragment("? * 0.06", donations.amount),
