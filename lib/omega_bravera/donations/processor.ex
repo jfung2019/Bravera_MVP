@@ -16,12 +16,12 @@ defmodule OmegaBravera.Donations.Processor do
            charge_params(donation),
            donation.ngo_chal_id
          ) do
-      {:ok, %{body: body}} ->
+      {:ok, %{body: body}, exchange_rate} ->
         case Poison.decode!(body) do
           %{"source" => _} = response ->
             updated =
               donation
-              |> Donation.charge_changeset(response)
+              |> Donation.charge_changeset(response, exchange_rate)
               |> Repo.update!()
 
             Notifier.send_donation_charged_email(updated)

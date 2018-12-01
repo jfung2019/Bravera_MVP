@@ -26,6 +26,7 @@ defmodule OmegaBravera.Money.Donation do
     field(:charged_status, :string)
     field(:charged_amount, :decimal)
     field(:charged_at, :utc_datetime)
+    field(:exchange_rate, :float, default: 1.0)
 
     # associations
     belongs_to(:user, User)
@@ -45,7 +46,8 @@ defmodule OmegaBravera.Money.Donation do
     :milestone_distance,
     :user_id,
     :ngo_chal_id,
-    :ngo_id
+    :ngo_id,
+    :exchange_rate
   ]
   @required_attributes [
     :amount,
@@ -66,11 +68,14 @@ defmodule OmegaBravera.Money.Donation do
     |> validate_required(@required_attributes)
   end
 
-  def charge_changeset(%__MODULE__{} = donation, stripe_attributes) do
+  def charge_changeset(%__MODULE__{} = donation, stripe_attributes, nil) do
     change(donation, Map.merge(charged_attributes(stripe_attributes), %{status: "charged"}))
   end
+  def charge_changeset(%__MODULE__{} = donation, stripe_attributes, exchange_rate) do
+    change(donation, Map.merge(charged_attributes(stripe_attributes, exchange_rate), %{status: "charged"}))
+  end
 
-  defp charged_attributes(stripe_attributes) do
+  defp charged_attributes(stripe_attributes, exchange_rate \\ 1.0) do
     %{
       charge_id: stripe_attributes["id"],
       last_digits: get_in(stripe_attributes, ["source", "card", "last4"]),
@@ -78,7 +83,8 @@ defmodule OmegaBravera.Money.Donation do
       charged_description: stripe_attributes["description"],
       charged_status: stripe_attributes["status"],
       charged_amount: moneyfied_stripe_amount(stripe_attributes["amount"]),
-      charged_at: DateTime.from_unix!(stripe_attributes["created"])
+      charged_at: DateTime.from_unix!(stripe_attributes["created"]),
+      exchange_rate: exchange_rate
     }
   end
 
