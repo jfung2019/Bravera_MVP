@@ -23,9 +23,11 @@ defmodule OmegaBravera.Money.DonationTest do
       "description" => "Donation to Save the children via Bravera.co"
     }
 
+    exchange_rate = 1.0
+
     assert donation.status == "pending"
 
-    changeset = Donation.charge_changeset(donation, stripe_response)
+    changeset = Donation.charge_changeset(donation, stripe_response, exchange_rate)
 
     assert changeset.changes == %{
              charge_id: "ch_1D9JN7EXtHU8QBy8AYC2qXct",

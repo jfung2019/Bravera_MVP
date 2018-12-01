@@ -91,6 +91,7 @@ defmodule OmegaBravera.StripeHelpers do
 
     case Stripy.req(:post, "charges", charge_params) do
       {:ok, response} ->
+
         %{body: response_body} = response
         body = Poison.decode!(response_body)
 
