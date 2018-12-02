@@ -26,7 +26,7 @@ defmodule OmegaBravera.Money.Donation do
     field(:charged_status, :string)
     field(:charged_amount, :decimal)
     field(:charged_at, :utc_datetime)
-    field(:exchange_rate, :float, default: 1.0)
+    field(:exchange_rate, :decimal, default: 1.0)
 
     # associations
     belongs_to(:user, User)

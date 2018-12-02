@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddDonationStripeExchangeRate do
 
   def change do
     alter table(:donations) do
-      add :exchange_rate, :float, default: 1.0
+      add :exchange_rate, :decimal, default: 1.0
     end
   end
 end

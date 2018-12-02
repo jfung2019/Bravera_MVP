@@ -98,6 +98,7 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
         "Supporter Name",
         "Supporter Email",
         "Milestone",
+        "Challenge Currency",
         "Donation Total",
         "Gateway Fee(3.4% + HKD 2.35)",
         "Bravera Fees(6%)",
