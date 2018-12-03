@@ -26,7 +26,7 @@ defmodule OmegaBravera.Money.Donation do
     field(:charged_status, :string)
     field(:charged_amount, :decimal)
     field(:charged_at, :utc_datetime)
-    field(:exchange_rate, :decimal, default: 1.0)
+    field(:exchange_rate, :decimal, default: 1)
 
     # associations
     belongs_to(:user, User)
@@ -75,7 +75,7 @@ defmodule OmegaBravera.Money.Donation do
     change(donation, Map.merge(charged_attributes(stripe_attributes, exchange_rate), %{status: "charged"}))
   end
 
-  defp charged_attributes(stripe_attributes, exchange_rate \\ 1.0) do
+  defp charged_attributes(stripe_attributes, %Decimal{} = exchange_rate \\ Decimal.new(1)) do
     %{
       charge_id: stripe_attributes["id"],
       last_digits: get_in(stripe_attributes, ["source", "card", "last4"]),

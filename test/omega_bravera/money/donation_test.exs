@@ -23,7 +23,7 @@ defmodule OmegaBravera.Money.DonationTest do
       "description" => "Donation to Save the children via Bravera.co"
     }
 
-    exchange_rate = 1.0
+    exchange_rate = Decimal.new(1)
 
     assert donation.status == "pending"
 
@@ -37,7 +37,8 @@ defmodule OmegaBravera.Money.DonationTest do
              charged_status: "succeeded",
              charged_amount: Decimal.new(150.0),
              charged_at: DateTime.from_unix!(1_536_701_169),
-             status: "charged"
+             status: "charged",
+             exchange_rate: exchange_rate
            }
   end
 end
