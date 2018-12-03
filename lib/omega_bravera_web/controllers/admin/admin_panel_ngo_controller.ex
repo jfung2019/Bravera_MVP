@@ -94,7 +94,7 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
         "Challenge Name",
         "Transaction Reference",
         "Payment Date",
-        "Challenger",
+        "Participant",
         "Supporter Name",
         "Supporter Email",
         "Milestone",

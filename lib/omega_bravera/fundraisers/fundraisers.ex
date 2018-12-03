@@ -64,7 +64,7 @@ defmodule OmegaBravera.Fundraisers do
           donations.exchange_rate
         )
       ]
-    ) |> Repo.all()
+    )|> Repo.all()
   end
 
   @doc """
