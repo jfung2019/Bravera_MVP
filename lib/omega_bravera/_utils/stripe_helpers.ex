@@ -123,7 +123,12 @@ defmodule OmegaBravera.StripeHelpers do
 
   defp get_stripe_exchange_rate(%{"balance_transaction" => balance_transaction}) do
     %{"exchange_rate" => exchange_rate} = balance_transaction
-    Decimal.new(exchange_rate)
+    exchange_rate =
+      case exchange_rate do
+        nil -> Decimal.new(1)
+        _ -> Decimal.new(exchange_rate)
+      end
+    exchange_rate
   end
 
   def create_stripe_customer(%{"email" => email, "str_src" => src_id} = params) do

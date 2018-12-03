@@ -63,7 +63,7 @@ defmodule OmegaBravera.Factory do
       milestone: 1,
       status: "pending",
       milestone_distance: 0,
-      exchange_rate: Decimal.new(1.0),
+      exchange_rate: Decimal.new(1),
       user: build(:user),
       ngo: build(:ngo),
       ngo_chal: build(:ngo_challenge)
