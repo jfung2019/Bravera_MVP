@@ -37,8 +37,7 @@ defmodule OmegaBravera.Money.DonationTest do
              charged_status: "succeeded",
              charged_amount: Decimal.new(150.0),
              charged_at: DateTime.from_unix!(1_536_701_169),
-             status: "charged",
-             exchange_rate: exchange_rate
+             status: "charged"
            }
   end
 end
