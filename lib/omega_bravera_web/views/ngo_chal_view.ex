@@ -3,13 +3,6 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   alias OmegaBravera.{Challenges.NGOChal, Trackers.Strava, Accounts.User}
 
-  def get_type_text(type) do
-    case type do
-      "Per Goal" -> "Select a total distance but your goals are broken down into x3 milestones that release pledged funcs, automatically."
-      "Per KM" -> "Select a total distance and ask for donations per KM. Pledged funds released at the end of your challenge."
-    end
-  end
-
   def user_full_name(%User{} = user), do: User.full_name(user)
 
   def user_profile_pic(%Strava{athlete_id: athlete_id}) do

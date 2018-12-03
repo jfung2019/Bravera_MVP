@@ -26,19 +26,34 @@
       </label>
       <br/>  <%= error_tag @f, :type %>
       <div class="form-group" id="ngo_chal_challenge_type">
-        <%= for challenge_type <- @available_challenge_types do %>
+      <!-- Start Challenge types -->
           <div class="card mx-auto mb-2 mr-3" style="width: 18rem; display: inline-block;">
             <div class="card-header">
-              <b><%= challenge_type %></b>
+              <b>Per Goal</b>
               <br />
-              <%= radio_button @f, :type, challenge_type, class: "radio-img" %>
+              <%= radio_button @f, :type, "PER_MILESTONE", class: "radio-img" %>
             </div>
             <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
             <div class="card-body">
-              <p class="card-text"><%= get_type_text(challenge_type) %></p>
+              <p class="card-text">
+                Select a total distance but your goals are broken down into x3 milestones that release pledged funcs, automatically.
+              </p>
             </div>
           </div>
-        <% end %>
+          <div class="card mx-auto mb-2 mr-3" style="width: 18rem; display: inline-block;">
+            <div class="card-header">
+              <b>Per KM</b>
+              <br />
+              <%= radio_button @f, :type, "PER_KM", class: "radio-img" %>
+            </div>
+            <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+            <div class="card-body">
+              <p class="card-text">
+                Select a total distance and ask for donations per KM. Pledged funds released at the end of your challenge.
+              </p>
+            </div>
+          </div>
+      <!-- end Challenge types -->
       </div>
     </div>
   </div>
@@ -100,7 +115,7 @@
   $(function() {
 
     // Check if Per KM first and save that
-    $("#ngo_chal_type_Per_KM").change(function(){
+    $("#ngo_chal_type_PER_KM").change(function(){
       $("#per-km-effort-education").css("display", "inline-block");
       $("#per-km-effort-education").text("Average of "
         + calculate_avg_km_per_day($("#ngo_chal_distance_target").val(), $("#ngo_chal_duration").val())
@@ -108,7 +123,7 @@
       );
     });
 
-    $("#ngo_chal_type_Per_Goal").change(function(){
+    $("#ngo_chal_type_PER_MILESTONE").change(function(){
       $("#per-km-effort-education").css("display", "none");
     });
 

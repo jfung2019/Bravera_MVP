@@ -13,7 +13,10 @@ defmodule OmegaBravera.Challenges.NGOChal do
   @per_km "PER_KM"
   @per_milestone "PER_MILESTONE"
 
-  @available_challenge_types ["Per KM", "Per Goal"]
+  @available_challenge_types [
+    [key: "Per Goal", value: @per_milestone],
+    [key: "Per KM", value: @per_km]
+  ]
 
   schema "ngo_chals" do
     field(:activity_type, :string)
