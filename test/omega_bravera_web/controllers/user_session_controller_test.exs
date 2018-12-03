@@ -39,7 +39,7 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
       }
       conn = post(conn, user_session_path(conn, :create), %{"session" => attrs})
 
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == user_profile_path(conn, :show)
     end
 
     test "bad password will send them back to login page", %{conn: conn} do

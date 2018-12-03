@@ -1,29 +1,27 @@
 <div class="card mb-3">
   <div class="card-body">
-    <p>
-      Invite friends to join your challenge will help motivate you and make it more fun!
-    </p>
+    <p>Invite others to join your challenge!</p>
 
     <%= form_tag(ngo_ngo_chal_ngo_chal_path(@conn, :invite_buddies, @challenge.ngo.slug, @challenge.slug)) do %>
       <div id="buddies-container" class="mb-3">
         <div class="form-group row buddy mb-1">
           <div class="form-group col-4 mb-0 pr-0">
-            <input name="buddies[1][name]" type="text" value="" placeholder="Buddy's name" class="form-control" />
+            <input name="buddies[1][name]" type="text" value="" placeholder="Name" class="form-control" />
           </div>
           <div class="form-group col-5 mb-0 pl-1">
-            <input name="buddies[1][email]" type="text" value="" placeholder="Buddy's email" class="form-control"/>
+            <input name="buddies[1][email]" type="text" value="" placeholder="Email" class="form-control"/>
           </div>
         </div>
         <div class="form-group row buddy mb-1">
           <div class="form-group col-4 mb-0 pr-0">
-            <input name="buddies[2][name]" type="text" value="" placeholder="Buddy's name" class="form-control" />
+            <input name="buddies[2][name]" type="text" value="" placeholder="Name" class="form-control" />
           </div>
           <div class="form-group col-5 mb-0 pl-1">
-            <input name="buddies[2][email]" type="text" value="" placeholder="Buddy's email" class="form-control"/>
+            <input name="buddies[2][email]" type="text" value="" placeholder="Email" class="form-control"/>
           </div>
         </div>
       </div>
-      <btn class="btn btn-primary" id="add-buddy-button">Add a buddy</btn>
+      <btn class="btn btn-primary" id="add-buddy-button">Add another</btn>
       <button class="btn btn-success" type="submit">Invite</button>
     <% end %>
   </div>

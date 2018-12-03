@@ -36,7 +36,7 @@ defmodule OmegaBravera.Challenges do
     query =
       from(activity in Activity,
         where: activity.challenge_id == ^challenge.id,
-        order_by: [desc: :inserted_at]
+        order_by: [desc: :start_date]
       )
 
     query =
@@ -53,7 +53,12 @@ defmodule OmegaBravera.Challenges do
     from(
       nc in NGOChal,
       where: nc.user_id == ^user_id,
-      preload: ^preloads
+      left_join: a in Activity,
+      on: nc.id == a.challenge_id,
+      preload: ^preloads,
+      order_by: [desc: :start_date],
+      group_by: nc.id,
+      select: %{nc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance)}
     )
     |> Repo.all()
   end

@@ -17,7 +17,7 @@
         <li> <b> Funds Pledged to date: </b> <%= @total_pledged %> </li>
         <li> <b> Funds Secured to date: </b> <%= @total_secured %> </li>
         <li> <b> Activities to date: </b> <%= @num_of_activities %> </li>
-        <li> <b> Total Distance covered on Bravera Challenges: </b> <%= @total_distance %> KMs </li>
+        <li> <b> Total Distance covered on Bravera Challenges: </b> <%= render_activity(@total_distance) %> KMs </li>
         <li> <b> Total Number of Supporters: </b> <%= @num_of_supporters %> </li>
       </ul>
     </div>
@@ -25,11 +25,12 @@
 
 
   <div class="row">
-    <div class="col-5"><h5>Challenges:</h5></div>
+    <div class="col-5"><h5>Your Challenges:</h5></div>
     <div class="col-7 mt-1">
       <%= img_tag(static_path(@conn, "/images/icons/if_ic_screen_rotation_48px.png")) %>
       <span class="small">Turn your mobile screen for better view.</span>
     </div>
+    <div class="col-5 ml-1"><%= link("Take another challenge", to: ngo_path(@conn, :index)) %></div>
   </div>
   <br />
 
@@ -74,7 +75,7 @@
               <%= render_datetime(challenge.end_date) %>
             </div>
             <div class="col-sm-3">
-              <%= challenge.distance_covered %>
+              <%= challenge.distance_covered %> KM
             </div>
             <div class="col-sm-2">
               <%= link("View", to: ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>

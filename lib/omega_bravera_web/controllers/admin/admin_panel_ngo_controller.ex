@@ -14,7 +14,7 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
   end
 
   def show(conn, %{"slug" => slug}) do
-    ngo = Fundraisers.get_ngo_by_slug(slug, :preload)
+    ngo = Fundraisers.get_ngo_by_slug(slug)
     render(conn, "show.html", ngo: ngo)
   end
 
