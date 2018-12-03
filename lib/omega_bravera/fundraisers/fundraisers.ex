@@ -51,13 +51,20 @@ defmodule OmegaBravera.Fundraisers do
         user.email,
         donations.milestone,
         ngo_chal.default_currency,
-        donations.amount,
-        fragment("(? * 0.034) + 2.35", donations.amount),
-        fragment("? * 0.06", donations.amount),
-        fragment("(? - (? * 0.034 + 2.35)) - (? * 0.06)", donations.amount, donations.amount, donations.amount)
+        fragment("ROUND((? * ?), 1)", donations.amount, donations.exchange_rate),
+        fragment("ROUND(((? * ?) * 0.034) + 2.35, 1)", donations.amount, donations.exchange_rate),
+        fragment("ROUND((? * ?) * 0.06, 1)", donations.amount, donations.exchange_rate),
+        fragment("ROUND(
+          ((? * ?) - (((? * ?) * 0.034) + 2.35)) - ((? * ?) * 0.06), 1)",
+          donations.exchange_rate,
+          donations.amount,
+          donations.exchange_rate,
+          donations.amount,
+          donations.amount,
+          donations.exchange_rate
+        )
       ]
-
-    ) |> Repo.all()
+    )|> Repo.all()
   end
 
   @doc """

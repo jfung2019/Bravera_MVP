@@ -85,11 +85,13 @@ defmodule OmegaBravera.StripeHelpers do
       "currency" => currency,
       "customer" => customer,
       "description" => description,
-      "receipt_email" => email
+      "receipt_email" => email,
+      "expand[]" => "balance_transaction",
     }
 
     case Stripy.req(:post, "charges", charge_params) do
       {:ok, response} ->
+
         %{body: response_body} = response
         body = Poison.decode!(response_body)
 
@@ -99,7 +101,7 @@ defmodule OmegaBravera.StripeHelpers do
               "Stripe customer charged: #{inspect(body)}"
             end)
 
-            {:ok, response}
+            {:ok, response, get_stripe_exchange_rate(body)}
 
           body["error"] ->
             Logger.error(fn ->
@@ -116,6 +118,12 @@ defmodule OmegaBravera.StripeHelpers do
 
         :error
     end
+  end
+
+
+  defp get_stripe_exchange_rate(%{"balance_transaction" => balance_transaction}) do
+    %{"exchange_rate" => exchange_rate} = balance_transaction
+    Decimal.new(exchange_rate)
   end
 
   def create_stripe_customer(%{"email" => email, "str_src" => src_id} = params) do
