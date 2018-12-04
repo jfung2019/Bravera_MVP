@@ -18,9 +18,13 @@
           <h4 class="text-center pt-4 pb-3">
             Support
           </h4>
-
           <div class="card">
-            <%= render "bs4_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
+            <%= if @challenge.type == "PER_MILESTONE" do %>
+              <%= render "milestone_challenge_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
+            <% end %>
+            <%= if @challenge.type == "PER_KM" do %>
+              <%= render "km_challenge_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
+            <% end %>
           </div>
         </div>
     <% end %>
