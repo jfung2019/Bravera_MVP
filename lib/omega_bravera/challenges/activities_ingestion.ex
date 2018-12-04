@@ -27,7 +27,13 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     Logger.info("Processing challenges")
     activity = Strava.Activity.retrieve(object_id, %{}, strava_client(hd))
     Logger.info("Processing activity: #{inspect(activity)}")
-    Enum.map(challenges, &process_challenge(&1, activity))
+
+    Enum.map(challenges, fn {challenge_id, _} ->
+      challenge_id
+      |> Challenges.get_ngo_chal!()
+      |> Repo.preload([:user, :ngo])
+      |> process_challenge(activity)
+    end)
   end
 
   def process_challenges([], _) do
@@ -35,14 +41,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     {:error, :no_challengers_found}
   end
 
-  def process_challenge({challenge_id, _}, %Strava.Activity{distance: distance} = strava_activity)
-      when distance > 0 and is_integer(challenge_id) do
+  def process_challenge(%NGOChal{type: "PER_MILESTONE", id: challenge_id} = challenge, %Strava.Activity{distance: distance} = strava_activity)
+      when distance > 0 do
     Logger.info("Processing challenge: #{challenge_id}")
 
     {status, _challenge, _activity, donations} =
-      challenge_id
-      |> Challenges.get_ngo_chal!()
-      |> Repo.preload([:user, :ngo])
+      challenge
       |> create_activity(strava_activity)
       |> update_challenge
       |> notify_participant_of_activity
@@ -54,6 +58,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
       Logger.info("Processing was successful")
+
       {:ok, :challenge_updated}
     else
       Logger.info("Processing was not successful (donation issue)")
@@ -67,7 +72,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     changeset = Challenges.Activity.create_changeset(activity, challenge)
 
     if valid_activity?(activity, challenge) and
-         activity_type_matches_challenge_type?(activity, challenge) do
+      activity_type_matches_challenge_activity_type?(activity, challenge) do
       case Repo.insert(changeset) do
         {:ok, activity} -> {:ok, challenge, activity}
         {:error, _} -> {:error, challenge, nil}
@@ -117,7 +122,6 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         :ok -> Enum.map(donations, &notify_donor_and_charge_donation/1)
         :error -> []
       end
-
     put_elem(params, 3, charged_donations)
   end
 
@@ -142,7 +146,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       Timex.compare(challenge.end_date, activity.start_date) >= 0
   end
 
-  defp activity_type_matches_challenge_type?(activity, challenge) do
+  defp activity_type_matches_challenge_activity_type?(activity, challenge) do
     activity.type == challenge.activity_type
   end
 end

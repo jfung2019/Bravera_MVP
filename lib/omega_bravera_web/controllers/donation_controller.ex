@@ -14,7 +14,8 @@ defmodule OmegaBraveraWeb.DonationController do
   def create(conn, %{
         "donation" => donation_params,
         "ngo_chal_slug" => ngo_chal_slug,
-        "ngo_slug" => ngo_slug
+        "ngo_slug" => ngo_slug,
+        "challenge_type" => "PER_MILESTONE"
       }) do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, ngo_chal_slug)
     stripe_customer = StripeHelpers.create_stripe_customer(donation_params)
@@ -59,5 +60,15 @@ defmodule OmegaBraveraWeb.DonationController do
         |> put_flash(:error, "Initial donation and/or pledges couldn't be processed.")
         |> redirect(to: challenge_path)
     end
+  end
+
+  def create(conn, %{
+    "donation" => donation_params,
+    "ngo_chal_slug" => ngo_chal_slug,
+    "ngo_slug" => ngo_slug,
+    "challenge_type" => "PER_KM"
+  }) do
+    IO.inspect("Per KM challenge.")
+    IO.inspect("Not Implemented.")
   end
 end
