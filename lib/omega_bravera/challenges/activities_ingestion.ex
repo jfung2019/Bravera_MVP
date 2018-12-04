@@ -41,9 +41,36 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     {:error, :no_challengers_found}
   end
 
-  def process_challenge(%NGOChal{type: "PER_MILESTONE", id: challenge_id} = challenge, %Strava.Activity{distance: distance} = strava_activity)
-      when distance > 0 do
-    Logger.info("Processing challenge: #{challenge_id}")
+  def process_challenge(
+    %NGOChal{type: "PER_KM"} = challenge,
+    %Strava.Activity{distance: distance} = strava_activity
+    ) when distance > 0 do
+    Logger.info("Processing km challenge: #{inspect(challenge.id)}")
+
+    {status, _challenge, _activity, _donations} =
+      challenge
+      |> create_activity(strava_activity)
+      |> update_challenge
+      |> notify_participant_of_activity
+      |> get_donations
+      |> notify_participant_of_milestone
+
+    Logger.info("Processing has finished for km challenge: #{inspect(challenge.id)}")
+
+    if status == :ok do
+      Logger.info("Processing was successful for km challenge: #{inspect(challenge.id)}")
+      {:ok, :challenge_updated}
+    else
+      Logger.info("Processing was not successful for km challenge: #{inspect(challenge.id)}")
+      {:error, :activity_not_processed}
+      end
+  end
+
+  def process_challenge(
+    %NGOChal{type: "PER_MILESTONE"} = challenge,
+    %Strava.Activity{distance: distance} = strava_activity
+    ) when distance > 0 do
+    Logger.info("Processing milestone challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, donations} =
       challenge
@@ -54,7 +81,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       |> notify_participant_of_milestone
       |> charge_donations()
 
-    Logger.info("Processing has finished for #{challenge_id}")
+    Logger.info("Processing has finished for milestone challenge: #{inspect(challenge.id)}")
 
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
       Logger.info("Processing was successful")
