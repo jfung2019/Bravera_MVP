@@ -10,6 +10,8 @@ defmodule OmegaBravera.Challenges do
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Money.Donation
 
+  use Timex
+
   def inactive_for_five_days() do
     query =
       from(challenge in NGOChal,
@@ -124,6 +126,17 @@ defmodule OmegaBravera.Challenges do
       )
 
     Repo.all(query)
+  end
+
+  def get_expired_km_challenges() do
+    now = Timex.now()
+    from(
+      nc in NGOChal,
+      where: nc.type == "PER_KM" and ^now > nc.end_date,
+      left_join: donations in assoc(nc, :donations),
+      on: donations.ngo_chal_id == nc.id and donations.status == "pending",
+      preload: [donations: donations]
+    ) |> Repo.all()
   end
 
   def get_activity_types, do: NGOChal.activity_types()
