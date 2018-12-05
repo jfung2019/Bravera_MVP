@@ -14,7 +14,7 @@ defmodule OmegaBravera.Donations.ProcessorTest do
     donor = insert(:user, %{email: "simon.garciar@gmail.com"})
 
     ngo =
-      insert(:ngo, %{stripe_id: "acct_1D8pvmJTOgSA3tLo", slug: "stc", name: "Save the children"})
+      insert(:ngo, %{slug: "stc", name: "Save the children"})
 
     challenge = insert(:ngo_challenge, %{ngo: ngo})
 
@@ -45,14 +45,16 @@ defmodule OmegaBravera.Donations.ProcessorTest do
 
       assert charged_fields == %{
                card_brand: "Visa",
-               charge_id: "ch_1D9L1lEXtHU8QBy8sVLJxp7P",
+               charge_id: "ch_1DceaYEXtHU8QBy83kWrbP1a",
                charged_amount: Decimal.new(10.0),
                charged_description: "Donation to Save the children via Bravera.co",
                charged_status: "succeeded",
                last_digits: "4242"
              }
 
-      assert Timex.compare(result.charged_at, DateTime.from_unix!(1_536_707_533)) == 0
+      assert Timex.compare(result.charged_at, DateTime.from_unix!(1_543_694_238)) == 0
     end
   end
+
+  # TODO: write a test for a non-hkd challenge and see if the exchange rate comes back other than nil inside balance_transaction
 end

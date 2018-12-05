@@ -21,7 +21,7 @@ defmodule OmegaBravera.StripeHelpers do
         str_cust_id: customer
       } = donation
 
-      %{"name" => ngo_name, "stripe_id" => ngo_connected_acct} = Fundraisers.get_ngo!(ngo_id)
+      %{"name" => ngo_name} = Fundraisers.get_ngo!(ngo_id)
 
       %{email: recpt_email} = Accounts.get_user!(user_id)
 
@@ -32,8 +32,6 @@ defmodule OmegaBravera.StripeHelpers do
         "currency" => currency,
         "customer" => customer,
         "description" => description,
-        "destination[account]" => ngo_connected_acct,
-        "destination[amount]" => destination_amount(amount),
         "receipt_email" => recpt_email
       }
 
@@ -71,7 +69,7 @@ defmodule OmegaBravera.StripeHelpers do
   end
 
   def charge_stripe_customer(ngo, params, ngo_chal_id) do
-    %{name: ngo_name, stripe_id: ngo_connected_acct} = ngo
+    %{name: ngo_name} = ngo
 
     %{
       "amount" => amount,
@@ -87,13 +85,13 @@ defmodule OmegaBravera.StripeHelpers do
       "currency" => currency,
       "customer" => customer,
       "description" => description,
-      "destination[account]" => ngo_connected_acct,
-      "destination[amount]" => destination_amount(amount),
-      "receipt_email" => email
+      "receipt_email" => email,
+      "expand[]" => "balance_transaction",
     }
 
     case Stripy.req(:post, "charges", charge_params) do
       {:ok, response} ->
+
         %{body: response_body} = response
         body = Poison.decode!(response_body)
 
@@ -103,7 +101,7 @@ defmodule OmegaBravera.StripeHelpers do
               "Stripe customer charged: #{inspect(body)}"
             end)
 
-            {:ok, response}
+            {:ok, response, get_stripe_exchange_rate(body)}
 
           body["error"] ->
             Logger.error(fn ->
@@ -120,6 +118,17 @@ defmodule OmegaBravera.StripeHelpers do
 
         :error
     end
+  end
+
+
+  defp get_stripe_exchange_rate(%{"balance_transaction" => balance_transaction}) do
+    %{"exchange_rate" => exchange_rate} = balance_transaction
+    exchange_rate =
+      case exchange_rate do
+        nil -> Decimal.new(1)
+        _ -> Decimal.new(exchange_rate)
+      end
+    exchange_rate
   end
 
   def create_stripe_customer(%{"email" => email, "str_src" => src_id} = params) do
@@ -147,14 +156,6 @@ defmodule OmegaBravera.StripeHelpers do
   defp total_amount(amount) do
     amount
     |> centify()
-    |> Decimal.round()
-    |> Decimal.to_string()
-  end
-
-  defp destination_amount(amount) do
-    amount
-    |> centify()
-    |> Numbers.mult(0.88)
     |> Decimal.round()
     |> Decimal.to_string()
   end

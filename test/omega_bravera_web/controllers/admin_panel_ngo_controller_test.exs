@@ -8,18 +8,14 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     desc: "some desc",
     logo: "some logo",
     name: "some name",
-    slug: "some-slug",
-    stripe_id: "some stripe_id",
-    type: "Per Goal"
+    slug: "some-slug"
   }
 
   @update_attrs %{
     desc: "some updated desc",
     logo: "some updated logo",
     name: "some updated name",
-    slug: "some-updated-slug",
-    stripe_id: "some updated stripe_id",
-    type: "Per Goal"
+    slug: "some-updated-slug"
   }
 
   setup %{conn: conn} do
@@ -67,7 +63,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: %{name: "foo name"})
+      conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: %{name: ""})
       assert html_response(conn, 200) =~ "New NGO"
     end
   end

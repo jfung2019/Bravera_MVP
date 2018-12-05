@@ -19,6 +19,54 @@ defmodule OmegaBravera.Fundraisers do
     Repo.all(query)
   end
 
+  def get_donations_for_ngo(slug) do
+    from(
+      n in NGO,
+      where: n.slug == ^slug,
+      left_join: ngo_user in assoc(n, :user),
+      left_join: donations in assoc(n, :donations),
+      on: donations.status == "charged",
+      left_join: user in assoc(donations, :user),
+      left_join: ngo_chal in assoc(donations, :ngo_chal),
+      preload: [user: ngo_user, donations: {donations, user: user, ngo_chal: ngo_chal}]
+    )
+    |> Repo.one()
+  end
+
+  def get_monthly_donations_for_ngo(slug, start_date, end_date) do
+    from(
+      n in NGO,
+      where: n.slug == ^slug,
+      left_join: ngo_user in assoc(n, :user),
+      left_join: donations in assoc(n, :donations),
+      on: donations.status == "charged" and donations.charged_at >= ^start_date and donations.charged_at <= ^end_date,
+      left_join: user in assoc(donations, :user),
+      left_join: ngo_chal in assoc(donations, :ngo_chal),
+      select: [
+        ngo_chal.slug,
+        donations.charge_id,
+        fragment("to_char(?, 'YYYY-MM-DD HH:MI')", donations.charged_at),
+        fragment("concat(?, ' - ', ?)", ngo_user.firstname, ngo_user.lastname),
+        fragment("concat(?, ' - ', ?)", user.firstname, user.lastname),
+        user.email,
+        donations.milestone,
+        ngo_chal.default_currency,
+        fragment("ROUND((? * ?), 1)", donations.amount, donations.exchange_rate),
+        fragment("ROUND(((? * ?) * 0.034) + 2.35, 1)", donations.amount, donations.exchange_rate),
+        fragment("ROUND((? * ?) * 0.06, 1)", donations.amount, donations.exchange_rate),
+        fragment("ROUND(
+          ((? * ?) - (((? * ?) * 0.034) + 2.35)) - ((? * ?) * 0.06), 1)",
+          donations.exchange_rate,
+          donations.amount,
+          donations.exchange_rate,
+          donations.amount,
+          donations.amount,
+          donations.exchange_rate
+        )
+      ]
+    )|> Repo.all()
+  end
+
   @doc """
   Returns the list of ngos.
 

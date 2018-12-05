@@ -6,7 +6,6 @@
       <th>Name</th>
       <th>Desc</th>
       <th>Logo</th>
-      <th>Stripe</th>
       <th>Slug</th>
 
       <th></th>
@@ -18,7 +17,6 @@
       <td><%= ngo.name %></td>
       <td><%= ngo.desc %></td>
       <td><%= ngo.logo %></td>
-      <td><%= ngo.stripe_id %></td>
       <td><%= ngo.slug %></td>
 
       <td class="text-right">
