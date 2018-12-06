@@ -8,7 +8,8 @@ defmodule OmegaBravera.Donations.Processor do
     Money.Donation,
     Repo,
     Donations.Notifier,
-    Challenges.NGOChal
+    Challenges.NGOChal,
+    Challenges
   }
 
   def charge_donation(%Donation{} = dn) do
@@ -51,6 +52,9 @@ defmodule OmegaBravera.Donations.Processor do
   end
 
   def charge_params(%Donation{} = donation, %NGOChal{type: "PER_KM"} = challenge) do
+    # To get the calculated field distance_covered
+    challenge = Challenges.get_ngo_chal!(challenge.id)
+
     %{
       "amount" => Decimal.mult(donation.amount, challenge.distance_covered),
       "currency" => donation.currency,

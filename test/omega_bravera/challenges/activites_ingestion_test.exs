@@ -10,7 +10,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     Challenges.ActivitiesIngestion,
     Repo, Accounts,
     Challenges,
-    Donations.Processor
+    Donations.Processor,
+    Challenges.KmChallengesWorker,
+    Money.Donation
   }
 
   setup do
@@ -105,6 +107,15 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
              }) == {:error, :activity_not_processed}
     end
 
+    test "does nothing if the Strava activity distance is <= 0 for km challenge" do
+      challenge = insert(:ngo_challenge, %{type: "PER_KM"})
+
+      assert ActivitiesIngestion.process_challenge(challenge.id, %Strava.Activity{
+               distance: 0,
+               type: challenge.activity_type
+             }) == {:error, :activity_not_processed}
+    end
+
     test "does nothing if the Strava activity start date is before the challenge start date", %{
       strava_activity: strava_activity
     } do
@@ -153,9 +164,40 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       assert updated_challenge.distance_covered == Decimal.new(1.7)
     end
 
+    test "updates a km challenge with the new covered distance", %{
+      strava_activity: strava_activity
+    } do
+      challenge = insert(:ngo_challenge, %{type: "PER_KM"})
+      strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
+
+      {:ok, :challenge_updated} =
+        ActivitiesIngestion.process_challenge(challenge, strava_activity)
+
+      updated_challenge = Challenges.get_ngo_chal_by_slugs(challenge.ngo.slug, challenge.slug)
+
+      assert updated_challenge.distance_covered == Decimal.new(1.7)
+    end
+
     test "updates the challenge status if the covered distance is greater than the target distance",
          %{strava_activity: strava_activity} do
       challenge = insert(:ngo_challenge, %{distance_target: 50})
+      activity =
+        strava_activity
+        |> Map.put(:type, challenge.activity_type)
+        |> Map.put(:distance, 50500)
+        |> Map.put(:id, 1)
+
+      {:ok, :challenge_updated} =
+        ActivitiesIngestion.process_challenge(challenge, activity)
+
+      updated_challenge = Repo.get!(NGOChal, challenge.id)
+
+      assert updated_challenge.status == "complete"
+    end
+
+    test "updates a km challenge status if the covered distance is greater than the target distance",
+         %{strava_activity: strava_activity} do
+      challenge = insert(:ngo_challenge, %{distance_target: 50, type: "PER_KM"})
       activity =
         strava_activity
         |> Map.put(:type, challenge.activity_type)
@@ -203,6 +245,61 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         challenge = Repo.get(NGOChal, challenge.id) |> Repo.preload([:activities])
 
         assert length(challenge.activities) == 1
+      end
+    end
+
+    test "charges the chargeable donations for a km challenge", %{strava_activity: strava_activity} do
+      use_cassette "process_km_donation" do
+        user = insert(:user)
+        ngo = insert(:ngo, %{slug: "sherief-1"})
+        donor = insert(:user, %{email: "sheriefalaa.w@gmail.com"})
+
+        challenge =
+          insert(:ngo_challenge, %{
+            ngo: ngo,
+            user: user,
+            distance_target: 150,
+            type: "PER_KM"
+          })
+
+        donation_params = %{
+          ngo_chal: challenge,
+          ngo: ngo,
+          user: donor,
+          str_cus_id: "cus_DaUL9L27e843XN",
+          str_src: "src_1D7qTcHjHTiyg867gAya4pe5"
+        }
+
+        donation = insert(:km_donation, donation_params)
+        strava_activity =
+          strava_activity
+           |> Map.replace!(:type, challenge.activity_type)
+           |> Map.replace!(:distance, Decimal.new(50000))
+
+        {:ok, :challenge_updated} =
+          ActivitiesIngestion.process_challenge(challenge, strava_activity)
+
+        challenge = Challenges.get_ngo_chal!(challenge.id) |> Repo.preload(:activities)
+
+        assert length(challenge.activities) == 1
+
+        # Run the worker and try to charge donation == donation still pending
+        KmChallengesWorker.start()
+        donation = Repo.get(Donation, donation.id)
+
+        assert donation.status == "pending"
+
+        # End the challenge
+        changeset = Ecto.Changeset.change(challenge, %{end_date: Timex.shift(Timex.now(), days: -10)})
+
+        {:ok, updated_challenge} =  Repo.update(changeset)
+
+        # Run the worker and try to charge donation == donation status is charged and charged_amount is amount * distnance_covered
+        KmChallengesWorker.start()
+        donation = Repo.get(Donation, donation.id)
+
+        assert donation.status == "charged"
+        assert donation.charged_amount == Decimal.mult(donation.amount, challenge.distance_covered) |> Decimal.round(1)
       end
     end
   end

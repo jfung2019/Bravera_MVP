@@ -70,4 +70,19 @@ defmodule OmegaBravera.Factory do
       ngo_chal: build(:ngo_challenge)
     }
   end
+
+  def km_donation_factory do
+    %OmegaBravera.Money.Donation{
+      amount: Decimal.new(5),
+      currency: "HKD",
+      str_src: "src_1D7qTcHjHTiyg867gAya4pe4",
+      str_cus_id: "cus_DYyQTnYmbkDjBZ",
+      km_distance: 50,
+      status: "pending",
+      exchange_rate: Decimal.new(1),
+      user: build(:user),
+      ngo: build(:ngo),
+      ngo_chal: build(:ngo_challenge)
+    }
+  end
 end
