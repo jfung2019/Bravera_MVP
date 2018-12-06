@@ -61,7 +61,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       challenge: challenge,
       m_targets: NGOChal.milestones_distances(challenge),
       changeset: changeset,
-      stats: milestone_stats(challenge),
+      milestone_stats: milestone_stats(challenge),
       donors: Accounts.latest_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn)

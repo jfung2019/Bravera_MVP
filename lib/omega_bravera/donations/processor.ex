@@ -1,11 +1,14 @@
 defmodule OmegaBravera.Donations.Processor do
+  require Logger
+
   alias OmegaBravera.{
     Money,
     Accounts.User,
     StripeHelpers,
     Money.Donation,
     Repo,
-    Donations.Notifier
+    Donations.Notifier,
+    Challenges.NGOChal
   }
 
   def charge_donation(%Donation{} = dn) do
@@ -13,7 +16,7 @@ defmodule OmegaBravera.Donations.Processor do
 
     case StripeHelpers.charge_stripe_customer(
            donation.ngo,
-           charge_params(donation),
+           charge_params(donation, donation.ngo_chal),
            donation.ngo_chal_id
          ) do
       {:ok, %{body: body}, exchange_rate} ->
@@ -47,7 +50,17 @@ defmodule OmegaBravera.Donations.Processor do
     {:ok, :no_kickstarter}
   end
 
-  def charge_params(%Donation{} = donation) do
+  def charge_params(%Donation{} = donation, %NGOChal{type: "PER_KM"} = challenge) do
+    %{
+      "amount" => Decimal.mult(donation.amount, challenge.distance_covered),
+      "currency" => donation.currency,
+      "source" => donation.str_src,
+      "receipt_email" => donation.user.email,
+      "customer" => donation.str_cus_id
+    }
+  end
+
+  def charge_params(%Donation{} = donation, _) do
     %{
       "amount" => donation.amount,
       "currency" => donation.currency,

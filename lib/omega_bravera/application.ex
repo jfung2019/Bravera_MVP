@@ -19,7 +19,12 @@ defmodule OmegaBravera.Application do
     children =
       case Application.get_env(:omega_bravera, :env) do
         :prod ->
-          [signups_worker_spec, inactive_challenges_spec, challenge_expirer_spec | children]
+          [
+            km_challenge_donation_collector(),
+            signups_worker_spec(),
+            inactive_challenges_spec(),
+            challenge_expirer_spec() | children
+          ]
 
         _ ->
           children
@@ -36,6 +41,15 @@ defmodule OmegaBravera.Application do
   def config_change(changed, _new, removed) do
     OmegaBraveraWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp km_challenge_donation_collector do
+    %{
+      id: "km_donation_collector",
+      start:
+        {SchedEx, :run_every,
+          [OmegaBravera.Challenges.KmChallengesWorker, :start, [], "30 0 * * *"]}
+    }
   end
 
   defp signups_worker_spec do
