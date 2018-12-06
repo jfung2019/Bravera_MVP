@@ -25,7 +25,12 @@ defmodule OmegaBravera.Donations.Pledges do
 
   def create(%NGOChal{type: "PER_KM"} = challenge, stripe_customer, donation_params) do
     case create_pledge(challenge, donation_params, stripe_customer) do
-      {:ok, pledge} -> {:ok, [pledge]}
+      {:ok, pledge} ->
+        Challenges.update_ngo_chal(challenge, %{
+          self_donated: self_donated(challenge, donation_params)
+        })
+
+        {:ok, [pledge]}
       {:error, reason} -> {:error, reason}
     end
   end
