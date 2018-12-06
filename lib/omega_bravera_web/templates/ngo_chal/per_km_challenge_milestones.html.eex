@@ -28,7 +28,7 @@
         Pledge value per KM:
         <strong class="text-500 float-right">
           <%=currency_to_symbol(@challenge.default_currency)%>
-          <%= round(Decimal.to_integer(@challenge.money_target) / @challenge.distance_target) %> per KM
+          <%= render_pledge_per_km(@total_pledges_per_km) %> per KM
         </strong>
       </h5>
       <div style="clear: both;"></div>

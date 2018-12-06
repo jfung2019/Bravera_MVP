@@ -64,7 +64,8 @@ defmodule OmegaBraveraWeb.NGOChalController do
       milestone_stats: milestone_stats(challenge),
       donors: Accounts.latest_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
-      current_user: Guardian.Plug.current_resource(conn)
+      current_user: Guardian.Plug.current_resource(conn),
+      total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(slug)
     }
 
     render(conn, "show.html", Map.merge(render_attrs, milestone_stats(challenge)))
