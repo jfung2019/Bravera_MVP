@@ -24,7 +24,17 @@ defmodule OmegaBravera.Donations.PledgesTest do
       "str_src" => "src_123JABD8554"
     }
 
-    {:ok, [user: user, donor: donor, donation_params: donation_params]}
+    km_donation_params = %{
+      "currency" => "HKD",
+      "donor_id" => donor.id,
+      "email" => "test@test.com",
+      "first_name" => "Test",
+      "last_name" => "User",
+      "pledge_per_km" => Decimal.new(5),
+      "str_src" => "src_123JABD8554"
+    }
+
+    {:ok, [user: user, donor: donor, donation_params: donation_params, km_donation_params: km_donation_params]}
   end
 
   test "create/3 creates the pledges and updates the challenge", %{
@@ -38,6 +48,20 @@ defmodule OmegaBravera.Donations.PledgesTest do
     challenge = Repo.get(NGOChal, challenge.id)
 
     assert length(pledges) == 4
+    assert challenge.self_donated == false
+  end
+
+  test "create/3 creates a single pledge for km challenge", %{
+    user: user,
+    km_donation_params: params
+  } do
+    stripe_customer = %{"id" => "cus_123456"}
+    challenge = insert(:ngo_challenge, %{user: user, type: "PER_KM"})
+
+    {:ok, pledges} = Pledges.create(challenge, stripe_customer, params)
+    challenge = Repo.get(NGOChal, challenge.id)
+
+    assert length(pledges) == 1
     assert challenge.self_donated == false
   end
 
@@ -65,6 +89,27 @@ defmodule OmegaBravera.Donations.PledgesTest do
 
     stripe_customer = %{"id" => "cus_123456"}
     challenge = insert(:ngo_challenge, %{user: user})
+
+    {:ok, _} = Pledges.create(challenge, stripe_customer, params)
+    challenge = Repo.get(NGOChal, challenge.id)
+
+    assert challenge.self_donated == true
+  end
+
+  test "create/3 sets a km challenge to self donated once the challenge creator donates", %{
+    user: user,
+    km_donation_params: p
+  } do
+    params =
+      Map.merge(p, %{
+        "donor_id" => user.id,
+        "email" => user.email,
+        "first_name" => user.firstname,
+        "last_name" => user.lastname
+      })
+
+    stripe_customer = %{"id" => "cus_123456"}
+    challenge = insert(:ngo_challenge, %{user: user, type: "PER_KM"})
 
     {:ok, _} = Pledges.create(challenge, stripe_customer, params)
     challenge = Repo.get(NGOChal, challenge.id)
