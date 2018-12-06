@@ -1,7 +1,6 @@
 defmodule OmegaBraveraWeb.Controllers.Helpers do
   alias OmegaBravera.Money
-
-
+  alias OmegaBravera.Challenges.NGOChal
 
   def total_for_user_challenges(ngo_chals, type) do
     cond do
@@ -35,7 +34,7 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
       "#{String.upcase(elem(el, 0))}: #{elem(el, 1)} " <> acc  end)
   end
 
-  def milestone_stats(ngo_chal) do
+  def milestone_stats(%NGOChal{type: "PER_MILESTONE"} = ngo_chal) do
     ngo_chal
     |> Money.milestones_donations()
     |> Enum.map(fn {k, v} ->
@@ -44,6 +43,8 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
     |> total_the_pledged_amount()
     |> Enum.into(%{})
   end
+
+  def milestone_stats(%NGOChal{type: "PER_KM"} = ngo_chal), do: %{}
 
   defp total_the_pledged_amount(tuple_list) do
     [

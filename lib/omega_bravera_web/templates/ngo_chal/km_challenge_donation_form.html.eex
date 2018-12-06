@@ -36,7 +36,7 @@
         Your Pledge Per KM:
       </label>
       <div class="col-sm-4">
-          <input type="number" class="form-control" id="pledge-per-km" name="donation[pledge_per_km]" required min="1">
+          <input type="number" class="form-control" id="pledge-per-km" name="donation[pledge_per_km]" required min="0.1" step="0.1">
       </div>
     </div>
 
