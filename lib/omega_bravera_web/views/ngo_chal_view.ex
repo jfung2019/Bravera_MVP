@@ -139,4 +139,12 @@ defmodule OmegaBraveraWeb.NGOChalView do
     distance_target
   ),
     do: Decimal.mult(total_km_pledges, distance_target) |> Decimal.to_string()
+
+  def render_current_pledges(nil, _), do: 0
+  def render_current_pledges(%Decimal{} = total_pledges, distance),
+   do: Decimal.mult(total_pledges, distance) |> Decimal.to_string()
+
+  def total_pledges(nil, _), do: 0
+  def total_pledges(%Decimal{} = total_pledges, distance),
+    do: Decimal.mult(total_pledges, distance) |> Decimal.to_integer()
 end

@@ -57,16 +57,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
     changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
-    render_attrs = %{
-      challenge: challenge,
-      m_targets: NGOChal.milestones_distances(challenge),
-      changeset: changeset,
-      milestone_stats: milestone_stats(challenge),
-      donors: Accounts.latest_donors(challenge, 5),
-      activities: Challenges.latest_activities(challenge, 5),
-      current_user: Guardian.Plug.current_resource(conn),
-      total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(slug)
-    }
+    render_attrs = get_render_attrs(conn, challenge, changeset)
 
     render(conn, "show.html", Map.merge(render_attrs, milestone_stats(challenge)))
   end
@@ -103,6 +94,29 @@ defmodule OmegaBraveraWeb.NGOChalController do
     # To trigger social share modal on invites.
     challenge_path = ngo_ngo_chal_path(conn, :show, ngo_slug, slug) <> "#share"
     redirect(conn, to: challenge_path)
+  end
+
+  defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset) do
+    %{
+      challenge: challenge,
+      m_targets: NGOChal.milestones_distances(challenge),
+      changeset: changeset,
+      milestone_stats: milestone_stats(challenge),
+      donors: Accounts.latest_donors(challenge, 5),
+      activities: Challenges.latest_activities(challenge, 5),
+      current_user: Guardian.Plug.current_resource(conn)
+    }
+  end
+
+  defp get_render_attrs(conn, %NGOChal{type: "PER_KM"} = challenge, changeset) do
+    %{
+      challenge: challenge,
+      changeset: changeset,
+      donors: Accounts.latest_km_donors(challenge, 5),
+      activities: Challenges.latest_activities(challenge, 5),
+      current_user: Guardian.Plug.current_resource(conn),
+      total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug)
+    }
   end
 
   defp assign_available_options(conn, _opts) do

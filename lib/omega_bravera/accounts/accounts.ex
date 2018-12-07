@@ -67,7 +67,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  def latest_donors(%NGOChal{} = challenge, limit \\ nil) do
+  def latest_donors(%NGOChal{type: "PER_MILESTONE"} = challenge, limit \\ nil) do
     query =
       challenge
       |> donors_for_challenge_query()
@@ -86,6 +86,28 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
     |> Enum.map(fn {user, amount, currency} ->
       %{"user" => user, "pledged" => amount, "currency" => currency}
+    end)
+  end
+
+  def latest_km_donors(%NGOChal{type: "PER_KM"} = challenge, limit \\ nil) do
+    query =
+      challenge
+      |> donors_for_challenge_query()
+      |> order_by(desc: :inserted_at)
+      |> group_by([user, donation], [user.id, donation.user_id, donation.currency])
+      |> select([user, donation], {user, sum(donation.amount), donation.currency})
+
+    query =
+      if is_number(limit) and limit > 0 do
+        limit(query, ^limit)
+      else
+        query
+      end
+
+    query
+    |> Repo.all()
+    |> Enum.map(fn {user, amount, currency} ->
+      %{"user" => user, "pledged" => Decimal.mult(amount, challenge.distance_target), "currency" => currency}
     end)
   end
 

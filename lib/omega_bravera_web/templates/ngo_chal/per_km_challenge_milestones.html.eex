@@ -34,10 +34,10 @@
       <div style="clear: both;"></div>
     </div>
     <h5 class="text-420 mt-0 mb-3 text-center">
-      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@milestone_stats, ["total", "charged"]) || 0 %></strong>
+      <strong><%= currency_to_symbol(@challenge.default_currency) %><%= render_current_pledges(@total_pledges_per_km, @challenge.distance_target) %></strong>
       Pledged of Goal
       <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %></strong>
-      <strong class="text-green">(<%= render_percentage_exceed(get_in(@milestone_stats, ["total", "charged"]) || 0, @challenge.money_target) %>%)</strong>
+      <strong class="text-green">(<%= render_percentage_exceed(total_pledges(@total_pledges_per_km, @challenge.distance_target), @challenge.money_target) %>%)</strong>
     </h5>
     <div class="mb-3 text-center mx-auto">
       <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>

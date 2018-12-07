@@ -8,7 +8,13 @@ defmodule OmegaBraveraWeb.DonationController do
 
   def index(conn, %{"ngo_chal_slug" => slug, "ngo_slug" => ngo_slug}) do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
-    donors = Accounts.latest_donors(challenge)
+    donors =
+      case challenge.type do
+        "PER_KM" ->
+          Accounts.latest_km_donors(challenge)
+        "PER_MILESTONE" ->
+          Accounts.latest_donors(challenge)
+      end
 
     render(conn, "index.html", %{challenge: challenge, donors: donors})
   end
