@@ -149,6 +149,16 @@ defmodule OmegaBravera.Challenges do
     ) |> Repo.one()
   end
 
+  def get_per_km_challenge_total_secured(slug) do
+    from(
+      nc in NGOChal,
+      where: nc.type == "PER_KM" and nc.slug == ^slug,
+      left_join: donations in assoc(nc, :donations),
+      on: donations.ngo_chal_id == nc.id and donations.status == "charged",
+      select: sum(donations.charged_amount)
+    ) |> Repo.one()
+  end
+
   def get_activity_types, do: NGOChal.activity_types()
 
   def get_number_of_activities_by_user(user_id) do

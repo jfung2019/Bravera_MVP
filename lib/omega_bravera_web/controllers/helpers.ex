@@ -1,6 +1,7 @@
 defmodule OmegaBraveraWeb.Controllers.Helpers do
   alias OmegaBravera.Money
   alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Challenges
 
   def total_for_user_challenges(ngo_chals, type) do
     cond do
@@ -10,7 +11,7 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
       true ->
         ngo_chals
         |> Enum.map(fn ngo_chal ->
-          milestone_stats(ngo_chal)
+          get_stats(ngo_chal)
           |> get_in(["total", type])
           |> add_currency(ngo_chal.default_currency)
         end)
@@ -34,7 +35,7 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
       "#{String.upcase(elem(el, 0))}: #{elem(el, 1)} " <> acc  end)
   end
 
-  def milestone_stats(%NGOChal{type: "PER_MILESTONE"} = ngo_chal) do
+  def get_stats(%NGOChal{type: "PER_MILESTONE"} = ngo_chal) do
     ngo_chal
     |> Money.milestones_donations()
     |> Enum.map(fn {k, v} ->
@@ -44,7 +45,38 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
     |> Enum.into(%{})
   end
 
-  def milestone_stats(%NGOChal{type: "PER_KM"} = ngo_chal), do: %{}
+  def get_stats(%NGOChal{type: "PER_KM"} = ngo_chal) do
+    ngo_chal = OmegaBravera.Challenges.get_ngo_chal!(ngo_chal.id)
+    total_secured = Challenges.get_per_km_challenge_total_secured(ngo_chal.slug)
+    total_pledged = Challenges.get_per_km_challenge_total_pledges(ngo_chal.slug)
+    total = %{"total" => %{"charged" => 0, "pending" => 0}}
+
+    total =
+      if Decimal.decimal?(total_secured) do
+        put_in(
+          total,
+          ["total", "charged"],
+          Decimal.to_float(total_secured) |> trunc()
+        )
+      else
+        total
+      end
+
+    total =
+      if Decimal.decimal?(total_pledged) do
+        put_in(
+          total,
+          ["total", "pending"],
+          Decimal.mult(total_pledged, ngo_chal.distance_target)
+          |> Decimal.to_float()
+          |> trunc()
+        )
+      else
+        total
+      end
+
+    total
+  end
 
   defp total_the_pledged_amount(tuple_list) do
     [

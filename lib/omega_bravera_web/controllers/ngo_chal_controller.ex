@@ -59,7 +59,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     render_attrs = get_render_attrs(conn, challenge, changeset)
 
-    render(conn, "show.html", Map.merge(render_attrs, milestone_stats(challenge)))
+    render(conn, "show.html", Map.merge(render_attrs, get_stats(challenge)))
   end
 
   def edit(conn, %{"id" => id}) do
@@ -101,7 +101,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       challenge: challenge,
       m_targets: NGOChal.milestones_distances(challenge),
       changeset: changeset,
-      milestone_stats: milestone_stats(challenge),
+      stats: get_stats(challenge),
       donors: Accounts.latest_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn)
