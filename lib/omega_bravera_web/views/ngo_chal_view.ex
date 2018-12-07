@@ -54,7 +54,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
   end
 
   def render_percentage_exceed(total, %Decimal{} = target), do: round((total / Decimal.to_integer(target)) * 100)
-  def render_percentage_exceed(%Decimal{} = total, target), do: round((Decimal.to_integer(total) / target) * 100)
+  def render_percentage_exceed(%Decimal{} = total, target), do: (Decimal.round(total) |> Decimal.to_integer()) / target * 100
 
   def render_progress_bar(target, previous_target, %{default_currency: currency, distance_covered: distance}, total) do
     percentage = render_percentage(target, distance, previous_target)
