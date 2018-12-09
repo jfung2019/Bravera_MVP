@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container user-profile">
   <div class="row">
     <div class="col-sm-3 float-right profile-pic-padding">
       <%= img_tag(@profile_picture, class: "img-thumbnail") %>
@@ -11,7 +11,7 @@
     <div class="col-sm-8">
       <br />
       <h5>Overview:</h5>
-      <ul>
+      <ul class="user-profile-details">
         <li> <b> Member Since: </b> <%= render_datetime(@user.inserted_at)%> </li>
         <li> <b> Total Number of Challenges: </b> <%= length(@user.ngo_chals) %> </li>
         <li> <b> Funds Pledged to date: </b> <%= @total_pledged %> </li>

@@ -316,16 +316,6 @@ input[type=number]::-webkit-outer-spin-button {
 
 }
 
-//  TODO VH Top and Footer for screens with footer
-// .vh-top{
-//   min-height: 80vh;
-// }
-//
-// footer{
-//   margin-top: 25px;
-//   min-height: 20vh;
-// }
-
 .btn{
   border-radius: 10px;
   padding: 5px 18px;
@@ -589,11 +579,6 @@ div.page-index {
   background-color: #f6f6f6;
 }
 
-.radio-img{
-  // visibility: hidden; /* Makes input not-clickable */
-  // position: absolute; /* Remove input from document flow */
-}
-
 .radio-btn-selected{
   box-shadow: none;
   border-color: #3aaa35;
@@ -656,8 +641,14 @@ div.page-index {
   display: none;
 }
 
-.profile-pic-padding {
-  margin-top:30px;
+.user-profile {
+  .user-profile-details {
+    padding: 1% 6%;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+  }
+  .profile-pic-padding {
+    margin-top:30px;
+  }
 }
 
 @media only screen and (max-width: 800px) {
