@@ -292,7 +292,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         # End the challenge
         changeset = Ecto.Changeset.change(challenge, %{end_date: Timex.shift(Timex.now(), days: -10)})
 
-        {:ok, updated_challenge} =  Repo.update(changeset)
+        {:ok, _updated_challenge} =  Repo.update(changeset)
 
         # Run the worker and try to charge donation == donation status is charged and charged_amount is amount * distnance_covered
         KmChallengesWorker.start()
