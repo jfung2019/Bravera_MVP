@@ -22,8 +22,12 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   def authenticate(conn, _params) do
-    redirect_url = OmegaBraveraWeb.Endpoint.url() <> "/strava/callback?redirect_to=" <> get_redirect_url(conn)
-    redirect(conn, external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url))
+    redirect_url =
+      OmegaBraveraWeb.Endpoint.url() <> "/strava/callback?redirect_to=" <> get_redirect_url(conn)
+
+    redirect(conn,
+      external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url)
+    )
   end
 
   @doc """

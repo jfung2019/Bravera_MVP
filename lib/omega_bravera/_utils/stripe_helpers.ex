@@ -86,12 +86,11 @@ defmodule OmegaBravera.StripeHelpers do
       "customer" => customer,
       "description" => description,
       "receipt_email" => email,
-      "expand[]" => "balance_transaction",
+      "expand[]" => "balance_transaction"
     }
 
     case Stripy.req(:post, "charges", charge_params) do
       {:ok, response} ->
-
         %{body: response_body} = response
         body = Poison.decode!(response_body)
 
@@ -120,14 +119,15 @@ defmodule OmegaBravera.StripeHelpers do
     end
   end
 
-
   defp get_stripe_exchange_rate(%{"balance_transaction" => balance_transaction}) do
     %{"exchange_rate" => exchange_rate} = balance_transaction
+
     exchange_rate =
       case exchange_rate do
         nil -> Decimal.new(1)
         _ -> Decimal.new(exchange_rate)
       end
+
     exchange_rate
   end
 

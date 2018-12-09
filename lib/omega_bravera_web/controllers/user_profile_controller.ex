@@ -35,16 +35,17 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
       true ->
         ids
-        |> Enum.map(fn id -> Money.get_number_of_ngo_chal_sponsors(id)  end)
+        |> Enum.map(fn id -> Money.get_number_of_ngo_chal_sponsors(id) end)
         |> Enum.reduce(fn id, acc -> id + acc end)
     end
   end
 
   defp get_profile_picture_link(user) do
-    %Strava.Athlete{profile: profile} = Strava.Athlete.retrieve(
-      user.strava.athlete_id,
-      Strava.Client.new(user.strava.token)
-    )
+    %Strava.Athlete{profile: profile} =
+      Strava.Athlete.retrieve(
+        user.strava.athlete_id,
+        Strava.Client.new(user.strava.token)
+      )
 
     profile
   end

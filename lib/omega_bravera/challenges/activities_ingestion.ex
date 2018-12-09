@@ -42,9 +42,10 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   end
 
   def process_challenge(
-    %NGOChal{type: "PER_KM"} = challenge,
-    %Strava.Activity{distance: distance} = strava_activity
-    ) when distance > 0 do
+        %NGOChal{type: "PER_KM"} = challenge,
+        %Strava.Activity{distance: distance} = strava_activity
+      )
+      when distance > 0 do
     Logger.info("Processing km challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, _donations} =
@@ -63,13 +64,14 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     else
       Logger.info("Processing was not successful for km challenge: #{inspect(challenge.id)}")
       {:error, :activity_not_processed}
-      end
+    end
   end
 
   def process_challenge(
-    %NGOChal{type: "PER_MILESTONE"} = challenge,
-    %Strava.Activity{distance: distance} = strava_activity
-    ) when distance > 0 do
+        %NGOChal{type: "PER_MILESTONE"} = challenge,
+        %Strava.Activity{distance: distance} = strava_activity
+      )
+      when distance > 0 do
     Logger.info("Processing milestone challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, donations} =
@@ -99,7 +101,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     changeset = Challenges.Activity.create_changeset(activity, challenge)
 
     if valid_activity?(activity, challenge) and
-      activity_type_matches_challenge_activity_type?(activity, challenge) do
+         activity_type_matches_challenge_activity_type?(activity, challenge) do
       case Repo.insert(changeset) do
         {:ok, activity} -> {:ok, challenge, activity}
         {:error, _} -> {:error, challenge, nil}
@@ -149,6 +151,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         :ok -> Enum.map(donations, &notify_donor_and_charge_donation/1)
         :error -> []
       end
+
     put_elem(params, 3, charged_donations)
   end
 

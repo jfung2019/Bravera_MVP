@@ -12,6 +12,7 @@ defmodule OmegaBraveraWeb.SettingController do
       user.setting == nil ->
         changeset = Accounts.change_setting(%Accounts.Setting{})
         render(conn, "new.html", changeset: changeset)
+
       user.setting != nil ->
         render(conn, "show.html", setting: user.setting)
     end
@@ -19,9 +20,9 @@ defmodule OmegaBraveraWeb.SettingController do
 
   def create(conn, %{"setting" => settings_params}) do
     user = Guardian.Plug.current_resource(conn)
-    changeset_params =
-      Map.merge(settings_params, %{"user_id" => user.id,}) |> calculate_weight_fraction()
 
+    changeset_params =
+      Map.merge(settings_params, %{"user_id" => user.id}) |> calculate_weight_fraction()
 
     case Accounts.create_setting(changeset_params) do
       {:ok, _setting} ->
@@ -40,6 +41,7 @@ defmodule OmegaBraveraWeb.SettingController do
     cond do
       user.setting == nil ->
         redirect(conn, to: setting_path(conn, :new))
+
       user.setting != nil ->
         render(conn, "show.html", setting: user.setting)
     end
@@ -54,6 +56,7 @@ defmodule OmegaBraveraWeb.SettingController do
 
       user.setting != nil ->
         {weight, fraction} = split_fraction(user.setting)
+
         setting =
           user.setting
           |> Map.put(:weight, weight)
@@ -95,18 +98,16 @@ defmodule OmegaBraveraWeb.SettingController do
   end
 
   defp split_fraction(params) do
-      weight = Map.get(params, :weight)
+    weight = Map.get(params, :weight)
 
     cond do
       weight != nil ->
-      {whole, decimal} = weight |> Decimal.div_rem(1)
+        {whole, decimal} = weight |> Decimal.div_rem(1)
 
-      {Decimal.to_string(whole), Decimal.to_string(decimal)}
+        {Decimal.to_string(whole), Decimal.to_string(decimal)}
 
       weight == nil ->
         {"", ""}
     end
-
-
   end
 end

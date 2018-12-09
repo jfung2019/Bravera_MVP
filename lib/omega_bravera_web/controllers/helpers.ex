@@ -24,15 +24,22 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
 
   defp total_with_currency(total) do
     currencies = %{"hkd" => 0, "krw" => 0, "sgd" => 0, "myr" => 0, "usd" => 0, "gbp" => 0}
+
     Enum.reduce(total, currencies, fn d, acc ->
       total = d[:total]
       Map.update(acc, d[:currency], total, fn sum -> sum + total end)
     end)
+    |> Enum.filter(fn {_currency, total} -> total > 0 end)
+    |> Enum.into(%{})
   end
 
-  defp total_to_string(total) do
-    Enum.reduce(total, "", fn el, acc ->
-      "#{String.upcase(elem(el, 0))}: #{elem(el, 1)} " <> acc  end)
+  defp total_to_string(total_map) when total_map == %{}, do: "0"
+
+  defp total_to_string(total_map) do
+    Enum.reduce(total_map, "", fn
+      el, acc ->
+        "#{String.upcase(elem(el, 0))}: #{elem(el, 1)} " <> acc
+    end)
   end
 
   def get_stats(%NGOChal{type: "PER_MILESTONE"} = ngo_chal) do

@@ -5,8 +5,7 @@ defmodule OmegaBraveraWeb.StravaView do
     %{
       "hub.mode" => "subscribe",
       "hub.verify_token" => "STRAVA",
-      "hub.challenge" => hub_challenge,
-
+      "hub.challenge" => hub_challenge
     }
   end
 

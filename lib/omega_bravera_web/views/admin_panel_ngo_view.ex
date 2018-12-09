@@ -22,7 +22,8 @@ defmodule OmegaBraveraWeb.AdminPanelNGOView do
       "net_donation" => Decimal.round(net_donation, 1),
       "bravera" => Decimal.round(bravera, 1),
       "gateway_fee" => Decimal.round(Decimal.add(gateway_percent, gateway_base_fee), 1)
-    } |> Map.get(opt)
+    }
+    |> Map.get(opt)
   end
 
   def render_kickstarter(nil), do: ""

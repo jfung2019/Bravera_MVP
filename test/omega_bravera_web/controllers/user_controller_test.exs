@@ -7,10 +7,9 @@ defmodule OmegaBraveraWeb.UserControllerTest do
   @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
 
   setup %{conn: conn} do
-    with {:ok, user} <-
-           Accounts.create_user(%{email: "user@example.com", password: "test1234"}),
+    with {:ok, user} <- Accounts.create_user(%{email: "user@example.com", password: "test1234"}),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
-        do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
   describe "new user" do
@@ -35,7 +34,9 @@ defmodule OmegaBraveraWeb.UserControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = put(conn, user_path(conn, :update, %{"user" => @invalid_attrs}))
-      assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
+
+      assert html_response(conn, 200) =~
+               "Oops, something went wrong! Please check the errors below."
     end
   end
 end

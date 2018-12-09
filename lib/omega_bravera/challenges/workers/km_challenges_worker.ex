@@ -1,12 +1,14 @@
 defmodule OmegaBravera.Challenges.KmChallengesWorker do
-require Logger
+  require Logger
 
-alias OmegaBravera.{Challenges, Money.Donation, Donations.Processor}
+  alias OmegaBravera.{Challenges, Money.Donation, Donations.Processor}
 
   def start() do
     Logger.info("KM Challenges Donation collector worker starting..")
+
     Challenges.get_expired_km_challenges()
     |> Enum.map(fn challenge -> charge_donations(challenge.donations) end)
+
     Logger.info("KM Challenges Donation collector worker done!")
   end
 

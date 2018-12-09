@@ -91,7 +91,8 @@ defmodule OmegaBraveraWeb.NGOChalViewTest do
     end
 
     test "30 decimal out of 120 decimal with 20 previous decimal" do
-      assert NGOChalView.render_percentage(Decimal.new(120), Decimal.new(30), Decimal.new(20)) == 8.33
+      assert NGOChalView.render_percentage(Decimal.new(120), Decimal.new(30), Decimal.new(20)) ==
+               8.33
     end
 
     test "30 out of 120 decimal with 20 previous" do

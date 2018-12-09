@@ -13,8 +13,7 @@ defmodule OmegaBravera.Donations.ProcessorTest do
   test "charge_donation/1 charges the donation and updates the schema successfully" do
     donor = insert(:user, %{email: "simon.garciar@gmail.com"})
 
-    ngo =
-      insert(:ngo, %{slug: "stc", name: "Save the children"})
+    ngo = insert(:ngo, %{slug: "stc", name: "Save the children"})
 
     challenge = insert(:ngo_challenge, %{ngo: ngo})
 

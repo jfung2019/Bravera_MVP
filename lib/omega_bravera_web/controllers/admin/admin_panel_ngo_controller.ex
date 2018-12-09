@@ -106,9 +106,9 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
       ]
     ]
 
-    cols ++ rows
-    |> CSV.encode
-    |> Enum.to_list
+    (cols ++ rows)
+    |> CSV.encode()
+    |> Enum.to_list()
     |> to_string
   end
 

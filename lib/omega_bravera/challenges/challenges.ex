@@ -130,13 +130,15 @@ defmodule OmegaBravera.Challenges do
 
   def get_expired_km_challenges() do
     now = Timex.now()
+
     from(
       nc in NGOChal,
       where: nc.type == "PER_KM" and ^now >= nc.end_date,
       left_join: donations in assoc(nc, :donations),
       on: donations.ngo_chal_id == nc.id and donations.status == "pending",
       preload: [donations: donations]
-    ) |> Repo.all()
+    )
+    |> Repo.all()
   end
 
   def get_per_km_challenge_total_pledges(slug) do
@@ -146,7 +148,8 @@ defmodule OmegaBravera.Challenges do
       left_join: donations in assoc(nc, :donations),
       on: donations.ngo_chal_id == nc.id,
       select: sum(donations.amount)
-    ) |> Repo.one()
+    )
+    |> Repo.one()
   end
 
   def get_per_km_challenge_total_secured(slug) do
@@ -156,7 +159,8 @@ defmodule OmegaBravera.Challenges do
       left_join: donations in assoc(nc, :donations),
       on: donations.ngo_chal_id == nc.id and donations.status == "charged",
       select: sum(donations.charged_amount)
-    ) |> Repo.one()
+    )
+    |> Repo.one()
   end
 
   def get_activity_types, do: NGOChal.activity_types()
@@ -228,12 +232,13 @@ defmodule OmegaBravera.Challenges do
   """
   def get_ngo_chal!(id) do
     from(nc in NGOChal,
-    left_join: a in Activity,
-    on: nc.id == a.challenge_id,
-    preload: [:donations],
-    group_by: nc.id,
-    select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)},
-    where: nc.id == ^id)
+      left_join: a in Activity,
+      on: nc.id == a.challenge_id,
+      preload: [:donations],
+      group_by: nc.id,
+      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)},
+      where: nc.id == ^id
+    )
     |> Repo.one!()
   end
 

@@ -31,7 +31,9 @@ defmodule OmegaBravera.Donations.Pledges do
         })
 
         {:ok, [pledge]}
-      {:error, reason} -> {:error, reason}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 
@@ -90,14 +92,15 @@ defmodule OmegaBravera.Donations.Pledges do
   end
 
   defp pledge_attributes(
-          %NGOChal{type: "PER_KM"} = challenge,
-          %{"currency" => currency,
-            "str_src" => stripe_source,
-            "donor_id" => donor_id,
-            "pledge_per_km" => pledge_per_km
-          },
-          %{"id" => stripe_customer_id}
-        ) do
+         %NGOChal{type: "PER_KM"} = challenge,
+         %{
+           "currency" => currency,
+           "str_src" => stripe_source,
+           "donor_id" => donor_id,
+           "pledge_per_km" => pledge_per_km
+         },
+         %{"id" => stripe_customer_id}
+       ) do
     %{
       amount: Decimal.new(pledge_per_km),
       km_distance: challenge.distance_target,

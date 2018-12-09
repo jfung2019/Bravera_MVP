@@ -72,8 +72,12 @@ defmodule OmegaBravera.Money.Donation do
   def charge_changeset(%__MODULE__{} = donation, stripe_attributes, nil) do
     change(donation, Map.merge(charged_attributes(stripe_attributes), %{status: "charged"}))
   end
+
   def charge_changeset(%__MODULE__{} = donation, stripe_attributes, exchange_rate) do
-    change(donation, Map.merge(charged_attributes(stripe_attributes, exchange_rate), %{status: "charged"}))
+    change(
+      donation,
+      Map.merge(charged_attributes(stripe_attributes, exchange_rate), %{status: "charged"})
+    )
   end
 
   defp charged_attributes(stripe_attributes, %Decimal{} = exchange_rate \\ Decimal.new(1)) do

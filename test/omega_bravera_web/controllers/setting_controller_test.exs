@@ -33,11 +33,10 @@ defmodule OmegaBraveraWeb.SettingControllerTest do
   end
 
   setup %{conn: conn} do
-    with {:ok, user} <-
-           Accounts.create_user(%{email: "user@example.com"}),
+    with {:ok, user} <- Accounts.create_user(%{email: "user@example.com"}),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
          {:ok, _setting} <- setting_fixture(user.id),
-        do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
   describe "edit setting" do
@@ -55,7 +54,9 @@ defmodule OmegaBraveraWeb.SettingControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = put(conn, setting_path(conn, :update, %{"setting" => @invalid_attrs}))
-      assert html_response(conn, 200) =~ "Oops, something went wrong! Please check the errors below."
+
+      assert html_response(conn, 200) =~
+               "Oops, something went wrong! Please check the errors below."
     end
   end
 end

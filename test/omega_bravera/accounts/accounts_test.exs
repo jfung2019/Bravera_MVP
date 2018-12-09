@@ -162,7 +162,8 @@ defmodule OmegaBravera.AccountsTest do
     }
 
     def setting_fixture(attrs \\ %{}) do
-    user = insert(:user)
+      user = insert(:user)
+
       {:ok, setting} =
         attrs
         |> Enum.into(@valid_attrs)
@@ -204,7 +205,6 @@ defmodule OmegaBravera.AccountsTest do
       assert %Setting{} = setting
       assert setting.gender == "Male"
       assert setting.date_of_birth == ~D[1980-07-14]
-
     end
 
     test "update_setting/2 with invalid data returns error changeset" do

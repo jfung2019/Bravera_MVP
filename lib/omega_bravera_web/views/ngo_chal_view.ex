@@ -34,66 +34,107 @@ defmodule OmegaBraveraWeb.NGOChalView do
   end
 
   def render_percentage(target, current, previous \\ 0)
+
   def render_percentage(%Decimal{} = target, current, previous) do
     render_percentage(Decimal.to_float(target), current, previous)
   end
+
   def render_percentage(target, current, %Decimal{} = previous) do
     render_percentage(target, current, Decimal.to_float(previous))
   end
+
   def render_percentage(target, %Decimal{} = current, previous) do
     render_percentage(target, Decimal.to_float(current), previous)
   end
+
   def render_percentage(_target, current, previous) when current <= previous, do: 0
   def render_percentage(_target, 0, _previous), do: 0
   def render_percentage(target, current, 0) when current >= target, do: 100
-  def render_percentage(target, current, 0), do: (current / target) * 100
+  def render_percentage(target, current, 0), do: current / target * 100
   def render_percentage(target, current, _previous) when current >= target, do: 100
+
   def render_percentage(target, current, previous) when previous > 0 do
-    ((current - previous) / target) * 100
+    ((current - previous) / target * 100)
     |> Float.round(2)
   end
 
-  def render_percentage_exceed(total, %Decimal{} = target), do: round((total / Decimal.to_integer(target)) * 100)
-  def render_percentage_exceed(%Decimal{} = total, target), do: (Decimal.round(total) |> Decimal.to_integer()) / target * 100
+  def render_percentage_exceed(total, %Decimal{} = target),
+    do: round(total / Decimal.to_integer(target) * 100)
 
-  def render_progress_bar(target, previous_target, %{default_currency: currency, distance_covered: distance}, total) do
+  def render_percentage_exceed(%Decimal{} = total, target),
+    do: (Decimal.round(total) |> Decimal.to_integer()) / target * 100
+
+  def render_progress_bar(
+        target,
+        previous_target,
+        %{default_currency: currency, distance_covered: distance},
+        total
+      ) do
     percentage = render_percentage(target, distance, previous_target)
+
     {label_class, total_class} =
       if percentage >= 100 do
         {"text-bravera text-500", "float-right text-success"}
       else
         {"milestone-label", "float-right"}
       end
-      [content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1", style: "text-align: left;") do
-        [content_tag(:span, "#{target}km", class: label_class),
-        content_tag(:span, class: "text-secondary") do
-          content_tag(:strong, "#{currency_to_symbol(currency)}#{total || 0}", class: total_class)
-        end]
+
+    [
+      content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1", style: "text-align: left;") do
+        [
+          content_tag(:span, "#{target}km", class: label_class),
+          content_tag(:span, class: "text-secondary") do
+            content_tag(:strong, "#{currency_to_symbol(currency)}#{total || 0}",
+              class: total_class
+            )
+          end
+        ]
       end,
       content_tag(:div, "", style: "clear: both;"),
       content_tag(:div, class: "progress chal-progress mb-2") do
-        content_tag(:div, "", class: "progress-bar bg-bravera", style: "width: #{percentage}%", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "")
-      end]
+        content_tag(:div, "",
+          class: "progress-bar bg-bravera",
+          style: "width: #{percentage}%",
+          role: "progressbar",
+          "aria-valuenow": "",
+          "aria-valuemin": "0",
+          "aria-valuemax": ""
+        )
+      end
+    ]
   end
 
   def render_progress_bar(%Decimal{} = distance_covered, distance_target) do
     percentage = render_percentage_exceed(distance_covered, distance_target)
+
     {label_class, total_class} =
       if percentage >= 100 do
         {"text-bravera text-500", "float-right text-success"}
       else
         {"milestone-label", "float-right"}
       end
-      [content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1", style: "text-align: left;") do
-        [content_tag(:span, "#{distance_covered}", class: label_class),
-        content_tag(:span, class: "text-secondary") do
-          content_tag(:strong, "#{distance_target}KM", class: total_class)
-        end]
+
+    [
+      content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1", style: "text-align: left;") do
+        [
+          content_tag(:span, "#{distance_covered}", class: label_class),
+          content_tag(:span, class: "text-secondary") do
+            content_tag(:strong, "#{distance_target}KM", class: total_class)
+          end
+        ]
       end,
       content_tag(:div, "", style: "clear: both;"),
       content_tag(:div, class: "progress chal-progress mb-2") do
-        content_tag(:div, "", class: "progress-bar bg-bravera", style: "width: #{percentage}%", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "")
-      end]
+        content_tag(:div, "",
+          class: "progress-bar bg-bravera",
+          style: "width: #{percentage}%",
+          role: "progressbar",
+          "aria-valuenow": "",
+          "aria-valuemin": "0",
+          "aria-valuemax": ""
+        )
+      end
+    ]
   end
 
   def render_total_pledged(pending, secured, default_currency) do
@@ -105,10 +146,15 @@ defmodule OmegaBraveraWeb.NGOChalView do
       end
 
     content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
-      ["Total Pledged:",
+      [
+        "Total Pledged:",
         content_tag(:span, class: "float-right") do
-          content_tag(:strong,"#{currency_to_symbol(default_currency) <> Integer.to_string(pending)}")
-        end]
+          content_tag(
+            :strong,
+            "#{currency_to_symbol(default_currency) <> Integer.to_string(pending)}"
+          )
+        end
+      ]
     end
   end
 
@@ -118,33 +164,41 @@ defmodule OmegaBraveraWeb.NGOChalView do
         "text-secondary"
       else
         "text-success"
-
       end
 
     content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
-    ["Total Secured:",
-      content_tag(:span, class: "float-right") do
-        content_tag(:strong,"#{currency_to_symbol(default_currency) <> Integer.to_string(secured)}")
-      end]
+      [
+        "Total Secured:",
+        content_tag(:span, class: "float-right") do
+          content_tag(
+            :strong,
+            "#{currency_to_symbol(default_currency) <> Integer.to_string(secured)}"
+          )
+        end
+      ]
     end
   end
 
   def render_pledge_per_km(nil), do: 0
+
   def render_pledge_per_km(%Decimal{} = total_km_pledges),
     do: Decimal.to_string(total_km_pledges)
 
   def render_km_challenge_total_support(nil, _), do: 0
+
   def render_km_challenge_total_support(
-    %Decimal{} = total_km_pledges,
-    distance_target
-  ),
-    do: Decimal.mult(total_km_pledges, distance_target) |> Decimal.to_string()
+        %Decimal{} = total_km_pledges,
+        distance_target
+      ),
+      do: Decimal.mult(total_km_pledges, distance_target) |> Decimal.to_string()
 
   def render_current_pledges(nil, _), do: 0
+
   def render_current_pledges(%Decimal{} = total_pledges, distance),
-   do: Decimal.mult(total_pledges, distance) |> Decimal.to_string()
+    do: Decimal.mult(total_pledges, distance) |> Decimal.to_string()
 
   def total_pledges(nil, _), do: 0
+
   def total_pledges(%Decimal{} = total_pledges, distance),
     do: Decimal.mult(total_pledges, distance) |> Decimal.to_integer()
 end

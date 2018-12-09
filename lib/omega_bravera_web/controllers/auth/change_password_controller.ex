@@ -10,6 +10,7 @@ defmodule OmegaBraveraWeb.ChangePasswordController do
       user.credential == nil ->
         changeset = Accounts.change_credential(%Accounts.Credential{})
         render(conn, "new.html", changeset: changeset, user: user)
+
       user.credential != nil ->
         redirect(conn, to: change_password_path(conn, :edit, %{}))
     end

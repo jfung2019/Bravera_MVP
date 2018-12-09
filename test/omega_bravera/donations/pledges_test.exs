@@ -34,7 +34,13 @@ defmodule OmegaBravera.Donations.PledgesTest do
       "str_src" => "src_123JABD8554"
     }
 
-    {:ok, [user: user, donor: donor, donation_params: donation_params, km_donation_params: km_donation_params]}
+    {:ok,
+     [
+       user: user,
+       donor: donor,
+       donation_params: donation_params,
+       km_donation_params: km_donation_params
+     ]}
   end
 
   test "create/3 creates the pledges and updates the challenge", %{

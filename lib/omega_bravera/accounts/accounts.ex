@@ -107,7 +107,11 @@ defmodule OmegaBravera.Accounts do
     query
     |> Repo.all()
     |> Enum.map(fn {user, amount, currency} ->
-      %{"user" => user, "pledged" => Decimal.mult(amount, challenge.distance_target), "currency" => currency}
+      %{
+        "user" => user,
+        "pledged" => Decimal.mult(amount, challenge.distance_target),
+        "currency" => currency
+      }
     end)
   end
 
@@ -279,6 +283,7 @@ defmodule OmegaBravera.Accounts do
         else
           {:error, :invalid_password}
         end
+
       credential == nil ->
         {:error, :user_does_not_exist}
     end

@@ -39,7 +39,9 @@ defmodule OmegaBravera.Fundraisers do
       where: n.slug == ^slug,
       left_join: ngo_user in assoc(n, :user),
       left_join: donations in assoc(n, :donations),
-      on: donations.status == "charged" and donations.charged_at >= ^start_date and donations.charged_at <= ^end_date,
+      on:
+        donations.status == "charged" and donations.charged_at >= ^start_date and
+          donations.charged_at <= ^end_date,
       left_join: user in assoc(donations, :user),
       left_join: ngo_chal in assoc(donations, :ngo_chal),
       select: [
@@ -54,7 +56,8 @@ defmodule OmegaBravera.Fundraisers do
         fragment("ROUND((? * ?), 1)", donations.amount, donations.exchange_rate),
         fragment("ROUND(((? * ?) * 0.034) + 2.35, 1)", donations.amount, donations.exchange_rate),
         fragment("ROUND((? * ?) * 0.06, 1)", donations.amount, donations.exchange_rate),
-        fragment("ROUND(
+        fragment(
+          "ROUND(
           ((? * ?) - (((? * ?) * 0.034) + 2.35)) - ((? * ?) * 0.06), 1)",
           donations.exchange_rate,
           donations.amount,
@@ -64,7 +67,8 @@ defmodule OmegaBravera.Fundraisers do
           donations.exchange_rate
         )
       ]
-    )|> Repo.all()
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -109,11 +113,11 @@ defmodule OmegaBravera.Fundraisers do
   def get_ngo!(id), do: Repo.get!(NGO, id)
 
   def get_ngo_by_slug(slug, preloads \\ [:ngo_chals]) do
-      from(n in NGO,
-        where: n.slug == ^slug,
-        preload: ^preloads
-      )
-      |> Repo.one()
+    from(n in NGO,
+      where: n.slug == ^slug,
+      preload: ^preloads
+    )
+    |> Repo.one()
   end
 
   @doc """

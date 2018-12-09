@@ -48,7 +48,7 @@ defmodule OmegaBravera.Application do
       id: "km_donation_collector",
       start:
         {SchedEx, :run_every,
-          [OmegaBravera.Challenges.KmChallengesWorker, :start, [], "30 0 * * *"]}
+         [OmegaBravera.Challenges.KmChallengesWorker, :start, [], "30 0 * * *"]}
     }
   end
 
