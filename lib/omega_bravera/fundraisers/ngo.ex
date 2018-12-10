@@ -7,8 +7,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
   alias OmegaBravera.Money.Donation
 
   @available_activities ["Run", "Cycle", "Walk", "Hike"]
-  @available_distances [50, 75, 150, 250]
-  @available_durations [24, 30, 40, 50, 60]
+  @available_distances [50, 75, 100, 150, 250, 300, 400, 500]
+  @available_durations [20, 24, 30, 40, 50, 60, 70, 80]
 
   @derive {Phoenix.Param, key: :slug}
   schema "ngos" do
