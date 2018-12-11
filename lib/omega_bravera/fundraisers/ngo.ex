@@ -21,6 +21,9 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:full_desc, :string)
     field(:currency, :string, default: "hkd")
     field(:minimum_donation, :integer, default: 0)
+    field(:pre_registration_start_date, :utc_datetime)
+    field(:pre_registration_end_date, :utc_datetime)
+    field(:open_registration, :boolean, default: false)
     field(:activities, {:array, :string}, default: @available_activities)
     field(:distances, {:array, :integer}, default: @available_distances)
     field(:durations, {:array, :integer}, default: @available_durations)
@@ -44,7 +47,10 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :activities,
     :distances,
     :durations,
-    :minimum_donation
+    :minimum_donation,
+    :pre_registration_start_date,
+    :pre_registration_end_date,
+    :open_registration
   ]
   @required_attributes [:name, :slug, :minimum_donation]
 

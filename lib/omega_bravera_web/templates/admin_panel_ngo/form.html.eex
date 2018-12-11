@@ -18,6 +18,24 @@
   </div>
 
   <div class="form-group">
+    <%= label f, "Pre-registration start: ", class: "control-label" %>
+    <%= registration_date_builder(f, :pre_registration_start_date, class: "form-control") %>
+    <%= error_tag f, :pre_registration_start_date %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, "Pre-registration end: ", class: "control-label" %>
+    <%= registration_date_builder(f, :pre_registration_end_date, class: "form-control") %>
+    <%= error_tag f, :pre_registration_end_date %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :open_registeration, class: "control-label" %>
+    <%= checkbox f, :open_registeration %>
+    <%= error_tag f, :open_registeration %>
+  </div>
+
+  <div class="form-group">
     <%= label f, "Description (displayed on /ngos)", class: "control-label" %>
     <%= text_input f, :desc, class: "form-control" %>
     <%= error_tag f, :desc %>
