@@ -22,8 +22,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:currency, :string, default: "hkd")
     field(:minimum_donation, :integer, default: 0)
     field(:pre_registration_start_date, :utc_datetime)
-    field(:pre_registration_end_date, :utc_datetime)
-    field(:open_registration, :boolean, default: false)
+    field(:launch_date, :utc_datetime)
+    field(:open_registration, :boolean, default: true)
     field(:activities, {:array, :string}, default: @available_activities)
     field(:distances, {:array, :integer}, default: @available_distances)
     field(:durations, {:array, :integer}, default: @available_durations)
@@ -49,7 +49,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :durations,
     :minimum_donation,
     :pre_registration_start_date,
-    :pre_registration_end_date,
+    :launch_date,
     :open_registration
   ]
   @required_attributes [:name, :slug, :minimum_donation]
@@ -65,6 +65,9 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_length(:desc, max: 255)
     |> validate_subset(:distances, @available_distances)
     |> validate_subset(:durations, @available_durations)
+    |> validate_open_registeration()
+    |> validate_registration_dates()
+    |> validate_launch_date()
     |> unique_constraint(:slug)
   end
 
@@ -77,6 +80,63 @@ defmodule OmegaBravera.Fundraisers.NGO do
       "United States Dollar (USD)" => "usd",
       "British Pound (GBP)" => "gbp"
     }
+  end
+
+  defp validate_registration_dates(changeset) do
+    case changeset.valid? do
+      true ->
+        pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
+        launch_date = get_field(changeset, :launch_date)
+        open_registration = get_field(changeset, :open_registration)
+
+        case open_registration == false and pre_registration_start_date >= launch_date do
+          true ->
+            add_error(changeset, :pre_registration_start_date, "Pre-registration start date cannot be greater than or equal to the Launch date.")
+          _ -> changeset
+        end
+
+      _ -> changeset
+    end
+  end
+
+  defp validate_open_registeration(changeset) do
+    case changeset.valid? do
+      true ->
+        pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
+        launch_date = get_field(changeset, :launch_date)
+        open_registration = get_field(changeset, :open_registration)
+
+        case open_registration == false and
+          (
+            is_nil(pre_registration_start_date) or
+            is_nil(launch_date)
+          ) do
+          true ->
+            add_error(changeset, :open_registration, "Cannot create non-closed registration NGO without registration dates.")
+          _ ->
+            changeset
+        end
+
+        _ -> changeset
+    end
+  end
+
+  defp validate_launch_date(changeset) do
+    case changeset.valid? do
+      true ->
+        launch_date = get_field(changeset, :launch_date)
+        open_registration = get_field(changeset, :open_registration)
+
+        case open_registration == false and (Timex.now() > launch_date) do
+          true ->
+            add_error(changeset, :launch_date, "Launch date cannot be less than today's date.")
+          _ ->
+            changeset
+        end
+
+        _ -> changeset
+    end
+
   end
 
   defp valid_currencies, do: Map.values(currency_options())

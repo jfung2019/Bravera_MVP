@@ -90,7 +90,8 @@ defmodule OmegaBravera.Fundraisers do
         n in NGO,
         join: user in assoc(n, :user),
         join: strava in assoc(user, :strava),
-        preload: [user: {user, strava: strava}]
+        preload: [user: {user, strava: strava}],
+        order_by: n.inserted_at
       )
 
     query |> Repo.all()
