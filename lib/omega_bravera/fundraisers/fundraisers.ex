@@ -153,7 +153,7 @@ defmodule OmegaBravera.Fundraisers do
   """
   def update_ngo(%NGO{} = ngo, attrs) do
     ngo
-    |> NGO.changeset(attrs)
+    |> NGO.update_changeset(attrs)
     |> Repo.update()
   end
 

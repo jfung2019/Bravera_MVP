@@ -66,9 +66,16 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_subset(:distances, @available_distances)
     |> validate_subset(:durations, @available_durations)
     |> validate_open_registeration()
-    |> validate_registration_dates()
+    |> validate_pre_registration_start_date()
     |> validate_launch_date()
+
     |> unique_constraint(:slug)
+  end
+
+  def update_changeset(ngo, attrs) do
+    ngo
+    |> changeset(attrs)
+    |> validate_pre_registration_start_date_modification(ngo)
   end
 
   def currency_options do
@@ -82,7 +89,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     }
   end
 
-  defp validate_registration_dates(changeset) do
+  defp validate_pre_registration_start_date(changeset) do
     case changeset.valid? do
       true ->
         pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
@@ -113,6 +120,26 @@ defmodule OmegaBravera.Fundraisers.NGO do
           ) do
           true ->
             add_error(changeset, :open_registration, "Cannot create non-closed registration NGO without registration dates.")
+          _ ->
+            changeset
+        end
+
+        _ -> changeset
+    end
+  end
+
+  defp validate_pre_registration_start_date_modification(changeset, %__MODULE__{} = ngo) do
+    case changeset.valid? do
+      true ->
+        pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
+        open_registration = get_field(changeset, :open_registration)
+
+        case open_registration == false and
+          ngo.pre_registration_start_date <= Timex.now() and
+          pre_registration_start_date > ngo.pre_registration_start_date
+          do
+          true ->
+            add_error(changeset, :pre_registration_start_date, "FOO")
           _ ->
             changeset
         end
