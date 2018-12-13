@@ -29,7 +29,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     ngo = insert(:ngo, %{url: "http://localhost:4000"})
     conn = get(conn, ngo_ngo_chal_path(conn, :new, ngo.slug))
 
-    assert html_response(conn, 200) =~ "Configure your Challenge"
+    assert html_response(conn, 200) =~ "localhost"
   end
 
   describe "create ngo_chal" do

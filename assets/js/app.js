@@ -24,3 +24,7 @@ import "moment";
 // paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
+
+import init_countdown from "./custom"
+
+window.init_countdown = init_countdown

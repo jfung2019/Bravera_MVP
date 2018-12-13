@@ -65,7 +65,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_length(:desc, max: 255)
     |> validate_subset(:distances, @available_distances)
     |> validate_subset(:durations, @available_durations)
-    |> validate_open_registeration()
+    |> validate_open_registration()
     |> validate_pre_registration_start_date()
     |> validate_launch_date()
 
@@ -106,7 +106,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     end
   end
 
-  defp validate_open_registeration(changeset) do
+  defp validate_open_registration(changeset) do
     case changeset.valid? do
       true ->
         pre_registration_start_date = get_field(changeset, :pre_registration_start_date)

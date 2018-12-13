@@ -1,0 +1,156 @@
+<div class="card-body pt-0 justify-content-center text-center">
+  <div class="row text-center">
+    <div class="col-lg-12">
+
+      <h4 class="text-green mb-0">
+        Challenge starts in:
+      </h4>
+      <h3 id="countdown" class="font-weight-bold mt-3 mb-3 text-danger"></h3>
+
+      <label for="ngo_chal_activity">
+        <h4 class="text-green mb-0">
+          Select an Activity
+        </h4>
+      </label>
+      <br/>  <%= error_tag @f, :activity_type %>
+      <div class="form-group" id="ngo_chal_activity">
+        <%= for activity <- @ngo.activities do %>
+          <%= label class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
+            <h4 class="activity-text mb-0 mt-4 pt-2">
+              <%= activity %>
+            </h4>
+            <%= radio_button @f, :activity_type, activity, class: "radio-img" %>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <label for="ngo_chal_challenge_type">
+        <h4 class="text-green mb-0">
+          Select an Challenge Type
+        </h4>
+      </label>
+      <br/>  <%= error_tag @f, :type %>
+      <div class="form-group" id="ngo_chal_challenge_type">
+      <!-- Start Challenge types -->
+          <div class="card mx-auto mb-2 mr-3" style="width: 18rem; display: inline-block;">
+            <div class="card-header">
+              <b>Per Goal</b>
+              <br />
+              <%= radio_button @f, :type, "PER_MILESTONE", class: "radio-img" %>
+            </div>
+            <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+            <div class="card-body">
+              <p class="card-text">
+                Select a total distance but your goals are broken down into x3 milestones that release pledged funds, automatically.
+              </p>
+            </div>
+          </div>
+          <div class="card mx-auto mb-2 mr-3" style="width: 18rem; display: inline-block;">
+            <div class="card-header">
+              <b>Per KM</b>
+              <br />
+              <%= radio_button @f, :type, "PER_KM", class: "radio-img" %>
+            </div>
+            <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+            <div class="card-body">
+              <p class="card-text">
+                Select a total distance and ask for donations per KM. Pledged funds released at the end of your challenge.
+              </p>
+            </div>
+          </div>
+      <!-- end Challenge types -->
+      </div>
+    </div>
+  </div>
+
+<!-- TODO Change to default rather than option -->
+    <div class="distance-select">
+      <label>
+        <h4 class="text-green mb-0">
+          Choose Duration and Distance
+        </h4>
+      </label>
+
+      <div class="form-group form-inline text-center justify-content-center">
+        <div class="input-group">
+          <%= select @f, :distance_target, @ngo.distances, class: "custom-select" %>
+          <div class="input-group-append">
+            <label class="input-group-text" for="ngo_chal_distance_target">KM</label>
+          </div>
+        </div>
+
+        <h4 class="mx-3 my-3 text-center text-green">in</h4>
+        <div class="input-group">
+          <%= select @f, :duration, @ngo.durations, class: "custom-select" %>
+          <div class="input-group-append">
+            <label class="input-group-text" for="ngo_chal_duration">days</label>
+          </div>
+        </div>
+        <span class="ml-2"><%= error_tag @f, :duration %></span>
+      </div>
+      <span id="per-km-effort-education" class="small" style="display: none;"></span>
+
+    </div>
+    <div class="mt-2 mb-4 text-center fund-input-container">
+      <label for="ngo_chal_money_target">
+        <h4 class="text-green my-2">Set Fundraising Target</h4>
+      </label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="currencyPrepend">
+            <%= currency_to_symbol(@ngo.currency) %>
+          </span>
+        </div>
+        <%= number_input @f, :money_target, min: @ngo.minimum_donation, value: @ngo.minimum_donation, class: "form-control money-input" %>
+        <div class="input-group-append">
+          <span class="input-group-text">.00</span>
+        </div>
+      </div>
+      <%= error_tag @f, :money_target %>
+    </div>
+
+    <div class="form-button">
+      <button type="submit" class="btn btn-bravera btn-lg btn-block form-button">
+        Submit
+      </button>
+    </div>
+</div>
+
+<script>
+  $(function() {
+
+    // Check if Per KM first and save that
+    $("#ngo_chal_type_PER_KM").change(function(){
+      $("#per-km-effort-education").css("display", "inline-block");
+      $("#per-km-effort-education").text("Average of "
+        + calculate_avg_km_per_day($("#ngo_chal_distance_target").val(), $("#ngo_chal_duration").val())
+        + "KM per day."
+      );
+    });
+
+    $("#ngo_chal_type_PER_MILESTONE").change(function(){
+      $("#per-km-effort-education").css("display", "none");
+    });
+
+    $("#ngo_chal_distance_target").change(function(){
+      $("#per-km-effort-education").text("Average of "
+        + calculate_avg_km_per_day($("#ngo_chal_distance_target").val(), $("#ngo_chal_duration").val())
+        + "KM per day."
+      );
+    });
+
+    $("#ngo_chal_duration").change(function(){
+      $("#per-km-effort-education").text("Average of "
+        + calculate_avg_km_per_day($("#ngo_chal_distance_target").val(), $("#ngo_chal_duration").val())
+        + "KM per day."
+      );
+    });
+
+    init_countdown("<%= render_countdown_date(@ngo.launch_date) %>", "countdown");
+  });
+
+  function calculate_avg_km_per_day(kms, days) {
+    return Math.round((kms / days) * 100) / 100
+  }
+</script>
