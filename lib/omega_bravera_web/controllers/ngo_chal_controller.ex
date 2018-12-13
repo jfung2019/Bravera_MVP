@@ -29,14 +29,24 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
+    extra_params = %{
+      "user_id" => current_user.id,
+      "ngo_slug" => ngo_slug,
+      "ngo_id" => ngo.id,
+      "slug" => sluggified_username,
+      "default_currency" => ngo.currency
+    }
+
+    extra_params =
+      case ngo.open_registration == false and ngo.launch_date > Timex.now() do
+        true ->
+          Map.put(extra_params, "status", "pre_registration")
+        _ ->
+          extra_params
+      end
+
     changeset_params =
-      Map.merge(chal_params, %{
-        "user_id" => current_user.id,
-        "ngo_slug" => ngo_slug,
-        "ngo_id" => ngo.id,
-        "slug" => sluggified_username,
-        "default_currency" => ngo.currency
-      })
+      Map.merge(chal_params, extra_params)
 
     case Challenges.create_ngo_chal(%NGOChal{}, changeset_params) do
       {:ok, challenge} ->
