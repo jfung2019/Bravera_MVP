@@ -9,6 +9,34 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   alias SendGrid.{Email, Mailer}
 
+  def send_pre_registration_challenge_sign_up_email(%NGOChal{} = challenge, path) do
+    challenge
+    |> Repo.preload([:user, :ngo])
+    |> pre_registration_challenge_signup_email(path)
+    |> Mailer.send()
+  end
+
+  def pre_registration_challenge_signup_email(%NGOChal{} = challenge, path) do
+    Email.build()
+    |> Email.put_template("0e8a21f6-234f-4293-b5cf-fc9805042d82")
+    |> Email.add_substitution("-firstName-", challenge.user.firstname)
+    |> Email.add_substitution(
+      "-challengeLink-",
+      "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}"
+    )
+    |> Email.add_substitution(
+      "-yearMonthDay-",
+      Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
+    )
+    |> Email.add_substitution("-causeName-", challenge.ngo.name)
+    |> Email.add_substitution("-days-", "#{challenge.duration} days")
+    |> Email.add_substitution("-kms-", "#{challenge.distance_target} Km")
+    |> Email.add_substitution("-fundraisingGoal-", "#{challenge.money_target}")
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(challenge.user.email)
+  end
+
   def send_challenge_signup_email(%NGOChal{} = challenge, path) do
     challenge
     |> Repo.preload([:user, :ngo])

@@ -189,9 +189,9 @@ defmodule OmegaBravera.Challenges do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_ngo_chal(%NGOChal{} = chal, attrs \\ %{}) do
+  def create_ngo_chal(%NGOChal{} = chal, %NGO{} = ngo, attrs \\ %{}) do
     chal
-    |> NGOChal.create_changeset(attrs)
+    |> NGOChal.create_changeset(ngo, attrs)
     |> Repo.insert()
   end
 

@@ -3,7 +3,7 @@ defmodule OmegaBravera.ChallengesTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.Challenges
+  alias OmegaBravera.{Challenges, Fundraisers.NGO}
 
   describe "ngo_chals" do
     alias OmegaBravera.Challenges.NGOChal
@@ -14,7 +14,7 @@ defmodule OmegaBravera.ChallengesTest do
       "duration" => 42,
       "money_target" => "120.5",
       "slug" => "some slug",
-      "status" => "some status",
+      "status" => "",
       "type" => "Per Goal"
     }
     @update_attrs %{
@@ -129,24 +129,43 @@ defmodule OmegaBravera.ChallengesTest do
       assert retrieved_chal.id == ngo_chal.id
     end
 
-    test "create_ngo_chal/1 with valid data creates a ngo_chal" do
+    test "create_ngo_chal/2 with valid data creates an active ngo_chal" do
       user = insert(:user)
       ngo = insert(:ngo)
 
       attrs = Map.merge(@valid_attrs, %{"user_id" => user.id, "ngo_id" => ngo.id})
 
-      {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, attrs)
+      {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
 
       assert ngo_chal.activity_type == "Walk"
       assert ngo_chal.distance_target == 50
       assert ngo_chal.duration == 42
       assert ngo_chal.money_target == Decimal.new("120.5")
       assert ngo_chal.slug == "some slug"
-      assert ngo_chal.status == "some status"
+      assert ngo_chal.status == "active"
     end
 
-    test "create_ngo_chal/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Challenges.create_ngo_chal(%NGOChal{}, @invalid_attrs)
+
+    test "create_ngo_chal/2 with valid data creates a pre_registration ngo_chal" do
+      user = insert(:user)
+      ngo = insert(:ngo, %{open_registration: false})
+
+      attrs = Map.merge(@valid_attrs, %{"user_id" => user.id, "ngo_id" => ngo.id})
+
+      {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
+
+      assert ngo_chal.start_date == ngo.launch_date
+      assert ngo_chal.end_date == Timex.shift(ngo.launch_date, days: ngo_chal.duration)
+      assert ngo_chal.activity_type == "Walk"
+      assert ngo_chal.distance_target == 50
+      assert ngo_chal.duration == 42
+      assert ngo_chal.money_target == Decimal.new("120.5")
+      assert ngo_chal.slug == "some slug"
+      assert ngo_chal.status == "pre_registration"
+    end
+
+    test "create_ngo_chal/2 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Challenges.create_ngo_chal(%NGOChal{}, %NGO{}, @invalid_attrs)
     end
 
     test "update_ngo_chal/2 with valid data updates the ngo_chal" do

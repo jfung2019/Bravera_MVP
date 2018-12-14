@@ -6,6 +6,43 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   alias OmegaBravera.Challenges.{NGOChal, Notifier}
   alias OmegaBravera.Accounts.User
 
+  test "pre_registration_challenge_signup_email" do
+    challenge = insert(:ngo_challenge)
+
+    email = Notifier.pre_registration_challenge_signup_email(challenge, "/swcc/John-512")
+
+    assert email == %SendGrid.Email{
+             __phoenix_layout__: nil,
+             __phoenix_view__: nil,
+             attachments: nil,
+             cc: nil,
+             content: nil,
+             custom_args: nil,
+             headers: nil,
+             reply_to: nil,
+             send_at: nil,
+             subject: nil,
+             from: %{email: "admin@bravera.co", name: "Bravera"},
+             substitutions: %{
+               "-kms-" => "#{challenge.distance_target} Km",
+               "-causeName-" => "Save the children worldwide",
+               "-challengeLink-" => "https://bravera.co/swcc/John-512",
+               "-yearMonthDay-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
+               "-days-" => "5 days",
+               "-firstName-" => "John",
+               "-fundraisingGoal-" => "2000"
+             },
+             template_id: "0e8a21f6-234f-4293-b5cf-fc9805042d82",
+             to: [%{email: challenge.user.email}],
+             bcc: [%{email: "admin@bravera.co"}]
+           }
+  end
+
+  test "send_pre_registration_challenge_signup_email/2 sends the email" do
+    challenge = insert(:ngo_challenge)
+    assert Notifier.send_pre_registration_challenge_sign_up_email(challenge, "/swcc/John-582") == :ok
+  end
+
   test "challenge_signup_email" do
     challenge = insert(:ngo_challenge)
 

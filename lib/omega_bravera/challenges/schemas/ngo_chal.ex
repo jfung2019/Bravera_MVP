@@ -103,11 +103,22 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_inclusion(:activity_type, @activity_types)
   end
 
-  def create_changeset(ngo_chal, attrs) do
+  def create_changeset(ngo_chal, ngo, attrs) do
     ngo_chal
     |> changeset(attrs)
-    |> add_start_and_end_dates(attrs)
+    |> add_start_and_end_dates(ngo, attrs)
+    |> add_status(ngo)
     |> validate_required([:start_date, :end_date])
+  end
+
+  defp add_status(%Ecto.Changeset{} = changeset, %NGO{} = ngo) do
+    status =
+      case ngo.open_registration == false and ngo.launch_date >= Timex.now() do
+        true -> "pre_registration"
+        _ -> "active"
+      end
+
+    changeset |> change(status: status)
   end
 
   def activity_completed_changeset(%__MODULE__{} = challenge, %{distance: distance}) do
@@ -157,6 +168,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
 
   defp add_start_and_end_dates(
          %Ecto.Changeset{} = changeset,
+         %NGO{} = ngo,
          %{"duration" => duration_str} = attrs
        )
        when is_binary(duration_str) do
@@ -166,20 +178,23 @@ defmodule OmegaBravera.Challenges.NGOChal do
         _ -> nil
       end
 
-    add_start_and_end_dates(changeset, Map.put(attrs, "duration", duration))
+    add_start_and_end_dates(changeset, ngo, Map.put(attrs, "duration", duration))
   end
 
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %{"duration" => duration})
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %NGO{} = ngo, %{"duration" => duration})
        when is_number(duration) do
-    start_date = Timex.now()
-    end_date = Timex.shift(start_date, days: duration)
+    {start_date, end_date} =
+      case ngo.open_registration == false and ngo.launch_date >= Timex.now() do
+        true -> {ngo.launch_date, Timex.shift(ngo.launch_date, days: duration)}
+        _ -> {Timex.now(), Timex.shift(Timex.now(), days: duration)}
+      end
 
     changeset
     |> change(start_date: start_date)
     |> change(end_date: end_date)
   end
 
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _), do: changeset
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _, _), do: changeset
 
   defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do
     case Decimal.cmp(changeset.changes[:distance_covered], challenge.distance_target) do

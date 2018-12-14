@@ -42,16 +42,21 @@ defmodule OmegaBraveraWeb.NGOChalController do
         true ->
           Map.put(extra_params, "status", "pre_registration")
         _ ->
-          extra_params
+          Map.put(extra_params, "status", "active")
       end
 
     changeset_params =
       Map.merge(chal_params, extra_params)
 
-    case Challenges.create_ngo_chal(%NGOChal{}, changeset_params) do
+    case Challenges.create_ngo_chal(%NGOChal{}, ngo, changeset_params) do
       {:ok, challenge} ->
         challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
-        Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+        case changeset_params["status"] do
+          "pre_registration" ->
+            Challenges.Notifier.send_pre_registration_challenge_sign_up_email(challenge, challenge_path)
+
+          _ -> Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+        end
 
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
