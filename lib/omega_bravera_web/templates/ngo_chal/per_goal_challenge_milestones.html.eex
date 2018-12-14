@@ -3,17 +3,19 @@
     <div id="challenge-status-container" class="<%= @challenge.status %>">
       <%= cond do %>
         <% active_challenge?(@challenge) -> %>
+          <h5 class="text-500 text-center mt-2 mb-0">Challenge ends in<h5>
           <h3 id="challenge_duration_countdown" class="text-success text-500 text-center mt-2 mb-0"></h3>
           <p class="text-center mb-0">
-            <%= render_date(@challenge.start_date) %> - <%= render_date(@challenge.end_date) %>
+            On <%= render_date(@challenge.end_date) %>
           </p>
-          <p style="font-size: 12px;" class="text-420 text-center mb-3">(Day/Month/Year)</h6>
+
         <% pre_registration?(@challenge) -> %>
+          <h5 class="text-500 text-center mt-2 mb-0">Challenge starts in<h5>
           <h3 id="challenge_duration_countdown" class="text-danger text-500 text-center mt-2 mb-0"></h3>
           <p class="text-center mb-0">
-            <%= render_date(@challenge.ngo.pre_registration_start_date) %> - <%= render_date(@challenge.ngo.launch_date) %>
+            On <%= render_date(@challenge.ngo.launch_date) %>
           </p>
-          <p style="font-size: 12px;" class="text-420 text-center mb-3">(Day/Month/Year)</h6>
+
         <% true -> %>
           <h5 class=" text-500 text-center mt-2 mb-0">
             Challenge <%= String.capitalize(@challenge.status) %>

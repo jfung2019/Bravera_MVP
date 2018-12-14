@@ -48,7 +48,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def render_date(date_time) do
     {:ok, formatted_date_time} =
       date_time
-      |> Timex.format("{D}/{M}/{WYYYY}")
+      |> Timex.format("%d %B %Y", :strftime)
 
     formatted_date_time
   end
