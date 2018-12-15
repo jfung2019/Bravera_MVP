@@ -208,6 +208,15 @@ defmodule OmegaBravera.Challenges do
     Repo.all(NGOChal)
   end
 
+  def get_live_ngo_chals() do
+    from(
+      nc in NGOChal,
+      where: nc.status == "pre_registration"
+      and nc.start_date < ^Timex.now()
+    )
+    |> Repo.all()
+  end
+
   def list_ngo_chals_preload() do
     NGOChal
     |> Repo.all()

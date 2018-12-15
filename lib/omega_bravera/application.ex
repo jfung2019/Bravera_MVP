@@ -20,6 +20,7 @@ defmodule OmegaBravera.Application do
       case Application.get_env(:omega_bravera, :env) do
         :prod ->
           [
+            pre_registration_challenges_activator(),
             km_challenge_donation_collector(),
             signups_worker_spec(),
             inactive_challenges_spec(),
@@ -41,6 +42,15 @@ defmodule OmegaBravera.Application do
   def config_change(changed, _new, removed) do
     OmegaBraveraWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp pre_registration_challenges_activator do
+    %{
+      id: "km_donation_collector",
+      start:
+        {SchedEx, :run_every,
+         [OmegaBravera.Challenges.LiveWorker, :start, [], "* * * * *"]}
+    }
   end
 
   defp km_challenge_donation_collector do

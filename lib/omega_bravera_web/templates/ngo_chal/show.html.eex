@@ -120,7 +120,7 @@
  }
 
  if($('#challenge-status-container').hasClass('pre_registration')) {
-    init_countdown('<%= render_countdown_date(@challenge.ngo.launch_date) %>', "challenge_duration_countdown");
+    init_countdown('<%= render_countdown_date(@challenge.start_date) %>', "challenge_duration_countdown");
  }
 
  var numInputs = document.querySelectorAll('input[type=number]');
