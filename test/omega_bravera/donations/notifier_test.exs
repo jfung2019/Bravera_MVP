@@ -7,11 +7,18 @@ defmodule OmegaBravera.NotifierTest do
   setup do
     user = insert(:user)
     ngo = insert(:ngo)
+
     [
       user: user,
       ngo: ngo,
       challenge: insert(:ngo_challenge, %{user: user, ngo: ngo}),
-      pre_registration_challenge: insert(:ngo_challenge, %{user: user, ngo: ngo, status: "pre_registration", start_date: Timex.shift(Timex.now(), days: 5)})
+      pre_registration_challenge:
+        insert(:ngo_challenge, %{
+          user: user,
+          ngo: ngo,
+          status: "pre_registration",
+          start_date: Timex.shift(Timex.now(), days: 5)
+        })
     ]
   end
 
@@ -48,11 +55,19 @@ defmodule OmegaBravera.NotifierTest do
            }
   end
 
-  test "pre_registration_donor_email", %{pre_registration_challenge: pre_registration_challenge, user: user} do
+  test "pre_registration_donor_email", %{
+    pre_registration_challenge: pre_registration_challenge,
+    user: user
+  } do
     donor =
       insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
-    result = Notifier.pre_registration_donor_email(pre_registration_challenge, donor, "/swcc/#{user.firstname}-594")
+    result =
+      Notifier.pre_registration_donor_email(
+        pre_registration_challenge,
+        donor,
+        "/swcc/#{user.firstname}-594"
+      )
 
     assert result == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -126,7 +141,13 @@ defmodule OmegaBravera.NotifierTest do
 
     pledges = donations(context, donor)
 
-    result = Notifier.email_parties(pre_registration_challenge, donor, pledges, "/swcc/#{user.firstname}-594")
+    result =
+      Notifier.email_parties(
+        pre_registration_challenge,
+        donor,
+        pledges,
+        "/swcc/#{user.firstname}-594"
+      )
 
     assert result == [:ok, :ok]
   end

@@ -30,6 +30,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
   def fixture(:ngo) do
     {:ok, ngo} = Fundraisers.create_ngo(@ngo_create_attrs)
     {:ok, user} = Accounts.create_user(%{email: "sheriefalaa.w@gmail.com"})
+
     ngo_chal_attrs = %{
       "activity_type" => "Walk",
       "money_target" => 500,
@@ -41,6 +42,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
       "slug" => "some-closed-registration-challenge",
       "type" => "PER_KM"
     }
+
     {:ok, _ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, ngo_chal_attrs)
     ngo
   end
@@ -105,8 +107,13 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
       assert html_response(conn, 200)
     end
 
-    test "when updating closed registration launch date, all its pre_registration challenges' start_date is also updated", %{conn: conn, ngo: ngo} do
-      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: %{launch_date: Timex.shift(Timex.now(), days: 11)})
+    test "when updating closed registration launch date, all its pre_registration challenges' start_date is also updated",
+         %{conn: conn, ngo: ngo} do
+      conn =
+        put(conn, admin_panel_ngo_path(conn, :update, ngo),
+          ngo: %{launch_date: Timex.shift(Timex.now(), days: 11)}
+        )
+
       assert html_response(conn, 302)
 
       updated_ngo = Fundraisers.get_ngo_by_slug(ngo.slug)

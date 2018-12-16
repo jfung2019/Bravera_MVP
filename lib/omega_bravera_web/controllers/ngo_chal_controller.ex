@@ -41,21 +41,26 @@ defmodule OmegaBraveraWeb.NGOChalController do
       case ngo.open_registration == false and ngo.launch_date > Timex.now() do
         true ->
           Map.put(extra_params, "status", "pre_registration")
+
         _ ->
           Map.put(extra_params, "status", "active")
       end
 
-    changeset_params =
-      Map.merge(chal_params, extra_params)
+    changeset_params = Map.merge(chal_params, extra_params)
 
     case Challenges.create_ngo_chal(%NGOChal{}, ngo, changeset_params) do
       {:ok, challenge} ->
         challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
+
         case changeset_params["status"] do
           "pre_registration" ->
-            Challenges.Notifier.send_pre_registration_challenge_sign_up_email(challenge, challenge_path)
+            Challenges.Notifier.send_pre_registration_challenge_sign_up_email(
+              challenge,
+              challenge_path
+            )
 
-          _ -> Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+          _ ->
+            Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
         end
 
         conn

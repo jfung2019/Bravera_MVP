@@ -182,7 +182,9 @@ defmodule OmegaBravera.Challenges.NGOChal do
     add_start_and_end_dates(changeset, ngo, Map.put(attrs, "duration", duration))
   end
 
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %NGO{} = ngo, %{"duration" => duration})
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %NGO{} = ngo, %{
+         "duration" => duration
+       })
        when is_number(duration) do
     {start_date, end_date} =
       case ngo.open_registration == false and ngo.launch_date >= Timex.now() do

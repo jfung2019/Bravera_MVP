@@ -6,7 +6,6 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   alias OmegaBravera.Challenges.{NGOChal, Notifier}
   alias OmegaBravera.Accounts.User
 
-
   test "challenge_activated_email" do
     challenge = insert(:ngo_challenge)
 
@@ -26,7 +25,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
                "-challengeLink-" => "https://bravera.co/swcc/John-512",
-               "-firstName-" => "John",
+               "-firstName-" => "John"
              },
              template_id: "75516ad9-3ce8-4742-bd70-1227ce3cba1d",
              to: [%{email: challenge.user.email}],
@@ -73,7 +72,9 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "send_pre_registration_challenge_signup_email/2 sends the email" do
     challenge = insert(:ngo_challenge)
-    assert Notifier.send_pre_registration_challenge_sign_up_email(challenge, "/swcc/John-582") == :ok
+
+    assert Notifier.send_pre_registration_challenge_sign_up_email(challenge, "/swcc/John-582") ==
+             :ok
   end
 
   test "challenge_signup_email" do

@@ -57,7 +57,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def render_activity(%Decimal{} = activity), do: Decimal.round(activity, 1)
 
   def render_countdown_date(nil), do: ""
-  def render_countdown_date(%DateTime{} = datetime),
-   do: Timex.format!(datetime, "%FT%T", :strftime)
 
+  def render_countdown_date(%DateTime{} = datetime),
+    do: Timex.format!(datetime, "%FT%T", :strftime)
 end

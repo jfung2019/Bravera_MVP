@@ -145,7 +145,6 @@ defmodule OmegaBravera.ChallengesTest do
       assert ngo_chal.status == "active"
     end
 
-
     test "create_ngo_chal/2 with valid data creates a pre_registration ngo_chal" do
       user = insert(:user)
       ngo = insert(:ngo, %{open_registration: false})
@@ -165,7 +164,8 @@ defmodule OmegaBravera.ChallengesTest do
     end
 
     test "create_ngo_chal/2 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Challenges.create_ngo_chal(%NGOChal{}, %NGO{}, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Challenges.create_ngo_chal(%NGOChal{}, %NGO{}, @invalid_attrs)
     end
 
     test "update_ngo_chal/2 with valid data updates the ngo_chal" do

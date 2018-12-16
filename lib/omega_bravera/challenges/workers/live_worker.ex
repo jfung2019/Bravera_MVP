@@ -15,14 +15,19 @@ defmodule OmegaBravera.Challenges.LiveWorker do
       case Challenges.update_ngo_chal(challenge, %{status: "active"}) do
         {:ok, _} ->
           Logger.info("LiveChallenges worker: activated challenge: #{inspect(challenge.slug)}")
-          Notifier.send_challenge_activated_email(challenge, Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug))
+
+          Notifier.send_challenge_activated_email(
+            challenge,
+            Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
+          )
 
         {:error, reason} ->
-          Logger.error("LiveChallenges worker: failed to activate challenge. Reason: #{inspect(reason)}")
+          Logger.error(
+            "LiveChallenges worker: failed to activate challenge. Reason: #{inspect(reason)}"
+          )
       end
     end)
 
     Logger.info("LiveChallenges worker: done!")
   end
-
 end

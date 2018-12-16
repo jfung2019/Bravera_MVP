@@ -103,29 +103,34 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
     test "stops processing if challange is not live" do
       user = insert(:user, strava: build(:strava, user: nil))
-      ngo = insert(
-        :ngo,
-        %{
-          user: user,
-          open_registration: false,
-          pre_registration_start_date: Timex.shift(Timex.now(), days: 3)
-        }
-      )
-      challenge = insert(
-        :ngo_challenge,
-        %{
-          ngo: ngo,
-          user: user,
-          status: "pre_registration",
-          start_date: ngo.launch_date
-        }
-      )
+
+      ngo =
+        insert(
+          :ngo,
+          %{
+            user: user,
+            open_registration: false,
+            pre_registration_start_date: Timex.shift(Timex.now(), days: 3)
+          }
+        )
+
+      challenge =
+        insert(
+          :ngo_challenge,
+          %{
+            ngo: ngo,
+            user: user,
+            status: "pre_registration",
+            start_date: ngo.launch_date
+          }
+        )
+
       insert(:donation, %{ngo_chal: challenge})
 
       challengers = Accounts.get_strava_challengers(user.strava.athlete_id)
 
       assert ActivitiesIngestion.process_challenges(challengers, %{"object_id" => 123_456}) ==
-        {:error, :no_challengers_found}
+               {:error, :no_challengers_found}
     end
   end
 

@@ -22,9 +22,9 @@ defmodule OmegaBravera.Donations.Notifier do
       case challenge.status == "pre_registration" and challenge.start_date > Timex.now() do
         true ->
           challenge |> pre_registration_donor_email(donor, challenge_path)
+
         _ ->
           challenge |> donor_email(donor, challenge_path)
-
       end
 
     email |> Mailer.send()

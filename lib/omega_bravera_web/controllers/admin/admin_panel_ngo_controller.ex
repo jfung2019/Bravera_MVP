@@ -58,11 +58,9 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
 
     case Fundraisers.update_ngo(ngo, ngo_params) do
       {:ok, updated_ngo} ->
-
         # Update all pre_registration challenges' start date
         ngo.ngo_chals
         |> Enum.map(fn challenge ->
-
           if challenge.status == "pre_registration" do
             Challenges.update_ngo_chal(challenge, %{start_date: updated_ngo.launch_date})
           end

@@ -56,13 +56,23 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       |> get_donations
       |> notify_participant_of_milestone
 
-    Logger.info("ActivityIngestion: Processing has finished for km challenge: #{inspect(challenge.id)}")
+    Logger.info(
+      "ActivityIngestion: Processing has finished for km challenge: #{inspect(challenge.id)}"
+    )
 
     if status == :ok do
-      Logger.info("ActivityIngestion: Processing was successful for km challenge: #{inspect(challenge.id)}")
+      Logger.info(
+        "ActivityIngestion: Processing was successful for km challenge: #{inspect(challenge.id)}"
+      )
+
       {:ok, :challenge_updated}
     else
-      Logger.info("ActivityIngestion: Processing was not successful for km challenge: #{inspect(challenge.id)}")
+      Logger.info(
+        "ActivityIngestion: Processing was not successful for km challenge: #{
+          inspect(challenge.id)
+        }"
+      )
+
       {:error, :activity_not_processed}
     end
   end
@@ -83,7 +93,11 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       |> notify_participant_of_milestone
       |> charge_donations()
 
-    Logger.info("ActivityIngestion: Processing has finished for milestone challenge: #{inspect(challenge.id)}")
+    Logger.info(
+      "ActivityIngestion: Processing has finished for milestone challenge: #{
+        inspect(challenge.id)
+      }"
+    )
 
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
       Logger.info("ActivityIngestion: Processing was successful")
