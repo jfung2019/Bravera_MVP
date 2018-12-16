@@ -1,14 +1,16 @@
 defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
-  alias OmegaBravera.Accounts
-  alias OmegaBravera.Fundraisers
+  alias OmegaBravera.{Accounts, Fundraisers, Challenges, Challenges.NGOChal}
 
   @ngo_create_attrs %{
     desc: "some desc",
     logo: "some logo",
     name: "some name",
-    slug: "some-slug"
+    slug: "some-slug",
+    open_registration: false,
+    pre_registration_start_date: Timex.now(),
+    launch_date: Timex.shift(Timex.now(), days: 10)
   }
 
   @update_attrs %{
@@ -27,6 +29,19 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
   def fixture(:ngo) do
     {:ok, ngo} = Fundraisers.create_ngo(@ngo_create_attrs)
+    {:ok, user} = Accounts.create_user(%{email: "sheriefalaa.w@gmail.com"})
+    ngo_chal_attrs = %{
+      "activity_type" => "Walk",
+      "money_target" => 500,
+      "distance_target" => 50,
+      "status" => "pre_registration",
+      "duration" => 30,
+      "user_id" => user.id,
+      "ngo_id" => ngo.id,
+      "slug" => "some-closed-registration-challenge",
+      "type" => "PER_KM"
+    }
+    {:ok, _ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, ngo_chal_attrs)
     ngo
   end
 
@@ -88,6 +103,15 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     test "renders errors in update when data is invalid", %{conn: conn, ngo: ngo} do
       conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: %{name: nil})
       assert html_response(conn, 200)
+    end
+
+    test "when updating closed registration launch date, all its pre_registration challenges' start_date is also updated", %{conn: conn, ngo: ngo} do
+      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: %{launch_date: Timex.shift(Timex.now(), days: 11)})
+      assert html_response(conn, 302)
+
+      updated_ngo = Fundraisers.get_ngo_by_slug(ngo.slug)
+      ngo_chal = List.first(updated_ngo.ngo_chals)
+      assert updated_ngo.launch_date == ngo_chal.start_date
     end
   end
 

@@ -59,7 +59,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :user_id,
     :ngo_id,
     :self_donated,
-    :type
+    :type,
+    :start_date
   ]
 
   @required_attributes [
