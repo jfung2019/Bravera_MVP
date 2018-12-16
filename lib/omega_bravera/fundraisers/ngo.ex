@@ -146,7 +146,11 @@ defmodule OmegaBravera.Fundraisers.NGO do
         case open_registration == false and ngo.pre_registration_start_date <= Timex.now() and
                pre_registration_start_date > ngo.pre_registration_start_date do
           true ->
-            add_error(changeset, :pre_registration_start_date, "FOO")
+            add_error(
+              changeset,
+              :pre_registration_start_date,
+              "Pre registration start date cannot be in the past"
+            )
 
           _ ->
             changeset
