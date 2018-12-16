@@ -7,7 +7,12 @@ defmodule OmegaBravera.NotifierTest do
   setup do
     user = insert(:user)
     ngo = insert(:ngo)
-    [user: user, ngo: ngo, challenge: insert(:ngo_challenge, %{user: user, ngo: ngo})]
+    [
+      user: user,
+      ngo: ngo,
+      challenge: insert(:ngo_challenge, %{user: user, ngo: ngo}),
+      pre_registration_challenge: insert(:ngo_challenge, %{user: user, ngo: ngo, status: "pre_registration", start_date: Timex.shift(Timex.now(), days: 5)})
+    ]
   end
 
   test "participant_email creates the participant email",
@@ -39,6 +44,36 @@ defmodule OmegaBravera.NotifierTest do
              },
              template_id: "79561f40-9939-406c-bdbe-0ecca63a1e1a",
              to: [%{email: user.email}],
+             bcc: [%{email: "admin@bravera.co"}]
+           }
+  end
+
+  test "pre_registration_donor_email", %{pre_registration_challenge: pre_registration_challenge, user: user} do
+    donor =
+      insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
+
+    result = Notifier.pre_registration_donor_email(pre_registration_challenge, donor, "/swcc/#{user.firstname}-594")
+
+    assert result == %SendGrid.Email{
+             __phoenix_layout__: nil,
+             __phoenix_view__: nil,
+             attachments: nil,
+             cc: nil,
+             content: nil,
+             custom_args: nil,
+             headers: nil,
+             reply_to: nil,
+             send_at: nil,
+             subject: nil,
+             from: %{email: "admin@bravera.co", name: "Bravera"},
+             substitutions: %{
+               "-challengeURL-" => "https://bravera.co/swcc/John-594",
+               "-donorName-" => "#{donor.firstname} #{donor.lastname}",
+               "-participantName-" => user.firstname,
+               "-challengeStartDate-" => pre_registration_challenge.start_date
+             },
+             template_id: "9fc14299-96a0-4a4d-9917-c19f747270ff",
+             to: [%{email: donor.email}],
              bcc: [%{email: "admin@bravera.co"}]
            }
   end
@@ -80,6 +115,18 @@ defmodule OmegaBravera.NotifierTest do
     pledges = donations(context, donor)
 
     result = Notifier.email_parties(challenge, donor, pledges, "/swcc/#{user.firstname}-594")
+
+    assert result == [:ok, :ok]
+  end
+
+  test "email_parties/4 sends the email to both donor (pre_registration pledge) and participant",
+       %{pre_registration_challenge: pre_registration_challenge, user: user} = context do
+    donor =
+      insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
+
+    pledges = donations(context, donor)
+
+    result = Notifier.email_parties(pre_registration_challenge, donor, pledges, "/swcc/#{user.firstname}-594")
 
     assert result == [:ok, :ok]
   end
