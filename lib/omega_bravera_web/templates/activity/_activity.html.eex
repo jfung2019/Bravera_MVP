@@ -1,10 +1,52 @@
 <div class="row">
-  <div class="col-6">Date</div>
-  <div class="col-6">Distance</div>
-</div>
-<%= for activity <- @activities do %>
-  <div class="row">
-    <div class="col-6"><%= Timex.format!(activity.start_date, "%b %d", :strftime) %></div>
-    <div class="col-6"><%= render_activity(activity.distance) %> Km</div>
+
+  <div class="col-9  mx-auto">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-2">
+            <b>Date</b>
+          </div>
+          <div class="col-sm-2">
+            <b>Start Time</b>
+          </div>
+          <div class="col-sm-3">
+            <b>Distance (km)</b>
+          </div>
+          <div class="col-sm-3">
+            <b>Duration</b>
+          </div>
+          <div class="col-sm-2">
+            <b>Avg. Speed</b>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <br />
+  <%= for activity <- @activities do %>
+    <div class="card bg-light text-dark">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-2">
+            <%= Timex.format!(activity.start_date, "%b %d", :strftime) %>
+          </div>
+          <div class="col-sm-2">
+            <%= Timex.format!(activity.start_date, "%H:%M", :strftime) %>
+          </div>
+          <div class="col-sm-3">
+            <%= render_activity(activity.distance) %> km
+          </div>
+          <div class="col-sm-3">
+            <%= render_time(activity.elapsed_time) %>
+          </div>
+          <div class="col-sm-2">
+            <%= render_activity(activity.average_speed) %> km/h
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+  <% end %>
   </div>
-<% end %>
+</div>

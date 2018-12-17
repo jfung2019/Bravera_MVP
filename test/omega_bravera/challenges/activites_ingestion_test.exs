@@ -26,7 +26,10 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       start_date: Timex.shift(Timex.now(), hours: 1),
       type: "Run",
       name: "Morning Run",
-      manual: false
+      manual: false,
+      moving_time: 2123,
+      elapsed_time: 1233,
+      average_speed: 123
     }
 
     {:ok, [strava_activity: strava_activity]}
@@ -150,9 +153,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     test "does nothing if the Strava activity is missing data" do
       challenge = insert(:ngo_challenge)
 
-      assert ActivitiesIngestion.process_challenge(challenge, %Strava.Activity{
-               distance: 100
-             }) == {:error, :activity_not_processed}
+      assert ActivitiesIngestion.process_challenge(
+        challenge, %Strava.Activity{}
+      ) == {:error, :activity_not_processed}
     end
 
     test "updates the challenge with the new covered distance", %{
