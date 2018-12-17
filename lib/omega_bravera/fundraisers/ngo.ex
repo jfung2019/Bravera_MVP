@@ -24,6 +24,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:pre_registration_start_date, :utc_datetime)
     field(:launch_date, :utc_datetime)
     field(:open_registration, :boolean, default: true)
+    field(:active_challenges, :integer, default: 0, virtual: true)
     field(:activities, {:array, :string}, default: @available_activities)
     field(:distances, {:array, :integer}, default: @available_distances)
     field(:durations, {:array, :integer}, default: @available_durations)
@@ -75,6 +76,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     ngo
     |> changeset(attrs)
     |> validate_pre_registration_start_date_modification(ngo)
+    |> validate_no_active_challenges(ngo)
   end
 
   def currency_options do
@@ -150,6 +152,26 @@ defmodule OmegaBravera.Fundraisers.NGO do
               changeset,
               :pre_registration_start_date,
               "Pre registration start date cannot be in the past"
+            )
+
+          _ ->
+            changeset
+        end
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp validate_no_active_challenges(changeset, %__MODULE__{} = ngo) do
+    case changeset.valid? do
+      true ->
+        case ngo.active_challenges > 0 do
+          true ->
+            add_error(
+              changeset,
+              :open_registration,
+              "Cannot close/open registration due to the presence of active challenges."
             )
 
           _ ->

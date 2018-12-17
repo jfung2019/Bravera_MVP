@@ -6,7 +6,7 @@ defmodule OmegaBravera.Fundraisers do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Fundraisers.NGO
+  alias OmegaBravera.{Fundraisers.NGO, Challenges.NGOChal}
 
   # Get a user's causes by user_id
 
@@ -116,7 +116,11 @@ defmodule OmegaBravera.Fundraisers do
   def get_ngo_by_slug(slug, preloads \\ [:ngo_chals]) do
     from(n in NGO,
       where: n.slug == ^slug,
-      preload: ^preloads
+      left_join: challenges in assoc(n, :ngo_chals),
+      on: challenges.ngo_id == n.id and challenges.status == ^"active",
+      preload: ^preloads,
+      group_by: [n.id],
+      select: %{n | active_challenges: count(challenges.id)}
     )
     |> Repo.one()
   end
