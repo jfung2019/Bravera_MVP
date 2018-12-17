@@ -147,7 +147,20 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
     content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
       [
-        "Total Pledged:",
+        "Total Pledged ",
+        content_tag(
+          :i,
+          class: "fa fa-question-circle-o text-secondary fa-1",
+          data: [
+            container: "body",
+            toggle: "popover",
+            placement: "top",
+            title: "Total pledged",
+            content: "means 'not yet secured' by either reaching a milestone or finishing a challenge.",
+            trigger: "focus"
+          ],
+          tabindex: "0",
+          id: "pledged_tooltip") do end,
         content_tag(:span, class: "float-right") do
           content_tag(
             :strong,
@@ -168,7 +181,20 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
     content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
       [
-        "Total Secured:",
+        "Total Secured ",
+        content_tag(
+          :i,
+          class: "fa fa-question-circle-o text-secondary fa-1",
+          data: [
+            container: "body",
+            toggle: "popover",
+            placement: "top",
+            title: "Total secured",
+            content: "the transaction has been made after hitting a milestone or challenge is completed.",
+            trigger: "focus"
+          ],
+          tabindex: "0",
+          id: "secured_tooltip") do end,
         content_tag(:span, class: "float-right") do
           content_tag(
             :strong,

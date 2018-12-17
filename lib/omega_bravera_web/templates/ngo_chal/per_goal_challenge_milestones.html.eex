@@ -63,3 +63,11 @@
     </div>
   </div>
 </div>  <!-- End of top card -->
+
+<script>
+
+$(document).ready(function(){
+  $("#secured_tooltip").popover({ placement: 'right'});
+  $("#pledged_tooltip").popover({ placement: 'right'});
+});
+</script>
