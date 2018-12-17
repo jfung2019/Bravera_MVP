@@ -14,7 +14,7 @@ defmodule OmegaBraveraWeb.StravaController do
 
   def post_webhook_callback(conn, params) do
     ActivitiesIngestion.process_strava_webhook(params)
-    render(conn, "webhook_callback.json", status: "200")
+    render(conn, "webhook_callback.json", status: 200)
   end
 
   def get_webhook_callback(conn, params) do
