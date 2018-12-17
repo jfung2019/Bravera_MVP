@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.AdminPanelUserController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.{Accounts, Repo}
 
   def index(conn, _params) do
     users = Accounts.list_users()
@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.AdminPanelUserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = id |> Accounts.get_user!()
+    user = id |> Accounts.get_user!() |> Repo.preload(:strava)
     render(conn, "show.html", user: user)
   end
 end
