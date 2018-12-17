@@ -299,11 +299,7 @@ defmodule OmegaBravera.Accounts do
 
   """
   def list_users do
-    from(
-      u in User,
-      preload: [:strava]
-    )
-    |> Repo.all()
+    Repo.all(User)
   end
 
   @doc """

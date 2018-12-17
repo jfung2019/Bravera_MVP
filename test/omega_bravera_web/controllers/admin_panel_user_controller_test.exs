@@ -1,12 +1,20 @@
 defmodule OmegaBraveraWeb.Admin.UserControllerTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.{Accounts, Repo, Trackers}
 
   @user_create_attrs %{
     email: "test@test.com",
     firstname: "some firstname",
     lastname: "some lastname"
+  }
+
+  @tracker_create_attrs %{
+    email: "test@test.com",
+    firstname: "some firstname",
+    lastname: "some lastname",
+    athlete_id: 123_456,
+    token: "132kans81h23",
   }
 
   setup %{conn: conn} do
@@ -18,7 +26,8 @@ defmodule OmegaBraveraWeb.Admin.UserControllerTest do
 
   def fixture(:user) do
     {:ok, user} = Accounts.create_user(@user_create_attrs)
-    user
+    {:ok, _strava} = Trackers.create_strava(user.id, @tracker_create_attrs)
+    user |> Repo.preload(:strava)
   end
 
   describe "index" do
