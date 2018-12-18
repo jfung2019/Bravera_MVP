@@ -94,10 +94,8 @@ footer.footer {
 .chal-progress{
   height: 18px;
   border-radius: 20px;
-}
-
-.milestone-label{
-  width: 250px;
+  width: calc(70%);
+  margin-top: 10px;
 }
 
 .charity-desc{
@@ -357,11 +355,16 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0 auto;
   }
 }
+
 @include media-breakpoint-up(sm){
   .cause-card {
     width: 350px;
     height: 200px;
     margin: 0 auto;
+  }
+
+  .chal-progress {
+    margin-top: 18px;
   }
 }
 

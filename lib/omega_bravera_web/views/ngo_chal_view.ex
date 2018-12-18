@@ -116,24 +116,27 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
     [
       content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1", style: "text-align: left;") do
-        [
-          content_tag(:span, "#{distance_covered}", class: label_class),
-          content_tag(:span, class: "text-secondary") do
-            content_tag(:strong, "#{distance_target}KM", class: total_class)
+          content_tag(:div, class: "d-flex justify-content-between bd-highlight mb-3") do
+            [
+              content_tag(:span, "#{distance_covered}", class: "p-2 " <> label_class),
+              content_tag(:div, class: "progress chal-progress") do
+                content_tag(:div, "",
+                  class: "progress-bar bg-bravera",
+                  style: "width: #{percentage}%",
+                  role: "progressbar",
+                  "aria-valuenow": "",
+                  "aria-valuemin": "0",
+                  "aria-valuemax": ""
+                )
+              end,
+              content_tag(:span, class: "p-2 text-secondary") do
+                content_tag(:strong, "#{distance_target}KM", class: total_class)
+              end
+            ]
           end
-        ]
+
       end,
-      content_tag(:div, "", style: "clear: both;"),
-      content_tag(:div, class: "progress chal-progress mb-2") do
-        content_tag(:div, "",
-          class: "progress-bar bg-bravera",
-          style: "width: #{percentage}%",
-          role: "progressbar",
-          "aria-valuenow": "",
-          "aria-valuemin": "0",
-          "aria-valuemax": ""
-        )
-      end
+      content_tag(:div, "", style: "clear: both;")
     ]
   end
 

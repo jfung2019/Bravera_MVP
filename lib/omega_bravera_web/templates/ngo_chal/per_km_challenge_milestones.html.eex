@@ -25,7 +25,7 @@
         <strong class="text-500 float-right"><%= @challenge.distance_covered %>KM</strong>
       </h5>
       <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
-        Pledge value per KM:
+        Pledge value:
         <strong class="text-500 float-right">
           <%= currency_to_symbol(@challenge.default_currency)%>
           <%= render_pledge_per_km(@total_pledges_per_km) %> per KM
