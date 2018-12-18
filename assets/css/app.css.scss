@@ -356,6 +356,12 @@ input[type=number]::-webkit-outer-spin-button {
   }
 }
 
+@include media-breakpoint-up(xs) {
+  .activity-text-size {
+    font-size: 0.5em;
+  }
+}
+
 @include media-breakpoint-up(sm){
   .cause-card {
     width: 350px;
@@ -365,6 +371,10 @@ input[type=number]::-webkit-outer-spin-button {
 
   .chal-progress {
     margin-top: 18px;
+  }
+
+  .activity-text-size {
+    font-size: 0.7em;
   }
 }
 
