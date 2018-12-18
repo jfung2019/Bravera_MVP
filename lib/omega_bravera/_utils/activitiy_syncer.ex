@@ -3,6 +3,8 @@ defmodule OmegaBravera.ActivitySyncer do
 
   alias OmegaBravera.Accounts
   alias OmegaBravera.Challenges.ActivitiesIngestion
+  alias OmegaBravera.Challenges
+  alias OmegaBravera.Repo
 
   def prepare_challengers() do
     Logger.info("Syncer: Preparing..")
@@ -32,7 +34,7 @@ defmodule OmegaBravera.ActivitySyncer do
       "Syncer: Got #{length(activities)} for challenge ID: #{elem(head, 0)}, page: #{page}"
     )
 
-    process_challenges(elem(head, 0), elem(head, 1), activities)
+    process_challenges(elem(head, 0), activities)
 
     if Enum.empty?(activities) do
       process_activities(tail)
@@ -57,12 +59,16 @@ defmodule OmegaBravera.ActivitySyncer do
     )
   end
 
-  # Note: token is only there to satisfy pattern matching for ActivitiesIngestion.process_challenge/2
-  def process_challenges(challenge_id, token, activities) do
+  def process_challenges(challenge_id, activities) do
     Logger.info("Syncer: Processing Activities for Challenge #{challenge_id}...")
 
     for activity <- activities do
-      ActivitiesIngestion.process_challenge({challenge_id, token}, activity)
+      challenge =
+        challenge_id
+        |> Challenges.get_ngo_chal!()
+        |> Repo.preload([:user, :ngo])
+
+      ActivitiesIngestion.process_challenge(challenge, activity)
     end
   end
 
