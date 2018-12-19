@@ -118,7 +118,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
       content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1", style: "text-align: left;") do
           content_tag(:div, class: "d-flex justify-content-between bd-highlight mb-3") do
             [
-              content_tag(:span, "#{distance_covered}", class: "p-2 " <> label_class),
+              content_tag(:span, "0", class: "p-2 " <> label_class),
               content_tag(:div, class: "progress km-chal-progress") do
                 content_tag(:div, "",
                   class: "progress-bar bg-bravera",
