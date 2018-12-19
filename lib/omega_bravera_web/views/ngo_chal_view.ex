@@ -91,7 +91,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
         ]
       end,
       content_tag(:div, "", style: "clear: both;"),
-      content_tag(:div, class: "progress chal-progress mb-2") do
+      content_tag(:div, class: "progress milestone-chal-progress mb-2") do
         content_tag(:div, "",
           class: "progress-bar bg-bravera",
           style: "width: #{percentage}%",
@@ -119,7 +119,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
           content_tag(:div, class: "d-flex justify-content-between bd-highlight mb-3") do
             [
               content_tag(:span, "#{distance_covered}", class: "p-2 " <> label_class),
-              content_tag(:div, class: "progress chal-progress") do
+              content_tag(:div, class: "progress km-chal-progress") do
                 content_tag(:div, "",
                   class: "progress-bar bg-bravera",
                   style: "width: #{percentage}%",
