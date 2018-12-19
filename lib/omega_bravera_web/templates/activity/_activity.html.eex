@@ -12,7 +12,7 @@
             <b>Distance <br/> (km)</b>
           </div>
           <div class="p-1 activity-text-size">
-            <b>Duration</b>
+            <b>Calories</b>
           </div>
           <div class="p-1 activity-text-size">
             <b>Speed <br/> (average)</b>
@@ -35,7 +35,7 @@
               <%= render_activity(activity.distance) %> km
             </div>
             <div class="p-1 activity-text-size">
-              <%= render_time(activity.elapsed_time) %>
+              <%= activity.calories %>
             </div>
             <div class="p-1 activity-text-size">
               <%= render_activity(activity.average_speed) %> km/h

@@ -14,6 +14,7 @@ defmodule OmegaBravera.Challenges.Activity do
     field(:average_speed, :decimal)
     field(:moving_time, :integer)
     field(:elapsed_time, :integer)
+    field(:calories, :decimal)
 
     # associations
     belongs_to(:user, User)
@@ -32,7 +33,8 @@ defmodule OmegaBravera.Challenges.Activity do
     :start_date,
     :type,
     :user_id,
-    :challenge_id
+    :challenge_id,
+    :calories
   ]
   @allowed_attributes [:name, :manual | @required_attributes]
   @activity_type [
@@ -52,7 +54,8 @@ defmodule OmegaBravera.Challenges.Activity do
       distance: to_km(strava_activity.distance),
       average_speed: to_km_per_hour(strava_activity.average_speed),
       moving_time: strava_activity.moving_time,
-      elapsed_time: strava_activity.elapsed_time
+      elapsed_time: strava_activity.elapsed_time,
+      calories: strava_activity.calories
     })
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)

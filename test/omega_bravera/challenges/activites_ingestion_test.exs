@@ -29,7 +29,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       manual: false,
       moving_time: 2123,
       elapsed_time: 1233,
-      average_speed: 123
+      average_speed: 123,
+      calories: 300
     }
 
     {:ok, [strava_activity: strava_activity]}
