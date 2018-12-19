@@ -18,8 +18,6 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   def get_webhook_callback(conn, params) do
-    IO.inspect conn
-    IO.inspect params
     render(conn, "hub_challenge.json", hub_challenge: params["hub.challenge"])
   end
 
