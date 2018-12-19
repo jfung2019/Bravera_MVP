@@ -17,12 +17,7 @@
           </h5>
       <% end %>
     </div>
-    <div class="progress chal-progress mt-3">
-      <div class="progress-bar bg-success"
-           style="width: <%= render_percentage(@challenge.money_target, get_in(@stats, ["total", "charged"])) %>%;" role="progressbar"  aria-valuenow="" aria-valuemin="0" aria-valuemax=""
-           id="money-progress"
-      ></div>
-    </div>
+    <%= render_progress_bar(@challenge.distance_covered, @challenge.distance_target) %>
     <h5 class="text-420 mt-0 mb-3 text-center">
       <strong><%= currency_to_symbol(@challenge.default_currency) %><%= get_in(@stats, ["total", "charged"]) || 0 %></strong>
       raised of target
