@@ -26,10 +26,10 @@
         <div class="card-body" style="width: 100%">
           <div class="d-flex justify-content-around">
             <div class="p-1 activity-text-size">
-              <%= Timex.format!(activity.start_date, "%b %d", :strftime) %>
+              <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%b %d", :strftime) %>
             </div>
             <div class="p-1 activity-text-size">
-              <%= Timex.format!(activity.start_date, "%H:%M", :strftime) %>
+              <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%H:%M", :strftime) %>
             </div>
             <div class="p-1 activity-text-size">
               <%= render_activity(activity.distance) %> km
