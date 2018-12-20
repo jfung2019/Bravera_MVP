@@ -145,7 +145,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
         pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
         open_registration = get_field(changeset, :open_registration)
 
-        case open_registration == false and ngo.pre_registration_start_date <= Timex.now() and
+        case open_registration == false and ngo.pre_registration_start_date <= Timex.now("Asia/Hong_Kong") and
                pre_registration_start_date > ngo.pre_registration_start_date do
           true ->
             add_error(
@@ -189,7 +189,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
         launch_date = get_field(changeset, :launch_date)
         open_registration = get_field(changeset, :open_registration)
 
-        case open_registration == false and Timex.now() > launch_date do
+        case open_registration == false and Timex.now("Asia/Hong_Kong") > launch_date do
           true ->
             add_error(changeset, :launch_date, "Launch date cannot be less than today's date.")
 

@@ -10,8 +10,8 @@ defmodule OmegaBravera.NgoTest do
     @create_attrs %{
       name: "some ngo",
       slug: "some-ngo",
-      pre_registration_start_date: Timex.now(),
-      launch_date: Timex.shift(Timex.now(), days: 10),
+      pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
+      launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10),
       minimum_donation: 500,
       open_registration: true
     }
@@ -84,7 +84,7 @@ defmodule OmegaBravera.NgoTest do
           %NGO{},
           %{
             @create_attrs
-            | launch_date: Timex.shift(Timex.now(), days: -10),
+            | launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -10),
               open_registration: false
           }
         )
@@ -109,7 +109,7 @@ defmodule OmegaBravera.NgoTest do
     end
 
     test "update_changeset/2 is vaild when pre_registration_start date is less than now." do
-      ngo = build(:ngo, %{pre_registration_start_date: Timex.shift(Timex.now(), days: 5)})
+      ngo = build(:ngo, %{pre_registration_start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 5)})
 
       updated_ngo =
         NGO.update_changeset(
