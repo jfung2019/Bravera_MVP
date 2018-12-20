@@ -224,8 +224,11 @@ defmodule OmegaBraveraWeb.NGOChalView do
   def render_km_challenge_total_support(
         %Decimal{} = total_km_pledges,
         distance_target
-      ),
-      do: Decimal.mult(total_km_pledges, distance_target) |> Decimal.to_string()
+      ) do
+        Decimal.mult(total_km_pledges, distance_target)
+        |> Decimal.round(1)
+        |> Decimal.to_string()
+      end
 
   def render_current_pledges(nil, _), do: 0
 

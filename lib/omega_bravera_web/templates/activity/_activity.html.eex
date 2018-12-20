@@ -26,7 +26,7 @@
         <div class="card-body" style="width: 100%">
           <div class="row">
             <div class="p-1 activity-text-size col">
-              <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%H:%M", :strftime) %>
+              <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%b %d", :strftime) %>
             </div>
             <div class="p-1 activity-text-size col">
               <%= render_time(activity.moving_time) %>
