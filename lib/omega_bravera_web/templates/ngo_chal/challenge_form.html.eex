@@ -7,7 +7,9 @@
   <% end %>
 
     <div class="text-center mb-1">
+    <%= if @ngo.open_registration == true and @ngo.launch_date < Timex.now() do %>
       <h2 class="text-420">Configure your Challenge</h2>
+    <% end %>
       <!-- card image and logo start-->
       <div class="row">
         <div class="col-md-6 offset-md-3">
@@ -40,8 +42,16 @@
     </div>
   </div>
   <%= if logged_in?(@conn) && has_tracker?(@conn) do %>
-    <%= render "challenge_form_signed_in.html", f: f, ngo: @ngo, available_challenge_types: @available_challenge_types %>
+    <%= if @ngo.open_registration == false and @ngo.launch_date > Timex.now() do %>
+      <%= render "challenge_pre_registration_signed_in.html", f: f, ngo: @ngo, available_challenge_types: @available_challenge_types %>
+    <% else %>
+      <%= render "challenge_form_signed_in.html", f: f, ngo: @ngo, available_challenge_types: @available_challenge_types %>
+    <% end %>
   <% else %>
-    <%= render "challenge_form_not_signed_in.html", conn: @conn %>
+    <%= if @ngo.open_registration == false and @ngo.launch_date > Timex.now() do %>
+      <%= render "challenge_pre_registration_not_signed_in.html", ngo: @ngo, conn: @conn %>
+    <% else %>
+      <%= render "challenge_form_not_signed_in.html", conn: @conn %>
+    <% end %>
   <% end %>
 <% end %>

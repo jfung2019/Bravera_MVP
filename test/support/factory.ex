@@ -23,7 +23,11 @@ defmodule OmegaBravera.Factory do
   def ngo_factory do
     %OmegaBravera.Fundraisers.NGO{
       name: "Save the children worldwide",
-      slug: sequence(:slug, &"swcc-#{&1}")
+      slug: sequence(:slug, &"swcc-#{&1}"),
+      pre_registration_start_date: Timex.now(),
+      launch_date: Timex.shift(Timex.now(), days: 10),
+      minimum_donation: 500,
+      open_registration: true
     }
   end
 

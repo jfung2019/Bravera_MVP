@@ -189,9 +189,9 @@ defmodule OmegaBravera.Challenges do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_ngo_chal(%NGOChal{} = chal, attrs \\ %{}) do
+  def create_ngo_chal(%NGOChal{} = chal, %NGO{} = ngo, attrs \\ %{}) do
     chal
-    |> NGOChal.create_changeset(attrs)
+    |> NGOChal.create_changeset(ngo, attrs)
     |> Repo.insert()
   end
 
@@ -206,6 +206,14 @@ defmodule OmegaBravera.Challenges do
   """
   def list_ngo_chals() do
     Repo.all(NGOChal)
+  end
+
+  def get_live_ngo_chals() do
+    from(
+      nc in NGOChal,
+      where: nc.status == "pre_registration" and nc.start_date < ^Timex.now()
+    )
+    |> Repo.all()
   end
 
   def list_ngo_chals_preload() do

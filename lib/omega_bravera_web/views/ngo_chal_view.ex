@@ -14,6 +14,9 @@ defmodule OmegaBraveraWeb.NGOChalView do
   def active_challenge?(%NGOChal{status: "active"}), do: true
   def active_challenge?(%NGOChal{}), do: false
 
+  def pre_registration?(%NGOChal{status: "pre_registration"}), do: true
+  def pre_registration?(%NGOChal{}), do: false
+
   def challenger_not_self_donated?(%NGOChal{user_id: user_id, self_donated: false}, %User{
         id: user_id
       }),

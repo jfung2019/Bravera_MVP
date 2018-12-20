@@ -29,19 +29,39 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
-    changeset_params =
-      Map.merge(chal_params, %{
-        "user_id" => current_user.id,
-        "ngo_slug" => ngo_slug,
-        "ngo_id" => ngo.id,
-        "slug" => sluggified_username,
-        "default_currency" => ngo.currency
-      })
+    extra_params = %{
+      "user_id" => current_user.id,
+      "ngo_slug" => ngo_slug,
+      "ngo_id" => ngo.id,
+      "slug" => sluggified_username,
+      "default_currency" => ngo.currency
+    }
 
-    case Challenges.create_ngo_chal(%NGOChal{}, changeset_params) do
+    extra_params =
+      case ngo.open_registration == false and ngo.launch_date > Timex.now() do
+        true ->
+          Map.put(extra_params, "status", "pre_registration")
+
+        _ ->
+          Map.put(extra_params, "status", "active")
+      end
+
+    changeset_params = Map.merge(chal_params, extra_params)
+
+    case Challenges.create_ngo_chal(%NGOChal{}, ngo, changeset_params) do
       {:ok, challenge} ->
         challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
-        Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+
+        case changeset_params["status"] do
+          "pre_registration" ->
+            Challenges.Notifier.send_pre_registration_challenge_sign_up_email(
+              challenge,
+              challenge_path
+            )
+
+          _ ->
+            Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+        end
 
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")

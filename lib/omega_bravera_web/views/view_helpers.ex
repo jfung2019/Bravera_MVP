@@ -48,7 +48,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def render_date(date_time) do
     {:ok, formatted_date_time} =
       date_time
-      |> Timex.format("{D}/{M}/{WYYYY}")
+      |> Timex.format("%d %B %Y", :strftime)
 
     formatted_date_time
   end
@@ -56,10 +56,16 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def render_activity(nil), do: 0
   def render_activity(%Decimal{} = activity), do: Decimal.round(activity, 1)
 
+
   def render_time(nil), do: "00:00:00"
   def render_time(seconds) do
     Time.add(~T[00:00:00], seconds, :second)
     |> Time.truncate(:second)
     |> Time.to_string()
   end
+
+  def render_countdown_date(nil), do: ""
+  def render_countdown_date(%DateTime{} = datetime),
+    do: Timex.format!(datetime, "%FT%T", :strftime)
+
 end
