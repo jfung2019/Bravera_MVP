@@ -1,20 +1,20 @@
 <div class="container">
     <div class="card" style="width: 100%">
       <div class="card-body" style="width: 100%">
-        <div class="d-flex justify-content-between">
-          <div class="p-1 activity-text-size">
+        <div class="row">
+          <div class="p-1 activity-text-size col">
             <b>Date</b>
           </div>
-          <div class="p-1 activity-text-size">
+          <div class="p-1 activity-text-size col">
             <b>Duration</b> <!-- moving time -->
           </div>
-          <div class="p-1 activity-text-size">
+          <div class="p-1 activity-text-size col">
             <b>Distance <br/> (km)</b>
           </div>
-          <div class="p-1 activity-text-size">
+          <div class="p-1 activity-text-size col">
             <b>Calories</b>
           </div>
-          <div class="p-1 activity-text-size">
+          <div class="p-1 activity-text-size col">
             <b>Speed <br/> (average)</b>
           </div>
         </div>
@@ -24,20 +24,20 @@
     <%= for activity <- @activities do %>
       <div class="card bg-light text-dark" style="width: 100%">
         <div class="card-body" style="width: 100%">
-          <div class="d-flex justify-content-between">
-            <div class="p-1 activity-text-size">
+          <div class="row">
+            <div class="p-1 activity-text-size col">
               <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%H:%M", :strftime) %>
             </div>
-            <div class="p-1 activity-text-size">
+            <div class="p-1 activity-text-size col">
               <%= render_time(activity.moving_time) %>
             </div>
-            <div class="p-1 activity-text-size">
+            <div class="p-1 activity-text-size col">
               <%= render_activity(activity.distance) %> km
             </div>
-            <div class="p-1 activity-text-size">
+            <div class="p-1 activity-text-size col">
               <%= activity.calories %>
             </div>
-            <div class="p-1 activity-text-size">
+            <div class="p-1 activity-text-size col">
               <%= render_activity(activity.average_speed) %> km/h
             </div>
           </div>
