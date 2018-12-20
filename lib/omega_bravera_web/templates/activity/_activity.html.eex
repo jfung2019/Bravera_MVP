@@ -1,12 +1,12 @@
 <div class="container">
     <div class="card" style="width: 100%">
       <div class="card-body" style="width: 100%">
-        <div class="d-flex justify-content-around">
+        <div class="d-flex justify-content-between">
           <div class="p-1 activity-text-size">
             <b>Date</b>
           </div>
           <div class="p-1 activity-text-size">
-            <b>Start Time</b>
+            <b>Duration</b> <!-- moving time -->
           </div>
           <div class="p-1 activity-text-size">
             <b>Distance <br/> (km)</b>
@@ -24,12 +24,12 @@
     <%= for activity <- @activities do %>
       <div class="card bg-light text-dark" style="width: 100%">
         <div class="card-body" style="width: 100%">
-          <div class="d-flex justify-content-around">
-            <div class="p-1 activity-text-size">
-              <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%b %d", :strftime) %>
-            </div>
+          <div class="d-flex justify-content-between">
             <div class="p-1 activity-text-size">
               <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%H:%M", :strftime) %>
+            </div>
+            <div class="p-1 activity-text-size">
+              <%= render_time(activity.moving_time) %>
             </div>
             <div class="p-1 activity-text-size">
               <%= render_activity(activity.distance) %> km
