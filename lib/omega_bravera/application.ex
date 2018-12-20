@@ -46,7 +46,7 @@ defmodule OmegaBravera.Application do
 
   defp pre_registration_challenges_activator do
     %{
-      id: "km_donation_collector",
+      id: "pre_registration_challenges_activator",
       start: {SchedEx, :run_every, [OmegaBravera.Challenges.LiveWorker, :start, [], "* * * * *"]}
     }
   end
