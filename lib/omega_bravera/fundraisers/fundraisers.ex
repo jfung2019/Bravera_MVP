@@ -197,4 +197,6 @@ defmodule OmegaBravera.Fundraisers do
   def available_distances, do: NGO.distance_options()
 
   def available_durations, do: NGO.duration_options()
+
+  def available_challenge_type_options, do: NGO.challenge_type_options()
 end

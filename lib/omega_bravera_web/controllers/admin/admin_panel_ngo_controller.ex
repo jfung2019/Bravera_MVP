@@ -126,5 +126,6 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
     |> assign(:available_activities, Fundraisers.available_activities())
     |> assign(:available_distances, Fundraisers.available_distances())
     |> assign(:available_durations, Fundraisers.available_durations())
+    |> assign(:available_challenge_type_options, Fundraisers.available_challenge_type_options())
   end
 end

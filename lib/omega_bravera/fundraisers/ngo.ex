@@ -10,6 +10,17 @@ defmodule OmegaBravera.Fundraisers.NGO do
   @available_distances [50, 75, 100, 150, 250, 300, 400, 500]
   @available_durations [20, 24, 30, 40, 50, 60, 70, 80]
 
+  # TODO: put NGO Challenge and NGO together in same module
+  @per_km "PER_KM"
+  @per_milestone "PER_MILESTONE"
+
+  @available_challenge_type_options [
+    [key: "Per Goal", value: @per_milestone],
+    [key: "Per KM", value: @per_km]
+  ]
+
+  @available_challenge_types [@per_milestone, @per_km]
+
   @derive {Phoenix.Param, key: :slug}
   schema "ngos" do
     field(:desc, :string)
@@ -28,6 +39,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:activities, {:array, :string}, default: @available_activities)
     field(:distances, {:array, :integer}, default: @available_distances)
     field(:durations, {:array, :integer}, default: @available_durations)
+    field(:challenge_types, {:array, :string}, default: @available_challenge_types)
     belongs_to(:user, User)
     has_many(:ngo_chals, NGOChal)
     has_many(:donations, Donation)
@@ -48,6 +60,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :activities,
     :distances,
     :durations,
+    :challenge_types,
     :minimum_donation,
     :pre_registration_start_date,
     :launch_date,
@@ -65,6 +78,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_subset(:activities, @available_activities)
     |> validate_subset(:distances, @available_distances)
     |> validate_subset(:durations, @available_durations)
+    |> validate_subset(:challenge_types, @available_challenge_types)
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
     |> validate_launch_date()
@@ -270,6 +284,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
   def distance_options, do: @available_distances
 
   def duration_options, do: @available_durations
+
+  def challenge_type_options, do: @available_challenge_type_options
 end
 
 defimpl Phoenix.Param, for: OmegaBravera.Fundraisers.NGO do
