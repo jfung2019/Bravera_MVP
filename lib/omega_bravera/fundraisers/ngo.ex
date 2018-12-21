@@ -63,7 +63,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_number(:minimum_donation, greater_than_or_equal_to: 0)
     |> validate_inclusion(:currency, valid_currencies())
     |> validate_subset(:activities, @available_activities)
-    |> validate_length(:desc, max: 255)
     |> validate_subset(:distances, @available_distances)
     |> validate_subset(:durations, @available_durations)
     |> validate_open_registration()

@@ -34,7 +34,7 @@
           <div class="card">
             <div class="card-body">
               <span><%= link @ngo.url, to: @ngo.url %></span>
-              <p class="card-text"><%= @ngo.full_desc %></p>
+              <p class="card-text"><%= raw @ngo.full_desc %></p>
             </div>
           </div>
       </div>
