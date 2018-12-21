@@ -17,7 +17,7 @@
                 <%= @ngo.name %>
               </h2>
               <p class="card-text">
-                <%= @ngo.desc %>
+                <%= raw @ngo.desc %>
               </p>
 
       <%= if has_tracker?(@conn) do %>
