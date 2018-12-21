@@ -12,21 +12,21 @@ defmodule OmegaBravera.Challenges.InactivityWorkerTest do
 
       _participant_notifiable =
         insert(:ngo_challenge, %{
-          last_activity_received: Timex.shift(Timex.now(), days: -6),
+          last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -6),
           slug: "John-325",
           ngo: ngo
         })
 
       donor_notifiable =
         insert(:ngo_challenge, %{
-          last_activity_received: Timex.shift(Timex.now(), days: -8),
+          last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -8),
           slug: "John-515",
           ngo: ngo
         })
 
       non_notifiable =
         insert(:ngo_challenge, %{
-          last_activity_received: Timex.shift(Timex.now(), days: -2),
+          last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -2),
           slug: "Peter-411",
           ngo: ngo
         })

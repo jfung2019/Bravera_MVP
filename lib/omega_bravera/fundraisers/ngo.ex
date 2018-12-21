@@ -77,6 +77,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> changeset(attrs)
     |> validate_pre_registration_start_date_modification(ngo)
     |> validate_no_active_challenges(ngo)
+    |> switch_dates_to_utc(ngo)
   end
 
   def currency_options do
@@ -90,14 +91,45 @@ defmodule OmegaBravera.Fundraisers.NGO do
     }
   end
 
+  defp switch_dates_to_utc(%Ecto.Changeset{} = changeset, ngo) do
+    if changeset.valid? do
+      new_pre_registration_start_date = get_change(changeset, :pre_registration_start_date)
+      new_launch_date = get_change(changeset, :launch_date)
+
+      cond do
+        is_nil(new_pre_registration_start_date) or is_nil(new_launch_date) ->
+          changeset
+
+        Timex.compare(ngo.pre_registration_start_date, new_pre_registration_start_date) == 0 and
+        Timex.compare(ngo.launch_date, new_launch_date) == 0 ->
+          changeset
+
+        true ->
+          changeset
+          |> change(%{
+            pre_registration_start_date: to_utc_date(changeset.changes.pre_registration_start_date),
+            launch_date: to_utc_date(changeset.changes.launch_date)
+          })
+      end
+
+    else
+      changeset
+    end
+  end
+
   defp validate_pre_registration_start_date(changeset) do
     case changeset.valid? do
       true ->
-        pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
-        launch_date = get_field(changeset, :launch_date)
+        pre_registration_start_date = get_field(changeset, :pre_registration_start_date) |> to_hk_date()
+        launch_date = get_field(changeset, :launch_date) |> to_hk_date()
         open_registration = get_field(changeset, :open_registration)
 
-        case open_registration == false and pre_registration_start_date >= launch_date do
+        case open_registration == false and
+          (
+            (Timex.compare(pre_registration_start_date, launch_date) == 1) or
+            (Timex.compare(pre_registration_start_date, launch_date) == 0)
+          )
+        do
           true ->
             add_error(
               changeset,
@@ -145,18 +177,26 @@ defmodule OmegaBravera.Fundraisers.NGO do
         pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
         open_registration = get_field(changeset, :open_registration)
 
-        case open_registration == false and ngo.pre_registration_start_date <= Timex.now("Asia/Hong_Kong") and
-               pre_registration_start_date > ngo.pre_registration_start_date do
-          true ->
-            add_error(
-              changeset,
-              :pre_registration_start_date,
-              "Pre registration start date cannot be in the past"
-            )
+        case is_nil(ngo.pre_registration_start_date) do
+          false ->
+            case open_registration == false and datetime_in_past?(ngo.pre_registration_start_date) #and
+            # (Timex.compare(pre_registration_start_date, ngo.pre_registration_start_date) != 0)
+            do
+              true ->
+                add_error(
+                  changeset,
+                  :pre_registration_start_date,
+                  "Pre registration date cannot be modified because it has been reached."
+                )
+
+              _ ->
+                changeset
+            end
 
           _ ->
             changeset
         end
+
 
       _ ->
         changeset
@@ -186,10 +226,10 @@ defmodule OmegaBravera.Fundraisers.NGO do
   defp validate_launch_date(changeset) do
     case changeset.valid? do
       true ->
-        launch_date = get_field(changeset, :launch_date)
+        launch_date = get_field(changeset, :launch_date) |> to_hk_date()
         open_registration = get_field(changeset, :open_registration)
 
-        case open_registration == false and Timex.now("Asia/Hong_Kong") > launch_date do
+        case open_registration == false and (Timex.compare(Timex.now("Asia/Hong_Kong"), launch_date) == 1) do
           true ->
             add_error(changeset, :launch_date, "Launch date cannot be less than today's date.")
 
@@ -200,6 +240,28 @@ defmodule OmegaBravera.Fundraisers.NGO do
       _ ->
         changeset
     end
+  end
+
+  # defp datetime_in_past?(nil, _), do: nil
+  defp datetime_in_past?(current, later \\ Timex.now("Asia/Hong_Kong")) do
+    # 0: when equal
+    # -1: when the first date/time comes before the second
+    # 1: when the first date/time comes after the second
+    case Timex.compare(to_hk_date(current), later) do
+      1 -> false
+      -1 -> true
+      0 -> false
+    end
+  end
+
+  defp to_hk_date(nil), do: nil
+  defp to_hk_date(datetime), do: Timex.to_datetime(datetime, "Asia/Hong_Kong")
+
+  defp to_utc_date(hk_datetime) do
+    hk_datetime
+    |> DateTime.to_naive
+    |> Timex.to_datetime("Asia/Hong_Kong")
+    |> Timex.to_datetime()
   end
 
   defp valid_currencies, do: Map.values(currency_options())

@@ -17,7 +17,7 @@ defmodule OmegaBravera.NotifierTest do
           user: user,
           ngo: ngo,
           status: "pre_registration",
-          start_date: Timex.shift(Timex.now(), days: 5)
+          start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 5)
         })
     ]
   end
@@ -85,7 +85,7 @@ defmodule OmegaBravera.NotifierTest do
                "-challengeURL-" => "https://bravera.co/swcc/John-594",
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
                "-participantName-" => user.firstname,
-               "-challengeStartDate-" => pre_registration_challenge.start_date
+               "-challengeStartDate-" => Timex.format!(pre_registration_challenge.start_date, "%Y-%m-%d", :strftime)
              },
              template_id: "9fc14299-96a0-4a4d-9917-c19f747270ff",
              to: [%{email: donor.email}],

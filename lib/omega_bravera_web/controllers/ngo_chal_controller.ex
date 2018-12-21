@@ -38,7 +38,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     }
 
     extra_params =
-      case ngo.open_registration == false and ngo.launch_date > Timex.now() do
+      case ngo.open_registration == false and (Timex.compare(to_hk_date(ngo.launch_date), Timex.now("Asia/Hong_Kong")) == 1) do
         true ->
           Map.put(extra_params, "status", "pre_registration")
 
@@ -115,6 +115,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
     challenge_path = ngo_ngo_chal_path(conn, :show, ngo_slug, slug) <> "#share"
     redirect(conn, to: challenge_path)
   end
+
+  defp to_hk_date(nil), do: nil
+  defp to_hk_date(date), do: Timex.Timezone.convert(date, "Asia/Hong_Kong")
 
   defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset) do
     %{

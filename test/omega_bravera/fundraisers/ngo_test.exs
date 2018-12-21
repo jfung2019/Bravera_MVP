@@ -92,7 +92,7 @@ defmodule OmegaBravera.NgoTest do
       refute ngo.valid?
     end
 
-    test "update_changeset/2 fails if admin edits pre_registeration_start after if it's in the past." do
+    test "update_changeset/2 fails if admin edits pre_registeration_start because it has been reached." do
       ngo = build(:ngo)
 
       updated_ngo =
@@ -100,8 +100,9 @@ defmodule OmegaBravera.NgoTest do
           ngo,
           %{
             pre_registration_start_date:
-              Timex.shift(ngo.pre_registration_start_date, minutes: 30),
-            open_registration: false
+              Timex.shift(ngo.pre_registration_start_date, days: 1),
+            open_registration: false,
+            launch_date: ngo.launch_date
           }
         )
 

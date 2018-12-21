@@ -44,19 +44,19 @@ defmodule OmegaBravera.ChallengesTest do
       ngo = insert(:ngo)
 
       insert(:ngo_challenge, %{
-        last_activity_received: Timex.shift(Timex.now(), days: -6),
+        last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -6),
         slug: "John-325",
         ngo: ngo
       })
 
       insert(:ngo_challenge, %{
-        last_activity_received: Timex.shift(Timex.now(), days: -8),
+        last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -8),
         slug: "John-515",
         ngo: ngo
       })
 
       insert(:ngo_challenge, %{
-        last_activity_received: Timex.shift(Timex.now(), days: -2),
+        last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -2),
         slug: "Peter-411",
         ngo: ngo
       })
@@ -70,7 +70,7 @@ defmodule OmegaBravera.ChallengesTest do
       ngo = insert(:ngo)
 
       insert(:ngo_challenge, %{
-        last_activity_received: Timex.shift(Timex.now(), days: -6),
+        last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -6),
         slug: "John-325",
         ngo: ngo,
         participant_notified_of_inactivity: true
@@ -83,19 +83,19 @@ defmodule OmegaBravera.ChallengesTest do
       ngo = insert(:ngo)
 
       insert(:ngo_challenge, %{
-        last_activity_received: Timex.shift(Timex.now(), days: -6),
+        last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -6),
         slug: "John-325",
         ngo: ngo
       })
 
       insert(:ngo_challenge, %{
-        last_activity_received: Timex.shift(Timex.now(), days: -8),
+        last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -8),
         slug: "John-325",
         ngo: ngo
       })
 
       insert(:ngo_challenge, %{
-        last_activity_received: Timex.shift(Timex.now(), days: -2),
+        last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -2),
         slug: "Peter-411",
         ngo: ngo
       })
@@ -109,7 +109,7 @@ defmodule OmegaBravera.ChallengesTest do
       ngo = insert(:ngo)
 
       insert(:ngo_challenge, %{
-        last_activity_received: Timex.shift(Timex.now(), days: -10),
+        last_activity_received: Timex.shift(Timex.now("Asia/Hong_Kong"), days: -10),
         slug: "John-325",
         ngo: ngo,
         donor_notified_of_inactivity: true

@@ -9,15 +9,28 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     name: "some name",
     slug: "some-slug",
     open_registration: false,
-    pre_registration_start_date: Timex.now(),
-    launch_date: Timex.shift(Timex.now(), days: 10)
+    pre_registration_start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 1),
+    launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10)
   }
 
   @update_attrs %{
     desc: "some updated desc",
     logo: "some updated logo",
     name: "some updated name",
-    slug: "some-updated-slug"
+    slug: "some-updated-slug",
+    open_registration: false,
+    pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
+    launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10)
+  }
+
+  @invalid_attrs %{
+    desc: nil,
+    logo: nil,
+    name: nil,
+    slug: nil,
+    open_registration: nil,
+    pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
+    launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10)
   }
 
   setup %{conn: conn} do
@@ -103,7 +116,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     end
 
     test "renders errors in update when data is invalid", %{conn: conn, ngo: ngo} do
-      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: %{name: nil})
+      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: @invalid_attrs)
       assert html_response(conn, 200)
     end
 
@@ -111,7 +124,10 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
          %{conn: conn, ngo: ngo} do
       conn =
         put(conn, admin_panel_ngo_path(conn, :update, ngo),
-          ngo: %{launch_date: Timex.shift(Timex.now(), days: 11)}
+          ngo: %{
+            pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
+            launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 11)
+          }
         )
 
       assert html_response(conn, 302)
