@@ -204,8 +204,8 @@ defmodule OmegaBravera.Challenges.Notifier do
   end
 
   defp remaining_time(%NGOChal{end_date: end_date}) do
-    now = Timex.now()
-    remaining_days = Timex.diff(end_date, now, :days)
+    now = Timex.now("Asia/Hong_Kong")
+    end_date = end_date |> Timex.to_datetime("Asia/Hong_Kong")
 
     cond do
       (diff = Timex.diff(end_date, now, :days)) > 0 ->
