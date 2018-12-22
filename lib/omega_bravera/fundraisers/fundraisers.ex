@@ -6,7 +6,7 @@ defmodule OmegaBravera.Fundraisers do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.{Fundraisers.NGO, Challenges.NGOChal}
+  alias OmegaBravera.Fundraisers.NGO
 
   # Get a user's causes by user_id
 
@@ -120,7 +120,7 @@ defmodule OmegaBravera.Fundraisers do
       on: challenges.ngo_id == n.id and challenges.status == ^"active",
       preload: ^preloads,
       group_by: [n.id],
-      select: %{n | active_challenges: count(challenges.id)}
+      select: %{n | active_challenges: count(challenges.id), launch_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.launch_date), pre_registration_start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.pre_registration_start_date)}
     )
     |> Repo.one()
   end
