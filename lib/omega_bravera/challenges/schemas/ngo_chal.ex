@@ -114,7 +114,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
 
   defp add_status(%Ecto.Changeset{} = changeset, %NGO{} = ngo) do
     status =
-      case ngo.open_registration == false and ngo.launch_date >= Timex.now() do
+      case ngo.open_registration == false and Timex.after?(ngo.launch_date, Timex.now()) do
         true -> "pre_registration"
         _ -> "active"
       end
@@ -187,7 +187,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
        })
        when is_number(duration) do
     {start_date, end_date} =
-      case ngo.open_registration == false and ngo.launch_date >= Timex.now() do
+      case ngo.open_registration == false and Timex.after?(ngo.launch_date, Timex.now()) do
         true -> {ngo.launch_date, Timex.shift(ngo.launch_date, days: duration)}
         _ -> {Timex.now(), Timex.shift(Timex.now(), days: duration)}
       end

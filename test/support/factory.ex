@@ -35,8 +35,8 @@ defmodule OmegaBravera.Factory do
     %OmegaBravera.Challenges.NGOChal{
       activity_type: sequence(:activity_type, ["Walk", "Cycle", "Run", "Hike"]),
       distance_target: sequence(:distance_target, [50, 75, 150, 250]),
-      start_date: Timex.now("Asia/Hong_Kong"),
-      end_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 5),
+      start_date: Timex.now(),
+      end_date: Timex.shift(Timex.now(), days: 5),
       duration: 5,
       status: "active",
       slug: "John-512",

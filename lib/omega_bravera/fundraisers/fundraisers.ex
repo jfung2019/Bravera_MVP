@@ -114,15 +114,25 @@ defmodule OmegaBravera.Fundraisers do
   def get_ngo!(id), do: Repo.get!(NGO, id)
 
   def get_ngo_by_slug(slug, preloads \\ [:ngo_chals]) do
-    from(n in NGO,
-      where: n.slug == ^slug,
-      left_join: challenges in assoc(n, :ngo_chals),
-      on: challenges.ngo_id == n.id and challenges.status == ^"active",
-      preload: ^preloads,
-      group_by: [n.id],
-      select: %{n | active_challenges: count(challenges.id), launch_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.launch_date), pre_registration_start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.pre_registration_start_date)}
-    )
-    |> Repo.one()
+    ngo =
+      from(n in NGO,
+        where: n.slug == ^slug,
+        left_join: challenges in assoc(n, :ngo_chals),
+        on: challenges.ngo_id == n.id and challenges.status == ^"active",
+        preload: ^preloads,
+        group_by: [n.id],
+        select: %{
+          n |
+          active_challenges: count(challenges.id),
+          launch_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.launch_date),
+          pre_registration_start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.pre_registration_start_date)
+        }
+      )
+      |> Repo.one()
+
+    ngo
+    |> Map.put(:pre_registration_start_date, Timex.to_datetime(ngo.pre_registration_start_date))
+    |> Map.put(:launch_date, Timex.to_datetime(ngo.launch_date))
   end
 
   @doc """

@@ -9,8 +9,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     name: "some name",
     slug: "some-slug",
     open_registration: false,
-    pre_registration_start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 1),
-    launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10)
+    pre_registration_start_date: Timex.shift(Timex.now(), days: 1),
+    launch_date: Timex.shift(Timex.now(), days: 10)
   }
 
   @update_attrs %{
@@ -19,8 +19,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     name: "some updated name",
     slug: "some-updated-slug",
     open_registration: false,
-    pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
-    launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10)
+    pre_registration_start_date: Timex.shift(Timex.now(), days: 3),
+    launch_date: Timex.shift(Timex.now(), days: 10)
   }
 
   @invalid_attrs %{
@@ -29,8 +29,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     name: nil,
     slug: nil,
     open_registration: nil,
-    pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
-    launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10)
+    pre_registration_start_date: Timex.now(),
+    launch_date: Timex.shift(Timex.now(), days: 10)
   }
 
   setup %{conn: conn} do
@@ -124,17 +124,20 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
          %{conn: conn, ngo: ngo} do
       conn =
         put(conn, admin_panel_ngo_path(conn, :update, ngo),
-          ngo: %{
-            pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
-            launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 11)
-          }
+          ngo: %{launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 15)}
         )
 
       assert html_response(conn, 302)
 
       updated_ngo = Fundraisers.get_ngo_by_slug(ngo.slug)
       ngo_chal = List.first(updated_ngo.ngo_chals)
-      assert updated_ngo.launch_date == ngo_chal.start_date
+
+      # TODO: Make sure to use the same postgres time conversion for challenge start date. Ex: see: Fundraisers.get_ngo_by_slug() - Sherief
+      assert
+        updated_ngo.launch_date ==
+        Timex.to_datetime(ngo_chal.start_date, "Asia/Hong_Kong")
+        |> DateTime.to_naive()
+        |> Timex.to_datetime()
     end
   end
 
