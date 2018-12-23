@@ -133,8 +133,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
       ngo_chal = List.first(updated_ngo.ngo_chals)
 
       # TODO: Make sure to use the same postgres time conversion for challenge start date. Ex: see: Fundraisers.get_ngo_by_slug() - Sherief
-      assert
-        updated_ngo.launch_date ==
+      assert updated_ngo.launch_date ==
         Timex.to_datetime(ngo_chal.start_date, "Asia/Hong_Kong")
         |> DateTime.to_naive()
         |> Timex.to_datetime()
