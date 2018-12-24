@@ -106,6 +106,24 @@ defmodule OmegaBravera.Fundraisers.NGO do
     }
   end
 
+  defp add_utc_dates(%Ecto.Changeset{
+    data: %{
+      launch_date: {:error, :invalid_date},
+      pre_registration_start_date: {:error, :invalid_date}
+    }
+  } = changeset,
+    %__MODULE__{}
+  ) do
+    changeset_data = %__MODULE__{
+      changeset.data |
+      launch_date: nil,
+      pre_registration_start_date: nil,
+      utc_launch_date: nil
+    }
+
+    %{changeset | data: changeset_data}
+  end
+
   defp add_utc_dates(%Ecto.Changeset{} = changeset, %__MODULE__{} = ngo) do
     if changeset.valid? do
       {new_utc_pre_registration_start_date, new_utc_launch_date} = switch_dates_to_utc(changeset)
@@ -114,7 +132,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
         is_nil(new_utc_pre_registration_start_date) or is_nil(new_utc_launch_date) ->
           changeset
 
-        # Updating shouldn't inclode date changes if new and old values are equal and not nil.
+        # Updating shouldn't include date changes if new and old values are equal and not nil.
         ( not is_nil(ngo.pre_registration_start_date) and not is_nil(ngo.launch_date) ) and
         Timex.compare(to_datetime(ngo.pre_registration_start_date), new_utc_pre_registration_start_date) == 0 and
         Timex.compare(to_datetime(ngo.launch_date), new_utc_launch_date) == 0 ->
@@ -287,7 +305,14 @@ defmodule OmegaBravera.Fundraisers.NGO do
   end
   defp changeset_to_hk_date(%Ecto.Changeset{} = changeset), do: changeset
 
-  defp switch_dates_to_utc(changeset) do
+  defp switch_dates_to_utc(%Ecto.Changeset{
+    data: %{
+      launch_date: {:error, :invalid_date},
+      pre_registration_start_date: {:error, :invalid_date}
+    }
+  }), do: {nil, nil}
+
+  defp switch_dates_to_utc(%Ecto.Changeset{} = changeset) do
     pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
     launch_date = get_field(changeset, :launch_date)
 
