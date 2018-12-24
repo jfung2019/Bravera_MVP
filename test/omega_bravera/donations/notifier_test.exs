@@ -7,18 +7,20 @@ defmodule OmegaBravera.NotifierTest do
   setup do
     user = insert(:user)
     ngo = insert(:ngo)
+    challenge = insert(:ngo_challenge, %{
+      user: user,
+      ngo: ngo,
+      status: "pre_registration",
+      start_date: Timex.shift(Timex.now(), days: 5)
+    })
+
+    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
 
     [
       user: user,
       ngo: ngo,
       challenge: insert(:ngo_challenge, %{user: user, ngo: ngo}),
-      pre_registration_challenge:
-        insert(:ngo_challenge, %{
-          user: user,
-          ngo: ngo,
-          status: "pre_registration",
-          start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 5)
-        })
+      pre_registration_challenge: challenge
     ]
   end
 
@@ -59,6 +61,7 @@ defmodule OmegaBravera.NotifierTest do
     pre_registration_challenge: pre_registration_challenge,
     user: user
   } do
+
     donor =
       insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
