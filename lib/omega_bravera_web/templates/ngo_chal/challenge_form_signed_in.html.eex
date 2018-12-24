@@ -87,7 +87,7 @@
         </div>
         <span class="ml-2"><%= error_tag @f, :duration %></span>
       </div>
-      <span id="per-km-effort-education" class="small" style="display: none;"></span>
+      <span id="per-km-effort-education" class="small"></span>
 
     </div>
     <div class="mt-2 mb-4 text-center fund-input-container">
@@ -117,19 +117,10 @@
 
 <script>
   $(function() {
-
-    // Check if Per KM first and save that
-    $("#ngo_chal_type_PER_KM").change(function(){
-      $("#per-km-effort-education").css("display", "inline-block");
-      $("#per-km-effort-education").text("Average of "
-        + calculate_avg_km_per_day($("#ngo_chal_distance_target").val(), $("#ngo_chal_duration").val())
-        + "KM per day."
-      );
-    });
-
-    $("#ngo_chal_type_PER_MILESTONE").change(function(){
-      $("#per-km-effort-education").css("display", "none");
-    });
+    $("#per-km-effort-education").text("Average of "
+      + calculate_avg_km_per_day($("#ngo_chal_distance_target").val(), $("#ngo_chal_duration").val())
+      + "KM per day."
+    );
 
     $("#ngo_chal_distance_target").change(function(){
       $("#per-km-effort-education").text("Average of "
