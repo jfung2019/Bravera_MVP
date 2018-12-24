@@ -37,6 +37,8 @@ defmodule OmegaBravera.Challenges.Notifier do
   end
 
   def pre_registration_challenge_signup_email(%NGOChal{} = challenge, path) do
+    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
+
     Email.build()
     |> Email.put_template("0e8a21f6-234f-4293-b5cf-fc9805042d82")
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
@@ -65,6 +67,8 @@ defmodule OmegaBravera.Challenges.Notifier do
   end
 
   def challenge_signup_email(%NGOChal{} = challenge, path) do
+    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
+
     Email.build()
     |> Email.put_template("e5402f0b-a2c2-4786-955b-21d1cac6211d")
     |> Email.add_substitution("-firstName-", challenge.user.firstname)

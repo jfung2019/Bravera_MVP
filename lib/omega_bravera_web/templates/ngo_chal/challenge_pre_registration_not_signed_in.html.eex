@@ -51,6 +51,6 @@
   }
 
   document.addEventListener("DOMContentLoaded", function(){
-    init_countdown("<%= render_countdown_date(@ngo.launch_date) %>", "countdown");
+    init_countdown("<%= render_countdown_date(@challenge.start_date) %>", "countdown");
   });
 </script>

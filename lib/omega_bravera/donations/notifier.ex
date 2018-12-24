@@ -4,6 +4,7 @@ defmodule OmegaBravera.Donations.Notifier do
 
   def email_parties(%NGOChal{} = chal, %User{} = donor, pledges, challenge_path) do
     challenge = Repo.preload(chal, [:user, :ngo])
+    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
 
     donor_result = email_donor(challenge, donor, challenge_path)
     participant_result = email_participant(challenge, donor, pledges, challenge_path)
@@ -19,7 +20,7 @@ defmodule OmegaBravera.Donations.Notifier do
 
   def email_donor(%NGOChal{} = challenge, %User{} = donor, challenge_path) do
     email =
-      case challenge.status == "pre_registration" and challenge.start_date > Timex.now("Asia/Hong_Kong") do
+      case challenge.status == "pre_registration" and Timex.after?(challenge.start_date, Timex.now("Asia/Hong_Kong")) do
         true ->
           challenge |> pre_registration_donor_email(donor, challenge_path)
 
@@ -51,6 +52,8 @@ defmodule OmegaBravera.Donations.Notifier do
   end
 
   def pre_registration_donor_email(%NGOChal{} = challenge, %User{} = donor, challenge_path) do
+    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
+
     Email.build()
     |> Email.put_template("9fc14299-96a0-4a4d-9917-c19f747270ff")
     |> Email.add_substitution("-donorName-", User.full_name(donor))

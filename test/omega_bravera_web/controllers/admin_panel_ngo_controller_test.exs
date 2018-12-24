@@ -42,6 +42,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
   def fixture(:ngo) do
     {:ok, ngo} = Fundraisers.create_ngo(@ngo_create_attrs)
+    ngo = %{ngo | utc_launch_date: ngo.launch_date}
+
     {:ok, user} = Accounts.create_user(%{email: "sheriefalaa.w@gmail.com"})
 
     ngo_chal_attrs = %{

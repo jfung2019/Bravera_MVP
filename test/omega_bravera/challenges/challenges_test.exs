@@ -148,6 +148,7 @@ defmodule OmegaBravera.ChallengesTest do
     test "create_ngo_chal/2 with valid data creates a pre_registration ngo_chal" do
       user = insert(:user)
       ngo = insert(:ngo, %{open_registration: false})
+      ngo = %{ngo | utc_launch_date: ngo.launch_date}
 
       attrs = Map.merge(@valid_attrs, %{"user_id" => user.id, "ngo_id" => ngo.id})
 

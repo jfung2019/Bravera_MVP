@@ -124,6 +124,7 @@ defmodule OmegaBravera.Fundraisers do
         select: %{
           n |
           active_challenges: count(challenges.id),
+          utc_launch_date: n.launch_date,
           launch_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.launch_date),
           pre_registration_start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.pre_registration_start_date)
         }
@@ -133,6 +134,7 @@ defmodule OmegaBravera.Fundraisers do
     ngo
     |> Map.put(:pre_registration_start_date, Timex.to_datetime(ngo.pre_registration_start_date))
     |> Map.put(:launch_date, Timex.to_datetime(ngo.launch_date))
+    |> Map.put(:utc_launch_date, Timex.to_datetime(ngo.launch_date))
   end
 
   @doc """

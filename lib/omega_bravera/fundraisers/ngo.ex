@@ -36,6 +36,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:launch_date, :utc_datetime)
     field(:open_registration, :boolean, default: true)
     field(:active_challenges, :integer, default: 0, virtual: true)
+    field(:utc_launch_date, :utc_datetime, virtual: true)
     field(:activities, {:array, :string}, default: @available_activities)
     field(:distances, {:array, :integer}, default: @available_distances)
     field(:durations, {:array, :integer}, default: @available_durations)
