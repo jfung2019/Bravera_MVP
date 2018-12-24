@@ -46,6 +46,15 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       assert {:ok, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity)
     end
 
+    test "returns error when activity is manual and the environment is set to accept only non-manual activities", %{
+      strava_activity: strava_activity
+    } do
+      challenge = insert(:ngo_challenge)
+      strava_activity = Map.put(strava_activity, :manual, true)
+
+      assert {:error, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity)
+    end
+
     test "returns error when activity dates are invalid", %{
       strava_activity: strava_activity
     } do

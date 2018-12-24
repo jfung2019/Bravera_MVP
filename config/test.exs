@@ -39,3 +39,6 @@ config :stripy,
   endpoint: "https://api.stripe.com/v1/"
 
 config :bcrypt_elixir, :log_rounds, 1
+
+# Manual activities
+config :omega_bravera, :enable_manual_activities, false

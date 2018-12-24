@@ -187,7 +187,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   defp valid_activity?(activity, challenge) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
     Timex.compare(challenge.start_date, activity.start_date) == -1 and
-      Timex.compare(challenge.end_date, activity.start_date) >= 0
+      Timex.compare(challenge.end_date, activity.start_date) >= 0 and
+      activity.manual == Application.get_env(:omega_bravera, :enable_manual_activities)
   end
 
   defp activity_type_matches_challenge_activity_type?(activity, challenge) do

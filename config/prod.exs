@@ -46,4 +46,7 @@ config :omega_bravera, OmegaBravera.Mailer,
 
 config :sendgrid,
   api_key: System.get_env("SENDGRID_API_KEY"),
-  sandbox_enable: is_nil(System.get_env("ENABLE_EMAILS"))
+sandbox_enable: is_nil(System.get_env("ENABLE_EMAILS"))
+
+# Manual activities
+config :omega_bravera, :enable_manual_activities, not is_nil(System.get_env("ENABLE_MANUAL_ACTIVITIES"))
