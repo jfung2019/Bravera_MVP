@@ -42,7 +42,7 @@
           <td><%= render_datetime(challenge.end_date) %></td>
           <td><%= challenge.money_target %></td>
           <td><%= challenge.distance_target %></td>
-          <td><%= challenge.distance_covered %></td>
+          <td><%= Decimal.round(challenge.distance_covered, 1) %> KM</td>
           <td><%= challenge.status %></td>
           <td><%= challenge.milestones %></td>
           <td><%= challenge.default_currency %></td>

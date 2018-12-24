@@ -214,8 +214,15 @@ defmodule OmegaBravera.Challenges do
       [%NGOChal{}, ...]
 
   """
-  def list_ngo_chals() do
-    Repo.all(NGOChal)
+  def list_ngo_chals(preloads \\ [:user, :ngo, :donations]) do
+    from(nc in NGOChal,
+    left_join: a in Activity,
+    on: nc.id == a.challenge_id,
+    preload: ^preloads,
+    group_by: nc.id,
+    select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)}
+  )
+  |> Repo.all()
   end
 
   def get_live_ngo_chals() do
@@ -224,14 +231,6 @@ defmodule OmegaBravera.Challenges do
       where: nc.status == "pre_registration" and nc.start_date < ^Timex.now()
     )
     |> Repo.all()
-  end
-
-  def list_ngo_chals_preload() do
-    NGOChal
-    |> Repo.all()
-    |> Repo.preload(:user)
-    |> Repo.preload(:ngo)
-    |> Repo.preload(:donations)
   end
 
   @doc """
