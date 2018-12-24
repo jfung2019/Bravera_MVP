@@ -131,10 +131,14 @@ defmodule OmegaBravera.Fundraisers do
       )
       |> Repo.one()
 
-    ngo
-    |> Map.put(:pre_registration_start_date, Timex.to_datetime(ngo.pre_registration_start_date))
-    |> Map.put(:launch_date, Timex.to_datetime(ngo.launch_date))
-    |> Map.put(:utc_launch_date, Timex.to_datetime(ngo.launch_date))
+      case Timex.is_valid?(ngo.pre_registration_start_date) and Timex.is_valid?(ngo.launch_date) do
+        true ->
+          ngo
+          |> Map.put(:pre_registration_start_date, Timex.to_datetime(ngo.pre_registration_start_date))
+          |> Map.put(:launch_date, Timex.to_datetime(ngo.launch_date))
+        _ ->
+          ngo
+      end
   end
 
   @doc """

@@ -13,7 +13,7 @@
       <%= render "challenge_header.html", assigns %>
       <%= render "challenge_details.html", assigns %>
 
-      <%= if active_challenge?(@challenge) or pre_registration?(@challenge) do %>
+      <%= if active_challenge?(@challenge) or pre_registration_challenge?(@challenge) do %>
         <div id="donation-form">
           <h4 class="text-center pt-4 pb-3">
             Support

@@ -16,7 +16,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, %{"ngo_slug" => ngo_slug}) do
-    # TODO slugify this ngo_id request
     ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
     changeset = Challenges.change_ngo_chal(%NGOChal{})

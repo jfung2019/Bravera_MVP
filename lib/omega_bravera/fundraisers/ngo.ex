@@ -106,24 +106,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     }
   end
 
-  defp add_utc_dates(%Ecto.Changeset{
-    data: %{
-      launch_date: {:error, :invalid_date},
-      pre_registration_start_date: {:error, :invalid_date}
-    }
-  } = changeset,
-    %__MODULE__{}
-  ) do
-    changeset_data = %__MODULE__{
-      changeset.data |
-      launch_date: nil,
-      pre_registration_start_date: nil,
-      utc_launch_date: nil
-    }
-
-    %{changeset | data: changeset_data}
-  end
-
   defp add_utc_dates(%Ecto.Changeset{} = changeset, %__MODULE__{} = ngo) do
     if changeset.valid? do
       {new_utc_pre_registration_start_date, new_utc_launch_date} = switch_dates_to_utc(changeset)
@@ -164,8 +146,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
 
         case open_registration == false and
           (
-            (Timex.compare(pre_registration_start_date, launch_date) == 1) or
-            (Timex.compare(pre_registration_start_date, launch_date) == 0)
+            Timex.after?(pre_registration_start_date, launch_date) or
+            Timex.equal?(pre_registration_start_date, launch_date)
           )
         do
           true ->
@@ -217,7 +199,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
 
         case is_nil(ngo.pre_registration_start_date) do
           false ->
-            case open_registration == false and datetime_in_past?(ngo.pre_registration_start_date)
+            case open_registration == false and
+              Timex.before?(ngo.pre_registration_start_date, Timex.now())
             do
               true ->
                 add_error(
@@ -265,8 +248,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
       true ->
         launch_date = get_field(changeset, :launch_date)
         open_registration = get_field(changeset, :open_registration)
-
-        case open_registration == false and (Timex.compare(Timex.now("Asia/Hong_Kong"), launch_date) == 1) do
+        case open_registration == false and Timex.before?(launch_date, Timex.now()) do
           true ->
             add_error(changeset_to_hk_date(changeset), :launch_date, "Launch date cannot be less than today's date.")
 
@@ -352,19 +334,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> Timex.to_datetime("Asia/Hong_Kong")
     |> Timex.to_datetime("Etc/UTC")
   end
-
-  defp datetime_in_past?(current, later \\ Timex.now("Asia/Hong_Kong")) do
-    # 0: when equal
-    # -1: when the first date/time comes before the second
-    # 1: when the first date/time comes after the second
-    current = current |> Timex.to_datetime("Asia/Hong_Kong")
-    case Timex.compare(current, later) do
-      1 -> false
-      -1 -> true
-      0 -> false
-    end
-  end
-
 
   defp valid_currencies, do: Map.values(currency_options())
 

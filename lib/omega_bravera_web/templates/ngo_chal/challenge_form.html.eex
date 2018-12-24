@@ -42,13 +42,13 @@
     </div>
   </div>
   <%= if logged_in?(@conn) && has_tracker?(@conn) do %>
-    <%= if @ngo.open_registration == false and @ngo.launch_date > Timex.now("Asia/Hong_Kong") do %>
+    <%= if pre_registration_ngo?(@ngo) do %>
       <%= render "challenge_pre_registration_signed_in.html", f: f, ngo: @ngo, available_challenge_types: @available_challenge_types %>
     <% else %>
       <%= render "challenge_form_signed_in.html", f: f, ngo: @ngo, available_challenge_types: @available_challenge_types %>
     <% end %>
   <% else %>
-    <%= if @ngo.open_registration == false and @ngo.launch_date > Timex.now("Asia/Hong_Kong") do %>
+    <%= if pre_registration_ngo?(@ngo) do %>
       <%= render "challenge_pre_registration_not_signed_in.html", ngo: @ngo, conn: @conn %>
     <% else %>
       <%= render "challenge_form_not_signed_in.html", conn: @conn %>

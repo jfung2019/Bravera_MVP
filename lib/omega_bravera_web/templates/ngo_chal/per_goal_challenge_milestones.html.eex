@@ -9,7 +9,7 @@
             On <%= render_date(@challenge.end_date) %>
           </p>
 
-        <% pre_registration?(@challenge) -> %>
+        <% pre_registration_challenge?(@challenge) -> %>
           <h5 class="text-500 text-center mt-2 mb-0">Challenge starts in<h5>
           <h3 id="challenge_duration_countdown" class="text-danger text-500 text-center mt-2 mb-0"></h3>
           <p class="text-center mb-0">
