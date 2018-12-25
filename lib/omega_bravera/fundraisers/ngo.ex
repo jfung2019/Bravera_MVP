@@ -67,7 +67,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :launch_date,
     :open_registration
   ]
-  @required_attributes [:name, :slug, :minimum_donation]
+  @required_attributes [:name, :slug, :minimum_donation, :url, :logo, :image]
 
   @doc false
   def changeset(ngo, attrs) do
