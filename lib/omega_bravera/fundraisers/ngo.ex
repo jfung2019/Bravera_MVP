@@ -223,25 +223,15 @@ defmodule OmegaBravera.Fundraisers.NGO do
     end
   end
 
-  defp validate_no_active_challenges(changeset, %__MODULE__{} = ngo) do
-    case changeset.valid? do
-      true ->
-        case ngo.active_challenges > 0 do
-          true ->
-            add_error(
-              changeset_to_hk_date(changeset),
-              :open_registration,
-              "Cannot close/open registration due to the presence of active challenges."
-            )
-
-          _ ->
-            changeset
-        end
-
-      _ ->
-        changeset
-    end
+  defp validate_no_active_challenges(%Ecto.Changeset{valid?: true, changes: %{open_registration: _}} = changeset, %__MODULE__{active_challenges: chals} = ngo) when chals > 0 do
+      add_error(
+        changeset_to_hk_date(changeset),
+        :open_registration,
+        "Cannot close/open registration due to the presence of active challenges."
+      )
   end
+
+  defp validate_no_active_challenges(changeset, _ngo), do: changeset
 
   defp validate_launch_date(changeset) do
     case changeset.valid? do
