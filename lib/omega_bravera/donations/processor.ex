@@ -56,7 +56,7 @@ defmodule OmegaBravera.Donations.Processor do
     challenge = Challenges.get_ngo_chal!(challenge.id)
 
     %{
-      "amount" => Decimal.mult(donation.amount, challenge.distance_covered),
+      "amount" => Decimal.mult(donation.amount, challenge.distance_covered) |> total_amount(),
       "currency" => donation.currency,
       "source" => donation.str_src,
       "receipt_email" => donation.user.email,
@@ -66,11 +66,18 @@ defmodule OmegaBravera.Donations.Processor do
 
   def charge_params(%Donation{} = donation, _) do
     %{
-      "amount" => donation.amount,
+      "amount" => donation.amount |> total_amount(),
       "currency" => donation.currency,
       "source" => donation.str_src,
       "receipt_email" => donation.user.email,
       "customer" => donation.str_cus_id
     }
+  end
+
+  defp total_amount(%Decimal{} = amount) do
+    gateway = Decimal.mult(amount, Decimal.new(0.034)) |> Decimal.add(Decimal.new(2.35))
+    bravera = Decimal.mult(amount, Decimal.new(0.06))
+
+    Decimal.add(gateway, bravera) |> Decimal.add(amount)
   end
 end

@@ -44,14 +44,14 @@ defmodule OmegaBravera.Donations.ProcessorTest do
 
       assert charged_fields == %{
                card_brand: "Visa",
-               charge_id: "ch_1DceaYEXtHU8QBy83kWrbP1a",
-               charged_amount: Decimal.new(10.0),
+               charge_id: "ch_1DlGQgEXtHU8QBy8l5ksSULe",
+               charged_amount: Decimal.new(13.29),
                charged_description: "Donation to Save the children via Bravera.co",
                charged_status: "succeeded",
                last_digits: "4242"
              }
 
-      assert Timex.compare(result.charged_at, DateTime.from_unix!(1_543_694_238)) == 0
+      assert Timex.equal?(result.charged_at, DateTime.from_unix!(1_545_746_322))
     end
   end
 
