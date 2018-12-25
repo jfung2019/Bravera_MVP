@@ -80,6 +80,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_subset(:distances, @available_distances)
     |> validate_subset(:durations, @available_durations)
     |> validate_subset(:challenge_types, @available_challenge_types)
+    |> validate_format(:url, ~r/^(https|http):\/\/\w+/)
     |> add_utc_dates(ngo)
     |> validate_open_registration()
     |> validate_pre_registration_start_date()

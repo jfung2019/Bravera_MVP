@@ -27,7 +27,10 @@ defmodule OmegaBravera.Factory do
       pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
       launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10),
       minimum_donation: 500,
-      open_registration: true
+      open_registration: true,
+      logo: "/logo.png",
+      image: "/image.png",
+      url: "http://test.com"
     }
   end
 

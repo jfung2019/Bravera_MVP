@@ -13,7 +13,10 @@ defmodule OmegaBravera.NgoTest do
       pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
       launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10),
       minimum_donation: 500,
-      open_registration: true
+      open_registration: true,
+      url: "https://test.com",
+      image: "/image.png",
+      logo: "/logo.png"
     }
 
     test "changeset/2 passes if correct params are given" do

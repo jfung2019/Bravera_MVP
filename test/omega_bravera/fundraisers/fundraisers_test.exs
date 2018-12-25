@@ -9,6 +9,8 @@ defmodule OmegaBravera.FundraisersTest do
     @valid_attrs %{
       desc: "some desc",
       logo: "some logo",
+      image: "some image",
+      url: "http://test.com",
       name: "some name",
       slug: "some slug"
     }

@@ -6,6 +6,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
   @ngo_create_attrs %{
     desc: "some desc",
     logo: "some logo",
+    image: "/test.png",
+    url: "http://test.com",
     name: "some name",
     slug: "some-slug",
     open_registration: false,
