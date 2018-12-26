@@ -6,6 +6,37 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   alias OmegaBravera.Challenges.{NGOChal, Notifier}
   alias OmegaBravera.Accounts.User
 
+  test "manual_activity_blocked_email" do
+    challenge = insert(:ngo_challenge)
+
+    email = Notifier.manual_activity_blocked_email(challenge)
+
+    assert email == %SendGrid.Email{
+             __phoenix_layout__: nil,
+             __phoenix_view__: nil,
+             attachments: nil,
+             cc: nil,
+             content: nil,
+             custom_args: nil,
+             headers: nil,
+             reply_to: nil,
+             send_at: nil,
+             subject: nil,
+             from: %{email: "admin@bravera.co", name: "Bravera"},
+             substitutions: %{
+               "-participantName-" => "John"
+             },
+             template_id: "fcd40945-8a55-4459-94b9-401a995246fb",
+             to: [%{email: challenge.user.email}],
+             bcc: [%{email: "admin@bravera.co"}]
+           }
+  end
+
+  test "send_manual_activity_blocked_email/1 sends the email" do
+    challenge = insert(:ngo_challenge)
+    assert Notifier.send_manual_activity_blocked_email(challenge) == :ok
+  end
+
   test "challenge_activated_email" do
     challenge = insert(:ngo_challenge)
 

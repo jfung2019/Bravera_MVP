@@ -191,7 +191,10 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     activity_started_before_end = Timex.compare(challenge.end_date, activity.start_date) >= 0
     if !activity_started_before_end, do: Logger.info("Activity started after challenge ended")
     manual_activity = activity.manual == Application.get_env(:omega_bravera, :enable_manual_activities)
-    if !manual_activity, do: Logger.info("Manual activity triggered and blocked")
+    if !manual_activity do
+      Logger.info("Manual activity triggered and blocked")
+      Challenges.Notifier.send_manual_activity_blocked_email(challenge)
+    end
     challenge_started_first and activity_started_before_end and manual_activity
   end
 
