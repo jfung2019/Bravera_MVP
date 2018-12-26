@@ -52,6 +52,8 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def render_date(date_time) do
     {:ok, formatted_date_time} =
       date_time
+      |> Timex.to_datetime()
+      |> Timex.to_datetime("Asia/Hong_Kong")
       |> Timex.format("%d %B %Y", :strftime)
 
     formatted_date_time
