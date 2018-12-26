@@ -69,13 +69,20 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   end
 
   def render_countdown_date(nil), do: ""
-  def render_countdown_date(%DateTime{} = datetime),
-    do: Timex.format!(datetime, "%FT%T", :strftime)
+  def render_countdown_date(%DateTime{} = datetime) do
+    datetime
+    |> Timex.to_datetime("Asia/Hong_Kong")
+    |> Timex.Timezone.convert("Etc/UTC")
+    |> Timex.to_datetime()
+    |> DateTime.to_iso8601()
+ end
 
   def render_countdown_date(datetime) when is_tuple(datetime) do
     datetime
+    |> Timex.to_datetime("Asia/Hong_Kong")
+    |> Timex.Timezone.convert("Etc/UTC")
     |> Timex.to_datetime()
-    Timex.format!(datetime, "%FT%T", :strftime)
+    |> DateTime.to_iso8601()
   end
 
 end
