@@ -125,8 +125,8 @@ defmodule OmegaBravera.Fundraisers do
           n |
           active_challenges: count(challenges.id),
           utc_launch_date: n.launch_date,
-          launch_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.launch_date),
-          pre_registration_start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.pre_registration_start_date)
+          launch_date: fragment("? at time zone 'utc'", n.launch_date),
+          pre_registration_start_date: fragment("? at time zone 'utc'", n.pre_registration_start_date)
         }
       )
       |> Repo.one()
@@ -139,6 +139,34 @@ defmodule OmegaBravera.Fundraisers do
         _ ->
           ngo
       end
+  end
+
+  def get_ngo_by_slug_with_hk_time(slug, preloads \\ [:ngo_chals]) do
+    ngo =
+      from(n in NGO,
+        where: n.slug == ^slug,
+        left_join: challenges in assoc(n, :ngo_chals),
+        on: challenges.ngo_id == n.id and challenges.status == ^"active",
+        preload: ^preloads,
+        group_by: [n.id],
+        select: %{
+          n |
+          active_challenges: count(challenges.id),
+          utc_launch_date: n.launch_date,
+          launch_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.launch_date),
+          pre_registration_start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.pre_registration_start_date)
+        }
+      )
+      |> Repo.one()
+
+    case Timex.is_valid?(ngo.pre_registration_start_date) and Timex.is_valid?(ngo.launch_date) do
+      true ->
+        ngo
+        |> Map.put(:pre_registration_start_date, Timex.to_datetime(ngo.pre_registration_start_date))
+        |> Map.put(:launch_date, Timex.to_datetime(ngo.launch_date))
+      _ ->
+        ngo
+    end
   end
 
   @doc """
