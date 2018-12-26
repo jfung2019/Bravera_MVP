@@ -7,14 +7,19 @@ defmodule OmegaBravera.NotifierTest do
   setup do
     user = insert(:user)
     ngo = insert(:ngo)
-    challenge = insert(:ngo_challenge, %{
-      user: user,
-      ngo: ngo,
-      status: "pre_registration",
-      start_date: Timex.shift(Timex.now(), days: 5)
-    })
 
-    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
+    challenge =
+      insert(:ngo_challenge, %{
+        user: user,
+        ngo: ngo,
+        status: "pre_registration",
+        start_date: Timex.shift(Timex.now(), days: 5)
+      })
+
+    challenge = %{
+      challenge
+      | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
+    }
 
     [
       user: user,
@@ -61,7 +66,6 @@ defmodule OmegaBravera.NotifierTest do
     pre_registration_challenge: pre_registration_challenge,
     user: user
   } do
-
     donor =
       insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
@@ -88,7 +92,8 @@ defmodule OmegaBravera.NotifierTest do
                "-challengeURL-" => "https://bravera.co/swcc/John-594",
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
                "-participantName-" => user.firstname,
-               "-challengeStartDate-" => Timex.format!(pre_registration_challenge.start_date, "%Y-%m-%d", :strftime)
+               "-challengeStartDate-" =>
+                 Timex.format!(pre_registration_challenge.start_date, "%Y-%m-%d", :strftime)
              },
              template_id: "9fc14299-96a0-4a4d-9917-c19f747270ff",
              to: [%{email: donor.email}],

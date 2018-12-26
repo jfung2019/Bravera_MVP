@@ -71,7 +71,11 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "pre_registration_challenge_signup_email" do
     challenge = insert(:ngo_challenge)
-    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
+
+    challenge = %{
+      challenge
+      | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
+    }
 
     email = Notifier.pre_registration_challenge_signup_email(challenge, "/swcc/John-512")
 
@@ -111,7 +115,11 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "challenge_signup_email" do
     challenge = insert(:ngo_challenge)
-    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
+
+    challenge = %{
+      challenge
+      | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
+    }
 
     email = Notifier.challenge_signup_email(challenge, "/swcc/John-512")
 

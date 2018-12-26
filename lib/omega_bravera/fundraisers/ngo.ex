@@ -92,7 +92,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> changeset(attrs)
     |> validate_pre_registration_start_date_modification(ngo)
     |> validate_no_active_challenges(ngo)
-
   end
 
   def currency_options do
@@ -106,12 +105,20 @@ defmodule OmegaBravera.Fundraisers.NGO do
     }
   end
 
-  defp validate_pre_registration_start_date(%Ecto.Changeset{valid?: true, changes: %{pre_registration_start_date: pre_registration_start_date, launch_date: launch_date}} = changeset) do
+  defp validate_pre_registration_start_date(
+         %Ecto.Changeset{
+           valid?: true,
+           changes: %{
+             pre_registration_start_date: pre_registration_start_date,
+             launch_date: launch_date
+           }
+         } = changeset
+       ) do
     open_registration = get_field(changeset, :open_registration)
 
     case open_registration == false and
-      (Timex.after?(pre_registration_start_date, launch_date) or
-      Timex.equal?(pre_registration_start_date, launch_date)) do
+           (Timex.after?(pre_registration_start_date, launch_date) or
+              Timex.equal?(pre_registration_start_date, launch_date)) do
       true ->
         add_error(
           changeset_to_hk_date(changeset),
@@ -126,13 +133,13 @@ defmodule OmegaBravera.Fundraisers.NGO do
 
   defp validate_pre_registration_start_date(%Ecto.Changeset{} = changeset), do: changeset
 
-
   defp validate_open_registration(%Ecto.Changeset{valid?: true} = changeset) do
     open_registration = get_field(changeset, :open_registration)
     pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
     launch_date = get_field(changeset, :launch_date)
 
-    case open_registration == false and (is_nil(pre_registration_start_date) or is_nil(launch_date)) do
+    case open_registration == false and
+           (is_nil(pre_registration_start_date) or is_nil(launch_date)) do
       true ->
         add_error(
           changeset_to_hk_date(changeset),
@@ -147,7 +154,13 @@ defmodule OmegaBravera.Fundraisers.NGO do
 
   defp validate_open_registration(%Ecto.Changeset{} = changeset), do: changeset
 
-  defp validate_pre_registration_start_date_modification(%Ecto.Changeset{valid?: true, changes: %{pre_registration_start_date: pre_registration_start_date}} = changeset, %__MODULE__{} = _ngo) do
+  defp validate_pre_registration_start_date_modification(
+         %Ecto.Changeset{
+           valid?: true,
+           changes: %{pre_registration_start_date: pre_registration_start_date}
+         } = changeset,
+         %__MODULE__{} = _ngo
+       ) do
     open_registration = get_field(changeset, :open_registration)
 
     case open_registration == false and Timex.after?(pre_registration_start_date, Timex.now()) do
@@ -163,27 +176,35 @@ defmodule OmegaBravera.Fundraisers.NGO do
     end
   end
 
-  defp validate_pre_registration_start_date_modification(%Ecto.Changeset{} = changeset,_ngo), do: changeset
+  defp validate_pre_registration_start_date_modification(%Ecto.Changeset{} = changeset, _ngo),
+    do: changeset
 
   defp validate_no_active_challenges(
-    %Ecto.Changeset{
-      valid?: true,
-      changes: %{open_registration: _}} = changeset,
-    %__MODULE__{active_challenges: chals}) when chals > 0 do
-      add_error(
-        changeset_to_hk_date(changeset),
-        :open_registration,
-        "Cannot close/open registration due to the presence of active challenges."
-      )
+         %Ecto.Changeset{valid?: true, changes: %{open_registration: _}} = changeset,
+         %__MODULE__{active_challenges: chals}
+       )
+       when chals > 0 do
+    add_error(
+      changeset_to_hk_date(changeset),
+      :open_registration,
+      "Cannot close/open registration due to the presence of active challenges."
+    )
   end
 
   defp validate_no_active_challenges(changeset, _ngo), do: changeset
 
-  defp validate_launch_date(%Ecto.Changeset{valid?: true, changes: %{launch_date: launch_date}} = changeset) do
+  defp validate_launch_date(
+         %Ecto.Changeset{valid?: true, changes: %{launch_date: launch_date}} = changeset
+       ) do
     open_registration = get_field(changeset, :open_registration)
+
     case open_registration == false and Timex.before?(launch_date, Timex.now()) do
       true ->
-        add_error(changeset_to_hk_date(changeset), :launch_date, "Launch date cannot be less than today's date.")
+        add_error(
+          changeset_to_hk_date(changeset),
+          :launch_date,
+          "Launch date cannot be less than today's date."
+        )
 
       _ ->
         changeset
@@ -193,22 +214,22 @@ defmodule OmegaBravera.Fundraisers.NGO do
   defp validate_launch_date(%Ecto.Changeset{} = changeset), do: changeset
 
   defp changeset_to_hk_date(
-    %Ecto.Changeset{
-      changes: %{
-        launch_date: launch_date,
-        pre_registration_start_date: pre_registration_start_date
-      }
-    } = changeset
-  ) do
+         %Ecto.Changeset{
+           changes: %{
+             launch_date: launch_date,
+             pre_registration_start_date: pre_registration_start_date
+           }
+         } = changeset
+       ) do
     launch_date =
       launch_date
       |> Timex.to_datetime("Asia/Hong_Kong")
-      |> DateTime.to_naive
+      |> DateTime.to_naive()
 
     pre_registration_start_date =
       pre_registration_start_date
       |> Timex.to_datetime("Asia/Hong_Kong")
-      |> DateTime.to_naive
+      |> DateTime.to_naive()
 
     changeset
     |> change(%{
@@ -216,6 +237,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
       launch_date: launch_date
     })
   end
+
   defp changeset_to_hk_date(%Ecto.Changeset{} = changeset), do: changeset
 
   defp valid_currencies, do: Map.values(currency_options())
