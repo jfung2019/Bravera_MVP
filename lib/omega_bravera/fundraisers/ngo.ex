@@ -81,7 +81,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_subset(:durations, @available_durations)
     |> validate_subset(:challenge_types, @available_challenge_types)
     |> validate_format(:url, ~r/^(https|http):\/\/\w+/)
-    |> add_utc_dates(ngo)
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
     |> validate_launch_date()
@@ -107,32 +106,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     }
   end
 
-  defp add_utc_dates(%Ecto.Changeset{valid?: true} = changeset, %__MODULE__{} = ngo) do
-    {new_utc_pre_registration_start_date, new_utc_launch_date} = switch_dates_to_utc(changeset)
-
-    cond do
-      is_nil(new_utc_pre_registration_start_date) or is_nil(new_utc_launch_date) ->
-        changeset
-
-      # Updating shouldn't include date changes if new and old values are equal and not nil.
-      ( not is_nil(ngo.pre_registration_start_date) and not is_nil(ngo.launch_date) ) and
-      Timex.equal?(to_datetime(ngo.pre_registration_start_date), new_utc_pre_registration_start_date) and
-      Timex.equal?(to_datetime(ngo.launch_date), new_utc_launch_date) ->
-        changeset
-        |> delete_change(:pre_registration_start_date)
-        |> delete_change(:launch_date)
-
-      true ->
-        changeset
-        |> change(%{
-          pre_registration_start_date: new_utc_pre_registration_start_date,
-          launch_date: new_utc_launch_date
-        })
-    end
-  end
-  defp add_utc_dates(%Ecto.Changeset{} = changeset, _), do: changeset
-
-
   defp validate_pre_registration_start_date(%Ecto.Changeset{valid?: true, changes: %{pre_registration_start_date: pre_registration_start_date, launch_date: launch_date}} = changeset) do
     open_registration = get_field(changeset, :open_registration)
 
@@ -154,8 +127,10 @@ defmodule OmegaBravera.Fundraisers.NGO do
   defp validate_pre_registration_start_date(%Ecto.Changeset{} = changeset), do: changeset
 
 
-  defp validate_open_registration(%Ecto.Changeset{valid?: true, changes: %{pre_registration_start_date: pre_registration_start_date, launch_date: launch_date}} = changeset) do
+  defp validate_open_registration(%Ecto.Changeset{valid?: true} = changeset) do
     open_registration = get_field(changeset, :open_registration)
+    pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
+    launch_date = get_field(changeset, :launch_date)
 
     case open_registration == false and (is_nil(pre_registration_start_date) or is_nil(launch_date)) do
       true ->
@@ -172,24 +147,16 @@ defmodule OmegaBravera.Fundraisers.NGO do
 
   defp validate_open_registration(%Ecto.Changeset{} = changeset), do: changeset
 
-  defp validate_pre_registration_start_date_modification(%Ecto.Changeset{valid?: true, changes: %{pre_registration_start_date: pre_registration_start_date}} = changeset, %__MODULE__{} = ngo) do
+  defp validate_pre_registration_start_date_modification(%Ecto.Changeset{valid?: true, changes: %{pre_registration_start_date: pre_registration_start_date}} = changeset, %__MODULE__{} = _ngo) do
     open_registration = get_field(changeset, :open_registration)
 
-    case is_nil(ngo.pre_registration_start_date) do
-      false ->
-        case open_registration == false and
-          Timex.after?(pre_registration_start_date, Timex.now())
-        do
-          true ->
-            add_error(
-              changeset_to_hk_date(changeset),
-              :pre_registration_start_date,
-              "Pre registration date cannot be modified because it has been reached."
-            )
-
-          _ ->
-            changeset
-        end
+    case open_registration == false and Timex.after?(pre_registration_start_date, Timex.now()) do
+      true ->
+        add_error(
+          changeset_to_hk_date(changeset),
+          :pre_registration_start_date,
+          "Pre registration date cannot be modified because it has been reached."
+        )
 
       _ ->
         changeset
@@ -250,54 +217,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     })
   end
   defp changeset_to_hk_date(%Ecto.Changeset{} = changeset), do: changeset
-
-  defp switch_dates_to_utc(%Ecto.Changeset{
-    data: %{
-      launch_date: {:error, :invalid_date},
-      pre_registration_start_date: {:error, :invalid_date}
-    }
-  }), do: {nil, nil}
-
-  defp switch_dates_to_utc(%Ecto.Changeset{} = changeset) do
-    pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
-    launch_date = get_field(changeset, :launch_date)
-
-    case is_nil(pre_registration_start_date) and is_nil(launch_date) do
-      true ->
-        {nil, nil}
-      _ ->
-        {
-          pre_registration_start_date
-          |> to_datetime(),
-
-          launch_date
-          |> to_datetime()
-        }
-    end
-  end
-
-  defp to_datetime(datetime) do
-    case is_tuple(datetime) do
-      true ->
-        datetime |> date_tuple_to_datetime()
-      false ->
-        datetime |> from_hk_to_utc()
-    end
-  end
-
-  defp date_tuple_to_datetime({{year, month, day}, {hour, minutes, seconds, microseconds}}) do
-    Timex.to_datetime({{year, month, day}, {hour, minutes, seconds, microseconds}}, "Asia/Hong_Kong")
-    |> Timex.to_datetime("Etc/UTC")
-  end
-  defp date_tuple_to_datetime(nil), do: nil
-
-  defp from_hk_to_utc(%DateTime{} = datetime) do
-    datetime
-    |> Timex.to_datetime()
-    |> DateTime.to_naive
-    |> Timex.to_datetime("Asia/Hong_Kong")
-    |> Timex.to_datetime("Etc/UTC")
-  end
 
   defp valid_currencies, do: Map.values(currency_options())
 

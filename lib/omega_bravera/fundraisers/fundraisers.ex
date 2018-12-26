@@ -181,10 +181,41 @@ defmodule OmegaBravera.Fundraisers do
       {:error, %Ecto.Changeset{}}
 
   """
+
   def create_ngo(attrs \\ %{}) do
     %NGO{}
     |> NGO.changeset(attrs)
+    |> switch_pre_registration_date_to_utc()
+    |> switch_launch_date_to_utc()
     |> Repo.insert()
+  end
+
+  defp switch_pre_registration_date_to_utc(
+    %Ecto.Changeset{valid?: true, changes: %{pre_registration_start_date: pre_registration_start_date}} = changeset) do
+      changeset
+      |> Ecto.Changeset.change(%{
+        pre_registration_start_date: pre_registration_start_date |> to_utc()
+      })
+  end
+
+  defp switch_pre_registration_date_to_utc(%Ecto.Changeset{} = changeset), do: changeset
+
+  defp switch_launch_date_to_utc(
+    %Ecto.Changeset{valid?: true, changes: %{launch_date: launch_date}} = changeset) do
+      changeset
+      |> Ecto.Changeset.change(%{
+        launch_date: launch_date |> to_utc()
+      })
+  end
+
+  defp switch_launch_date_to_utc(%Ecto.Changeset{} = changeset), do: changeset
+
+  defp to_utc(%DateTime{} = datetime) do
+    datetime
+    |> Timex.to_datetime()
+    |> DateTime.to_naive
+    |> Timex.to_datetime("Asia/Hong_Kong")
+    |> Timex.to_datetime("Etc/UTC")
   end
 
   @doc """
@@ -202,6 +233,8 @@ defmodule OmegaBravera.Fundraisers do
   def update_ngo(%NGO{} = ngo, attrs) do
     ngo
     |> NGO.update_changeset(attrs)
+    |> switch_pre_registration_date_to_utc()
+    |> switch_launch_date_to_utc()
     |> Repo.update()
   end
 

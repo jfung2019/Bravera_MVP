@@ -21,7 +21,6 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     name: "some updated name",
     slug: "some-updated-slug",
     open_registration: false,
-    pre_registration_start_date: Timex.shift(Timex.now(), days: 3),
     launch_date: Timex.shift(Timex.now(), days: 10)
   }
 
@@ -128,19 +127,15 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
          %{conn: conn, ngo: ngo} do
       conn =
         put(conn, admin_panel_ngo_path(conn, :update, ngo),
-          ngo: %{launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 15)}
+          ngo: %{launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 20)}
         )
 
       assert html_response(conn, 302)
 
       updated_ngo = Fundraisers.get_ngo_by_slug(ngo.slug)
-      ngo_chal = List.first(updated_ngo.ngo_chals)
+      ngo_chal = updated_ngo.ngo_chals |> List.first()
 
-      # TODO: Make sure to use the same postgres time conversion for challenge start date. Ex: see: Fundraisers.get_ngo_by_slug() - Sherief
-      assert updated_ngo.launch_date ==
-        Timex.to_datetime(ngo_chal.start_date, "Asia/Hong_Kong")
-        |> DateTime.to_naive()
-        |> Timex.to_datetime()
+      assert Timex.equal?(updated_ngo.launch_date, ngo_chal.start_date)
     end
   end
 

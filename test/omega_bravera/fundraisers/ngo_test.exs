@@ -103,23 +103,22 @@ defmodule OmegaBravera.NgoTest do
           ngo,
           %{
             pre_registration_start_date:
-              Timex.shift(ngo.pre_registration_start_date, days: 1),
-            open_registration: false,
-            launch_date: ngo.launch_date
+              Timex.shift(ngo.pre_registration_start_date, days: 2),
+            open_registration: false
           }
         )
 
       refute updated_ngo.valid?
     end
 
-    test "update_changeset/2 is vaild when pre_registration_start date is less than now." do
-      ngo = build(:ngo, %{pre_registration_start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 5)})
+    test "update_changeset/2 is vaild when pre_registration_start_date is less than now." do
+      ngo = build(:ngo, %{pre_registration_start_date: Timex.now("Asia/Hong_Kong")})
 
       updated_ngo =
         NGO.update_changeset(
           ngo,
           %{
-            pre_registration_start_date: Timex.shift(ngo.pre_registration_start_date, days: 3),
+            pre_registration_start_date: Timex.shift(ngo.pre_registration_start_date, days: -2),
             open_registration: false
           }
         )
