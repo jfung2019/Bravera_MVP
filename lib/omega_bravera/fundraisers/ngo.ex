@@ -35,6 +35,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:pre_registration_start_date, :utc_datetime)
     field(:launch_date, :utc_datetime)
     field(:open_registration, :boolean, default: true)
+    field(:hidden, :boolean, default: false)
     field(:active_challenges, :integer, default: 0, virtual: true)
     field(:utc_launch_date, :utc_datetime, virtual: true)
     field(:activities, {:array, :string}, default: @available_activities)
@@ -65,7 +66,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :minimum_donation,
     :pre_registration_start_date,
     :launch_date,
-    :open_registration
+    :open_registration,
+    :hidden
   ]
   @required_attributes [:name, :slug, :minimum_donation, :url, :logo, :image]
 

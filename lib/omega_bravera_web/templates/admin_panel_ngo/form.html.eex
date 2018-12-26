@@ -36,6 +36,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :hidden, class: "control-label" %>
+    <%= checkbox f, :hidden %>
+    <%= error_tag f, :hidden %>
+  </div>
+
+  <div class="form-group">
     <%= label f, "Description (displayed on /ngos)", class: "control-label" %>
     <%= textarea f, :desc, class: "form-control", rows: 3 %>
     <%= error_tag f, :desc %>

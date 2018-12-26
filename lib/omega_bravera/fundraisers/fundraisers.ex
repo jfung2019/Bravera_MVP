@@ -80,21 +80,23 @@ defmodule OmegaBravera.Fundraisers do
       [%NGO{}, ...]
 
   """
-  def list_ngos do
-    Repo.all(NGO)
+  def list_ngos(hidden \\ false) do
+    from(
+      n in NGO,
+      where: n.hidden == ^hidden
+    )
+    |> Repo.all()
   end
 
   def list_ngos_preload() do
-    query =
-      from(
-        n in NGO,
-        join: user in assoc(n, :user),
-        join: strava in assoc(user, :strava),
-        preload: [user: {user, strava: strava}],
-        order_by: n.inserted_at
-      )
-
-    query |> Repo.all()
+    from(
+      n in NGO,
+      join: user in assoc(n, :user),
+      join: strava in assoc(user, :strava),
+      preload: [user: {user, strava: strava}],
+      order_by: n.inserted_at
+    )
+    |> Repo.all()
   end
 
   @doc """
