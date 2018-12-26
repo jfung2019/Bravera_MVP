@@ -107,55 +107,88 @@ defmodule OmegaBravera.Fundraisers.NGO do
     }
   end
 
-  defp add_utc_dates(%Ecto.Changeset{} = changeset, %__MODULE__{} = ngo) do
-    if changeset.valid? do
-      {new_utc_pre_registration_start_date, new_utc_launch_date} = switch_dates_to_utc(changeset)
+  defp add_utc_dates(%Ecto.Changeset{valid?: true} = changeset, %__MODULE__{} = ngo) do
+    {new_utc_pre_registration_start_date, new_utc_launch_date} = switch_dates_to_utc(changeset)
 
-      cond do
-        is_nil(new_utc_pre_registration_start_date) or is_nil(new_utc_launch_date) ->
-          changeset
+    cond do
+      is_nil(new_utc_pre_registration_start_date) or is_nil(new_utc_launch_date) ->
+        changeset
 
-        # Updating shouldn't include date changes if new and old values are equal and not nil.
-        ( not is_nil(ngo.pre_registration_start_date) and not is_nil(ngo.launch_date) ) and
-        Timex.compare(to_datetime(ngo.pre_registration_start_date), new_utc_pre_registration_start_date) == 0 and
-        Timex.compare(to_datetime(ngo.launch_date), new_utc_launch_date) == 0 ->
-          changeset
-          |> delete_change(:pre_registration_start_date)
-          |> delete_change(:launch_date)
+      # Updating shouldn't include date changes if new and old values are equal and not nil.
+      ( not is_nil(ngo.pre_registration_start_date) and not is_nil(ngo.launch_date) ) and
+      Timex.equal?(to_datetime(ngo.pre_registration_start_date), new_utc_pre_registration_start_date) and
+      Timex.equal?(to_datetime(ngo.launch_date), new_utc_launch_date) ->
+        changeset
+        |> delete_change(:pre_registration_start_date)
+        |> delete_change(:launch_date)
 
-        true ->
-          changeset
-          |> change(%{
-            pre_registration_start_date: new_utc_pre_registration_start_date,
-            launch_date: new_utc_launch_date
-          })
-      end
-
-    else
-      changeset
+      true ->
+        changeset
+        |> change(%{
+          pre_registration_start_date: new_utc_pre_registration_start_date,
+          launch_date: new_utc_launch_date
+        })
     end
   end
-  defp add_utc_dates(%Ecto.Changeset{} = changeset, nil), do: changeset
+  defp add_utc_dates(%Ecto.Changeset{} = changeset, _), do: changeset
 
 
-  defp validate_pre_registration_start_date(changeset) do
-    case changeset.valid? do
+  defp validate_pre_registration_start_date(%Ecto.Changeset{valid?: true} = changeset) do
+    pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
+    launch_date = get_field(changeset, :launch_date)
+    open_registration = get_field(changeset, :open_registration)
+
+    case open_registration == false and
+      (Timex.after?(pre_registration_start_date, launch_date) or
+      Timex.equal?(pre_registration_start_date, launch_date)) do
       true ->
-        pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
-        launch_date = get_field(changeset, :launch_date)
-        open_registration = get_field(changeset, :open_registration)
+        add_error(
+          changeset_to_hk_date(changeset),
+          :pre_registration_start_date,
+          "Pre-registration start date cannot be greater than or equal to the Launch date."
+        )
 
+      _ ->
+        changeset
+    end
+  end
+
+  defp validate_pre_registration_start_date(%Ecto.Changeset{} = changeset), do: changeset
+
+
+  defp validate_open_registration(%Ecto.Changeset{valid?: true} = changeset) do
+    pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
+    launch_date = get_field(changeset, :launch_date)
+    open_registration = get_field(changeset, :open_registration)
+
+    case open_registration == false and (is_nil(pre_registration_start_date) or is_nil(launch_date)) do
+      true ->
+        add_error(
+          changeset_to_hk_date(changeset),
+          :open_registration,
+          "Cannot create non-closed registration NGO without registration dates."
+        )
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp validate_open_registration(%Ecto.Changeset{} = changeset), do: changeset
+
+  defp validate_pre_registration_start_date_modification(%Ecto.Changeset{valid?: true} = changeset, %__MODULE__{} = ngo) do
+    open_registration = get_field(changeset, :open_registration)
+
+    case is_nil(ngo.pre_registration_start_date) do
+      false ->
         case open_registration == false and
-          (
-            Timex.after?(pre_registration_start_date, launch_date) or
-            Timex.equal?(pre_registration_start_date, launch_date)
-          )
+          Timex.before?(ngo.pre_registration_start_date, Timex.now())
         do
           true ->
             add_error(
               changeset_to_hk_date(changeset),
               :pre_registration_start_date,
-              "Pre-registration start date cannot be greater than or equal to the Launch date."
+              "Pre registration date cannot be modified because it has been reached."
             )
 
           _ ->
@@ -167,64 +200,13 @@ defmodule OmegaBravera.Fundraisers.NGO do
     end
   end
 
-  defp validate_open_registration(changeset) do
-    case changeset.valid? do
-      true ->
-        pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
-        launch_date = get_field(changeset, :launch_date)
-        open_registration = get_field(changeset, :open_registration)
+  defp validate_pre_registration_start_date_modification(%Ecto.Changeset{} = changeset,_ngo), do: changeset
 
-        case open_registration == false and
-               (is_nil(pre_registration_start_date) or is_nil(launch_date)) do
-          true ->
-            add_error(
-              changeset_to_hk_date(changeset),
-              :open_registration,
-              "Cannot create non-closed registration NGO without registration dates."
-            )
-
-          _ ->
-            changeset
-        end
-
-      _ ->
-        changeset
-    end
-  end
-
-  defp validate_pre_registration_start_date_modification(changeset, %__MODULE__{} = ngo) do
-    case changeset.valid? do
-      true ->
-        pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
-        open_registration = get_field(changeset, :open_registration)
-
-        case is_nil(ngo.pre_registration_start_date) do
-          false ->
-            case open_registration == false and
-              Timex.before?(ngo.pre_registration_start_date, Timex.now())
-            do
-              true ->
-                add_error(
-                  changeset_to_hk_date(changeset),
-                  :pre_registration_start_date,
-                  "Pre registration date cannot be modified because it has been reached."
-                )
-
-              _ ->
-                changeset
-            end
-
-          _ ->
-            changeset
-        end
-
-
-      _ ->
-        changeset
-    end
-  end
-
-  defp validate_no_active_challenges(%Ecto.Changeset{valid?: true, changes: %{open_registration: _}} = changeset, %__MODULE__{active_challenges: chals} = ngo) when chals > 0 do
+  defp validate_no_active_challenges(
+    %Ecto.Changeset{
+      valid?: true,
+      changes: %{open_registration: _}} = changeset,
+    %__MODULE__{active_challenges: chals}) when chals > 0 do
       add_error(
         changeset_to_hk_date(changeset),
         :open_registration,
@@ -234,23 +216,19 @@ defmodule OmegaBravera.Fundraisers.NGO do
 
   defp validate_no_active_challenges(changeset, _ngo), do: changeset
 
-  defp validate_launch_date(changeset) do
-    case changeset.valid? do
+  defp validate_launch_date(%Ecto.Changeset{valid?: true} = changeset) do
+    launch_date = get_field(changeset, :launch_date)
+    open_registration = get_field(changeset, :open_registration)
+    case open_registration == false and Timex.before?(launch_date, Timex.now()) do
       true ->
-        launch_date = get_field(changeset, :launch_date)
-        open_registration = get_field(changeset, :open_registration)
-        case open_registration == false and Timex.before?(launch_date, Timex.now()) do
-          true ->
-            add_error(changeset_to_hk_date(changeset), :launch_date, "Launch date cannot be less than today's date.")
-
-          _ ->
-            changeset
-        end
+        add_error(changeset_to_hk_date(changeset), :launch_date, "Launch date cannot be less than today's date.")
 
       _ ->
         changeset
     end
   end
+
+  defp validate_launch_date(%Ecto.Changeset{} = changeset), do: changeset
 
   defp changeset_to_hk_date(
     %Ecto.Changeset{
