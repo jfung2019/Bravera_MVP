@@ -63,8 +63,8 @@ defmodule OmegaBravera.Challenges do
       select: %{
         nc |
         distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
-        start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", nc.start_date),
-        end_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", nc.end_date)
+        start_date: fragment("? at time zone 'utc'", nc.start_date),
+        end_date: fragment("? at time zone 'utc'", nc.end_date)
       }
     )
     |> Repo.all()
@@ -114,8 +114,8 @@ defmodule OmegaBravera.Challenges do
         select: %{
           nc |
           distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
-          start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", nc.start_date),
-          end_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", nc.end_date)
+          start_date: fragment("? at time zone 'utc'", nc.start_date),
+          end_date: fragment("? at time zone 'utc'", nc.end_date)
         }
       )
 

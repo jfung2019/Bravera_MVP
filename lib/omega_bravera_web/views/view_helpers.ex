@@ -71,16 +71,12 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def render_countdown_date(nil), do: ""
   def render_countdown_date(%DateTime{} = datetime) do
     datetime
-    |> Timex.to_datetime("Asia/Hong_Kong")
-    |> Timex.Timezone.convert("Etc/UTC")
     |> Timex.to_datetime()
     |> DateTime.to_iso8601()
  end
 
   def render_countdown_date(datetime) when is_tuple(datetime) do
     datetime
-    |> Timex.to_datetime("Asia/Hong_Kong")
-    |> Timex.Timezone.convert("Etc/UTC")
     |> Timex.to_datetime()
     |> DateTime.to_iso8601()
   end
