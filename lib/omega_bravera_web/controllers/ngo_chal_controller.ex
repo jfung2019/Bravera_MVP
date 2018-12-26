@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     }
 
     extra_params =
-      case ngo.open_registration == false and (Timex.compare(ngo.utc_launch_date, Timex.now()) == 1) do
+      case ngo.open_registration == false and Timex.compare(ngo.utc_launch_date, Timex.now()) == 1 do
         true ->
           Map.put(extra_params, "status", "pre_registration")
 
@@ -116,7 +116,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   defp date_tuple_datetime(nil), do: nil
-  defp date_tuple_datetime(date_tuple) when is_tuple(date_tuple), do: Timex.to_datetime(date_tuple)
+
+  defp date_tuple_datetime(date_tuple) when is_tuple(date_tuple),
+    do: Timex.to_datetime(date_tuple)
 
   defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset) do
     %{

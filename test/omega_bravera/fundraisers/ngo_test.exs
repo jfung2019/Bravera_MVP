@@ -102,8 +102,7 @@ defmodule OmegaBravera.NgoTest do
         NGO.update_changeset(
           ngo,
           %{
-            pre_registration_start_date:
-              Timex.shift(ngo.pre_registration_start_date, days: 2),
+            pre_registration_start_date: Timex.shift(ngo.pre_registration_start_date, days: 2),
             open_registration: false
           }
         )
@@ -129,8 +128,7 @@ defmodule OmegaBravera.NgoTest do
     test "update_changeset/2 fails if admin tries to edit pre_registration_start_date or launch_date if there're active challenges." do
       ngo = build(:ngo, %{active_challenges: 1})
 
-      updated_ngo =
-        NGO.update_changeset(ngo, %{open_registration: false})
+      updated_ngo = NGO.update_changeset(ngo, %{open_registration: false})
 
       refute updated_ngo.valid?
     end

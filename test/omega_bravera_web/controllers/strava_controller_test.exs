@@ -32,10 +32,16 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
   describe "strava webhook" do
     test "returns a proper response when doing the hub challenge", %{conn: conn} do
       secret = "super_secret"
+
       conn =
         conn
         |> get(strava_path(conn, :get_webhook_callback), %{"hub.challenge" => secret})
-      assert json_response(conn, 200) == %{"hub.mode" => "subscribe", "hub.challenge" => secret, "hub.verify_token" => "STRAVA"}
+
+      assert json_response(conn, 200) == %{
+               "hub.mode" => "subscribe",
+               "hub.challenge" => secret,
+               "hub.verify_token" => "STRAVA"
+             }
     end
   end
 

@@ -190,18 +190,32 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     if !challenge_started_first, do: Logger.info("Activity before start date of challenge")
     activity_started_before_end = Timex.compare(challenge.end_date, activity.start_date) >= 0
     if !activity_started_before_end, do: Logger.info("Activity started after challenge ended")
-    manual_activity = activity.manual == Application.get_env(:omega_bravera, :enable_manual_activities)
+
+    manual_activity =
+      activity.manual == Application.get_env(:omega_bravera, :enable_manual_activities)
+
     if !manual_activity do
       Logger.info("Manual activity triggered and blocked")
       Challenges.Notifier.send_manual_activity_blocked_email(challenge)
     end
+
     challenge_started_first and activity_started_before_end and manual_activity
   end
 
-  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{activity_type: activity_type}), do: true
+  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
+         activity_type: activity_type
+       }),
+       do: true
 
-  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{activity_type: challenge_activity_type}) do
-    Logger.info("Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{activity_type}")
+  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
+         activity_type: challenge_activity_type
+       }) do
+    Logger.info(
+      "Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{
+        activity_type
+      }"
+    )
+
     false
   end
 end

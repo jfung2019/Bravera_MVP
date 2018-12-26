@@ -61,10 +61,10 @@ defmodule OmegaBravera.Challenges do
       order_by: [desc: :start_date],
       group_by: nc.id,
       select: %{
-        nc |
-        distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
-        start_date: fragment("? at time zone 'utc'", nc.start_date),
-        end_date: fragment("? at time zone 'utc'", nc.end_date)
+        nc
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+          start_date: fragment("? at time zone 'utc'", nc.start_date),
+          end_date: fragment("? at time zone 'utc'", nc.end_date)
       }
     )
     |> Repo.all()
@@ -112,10 +112,10 @@ defmodule OmegaBravera.Challenges do
         preload: ^preloads,
         group_by: nc.id,
         select: %{
-          nc |
-          distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
-          start_date: fragment("? at time zone 'utc'", nc.start_date),
-          end_date: fragment("? at time zone 'utc'", nc.end_date)
+          nc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+            start_date: fragment("? at time zone 'utc'", nc.start_date),
+            end_date: fragment("? at time zone 'utc'", nc.end_date)
         }
       )
 
@@ -216,13 +216,13 @@ defmodule OmegaBravera.Challenges do
   """
   def list_ngo_chals(preloads \\ [:user, :ngo, :donations]) do
     from(nc in NGOChal,
-    left_join: a in Activity,
-    on: nc.id == a.challenge_id,
-    preload: ^preloads,
-    group_by: nc.id,
-    select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)}
-  )
-  |> Repo.all()
+      left_join: a in Activity,
+      on: nc.id == a.challenge_id,
+      preload: ^preloads,
+      group_by: nc.id,
+      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)}
+    )
+    |> Repo.all()
   end
 
   def get_live_ngo_chals() do

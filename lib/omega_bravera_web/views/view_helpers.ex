@@ -30,9 +30,12 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def render_datetime(nil), do: ""
 
   def render_datetime(datetime) when is_tuple(datetime) do
-    {:ok, formatted_string} = Timex.to_datetime(datetime) |> Timex.format("{D}/{M}/{WYY} {h24}:{m}")
+    {:ok, formatted_string} =
+      Timex.to_datetime(datetime) |> Timex.format("{D}/{M}/{WYY} {h24}:{m}")
+
     formatted_string
   end
+
   def render_datetime(naive_date_time) do
     naive_date_time =
       try do
@@ -60,8 +63,8 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def render_activity(nil), do: 0
   def render_activity(%Decimal{} = activity), do: Decimal.round(activity, 1)
 
-
   def render_time(nil), do: "00:00:00"
+
   def render_time(seconds) do
     Time.add(~T[00:00:00], seconds, :second)
     |> Time.truncate(:second)
@@ -69,16 +72,16 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   end
 
   def render_countdown_date(nil), do: ""
+
   def render_countdown_date(%DateTime{} = datetime) do
     datetime
     |> Timex.to_datetime()
     |> DateTime.to_iso8601()
- end
+  end
 
   def render_countdown_date(datetime) when is_tuple(datetime) do
     datetime
     |> Timex.to_datetime()
     |> DateTime.to_iso8601()
   end
-
 end

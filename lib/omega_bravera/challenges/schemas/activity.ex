@@ -66,10 +66,12 @@ defmodule OmegaBravera.Challenges.Activity do
   end
 
   defp to_km(nil), do: nil
+
   defp to_km(meters),
-   do: Decimal.div(Decimal.new(meters), @meters_per_km)
+    do: Decimal.div(Decimal.new(meters), @meters_per_km)
 
   defp to_km_per_hour(nil), do: nil
+
   defp to_km_per_hour(meters_per_second),
     do: Decimal.mult(Decimal.new(meters_per_second), @km_per_hour)
 
