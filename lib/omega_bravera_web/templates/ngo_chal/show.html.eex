@@ -13,7 +13,7 @@
       <%= render "challenge_header.html", assigns %>
       <%= render "challenge_details.html", assigns %>
 
-      <%= if active_challenge?(@challenge) do %>
+      <%= if active_challenge?(@challenge) or pre_registration_challenge?(@challenge) do %>
         <div id="donation-form">
           <h4 class="text-center pt-4 pb-3">
             Support
@@ -22,6 +22,7 @@
             <%= if @challenge.type == "PER_MILESTONE" do %>
               <%= render "milestone_challenge_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
             <% end %>
+
             <%= if @challenge.type == "PER_KM" do %>
               <%= render "km_challenge_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
             <% end %>
@@ -115,16 +116,11 @@
  });
 
  if($('#challenge-status-container').hasClass('active')) {
-   var now = moment();
-      var exp = moment('<%= @challenge.end_date %>');
+    init_countdown('<%= render_countdown_date(@challenge.end_date)   %>', "challenge_duration_countdown");
+ }
 
-      var daysLeft = exp.diff(now, 'days');
-      var hours = exp.subtract(daysLeft, 'days').diff(now, 'hours');
-      var minutes = exp.subtract(hours, 'hours').diff(now, 'minutes');
-
-      document.getElementById('days-left').append(daysLeft);
-      document.getElementById('hours-left').append(hours);
-      document.getElementById('mins-left').append(minutes);
+ if($('#challenge-status-container').hasClass('pre_registration')) {
+    init_countdown('<%= render_countdown_date(@challenge.start_date) %>', "challenge_duration_countdown");
  }
 
  var numInputs = document.querySelectorAll('input[type=number]');

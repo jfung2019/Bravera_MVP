@@ -28,7 +28,7 @@
       </div>
       <div class="card">
         <div class="card-body">
-          <p class="card-text"><%= ngo.desc %></p>
+          <p class="card-text"><%= raw ngo.desc %></p>
         </div>
         <div class="card-footer">
           <div class="text-center">

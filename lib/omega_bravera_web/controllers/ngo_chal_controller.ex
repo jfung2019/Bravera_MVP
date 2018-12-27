@@ -16,7 +16,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, %{"ngo_slug" => ngo_slug}) do
-    # TODO slugify this ngo_id request
     ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
     changeset = Challenges.change_ngo_chal(%NGOChal{})
@@ -29,19 +28,39 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
 
-    changeset_params =
-      Map.merge(chal_params, %{
-        "user_id" => current_user.id,
-        "ngo_slug" => ngo_slug,
-        "ngo_id" => ngo.id,
-        "slug" => sluggified_username,
-        "default_currency" => ngo.currency
-      })
+    extra_params = %{
+      "user_id" => current_user.id,
+      "ngo_slug" => ngo_slug,
+      "ngo_id" => ngo.id,
+      "slug" => sluggified_username,
+      "default_currency" => ngo.currency
+    }
 
-    case Challenges.create_ngo_chal(%NGOChal{}, changeset_params) do
+    extra_params =
+      case ngo.open_registration == false and Timex.compare(ngo.utc_launch_date, Timex.now()) == 1 do
+        true ->
+          Map.put(extra_params, "status", "pre_registration")
+
+        _ ->
+          Map.put(extra_params, "status", "active")
+      end
+
+    changeset_params = Map.merge(chal_params, extra_params)
+
+    case Challenges.create_ngo_chal(%NGOChal{}, ngo, changeset_params) do
       {:ok, challenge} ->
         challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
-        Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+
+        case changeset_params["status"] do
+          "pre_registration" ->
+            Challenges.Notifier.send_pre_registration_challenge_sign_up_email(
+              challenge,
+              challenge_path
+            )
+
+          _ ->
+            Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+        end
 
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
@@ -95,6 +114,11 @@ defmodule OmegaBraveraWeb.NGOChalController do
     challenge_path = ngo_ngo_chal_path(conn, :show, ngo_slug, slug) <> "#share"
     redirect(conn, to: challenge_path)
   end
+
+  defp date_tuple_datetime(nil), do: nil
+
+  defp date_tuple_datetime(date_tuple) when is_tuple(date_tuple),
+    do: Timex.to_datetime(date_tuple)
 
   defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset) do
     %{

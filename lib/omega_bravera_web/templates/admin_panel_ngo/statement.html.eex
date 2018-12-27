@@ -1,6 +1,6 @@
 <div class="row mt-2 mb-2 mx-auto">
       <div class="col-4">
-    <%= form_for @conn, admin_panel_ngo_path(@conn, :export_statement, @ngo.slug), [as: :start_date, method: :get], fn f -> %>
+    <%= form_for @conn, admin_panel_ngo_path(@conn, :export_statement, @ngo.slug), [as: :start_date, method: :get], fn _f -> %>
       <select class="custom-select mb-2" name="month" required>
         <option value="">Month</option>
         <option value='1'>January</option>

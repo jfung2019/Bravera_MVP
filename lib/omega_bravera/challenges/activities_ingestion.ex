@@ -14,7 +14,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def process_strava_webhook(
         %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
       ) do
-    Logger.info("Strava POST webhook processing: #{inspect(params)}")
+    Logger.info("ActivityIngestion: Strava POST webhook processing: #{inspect(params)}")
 
     owner_id
     |> Accounts.get_strava_challengers()
@@ -24,9 +24,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def process_strava_webhook(_), do: {:error, :webhook_not_processed}
 
   def process_challenges([hd | _] = challenges, %{"object_id" => object_id}) do
-    Logger.info("Processing challenges")
+    Logger.info("ActivityIngestion: Processing challenges")
     activity = Strava.Activity.retrieve(object_id, %{}, strava_client(hd))
-    Logger.info("Processing activity: #{inspect(activity)}")
+    Logger.info("ActivityIngestion: Processing activity: #{inspect(activity)}")
 
     Enum.map(challenges, fn {challenge_id, _} ->
       challenge_id
@@ -37,7 +37,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   end
 
   def process_challenges([], _) do
-    Logger.info("No challengers found")
+    Logger.info("ActivityIngestion: No challengers found")
     {:error, :no_challengers_found}
   end
 
@@ -46,7 +46,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         %Strava.Activity{distance: distance} = strava_activity
       )
       when distance > 0 do
-    Logger.info("Processing km challenge: #{inspect(challenge.id)}")
+    Logger.info("ActivityIngestion: Processing km challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, _donations} =
       challenge
@@ -56,13 +56,23 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       |> get_donations
       |> notify_participant_of_milestone
 
-    Logger.info("Processing has finished for km challenge: #{inspect(challenge.id)}")
+    Logger.info(
+      "ActivityIngestion: Processing has finished for km challenge: #{inspect(challenge.id)}"
+    )
 
     if status == :ok do
-      Logger.info("Processing was successful for km challenge: #{inspect(challenge.id)}")
+      Logger.info(
+        "ActivityIngestion: Processing was successful for km challenge: #{inspect(challenge.id)}"
+      )
+
       {:ok, :challenge_updated}
     else
-      Logger.info("Processing was not successful for km challenge: #{inspect(challenge.id)}")
+      Logger.info(
+        "ActivityIngestion: Processing was not successful for km challenge: #{
+          inspect(challenge.id)
+        }"
+      )
+
       {:error, :activity_not_processed}
     end
   end
@@ -72,7 +82,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         %Strava.Activity{distance: distance} = strava_activity
       )
       when distance > 0 do
-    Logger.info("Processing milestone challenge: #{inspect(challenge.id)}")
+    Logger.info("ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, donations} =
       challenge
@@ -83,14 +93,18 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       |> notify_participant_of_milestone
       |> charge_donations()
 
-    Logger.info("Processing has finished for milestone challenge: #{inspect(challenge.id)}")
+    Logger.info(
+      "ActivityIngestion: Processing has finished for milestone challenge: #{
+        inspect(challenge.id)
+      }"
+    )
 
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
-      Logger.info("Processing was successful")
+      Logger.info("ActivityIngestion: Processing was successful")
 
       {:ok, :challenge_updated}
     else
-      Logger.info("Processing was not successful (donation issue)")
+      Logger.info("ActivityIngestion: Processing was not successful (donation issue)")
       {:error, :activity_not_processed}
     end
   end
@@ -104,7 +118,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
          activity_type_matches_challenge_activity_type?(activity, challenge) do
       case Repo.insert(changeset) do
         {:ok, activity} -> {:ok, challenge, activity}
-        {:error, _} -> {:error, challenge, nil}
+        {:error, _changeset} -> {:error, challenge, nil}
       end
     else
       {:error, challenge, nil}
@@ -172,11 +186,36 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   defp valid_activity?(activity, challenge) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
-    Timex.compare(challenge.start_date, activity.start_date) == -1 and
-      Timex.compare(challenge.end_date, activity.start_date) >= 0
+    challenge_started_first = Timex.compare(challenge.start_date, activity.start_date) == -1
+    if !challenge_started_first, do: Logger.info("Activity before start date of challenge")
+    activity_started_before_end = Timex.compare(challenge.end_date, activity.start_date) >= 0
+    if !activity_started_before_end, do: Logger.info("Activity started after challenge ended")
+
+    manual_activity =
+      activity.manual == Application.get_env(:omega_bravera, :enable_manual_activities)
+
+    if !manual_activity do
+      Logger.info("Manual activity triggered and blocked")
+      Challenges.Notifier.send_manual_activity_blocked_email(challenge)
+    end
+
+    challenge_started_first and activity_started_before_end and manual_activity
   end
 
-  defp activity_type_matches_challenge_activity_type?(activity, challenge) do
-    activity.type == challenge.activity_type
+  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
+         activity_type: activity_type
+       }),
+       do: true
+
+  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
+         activity_type: challenge_activity_type
+       }) do
+    Logger.info(
+      "Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{
+        activity_type
+      }"
+    )
+
+    false
   end
 end

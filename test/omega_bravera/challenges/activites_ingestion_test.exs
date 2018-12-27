@@ -46,6 +46,16 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       assert {:ok, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity)
     end
 
+    test "returns error when activity is manual and the environment is set to accept only non-manual activities",
+         %{
+           strava_activity: strava_activity
+         } do
+      challenge = insert(:ngo_challenge)
+      strava_activity = Map.put(strava_activity, :manual, true)
+
+      assert {:error, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity)
+    end
+
     test "returns error when activity dates are invalid", %{
       strava_activity: strava_activity
     } do
@@ -76,9 +86,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       assert ActivitiesIngestion.process_challenges(challengers, user.strava.athlete_id) ==
                {:error, :no_challengers_found}
     end
-  end
 
-  describe "process_challenge/2" do
     test "processes challenges if challengers were found", %{
       strava_activity: strava_activity
     } do
@@ -107,6 +115,40 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       end
     end
 
+    test "stops processing if challange is not live" do
+      user = insert(:user, strava: build(:strava, user: nil))
+
+      ngo =
+        insert(
+          :ngo,
+          %{
+            user: user,
+            open_registration: false,
+            pre_registration_start_date: Timex.shift(Timex.now(), days: 3)
+          }
+        )
+
+      challenge =
+        insert(
+          :ngo_challenge,
+          %{
+            ngo: ngo,
+            user: user,
+            status: "pre_registration",
+            start_date: ngo.launch_date
+          }
+        )
+
+      insert(:donation, %{ngo_chal: challenge})
+
+      challengers = Accounts.get_strava_challengers(user.strava.athlete_id)
+
+      assert ActivitiesIngestion.process_challenges(challengers, %{"object_id" => 123_456}) ==
+               {:error, :no_challengers_found}
+    end
+  end
+
+  describe "process_challenge/2" do
     test "does nothing if the Strava activity distance is <= 0" do
       challenge = insert(:ngo_challenge)
 
@@ -155,8 +197,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       challenge = insert(:ngo_challenge)
 
       assert ActivitiesIngestion.process_challenge(
-        challenge, %Strava.Activity{}
-      ) == {:error, :activity_not_processed}
+               challenge,
+               %Strava.Activity{}
+             ) == {:error, :activity_not_processed}
     end
 
     test "updates the challenge with the new covered distance", %{

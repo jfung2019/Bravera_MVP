@@ -1,17 +1,20 @@
 <div class="card challenge-details">
   <div class="container border-bottom">
     <div id="challenge-status-container" class="<%= @challenge.status %>">
-      <%= if active_challenge?(@challenge) do %>
-        <h5 class=" text-500 text-center mt-2 mb-0">
-          <strong id="days-left" class="text-success"></strong> Days,
-          <strong id="hours-left" class="text-success"></strong> Hours,
-          <strong id="mins-left" class="text-success"></strong>  Minutes Left
-        </h5>
-        <p class="text-center mb-0">
-          <%= render_date(@challenge.start_date) %> - <%= render_date(@challenge.end_date) %>
-        </p>
-        <p style="font-size: 12px;" class="text-420 text-center mb-3">(Day/Month/Year)</h6>
-      <% else %>
+      <%= cond do %>
+        <% active_challenge?(@challenge) -> %>
+          <h5 class="text-500 text-center mt-2 mb-0">Challenge ends in<h5>
+          <h3 id="challenge_duration_countdown" class="text-success text-500 text-center mt-2 mb-0"></h3>
+          <p class="text-center mb-0">
+            On <%= render_date(@challenge.end_date) %>
+          </p>
+        <% pre_registration_challenge?(@challenge) -> %>
+          <h5 class="text-500 text-center mt-2 mb-0">Challenge starts in<h5>
+          <h3 id="challenge_duration_countdown" class="text-danger text-500 text-center mt-2 mb-0"></h3>
+          <p class="text-center mb-0">
+            On <%= render_date(@challenge.start_date) %>
+          </p>
+        <% true -> %>
           <h5 class=" text-500 text-center mt-2 mb-0">
             Challenge <%= String.capitalize(@challenge.status) %>
           </h5>

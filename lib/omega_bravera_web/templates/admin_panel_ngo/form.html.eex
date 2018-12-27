@@ -18,14 +18,38 @@
   </div>
 
   <div class="form-group">
+    <%= label f, "Pre-registration start: ", class: "control-label" %>
+    <%= registration_date_builder(f, :pre_registration_start_date, class: "form-control") %>
+    <%= error_tag f, :pre_registration_start_date %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, "Pre-registration end: ", class: "control-label" %>
+    <%= registration_date_builder(f, :launch_date, class: "form-control") %>
+    <%= error_tag f, :launch_date %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :open_registration, class: "control-label" %>
+    <%= checkbox f, :open_registration %>
+    <%= error_tag f, :open_registration %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :hidden, class: "control-label" %>
+    <%= checkbox f, :hidden %>
+    <%= error_tag f, :hidden %>
+  </div>
+
+  <div class="form-group">
     <%= label f, "Description (displayed on /ngos)", class: "control-label" %>
-    <%= text_input f, :desc, class: "form-control" %>
+    <%= textarea f, :desc, class: "form-control", rows: 3 %>
     <%= error_tag f, :desc %>
   </div>
 
   <div class="form-group">
     <%= label f, "Full description (displayed on /ngo/new)", class: "control-label" %>
-    <%= text_input f, :full_desc, class: "form-control" %>
+    <%= textarea f, :full_desc, class: "form-control", rows: 3 %>
     <%= error_tag f, :full_desc %>
   </div>
 
@@ -72,6 +96,11 @@
   <div class="form-group">
     <%= label f, :durations, class: "control-label" %>
     <%= multiple_select f, :durations, @available_durations, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :challenge_types, class: "control-label" %>
+    <%= multiple_select f, :challenge_types, @available_challenge_type_options, class: "form-control" %>
   </div>
 
   <div class="form-group">

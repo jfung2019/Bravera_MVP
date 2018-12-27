@@ -60,7 +60,12 @@ defmodule OmegaBravera.Challenges do
       preload: ^preloads,
       order_by: [desc: :start_date],
       group_by: nc.id,
-      select: %{nc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance)}
+      select: %{
+        nc
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+          start_date: fragment("? at time zone 'utc'", nc.start_date),
+          end_date: fragment("? at time zone 'utc'", nc.end_date)
+      }
     )
     |> Repo.all()
   end
@@ -106,7 +111,12 @@ defmodule OmegaBravera.Challenges do
         where: nc.slug == ^slug and n.slug == ^ngo_slug,
         preload: ^preloads,
         group_by: nc.id,
-        select: %{nc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance)}
+        select: %{
+          nc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+            start_date: fragment("? at time zone 'utc'", nc.start_date),
+            end_date: fragment("? at time zone 'utc'", nc.end_date)
+        }
       )
 
     Repo.one(query)
@@ -189,9 +199,9 @@ defmodule OmegaBravera.Challenges do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_ngo_chal(%NGOChal{} = chal, attrs \\ %{}) do
+  def create_ngo_chal(%NGOChal{} = chal, %NGO{} = ngo, attrs \\ %{}) do
     chal
-    |> NGOChal.create_changeset(attrs)
+    |> NGOChal.create_changeset(ngo, attrs)
     |> Repo.insert()
   end
 
@@ -204,16 +214,23 @@ defmodule OmegaBravera.Challenges do
       [%NGOChal{}, ...]
 
   """
-  def list_ngo_chals() do
-    Repo.all(NGOChal)
+  def list_ngo_chals(preloads \\ [:user, :ngo, :donations]) do
+    from(nc in NGOChal,
+      left_join: a in Activity,
+      on: nc.id == a.challenge_id,
+      preload: ^preloads,
+      group_by: nc.id,
+      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)}
+    )
+    |> Repo.all()
   end
 
-  def list_ngo_chals_preload() do
-    NGOChal
+  def get_live_ngo_chals() do
+    from(
+      nc in NGOChal,
+      where: nc.status == "pre_registration" and nc.start_date < ^Timex.now()
+    )
     |> Repo.all()
-    |> Repo.preload(:user)
-    |> Repo.preload(:ngo)
-    |> Repo.preload(:donations)
   end
 
   @doc """

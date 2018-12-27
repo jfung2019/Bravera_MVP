@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.NGOChalView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.{Challenges.NGOChal, Trackers.Strava, Accounts.User}
+  alias OmegaBravera.{Fundraisers.NGO, Challenges.NGOChal, Trackers.Strava, Accounts.User}
 
   def user_full_name(%User{} = user), do: User.full_name(user)
 
@@ -13,6 +13,14 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def active_challenge?(%NGOChal{status: "active"}), do: true
   def active_challenge?(%NGOChal{}), do: false
+
+  def pre_registration_challenge?(%NGOChal{status: "pre_registration"}), do: true
+  def pre_registration_challenge?(%NGOChal{}), do: false
+
+  def pre_registration_ngo?(%NGO{open_registration: false} = ngo),
+    do: Timex.after?(ngo.launch_date, Timex.now("Asia/Hong_Kong"))
+
+  def pre_registration_ngo?(%NGO{}), do: false
 
   def challenger_not_self_donated?(%NGOChal{user_id: user_id, self_donated: false}, %User{
         id: user_id
@@ -116,25 +124,24 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
     [
       content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1", style: "text-align: left;") do
-          content_tag(:div, class: "d-flex justify-content-between bd-highlight mb-3") do
-            [
-              content_tag(:span, "0", class: "p-2 " <> label_class),
-              content_tag(:div, class: "progress km-chal-progress") do
-                content_tag(:div, "",
-                  class: "progress-bar bg-bravera",
-                  style: "width: #{percentage}%",
-                  role: "progressbar",
-                  "aria-valuenow": "",
-                  "aria-valuemin": "0",
-                  "aria-valuemax": ""
-                )
-              end,
-              content_tag(:span, class: "p-2 text-secondary") do
-                content_tag(:strong, "#{distance_target}KM", class: total_class)
-              end
-            ]
-          end
-
+        content_tag(:div, class: "d-flex justify-content-between bd-highlight mb-3") do
+          [
+            content_tag(:span, "0", class: "p-2 " <> label_class),
+            content_tag(:div, class: "progress km-chal-progress") do
+              content_tag(:div, "",
+                class: "progress-bar bg-bravera",
+                style: "width: #{percentage}%",
+                role: "progressbar",
+                "aria-valuenow": "",
+                "aria-valuemin": "0",
+                "aria-valuemax": ""
+              )
+            end,
+            content_tag(:span, class: "p-2 text-secondary") do
+              content_tag(:strong, "#{distance_target}KM", class: total_class)
+            end
+          ]
+        end
       end,
       content_tag(:div, "", style: "clear: both;")
     ]
@@ -151,19 +158,21 @@ defmodule OmegaBraveraWeb.NGOChalView do
     content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
       [
         "Total Pledged ",
-        content_tag(
-          :i,
+        content_tag(:i,
           class: "fa fa-question-circle-o text-secondary fa-1",
           data: [
             container: "body",
             toggle: "popover",
             placement: "top",
             title: "Total pledged",
-            content: "means 'not yet secured' by either reaching a milestone or finishing a challenge.",
+            content:
+              "means 'not yet secured' by either reaching a milestone or finishing a challenge.",
             trigger: "focus"
           ],
           tabindex: "0",
-          id: "pledged_tooltip") do end,
+          id: "pledged_tooltip"
+        ) do
+        end,
         content_tag(:span, class: "float-right") do
           content_tag(
             :strong,
@@ -185,19 +194,21 @@ defmodule OmegaBraveraWeb.NGOChalView do
     content_tag(:h5, class: "text-420 mt-2 mb-1 ml-1 text-left #{color}") do
       [
         "Total Secured ",
-        content_tag(
-          :i,
+        content_tag(:i,
           class: "fa fa-question-circle-o text-secondary fa-1",
           data: [
             container: "body",
             toggle: "popover",
             placement: "top",
             title: "Total secured",
-            content: "the transaction has been made after hitting a milestone or challenge is completed.",
+            content:
+              "the transaction has been made after hitting a milestone or challenge is completed.",
             trigger: "focus"
           ],
           tabindex: "0",
-          id: "secured_tooltip") do end,
+          id: "secured_tooltip"
+        ) do
+        end,
         content_tag(:span, class: "float-right") do
           content_tag(
             :strong,
@@ -225,10 +236,10 @@ defmodule OmegaBraveraWeb.NGOChalView do
         %Decimal{} = total_km_pledges,
         distance_target
       ) do
-        Decimal.mult(total_km_pledges, distance_target)
-        |> Decimal.round(1)
-        |> Decimal.to_string()
-      end
+    Decimal.mult(total_km_pledges, distance_target)
+    |> Decimal.round(1)
+    |> Decimal.to_string()
+  end
 
   def render_current_pledges(nil, _), do: 0
 

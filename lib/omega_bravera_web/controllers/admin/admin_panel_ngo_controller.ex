@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.AdminPanelNGOController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Accounts, Fundraisers, Slugify}
+  alias OmegaBravera.{Accounts, Fundraisers, Slugify, Challenges}
   alias OmegaBravera.Fundraisers.NGO
 
   use Timex
@@ -47,17 +47,25 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
   end
 
   def edit(conn, %{"slug" => slug}) do
-    ngo = slug |> Fundraisers.get_ngo_by_slug()
+    ngo = slug |> Fundraisers.get_ngo_by_slug_with_hk_time()
     users = Accounts.list_users()
     changeset = ngo |> Fundraisers.change_ngo()
     render(conn, "edit.html", ngo: ngo, users: users, changeset: changeset)
   end
 
   def update(conn, %{"slug" => slug, "ngo" => ngo_params}) do
-    ngo = slug |> Fundraisers.get_ngo_by_slug()
+    ngo = slug |> Fundraisers.get_ngo_by_slug_with_hk_time()
 
     case Fundraisers.update_ngo(ngo, ngo_params) do
-      {:ok, _ngo} ->
+      {:ok, updated_ngo} ->
+        # Update all pre_registration challenges' start date
+        ngo.ngo_chals
+        |> Enum.map(fn challenge ->
+          if challenge.status == "pre_registration" do
+            Challenges.update_ngo_chal(challenge, %{start_date: updated_ngo.launch_date})
+          end
+        end)
+
         conn
         |> put_flash(:info, "NGO updated successfully.")
         |> redirect(to: admin_panel_ngo_path(conn, :index))
@@ -118,5 +126,6 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
     |> assign(:available_activities, Fundraisers.available_activities())
     |> assign(:available_distances, Fundraisers.available_distances())
     |> assign(:available_durations, Fundraisers.available_durations())
+    |> assign(:available_challenge_type_options, Fundraisers.available_challenge_type_options())
   end
 end

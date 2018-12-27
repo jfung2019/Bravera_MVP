@@ -6,8 +6,120 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   alias OmegaBravera.Challenges.{NGOChal, Notifier}
   alias OmegaBravera.Accounts.User
 
+  test "manual_activity_blocked_email" do
+    challenge = insert(:ngo_challenge)
+
+    email = Notifier.manual_activity_blocked_email(challenge)
+
+    assert email == %SendGrid.Email{
+             __phoenix_layout__: nil,
+             __phoenix_view__: nil,
+             attachments: nil,
+             cc: nil,
+             content: nil,
+             custom_args: nil,
+             headers: nil,
+             reply_to: nil,
+             send_at: nil,
+             subject: nil,
+             from: %{email: "admin@bravera.co", name: "Bravera"},
+             substitutions: %{
+               "-participantName-" => "John"
+             },
+             template_id: "fcd40945-8a55-4459-94b9-401a995246fb",
+             to: [%{email: challenge.user.email}],
+             bcc: [%{email: "admin@bravera.co"}]
+           }
+  end
+
+  test "send_manual_activity_blocked_email/1 sends the email" do
+    challenge = insert(:ngo_challenge)
+    assert Notifier.send_manual_activity_blocked_email(challenge) == :ok
+  end
+
+  test "challenge_activated_email" do
+    challenge = insert(:ngo_challenge)
+
+    email = Notifier.challenge_activated_email(challenge, "/swcc/John-512")
+
+    assert email == %SendGrid.Email{
+             __phoenix_layout__: nil,
+             __phoenix_view__: nil,
+             attachments: nil,
+             cc: nil,
+             content: nil,
+             custom_args: nil,
+             headers: nil,
+             reply_to: nil,
+             send_at: nil,
+             subject: nil,
+             from: %{email: "admin@bravera.co", name: "Bravera"},
+             substitutions: %{
+               "-challengeLink-" => "https://bravera.co/swcc/John-512",
+               "-firstName-" => "John"
+             },
+             template_id: "75516ad9-3ce8-4742-bd70-1227ce3cba1d",
+             to: [%{email: challenge.user.email}],
+             bcc: [%{email: "admin@bravera.co"}]
+           }
+  end
+
+  test "send_challenge_activated_email/2 sends the email" do
+    challenge = insert(:ngo_challenge)
+    assert Notifier.send_challenge_activated_email(challenge, "/swcc/John-582") == :ok
+  end
+
+  test "pre_registration_challenge_signup_email" do
+    challenge = insert(:ngo_challenge)
+
+    challenge = %{
+      challenge
+      | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
+    }
+
+    email = Notifier.pre_registration_challenge_signup_email(challenge, "/swcc/John-512")
+
+    assert email == %SendGrid.Email{
+             __phoenix_layout__: nil,
+             __phoenix_view__: nil,
+             attachments: nil,
+             cc: nil,
+             content: nil,
+             custom_args: nil,
+             headers: nil,
+             reply_to: nil,
+             send_at: nil,
+             subject: nil,
+             from: %{email: "admin@bravera.co", name: "Bravera"},
+             substitutions: %{
+               "-kms-" => "#{challenge.distance_target} Km",
+               "-causeName-" => "Save the children worldwide",
+               "-challengeLink-" => "https://bravera.co/swcc/John-512",
+               "-yearMonthDay-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
+               "-days-" => "5 days",
+               "-firstName-" => "John",
+               "-fundraisingGoal-" => "2000"
+             },
+             template_id: "0e8a21f6-234f-4293-b5cf-fc9805042d82",
+             to: [%{email: challenge.user.email}],
+             bcc: [%{email: "admin@bravera.co"}]
+           }
+  end
+
+  test "send_pre_registration_challenge_signup_email/2 sends the email" do
+    challenge = insert(:ngo_challenge)
+
+    assert Notifier.send_pre_registration_challenge_sign_up_email(challenge, "/swcc/John-582") ==
+             :ok
+  end
+
   test "challenge_signup_email" do
     challenge = insert(:ngo_challenge)
+
+    challenge = %{
+      challenge
+      | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
+    }
 
     email = Notifier.challenge_signup_email(challenge, "/swcc/John-512")
 

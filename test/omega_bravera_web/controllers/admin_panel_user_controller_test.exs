@@ -14,7 +14,7 @@ defmodule OmegaBraveraWeb.Admin.UserControllerTest do
     firstname: "some firstname",
     lastname: "some lastname",
     athlete_id: 123_456,
-    token: "132kans81h23",
+    token: "132kans81h23"
   }
 
   setup %{conn: conn} do

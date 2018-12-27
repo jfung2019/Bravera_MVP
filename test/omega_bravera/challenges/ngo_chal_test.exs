@@ -24,7 +24,7 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
       "type" => "Per Goal"
     }
 
-    changeset = NGOChal.create_changeset(%NGOChal{}, attrs)
+    changeset = NGOChal.create_changeset(%NGOChal{}, ngo, attrs)
 
     assert changeset.valid? == true
     assert changeset.changes[:start_date] != nil

@@ -8,7 +8,7 @@ defmodule OmegaBraveraWeb.AdminPanelChallengesController do
   plug(:assign_available_options when action in [:edit])
 
   def index(conn, _params) do
-    challenges = Challenges.list_ngo_chals_preload()
+    challenges = Challenges.list_ngo_chals()
     render(conn, "index.html", challenges: challenges)
   end
 
