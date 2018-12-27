@@ -134,9 +134,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     {:ok, updated, activity}
   end
 
-  defp update_challenge({:error, _, _} = params) do
-    params
-  end
+  defp update_challenge({:error, _, _} = params), do: params
 
   defp notify_participant_of_activity({status, challenge, activity} = params) do
     if status == :ok do

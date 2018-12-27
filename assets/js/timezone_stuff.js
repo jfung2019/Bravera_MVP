@@ -27,3 +27,10 @@ export default function(launch_date, element) {
     }
   }, 1000);
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-render-date]').forEach((el) => {
+    const date = new Date(el.getAttribute('data-render-date'));
+    el.textContent = Intl.DateTimeFormat('en-gb', {year: 'numeric', day: 'numeric', month: 'long'}).format(date);
+  });
+});

@@ -1,4 +1,5 @@
 defmodule OmegaBraveraWeb.ViewHelpers do
+  import Phoenix.HTML.Tag, only: [tag: 2]
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Accounts.AdminUser
 
@@ -53,13 +54,12 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   end
 
   def render_date(date_time) do
-    {:ok, formatted_date_time} =
+    formatted_date_time =
       date_time
       |> Timex.to_datetime()
-      |> Timex.to_datetime("Asia/Hong_Kong")
-      |> Timex.format("%d %B %Y", :strftime)
+      |> DateTime.to_iso8601()
 
-    formatted_date_time
+    tag(:span, "data-render-date": formatted_date_time)
   end
 
   def render_activity(nil), do: 0

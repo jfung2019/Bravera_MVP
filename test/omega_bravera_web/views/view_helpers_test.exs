@@ -10,6 +10,10 @@ defmodule OmegaBraveraWeb.ViewHelpersTest do
 
   test "can render date from datetime" do
     {:ok, date_time, _utc_offset} = DateTime.from_iso8601("2018-10-11T03:01:37.803379Z")
-    assert ViewHelpers.render_date(date_time) == "11 October 2018"
+    assert ViewHelpers.render_date(date_time) == {:safe, [60, "span", [[32, "data-render-date", 61, 34, "2018-10-11T03:01:37.803379Z", 34]], 62]}
+  end
+
+  test "tuple renders span tag with data attribute to be parsed properly" do
+    assert ViewHelpers.render_date({{2000, 1, 1}, {13, 30, 15}}) == {:safe, [60, "span", [[32, "data-render-date", 61, 34, "2000-01-01T13:30:15Z", 34]], 62]}
   end
 end

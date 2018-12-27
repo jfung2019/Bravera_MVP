@@ -41,8 +41,7 @@ config :omega_bravera,
 config :omega_bravera, :app_base_url, System.get_env("APP_BASE_URL") || "https://bravera.co"
 
 # Manual activities
-config :omega_bravera,
-       :enable_manual_activities, false
+config :omega_bravera, :enable_manual_activities, false
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
