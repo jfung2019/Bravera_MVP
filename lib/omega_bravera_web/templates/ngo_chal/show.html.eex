@@ -115,19 +115,11 @@
    $(this).parent().remove()
  });
 
- if($('#challenge-status-container').hasClass('active')) {
-    init_countdown('<%= render_countdown_date(@challenge.end_date)   %>', "challenge_duration_countdown");
- }
-
- if($('#challenge-status-container').hasClass('pre_registration')) {
-    init_countdown('<%= render_countdown_date(@challenge.start_date) %>', "challenge_duration_countdown");
- }
-
  var numInputs = document.querySelectorAll('input[type=number]');
 
  numInputs.forEach(function (input) {
    input.addEventListener('change', function (e) {
-     if (e.target.value == '') {
+     if (e.target.value === '') {
        e.target.value = 0
      }
    })

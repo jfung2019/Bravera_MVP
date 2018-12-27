@@ -73,17 +73,13 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     |> Time.to_string()
   end
 
-  def render_countdown_date(nil), do: ""
+  def render_countdown_date(nil), do: {:safe, ""}
 
-  def render_countdown_date(%DateTime{} = datetime) do
-    datetime
-    |> Timex.to_datetime()
-    |> DateTime.to_iso8601()
-  end
-
-  def render_countdown_date(datetime) when is_tuple(datetime) do
-    datetime
-    |> Timex.to_datetime()
-    |> DateTime.to_iso8601()
+  def render_countdown_date(datetime) do
+    formatted_date_time =
+      datetime
+      |> Timex.to_datetime()
+      |> DateTime.to_iso8601()
+    tag(:span, "data-render-countdown": formatted_date_time)
   end
 end
