@@ -5,10 +5,6 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def user_full_name(%User{} = user), do: User.full_name(user)
 
-  def user_profile_pic(%Strava{athlete_id: athlete_id}) do
-    "https://www.strava.com/athletes/#{Integer.to_string(athlete_id)}/avatar?size=large"
-  end
-
   def user_profile_pic(nil), do: ""
 
   def active_challenge?(%NGOChal{status: "active"}), do: true

@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
   use Timex
   alias Numbers
 
-  alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money}
+  alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money, Repo}
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Slugify
@@ -115,11 +115,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
     redirect(conn, to: challenge_path)
   end
 
-  defp date_tuple_datetime(nil), do: nil
-
-  defp date_tuple_datetime(date_tuple) when is_tuple(date_tuple),
-    do: Timex.to_datetime(date_tuple)
-
   defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset) do
     %{
       challenge: challenge,
@@ -128,7 +123,8 @@ defmodule OmegaBraveraWeb.NGOChalController do
       stats: get_stats(challenge),
       donors: Accounts.latest_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
-      current_user: Guardian.Plug.current_resource(conn)
+      current_user: Guardian.Plug.current_resource(conn),
+      profile_picture: get_profile_picture_link(challenge.user)
     }
   end
 
@@ -139,12 +135,24 @@ defmodule OmegaBraveraWeb.NGOChalController do
       donors: Accounts.latest_km_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug)
+      total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
+      profile_picture: get_profile_picture_link(challenge.user)
     }
   end
 
   defp assign_available_options(conn, _opts) do
     conn
     |> assign(:available_challenge_types, Challenges.available_challenge_types())
+  end
+
+  defp get_profile_picture_link(user) do
+    user = user |> Repo.preload(:strava)
+    %Strava.Athlete{profile: profile} =
+      Strava.Athlete.retrieve(
+        user.strava.athlete_id,
+        Strava.Client.new(user.strava.token)
+      )
+
+    profile
   end
 end
