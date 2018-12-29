@@ -46,9 +46,10 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       assert {:ok, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity)
     end
 
-    test "returns error when activity is manual and the environment is set to accept only non-manual activities", %{
-      strava_activity: strava_activity
-    } do
+    test "returns error when activity is manual and the environment is set to accept only non-manual activities",
+         %{
+           strava_activity: strava_activity
+         } do
       challenge = insert(:ngo_challenge)
       strava_activity = Map.put(strava_activity, :manual, true)
 
@@ -196,8 +197,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       challenge = insert(:ngo_challenge)
 
       assert ActivitiesIngestion.process_challenge(
-        challenge, %Strava.Activity{}
-      ) == {:error, :activity_not_processed}
+               challenge,
+               %Strava.Activity{}
+             ) == {:error, :activity_not_processed}
     end
 
     test "updates the challenge with the new covered distance", %{

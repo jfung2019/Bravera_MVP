@@ -103,6 +103,3 @@ config :omega_bravera, OmegaBravera.Repo,
   pool_size: 10
 
 config :omega_bravera, :app_base_url, "http://localhost:4000"
-
-# Manual activities
-config :omega_bravera, :enable_manual_activities, not is_nil(System.get_env("ENABLE_MANUAL_ACTIVITIES"))
