@@ -16,7 +16,9 @@
                 Choose a challenge, invite sponsors,
                 and raise money.
               </p>
-              <%= link("Get Started", class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index), role: "button", style: "width: 175px;") %>
+              <div class="text-center text-md-left">
+                <%= link("Get Started", class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index)) %>
+              </div>
             </div>
             <div class="col-md-6 col-12 offset-md-2">
               <%= img_tag(static_path(@conn, "/images/landing/phone.png"), class: "img-fluid") %>
@@ -41,22 +43,23 @@
   	</div>
   </div>
 
-	<div class="row challenge-section">
-    	<div class="col-md-8 offset-md-2">
-          <div class="row">
-            <div class="col-md-8 offset-md-2 challenge-text">
-              <h3>Challenges for good</h3>
-              <h5 class="text-center mb-3">
-                Bravera helps you achieve your goals meaningfully.
-              </h5>
-              <p>
-                We combine fitness and fundraising: Connect your fitness tracker, accept a charity fundraising fitness challenge, invite sponsors, and raise money while you train!
-              </p>
-              <p>
-                Your challenge is broken down into attainable milestones that automatically unlock funds for causes as you achieve them.
-              </p>
-            </div>
-          </div>
+  <div class="row watch-section">
+    <div class="col-8 offset-2 col-md-2 offset-md-3 text-center text-md-left">
+			<%= img_tag(static_path(@conn, "/images/landing/watch.png"), class: "img-fluid") %>
+    </div>
+    <div class="col-12 col-md-6 bravera-explanation">
+      <h2>What is Bravera?</h2>
+      <p>
+        Our online platform connects the activity from your fitness tracker,<br class="d-none d-md-block">
+        such as Strava, to a charity or cause that's close to your heart.
+      </p>
+      <h2>Why Bravera?</h2>
+      <p>
+        Sometimes we need that extra motivation to achieve our fitness goals.<br class="d-none d-md-block">
+        We do this by bringing people together to be healthy and create social<br class="d-none d-md-block">
+        impact. Together, with friends and fellow fundraisers, Bravera is with<br class="d-none d-md-block">
+        you every step of the way.
+      </p>
     </div>
   </div>
 </div>

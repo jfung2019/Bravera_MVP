@@ -6,6 +6,8 @@ $theme-colors: (
   "background": #F9F5F5
 );
 
+$bravera-red: #F5274B;
+
 @import "bootstrap";
 @import "font-awesome";
 
@@ -404,6 +406,13 @@ div.page-index {
     color: white;
     .row:first-child > div {
       align-self: center;
+      .btn {
+        width: 175px;
+        border-radius: 20px;
+      }
+      @include media-breakpoint-down(sm) {
+        margin-bottom: 4%;
+      }
     }
     img.fluid-image {
       width: 20%;
@@ -423,24 +432,18 @@ div.page-index {
     }
   }
 
-  .challenge-section {
-    img {
-      width:100%;
-      height:auto;
-      margin:auto;
-      padding-top:70px;
-      padding-bottom:50px;
-    }
-    .challenge-text {
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      h3, h5, p {
-        text-align: center;
+  $watch-padding: 5%;
+  .watch-section {
+    padding-top: $watch-padding;
+    padding-bottom: $watch-padding;
+    background-color: #F2EEEF;
+    .bravera-explanation {
+      h2 {
+        color: $bravera-red;
+        margin-bottom: 3%;
       }
       p {
-        margin-top: 0;
-        margin-bottom: 1rem;
+        color: grey;
       }
     }
   }
