@@ -2,10 +2,11 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   import Phoenix.HTML.Tag, only: [tag: 2]
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Accounts.AdminUser
+  alias OmegaBravera.Challenges.NGOChal
 
   def logged_in?(conn) do
     user = Guardian.Plug.current_resource(conn)
-    if user !== nil, do: true
+    if user !== nil, do: true, else: false
   end
 
   def has_tracker?(conn) do
@@ -27,6 +28,9 @@ defmodule OmegaBraveraWeb.ViewHelpers do
         false
     end
   end
+
+  def is_own_challenge?(%NGOChal{} = challenge, %User{} = user), do: challenge.user.id == user.id
+  def is_own_challenge?(_, _), do: false
 
   def render_datetime(nil), do: ""
 
