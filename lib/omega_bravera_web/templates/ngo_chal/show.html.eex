@@ -39,7 +39,7 @@
       </div>
       <div class="card-footer text-center">
         <%= if is_own_challenge?(@challenge, @current_user) do %>
-          <%= link("View Challenges", to: ngo_ngo_chal_path(@conn, :new, @ngo.slug), class: "btn btn-bravera mb-2") %>
+          <%= link("View Challenges", to: ngo_ngo_chal_path(@conn, :new, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %>
         <% else %>
           <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %>
           <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
