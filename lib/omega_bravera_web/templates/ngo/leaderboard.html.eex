@@ -21,14 +21,20 @@
             <thead>
               <tr>
                 <th scope="col">Rank</th>
-                <th scope="col">Challenger</th>
+                <th scope="col"></th>
+                <th scope="col">Participant</th>
+                <th scope="col">Pledged</th>
+                <th scope="col">Secured</th>
               </tr>
             </thead>
             <tbody>
               <%= for {challenge, index} <- Enum.with_index(@challenges) do %>
                 <tr>
                   <td><%= index + 1 %></td>
+                  <td>avatar</td>
                   <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                  <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
+                  <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
                 </tr>
               <% end %>
             </tbody>
