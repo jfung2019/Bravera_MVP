@@ -71,7 +71,7 @@
         <% end %>
       </div>
       <div class="card-body text-center mx-3 pb-2">
-        <h6><%= link("View Leaderboard", to: ngo_ngo_path(@conn, :leaderboard, @challenge.ngo.slug)) %></h6>
+        <h6><%= link("View Leaderboard", to: ngo_ngo_path(@conn, :leaderboard, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %></h6>
       </div>
     </div>
   </div>
