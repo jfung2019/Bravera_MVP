@@ -5,7 +5,9 @@
       <h4 class="text-green mb-0">
         Challenge starts in:
       </h4>
-      <h3 id="countdown" class="font-weight-bold mt-3 mb-3 text-danger"></h3>
+      <h3 id="countdown" class="font-weight-bold mt-3 mb-3 text-danger">
+        <%= render_countdown_date(@ngo.launch_date) %>
+      </h3>
 
       <label for="ngo_chal_activity">
         <h4 class="text-green mb-0">
@@ -137,8 +139,6 @@
         + "KM per day."
       );
     });
-
-    init_countdown("<%= render_countdown_date(@ngo.launch_date) %>", "countdown");
   });
 
   function calculate_avg_km_per_day(kms, days) {

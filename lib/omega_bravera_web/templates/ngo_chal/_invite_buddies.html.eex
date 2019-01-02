@@ -8,7 +8,7 @@
           <div class="form-group col-4 mb-0 pr-0">
             <input name="buddies[1][name]" type="text" value="" placeholder="Name" class="form-control" />
           </div>
-          <div class="form-group col-5 mb-0 pl-1">
+          <div class="form-group col-8 mb-0 pl-1">
             <input name="buddies[1][email]" type="text" value="" placeholder="Email" class="form-control"/>
           </div>
         </div>
@@ -16,7 +16,7 @@
           <div class="form-group col-4 mb-0 pr-0">
             <input name="buddies[2][name]" type="text" value="" placeholder="Name" class="form-control" />
           </div>
-          <div class="form-group col-5 mb-0 pl-1">
+          <div class="form-group col-8 mb-0 pl-1">
             <input name="buddies[2][email]" type="text" value="" placeholder="Email" class="form-control"/>
           </div>
         </div>
