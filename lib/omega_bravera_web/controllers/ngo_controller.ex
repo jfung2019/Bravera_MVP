@@ -16,7 +16,9 @@ defmodule OmegaBraveraWeb.NGOController do
 
   def leaderboard(conn, %{"ngo_slug" => slug}) do
     ngo = Fundraisers.get_ngo_by_slug(slug)
-    challenges = Challenges.get_ngo_ngo_chals(ngo) |> add_stats()
+    challenges = Challenges.get_ngo_ngo_chals(ngo)
+    |> add_stats()
+    |> add_profile_picture()
 
     render(conn, "leaderboard.html", %{ngo: ngo, challenges: challenges})
   end
@@ -26,6 +28,12 @@ defmodule OmegaBraveraWeb.NGOController do
       challenge
       |> Map.put(:total_secured, get_total_secured(challenge))
       |> Map.put(:total_pledged, get_total_pledged(challenge))
+    end)
+  end
+
+  defp add_profile_picture(challenges) do
+    Enum.map(challenges, fn challenge ->
+      Map.put(challenge, :participant_profile_picture, get_profile_picture_link(challenge.user))
     end)
   end
 

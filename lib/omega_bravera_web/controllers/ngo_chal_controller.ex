@@ -144,15 +144,4 @@ defmodule OmegaBraveraWeb.NGOChalController do
     conn
     |> assign(:available_challenge_types, Challenges.available_challenge_types())
   end
-
-  defp get_profile_picture_link(user) do
-    user = user |> Repo.preload(:strava)
-    %Strava.Athlete{profile: profile} =
-      Strava.Athlete.retrieve(
-        user.strava.athlete_id,
-        Strava.Client.new(user.strava.token)
-      )
-
-    profile
-  end
 end

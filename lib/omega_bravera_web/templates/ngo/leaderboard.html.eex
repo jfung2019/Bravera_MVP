@@ -17,28 +17,36 @@
             <%= @ngo.name %>
           </h2>
           <p class="lead">Challenges Leaderboard</p>
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Rank</th>
-                <th scope="col"></th>
-                <th scope="col">Participant</th>
-                <th scope="col">Pledged</th>
-                <th scope="col">Secured</th>
-              </tr>
-            </thead>
-            <tbody>
-              <%= for {challenge, index} <- Enum.with_index(@challenges) do %>
+          <div class="table-responsive">
+            <table class="table table-striped table-sm">
+              <thead>
                 <tr>
-                  <td><%= index + 1 %></td>
-                  <td>avatar</td>
-                  <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
-                  <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
-                  <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Profile</th>
+                  <th scope="col">Participant</th>
+                  <th scope="col">Pledged</th>
+                  <th scope="col">Secured</th>
                 </tr>
-              <% end %>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <%= for {challenge, index} <- Enum.with_index(@challenges) do %>
+                  <tr>
+                    <td><%= index + 1 %></td>
+                    <td>
+                      <div class="leaderboard-avatars mx-auto">
+                        <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
+                          <img class="thumbnail img-fluid rounded-circle border border-bravera" src="<%= challenge.participant_profile_picture %>">
+                        <% end %>
+                      </div>
+                    </td>
+                    <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                    <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
+                    <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
           <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @ngo.slug), class: "btn btn-green sign-up") %>
           <%= link("View all Challenges", to: ngo_path(@conn, :index), class: "btn btn-green sign-up") %>
         </div>

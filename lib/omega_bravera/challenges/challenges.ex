@@ -126,13 +126,13 @@ defmodule OmegaBravera.Challenges do
     query =
       from(nc in NGOChal,
         where: nc.ngo_id == ^ngo.id,
-        join: u in User,
-        on: u.id == nc.user_id,
-        left_join: d in Donation,
-        on: d.ngo_chal_id == nc.id and d.status == "charged",
-        preload: [:user, :donations],
-        group_by: [nc.id],
-        order_by: [desc: sum(fragment("coalesce(?,0)", d.amount))]
+        left_join: user in assoc(nc, :user),
+        left_join: strava in assoc(user, :strava),
+        left_join: donations in assoc(nc, :donations),
+        on: donations.ngo_chal_id == nc.id and donations.status == "charged",
+        preload: [user: {user, strava: strava}, donations: donations],
+        group_by: [nc.id, donations.id, user.id, strava.id],
+        order_by: [desc: sum(fragment("coalesce(?,0)", donations.amount))]
       )
 
     Repo.all(query)
@@ -152,14 +152,20 @@ defmodule OmegaBravera.Challenges do
   end
 
   def get_per_km_challenge_total_pledges(slug) do
-    from(
-      nc in NGOChal,
-      where: nc.type == "PER_KM" and nc.slug == ^slug,
-      left_join: donations in assoc(nc, :donations),
-      on: donations.ngo_chal_id == nc.id,
-      select: sum(donations.amount)
-    )
-    |> Repo.one()
+    km_pledges =
+      from(
+        nc in NGOChal,
+        where: nc.type == "PER_KM" and nc.slug == ^slug,
+        left_join: donations in assoc(nc, :donations),
+        on: donations.ngo_chal_id == nc.id,
+        select: sum(donations.amount)
+      )
+      |> Repo.one()
+
+    case km_pledges do
+      nil -> Decimal.new(0)
+      _ -> km_pledges
+    end
   end
 
   def get_per_km_challenge_total_secured(slug) do
