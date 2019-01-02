@@ -29,9 +29,16 @@ defmodule OmegaBraveraWeb.NGOController do
     end)
   end
 
-  defp get_total_secured(%NGOChal{} = challenge),
+  defp get_total_secured(%NGOChal{type: "PER_MILESTONE"} = challenge),
    do: get_stats(challenge) |> get_in(["total", "charged"] || 0)
+
+  defp get_total_secured(%NGOChal{type: "PER_KM"} = challenge) do
+    challenge = Challenges.get_ngo_chal!(challenge.id)
+    Decimal.mult(Challenges.get_per_km_challenge_total_pledges(challenge.slug), challenge.distance_covered)
+    |> Decimal.round(1)
+  end
 
   defp get_total_pledged(%NGOChal{} = challenge),
    do: get_stats(challenge) |> get_in(["total", "pending"] || 0)
+
 end
