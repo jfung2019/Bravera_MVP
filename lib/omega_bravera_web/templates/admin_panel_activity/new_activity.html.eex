@@ -1,0 +1,7 @@
+<div class="container">
+  <h2>New Activity</h2>
+  
+  <%= render "new_activity_form.html", Map.put(assigns, :action, admin_panel_activity_path(@conn, :create)) %>
+  
+  <span><%= link "Back", to: admin_panel_activity_path(@conn, :index) %></span>
+</div>

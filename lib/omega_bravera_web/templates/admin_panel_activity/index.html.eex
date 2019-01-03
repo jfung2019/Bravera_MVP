@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col-6 offset-2">
+    <h2>Listing Activities Created by Admin</h2>
+
+    <span><%= link "Create New Activity", to: admin_panel_activity_path(@conn, :new) %></span>
+    <br />
+    <span><%= link "Import New Activity from Strava", to: admin_panel_activity_path(@conn, :new) %></span>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for activity <- @activities do %>
+          <tr>
+            <td><%= activity.id %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

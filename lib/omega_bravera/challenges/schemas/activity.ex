@@ -15,6 +15,7 @@ defmodule OmegaBravera.Challenges.Activity do
     field(:moving_time, :integer)
     field(:elapsed_time, :integer)
     field(:calories, :decimal)
+    field(:added_by_admin, :boolean, default: false)
 
     # associations
     belongs_to(:user, User)
@@ -36,6 +37,18 @@ defmodule OmegaBravera.Challenges.Activity do
     :challenge_id,
     :calories
   ]
+
+  @required_attributes_for_admin [
+    :average_speed,
+    :moving_time,
+    :distance,
+    :start_date,
+    :type,
+    :user_id,
+    :challenge_id,
+    :calories
+  ]
+
   @allowed_attributes [:name, :manual | @required_attributes]
   @activity_type [
     "Run",
@@ -61,6 +74,25 @@ defmodule OmegaBravera.Challenges.Activity do
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:challenge_id)
     |> unique_constraint(:strava_id)
+    |> unique_constraint(:challenge_id)
+    |> validate_inclusion(:type, @activity_type)
+  end
+
+  def create_activity_by_admin_changeset(%Strava.Activity{} = strava_activity, %NGOChal{} = challenge) do
+    %__MODULE__{}
+    |> cast(strava_attributes(strava_activity), @required_attributes_for_admin)
+    |> change(%{
+      user_id: challenge.user_id,
+      challenge_id: challenge.id,
+      distance: to_km(strava_activity.distance), # convert to decimal
+      average_speed: to_km_per_hour(strava_activity.average_speed), # Check Strava docs
+      moving_time: strava_activity.moving_time, # convert to integer
+      calories: strava_activity.calories,
+      added_by_admin: true
+    })
+    |> validate_required(@required_attributes_for_admin)
+    |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:challenge_id)
     |> unique_constraint(:challenge_id)
     |> validate_inclusion(:type, @activity_type)
   end
