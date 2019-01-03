@@ -5,10 +5,8 @@ defmodule OmegaBravera.Challenges do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
-  alias OmegaBravera.Accounts.User
   alias OmegaBravera.Challenges.{NGOChal, Activity, Team}
   alias OmegaBravera.Fundraisers.NGO
-  alias OmegaBravera.Money.Donation
 
   use Timex
 
@@ -122,20 +120,31 @@ defmodule OmegaBravera.Challenges do
     Repo.one(query)
   end
 
-  def get_ngo_ngo_chals(%NGO{} = ngo) do
-    query =
-      from(nc in NGOChal,
-        where: nc.ngo_id == ^ngo.id,
-        left_join: user in assoc(nc, :user),
-        left_join: strava in assoc(user, :strava),
-        left_join: donations in assoc(nc, :donations),
-        on: donations.ngo_chal_id == nc.id and donations.status == "charged",
-        preload: [user: {user, strava: strava}, donations: donations],
-        group_by: [nc.id, donations.id, user.id, strava.id],
-        order_by: [desc: sum(fragment("coalesce(?,0)", donations.amount))]
-      )
+  def get_ngo_milestone_ngo_chals(%NGO{} = ngo) do
+    from(nc in NGOChal,
+      where: nc.ngo_id == ^ngo.id and nc.type == "PER_MILESTONE",
+      left_join: user in assoc(nc, :user),
+      left_join: strava in assoc(user, :strava),
+      left_join: donations in assoc(nc, :donations),
+      on: donations.ngo_chal_id == nc.id and donations.status == "charged",
+      preload: [user: {user, strava: strava}, donations: donations],
+      group_by: [nc.id, donations.id, user.id, strava.id],
+      order_by: [desc: sum(fragment("coalesce(?,0)", donations.charged_amount))]
+    )
+    |> Repo.all()
+  end
 
-    Repo.all(query)
+  def get_ngo_km_ngo_chals(%NGO{} = ngo) do
+    from(nc in NGOChal,
+      where: nc.ngo_id == ^ngo.id and nc.type == "PER_KM",
+      left_join: user in assoc(nc, :user),
+      left_join: strava in assoc(user, :strava),
+      left_join: donations in assoc(nc, :donations),
+      on: donations.ngo_chal_id == nc.id,
+      preload: [user: {user, strava: strava}, donations: donations],
+      group_by: [nc.id, donations.id, user.id, strava.id]
+    )
+    |> Repo.all()
   end
 
   def get_expired_km_challenges() do

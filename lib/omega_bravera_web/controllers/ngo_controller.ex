@@ -16,11 +16,16 @@ defmodule OmegaBraveraWeb.NGOController do
 
   def leaderboard(conn, %{"ngo_slug" => slug}) do
     ngo = Fundraisers.get_ngo_by_slug(slug)
-    challenges = Challenges.get_ngo_ngo_chals(ngo)
+    milestone_challenges = Challenges.get_ngo_milestone_ngo_chals(ngo)
     |> add_stats()
     |> add_profile_picture()
 
-    render(conn, "leaderboard.html", %{ngo: ngo, challenges: challenges})
+    km_challenges = Challenges.get_ngo_km_ngo_chals(ngo)
+    |> add_stats()
+    |> add_profile_picture()
+    |> order_by_current_distance_value()
+
+    render(conn, "leaderboard.html", %{ngo: ngo, milestone_challenges: milestone_challenges, km_challenges: km_challenges})
   end
 
   defp add_stats(challenges) do
@@ -48,5 +53,7 @@ defmodule OmegaBraveraWeb.NGOController do
 
   defp get_total_pledged(%NGOChal{} = challenge),
    do: get_stats(challenge) |> get_in(["total", "pending"] || 0)
+
+  defp order_by_current_distance_value(km_chals), do: Enum.sort(km_chals, &(&1.total_secured >= &2.total_secured))
 
 end
