@@ -502,14 +502,10 @@ div.page-index {
     div.col-12 {
       align-self: center;
     }
-    .blockquote{
-      &:before, &:after  {
-        content: open-quote;
-        display: inline;
-        font-size: 220%;
-      }
+    .blockquote {
       p {
         display: inline;
+        font-style: italic;
       }
       footer {
         font-size: 75%;
