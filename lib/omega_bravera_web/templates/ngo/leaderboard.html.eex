@@ -60,7 +60,7 @@
           </div>
 
         <div class="leaderboard">
-          <div id="km-leaderboard-table" class="table-responsive leaderboard-responsive hidden">
+          <div id="km-leaderboard-table" class="table-responsive leaderboard-responsive d-none">
             <table class="table table-striped table-sm">
               <thead>
                 <tr>
@@ -103,13 +103,13 @@
 
 <script>
   $("#km_leaderboard").on('change', function () {
-    $("#milestone-leaderboard-table").removeClass("show").addClass("hidden");
-    $("#km-leaderboard-table").removeClass("hidden").addClass("show");
+    $("#milestone-leaderboard-table").removeClass("d-block").addClass("d-none");
+    $("#km-leaderboard-table").removeClass("d-none").addClass("d-block");
 
   });
 
   $("#milestone_leaderboard").on('change', function () {
-    $("#km-leaderboard-table").removeClass("show").addClass("hidden");
-    $("#milestone-leaderboard-table").removeClass("hidden").addClass("show");
+    $("#km-leaderboard-table").removeClass("d-block").addClass("d-none");
+    $("#milestone-leaderboard-table").removeClass("d-none").addClass("d-block");
   });
 </script>
