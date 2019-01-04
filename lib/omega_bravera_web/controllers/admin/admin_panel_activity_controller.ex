@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   use OmegaBraveraWeb, :controller
 
   alias OmegaBravera.Challenges.{Activity, NGOChal}
-  alias OmegaBravera.{Challenges, Activities, Accounts}
+  alias OmegaBravera.{Challenges, Activities}
 
   def index(conn, _) do
     activities = Activities.list_activities_added_by_admin()

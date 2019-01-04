@@ -6,21 +6,10 @@ $theme-colors: (
   "background": #F9F5F5
 );
 
+$bravera-red: #F5274B;
+
 @import "bootstrap";
 @import "font-awesome";
-
-.halfway-down{
-  margin-top: 50%;
-}
-
-.scroll-col{
-  max-height: 800px;
-  overflow-y: scroll;
-}
-
-.nonscroll-col{
-  position: sticky;
-}
 
 // NavBar styling
 .navbar {
@@ -116,10 +105,6 @@ h1{
   font-weight: 300;
 }
 
-.text-400{
-  font-weight: 400;
-}
-
 .text-420{
   font-weight: 420;
 }
@@ -156,82 +141,38 @@ input[type=number]::-webkit-outer-spin-button {
   background-color: #F9F5F5;
 }
 
-.leaderboard-name{
-  color: gray;
-  text-decoration: underline;
-  font-weight: 500;
-  font-size: 22px;
-}
+// Leaderboard page styling
 
-.challenge-img-left{
-  max-width: 600px
-}
+.leaderboard {
+  @include media-breakpoint-up(xs) {
+    .leaderboard-responsive {
+      font-size: 0.8em;
+    }
 
-.challenge-img-right{
-  max-width: 600px
-}
+    .avatars {
+      width: 40px;
+      height: 30px;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
 
-/* Dot style for toggle button */
+  @include media-breakpoint-up(lg) {
+    .leaderboard-responsive {
+      font-size: 1.2em;
+    }
 
-.dotstyle ul {
-	position: relative;
-	display: inline-block;
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	cursor: default;
-}
-
-.dotstyle li {
-	position: relative;
-	display: block;
-	float: left;
-	margin: 0 16px;
-	width: 16px;
-	height: 16px;
-	cursor: pointer;
-}
-
-.dotstyle li button {
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	outline: none;
-	border-radius: 50%;
-	background-color: #fff;
-	background-color: rgba(255,255,255,0.3);
-	text-indent: -999em;
-	cursor: pointer;
-	position: absolute;
-}
-
-.dotstyle-fillup li button {
-	overflow: hidden;
-	background-color: rgba(0,0,0,0);
-	box-shadow: inset 0 0 0 2px rgba(255,255,255,1);
-	transition: background 0.3s;
-}
-
-.dotstyle-fillup li button::after {
-	content: '';
-	position: absolute;
-	bottom: 0;
-	height: 0;
-	left: 0;
-	width: 100%;
-	background-color: #fff;
-	box-shadow: 0 0 1px #fff;
-	transition: height 0.3s;
-}
-
-.dotstyle-fillup li button:hover,
-.dotstyle-fillup li button:focus {
-	background-color: theme-color("bravera");
-}
-
-.dotstyle-fillup li.current button::after {
-	height: 100%;
+    .avatars {
+      width: 60px;
+      height: 50px;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
 }
 
 // Default phoenix styles below
@@ -314,11 +255,6 @@ input[type=number]::-webkit-outer-spin-button {
   }
 }
 
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-
-}
-
 .btn{
   border-radius: 10px;
   padding: 5px 18px;
@@ -357,27 +293,13 @@ input[type=number]::-webkit-outer-spin-button {
   border-width: 3px !important;
 }
 
-@include media-breakpoint-up(lg){
-  .cause-card {
-    width: 600px;
-    height: 200px;
-    margin: 0 auto;
-  }
-}
-
 @include media-breakpoint-up(xs) {
   .activity-text-size {
     font-size: 0.5em;
   }
 }
 
-@include media-breakpoint-up(sm){
-  .cause-card {
-    width: 350px;
-    height: 200px;
-    margin: 0 auto;
-  }
-
+@include media-breakpoint-up(sm) {
   .km-chal-progress {
     margin-top: 18px;
   }
@@ -387,16 +309,6 @@ input[type=number]::-webkit-outer-spin-button {
   }
 }
 
-.leaderboard-avatars {
-  width: 60px;
-  height: 50px;
-}
-
-.leaderboard-avatars img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
 .cause-img {
   max-width: 704px;
   max-height: 175px;
@@ -404,11 +316,6 @@ input[type=number]::-webkit-outer-spin-button {
 
 .cause-thumb{
   z-index: 3;
-}
-
-.form-thumb{
-  width: 175px;
-  height: 175px;
 }
 
 .form-button{
@@ -526,19 +433,36 @@ h5 {
 
 // page_path :index
 div.page-index {
-  padding-bottom: 1%;
-  .card3bottom {
-    background-color: #f1eeee;
-    margin-right: 0 !important;
-    margin-left: 0 !important;
+  p {
+    color: grey;
   }
-
-  .card3bottomright {
-    padding: 20px 10px 10px 60px;
-    display: inline-block;
-    background-color: #f1eeee;
+  .btn {
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+  .card-body {
+    background-image: url("/images/landing/hero.jpg");
+    color: white;
+    p {
+      color: white;
+    }
+    .row:first-child > div {
+      align-self: center;
+      @include media-breakpoint-down(sm) {
+        margin-bottom: 4%;
+      }
+      .btn {
+        width: 175px;
+      }
+    }
+    img.fluid-image {
+      width: 20%;
+    }
+  }
+  .card-footer {
+    color: grey;
     img{
-      width:30px;
+      width: 30px;
       display: inline-block;
     }
     p{
@@ -549,34 +473,60 @@ div.page-index {
     }
   }
 
-  .circle-logo{
-    width: 150px;
-    height: 150px;
-  }
-
-  .challenge-section {
-    img {
-      width:100%;
-      height:auto;
-      margin:auto;
-      padding-top:70px;
-      padding-bottom:50px;
-    }
-    @include media-breakpoint-down(sm) {
-      div.embed-responsive {
+  $watch-padding: 5%;
+  .watch-section {
+    padding-top: $watch-padding;
+    padding-bottom: $watch-padding;
+    background-color: #F2EEEF;
+    .bravera-explanation {
+      h2 {
+        color: $bravera-red;
         margin-bottom: 3%;
       }
-    }
-    .challenge-text {
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      h3, h5, p {
-        text-align: center;
-      }
       p {
-        margin-top: 0;
-        margin-bottom: 1rem;
+        color: grey;
+      }
+    }
+  }
+
+  .get-started {
+    background-color: white;
+    padding-top: 4%;
+    @include media-breakpoint-down(sm) {
+      padding-top: 11%;
+    }
+    h2 {
+      color: $bravera-red;
+    }
+    div.col-12 {
+      align-self: center;
+      font-weight: bold;
+    }
+  }
+
+  .testimonials {
+    padding-top: 4%;
+    color: grey;
+    h2 {
+      font-weight: 400;
+      margin-bottom: 3%;
+      @include media-breakpoint-down(sm) {
+        margin-bottom: 11%;
+      }
+    }
+    @include media-breakpoint-down(sm) {
+      padding-top: 11%;
+    }
+    div.col-12 {
+      align-self: center;
+    }
+    .blockquote {
+      p {
+        display: inline;
+        font-style: italic;
+      }
+      footer {
+        font-size: 75%;
       }
     }
   }
@@ -585,11 +535,11 @@ div.page-index {
 // Challenge Signup Form
 
 .checkboxgroup{
-    display:inline-block;
-    text-align:center;
-}
-.checkboxgroup label {
+  display:inline-block;
+  text-align:center;
+  label {
     display:block;
+  }
 }
 
 .btn-sq-lg {
@@ -680,27 +630,27 @@ div.page-index {
 }
 
 @media only screen and (max-width: 800px) {
-	
+
 	/* Force table to not be like tables anymore */
-	#no-more-tables table, 
-	#no-more-tables thead, 
-	#no-more-tables tbody, 
-	#no-more-tables th, 
-	#no-more-tables td, 
-	#no-more-tables tr { 
-		display: block; 
+	#no-more-tables table,
+	#no-more-tables thead,
+	#no-more-tables tbody,
+	#no-more-tables th,
+	#no-more-tables td,
+	#no-more-tables tr {
+		display: block;
 	}
- 
+
 	/* Hide table headers (but not display: none;, for accessibility) */
-	#no-more-tables thead tr { 
+	#no-more-tables thead tr {
 		position: absolute;
 		top: -9999px;
 		left: -9999px;
 	}
- 
+
 	#no-more-tables tr { border: 1px solid #ccc; }
- 
-	#no-more-tables td { 
+
+	#no-more-tables td {
 		/* Behave  like a "row" */
 		border: none;
 		border-bottom: 1px solid #eee; 
