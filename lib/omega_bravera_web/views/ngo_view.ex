@@ -29,4 +29,16 @@ defmodule OmegaBraveraWeb.NGOView do
       Enum.reduce(donations, Decimal.new(0), fn donation, acc ->
         Decimal.add(acc, donation.amount)
       end)
+
+  # TODO: duplicate in ngo_chal_view. Move into app logic and delegate
+  def currency_to_symbol(currency) do
+    case currency do
+      "myr" -> "RM"
+      "hkd" -> "HK$"
+      "krw" -> "₩"
+      "sgd" -> "S$"
+      "gbp" -> "£"
+      _ -> "$"
+    end
+  end
 end
