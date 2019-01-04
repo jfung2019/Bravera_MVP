@@ -415,17 +415,26 @@ h5 {
 
 // page_path :index
 div.page-index {
+  p {
+    color: grey;
+  }
+  .btn {
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
   .card-body {
     background-image: url("/images/landing/hero.jpg");
     color: white;
+    p {
+      color: white;
+    }
     .row:first-child > div {
       align-self: center;
-      .btn {
-        width: 175px;
-        border-radius: 20px;
-      }
       @include media-breakpoint-down(sm) {
         margin-bottom: 4%;
+      }
+      .btn {
+        width: 175px;
       }
     }
     img.fluid-image {
@@ -461,16 +470,62 @@ div.page-index {
       }
     }
   }
+
+  .get-started {
+    background-color: white;
+    padding-top: 4%;
+    @include media-breakpoint-down(sm) {
+      padding-top: 11%;
+    }
+    h2 {
+      color: $bravera-red;
+    }
+    div.col-12 {
+      align-self: center;
+      font-weight: bold;
+    }
+  }
+
+  .testimonials {
+    padding-top: 4%;
+    color: grey;
+    h2 {
+      font-weight: 400;
+      margin-bottom: 3%;
+      @include media-breakpoint-down(sm) {
+        margin-bottom: 11%;
+      }
+    }
+    @include media-breakpoint-down(sm) {
+      padding-top: 11%;
+    }
+    div.col-12 {
+      align-self: center;
+    }
+    .blockquote{
+      &:before, &:after  {
+        content: open-quote;
+        display: inline;
+        font-size: 220%;
+      }
+      p {
+        display: inline;
+      }
+      footer {
+        font-size: 75%;
+      }
+    }
+  }
 }
 
 // Challenge Signup Form
 
 .checkboxgroup{
-    display:inline-block;
-    text-align:center;
-}
-.checkboxgroup label {
+  display:inline-block;
+  text-align:center;
+  label {
     display:block;
+  }
 }
 
 .btn-sq-lg {
@@ -561,27 +616,27 @@ div.page-index {
 }
 
 @media only screen and (max-width: 800px) {
-	
+
 	/* Force table to not be like tables anymore */
-	#no-more-tables table, 
-	#no-more-tables thead, 
-	#no-more-tables tbody, 
-	#no-more-tables th, 
-	#no-more-tables td, 
-	#no-more-tables tr { 
-		display: block; 
+	#no-more-tables table,
+	#no-more-tables thead,
+	#no-more-tables tbody,
+	#no-more-tables th,
+	#no-more-tables td,
+	#no-more-tables tr {
+		display: block;
 	}
- 
+
 	/* Hide table headers (but not display: none;, for accessibility) */
-	#no-more-tables thead tr { 
+	#no-more-tables thead tr {
 		position: absolute;
 		top: -9999px;
 		left: -9999px;
 	}
- 
+
 	#no-more-tables tr { border: 1px solid #ccc; }
- 
-	#no-more-tables td { 
+
+	#no-more-tables td {
 		/* Behave  like a "row" */
 		border: none;
 		border-bottom: 1px solid #eee; 

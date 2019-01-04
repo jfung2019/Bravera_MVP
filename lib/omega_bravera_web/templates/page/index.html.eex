@@ -60,6 +60,97 @@
         impact. Together, with friends and fellow fundraisers, Bravera is with<br class="d-none d-md-block">
         you every step of the way.
       </p>
+      <div class="text-center text-md-left">
+        <%= link("Take a Challenge", class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index)) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row get-started">
+    <div class="col">
+      <div class="row">
+        <div class="col text-center">
+          <h2>How to get started?</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 offset-2 col-md-2 offset-md-3">
+					<%= img_tag(static_path(@conn, "/images/landing/cause.png"), class: "img-fluid") %>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-left">
+          <p>1. Select a cause</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 offset-2 col-md-2 offset-md-3">
+          <%= img_tag(static_path(@conn, "/images/landing/connect.png"), class: "img-fluid") %>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-left">
+          <p>2. Connect a fitness tracker</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 offset-2 col-md-2 offset-md-3">
+          <%= img_tag(static_path(@conn, "/images/landing/configure.png"), class: "img-fluid") %>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-left">
+          <p>3. Configure your challenge</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 offset-2 col-md-2 offset-md-3">
+          <%= img_tag(static_path(@conn, "/images/landing/sponsorship.png"), class: "img-fluid") %>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-left">
+          <p>4. Get sponsorship</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 offset-2 col-md-2 offset-md-3">
+          <%= img_tag(static_path(@conn, "/images/landing/milestones.png"), class: "img-fluid") %>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-left">
+          <p>5. Reach your milestones and<br class="d-md-none d-sm-block"> unlock dontations</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row testimonials">
+    <div class="col">
+      <div class="row">
+        <div class="col text-center">
+          <h2>What people are saying</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 offset-2 col-md-2 offset-md-3">
+          <%= img_tag(static_path(@conn, "/images/landing/vic.png"), class: "img-fluid") %>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-left">
+          <blockquote class="blockquote">
+            <p>Bravera definitley motivated me and gave me the drive to put on my<br class="d-none d-md-block">
+            trainers. I was running with real purpose, not just for my own health<br class="d-none d-md-block">
+            but for the charity and the children it supports too.</p>
+            <footer class="blockquote-footer">Victoria, Challenge Participant</footer>
+          </blockquote>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 offset-2 col-md-2 offset-md-3">
+          <%= img_tag(static_path(@conn, "/images/landing/chris.png"), class: "img-fluid") %>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-left">
+          <blockquote class="blockquote">
+            <p>As a small non-profit with multiple programmes, Bravera is a great<br class="d-none d-md-block">
+            way people can connect with our initiatives. With limited resources this<br class="d-none d-md-block">
+            is a time-saving tool that builds awareness. Making the connection of<br class="d-none d-md-block">
+            giving and health is building a really committed community that is<br class="d-none d-md-block">
+            delivering great results!</p>
+            <footer class="blockquote-footer">Chris Geary, Found, BSD Coding Academy and Fargo Foundation / RefuGeek</footer>
+          </blockquote>
+        </div>
+      </div>
     </div>
   </div>
 </div>
