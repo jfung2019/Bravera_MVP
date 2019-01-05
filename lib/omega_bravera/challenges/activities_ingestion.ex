@@ -82,6 +82,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         %Strava.Activity{distance: distance} = strava_activity
       )
       when distance > 0 do
+
     Logger.info("ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, donations} =
@@ -100,11 +101,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     )
 
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
-      Logger.info("ActivityIngestion: Processing was successful")
+      Logger.info("ActivityIngestion: Processing was successful for milestone challenge: #{inspect(challenge.id)}")
 
       {:ok, :challenge_updated}
     else
-      Logger.info("ActivityIngestion: Processing was not successful (donation issue)")
+      Logger.info("ActivityIngestion: Processing was not successful for milestone challenge: #{inspect(challenge.id)}")
+
       {:error, :activity_not_processed}
     end
   end
@@ -112,7 +114,18 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def process_challenge(_, _), do: {:error, :activity_not_processed}
 
   def create_activity(challenge, activity) do
-    changeset = Challenges.Activity.create_changeset(activity, challenge)
+    # Check if the strava activity is an admin created one.
+    changeset =
+      case Map.has_key?(activity, :admin_id) do
+        false ->
+          Challenges.Activity.create_changeset(activity, challenge)
+        true ->
+          Challenges.Activity.create_activity_by_admin_changeset(
+            activity,
+            challenge,
+            activity.admin_id
+          )
+      end
 
     if valid_activity?(activity, challenge) and
          activity_type_matches_challenge_activity_type?(activity, challenge) do

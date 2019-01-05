@@ -6,19 +6,17 @@ defmodule OmegaBravera.Activities do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Challenges.{Activity, NGOChal}
+  alias OmegaBravera.Challenges.{Activity}
 
   def list_activities_added_by_admin() do
     from(
-      a in Activity,
-      where: a.added_by_admin == true
+      activity in Activity,
+      where: not is_nil(activity.admin_id),
+      left_join: challenge in assoc(activity, :challenge),
+      left_join: ngo in assoc(challenge, :ngo),
+      left_join: user in assoc(activity, :user),
+      preload: [challenge: {challenge, ngo: ngo}, user: user]
     )
     |> Repo.all()
-  end
-
-  def create_activity(%Strava.Activity{} = strava_activity, %NGOChal{} = challenge) do
-    strava_activity
-    |> Activity.create_changeset(challenge)
-    |> Repo.insert()
   end
 end

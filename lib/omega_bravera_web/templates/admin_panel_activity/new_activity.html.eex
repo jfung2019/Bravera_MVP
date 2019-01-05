@@ -1,5 +1,6 @@
 <div class="container">
   <h2>New Activity</h2>
+  <h6 class="text-danger">Warning: creating an activity will trigger emails and donations</h6>
   
   <%= render "new_activity_form.html", Map.put(assigns, :action, admin_panel_activity_path(@conn, :create)) %>
   

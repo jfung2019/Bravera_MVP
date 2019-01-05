@@ -235,6 +235,19 @@ defmodule OmegaBravera.Challenges do
       on: nc.id == a.challenge_id,
       preload: ^preloads,
       group_by: nc.id,
+      order_by: [desc: nc.id],
+      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)}
+    )
+    |> Repo.all()
+  end
+
+  def list_active_ngo_chals(preloads \\ [:user, :ngo, :donations]) do
+    from(nc in NGOChal,
+      left_join: a in Activity,
+      on: nc.id == a.challenge_id and nc.status == "active",
+      preload: ^preloads,
+      group_by: nc.id,
+      order_by: [desc: nc.id],
       select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)}
     )
     |> Repo.all()
