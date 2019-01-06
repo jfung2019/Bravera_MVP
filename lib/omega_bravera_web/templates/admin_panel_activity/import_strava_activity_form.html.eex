@@ -1,0 +1,94 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, "Challenge and Participant", class: "control-label" %>
+    <%= select(f, :challenge_id, Enum.map(@challenges,
+          &{"Challenge: #{&1.slug} Participant: #{&1.user.firstname} #{&1.user.lastname} (#{&1.user.email}) | Type: #{&1.activity_type} | Start date: #{render_datetime(&1.start_date)}", &1.id}
+        ),
+          class: "form-control", prompt: "Who is the activity for?", name: "challenge_id", id: "challenge")
+    %>
+    <%= error_tag f, :challenge_id %>
+  </div>
+
+  <div id="strava-dropdown-container" class="form-group d-none">
+    <%= label f, "Select Strava Activity", class: "control-label" %>
+    <%= select(f, :strava_id, [], class: "form-control", prompt: "Select an activity from Strava..", name: "strava_activiy_id", id: "strava-dropdown")%>
+  </div>  
+
+  <div class="form-group">
+    <%= submit "Save", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<script>
+  $(document).ready(function(){
+    $("#challenge").on('change', function() {
+      $("#strava-dropdown-container").addClass("d-none");
+      $("#strava-dropdown").empty();
+      
+      $.get(
+        "http://localhost:4000/admin/api/challenge_dates",
+        {challenge_id: $(this).val()}
+      ).done(function(data) {
+          const start_date_in_ms = Math.floor(new Date(data.start_date).getTime() / 1000 );
+          const end_date_in_ms = Math.floor(new Date(data.end_date).getTime() / 1000);
+
+          $.ajax({
+            url: "https://www.strava.com/api/v3/athlete/activities",
+            type: 'GET',
+            data: {before: end_date_in_ms, after: start_date_in_ms, per_page: 100},
+            headers: {"Authorization": `Bearer ${data.athlete_token}`}
+          }).done(function(data) {
+            render_activities(data);
+            $("#strava-dropdown-container").removeClass("d-none");
+          }).fail(function(data) {
+            alert("Challenge is in the future, probably.")
+          })
+        });
+      });
+  });
+
+  function render_activities(data){
+    $("#strava-dropdown").append('<option value="">Select an activity from Strava..</option>');
+
+    data.forEach(function(activity) {
+      $("#strava-dropdown").append(
+        `<option value="${activity.id}">
+          Start Date: ${to_hk_datetime(activity.start_date)} |
+          Distance: ${from_meters_to_kms(activity.distance)} KM | 
+          Duration: ${from_seconds_to_time(activity.moving_time)} |
+          Type: ${activity.type}
+        </option>`
+      )
+    });
+  }
+
+  function to_hk_datetime(date) {
+    console.log(date);
+    var date_obj = new Date(date);
+    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hourCycle: 'h24' };
+    return date_obj.toLocaleDateString('en-GB', options);
+  }
+
+  function from_seconds_to_time(time_in_seconds) {
+    var sec_num = parseInt(time_in_seconds, 10);
+    var hours   = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    return hours + ':' + minutes + ':' + seconds;
+  }
+
+  function from_meters_to_kms(distance_in_meters) {
+    return Math.floor(distance_in_meters / 1000);
+  }
+
+</script>
