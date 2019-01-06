@@ -13,6 +13,11 @@ config :omega_bravera, OmegaBravera.Guardian,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+# Useful when debugging ActivityIngestion tests
+# config :logger,
+#   backends: [:console],
+#   compile_time_purge_level: :debug
+
 # Configure your database
 host = System.get_env("BRAVERA_DB_HOST") || "localhost"
 

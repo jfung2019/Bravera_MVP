@@ -22,9 +22,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   def create(conn, %{"activity" => activity_params, "challenge_id" => challenge_id}) do
     current_admin_user = Guardian.Plug.current_resource(conn)
     challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
-    challenges = Challenges.list_active_ngo_chals([:user])
     activity = create_strava_activity(activity_params, current_admin_user, challenge.user)
-
 
     changeset = Activity.create_activity_by_admin_changeset(
       activity, challenge, current_admin_user.id
@@ -50,6 +48,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
               moving_time: from_seconds_to_time_map(activity.moving_time),
               start_date: to_hk(activity.start_date)
             })
+        challenges = Challenges.list_active_ngo_chals([:user])
         conn
         |> render("new_activity.html", changeset: changeset, challenges: challenges)
     end
@@ -140,10 +139,6 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   defp add_calories(%Strava.Activity{} = activity, activity_params, participant) do
     participant = participant |> Repo.preload(:strava)
     activity = Map.put(activity, :calories, from_string_to_float(activity_params.calories))
-    athlete = Strava.Athlete.retrieve(
-      participant.strava.athlete_id,
-      Strava.Client.new(participant.strava.token)
-    )
 
     # Metabolic equivalent
     met_values = %{
@@ -155,6 +150,11 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
     # Calculate calories based on MET value and Weight and Duration.
     if activity.calories == nil do
+      athlete = Strava.Athlete.retrieve(
+        participant.strava.athlete_id,
+        Strava.Client.new(participant.strava.token)
+      )
+
       # calories per hour = met_value * weight in kg
       calories_per_hour =
         if athlete.weight != nil do
