@@ -464,12 +464,23 @@ div.page-index {
     img{
       width: 30px;
       display: inline-block;
+      float: left;
     }
-    p{
+    p {
       font-size:10px;
       display: inline-block;
       padding-left: 10px;
       padding-right: 10px;
+      float: right;
+    }
+    @include media-breakpoint-down(sm) {
+      .trackers {
+        flex-direction: column;
+        .text-center {
+          padding-left: 25%;
+          padding-right: 25%;
+        }
+      }
     }
   }
 
@@ -528,6 +539,15 @@ div.page-index {
       footer {
         font-size: 75%;
       }
+    }
+  }
+  .buttons {
+    padding-bottom: 2%;
+    @include media-breakpoint-down(sm) {
+      .btn:first-child {
+        margin-bottom: 2%;
+      }
+      padding-bottom: 5%;
     }
   }
 }

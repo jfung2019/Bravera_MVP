@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.NGOChalView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.{Fundraisers.NGO, Challenges.NGOChal, Trackers.Strava, Accounts.User}
+  alias OmegaBravera.{Fundraisers.NGO, Challenges.NGOChal, Accounts.User}
 
   def user_full_name(%User{} = user), do: User.full_name(user)
 
