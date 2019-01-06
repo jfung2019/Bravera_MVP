@@ -87,10 +87,6 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     end
   end
 
-  def import_activity_from_strava(conn, _) do
-    # Not Implemented
-  end
-
   defp create_strava_activity(params, current_admin_user, participant) do
     activity_params = params |> map_keys_to_atoms()
 
