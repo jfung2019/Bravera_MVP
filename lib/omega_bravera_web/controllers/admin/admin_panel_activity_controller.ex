@@ -11,6 +11,39 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     render(conn, "index.html", activities: activities)
   end
 
+  def new_import_activity_from_strava(conn, _) do
+    current_admin_user = Guardian.Plug.current_resource(conn)
+    changeset = Activity.create_activity_by_admin_changeset(%Strava.Activity{}, %NGOChal{}, current_admin_user.id)
+    challenges = Challenges.list_active_ngo_chals([:user])
+
+    render(conn, "import_strava_activity.html", changeset: changeset, challenges: challenges)
+  end
+
+  def get_challenge_dates(conn, %{"challenge_id" => challenge_id}) do
+    # Returns JSON start and end dates
+    challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
+    athlete = challenge.user |> Repo.preload(:strava)
+    data = %{start_date: challenge.start_date, end_date: Timex.now(), athlete_token: athlete.strava.token}
+    json(conn, data)
+  end
+
+  def create_imported_strava_activity(conn, %{"strava_activiy_id" => strava_activity_id, "challenge_id" => challenge_id}) do
+    challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
+    user = challenge.user |> Repo.preload(:strava)
+    activity = Strava.Activity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
+
+    case ActivitiesIngestion.process_challenge(challenge, activity) do
+      {:ok, :challenge_updated} ->
+        conn
+        |> put_flash(:info, "Activity imported successfully.")
+        |> redirect(to: admin_panel_activity_path(conn, :index))
+      {:error, :activity_not_processed} ->
+        conn
+        |> put_flash(:error, "Activity could not be imported. Please check the logs.")
+        |> redirect(to: admin_panel_activity_path(conn, :index))
+    end
+  end
+
   def new(conn, _) do
     current_admin_user = Guardian.Plug.current_resource(conn)
     changeset = Activity.create_activity_by_admin_changeset(%Strava.Activity{}, %NGOChal{}, current_admin_user.id)

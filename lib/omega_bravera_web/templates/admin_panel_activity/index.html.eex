@@ -3,6 +3,8 @@
     <h2>Listing Activities Created by Admin</h2>
 
     <span><%= link "Create New Activity", to: admin_panel_activity_path(@conn, :new) %></span>
+    <br />
+    <span><%= link "Import Strava Activity", to: admin_panel_activity_path(@conn, :new_import_activity_from_strava) %></span>
     <table class="table">
       <thead>
         <tr>
