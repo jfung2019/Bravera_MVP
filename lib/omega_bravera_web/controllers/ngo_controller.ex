@@ -16,14 +16,21 @@ defmodule OmegaBraveraWeb.NGOController do
 
   def leaderboard(conn, %{"ngo_slug" => slug}) do
     ngo = Fundraisers.get_ngo_by_slug(slug)
-    milestone_challenges = Challenges.get_ngo_milestone_ngo_chals(ngo)
-    |> add_stats()
-    |> add_profile_picture()
+    milestone_challenges_task = Task.async(fn ->
+      Challenges.get_ngo_milestone_ngo_chals(ngo)
+      |> add_stats()
+      |> add_profile_picture()
+    end)
 
-    km_challenges = Challenges.get_ngo_km_ngo_chals(ngo)
-    |> add_stats()
-    |> add_profile_picture()
-    |> order_by_current_distance_value()
+    km_challenges_task = Task.async(fn ->
+      Challenges.get_ngo_km_ngo_chals(ngo)
+      |> add_stats()
+      |> add_profile_picture()
+      |> order_by_current_distance_value()
+    end)
+
+    milestone_challenges = Task.await(milestone_challenges_task, 25000)
+    km_challenges = Task.await(km_challenges_task, 25000)
 
     render(conn, "leaderboard.html", %{ngo: ngo, milestone_challenges: milestone_challenges, km_challenges: km_challenges})
   end
