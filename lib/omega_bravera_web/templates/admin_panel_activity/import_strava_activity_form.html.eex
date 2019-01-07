@@ -32,7 +32,7 @@
       $("#strava-dropdown").empty();
       
       $.get(
-        "http://localhost:4000/admin/api/challenge_dates",
+        "/admin/api/challenge_dates",
         {challenge_id: $(this).val()}
       ).done(function(data) {
           const start_date_in_ms = Math.floor(new Date(data.start_date).getTime() / 1000 );
