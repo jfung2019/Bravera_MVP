@@ -15,7 +15,7 @@ defmodule OmegaBraveraWeb.Admin.ActivityControllerTest do
       "day" => Integer.to_string(Timex.now("Asia/Hong_Kong").day)
     },
     "distance" => "30",
-    "moving_time" => %{"hour" => "1", "minute" => "0"},
+    "moving_time" => %{"hour" => "1", "minute" => "0", "second" => "0"},
     "average_speed" => "",
     # Filled in inside each test (challenge.activity_type)
     "type" => "",
