@@ -16,6 +16,7 @@ defmodule OmegaBravera.Factory do
       firstname: "John",
       lastname: "Doe",
       token: "abcdef123456",
+      profile_picture: "some-profile-picture.png",
       user: build(:user)
     }
   end
