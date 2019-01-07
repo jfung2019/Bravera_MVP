@@ -132,7 +132,10 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   end
 
   defp from_time_to_seconds(time_map),
-   do: (from_string_to_integer(time_map["hour"]) * 3600) + (from_string_to_integer(time_map["minute"]) * 60)
+   do:
+     (from_string_to_integer(time_map["hour"]) * 3600) +
+     (from_string_to_integer(time_map["minute"]) * 60) +
+     (from_string_to_integer(time_map["second"]))
 
   defp from_seconds_to_time_map(seconds) do
     {hour, minute} = Decimal.div_rem( Decimal.div(seconds, Decimal.new(60)), Decimal.new(60))
@@ -171,7 +174,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
     # Metabolic equivalent
     met_values = %{
-      "Run" => Decimal.new(13.0),
+      "Run" => Decimal.new(9.0),
       "Cycle" => Decimal.new(4.5),
       "Walk" => Decimal.new(2.9),
       "Hike" => Decimal.new(7.0)
