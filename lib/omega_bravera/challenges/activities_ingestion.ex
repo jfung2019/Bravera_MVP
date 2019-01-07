@@ -11,6 +11,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     Repo
   }
 
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
+
   def process_strava_webhook(
         %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
       ) do
@@ -204,7 +207,10 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     allow_manual_activity =
       if Application.get_env(:omega_bravera, :enable_manual_activities) == false  and activity.manual == true do
         Logger.info("Manual activity triggered and blocked!")
-        Challenges.Notifier.send_manual_activity_blocked_email(challenge)
+        Challenges.Notifier.send_manual_activity_blocked_email(
+          challenge,
+          Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
+        )
         false
       else
         true

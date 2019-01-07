@@ -9,7 +9,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   test "manual_activity_blocked_email" do
     challenge = insert(:ngo_challenge)
 
-    email = Notifier.manual_activity_blocked_email(challenge)
+    email = Notifier.manual_activity_blocked_email(challenge, "/swcc/John-512")
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -24,6 +24,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
+              "-challengeLink-" => "https://bravera.co/swcc/John-512",
                "-participantName-" => "John"
              },
              template_id: "fcd40945-8a55-4459-94b9-401a995246fb",
@@ -34,7 +35,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "send_manual_activity_blocked_email/1 sends the email" do
     challenge = insert(:ngo_challenge)
-    assert Notifier.send_manual_activity_blocked_email(challenge) == :ok
+    assert Notifier.send_manual_activity_blocked_email(challenge, "/swcc/John-512") == :ok
   end
 
   test "challenge_activated_email" do

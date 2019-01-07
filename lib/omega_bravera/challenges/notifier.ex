@@ -9,17 +9,21 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   alias SendGrid.{Email, Mailer}
 
-  def send_manual_activity_blocked_email(%NGOChal{} = challenge) do
+  def send_manual_activity_blocked_email(%NGOChal{} = challenge, path) do
     challenge
     |> Repo.preload([:user])
-    |> manual_activity_blocked_email()
+    |> manual_activity_blocked_email(path)
     |> Mailer.send()
   end
 
-  def manual_activity_blocked_email(%NGOChal{} = challenge) do
+  def manual_activity_blocked_email(%NGOChal{} = challenge, path) do
     Email.build()
     |> Email.put_template("fcd40945-8a55-4459-94b9-401a995246fb")
     |> Email.add_substitution("-participantName-", challenge.user.firstname)
+    |> Email.add_substitution(
+      "-challengeLink-",
+      "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}"
+    )
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
