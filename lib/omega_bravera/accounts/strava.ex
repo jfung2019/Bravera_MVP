@@ -9,6 +9,7 @@ defmodule OmegaBravera.Accounts.Strava do
     athlete
     |> Map.take([:email, :firstname, :lastname])
     |> Map.put(:athlete_id, athlete.id)
+    |> Map.put(:profile_picture, athlete.profile)
     |> Map.merge(%{token: client.token.access_token})
     |> Map.put(:additional_info, build_additional_info(athlete))
   end
