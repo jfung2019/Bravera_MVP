@@ -69,7 +69,6 @@
   }
 
   function to_hk_datetime(date) {
-    console.log(date);
     var date_obj = new Date(date);
     var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hourCycle: 'h24' };
     return date_obj.toLocaleDateString('en-GB', options);

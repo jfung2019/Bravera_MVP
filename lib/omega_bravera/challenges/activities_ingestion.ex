@@ -134,7 +134,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
          activity_type_matches_challenge_activity_type?(activity, challenge) do
       case Repo.insert(changeset) do
         {:ok, activity} -> {:ok, challenge, activity}
-        {:error, _changeset} -> {:error, challenge, nil}
+        {:error, changeset} ->
+          Logger.error("ActivityIngestion: activity could not be saved. Changeset errors: #{inspect(changeset.errors)}")
+          {:error, challenge, nil}
       end
     else
       {:error, challenge, nil}

@@ -77,6 +77,7 @@ defmodule OmegaBravera.Challenges.Activity do
     |> foreign_key_constraint(:challenge_id)
     |> unique_constraint(:strava_id)
     |> unique_constraint(:challenge_id)
+    |> unique_constraint(:strava_id_challenge_id)
     |> validate_inclusion(:type, @activity_type)
   end
 
