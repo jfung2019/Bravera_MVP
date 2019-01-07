@@ -12,7 +12,8 @@ defmodule OmegaBravera.Accounts.StravaTest do
       email: "simon.garciar@gmail.com",
       firstname: "Rafael",
       lastname: "Garcia",
-      token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30"
+      token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
+      profile_picture: "https://graph.facebook.com/10160635840075043/picture?height=256&width=256"
     }
 
     [attrs: attrs]

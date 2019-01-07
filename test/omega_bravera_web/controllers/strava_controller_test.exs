@@ -67,7 +67,8 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
         email: "sherief@plangora.com",
         firstname: "Sherief",
         lastname: "Alaa",
-        token: "e5a4712333abdc9a6e24911e5e491231239cf"
+        token: "e5a4712333abdc9a6e24911e5e491231239cf",
+        profile_picture: "some-profile-picture.png"
       }
 
       with_mock(Strava, [], login_changeset: fn _code -> changeset end) do

@@ -19,13 +19,11 @@ defmodule OmegaBraveraWeb.NGOController do
     milestone_challenges_task = Task.async(fn ->
       Challenges.get_ngo_milestone_ngo_chals(ngo)
       |> add_stats()
-      |> add_profile_picture()
     end)
 
     km_challenges_task = Task.async(fn ->
       Challenges.get_ngo_km_ngo_chals(ngo)
       |> add_stats()
-      |> add_profile_picture()
       |> order_by_current_distance_value()
     end)
 
@@ -40,12 +38,6 @@ defmodule OmegaBraveraWeb.NGOController do
       challenge
       |> Map.put(:total_secured, get_total_secured(challenge))
       |> Map.put(:total_pledged, get_total_pledged(challenge))
-    end)
-  end
-
-  defp add_profile_picture(challenges) do
-    Enum.map(challenges, fn challenge ->
-      Map.put(challenge, :participant_profile_picture, get_profile_picture_link(challenge.user))
     end)
   end
 

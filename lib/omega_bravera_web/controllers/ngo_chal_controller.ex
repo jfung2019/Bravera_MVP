@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
   use Timex
   alias Numbers
 
-  alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money, Repo}
+  alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money}
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Slugify
@@ -123,8 +123,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       stats: get_stats(challenge),
       donors: Accounts.latest_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
-      current_user: Guardian.Plug.current_resource(conn),
-      profile_picture: get_profile_picture_link(challenge.user)
+      current_user: Guardian.Plug.current_resource(conn)
     }
   end
 
@@ -135,8 +134,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       donors: Accounts.latest_km_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
-      profile_picture: get_profile_picture_link(challenge.user)
+      total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug)
     }
   end
 
