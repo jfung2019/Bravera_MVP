@@ -15,7 +15,8 @@ defmodule OmegaBravera.Activities do
       left_join: challenge in assoc(activity, :challenge),
       left_join: ngo in assoc(challenge, :ngo),
       left_join: user in assoc(activity, :user),
-      preload: [challenge: {challenge, ngo: ngo}, user: user]
+      preload: [challenge: {challenge, ngo: ngo}, user: user],
+      order_by: [desc: :id]
     )
     |> Repo.all()
   end
