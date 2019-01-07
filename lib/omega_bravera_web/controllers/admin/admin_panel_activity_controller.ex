@@ -155,12 +155,16 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     activity = Map.put(activity, :average_speed, from_string_to_float(activity_params.average_speed))
 
     if activity.average_speed == nil do
-      # distance in meters / time in seconds = average km per hour
+      distance = Decimal.mult(activity.distance, Decimal.new(1000))
+      duration_in_minutes =
+        Decimal.new(activity.moving_time)
+        |> Decimal.div(60)
+        |> Decimal.div(60)
+      time = Decimal.mult(duration_in_minutes, 1000)
+      # km/h
       average_speed =
-        activity.distance
-        |> Decimal.mult(Decimal.new(1000))
-        |> Decimal.div(Decimal.new(activity.moving_time))
-        |> Decimal.round(1)
+        Decimal.div(distance, time)
+        |> Decimal.round(2)
 
       %{activity | average_speed:  average_speed}
     else
