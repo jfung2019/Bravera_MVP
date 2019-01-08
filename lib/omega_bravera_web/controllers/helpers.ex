@@ -98,15 +98,4 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
       | tuple_list
     ]
   end
-
-  def get_profile_picture_link(user) do
-    user = user |> Repo.preload(:strava)
-    %Strava.Athlete{profile: profile} =
-      Strava.Athlete.retrieve(
-        user.strava.athlete_id,
-        Strava.Client.new(user.strava.token)
-      )
-
-    profile
-  end
 end

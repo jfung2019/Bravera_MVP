@@ -62,7 +62,7 @@ defmodule OmegaBraveraWeb.UserController do
     user = Guardian.Plug.current_resource(conn)
 
     case Accounts.update_user(user, user_params) do
-      {:ok, user} ->
+      {:ok, _user} ->
         conn
         |> put_flash(:info, "Account updated successfully.")
         |> redirect(to: user_path(conn, :show, %{}))

@@ -86,4 +86,18 @@ defmodule OmegaBraveraWeb.ViewHelpers do
       |> DateTime.to_iso8601()
     tag(:span, "data-render-countdown": formatted_date_time)
   end
+
+  def profile_picture_or_default(saved_profile_picture, default) do
+    if valid_uri?(saved_profile_picture), do: saved_profile_picture, else: default
+  end
+  defp valid_uri?(nil), do: false
+  defp valid_uri?(str) do
+    uri = URI.parse(str)
+    case uri do
+      %URI{scheme: nil} -> false
+      %URI{host: nil} -> false
+      %URI{path: nil} -> false
+      _ -> true
+    end
+  end
 end
