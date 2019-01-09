@@ -30,6 +30,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:slug, :string)
     field(:url, :string)
     field(:full_desc, :string)
+    field(:challenge_desc, :string)
     field(:currency, :string, default: "hkd")
     field(:minimum_donation, :integer, default: 0)
     field(:pre_registration_start_date, :utc_datetime)
@@ -57,6 +58,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :slug,
     :url,
     :full_desc,
+    :challenge_desc,
     :user_id,
     :currency,
     :activities,

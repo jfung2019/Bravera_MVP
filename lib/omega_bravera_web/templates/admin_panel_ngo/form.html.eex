@@ -54,6 +54,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, "Challenge description (displayed on /ngo/challenge)", class: "control-label" %>
+    <%= textarea f, :challenge_desc, class: "form-control", rows: 3 %>
+    <%= error_tag f, :challenge_desc %>
+  </div>
+
+  <div class="form-group">
     <%= label f, "Hero Image", class: "control-label" %>
     <%= text_input f, :image, class: "form-control" %>
     <%= error_tag f, :image %>

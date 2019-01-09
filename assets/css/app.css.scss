@@ -263,6 +263,19 @@ input[type=number]::-webkit-outer-spin-button {
 // $$$$ PARTICIPANT PAGE $$$$ //
 ////////////////////////////////
 
+// TODO: put everything related to challenge participant page in here.
+.challenge-details {
+  .challenge-desc {
+    @include media-breakpoint-up(xs) {
+      font-size: 0.8em;
+    }
+
+    @include media-breakpoint-up(lg) {
+      font-size: 1.1em;
+    }
+  }
+}
+
 // text-shadow: horizontal-offset vertical-offset blur color;
 .card-img-text-shadow{
   text-shadow: 2px 2px 2px rgba(0,0,0,0.6);
