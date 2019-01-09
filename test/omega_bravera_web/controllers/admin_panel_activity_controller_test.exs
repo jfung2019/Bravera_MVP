@@ -89,9 +89,9 @@ defmodule OmegaBraveraWeb.Admin.ActivityControllerTest do
           "type" => challenge.activity_type,
           "start_date" => %{
             # Must be in the furture so that ActivityIngestion doesn't refuse it
-            "hour" => Integer.to_string(Timex.now("Asia/Hong_Kong").hour - 2),
+            "hour" => Integer.to_string(Timex.now("Asia/Hong_Kong").hour),
             "minute" => "00",
-            "year" => Integer.to_string(Timex.now("Asia/Hong_Kong").year),
+            "year" => Integer.to_string(Timex.now("Asia/Hong_Kong").year - 2),
             "month" => Integer.to_string(Timex.now("Asia/Hong_Kong").month),
             "day" => Integer.to_string(Timex.now("Asia/Hong_Kong").day)
           },
