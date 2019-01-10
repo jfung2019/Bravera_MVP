@@ -14,11 +14,8 @@
       <%= render "challenge_details.html", assigns %>
 
       <%= if active_challenge?(@challenge) or pre_registration_challenge?(@challenge) do %>
-        <div id="donation-form">
-          <h4 class="text-center pt-4 pb-3">
-            Support
-          </h4>
-          <div class="card">
+        <div id="donation-form" class="donation-form mt-4">
+          <!-- <div class="card"> -->
             <%= if @challenge.type == "PER_MILESTONE" do %>
               <%= render "milestone_challenge_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
             <% end %>
@@ -26,7 +23,7 @@
             <%= if @challenge.type == "PER_KM" do %>
               <%= render "km_challenge_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
             <% end %>
-          </div>
+          <!-- </div> -->
         </div>
     <% end %>
   </div>

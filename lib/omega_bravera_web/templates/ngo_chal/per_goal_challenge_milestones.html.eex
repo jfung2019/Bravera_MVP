@@ -37,7 +37,7 @@
       <strong class="text-green">(<%= render_percentage_exceed(get_in(@stats, ["total", "charged"]) || 0, @challenge.money_target) %>%)</strong>
     </h5>
     <div class="mb-3 text-center mx-auto">
-      <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
+      <a id="support-now" class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
     </div>
   </div>
 
