@@ -116,6 +116,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
 
   # Do not divide by zero please.
   def render_percentage_exceed(_, 0), do: 0
+  def render_percentage_exceed(nil, _), do: 0
 
   def render_percentage_exceed(total, %Decimal{} = target),
     do: round(total / Decimal.to_integer(target) * 100)

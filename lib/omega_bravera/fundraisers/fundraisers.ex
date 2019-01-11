@@ -6,17 +6,16 @@ defmodule OmegaBravera.Fundraisers do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Fundraisers.NGO
+  alias OmegaBravera.{
+    Fundraisers.NGO,
+    Money.Donation,
+    Challenges.Activity
+  }
 
   # Get a user's causes by user_id
 
   def get_ngos_by_user(user_id) do
-    query =
-      from(n in NGO,
-        where: n.user_id == ^user_id
-      )
-
-    Repo.all(query)
+    from(ngo in NGO, where: ngo.user_id == ^user_id) |> Repo.all()
   end
 
   def get_donations_for_ngo(slug) do
@@ -76,7 +75,7 @@ defmodule OmegaBravera.Fundraisers do
 
     total_pledged = Repo.one(
       from(
-        donation in OmegaBravera.Money.Donation,
+        donation in Donation,
         where: donation.ngo_id == ^ngo.id,
         select: fragment("SUM( CASE WHEN km_distance IS NOT NULL THEN amount * km_distance ELSE amount END )")
       )
@@ -84,7 +83,7 @@ defmodule OmegaBravera.Fundraisers do
 
     total_secured = Repo.aggregate(
       from(
-        donation in OmegaBravera.Money.Donation,
+        donation in Donation,
         where: donation.ngo_id == ^ngo.id
       ),
       :sum,
@@ -92,7 +91,7 @@ defmodule OmegaBravera.Fundraisers do
     )
 
     calories_and_activities_query = from(
-      activity in OmegaBravera.Challenges.Activity,
+      activity in Activity,
       join: challenge in assoc(activity, :challenge),
       where: challenge.ngo_id == ^ngo.id and activity.challenge_id == challenge.id
     )
@@ -109,21 +108,51 @@ defmodule OmegaBravera.Fundraisers do
     }
   end
 
-  @doc """
-  Returns the list of ngos.
-
-  ## Examples
-
-      iex> list_ngos()
-      [%NGO{}, ...]
-
-  """
   def list_ngos(hidden \\ false) do
+    total_pledged_secured_query =
+      from(
+        donation in Donation,
+        group_by: donation.ngo_id,
+        select: %{
+          ngo_id: donation.ngo_id,
+          total_pledged: fragment("SUM( CASE WHEN km_distance IS NOT NULL THEN amount * km_distance ELSE amount END )"),
+          total_secured: fragment("round(sum(coalesce(?, 0)), 1)", donation.charged_amount)
+        }
+      )
+
+    total_distance_calories_challenges_query =
+      from(
+        ngo in NGO,
+        join: challenge in assoc(ngo, :ngo_chals),
+        left_join: activity in assoc(challenge, :activities),
+        on: challenge.user_id == activity.user_id,
+        group_by: ngo.id,
+        select: %{
+          ngo_id: ngo.id,
+          total_distance_covered: fragment("round(sum(coalesce(?, 0)), 0)", activity.distance),
+          total_calories: fragment("round(sum(coalesce(?, 0)), 0)", activity.calories),
+          num_of_challenges: fragment("round(count( distinct coalesce(?, 0)), 0)", challenge.id)
+        }
+      )
+
     from(
-      n in NGO,
-      where: n.hidden == ^hidden
-    )
-    |> Repo.all()
+      ngo in NGO,
+      where: ngo.hidden == ^hidden,
+      join: ngo_pledged_secured in subquery(total_pledged_secured_query),
+      where: ngo.id == ngo_pledged_secured.ngo_id,
+      join: ngo_distance_calories_challenges in subquery(total_distance_calories_challenges_query),
+      where: ngo.id == ngo_distance_calories_challenges.ngo_id,
+      distinct: ngo.id,
+      select: %{
+        ngo |
+        total_pledged: ngo_pledged_secured.total_pledged,
+        total_secured: ngo_pledged_secured.total_secured,
+        total_distance_covered: ngo_distance_calories_challenges.total_distance_covered,
+        total_calories: ngo_distance_calories_challenges.total_calories,
+        num_of_challenges: ngo_distance_calories_challenges.num_of_challenges
+
+      }
+    ) |> Repo.all()
   end
 
   def list_ngos_preload() do
@@ -137,20 +166,6 @@ defmodule OmegaBravera.Fundraisers do
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single ngo.
-
-  Raises `Ecto.NoResultsError` if the Ngo does not exist.
-
-  ## Examples
-
-      iex> get_ngo!(123)
-      %NGO{}
-
-      iex> get_ngo!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_ngo!(id), do: Repo.get!(NGO, id)
 
   def get_ngo_by_slug(slug, preloads \\ [:ngo_chals]) do

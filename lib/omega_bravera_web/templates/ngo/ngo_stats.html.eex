@@ -39,6 +39,10 @@
                 Total Calories:
                 <strong class="text-500 float-right"><%= @ngo.total_calories || 0 %> Calories</strong>
               </h5>
+            <% else %>
+              <h5 class="text-500 text-center mt-2 mb-0">Challenge starts</h5>
+              <div class="text-center text-danger" On <%= render_date(@ngo.launch_date) %> </div>
+
             <% end %>
             <div style="clear: both;"></div>
          </div>
