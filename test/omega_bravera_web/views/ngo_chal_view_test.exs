@@ -35,32 +35,6 @@ defmodule OmegaBraveraWeb.NGOChalViewTest do
            ) == false
   end
 
-  describe "currency_to_symbol/1" do
-    test "as USD returns $" do
-      assert NGOChalView.currency_to_symbol("usd") == "$"
-    end
-
-    test "as MYR returns RM" do
-      assert NGOChalView.currency_to_symbol("myr") == "RM"
-    end
-
-    test "as HKD returns HK$" do
-      assert NGOChalView.currency_to_symbol("hkd") == "HK$"
-    end
-
-    test "as krw returns ₩" do
-      assert NGOChalView.currency_to_symbol("krw") == "₩"
-    end
-
-    test "as sgd returns ₩" do
-      assert NGOChalView.currency_to_symbol("sgd") == "S$"
-    end
-
-    test "as gbp returns ₩" do
-      assert NGOChalView.currency_to_symbol("gbp") == "£"
-    end
-  end
-
   describe "render_percentage/3" do
     test "0 done, against 100 km, can be any amount" do
       assert NGOChalView.render_percentage(100, 0) == 0

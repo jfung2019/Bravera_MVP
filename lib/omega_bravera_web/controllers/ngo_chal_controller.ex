@@ -16,7 +16,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, %{"ngo_slug" => ngo_slug}) do
-    ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
+    ngo = Fundraisers.get_ngo_with_stats(ngo_slug)
 
     changeset = Challenges.change_ngo_chal(%NGOChal{})
     render(conn, "new.html", changeset: changeset, ngo: ngo)

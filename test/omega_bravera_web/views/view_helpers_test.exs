@@ -29,4 +29,30 @@ defmodule OmegaBraveraWeb.ViewHelpersTest do
   test "renders countdown span with tuple" do
     assert Phoenix.HTML.safe_to_string(ViewHelpers.render_countdown_date({{2000, 1, 1}, {13, 30, 15}})) == "<span data-render-countdown=\"2000-01-01T13:30:15Z\">"
   end
+
+  describe "currency_to_symbol/1" do
+    test "as USD returns $" do
+      assert ViewHelpers.currency_to_symbol("usd") == "$"
+    end
+
+    test "as MYR returns RM" do
+      assert ViewHelpers.currency_to_symbol("myr") == "RM"
+    end
+
+    test "as HKD returns HK$" do
+      assert ViewHelpers.currency_to_symbol("hkd") == "HK$"
+    end
+
+    test "as krw returns ₩" do
+      assert ViewHelpers.currency_to_symbol("krw") == "₩"
+    end
+
+    test "as sgd returns ₩" do
+      assert ViewHelpers.currency_to_symbol("sgd") == "S$"
+    end
+
+    test "as gbp returns ₩" do
+      assert ViewHelpers.currency_to_symbol("gbp") == "£"
+    end
+  end
 end

@@ -33,6 +33,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:challenge_desc, :string)
     field(:currency, :string, default: "hkd")
     field(:minimum_donation, :integer, default: 0)
+    field(:fundraising_goal, :integer, default: 0)
     field(:pre_registration_start_date, :utc_datetime)
     field(:launch_date, :utc_datetime)
     field(:open_registration, :boolean, default: true)
@@ -45,7 +46,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:challenge_types, {:array, :string}, default: @available_challenge_types)
     field(:total_pledged, :decimal, defailt: 0, virtual: true)
     field(:total_secured, :decimal, defailt: 0, virtual: true)
-    field(:num_of_participants, :decimal, defailt: 0, virtual: true)
+    field(:num_of_challenges, :decimal, defailt: 0, virtual: true)
     field(:total_distance_covered, :decimal, defailt: 0, virtual: true)
     field(:total_calories, :decimal, defailt: 0, virtual: true)
     belongs_to(:user, User)
@@ -71,12 +72,13 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :durations,
     :challenge_types,
     :minimum_donation,
+    :fundraising_goal,
     :pre_registration_start_date,
     :launch_date,
     :open_registration,
     :hidden
   ]
-  @required_attributes [:name, :slug, :minimum_donation, :url, :logo, :image]
+  @required_attributes [:name, :slug, :minimum_donation, :url, :logo, :image, :fundraising_goal]
 
   @doc false
   def changeset(ngo, attrs) do
@@ -84,6 +86,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
     |> validate_number(:minimum_donation, greater_than_or_equal_to: 0)
+    |> validate_number(:fundraising_goal, greater_than_or_equal_to: 0)
     |> validate_inclusion(:currency, valid_currencies())
     |> validate_subset(:activities, @available_activities)
     |> validate_subset(:distances, @available_distances)

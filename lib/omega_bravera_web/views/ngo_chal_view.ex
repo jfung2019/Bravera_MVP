@@ -25,18 +25,6 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def challenger_not_self_donated?(_, _), do: false
 
-  # TODO: Move into app logic and delegate
-  def currency_to_symbol(currency) do
-    case currency do
-      "myr" -> "RM"
-      "hkd" -> "HK$"
-      "krw" -> "₩"
-      "sgd" -> "S$"
-      "gbp" -> "£"
-      _ -> "$"
-    end
-  end
-
   def render_percentage(target, current, previous \\ 0)
 
   def render_percentage(%Decimal{} = target, current, previous) do
@@ -61,12 +49,6 @@ defmodule OmegaBraveraWeb.NGOChalView do
     ((current - previous) / target * 100)
     |> Float.round(2)
   end
-
-  def render_percentage_exceed(total, %Decimal{} = target),
-    do: round(total / Decimal.to_integer(target) * 100)
-
-  def render_percentage_exceed(%Decimal{} = total, target),
-    do: (Decimal.round(total) |> Decimal.to_integer()) / target * 100
 
   def render_progress_bar(
         target,

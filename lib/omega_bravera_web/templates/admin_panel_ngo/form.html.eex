@@ -84,6 +84,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :fundraising_goal, class: "control-label" %>
+    <%= text_input f, :fundraising_goal, class: "form-control" %>
+    <%= error_tag f, :fundraising_goal %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :minimum_donation, class: "control-label" %>
     <%= text_input f, :minimum_donation, class: "form-control" %>
     <%= error_tag f, :minimum_donation %>

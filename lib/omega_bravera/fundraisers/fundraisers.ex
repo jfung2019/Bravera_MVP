@@ -71,8 +71,8 @@ defmodule OmegaBravera.Fundraisers do
     |> Repo.all()
   end
 
-  def get_ngo_with_stats(slug) do
-    ngo = get_ngo_by_slug(slug, [])
+  def get_ngo_with_stats(slug, preloads \\ [:ngo_chals]) do
+    ngo = get_ngo_by_slug(slug, preloads)
 
     total_pledged = Repo.one(
       from(
@@ -89,16 +89,6 @@ defmodule OmegaBravera.Fundraisers do
       ),
       :sum,
       :charged_amount
-    )
-
-    # Since challenges are owned by a single participant/user.
-    num_of_participants = Repo.aggregate(
-      from(
-        challenge in OmegaBravera.Challenges.NGOChal,
-        where: challenge.ngo_id == ^ngo.id
-      ),
-      :count,
-      :id
     )
 
     total_distance_covered = Repo.aggregate(
@@ -125,7 +115,7 @@ defmodule OmegaBravera.Fundraisers do
       ngo |
       total_pledged: total_pledged,
       total_secured: total_secured,
-      num_of_participants: num_of_participants,
+      num_of_challenges: Enum.count(ngo.ngo_chals),
       total_distance_covered: total_distance_covered,
       total_calories: total_calories
     }

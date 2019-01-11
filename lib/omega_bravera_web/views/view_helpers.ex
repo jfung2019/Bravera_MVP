@@ -90,6 +90,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def profile_picture_or_default(saved_profile_picture, default) do
     if valid_uri?(saved_profile_picture), do: saved_profile_picture, else: default
   end
+
   defp valid_uri?(nil), do: false
   defp valid_uri?(str) do
     uri = URI.parse(str)
@@ -100,4 +101,27 @@ defmodule OmegaBraveraWeb.ViewHelpers do
       _ -> true
     end
   end
+
+  def currency_to_symbol(currency) do
+    case currency do
+      "myr" -> "RM"
+      "hkd" -> "HK$"
+      "krw" -> "₩"
+      "sgd" -> "S$"
+      "gbp" -> "£"
+      _ -> "$"
+    end
+  end
+
+  # Do not divide by zero please.
+  def render_percentage_exceed(_, 0), do: 0
+
+  def render_percentage_exceed(total, %Decimal{} = target),
+    do: round(total / Decimal.to_integer(target) * 100)
+
+  def render_percentage_exceed(%Decimal{} = total, target),
+    do: (Decimal.round(total) |> Decimal.to_integer()) / target * 100
+
+  def render_percentage_exceed(total, target),
+    do: round((total / target) * 100)
 end
