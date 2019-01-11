@@ -3,6 +3,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Accounts.AdminUser
   alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Fundraisers.NGO
 
   def logged_in?(conn) do
     user = Guardian.Plug.current_resource(conn)
@@ -124,4 +125,9 @@ defmodule OmegaBraveraWeb.ViewHelpers do
 
   def render_percentage_exceed(total, target),
     do: round((total / target) * 100)
+
+  def pre_registration_ngo?(%NGO{open_registration: false} = ngo),
+    do: Timex.after?(ngo.launch_date, Timex.now())
+
+  def pre_registration_ngo?(%NGO{}), do: false
 end

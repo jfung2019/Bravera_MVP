@@ -91,32 +91,20 @@ defmodule OmegaBravera.Fundraisers do
       :charged_amount
     )
 
-    total_distance_covered = Repo.aggregate(
-      from(
-        activity in OmegaBravera.Challenges.Activity,
-        join: challenge in assoc(activity, :challenge),
-        where: challenge.ngo_id == ^ngo.id and activity.challenge_id == challenge.id
-      ),
-      :sum,
-      :distance
+    calories_and_activities_query = from(
+      activity in OmegaBravera.Challenges.Activity,
+      join: challenge in assoc(activity, :challenge),
+      where: challenge.ngo_id == ^ngo.id and activity.challenge_id == challenge.id
     )
-
-    total_calories = Repo.aggregate(
-      from(
-        activity in OmegaBravera.Challenges.Activity,
-        join: challenge in assoc(activity, :challenge),
-        where: challenge.ngo_id == ^ngo.id and activity.challenge_id == challenge.id
-      ),
-      :sum,
-      :calories
-    )
+    total_distance_covered = Repo.aggregate(calories_and_activities_query, :sum, :distance)
+    total_calories = Repo.aggregate(calories_and_activities_query, :sum, :calories)
 
     %{
       ngo |
       total_pledged: total_pledged,
       total_secured: total_secured,
       num_of_challenges: Enum.count(ngo.ngo_chals),
-      total_distance_covered: total_distance_covered,
+      total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
       total_calories: total_calories
     }
   end

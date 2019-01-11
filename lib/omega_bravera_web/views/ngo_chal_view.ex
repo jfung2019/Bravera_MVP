@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.NGOChalView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.{Fundraisers.NGO, Challenges.NGOChal, Accounts.User}
+  alias OmegaBravera.{Challenges.NGOChal, Accounts.User}
 
   def user_full_name(%User{} = user), do: User.full_name(user)
 
@@ -12,11 +12,6 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def pre_registration_challenge?(%NGOChal{status: "pre_registration"}), do: true
   def pre_registration_challenge?(%NGOChal{}), do: false
-
-  def pre_registration_ngo?(%NGO{open_registration: false} = ngo),
-    do: Timex.after?(ngo.launch_date, Timex.now("Asia/Hong_Kong"))
-
-  def pre_registration_ngo?(%NGO{}), do: false
 
   def challenger_not_self_donated?(%NGOChal{user_id: user_id, self_donated: false}, %User{
         id: user_id
