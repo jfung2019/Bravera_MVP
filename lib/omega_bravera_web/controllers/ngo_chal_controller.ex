@@ -76,7 +76,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
     changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
-    render_attrs = get_render_attrs(conn, challenge, changeset)
+    render_attrs = get_render_attrs(conn, challenge, changeset, ngo_slug)
 
     render(conn, "show.html", Map.merge(render_attrs, get_stats(challenge)))
   end
@@ -115,7 +115,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     redirect(conn, to: challenge_path)
   end
 
-  defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset) do
+  defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset, ngo_slug) do
     %{
       challenge: challenge,
       m_targets: NGOChal.milestones_distances(challenge),
@@ -123,18 +123,20 @@ defmodule OmegaBraveraWeb.NGOChalController do
       stats: get_stats(challenge),
       donors: Accounts.latest_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
-      current_user: Guardian.Plug.current_resource(conn)
+      current_user: Guardian.Plug.current_resource(conn),
+      ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug)
     }
   end
 
-  defp get_render_attrs(conn, %NGOChal{type: "PER_KM"} = challenge, changeset) do
+  defp get_render_attrs(conn, %NGOChal{type: "PER_KM"} = challenge, changeset, ngo_slug) do
     %{
       challenge: challenge,
       changeset: changeset,
       donors: Accounts.latest_km_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug)
+      total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
+      ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug)
     }
   end
 
