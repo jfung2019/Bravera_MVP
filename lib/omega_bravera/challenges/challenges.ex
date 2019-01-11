@@ -123,13 +123,11 @@ defmodule OmegaBravera.Challenges do
   def get_ngo_milestone_ngo_chals(%NGO{} = ngo) do
     from(nc in NGOChal,
       where: nc.ngo_id == ^ngo.id and nc.type == "PER_MILESTONE",
-      left_join: user in assoc(nc, :user),
-      left_join: strava in assoc(user, :strava),
-      left_join: donations in assoc(nc, :donations),
+      join: user in assoc(nc, :user),
+      join: strava in assoc(user, :strava),
+      join: donations in assoc(nc, :donations),
       on: donations.ngo_chal_id == nc.id and donations.status == "charged",
-      preload: [user: {user, strava: strava}, donations: donations],
-      group_by: [nc.id, donations.id, user.id, strava.id],
-      order_by: [desc: sum(fragment("coalesce(?,0)", donations.charged_amount))]
+      preload: [user: {user, strava: strava}, donations: donations]
     )
     |> Repo.all()
   end
@@ -137,12 +135,11 @@ defmodule OmegaBravera.Challenges do
   def get_ngo_km_ngo_chals(%NGO{} = ngo) do
     from(nc in NGOChal,
       where: nc.ngo_id == ^ngo.id and nc.type == "PER_KM",
-      left_join: user in assoc(nc, :user),
-      left_join: strava in assoc(user, :strava),
-      left_join: donations in assoc(nc, :donations),
+      join: user in assoc(nc, :user),
+      join: strava in assoc(user, :strava),
+      join: donations in assoc(nc, :donations),
       on: donations.ngo_chal_id == nc.id,
-      preload: [user: {user, strava: strava}, donations: donations],
-      group_by: [nc.id, donations.id, user.id, strava.id]
+      preload: [user: {user, strava: strava}, donations: donations]
     )
     |> Repo.all()
   end

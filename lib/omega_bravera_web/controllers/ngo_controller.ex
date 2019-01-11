@@ -19,12 +19,13 @@ defmodule OmegaBraveraWeb.NGOController do
     milestone_challenges_task = Task.async(fn ->
       Challenges.get_ngo_milestone_ngo_chals(ngo)
       |> add_stats()
+      |> order_by_total_secured()
     end)
 
     km_challenges_task = Task.async(fn ->
       Challenges.get_ngo_km_ngo_chals(ngo)
       |> add_stats()
-      |> order_by_current_distance_value()
+      |> order_by_total_secured()
     end)
 
     milestone_challenges = Task.await(milestone_challenges_task, 25000)
@@ -53,6 +54,5 @@ defmodule OmegaBraveraWeb.NGOController do
   defp get_total_pledged(%NGOChal{} = challenge),
    do: get_stats(challenge) |> get_in(["total", "pending"] || 0)
 
-  defp order_by_current_distance_value(km_chals), do: Enum.sort(km_chals, &(&1.total_secured >= &2.total_secured))
-
+  defp order_by_total_secured(chals), do: Enum.sort(chals, &(&1.total_secured >= &2.total_secured))
 end
