@@ -116,16 +116,18 @@ defmodule OmegaBravera.Fundraisers do
         select: %{
           ngo_id: donation.ngo_id,
           total_pledged: fragment("SUM( CASE WHEN km_distance IS NOT NULL THEN amount * km_distance ELSE amount END )"),
+          # TODO: get distance covered and if the challenge type is PER_KM, multiply donation.amount with distance_covered. If not, donation.amount
           total_secured: fragment("round(sum(coalesce(?, 0)), 1)", donation.charged_amount)
         }
       )
 
+    # TODO: For some reason, this subquery is not displaying NGOs with no challenges or even newly created NGOs.
     total_distance_calories_challenges_query =
       from(
         ngo in NGO,
+        where: ngo.hidden == ^hidden,
         join: challenge in assoc(ngo, :ngo_chals),
         left_join: activity in assoc(challenge, :activities),
-        on: challenge.user_id == activity.user_id,
         group_by: ngo.id,
         select: %{
           ngo_id: ngo.id,
@@ -139,10 +141,10 @@ defmodule OmegaBravera.Fundraisers do
       ngo in NGO,
       where: ngo.hidden == ^hidden,
       join: ngo_pledged_secured in subquery(total_pledged_secured_query),
-      where: ngo.id == ngo_pledged_secured.ngo_id,
+      on: ngo.id == ngo_pledged_secured.ngo_id,
       join: ngo_distance_calories_challenges in subquery(total_distance_calories_challenges_query),
-      where: ngo.id == ngo_distance_calories_challenges.ngo_id,
-      distinct: ngo.id,
+      on: ngo.id == ngo_distance_calories_challenges.ngo_id,
+      order_by: [desc: ngo.id],
       select: %{
         ngo |
         total_pledged: ngo_pledged_secured.total_pledged,
@@ -155,9 +157,10 @@ defmodule OmegaBravera.Fundraisers do
     ) |> Repo.all()
   end
 
-  def list_ngos_preload() do
+  def list_ngos_preload(hidden \\ false) do
     from(
       n in NGO,
+      where: n.hidden == ^hidden,
       join: user in assoc(n, :user),
       join: strava in assoc(user, :strava),
       preload: [user: {user, strava: strava}],
