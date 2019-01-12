@@ -16,6 +16,9 @@ defmodule OmegaBravera.Challenges.Activity do
     field(:elapsed_time, :integer)
     field(:calories, :decimal)
 
+    # Only used for to record which admin created the activity
+    field(:admin_id, :integer)
+
     # associations
     belongs_to(:user, User)
     belongs_to(:challenge, NGOChal)
@@ -36,6 +39,18 @@ defmodule OmegaBravera.Challenges.Activity do
     :challenge_id,
     :calories
   ]
+
+  @required_attributes_for_admin [
+    :start_date,
+    :distance,
+    :average_speed,
+    :calories,
+    :moving_time,
+    :type,
+    :user_id,
+    :challenge_id
+  ]
+
   @allowed_attributes [:name, :manual | @required_attributes]
   @activity_type [
     "Run",
@@ -62,14 +77,39 @@ defmodule OmegaBravera.Challenges.Activity do
     |> foreign_key_constraint(:challenge_id)
     |> unique_constraint(:strava_id)
     |> unique_constraint(:challenge_id)
+    |> unique_constraint(:strava_id_challenge_id)
+    |> validate_inclusion(:type, @activity_type)
+  end
+
+  def create_activity_by_admin_changeset(%Strava.Activity{} = strava_activity, %NGOChal{} = challenge, admin_user_id) do
+    %__MODULE__{}
+    |> cast(strava_attributes(strava_activity), @required_attributes_for_admin)
+    |> change(%{
+      strava_id: strava_activity.id,
+      user_id: challenge.user_id,
+      challenge_id: challenge.id,
+      distance: strava_activity.distance,
+      average_speed: strava_activity.average_speed,
+      moving_time: strava_activity.moving_time,
+      calories: strava_activity.calories,
+      admin_id: admin_user_id
+    })
+    |> validate_required(@required_attributes_for_admin)
+    |> check_constraint(:admin_id, name: :strava_id_or_admin_id_required)
+    |> check_constraint(:strava_id, name: :strava_id_or_admin_id_required)
+    |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:challenge_id)
+    |> unique_constraint(:challenge_id)
     |> validate_inclusion(:type, @activity_type)
   end
 
   defp to_km(nil), do: nil
+
   defp to_km(meters),
-   do: Decimal.div(Decimal.new(meters), @meters_per_km)
+    do: Decimal.div(Decimal.new(meters), @meters_per_km)
 
   defp to_km_per_hour(nil), do: nil
+
   defp to_km_per_hour(meters_per_second),
     do: Decimal.mult(Decimal.new(meters_per_second), @km_per_hour)
 

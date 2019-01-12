@@ -23,9 +23,7 @@
       <%= if has_tracker?(@conn) do %>
 
             <div class="text-center">
-              <a class="btn btn-bravera sign-up" href=<%= "/" <> @ngo.slug <> "/new" %>>
-                Join the Challenge
-              </a>
+              <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @ngo.slug), class: "btn btn-green sign-up") %>
             </div>
           </div>
 

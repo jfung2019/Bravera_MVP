@@ -9,14 +9,14 @@ defmodule OmegaBravera.Trackers do
   alias OmegaBravera.Trackers.Strava
   alias OmegaBravera.Challenges.NGOChal
 
-  def create_or_update_tracker(%{id: user_id}, %{token: token} = changeset) do
+  def create_or_update_tracker(%{id: user_id}, %{token: token, profile_picture: profile_picture} = changeset) do
     case Repo.get_by(Strava, user_id: user_id) do
       nil ->
         create_strava(user_id, changeset)
 
       strava ->
         # is this some convoluted way of saying to update it when the token's been refreshed?
-        unless strava.token == token do
+        unless strava.token == token and strava.profile_picture == profile_picture do
           update_strava(strava, changeset)
         end
     end

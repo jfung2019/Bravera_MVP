@@ -13,7 +13,10 @@ defmodule OmegaBravera.NgoTest do
       pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
       launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10),
       minimum_donation: 500,
-      open_registration: true
+      open_registration: true,
+      url: "https://test.com",
+      image: "/image.png",
+      logo: "/logo.png"
     }
 
     test "changeset/2 passes if correct params are given" do
@@ -99,24 +102,22 @@ defmodule OmegaBravera.NgoTest do
         NGO.update_changeset(
           ngo,
           %{
-            pre_registration_start_date:
-              Timex.shift(ngo.pre_registration_start_date, days: 1),
-            open_registration: false,
-            launch_date: ngo.launch_date
+            pre_registration_start_date: Timex.shift(ngo.pre_registration_start_date, days: 2),
+            open_registration: false
           }
         )
 
       refute updated_ngo.valid?
     end
 
-    test "update_changeset/2 is vaild when pre_registration_start date is less than now." do
-      ngo = build(:ngo, %{pre_registration_start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 5)})
+    test "update_changeset/2 is vaild when pre_registration_start_date is less than now." do
+      ngo = build(:ngo, %{pre_registration_start_date: Timex.now("Asia/Hong_Kong")})
 
       updated_ngo =
         NGO.update_changeset(
           ngo,
           %{
-            pre_registration_start_date: Timex.shift(ngo.pre_registration_start_date, days: 3),
+            pre_registration_start_date: Timex.shift(ngo.pre_registration_start_date, days: -2),
             open_registration: false
           }
         )
@@ -127,8 +128,7 @@ defmodule OmegaBravera.NgoTest do
     test "update_changeset/2 fails if admin tries to edit pre_registration_start_date or launch_date if there're active challenges." do
       ngo = build(:ngo, %{active_challenges: 1})
 
-      updated_ngo =
-        NGO.update_changeset(ngo, %{open_registration: false})
+      updated_ngo = NGO.update_changeset(ngo, %{open_registration: false})
 
       refute updated_ngo.valid?
     end

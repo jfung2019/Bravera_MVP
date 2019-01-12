@@ -11,6 +11,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     Repo
   }
 
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
+
   def process_strava_webhook(
         %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
       ) do
@@ -82,6 +85,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         %Strava.Activity{distance: distance} = strava_activity
       )
       when distance > 0 do
+
     Logger.info("ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, donations} =
@@ -100,11 +104,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     )
 
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
-      Logger.info("ActivityIngestion: Processing was successful")
+      Logger.info("ActivityIngestion: Processing was successful for milestone challenge: #{inspect(challenge.id)}")
 
       {:ok, :challenge_updated}
     else
-      Logger.info("ActivityIngestion: Processing was not successful (donation issue)")
+      Logger.info("ActivityIngestion: Processing was not successful for milestone challenge: #{inspect(challenge.id)}")
+
       {:error, :activity_not_processed}
     end
   end
@@ -112,13 +117,26 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def process_challenge(_, _), do: {:error, :activity_not_processed}
 
   def create_activity(challenge, activity) do
-    changeset = Challenges.Activity.create_changeset(activity, challenge)
+    # Check if the strava activity is an admin created one.
+    changeset =
+      case Map.has_key?(activity, :admin_id) do
+        false ->
+          Challenges.Activity.create_changeset(activity, challenge)
+        true ->
+          Challenges.Activity.create_activity_by_admin_changeset(
+            activity,
+            challenge,
+            activity.admin_id
+          )
+      end
 
     if valid_activity?(activity, challenge) and
          activity_type_matches_challenge_activity_type?(activity, challenge) do
       case Repo.insert(changeset) do
         {:ok, activity} -> {:ok, challenge, activity}
-        {:error, _} -> {:error, challenge, nil}
+        {:error, changeset} ->
+          Logger.error("ActivityIngestion: activity could not be saved. Changeset errors: #{inspect(changeset.errors)}")
+          {:error, challenge, nil}
       end
     else
       {:error, challenge, nil}
@@ -134,9 +152,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     {:ok, updated, activity}
   end
 
-  defp update_challenge({:error, _, _} = params) do
-    params
-  end
+  defp update_challenge({:error, _, _} = params), do: params
 
   defp notify_participant_of_activity({status, challenge, activity} = params) do
     if status == :ok do
@@ -186,12 +202,39 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   defp valid_activity?(activity, challenge) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
-    Timex.compare(challenge.start_date, activity.start_date) == -1 and
-      Timex.compare(challenge.end_date, activity.start_date) >= 0 and
-      activity.manual == Application.get_env(:omega_bravera, :enable_manual_activities)
+    challenge_started_first = Timex.compare(challenge.start_date, activity.start_date) == -1
+    if !challenge_started_first, do: Logger.info("Activity before start date of challenge")
+    activity_started_before_end = Timex.compare(challenge.end_date, activity.start_date) >= 0
+    if !activity_started_before_end, do: Logger.info("Activity started after challenge ended")
+    allow_manual_activity =
+      if Application.get_env(:omega_bravera, :enable_manual_activities) == false  and activity.manual == true do
+        Logger.info("Manual activity triggered and blocked!")
+        Challenges.Notifier.send_manual_activity_blocked_email(
+          challenge,
+          Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
+        )
+        false
+      else
+        true
+      end
+
+    challenge_started_first and activity_started_before_end and allow_manual_activity
   end
 
-  defp activity_type_matches_challenge_activity_type?(activity, challenge) do
-    activity.type == challenge.activity_type
+  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
+         activity_type: activity_type
+       }),
+       do: true
+
+  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
+         activity_type: challenge_activity_type
+       }) do
+    Logger.info(
+      "Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{
+        activity_type
+      }"
+    )
+
+    false
   end
 end

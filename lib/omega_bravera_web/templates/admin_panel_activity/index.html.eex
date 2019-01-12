@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-6 offset-2">
+    <h2>Listing Activities Created by Admin</h2>
+
+    <span><%= link "Create New Activity", to: admin_panel_activity_path(@conn, :new) %></span>
+    <br />
+    <span><%= link "Import Strava Activity", to: admin_panel_activity_path(@conn, :new_import_activity_from_strava) %></span>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Activity ID</th>
+          <th>Admin ID</th>
+          <th>Challenge</th>
+          <th>Participant</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for activity <- @activities do %>
+          <tr>
+            <td><%= activity.id %></td>
+            <td><%= activity.admin_id %></td>
+            <td><%= link("URL", to: ngo_ngo_chal_path(@conn, :show, activity.challenge.ngo.slug, activity.challenge.slug),  target: "_blank") %></td>
+            <td><%= "#{activity.user.firstname} #{activity.user.lastname} (#{activity.user.email})" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

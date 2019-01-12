@@ -1,0 +1,61 @@
+
+<script src="https://js.stripe.com/v3/"></script>
+
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded",   function(event) {
+    var stripe = Stripe('<%= Application.get_env(:omega_bravera, :stripe_public_key) %>');
+    var elements = stripe.elements();
+
+    var style = {
+      base: {
+        fontSize: '16px',
+        color: "#32325d",
+      }
+    };
+
+    var card = elements.create('card', {style: style});
+
+    card.mount('#card-element');
+
+    card.addEventListener('change', function(event) {
+      var displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = '';
+      }
+    });
+
+    var form = document.getElementById('payment-form');
+
+    var fullName = document.getElementById('first-name').value + " " + document.getElementById('last-name').value;
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      var ownerInfo = {
+        owner: {
+          name: fullName,
+          email: document.getElementById('email').value
+        },
+      };
+
+      stripe.createSource(card, ownerInfo).then(function(result) {
+        if (result.error) {
+          var errorElement = document.getElementById('card-errors');
+          errorElement.textContent = result.error.message;
+        } else {
+          stripeSourceHandler(result.source);
+        }
+      });
+    });
+
+    function stripeSourceHandler(source) {
+      var form = document.getElementById('payment-form');
+      var sourceInput = document.getElementById('source-input');
+      sourceInput.setAttribute('value', source.id);
+      form.appendChild(sourceInput);
+
+      form.submit();
+    }
+  });
+</script>

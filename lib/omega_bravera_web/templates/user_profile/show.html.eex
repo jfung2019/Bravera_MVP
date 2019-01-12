@@ -1,7 +1,7 @@
 <div class="container user-profile">
   <div class="row">
     <div class="col-sm-3 float-right profile-pic-padding">
-      <%= img_tag(@profile_picture, class: "img-thumbnail") %>
+      <%= img_tag(profile_picture_or_default(@user.strava.profile_picture, static_path(@conn, "/images/profile_default.jpeg")), class: "img-thumbnail") %>
       <div>
         <span class="small">Note: to edit profile picture, please change inside your connected fitness tracker account.</span>
       </div>

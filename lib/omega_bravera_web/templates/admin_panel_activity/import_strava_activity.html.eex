@@ -1,0 +1,8 @@
+<div class="container">
+  <h2>Import Strava Activity</h2>
+  <h6 class="text-danger">Warning: importing a strava activity will trigger emails and donations</h6>
+  
+  <%= render "import_strava_activity_form.html", Map.put(assigns, :action, admin_panel_activity_path(@conn, :create_imported_strava_activity)) %>
+  
+  <span><%= link "Back", to: admin_panel_activity_path(@conn, :index) %></span>
+</div>

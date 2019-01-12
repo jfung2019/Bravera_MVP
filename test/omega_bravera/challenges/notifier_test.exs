@@ -6,6 +6,38 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   alias OmegaBravera.Challenges.{NGOChal, Notifier}
   alias OmegaBravera.Accounts.User
 
+  test "manual_activity_blocked_email" do
+    challenge = insert(:ngo_challenge)
+
+    email = Notifier.manual_activity_blocked_email(challenge, "/swcc/John-512")
+
+    assert email == %SendGrid.Email{
+             __phoenix_layout__: nil,
+             __phoenix_view__: nil,
+             attachments: nil,
+             cc: nil,
+             content: nil,
+             custom_args: nil,
+             headers: nil,
+             reply_to: nil,
+             send_at: nil,
+             subject: nil,
+             from: %{email: "admin@bravera.co", name: "Bravera"},
+             substitutions: %{
+              "-challengeLink-" => "https://bravera.co/swcc/John-512",
+               "-participantName-" => "John"
+             },
+             template_id: "fcd40945-8a55-4459-94b9-401a995246fb",
+             to: [%{email: challenge.user.email}],
+             bcc: [%{email: "admin@bravera.co"}]
+           }
+  end
+
+  test "send_manual_activity_blocked_email/1 sends the email" do
+    challenge = insert(:ngo_challenge)
+    assert Notifier.send_manual_activity_blocked_email(challenge, "/swcc/John-512") == :ok
+  end
+
   test "challenge_activated_email" do
     challenge = insert(:ngo_challenge)
 
@@ -40,7 +72,11 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "pre_registration_challenge_signup_email" do
     challenge = insert(:ngo_challenge)
-    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
+
+    challenge = %{
+      challenge
+      | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
+    }
 
     email = Notifier.pre_registration_challenge_signup_email(challenge, "/swcc/John-512")
 
@@ -80,7 +116,11 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "challenge_signup_email" do
     challenge = insert(:ngo_challenge)
-    challenge = %{challenge | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")}
+
+    challenge = %{
+      challenge
+      | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
+    }
 
     email = Notifier.challenge_signup_email(challenge, "/swcc/John-512")
 

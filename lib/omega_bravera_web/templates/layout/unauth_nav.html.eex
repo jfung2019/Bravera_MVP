@@ -13,17 +13,16 @@
 
       <ul class="navbar-nav mx-auto">
       </ul>
-
       <div class="ml-md-4 mb-3 mt-3">
-        <a class="btn btn-bravera" href="https://www.bravera.fit/how/" role="button">
-          About us
-        </a>
+        <%= link("Partners", to: "https://bravera.typeform.com/to/CWFDJm", target: "_blank", class: "btn btn-bravera") %>
       </div>
 
       <div class="ml-md-4 mb-3 mt-3">
-        <a class="btn btn-bravera" href="/login/" role="button">
-          Log in
-        </a>
+        <%= link("About us", to: "https://www.bravera.fit/how/", target: "_blank", class: "btn btn-bravera") %>
+      </div>
+
+      <div class="ml-md-4 mb-3 mt-3">
+        <%= link("Login", to: page_path(@conn, :login), class: "btn btn-bravera") %>
       </div>
     </div>
 </nav>

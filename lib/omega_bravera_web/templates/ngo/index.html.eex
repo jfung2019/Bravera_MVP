@@ -30,6 +30,9 @@
         <div class="card-body">
           <p class="card-text"><%= raw ngo.desc %></p>
         </div>
+        <div>
+          <%= render(OmegaBraveraWeb.NGOView, "ngo_stats.html", ngo: ngo) %>
+        </div>
         <div class="card-footer">
           <div class="text-center">
             <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, ngo.slug), class: "btn btn-green sign-up") %>

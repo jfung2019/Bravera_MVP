@@ -1,17 +1,24 @@
 <div class="card challenge-details">
   <div class="container border-bottom">
+    <div class="m-3 text-justify challenge-desc">
+      <%= @challenge.ngo.challenge_desc %>
+    </div>
     <div id="challenge-status-container" class="<%= @challenge.status %>">
       <%= cond do %>
         <% active_challenge?(@challenge) -> %>
-          <h5 class="text-500 text-center mt-2 mb-0">Challenge ends in<h5>
-          <h3 id="challenge_duration_countdown" class="text-success text-500 text-center mt-2 mb-0"></h3>
+          <h5 class="text-500 text-center mt-2 mb-0">Challenge ends in</h5>
+          <h3 id="challenge_duration_countdown" class="text-success text-500 text-center mt-2 mb-0">
+            <%= render_countdown_date(@challenge.end_date) %>
+          </h3>
           <p class="text-center mb-0">
             On <%= render_date(@challenge.end_date) %>
           </p>
 
         <% pre_registration_challenge?(@challenge) -> %>
-          <h5 class="text-500 text-center mt-2 mb-0">Challenge starts in<h5>
-          <h3 id="challenge_duration_countdown" class="text-danger text-500 text-center mt-2 mb-0"></h3>
+          <h5 class="text-500 text-center mt-2 mb-0">Challenge starts in</h5>
+          <h3 id="challenge_duration_countdown" class="text-danger text-500 text-center mt-2 mb-0">
+            <%= render_countdown_date(@challenge.start_date) %>
+          </h3>
           <p class="text-center mb-0">
             On <%= render_date(@challenge.start_date) %>
           </p>
@@ -30,7 +37,7 @@
       <strong class="text-green">(<%= render_percentage_exceed(get_in(@stats, ["total", "charged"]) || 0, @challenge.money_target) %>%)</strong>
     </h5>
     <div class="mb-3 text-center mx-auto">
-      <a class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
+      <a id="support-now" class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
     </div>
   </div>
 

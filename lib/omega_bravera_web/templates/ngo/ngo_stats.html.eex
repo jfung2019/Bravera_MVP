@@ -1,0 +1,51 @@
+<div class="card">
+   <div class="card-body">
+      <div class="container">
+         <div class="mb-3 mx-lg-3">
+            <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
+               Fundraising Goal:
+               <strong class="text-500 float-right"><%= "#{currency_to_symbol(@ngo.currency)}#{@ngo.fundraising_goal}" %></strong>
+            </h5>
+            <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
+              Pledged to date:
+              <span class="float-right">
+                <strong class="text-500">
+                  <%= "#{currency_to_symbol(@ngo.currency)}#{@ngo.total_pledged || 0 }" %>
+                  <span class="text-green">(<%= render_percentage_exceed(@ngo.total_pledged, @ngo.fundraising_goal) %>%)</span>
+                </strong>
+              </span>
+            </h5>
+            <%= if !pre_registration_ngo?(@ngo) do %>
+              <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
+                Secured to date:
+                <span class="float-right">
+                  <strong class="text-500">
+                    <%= "#{currency_to_symbol(@ngo.currency)}#{@ngo.total_secured || 0 }" %>
+                    <span class="text-green">(<%= render_percentage_exceed(@ngo.total_secured, @ngo.fundraising_goal) %>%)</span>
+                  </strong>
+                </span>
+              </h5>
+            <% end %>
+            <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
+               Participants:
+               <strong class="text-500 float-right"><%= @ngo.num_of_challenges || 0 %></strong>
+            </h5>
+            <%= if !pre_registration_ngo?(@ngo) do %>
+              <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
+                Total Distance:
+                <strong class="text-500 float-right"><%= @ngo.total_distance_covered || 0 %> KM</strong>
+              </h5>
+              <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
+                Total Calories:
+                <strong class="text-500 float-right"><%= @ngo.total_calories || 0 %> Calories</strong>
+              </h5>
+            <% else %>
+              <h5 class="text-500 text-center mt-2 mb-0">Challenge starts</h5>
+              <div class="text-center text-danger" On <%= render_date(@ngo.launch_date) %> </div>
+
+            <% end %>
+            <div style="clear: both;"></div>
+         </div>
+      </div>
+   </div>
+</div>

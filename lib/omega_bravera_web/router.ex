@@ -92,7 +92,11 @@ defmodule OmegaBraveraWeb.Router do
       get("/", AdminUserPageController, :index)
       resources("/admin_users", AdminUserController)
       resources("/users", AdminPanelUserController, only: [:index, :show])
-      resources("/sync", AdminPanelExchangeRateController, only: [:index])
+      resources("/activities", AdminPanelActivityController, only: [:index, :new, :create])
+      get("/activities/import_activity_from_strava", AdminPanelActivityController, :new_import_activity_from_strava)
+      post("/activities/create_imported_strava_activity", AdminPanelActivityController, :create_imported_strava_activity)
+      resources("/sync_exchange_rate", AdminPanelExchangeRateController, only: [:index])
+      resources("/sync_profile_pictures", AdminPanelProfilePictureController, only: [:index])
       get("/challenges", AdminPanelChallengesController, :index)
 
       resources("/ngos", AdminPanelNGOController, only: [:index, :new, :create]) do
@@ -104,6 +108,12 @@ defmodule OmegaBraveraWeb.Router do
       put("/ngos/:slug", AdminPanelNGOController, :update)
       get("/ngo/:slug/statement", AdminPanelNGOController, :statement)
       get("/ngo/:slug/statement/monthly/", AdminPanelNGOController, :export_statement)
+    end
+
+    scope "/api" do
+      pipe_through([:admin_authenticated, :api])
+
+      get("/challenge_dates", AdminPanelActivityController, :get_challenge_dates)
     end
   end
 

@@ -36,6 +36,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :hidden, class: "control-label" %>
+    <%= checkbox f, :hidden %>
+    <%= error_tag f, :hidden %>
+  </div>
+
+  <div class="form-group">
     <%= label f, "Description (displayed on /ngos)", class: "control-label" %>
     <%= textarea f, :desc, class: "form-control", rows: 3 %>
     <%= error_tag f, :desc %>
@@ -45,6 +51,12 @@
     <%= label f, "Full description (displayed on /ngo/new)", class: "control-label" %>
     <%= textarea f, :full_desc, class: "form-control", rows: 3 %>
     <%= error_tag f, :full_desc %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, "Challenge description (displayed on /ngo/challenge)", class: "control-label" %>
+    <%= textarea f, :challenge_desc, class: "form-control", rows: 3 %>
+    <%= error_tag f, :challenge_desc %>
   </div>
 
   <div class="form-group">
@@ -69,6 +81,12 @@
     <%= label f, :currency, class: "control-label" %>
     <%= select f, :currency, @available_currencies, class: "form-control" %>
     <%= error_tag f, :currency %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :fundraising_goal, class: "control-label" %>
+    <%= text_input f, :fundraising_goal, class: "form-control" %>
+    <%= error_tag f, :fundraising_goal %>
   </div>
 
   <div class="form-group">

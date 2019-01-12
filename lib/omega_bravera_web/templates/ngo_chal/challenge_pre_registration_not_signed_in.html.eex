@@ -3,7 +3,9 @@
     <div class="col-lg-12">
       <div class="form-group">
         <p>Challenge starts in:</p>
-        <h3 id="countdown" class="font-weight-bold mb-3 text-danger"></h3>
+        <h3 id="countdown" class="font-weight-bold mb-3 text-danger">
+          <%= render_countdown_date(@ngo.launch_date) %>
+        </h3>
         <p>Using Bravera is easy! Just follow the steps below.</p>
         <p>1. Connect with a fitness Tracker</p>
         <%= img_tag(static_path(@conn, "/images/connect-icon.png"))%>
@@ -49,8 +51,4 @@
   } else {
     $("#no-strava").tooltip();
   }
-
-  document.addEventListener("DOMContentLoaded", function(){
-    init_countdown("<%= render_countdown_date(@ngo.launch_date) %>", "countdown");
-  });
 </script>

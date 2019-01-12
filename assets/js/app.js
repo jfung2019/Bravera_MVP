@@ -25,6 +25,4 @@ import "moment";
 
 // import socket from "./socket"
 
-import init_countdown from "./custom"
-
-window.init_countdown = init_countdown
+import "./timezone_stuff";

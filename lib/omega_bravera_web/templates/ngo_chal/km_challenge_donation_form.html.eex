@@ -5,213 +5,175 @@
     </div>
   <% end %>
 
-  <div class="card-body">
-    <%= hidden_input f, :currency %>
-    <div class="form-group">
-      <%= error_tag f, :currency %>
-      <div class="currency-selector max-w-300">
-        <label
-          class="control-label"
-          for="amount">
-          <h4 class="currency-select-label text-green">Donation Amount</h4>
-        </label>
-        <%= error_tag f, :currency %>
-
+  <div class="accordion support-accordion" id="supportAccordion">
+    <div class="card">
+      <div class="card-header mx-auto" id="headingOne">
+        <h5 class="mb-0">
+          <button id="support-accordion-btn" class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <h4 class="support-text-color text-center mx-auto">
+              <i class="fa fa-plus align-icon"></i>
+              Support Now
+            </h4>
+          </button>
+        </h5>
       </div>
-    </div>
 
-  <div class="mx-auto" style="max-width: 360px;">
-
-     <div class="form-group row">
-      <span class="mr-auto p-2"><%= "#{@challenge.user.firstname}'s Target Distance:" %></span>
-      <span class="text-500 p-2"><%=@challenge.distance_target%>KM</span>
-    </div>
-
-     <div class="form-group row justify-content-between">
-      <span class="mr-auto p-2">Your Pledge Per KM:</span>
-      <span class="p-2 pull-right" style="max-width: 100px;">
-        <input type="number" class="form-control p-2" id="pledge-per-km" name="donation[pledge_per_km]" required min="0.1" step="0.1">
-      </span>
-    </div>
-
-     <div class="form-group row">
-        <span class="mr-auto p-2">
-          <%= "Your Total Pledged Support #{currency_to_symbol(@challenge.default_currency)}" %>
-        </span>
-        <span class="p-2 text-500" id="total-pledged">0</span>
-
-    </div>
-
-     <div class="form-group row">
-      <div class="mt-2">
-        <p class="text-center small">
-        <span class="text-danger">Note:</span> Your card will only be charged based on the actual distance covered.</p>
-        <p class="text-center small">Your card will not be charged until the challenge ends.</p>
-      </div>
-    </div>
-
-    <h5 class="text-420 mt-2 mb-1">
-      <div class="d-flex">
-        <span class="mr-auto p-2">Current Total Support:</span>
-        <span class="p-2">
-          <%="#{currency_to_symbol(@challenge.default_currency)}#{render_km_challenge_total_support(@total_pledges_per_km, @challenge.distance_target)}"%>
-        </span>
-      </div>
-    </h5>
-    <div style="clear: both;"></div>
-
-  </div>
-
-  </div> <!-- End Milestone Form -->
-
-  <!-- Billing form -->
-  <div class="card-body border-top">
-    <div class="text-center">
-      <h5>Billing Information</h5>
-    </div>
-    <div class="max-w-500 mx-auto">
-    <div class="row">
-      <div class="col-md-12">
-        <form class="needs-validation" novalidate="">
-          <div class="row">
-            <div class="col-md-6 mb-3 form-group">
-              <label for="first-name">First name</label>
-              <input type="text" class="form-control"
-              name="donation[first_name]" id="first-name" placeholder="" value="" required="">
-              <div class="invalid-feedback">
-                Valid first name is required.
-              </div>
-            </div>
-
-            <div class="col-md-6 mb-3 form-group">
-              <label for="first-name">Last name</label>
-              <input type="text" class="form-control"
-              name="donation[last_name]" id="last-name" placeholder="" value="" required="">
-              <div class="invalid-feedback">
-                Valid last name is required.
-              </div>
-            </div>
-          </div>
-
-            <div class="mb-3">
-              <label for="email">Email</label>
-              <input type="email" class="form-control" id="email" placeholder="you@example.com" name="donation[email]" required="">
-              <div class="invalid-feedback">
-                Please enter a valid email address.
-              </div>
-            </div>
-
-
-            <div class="form-group">
-              <label for="card-element">
-                <h4 class="mb-3">Credit/Debit Card Info</h4>
+      <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#supportAccordion">
+        <div class="card-body">
+          <%= hidden_input f, :currency %>
+          <div class="form-group">
+            <%= error_tag f, :currency %>
+            <div class="currency-selector max-w-300">
+              <label
+                class="control-label"
+                for="amount">
+                <h4 class="currency-select-label text-green">Donation Amount</h4>
               </label>
-              <div id="card-element">
-                <!-- A Stripe Element will be inserted here. -->
+              <%= error_tag f, :currency %>
+
+            </div>
+          </div>
+
+          <div class="mx-auto" style="max-width: 360px;">
+
+            <div class="form-group row">
+              <span class="mr-auto p-2"><%= "#{@challenge.user.firstname}'s Target Distance:" %></span>
+              <span class="text-500 p-2"><%=@challenge.distance_target%>KM</span>
+            </div>
+
+            <div class="form-group row justify-content-between">
+              <span class="mr-auto p-2">Your Pledge Per KM:</span>
+              <span class="p-2 pull-right" style="max-width: 100px;">
+                <input type="number" class="form-control p-2" id="pledge-per-km" name="donation[pledge_per_km]" required min="0.1" step="0.1">
+              </span>
+            </div>
+
+            <div class="form-group row">
+                <span class="mr-auto p-2">
+                  <%= "Your Total Pledged Support #{currency_to_symbol(@challenge.default_currency)}" %>
+                </span>
+                <span class="p-2 text-500" id="total-pledged">0</span>
+
+            </div>
+
+            <div class="form-group row">
+              <div class="mt-2">
+                <p class="text-center small">
+                <span class="text-danger">Note:</span> Your card will only be charged based on the actual distance covered.</p>
+                <p class="text-center small">Your card will not be charged until the challenge ends.</p>
+              </div>
+            </div>
+
+            <h5 class="text-420 mt-2 mb-1">
+              <div class="d-flex">
+                <span class="mr-auto p-2">Current Total Support:</span>
+                <span class="p-2">
+                  <%="#{currency_to_symbol(@challenge.default_currency)}#{render_km_challenge_total_support(@total_pledges_per_km, @challenge.distance_target)}"%>
+                </span>
+              </div>
+            </h5>
+            <div style="clear: both;"></div>
+      
+          </div>
+      
+        </div> <!-- End Milestone Form -->
+      
+        <!-- Billing form -->
+        <div class="card-body border-top">
+          <div class="text-center">
+            <h5>Billing Information</h5>
+          </div>
+          <div class="max-w-500 mx-auto">
+          <div class="row">
+            <div class="col-md-12">
+              <form class="needs-validation" novalidate="">
+                <div class="row">
+                  <div class="col-md-6 mb-3 form-group">
+                    <label for="first-name">First name</label>
+                    <input type="text" class="form-control"
+                    name="donation[first_name]" id="first-name" placeholder="" value="" required="">
+                    <div class="invalid-feedback">
+                      Valid first name is required.
+                    </div>
+                  </div>
+      
+                  <div class="col-md-6 mb-3 form-group">
+                    <label for="first-name">Last name</label>
+                    <input type="text" class="form-control"
+                    name="donation[last_name]" id="last-name" placeholder="" value="" required="">
+                    <div class="invalid-feedback">
+                      Valid last name is required.
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="mb-3">
+                  <label for="email">Email</label>
+                  <input type="email" class="form-control" id="email" placeholder="you@example.com" name="donation[email]" required="">
+                  <div class="invalid-feedback">
+                    Please enter a valid email address.
+                  </div>
+                </div>
+      
+      
+                <div class="form-group">
+                  <label for="card-element">
+                    <h4 class="mb-3">Credit/Debit Card Info</h4>
+                  </label>
+                  <div id="card-element">
+                    <!-- A Stripe Element will be inserted here. -->
+                  </div>
+      
+                  <!-- Used to display Element errors. -->
+                  <div id="card-errors" role="alert"></div>
+                </div>
+
+                <hr class="mb-4">
+                <div class="form-group d-none">
+                  <div>
+                    <%= label f, :str_src, class: "control-label" %>
+                    <%= text_input f, :str_src, class: "form-control invisible", id: "source-input" %>
+                  </div>
+                </div>
               </div>
 
-              <!-- Used to display Element errors. -->
-              <div id="card-errors" role="alert"></div>
-            </div>
-          <hr class="mb-4">
-          <div class="form-group d-none">
-            <div>
-              <%= label f, :str_src, class: "control-label" %>
-              <%= text_input f, :str_src, class: "form-control invisible", id: "source-input" %>
+              <div class="text-center mx-auto">
+                <button class="btn btn-bravera btn-block" style="width:200px;">Submit</button>
+              </div>
+
+              </form>
             </div>
           </div>
         </div>
-
-        <div class="text-center mx-auto">
-          <button class="btn btn-bravera btn-block" style="width:200px;">Submit</button>
-        </div>
-
-        </form>
       </div>
     </div>
   </div>
-    <script>
-      (function() {
-        'use strict';
 
-        $('#pledge-per-km').on('input',function(e){
-          $("#total-pledged").text(<%=@challenge.distance_target%> * $(this).val());
-        });
+  <script>
+    (function() {
+      'use strict';
 
-        window.addEventListener('load', function() {
-          var forms = document.getElementsByClassName('needs-validation');
+      <%= render "support_accordion_trigger.html" %>
 
-          var validation = Array.prototype.filter.call(forms, function(form) {
-            form.addEventListener('submit', function(event) {
-              if (form.checkValidity() === false) {
-                event.preventDefault();
-                event.stopPropagation();
-              }
-              form.classList.add('was-validated');
-            }, false);
-          });
-        }, false);
-      })();
-    </script>
-  <% end %>
-
-<script src="https://js.stripe.com/v3/"></script>
-
-<script type="text/javascript">
-  document.addEventListener("DOMContentLoaded",   function(event) {
-    var stripe = Stripe('<%= Application.get_env(:omega_bravera, :stripe_public_key) %>');
-    var elements = stripe.elements();
-
-    var style = {
-      base: {
-        fontSize: '16px',
-        color: "#32325d",
-      }
-    };
-
-    var card = elements.create('card', {style: style});
-
-    card.mount('#card-element');
-
-    card.addEventListener('change', function(event) {
-      var displayError = document.getElementById('card-errors');
-      if (event.error) {
-        displayError.textContent = event.error.message;
-      } else {
-        displayError.textContent = '';
-      }
-    });
-
-    var form = document.getElementById('payment-form');
-
-    var fullName = document.getElementById('first-name').value + " " + document.getElementById('last-name').value;
-
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      var ownerInfo = {
-        owner: {
-          name: fullName,
-          email: document.getElementById('email').value
-        },
-      };
-
-      stripe.createSource(card, ownerInfo).then(function(result) {
-        if (result.error) {
-          var errorElement = document.getElementById('card-errors');
-          errorElement.textContent = result.error.message;
-        } else {
-          stripeSourceHandler(result.source);
-        }
+      $('#pledge-per-km').on('input',function(e){
+        $("#total-pledged").text(<%=@challenge.distance_target%> * $(this).val());
       });
-    });
 
-    function stripeSourceHandler(source) {
-      var form = document.getElementById('payment-form');
-      var sourceInput = document.getElementById('source-input');
-      sourceInput.setAttribute('value', source.id);
-      form.appendChild(sourceInput);
+      window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
 
-      form.submit();
-    }
-  });
-</script>
+        var validation = Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+  </script>
+
+ <%= render "stripe_script.html" %>
+<% end %>

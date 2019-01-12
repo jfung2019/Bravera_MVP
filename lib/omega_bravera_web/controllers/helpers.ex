@@ -1,7 +1,5 @@
 defmodule OmegaBraveraWeb.Controllers.Helpers do
-  alias OmegaBravera.Money
-  alias OmegaBravera.Challenges.NGOChal
-  alias OmegaBravera.Challenges
+  alias OmegaBravera.{Challenges, Challenges.NGOChal, Money, Repo}
 
   def total_for_user_challenges(ngo_chals, type) do
     cond do

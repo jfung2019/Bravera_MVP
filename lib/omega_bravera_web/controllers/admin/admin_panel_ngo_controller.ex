@@ -47,14 +47,14 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
   end
 
   def edit(conn, %{"slug" => slug}) do
-    ngo = slug |> Fundraisers.get_ngo_by_slug()
+    ngo = slug |> Fundraisers.get_ngo_by_slug_with_hk_time()
     users = Accounts.list_users()
     changeset = ngo |> Fundraisers.change_ngo()
     render(conn, "edit.html", ngo: ngo, users: users, changeset: changeset)
   end
 
   def update(conn, %{"slug" => slug, "ngo" => ngo_params}) do
-    ngo = slug |> Fundraisers.get_ngo_by_slug()
+    ngo = slug |> Fundraisers.get_ngo_by_slug_with_hk_time()
 
     case Fundraisers.update_ngo(ngo, ngo_params) do
       {:ok, updated_ngo} ->
