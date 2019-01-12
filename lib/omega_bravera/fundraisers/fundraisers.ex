@@ -109,6 +109,10 @@ defmodule OmegaBravera.Fundraisers do
   end
 
   def list_ngos(hidden \\ false) do
+    # The problem: total_pledged_secured_query + total_distance_calories_challenges_query + ngos_with_stats query for ngos
+    # with stats and do that correctly. However, any new NGO or an existing NGO without challenges, activities, and donations
+    # are not included.
+
     total_pledged_secured_query =
       from(
         donation in Donation,
@@ -137,30 +141,45 @@ defmodule OmegaBravera.Fundraisers do
         }
       )
 
-    from(
-      ngo in NGO,
-      where: ngo.hidden == ^hidden,
-      join: ngo_pledged_secured in subquery(total_pledged_secured_query),
-      on: ngo.id == ngo_pledged_secured.ngo_id,
-      join: ngo_distance_calories_challenges in subquery(total_distance_calories_challenges_query),
-      on: ngo.id == ngo_distance_calories_challenges.ngo_id,
-      order_by: [desc: ngo.id],
-      select: %{
-        ngo |
-        total_pledged: ngo_pledged_secured.total_pledged,
-        total_secured: ngo_pledged_secured.total_secured,
-        total_distance_covered: ngo_distance_calories_challenges.total_distance_covered,
-        total_calories: ngo_distance_calories_challenges.total_calories,
-        num_of_challenges: ngo_distance_calories_challenges.num_of_challenges
+    ngos_with_stats =
+      from(
+        ngo in NGO,
+        where: ngo.hidden == ^hidden,
+        join: ngo_pledged_secured in subquery(total_pledged_secured_query),
+        on: ngo.id == ngo_pledged_secured.ngo_id,
+        join: ngo_distance_calories_challenges in subquery(total_distance_calories_challenges_query),
+        on: ngo.id == ngo_distance_calories_challenges.ngo_id,
+        order_by: [desc: ngo.id],
+        select: %{
+          ngo |
+          total_pledged: ngo_pledged_secured.total_pledged,
+          total_secured: ngo_pledged_secured.total_secured,
+          total_distance_covered: ngo_distance_calories_challenges.total_distance_covered,
+          total_calories: ngo_distance_calories_challenges.total_calories,
+          num_of_challenges: ngo_distance_calories_challenges.num_of_challenges
 
-      }
-    ) |> Repo.all()
+        }
+      ) |> Repo.all()
+
+      # Hacky solution:
+      ngos_with_stats_ids = ngos_with_stats |> Enum.map(&(&1.id))
+
+      ngos_without_stats =
+        from(
+          ngo in NGO,
+          where: ngo.hidden == ^hidden and ngo.id not in ^ngos_with_stats_ids,
+          order_by: [desc: ngo.id]
+        ) |> Repo.all()
+
+    ngos = ngos_with_stats ++ ngos_without_stats
+
+    # Sort by desc: id.
+    Enum.sort(ngos, &(&1.id >= &2.id))
   end
 
-  def list_ngos_preload(hidden \\ false) do
+  def list_ngos_preload() do
     from(
       n in NGO,
-      where: n.hidden == ^hidden,
       join: user in assoc(n, :user),
       join: strava in assoc(user, :strava),
       preload: [user: {user, strava: strava}],
