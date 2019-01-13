@@ -32,11 +32,11 @@
             </div>
             <%= if !pre_registration_ngo?(@ngo) do %>
               <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-                Total Distance:
+                Distance Travelled:
                 <strong class="text-500 float-right"><%= @ngo.total_distance_covered || 0 %> KM</strong>
               </div>
               <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-                Total Calories:
+                Calories Burned:
                 <strong class="text-500 float-right"><%= @ngo.total_calories || 0 %> Calories</strong>
               </div>
             <% else %>
