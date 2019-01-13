@@ -125,9 +125,7 @@ defmodule OmegaBravera.Challenges do
       where: nc.ngo_id == ^ngo.id and nc.type == "PER_MILESTONE",
       join: user in assoc(nc, :user),
       join: strava in assoc(user, :strava),
-      join: donations in assoc(nc, :donations),
-      on: donations.ngo_chal_id == nc.id and donations.status == "charged",
-      preload: [user: {user, strava: strava}, donations: donations]
+      preload: [user: {user, strava: strava}]
     )
     |> Repo.all()
   end
@@ -137,9 +135,7 @@ defmodule OmegaBravera.Challenges do
       where: nc.ngo_id == ^ngo.id and nc.type == "PER_KM",
       join: user in assoc(nc, :user),
       join: strava in assoc(user, :strava),
-      join: donations in assoc(nc, :donations),
-      on: donations.ngo_chal_id == nc.id,
-      preload: [user: {user, strava: strava}, donations: donations]
+      preload: [user: {user, strava: strava}]
     )
     |> Repo.all()
   end
