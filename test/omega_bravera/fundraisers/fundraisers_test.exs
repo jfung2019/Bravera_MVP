@@ -1,6 +1,8 @@
 defmodule OmegaBravera.FundraisersTest do
   use OmegaBravera.DataCase
 
+  import OmegaBravera.Factory
+
   alias OmegaBravera.Fundraisers
 
   describe "ngos" do
@@ -12,7 +14,8 @@ defmodule OmegaBravera.FundraisersTest do
       image: "some image",
       url: "http://test.com",
       name: "some name",
-      slug: "some slug"
+      slug: "some slug",
+      user_id: ""
     }
     @update_attrs %{
       desc: "some updated desc",
@@ -23,9 +26,10 @@ defmodule OmegaBravera.FundraisersTest do
     @invalid_attrs %{desc: nil, logo: nil, name: nil, slug: nil}
 
     def ngo_fixture(attrs \\ %{}) do
+      user = insert(:user)
       {:ok, ngo} =
         attrs
-        |> Enum.into(@valid_attrs)
+        |> Enum.into(%{@valid_attrs | user_id: user.id})
         |> Fundraisers.create_ngo()
 
       ngo
@@ -42,7 +46,7 @@ defmodule OmegaBravera.FundraisersTest do
     end
 
     test "create_ngo/1 with valid data creates a ngo" do
-      assert {:ok, %NGO{} = ngo} = Fundraisers.create_ngo(@valid_attrs)
+      ngo = ngo_fixture()
       assert ngo.desc == "some desc"
       assert ngo.logo == "some logo"
       assert ngo.name == "some name"

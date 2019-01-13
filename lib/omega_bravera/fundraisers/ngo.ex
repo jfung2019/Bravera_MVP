@@ -78,7 +78,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :open_registration,
     :hidden
   ]
-  @required_attributes [:name, :slug, :minimum_donation, :url, :logo, :image, :fundraising_goal]
+  @required_attributes [:name, :slug, :minimum_donation, :url, :logo, :image, :fundraising_goal, :user_id]
 
   @doc false
   def changeset(ngo, attrs) do

@@ -31,7 +31,8 @@ defmodule OmegaBravera.Factory do
       open_registration: true,
       logo: "/logo.png",
       image: "/image.png",
-      url: "http://test.com"
+      url: "http://test.com",
+      user: build(:user)
     }
   end
 

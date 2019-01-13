@@ -31,7 +31,7 @@
           <p class="card-text"><%= raw ngo.desc %></p>
         </div>
         <div>
-          <%= render(OmegaBraveraWeb.NGOView, "ngo_stats.html", ngo: ngo) %>
+          <%= render(OmegaBraveraWeb.NGOView, "ngo_stats.html", ngo: ngo, conn: @conn) %>
         </div>
         <div class="card-footer">
           <div class="text-center">

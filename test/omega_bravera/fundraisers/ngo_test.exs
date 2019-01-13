@@ -16,7 +16,8 @@ defmodule OmegaBravera.NgoTest do
       open_registration: true,
       url: "https://test.com",
       image: "/image.png",
-      logo: "/logo.png"
+      logo: "/logo.png",
+      user_id: 1
     }
 
     test "changeset/2 passes if correct params are given" do
@@ -111,7 +112,7 @@ defmodule OmegaBravera.NgoTest do
     end
 
     test "update_changeset/2 is vaild when pre_registration_start_date is less than now." do
-      ngo = build(:ngo, %{pre_registration_start_date: Timex.now("Asia/Hong_Kong")})
+      ngo = build(:ngo, %{pre_registration_start_date: Timex.now("Asia/Hong_Kong"), user_id: 1})
 
       updated_ngo =
         NGO.update_changeset(
