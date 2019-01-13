@@ -12,7 +12,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     slug: "some-slug",
     open_registration: false,
     pre_registration_start_date: Timex.shift(Timex.now(), days: 1),
-    launch_date: Timex.shift(Timex.now(), days: 10)
+    launch_date: Timex.shift(Timex.now(), days: 10),
+    user_id: nil
   }
 
   @update_attrs %{
@@ -42,10 +43,11 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
   end
 
   def fixture(:ngo) do
-    {:ok, ngo} = Fundraisers.create_ngo(@ngo_create_attrs)
+    {:ok, user} = Accounts.create_user(%{email: "sheriefalaa.w@gmail.com"})
+
+    {:ok, ngo} = Fundraisers.create_ngo(%{@ngo_create_attrs | user_id: user.id})
     ngo = %{ngo | utc_launch_date: ngo.launch_date}
 
-    {:ok, user} = Accounts.create_user(%{email: "sheriefalaa.w@gmail.com"})
 
     ngo_chal_attrs = %{
       "activity_type" => "Walk",
@@ -90,7 +92,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
   describe "create ngo" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: @ngo_create_attrs)
+      {:ok, user} = Accounts.create_user(%{email: "sheriefalaa.w@gmail.com"})
+      conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: %{@ngo_create_attrs | user_id: user.id})
       assert %{slug: slug} = redirected_params(conn)
       assert redirected_to(conn) == admin_panel_ngo_path(conn, :show, slug)
     end
