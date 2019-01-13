@@ -187,6 +187,9 @@ $('#amount').change(function(){
                     m1Value +
                     m2Value +
                     m3Value;
+
+var fees = 0;
+
  var mComplete = 0;
  $('#amount').change(function(){
    if (mComplete === 0){
@@ -204,6 +207,12 @@ $('#amount').change(function(){
    } else if (mComplete === 3){
      totalSupport = parseInt($('#kickstarter').val());
    }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
+
    $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
  }).change();
  //
@@ -223,6 +232,12 @@ $('#amount').change(function(){
    } else if (mComplete === 3){
      totalSupport = parseInt($('#kickstarter').val());
    }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
+
    $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
  }).change();
 
@@ -243,6 +258,11 @@ $('#amount').change(function(){
      } else if (mComplete === 3){
        totalSupport = parseInt($('#kickstarter').val());
      }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
      $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
    }).change();
  }
@@ -265,6 +285,12 @@ $('#amount').change(function(){
      } else if (mComplete === 3){
        totalSupport = parseInt($('#kickstarter').val());
      }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
+
      $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
    }).change();
  }
@@ -287,15 +313,43 @@ $('#amount').change(function(){
      } else if (mComplete === 3){
        totalSupport = parseInt($('#kickstarter').val());
      }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
+
      $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
    }).change();
  }
 
-$(function() {
-  var share = window.location.hash.substr(1);
+  $(document).on("click", "#donation_donor_pays_fees", function(){
+    if ($("#donation_donor_pays_fees:checked").length > 0 && fees === 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees;
+    } else {
+      totalSupport = totalSupport - fees;
+      fees = 0;
+    }
 
-  if(share !== "") {
-    $("#share").modal();
+     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
+  });
+
+
+  $(function() {
+    var share = window.location.hash.substr(1);
+
+    if(share !== "") {
+      $("#share").modal();
+    }
+  });
+
+  function total_donation_fees(amount = 0) {
+    if(amount > 0) {
+      const bravera_fees = amount * 0.06;
+      const gateway_fees = (amount * 0.034) + 9.4;
+      return Math.ceil(Math.round((bravera_fees + gateway_fees) * 100) / 100);
+    }
+    return 0;
   }
-});
 </script>
