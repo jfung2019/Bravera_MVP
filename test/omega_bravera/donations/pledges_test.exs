@@ -21,7 +21,8 @@ defmodule OmegaBravera.Donations.PledgesTest do
       "milestone_3" => "30",
       "milestone_2" => "30",
       "milestone_4" => "25",
-      "str_src" => "src_123JABD8554"
+      "str_src" => "src_123JABD8554",
+      "donor_pays_fees" => "false"
     }
 
     km_donation_params = %{
@@ -31,7 +32,8 @@ defmodule OmegaBravera.Donations.PledgesTest do
       "first_name" => "Test",
       "last_name" => "User",
       "pledge_per_km" => Decimal.new(5),
-      "str_src" => "src_123JABD8554"
+      "str_src" => "src_123JABD8554",
+      "donor_pays_fees" => "false"
     }
 
     {:ok,

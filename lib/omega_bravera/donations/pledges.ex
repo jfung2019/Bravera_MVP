@@ -66,7 +66,12 @@ defmodule OmegaBravera.Donations.Pledges do
   defp pledge_attributes(
          {step, charge_amount},
          %NGOChal{type: "PER_MILESTONE"} = challenge,
-         %{"currency" => currency, "str_src" => stripe_source, "donor_id" => donor_id},
+         %{
+           "currency" => currency,
+           "str_src" => stripe_source,
+           "donor_id" => donor_id,
+           "donor_pays_fees" => donor_pays_fees
+          },
          %{"id" => stripe_customer_id}
        ) do
     %{
@@ -79,7 +84,8 @@ defmodule OmegaBravera.Donations.Pledges do
       ngo_chal_id: challenge.id,
       ngo_id: challenge.ngo_id,
       user_id: donor_id,
-      status: "pending"
+      status: "pending",
+      donor_pays_fees: donor_pays_fees
     }
   end
 
@@ -97,7 +103,8 @@ defmodule OmegaBravera.Donations.Pledges do
            "currency" => currency,
            "str_src" => stripe_source,
            "donor_id" => donor_id,
-           "pledge_per_km" => pledge_per_km
+           "pledge_per_km" => pledge_per_km,
+           "donor_pays_fees" => donor_pays_fees
          },
          %{"id" => stripe_customer_id}
        ) do
@@ -110,7 +117,8 @@ defmodule OmegaBravera.Donations.Pledges do
       ngo_chal_id: challenge.id,
       ngo_id: challenge.ngo_id,
       user_id: donor_id,
-      status: "pending"
+      status: "pending",
+      donor_pays_fees: donor_pays_fees
     }
   end
 

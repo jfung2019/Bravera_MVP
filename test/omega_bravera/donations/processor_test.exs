@@ -22,7 +22,7 @@ defmodule OmegaBravera.Donations.ProcessorTest do
       str_src: "src_1D9JN4EXtHU8QBy8JErKq6fH",
       user: donor,
       ngo: ngo,
-      ngo_chal: challenge
+      ngo_chal: challenge,
     }
 
     donation = insert(:donation, donation_attrs)
@@ -44,14 +44,59 @@ defmodule OmegaBravera.Donations.ProcessorTest do
 
       assert charged_fields == %{
                card_brand: "Visa",
-               charge_id: "ch_1DlGQgEXtHU8QBy8l5ksSULe",
-               charged_amount: Decimal.new(13.29),
+               charge_id: "ch_1Ds8ugEXtHU8QBy8i6WT5pk6",
+               charged_amount: Decimal.new(10.0),
                charged_description: "Donation to Save the children via Bravera.co",
                charged_status: "succeeded",
                last_digits: "4242"
              }
 
-      assert Timex.equal?(result.charged_at, DateTime.from_unix!(1_545_746_322))
+      assert Timex.equal?(result.charged_at, DateTime.from_unix!(1_547_385_726))
+    end
+  end
+
+  test "charge_donation/1 charges km challenge pledge sucessfully and makes user pay for fees" do
+    donor = insert(:user, %{email: "sheriefalaa.w@gmail.com"})
+    ngo = insert(:ngo, %{slug: "stc", name: "Save the children"})
+    challenge = insert(:ngo_challenge, %{ngo: ngo, type: "PER_KM", activity_type: "Walk"})
+    insert(:activity, %{challenge: challenge, distance: Decimal.new(10)})
+
+    donation_attrs = %{
+      str_cus_id: "cus_DaUL9L27e843XN",
+      str_src: "src_1D9JN4EXtHU8QBy8JErKq6fH",
+      user: donor,
+      ngo: ngo,
+      ngo_chal: challenge,
+      donor_pays_fees: true
+    }
+
+    donation = insert(:donation, donation_attrs)
+
+    use_cassette "charge_km_donation" do
+      {:ok, %Donation{status: "charged"} = donation} = Processor.charge_donation(donation)
+      result = Repo.get(Donation, donation.id)
+
+      fields = [
+        :charge_id,
+        :last_digits,
+        :card_brand,
+        :charged_description,
+        :charged_status,
+        :charged_amount
+      ]
+
+      charged_fields = Map.take(result, fields)
+
+      assert charged_fields == %{
+               card_brand: "Visa",
+               charge_id: "ch_1Ds9ADEXtHU8QBy8S5PkhhSG",
+               charged_amount: Decimal.new(111.75),
+               charged_description: "Donation to Save the children via Bravera.co",
+               charged_status: "succeeded",
+               last_digits: "4242"
+             }
+
+      assert Timex.equal?(result.charged_at, DateTime.from_unix!(1_547_386_689))
     end
   end
 

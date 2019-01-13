@@ -18,6 +18,7 @@ defmodule OmegaBravera.Money.Donation do
     field(:str_cus_id, :string)
     field(:milestone_distance, :integer)
     field(:km_distance, :integer)
+    field(:donor_pays_fees, :boolean, default: false)
 
     # charge successful fields
     field(:charge_id, :string)
@@ -49,7 +50,8 @@ defmodule OmegaBravera.Money.Donation do
     :user_id,
     :ngo_chal_id,
     :ngo_id,
-    :exchange_rate
+    :exchange_rate,
+    :donor_pays_fees
   ]
   @required_attributes [
     :amount,

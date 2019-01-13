@@ -2,8 +2,6 @@ defmodule OmegaBravera.Donations.Processor do
   require Logger
 
   alias OmegaBravera.{
-    Money,
-    Accounts.User,
     StripeHelpers,
     Money.Donation,
     Repo,
@@ -55,8 +53,19 @@ defmodule OmegaBravera.Donations.Processor do
     # To get the calculated field distance_covered
     challenge = Challenges.get_ngo_chal!(challenge.id)
 
+    amount =
+      cond do
+        donation.donor_pays_fees == true ->
+          donation.amount
+          |> Decimal.mult(challenge.distance_covered)
+          |> amount_with_fees()
+        donation.donor_pays_fees == false ->
+          donation.amount
+          |> Decimal.mult(challenge.distance_covered)
+      end
+
     %{
-      "amount" => Decimal.mult(donation.amount, challenge.distance_covered) |> total_amount(),
+      "amount" => amount,
       "currency" => donation.currency,
       "source" => donation.str_src,
       "receipt_email" => donation.user.email,
@@ -65,8 +74,16 @@ defmodule OmegaBravera.Donations.Processor do
   end
 
   def charge_params(%Donation{} = donation, _) do
+    amount =
+      cond do
+        donation.donor_pays_fees == true ->
+          amount_with_fees(donation.amount)
+        donation.donor_pays_fees == false ->
+          donation.amount
+      end
+
     %{
-      "amount" => donation.amount |> total_amount(),
+      "amount" =>  amount,
       "currency" => donation.currency,
       "source" => donation.str_src,
       "receipt_email" => donation.user.email,
@@ -74,9 +91,9 @@ defmodule OmegaBravera.Donations.Processor do
     }
   end
 
-  defp total_amount(%Decimal{} = amount) do
-    gateway = Decimal.mult(amount, Decimal.new(0.034)) |> Decimal.add(Decimal.new(2.35))
-    bravera = Decimal.mult(amount, Decimal.new(0.06))
+  defp amount_with_fees(%Decimal{} = amount) do
+    gateway = Decimal.mult(amount, Decimal.from_float(0.034)) |> Decimal.add(Decimal.from_float(2.35))
+    bravera = Decimal.mult(amount, Decimal.from_float(0.06))
 
     Decimal.add(gateway, bravera) |> Decimal.add(amount)
   end
