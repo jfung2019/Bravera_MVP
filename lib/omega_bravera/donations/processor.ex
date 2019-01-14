@@ -15,6 +15,7 @@ defmodule OmegaBravera.Donations.Processor do
   def charge_donation(%Donation{} = dn) do
     donation = Repo.preload(dn, [:ngo, :ngo_chal, :user])
 
+    Logger.info("Debug: attempt to charge: #{inspect(charge_params(donation, donation.ngo_chal))}")
     case StripeHelpers.charge_stripe_customer(
            donation.ngo,
            charge_params(donation, donation.ngo_chal),
