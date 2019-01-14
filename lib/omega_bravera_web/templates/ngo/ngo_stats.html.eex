@@ -4,13 +4,13 @@
          <div class="mb-3 mx-lg-3">
             <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
                Fundraising Goal:
-               <strong class="text-500 float-right"><%= "#{currency_to_symbol(@ngo.currency)}#{@ngo.fundraising_goal}" %></strong>
+               <strong class="text-500 float-right"><%= "#{currency_to_symbol(@ngo.currency)}#{number_with_commas(@ngo.fundraising_goal)}" %></strong>
             </div>
             <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
               Pledged to date:
               <span class="float-right">
                 <strong class="text-500">
-                  <%= "#{currency_to_symbol(@ngo.currency)}#{@ngo.total_pledged || 0 }" %>
+                  <%= "#{currency_to_symbol(@ngo.currency)}#{number_with_commas(@ngo.total_pledged || 0)}" %>
                   <span class="text-green">(<%= render_percentage_exceed(@ngo.total_pledged, @ngo.fundraising_goal) %>%)</span>
                 </strong>
               </span>
@@ -20,7 +20,7 @@
                 Secured to date:
                 <span class="float-right">
                   <strong class="text-500">
-                    <%= "#{currency_to_symbol(@ngo.currency)}#{@ngo.total_secured || 0 }" %>
+                    <%= "#{currency_to_symbol(@ngo.currency)}#{number_with_commas(@ngo.total_secured || 0)}" %>
                     <span class="text-green">(<%= render_percentage_exceed(@ngo.total_secured, @ngo.fundraising_goal) %>%)</span>
                   </strong>
                 </span>

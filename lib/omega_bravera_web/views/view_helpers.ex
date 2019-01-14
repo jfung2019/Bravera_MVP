@@ -131,4 +131,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     do: Timex.after?(ngo.launch_date, Timex.now())
 
   def pre_registration_ngo?(%NGO{}), do: false
+
+  def number_with_commas(number) when is_integer(number), do: Number.Delimit.number_to_delimited(number, precision: 0)
+  def number_with_commas(number), do: Number.Delimit.number_to_delimited(number)
 end
