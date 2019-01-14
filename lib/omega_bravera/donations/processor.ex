@@ -2,8 +2,6 @@ defmodule OmegaBravera.Donations.Processor do
   require Logger
 
   alias OmegaBravera.{
-    Money,
-    Accounts.User,
     StripeHelpers,
     Money.Donation,
     Repo,
@@ -14,37 +12,35 @@ defmodule OmegaBravera.Donations.Processor do
 
   def charge_donation(%Donation{} = dn) do
     donation = Repo.preload(dn, [:ngo, :ngo_chal, :user])
+    charge_params = charge_params(donation, donation.ngo_chal)
 
-    Logger.info("Debug: attempt to charge: #{inspect(charge_params(donation, donation.ngo_chal))}")
-    case StripeHelpers.charge_stripe_customer(
-           donation.ngo,
-           charge_params(donation, donation.ngo_chal),
-           donation.ngo_chal_id
-         ) do
-      {:ok, %{body: body}, exchange_rate} ->
-        case Poison.decode!(body) do
-          %{"source" => _} = response ->
-            updated =
-              donation
-              |> Donation.charge_changeset(response, exchange_rate)
-              |> Repo.update!()
+    if Decimal.cmp(charge_params["amount"], Decimal.new(1)) === :gt do
+      case StripeHelpers.charge_stripe_customer(
+            donation.ngo,
+            charge_params
+          ) do
+        {:ok, %{body: body}, exchange_rate} ->
+          case Poison.decode!(body) do
+            %{"source" => _} = response ->
+              updated =
+                donation
+                |> Donation.charge_changeset(response, exchange_rate)
+                |> Repo.update!()
 
-            Notifier.send_donation_charged_email(updated)
+              Notifier.send_donation_charged_email(updated)
 
-            {:ok, updated}
+              {:ok, updated}
 
-          %{"error" => _} ->
-            {:error, :stripe_error}
+            %{"error" => _} ->
+              {:error, :stripe_error}
 
-          _ ->
-            {:error, :unknown_error}
-        end
+            _ ->
+              {:error, :unknown_error}
+          end
 
-      {:error, reason} ->
-        {:error, reason}
-
-      :error ->
-        {:error, :unknown_error}
+        {:error, _reason} ->
+          {:error, :charge_stripe_customer_error}
+      end
     end
   end
 

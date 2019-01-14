@@ -68,7 +68,7 @@ defmodule OmegaBravera.StripeHelpers do
     end)
   end
 
-  def charge_stripe_customer(ngo, params, ngo_chal_id) do
+  def charge_stripe_customer(ngo, params) do
     %{name: ngo_name} = ngo
 
     %{
@@ -107,15 +107,13 @@ defmodule OmegaBravera.StripeHelpers do
               "Stripe charge failed: #{inspect(body)}"
             end)
 
-            :error
+            {:error, :stripy_charge_error}
         end
 
       {:error, reason} ->
         Logger.error(fn ->
           "Stripe request failed: #{inspect(reason)}"
         end)
-
-        :error
     end
   end
 
