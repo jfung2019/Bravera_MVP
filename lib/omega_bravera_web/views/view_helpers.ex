@@ -122,7 +122,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     do: round(total / Decimal.to_integer(target) * 100)
 
   def render_percentage_exceed(%Decimal{} = total, target),
-    do: (Decimal.round(total) |> Decimal.to_integer()) / target * 100
+    do: round((Decimal.round(total) |> Decimal.to_integer()) / target * 100)
 
   def render_percentage_exceed(total, target),
     do: round((total / target) * 100)
