@@ -14,7 +14,7 @@ defmodule OmegaBravera.Challenges.KmChallengesWorker do
 
   defp notify_donor_and_charge_donation(donation) do
     Logger.info("KmChallengesWorker: Charging donation id: #{donation.id}")
-    Challenges.Notifier.send_donor_milestone_email(donation)
+    # Challenges.Notifier.send_donor_milestone_email(donation)
 
     case Processor.charge_donation(donation) do
       {:ok, %Donation{status: "charged"} = charged_donation} ->
