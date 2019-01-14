@@ -1,11 +1,14 @@
 defmodule OmegaBravera.Challenges.ExpirerWorker do
   import Ecto.Query, only: [from: 2]
-  alias OmegaBravera.{Challenges.NGOChal, Repo}
+  alias OmegaBravera.{Challenges.NGOChal, Repo, Challenges.KmChallengesWorker}
 
   def process_expired_challenges() do
-    now = Timex.now("Asia/Hong_Kong")
+    # To avoid KM Challenges being expired before they are even charged, we run the KmChallengesWorker
+    # before the expirer worker. -Sherief
+    KmChallengesWorker.start()
 
-    # TODO: Use the correct timezone with challenge.end_date. Otherwise, challenges will end 7 hours early.
+    now = Timex.now()
+
     query =
       from(challenge in NGOChal,
         where: challenge.end_date <= ^now and challenge.status == "active"

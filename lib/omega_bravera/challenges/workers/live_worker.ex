@@ -6,8 +6,6 @@ defmodule OmegaBravera.Challenges.LiveWorker do
   alias OmegaBraveraWeb.Endpoint
 
   def start() do
-    Logger.info("LiveChallenges worker: started..")
-
     Challenges.get_live_ngo_chals()
     |> Enum.map(fn challenge ->
       challenge = challenge |> Repo.preload([:ngo])
@@ -27,7 +25,5 @@ defmodule OmegaBravera.Challenges.LiveWorker do
           )
       end
     end)
-
-    Logger.info("LiveChallenges worker: done!")
   end
 end
