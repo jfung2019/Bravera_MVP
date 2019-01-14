@@ -56,10 +56,14 @@
               </span>
             </div>
 
-            <div class="form-group row">
-              <%= checkbox f, :donor_pays_fees, class: "col-1 mt-1"%>
-              <p class="col-11 text-center small">Yes! I want to maximize my donation to the Cause and cover service fees (card payment & platform service fees).</p>
-            </div>
+            <%= if hide_donor_pays_fees?(@challenge.ngo) do %>
+                <%= checkbox f, :donor_pays_fees, class: "d-none"%>
+            <% else %>
+              <div class="form-group row">
+                <%= checkbox f, :donor_pays_fees, class: "col-1 mt-1"%>
+                <p class="col-11 text-center small">Yes! I want to maximize my donation to the Cause and cover service fees (card payment & platform service fees).</p>
+              </div>
+            <% end %>
 
             <div class="form-group row">
               <div class="mt-2">

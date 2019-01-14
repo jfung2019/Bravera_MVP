@@ -42,6 +42,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :hide_donor_pays_fees, class: "control-label" %>
+    <%= checkbox f, :hide_donor_pays_fees %>
+    <%= error_tag f, :hide_donor_pays_fees %>
+  </div>
+
+  <div class="form-group">
     <%= label f, "Description (displayed on /ngos)", class: "control-label" %>
     <%= textarea f, :desc, class: "form-control", rows: 3 %>
     <%= error_tag f, :desc %>
