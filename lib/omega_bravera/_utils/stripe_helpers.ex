@@ -2,7 +2,6 @@ defmodule OmegaBravera.StripeHelpers do
   require Logger
   alias OmegaBravera.Fundraisers
   alias OmegaBravera.Money
-  alias OmegaBravera.Challenges
   alias OmegaBravera.Accounts
 
   alias Decimal
@@ -107,13 +106,15 @@ defmodule OmegaBravera.StripeHelpers do
               "Stripe charge failed: #{inspect(body)}"
             end)
 
-            {:error, :stripy_charge_error}
+            :error
         end
 
       {:error, reason} ->
         Logger.error(fn ->
           "Stripe request failed: #{inspect(reason)}"
         end)
+
+        :error
     end
   end
 
