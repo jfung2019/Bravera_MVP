@@ -113,7 +113,7 @@ defmodule OmegaBravera.Donations.Notifier do
     )
     |> Email.add_substitution(
       "-chargedAmount-",
-      "#{donation.charged_amount} #{donation.currency}"
+      "#{Decimal.round(donation.charged_amount)} #{donation.currency}"
     )
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
