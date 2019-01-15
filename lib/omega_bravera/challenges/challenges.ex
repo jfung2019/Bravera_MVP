@@ -145,7 +145,7 @@ defmodule OmegaBravera.Challenges do
 
     from(
       nc in NGOChal,
-      where: nc.type == "PER_KM" and ^now >= nc.end_date,
+      where: nc.type == "PER_KM" and (nc.status == "completed" or ^now >= nc.end_date),
       join: donations in assoc(nc, :donations),
       on: donations.ngo_chal_id == nc.id and donations.status == "pending",
       preload: [donations: donations]
