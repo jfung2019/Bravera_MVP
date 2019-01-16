@@ -188,6 +188,8 @@ $('#amount').change(function(){
                     m2Value +
                     m3Value;
 
+var fees = 0;
+
  var mComplete = 0;
  $('#amount').change(function(){
    if (mComplete === 0){
@@ -207,7 +209,8 @@ $('#amount').change(function(){
    }
 
     if ($("#donation_donor_pays_fees:checked").length > 0) {
-      totalSupport = totalSupport + total_donation_fees(totalSupport)
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
     }
 
    $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
@@ -231,7 +234,8 @@ $('#amount').change(function(){
    }
 
     if ($("#donation_donor_pays_fees:checked").length > 0) {
-      totalSupport = totalSupport + total_donation_fees(totalSupport)
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
     }
 
    $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
@@ -256,7 +260,8 @@ $('#amount').change(function(){
      }
 
     if ($("#donation_donor_pays_fees:checked").length > 0) {
-      totalSupport = totalSupport + total_donation_fees(totalSupport)
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
     }
      $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
    }).change();
@@ -282,7 +287,8 @@ $('#amount').change(function(){
      }
 
     if ($("#donation_donor_pays_fees:checked").length > 0) {
-      totalSupport = totalSupport + total_donation_fees(totalSupport)
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
     }
 
      $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
@@ -309,22 +315,25 @@ $('#amount').change(function(){
      }
 
     if ($("#donation_donor_pays_fees:checked").length > 0) {
-      totalSupport = totalSupport + total_donation_fees(totalSupport)
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
     }
 
      $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
    }).change();
  }
 
-//  $(document).on("click", "#donation_donor_pays_fees", function(){
-//    if ($("#donation_donor_pays_fees:checked").length > 0) {
-//      totalSupport = totalSupport + total_donation_fees(totalSupport)
-//    } else {
-//      totalSupport = totalSupport - total_donation_fees(totalSupport)
-//    }
+  $(document).on("click", "#donation_donor_pays_fees", function(){
+    if ($("#donation_donor_pays_fees:checked").length > 0 && fees === 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees;
+    } else {
+      totalSupport = totalSupport - fees;
+      fees = 0;
+    }
 
-//     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
-//  });
+     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
+  });
 
 
   $(function() {

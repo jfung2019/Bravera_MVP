@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.NGOChalView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.{Challenges.NGOChal, Accounts.User}
+  alias OmegaBravera.{Challenges.NGOChal, Accounts.User, Fundraisers.NGO}
 
   def user_full_name(%User{} = user), do: User.full_name(user)
 
@@ -223,4 +223,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def total_pledges(%Decimal{} = total_pledges, distance),
     do: Decimal.mult(total_pledges, distance) |> Decimal.to_integer()
+
+  def hide_donor_pays_fees?(%NGO{} = ngo), do: ngo.hide_donor_pays_fees
 end
+
