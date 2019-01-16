@@ -17,12 +17,13 @@ defmodule OmegaBravera.Trackers.Strava do
 
 
   @required_attributes [:athlete_id, :firstname, :lastname, :token]
-  @allowed_attributes [:profile_picture | @required_attributes]
+  @allowed_attributes [:profile_picture, :email | @required_attributes]
 
   @doc false
   def changeset(strava, attrs) do
     strava
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
+    |> unique_constraint(:athlete_id)
   end
 end

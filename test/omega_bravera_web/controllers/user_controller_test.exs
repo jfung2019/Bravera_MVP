@@ -7,7 +7,8 @@ defmodule OmegaBraveraWeb.UserControllerTest do
   @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
 
   setup %{conn: conn} do
-    with {:ok, user} <- Accounts.create_user(%{email: "user@example.com", password: "test1234"}),
+    attrs = %{firstname: "sherief", lastname: "alaa ", email: "user@example.com", password: "test1234"}
+    with {:ok, user} <- Accounts.create_user(attrs),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
          do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end

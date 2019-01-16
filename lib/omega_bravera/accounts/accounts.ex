@@ -163,15 +163,15 @@ defmodule OmegaBravera.Accounts do
       nil ->
         Accounts.Strava.create_user_with_tracker(changeset)
 
-        strava ->
-          updated_user =
-            case Accounts.update_user(strava.user, changeset) do
-              {:ok, u} -> u
-              {:error, _} -> strava.user
-            end
+      strava ->
+        updated_user =
+          case Accounts.update_user(strava.user, changeset) do
+            {:ok, u} -> u
+            {:error, _} -> strava.user
+          end
 
-          Trackers.create_or_update_tracker(updated_user, changeset)
-          {:ok, updated_user}
+        Trackers.create_or_update_tracker(updated_user, changeset)
+        {:ok, updated_user}
 
     end
   end

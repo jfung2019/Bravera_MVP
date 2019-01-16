@@ -43,7 +43,9 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
   end
 
   def fixture(:ngo) do
-    {:ok, user} = Accounts.create_user(%{email: "sheriefalaa.w@gmail.com"})
+    user_attrs = %{firstname: "sherief", lastname: "alaa ", email: "user@example.com", password: "test1234"}
+
+    {:ok, user} = Accounts.create_user(user_attrs)
 
     {:ok, ngo} = Fundraisers.create_ngo(%{@ngo_create_attrs | user_id: user.id})
     ngo = %{ngo | utc_launch_date: ngo.launch_date}
@@ -92,7 +94,9 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
   describe "create ngo" do
     test "redirects to show when data is valid", %{conn: conn} do
-      {:ok, user} = Accounts.create_user(%{email: "sheriefalaa.w@gmail.com"})
+    attrs = %{firstname: "sherief", lastname: "alaa ", email: "user@example.com", password: "test1234"}
+
+      {:ok, user} = Accounts.create_user(attrs)
       conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: %{@ngo_create_attrs | user_id: user.id})
       assert %{slug: slug} = redirected_params(conn)
       assert redirected_to(conn) == admin_panel_ngo_path(conn, :show, slug)
