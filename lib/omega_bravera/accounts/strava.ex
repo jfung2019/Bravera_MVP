@@ -7,13 +7,14 @@ defmodule OmegaBravera.Accounts.Strava do
     athlete = Strava.Auth.get_athlete!(client)
 
     athlete
-    |> Map.take([:email, :firstname, :lastname])
+    |> Map.take([:firstname, :lastname])
     |> Map.put(:athlete_id, athlete.id)
     |> Map.put(:profile_picture, athlete.profile)
     |> Map.merge(%{token: client.token.access_token})
     |> Map.put(:additional_info, build_additional_info(athlete))
   end
 
+  # Not used at moment with accounts.insert_or_update_strava_user()
   def create_user_with_tracker_and_email(attrs) do
     case create_user_with_tracker(attrs) do
       {:ok, data} ->

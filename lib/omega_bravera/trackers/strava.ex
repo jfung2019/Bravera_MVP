@@ -16,7 +16,7 @@ defmodule OmegaBravera.Trackers.Strava do
   end
 
 
-  @required_attributes [:email, :athlete_id, :firstname, :lastname, :token]
+  @required_attributes [:athlete_id, :firstname, :lastname, :token]
   @allowed_attributes [:profile_picture | @required_attributes]
 
   @doc false
