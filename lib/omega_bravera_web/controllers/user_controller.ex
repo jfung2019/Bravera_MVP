@@ -67,8 +67,9 @@ defmodule OmegaBraveraWeb.UserController do
           Accounts.Notifier.send_user_signup_email(user)
         end
 
+        # TODO: if email exists, send another email and deactivate previous email.
         conn
-        |> put_flash(:info, "Account updated successfully.")
+        |> put_flash(:info, "Email updated. Please check your inbox now!")
         |> redirect(to: user_path(conn, :show, %{}))
 
       {:error, %Ecto.Changeset{} = changeset} ->

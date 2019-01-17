@@ -230,8 +230,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
   def verified_email?(%User{email: email, email_verified: email_verified}) do
     cond do
       is_nil(email) -> false
-      not is_nil(email) and is_nil(email_verified) -> true # Existing users..
-      not is_nil(email) and email_verified == false -> false
+      is_nil(email_verified) -> false
       not is_nil(email) and email_verified == true -> true
     end
   end
