@@ -224,9 +224,6 @@ defmodule OmegaBraveraWeb.NGOChalView do
   def total_pledges(%Decimal{} = total_pledges, distance),
     do: Decimal.mult(total_pledges, distance) |> Decimal.to_integer()
 
-  # def user_has_email?(%User{email: email}) when is_nil(email), do: false
-  # def user_has_email?(%User{email: email}) when not is_nil(email), do: true
-
   def verified_email?(%User{email: email, email_verified: email_verified}) do
     cond do
       is_nil(email) -> false
