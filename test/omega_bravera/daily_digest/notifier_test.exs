@@ -33,7 +33,7 @@ defmodule OmegaBravera.DailyDigest.NotifierTest do
     insert_list(4, :donation, %{user: donor})
 
     params = %{
-      signups: [strava.user, insert(:strava).user, insert(:strava).user],
+      signups: [strava.user, insert(:strava, %{athlete_id: 33_762_321}).user, insert(:strava, %{athlete_id: 33_762_123}).user],
       new_challenges: [insert(:ngo_challenge), insert(:ngo_challenge, %{user: strava.user})],
       challenges_new_users: [],
       challenges_milestones: [],

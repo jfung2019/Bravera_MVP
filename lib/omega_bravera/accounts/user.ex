@@ -9,13 +9,13 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Stripe.StrCustomer
 
-  @required_attributes [:email]
+  @required_attributes [:firstname, :lastname]
   @allowed_attributes [:email, :firstname, :lastname, :additional_info]
 
   schema "users" do
     field(:email, :string)
-    field(:firstname, :string, default: "No Name")
-    field(:lastname, :string, default: "No Name")
+    field(:firstname, :string)
+    field(:lastname, :string)
     field(:additional_info, :map, default: %{})
 
     # associations

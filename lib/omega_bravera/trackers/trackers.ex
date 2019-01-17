@@ -67,6 +67,14 @@ defmodule OmegaBravera.Trackers do
   """
   def get_strava!(id), do: Repo.get!(Strava, id)
 
+  def get_strava_with_athlete_id(athlete_id, preloads \\ [:user]) do
+    from(
+      s in Strava,
+      where: s.athlete_id == ^athlete_id,
+      preload: ^preloads
+    ) |> Repo.one()
+   end
+
   @doc """
   Creates a strava.
 

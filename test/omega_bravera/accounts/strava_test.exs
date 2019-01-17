@@ -2,6 +2,8 @@ defmodule OmegaBravera.Accounts.StravaTest do
   use OmegaBravera.DataCase
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
+  import OmegaBravera.Factory
+
   alias OmegaBravera.{Accounts, Trackers}
 
   setup do
@@ -9,10 +11,9 @@ defmodule OmegaBravera.Accounts.StravaTest do
 
     attrs = %{
       athlete_id: 33_762_738,
-      email: "simon.garciar@gmail.com",
       firstname: "Rafael",
       lastname: "Garcia",
-      token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
+      token: "8089de39cdfb41470291b9a116f1fc6b94633ad0",
       profile_picture: "https://graph.facebook.com/10160635840075043/picture?height=256&width=256"
     }
 
@@ -29,7 +30,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
     use_cassette "strava_signup_sign_in_flow" do
       result = Accounts.Strava.login_changeset(params)
 
-      assert result == Map.put(attrs, :additional_info, %{sex: "M", location: "//"})
+      assert result == Map.put(attrs, :additional_info, %{sex: "M", location: "Spain/Barcelona/Barcelona"})
     end
   end
 
@@ -38,18 +39,19 @@ defmodule OmegaBravera.Accounts.StravaTest do
       {:ok, %{strava: strava, user: user}} = Accounts.Strava.create_user_with_tracker(attrs)
 
       assert match?(%Accounts.User{}, user) == true
-      assert user.email == "simon.garciar@gmail.com"
+      assert user.firstname == "Rafael"
 
       assert match?(%Trackers.Strava{}, strava) == true
       assert strava.athlete_id == 33_762_738
     end
 
     test "fails if either the user is already on the db", %{attrs: attrs} do
+      strava = insert(:strava, attrs)
       {:ok, _} = Accounts.create_user(Map.take(attrs, [:firstname, :lastname, :email]))
 
-      {:error, :user, changeset, _} = Accounts.Strava.create_user_with_tracker(attrs)
+      {:error, :strava, changeset, _} = Accounts.Strava.create_user_with_tracker(attrs)
 
-      assert changeset.errors == [email: {"has already been taken", []}]
+      assert changeset.errors == [athlete_id: {"has already been taken", []}]
     end
   end
 end

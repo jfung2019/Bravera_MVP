@@ -6,13 +6,13 @@ defmodule OmegaBravera.DailyDigest.WorkerTest do
 
   test "process_signups/0 finds all new users signups, all new challenges, all challenges with milestones and all completed challenges" do
     old_user = insert(:user, %{inserted_at: inserted_at(21, days: -3)})
-    insert(:strava, %{user: old_user})
+    insert(:strava, %{user: old_user, athlete_id: 33_762_321})
 
     old_donor = insert(:user, %{inserted_at: inserted_at(21, days: -10)})
 
     # just when the timespan starts
     new_user = insert(:user, %{inserted_at: inserted_at(23)})
-    insert(:strava, %{user: new_user})
+    insert(:strava, %{user: new_user, athlete_id: 33_762_123})
 
     new_donor = insert(:user, %{inserted_at: inserted_at(15, days: 0)})
     challenge = insert(:ngo_challenge, %{inserted_at: inserted_at(23), user: old_user})
