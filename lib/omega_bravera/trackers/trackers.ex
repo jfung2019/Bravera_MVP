@@ -9,7 +9,10 @@ defmodule OmegaBravera.Trackers do
   alias OmegaBravera.Trackers.Strava
   alias OmegaBravera.Challenges.NGOChal
 
-  def create_or_update_tracker(%{id: user_id}, %{token: token, profile_picture: profile_picture} = changeset) do
+  def create_or_update_tracker(
+        %{id: user_id},
+        %{token: token, profile_picture: profile_picture} = changeset
+      ) do
     case Repo.get_by(Strava, user_id: user_id) do
       nil ->
         create_strava(user_id, changeset)
@@ -72,8 +75,9 @@ defmodule OmegaBravera.Trackers do
       s in Strava,
       where: s.athlete_id == ^athlete_id,
       preload: ^preloads
-    ) |> Repo.one()
-   end
+    )
+    |> Repo.one()
+  end
 
   @doc """
   Creates a strava.

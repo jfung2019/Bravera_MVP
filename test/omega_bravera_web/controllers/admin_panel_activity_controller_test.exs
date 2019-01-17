@@ -33,12 +33,14 @@ defmodule OmegaBraveraWeb.Admin.ActivityControllerTest do
   def fixture(:challenge) do
     user = insert(:user)
     ngo = insert(:ngo, %{slug: "sherief-1"})
-    challenge = insert(:ngo_challenge, %{
-      ngo: ngo,
-      user: user,
-      distance_target: 150,
-      type: "PER_KM"
-    })
+
+    challenge =
+      insert(:ngo_challenge, %{
+        ngo: ngo,
+        user: user,
+        distance_target: 150,
+        type: "PER_KM"
+      })
 
     challenge
   end
@@ -68,40 +70,41 @@ defmodule OmegaBraveraWeb.Admin.ActivityControllerTest do
     setup [:create_challenge]
 
     test "redirects to index when data is valid", %{conn: conn, challenge: challenge} do
-      conn = post(
-        conn,
-        admin_panel_activity_path(conn, :create),
-        activity: %{@activity_create_attrs | "type" => challenge.activity_type},
-        challenge_id: challenge.id
-      )
+      conn =
+        post(
+          conn,
+          admin_panel_activity_path(conn, :create),
+          activity: %{@activity_create_attrs | "type" => challenge.activity_type},
+          challenge_id: challenge.id
+        )
+
       assert redirected_to(conn) == admin_panel_activity_path(conn, :index)
       assert get_flash(conn, :info) =~ "Activity created successfully."
     end
 
-
-
-    test "redirects to index when activity data is refused by AcivityIngestion with an error flash", %{conn: conn, challenge: challenge} do
-      conn = post(
-        conn,
-        admin_panel_activity_path(conn, :create),
-        activity: %{
-          @activity_create_attrs |
-          "type" => challenge.activity_type,
-          "start_date" => %{
-            # Must be in the furture so that ActivityIngestion doesn't refuse it
-            "hour" => Integer.to_string(Timex.now("Asia/Hong_Kong").hour),
-            "minute" => "00",
-            "year" => Integer.to_string(Timex.now("Asia/Hong_Kong").year - 2),
-            "month" => Integer.to_string(Timex.now("Asia/Hong_Kong").month),
-            "day" => Integer.to_string(Timex.now("Asia/Hong_Kong").day)
+    test "redirects to index when activity data is refused by AcivityIngestion with an error flash",
+         %{conn: conn, challenge: challenge} do
+      conn =
+        post(
+          conn,
+          admin_panel_activity_path(conn, :create),
+          activity: %{
+            @activity_create_attrs
+            | "type" => challenge.activity_type,
+              "start_date" => %{
+                # Must be in the furture so that ActivityIngestion doesn't refuse it
+                "hour" => Integer.to_string(Timex.now("Asia/Hong_Kong").hour),
+                "minute" => "00",
+                "year" => Integer.to_string(Timex.now("Asia/Hong_Kong").year - 2),
+                "month" => Integer.to_string(Timex.now("Asia/Hong_Kong").month),
+                "day" => Integer.to_string(Timex.now("Asia/Hong_Kong").day)
+              }
           },
-        },
-        challenge_id: challenge.id
-      )
+          challenge_id: challenge.id
+        )
+
       assert redirected_to(conn) == admin_panel_activity_path(conn, :index)
       assert get_flash(conn, :error) =~ "Activity not processed. Please check the logs."
     end
   end
 end
-
-

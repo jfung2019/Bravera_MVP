@@ -13,7 +13,14 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
   def new_import_activity_from_strava(conn, _) do
     current_admin_user = Guardian.Plug.current_resource(conn)
-    changeset = Activity.create_activity_by_admin_changeset(%Strava.Activity{}, %NGOChal{}, current_admin_user.id)
+
+    changeset =
+      Activity.create_activity_by_admin_changeset(
+        %Strava.Activity{},
+        %NGOChal{},
+        current_admin_user.id
+      )
+
     challenges = Challenges.list_active_ngo_chals([:user])
 
     render(conn, "import_strava_activity.html", changeset: changeset, challenges: challenges)
@@ -23,20 +30,32 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     # Returns JSON start and end dates
     challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
     athlete = challenge.user |> Repo.preload(:strava)
-    data = %{start_date: challenge.start_date, end_date: Timex.now(), athlete_token: athlete.strava.token}
+
+    data = %{
+      start_date: challenge.start_date,
+      end_date: Timex.now(),
+      athlete_token: athlete.strava.token
+    }
+
     json(conn, data)
   end
 
-  def create_imported_strava_activity(conn, %{"strava_activiy_id" => strava_activity_id, "challenge_id" => challenge_id}) do
+  def create_imported_strava_activity(conn, %{
+        "strava_activiy_id" => strava_activity_id,
+        "challenge_id" => challenge_id
+      }) do
     challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
     user = challenge.user |> Repo.preload(:strava)
-    activity = Strava.Activity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
+
+    activity =
+      Strava.Activity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
 
     case ActivitiesIngestion.process_challenge(challenge, activity) do
       {:ok, :challenge_updated} ->
         conn
         |> put_flash(:info, "Activity imported successfully.")
         |> redirect(to: admin_panel_activity_path(conn, :index))
+
       {:error, :activity_not_processed} ->
         conn
         |> put_flash(:error, "Activity could not be imported. Please check the logs.")
@@ -46,7 +65,14 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
   def new(conn, _) do
     current_admin_user = Guardian.Plug.current_resource(conn)
-    changeset = Activity.create_activity_by_admin_changeset(%Strava.Activity{}, %NGOChal{}, current_admin_user.id)
+
+    changeset =
+      Activity.create_activity_by_admin_changeset(
+        %Strava.Activity{},
+        %NGOChal{},
+        current_admin_user.id
+      )
+
     challenges = Challenges.list_active_ngo_chals([:user])
 
     render(conn, "new_activity.html", changeset: changeset, challenges: challenges)
@@ -57,9 +83,12 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
     activity = create_strava_activity(activity_params, current_admin_user, challenge.user)
 
-    changeset = Activity.create_activity_by_admin_changeset(
-      activity, challenge, current_admin_user.id
-    )
+    changeset =
+      Activity.create_activity_by_admin_changeset(
+        activity,
+        challenge,
+        current_admin_user.id
+      )
 
     case changeset.valid? do
       true ->
@@ -68,20 +97,23 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
             conn
             |> put_flash(:info, "Activity created successfully.")
             |> redirect(to: admin_panel_activity_path(conn, :index))
+
           {:error, :activity_not_processed} ->
             conn
             |> put_flash(:error, "Activity not processed. Please check the logs.")
             |> redirect(to: admin_panel_activity_path(conn, :index))
         end
+
       false ->
         changeset =
           changeset
-          |> Ecto.Changeset.change(
-            %{
-              moving_time: from_seconds_to_time_map(activity.moving_time),
-              start_date: to_hk(activity.start_date)
-            })
+          |> Ecto.Changeset.change(%{
+            moving_time: from_seconds_to_time_map(activity.moving_time),
+            start_date: to_hk(activity.start_date)
+          })
+
         challenges = Challenges.list_active_ngo_chals([:user])
+
         conn
         |> render("new_activity.html", changeset: changeset, challenges: challenges)
     end
@@ -126,19 +158,20 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   defp from_string_to_float(string), do: Decimal.new(string)
 
   defp from_string_to_integer(""), do: 0
+
   defp from_string_to_integer(string) do
-   {integer, _} = Integer.parse(string)
-   integer
+    {integer, _} = Integer.parse(string)
+    integer
   end
 
   defp from_time_to_seconds(time_map),
-   do:
-     (from_string_to_integer(time_map["hour"]) * 3600) +
-     (from_string_to_integer(time_map["minute"]) * 60) +
-     (from_string_to_integer(time_map["second"]))
+    do:
+      from_string_to_integer(time_map["hour"]) * 3600 +
+        from_string_to_integer(time_map["minute"]) * 60 +
+        from_string_to_integer(time_map["second"])
 
   defp from_seconds_to_time_map(seconds) do
-    {hour, minute} = Decimal.div_rem( Decimal.div(seconds, Decimal.new(60)), Decimal.new(60))
+    {hour, minute} = Decimal.div_rem(Decimal.div(seconds, Decimal.new(60)), Decimal.new(60))
 
     %{
       "hour" => Decimal.to_string(hour),
@@ -152,21 +185,24 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   end
 
   defp add_average_speed(%Strava.Activity{} = activity, activity_params) do
-    activity = Map.put(activity, :average_speed, from_string_to_float(activity_params.average_speed))
+    activity =
+      Map.put(activity, :average_speed, from_string_to_float(activity_params.average_speed))
 
     if activity.average_speed == nil do
       distance = Decimal.mult(activity.distance, Decimal.new(1000))
+
       duration_in_minutes =
         Decimal.new(activity.moving_time)
         |> Decimal.div(60)
         |> Decimal.div(60)
+
       time = Decimal.mult(duration_in_minutes, 1000)
       # km/h
       average_speed =
         Decimal.div(distance, time)
         |> Decimal.round(2)
 
-      %{activity | average_speed:  average_speed}
+      %{activity | average_speed: average_speed}
     else
       activity
     end
@@ -186,10 +222,11 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
     # Calculate calories based on MET value and Weight and Duration.
     if activity.calories == nil do
-      athlete = Strava.Athlete.retrieve(
-        participant.strava.athlete_id,
-        Strava.Client.new(participant.strava.token)
-      )
+      athlete =
+        Strava.Athlete.retrieve(
+          participant.strava.athlete_id,
+          Strava.Client.new(participant.strava.token)
+        )
 
       # calories per hour = met_value * weight in kg
       calories_per_hour =
@@ -206,10 +243,9 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
       duration_in_hours = Decimal.div(duration_in_minutes, Decimal.new(60))
       calories = Decimal.mult(calories_per_hour, duration_in_hours) |> Decimal.round()
 
-      %{activity | calories:  calories}
+      %{activity | calories: calories}
     else
       activity
     end
-
   end
 end

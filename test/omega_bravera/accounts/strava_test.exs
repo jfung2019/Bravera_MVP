@@ -30,7 +30,8 @@ defmodule OmegaBravera.Accounts.StravaTest do
     use_cassette "strava_signup_sign_in_flow" do
       result = Accounts.Strava.login_changeset(params)
 
-      assert result == Map.put(attrs, :additional_info, %{sex: "M", location: "Spain/Barcelona/Barcelona"})
+      assert result ==
+               Map.put(attrs, :additional_info, %{sex: "M", location: "Spain/Barcelona/Barcelona"})
     end
   end
 

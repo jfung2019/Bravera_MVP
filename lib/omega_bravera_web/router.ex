@@ -93,8 +93,19 @@ defmodule OmegaBraveraWeb.Router do
       resources("/admin_users", AdminUserController)
       resources("/users", AdminPanelUserController, only: [:index, :show])
       resources("/activities", AdminPanelActivityController, only: [:index, :new, :create])
-      get("/activities/import_activity_from_strava", AdminPanelActivityController, :new_import_activity_from_strava)
-      post("/activities/create_imported_strava_activity", AdminPanelActivityController, :create_imported_strava_activity)
+
+      get(
+        "/activities/import_activity_from_strava",
+        AdminPanelActivityController,
+        :new_import_activity_from_strava
+      )
+
+      post(
+        "/activities/create_imported_strava_activity",
+        AdminPanelActivityController,
+        :create_imported_strava_activity
+      )
+
       resources("/sync_exchange_rate", AdminPanelExchangeRateController, only: [:index])
       resources("/sync_profile_pictures", AdminPanelProfilePictureController, only: [:index])
       get("/challenges", AdminPanelChallengesController, :index)

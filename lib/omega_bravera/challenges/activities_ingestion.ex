@@ -85,7 +85,6 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         %Strava.Activity{distance: distance} = strava_activity
       )
       when distance > 0 do
-
     Logger.info("ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, donations} =
@@ -104,11 +103,19 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     )
 
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
-      Logger.info("ActivityIngestion: Processing was successful for milestone challenge: #{inspect(challenge.id)}")
+      Logger.info(
+        "ActivityIngestion: Processing was successful for milestone challenge: #{
+          inspect(challenge.id)
+        }"
+      )
 
       {:ok, :challenge_updated}
     else
-      Logger.info("ActivityIngestion: Processing was not successful for milestone challenge: #{inspect(challenge.id)}")
+      Logger.info(
+        "ActivityIngestion: Processing was not successful for milestone challenge: #{
+          inspect(challenge.id)
+        }"
+      )
 
       {:error, :activity_not_processed}
     end
@@ -122,6 +129,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       case Map.has_key?(activity, :admin_id) do
         false ->
           Challenges.Activity.create_changeset(activity, challenge)
+
         true ->
           Challenges.Activity.create_activity_by_admin_changeset(
             activity,
@@ -133,9 +141,16 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     if valid_activity?(activity, challenge) and
          activity_type_matches_challenge_activity_type?(activity, challenge) do
       case Repo.insert(changeset) do
-        {:ok, activity} -> {:ok, challenge, activity}
+        {:ok, activity} ->
+          {:ok, challenge, activity}
+
         {:error, changeset} ->
-          Logger.error("ActivityIngestion: activity could not be saved. Changeset errors: #{inspect(changeset.errors)}")
+          Logger.error(
+            "ActivityIngestion: activity could not be saved. Changeset errors: #{
+              inspect(changeset.errors)
+            }"
+          )
+
           {:error, challenge, nil}
       end
     else
@@ -206,13 +221,17 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     if !challenge_started_first, do: Logger.info("Activity before start date of challenge")
     activity_started_before_end = Timex.compare(challenge.end_date, activity.start_date) >= 0
     if !activity_started_before_end, do: Logger.info("Activity started after challenge ended")
+
     allow_manual_activity =
-      if Application.get_env(:omega_bravera, :enable_manual_activities) == false  and activity.manual == true do
+      if Application.get_env(:omega_bravera, :enable_manual_activities) == false and
+           activity.manual == true do
         Logger.info("Manual activity triggered and blocked!")
+
         Challenges.Notifier.send_manual_activity_blocked_email(
           challenge,
           Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
         )
+
         false
       else
         true

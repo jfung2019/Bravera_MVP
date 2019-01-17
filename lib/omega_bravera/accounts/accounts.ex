@@ -172,7 +172,6 @@ defmodule OmegaBravera.Accounts do
 
         Trackers.create_or_update_tracker(updated_user, changeset)
         {:ok, updated_user}
-
     end
   end
 
@@ -382,6 +381,11 @@ defmodule OmegaBravera.Accounts do
   """
   def change_user(%User{} = user) do
     User.changeset(user, %{})
+  end
+
+  def amount_of_current_users() do
+    from(u in User, where: not is_nil(u.additional_info), select: count(u.id))
+    |> Repo.one()
   end
 
   @doc """

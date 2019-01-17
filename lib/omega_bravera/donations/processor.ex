@@ -14,8 +14,8 @@ defmodule OmegaBravera.Donations.Processor do
     donation = Repo.preload(dn, [:ngo, :ngo_chal, :user])
 
     case StripeHelpers.charge_stripe_customer(
-          donation.ngo,
-          charge_params(donation, donation.ngo_chal)
+           donation.ngo,
+           charge_params(donation, donation.ngo_chal)
          ) do
       {:ok, %{body: body}, exchange_rate} ->
         case Poison.decode!(body) do
@@ -29,18 +29,18 @@ defmodule OmegaBravera.Donations.Processor do
 
             {:ok, updated}
 
-            %{"error" => _} ->
-              {:error, :stripe_error}
+          %{"error" => _} ->
+            {:error, :stripe_error}
 
-            _ ->
-              {:error, :unknown_error}
-          end
+          _ ->
+            {:error, :unknown_error}
+        end
 
-        {:error, reason} ->
-          {:error, reason}
+      {:error, reason} ->
+        {:error, reason}
 
-        :error ->
-          {:error, :unknown_error}
+      :error ->
+        {:error, :unknown_error}
     end
   end
 

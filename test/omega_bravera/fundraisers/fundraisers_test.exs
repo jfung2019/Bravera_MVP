@@ -27,6 +27,7 @@ defmodule OmegaBravera.FundraisersTest do
 
     def ngo_fixture(attrs \\ %{}) do
       user = insert(:user)
+
       {:ok, ngo} =
         attrs
         |> Enum.into(%{@valid_attrs | user_id: user.id})

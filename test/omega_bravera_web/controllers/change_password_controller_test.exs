@@ -23,7 +23,12 @@ defmodule OmegaBraveraWeb.ChangePasswordControllerTest do
   end
 
   setup %{conn: conn} do
-    attrs = %{firstname: "sherief", lastname: "alaa ", email: "user@example.com", password: "test1234"}
+    attrs = %{
+      firstname: "sherief",
+      lastname: "alaa ",
+      email: "user@example.com",
+      password: "test1234"
+    }
 
     with {:ok, user} <- Accounts.create_user(attrs),
          {:ok, _setting} <- credential_fixture(user.id),

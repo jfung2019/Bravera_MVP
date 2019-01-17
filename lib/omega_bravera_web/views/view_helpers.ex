@@ -85,6 +85,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
       datetime
       |> Timex.to_datetime()
       |> DateTime.to_iso8601()
+
     tag(:span, "data-render-countdown": formatted_date_time)
   end
 
@@ -93,8 +94,10 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   end
 
   defp valid_uri?(nil), do: false
+
   defp valid_uri?(str) do
     uri = URI.parse(str)
+
     case uri do
       %URI{scheme: nil} -> false
       %URI{host: nil} -> false
@@ -125,13 +128,15 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     do: round((Decimal.round(total) |> Decimal.to_integer()) / target * 100)
 
   def render_percentage_exceed(total, target),
-    do: round((total / target) * 100)
+    do: round(total / target * 100)
 
   def pre_registration_ngo?(%NGO{open_registration: false} = ngo),
     do: Timex.after?(ngo.launch_date, Timex.now())
 
   def pre_registration_ngo?(%NGO{}), do: false
 
-  def number_with_commas(number) when is_integer(number), do: Number.Delimit.number_to_delimited(number, precision: 0)
+  def number_with_commas(number) when is_integer(number),
+    do: Number.Delimit.number_to_delimited(number, precision: 0)
+
   def number_with_commas(number), do: Number.Delimit.number_to_delimited(number)
 end
