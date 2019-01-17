@@ -53,7 +53,6 @@ defmodule OmegaBravera.TrackersTest do
       assert match?(%Trackers.Strava{}, strava) == true
 
       assert strava.athlete_id == 42
-      assert strava.email == "someone@email.com"
       assert strava.firstname == "firstname"
       assert strava.lastname == "lastname"
       assert strava.token == "token"
@@ -71,7 +70,6 @@ defmodule OmegaBravera.TrackersTest do
       assert match?(%Trackers.Strava{}, strava) == true
 
       assert strava.athlete_id == 43
-      assert strava.email == "someone@updatedemail.com"
       assert strava.firstname == "updated firstname"
       assert strava.lastname == "updated lastname"
       assert strava.token == "updated token"

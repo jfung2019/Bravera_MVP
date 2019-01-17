@@ -17,9 +17,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
   def new(conn, %{"ngo_slug" => ngo_slug}) do
     ngo = Fundraisers.get_ngo_with_stats(ngo_slug)
-
+    current_user = Guardian.Plug.current_resource(conn)
     changeset = Challenges.change_ngo_chal(%NGOChal{})
-    render(conn, "new.html", changeset: changeset, ngo: ngo)
+
+    render(conn, "new.html", changeset: changeset, ngo: ngo, current_user: current_user)
   end
 
   def create(conn, %{"ngo_slug" => ngo_slug, "ngo_chal" => chal_params}) do
