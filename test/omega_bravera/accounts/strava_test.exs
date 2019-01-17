@@ -46,7 +46,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
     end
 
     test "fails if either the user is already on the db", %{attrs: attrs} do
-      strava = insert(:strava, attrs)
+      insert(:strava, attrs)
       {:ok, _} = Accounts.create_user(Map.take(attrs, [:firstname, :lastname, :email]))
 
       {:error, :strava, changeset, _} = Accounts.Strava.create_user_with_tracker(attrs)

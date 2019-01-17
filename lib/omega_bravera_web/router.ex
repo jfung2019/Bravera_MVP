@@ -47,6 +47,7 @@ defmodule OmegaBraveraWeb.Router do
     get("/account", UserController, :show)
     get("/account/edit", UserController, :edit)
     put("/account", UserController, :update)
+    get("/account/activate/:email_activation_token", UserController, :activate_email)
   end
 
   # Strava OAuth Routes

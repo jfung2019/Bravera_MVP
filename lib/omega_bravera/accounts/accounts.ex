@@ -131,16 +131,6 @@ defmodule OmegaBravera.Accounts do
     Repo.one(query)
   end
 
-  # TODO I think I was being cute with this, do we use?
-  #
-  # def get_user_strava!(user_id) do
-  #   query = from u in User,
-  #     where: u.id == ^user_id,
-  #     join: s in Strava, where: s.user_id == ^user_id
-  #
-  #   query |> Repo.one()
-  # end
-
   def get_user_with_everything!(user_id) do
     user = User
 
@@ -153,9 +143,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.preload([:strava, :setting, :credential])
   end
 
-  @doc """
-  Inserts or updates strava user with create_strava_user func below
-  """
+  def get_user_by_token(token) do
+    from(u in User, where: u.email_activation_token == ^ token) |> Repo.one()
+  end
+
   def insert_or_update_strava_user(%{athlete_id: nil}), do: {:error, "No athlete id!"}
 
   def insert_or_update_strava_user(changeset) do
