@@ -63,13 +63,13 @@
           <td data-title="Supporter Email"><%= donation.user.email %></td>
           <td data-title="Milestone"><%= render_kickstarter(donation.milestone) %></td>
           <td data-title="Challenge currency"><%= donation.ngo_chal.default_currency %></td>
-          <td data-title="Donation Total"><%= Decimal.round(Decimal.mult(donation.amount, donation.exchange_rate), 1) %></td>
+          <td data-title="Donation Total"><%= Decimal.round(Decimal.mult(donation.charged_amount, donation.exchange_rate), 1) %></td>
           <td class="line-break-fix" data-title="Gateway Fees
 (3.4% + HKD 2.35)"> <!-- do not add spaces before (3.4% + HKD 2.35) -->
-            <%= render_fees(donation.amount, donation.exchange_rate, donation.ngo_chal.default_currency, "gateway_fee") %>
+            <%= render_fees(donation, "gateway_fee") %>
           </td>
-          <td data-title="Bravera Fees(6%)"><%= render_fees(donation.amount, donation.exchange_rate, donation.ngo_chal.default_currency, "bravera") %></td>
-          <td data-title="Net Donation"><%= render_fees(donation.amount, donation.exchange_rate, donation.ngo_chal.default_currency, "net_donation") %></td>
+          <td data-title="Bravera Fees(6%)"><%= render_fees(donation, "bravera") %></td>
+          <td data-title="Net Donation"><%= render_fees(donation, "net_donation") %></td>
         </tr>
       <% end %>
     </tbody>
