@@ -1,0 +1,32 @@
+<table class="table">
+	<tbody>
+		<tr>
+			<td>Total Amount of Users:</td>
+			<td><%= @users %></td>
+		</tr>
+		<tr>
+			<td>Total amount of donors:</td>
+			<td><%= @donors %></td>
+		</tr>
+		<tr>
+			<td>Total amount of Activities:</td>
+			<td><%= @activities %></td>
+		</tr>
+		<tr>
+			<td>Total amount of Target Distance:</td>
+			<td><%= @distance_target %></td>
+		</tr>
+		<tr>
+			<td>Total amount of Challenge Days:</td>
+			<td><%= @challenge_days %> days</td>
+		</tr>
+		<tr>
+			<td>Total amount of Donations:</td>
+			<td><%= @donations %></td>
+		</tr>
+		<tr>
+			<td>Total amount of Secured Donations:</td>
+			<td><%= @total_secured %></td>
+		</tr>
+	</tbody>
+</table>

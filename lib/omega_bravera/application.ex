@@ -21,7 +21,6 @@ defmodule OmegaBravera.Application do
         :prod ->
           [
             pre_registration_challenges_activator(),
-            km_challenge_donation_collector(),
             signups_worker_spec(),
             inactive_challenges_spec(),
             challenge_expirer_spec() | children
@@ -48,15 +47,6 @@ defmodule OmegaBravera.Application do
     %{
       id: "pre_registration_challenges_activator",
       start: {SchedEx, :run_every, [OmegaBravera.Challenges.LiveWorker, :start, [], "* * * * *"]}
-    }
-  end
-
-  defp km_challenge_donation_collector do
-    %{
-      id: "km_donation_collector",
-      start:
-        {SchedEx, :run_every,
-         [OmegaBravera.Challenges.KmChallengesWorker, :start, [], "30 0 * * *"]}
     }
   end
 

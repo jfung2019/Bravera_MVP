@@ -25,7 +25,8 @@ defmodule OmegaBravera.Donations.Notifier do
   def email_donor(%NGOChal{} = challenge, %User{} = donor, challenge_path) do
     email =
       cond do
-        challenge.status == "pre_registration" and Timex.after?(challenge.start_date, Timex.now("Asia/Hong_Kong")) ->
+        challenge.status == "pre_registration" and
+            Timex.after?(challenge.start_date, Timex.now("Asia/Hong_Kong")) ->
           challenge |> pre_registration_donor_email(donor, challenge_path)
 
         true ->
@@ -113,7 +114,7 @@ defmodule OmegaBravera.Donations.Notifier do
     )
     |> Email.add_substitution(
       "-chargedAmount-",
-      "#{donation.charged_amount} #{donation.currency}"
+      "#{Decimal.round(donation.charged_amount)} #{donation.currency}"
     )
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")

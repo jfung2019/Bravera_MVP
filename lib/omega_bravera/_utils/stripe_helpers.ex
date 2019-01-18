@@ -2,7 +2,6 @@ defmodule OmegaBravera.StripeHelpers do
   require Logger
   alias OmegaBravera.Fundraisers
   alias OmegaBravera.Money
-  alias OmegaBravera.Challenges
   alias OmegaBravera.Accounts
 
   alias Decimal
@@ -68,7 +67,7 @@ defmodule OmegaBravera.StripeHelpers do
     end)
   end
 
-  def charge_stripe_customer(ngo, params, ngo_chal_id) do
+  def charge_stripe_customer(ngo, params) do
     %{name: ngo_name} = ngo
 
     %{

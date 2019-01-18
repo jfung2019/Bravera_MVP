@@ -131,16 +131,6 @@ defmodule OmegaBravera.Accounts do
     Repo.one(query)
   end
 
-  # TODO I think I was being cute with this, do we use?
-  #
-  # def get_user_strava!(user_id) do
-  #   query = from u in User,
-  #     where: u.id == ^user_id,
-  #     join: s in Strava, where: s.user_id == ^user_id
-  #
-  #   query |> Repo.one()
-  # end
-
   def get_user_with_everything!(user_id) do
     user = User
 
@@ -153,21 +143,22 @@ defmodule OmegaBravera.Accounts do
     |> Repo.preload([:strava, :setting, :credential])
   end
 
-  @doc """
-  Inserts or updates strava user with create_strava_user func below
-  """
-  def insert_or_update_strava_user(%{email: nil}), do: {:error, "No email"}
+  def get_user_by_token(token) do
+    from(u in User, where: u.email_activation_token == ^ token) |> Repo.one()
+  end
+
+  def insert_or_update_strava_user(%{athlete_id: nil}), do: {:error, "No athlete id!"}
 
   def insert_or_update_strava_user(changeset) do
-    case Repo.get_by(User, email: changeset[:email]) do
+    case Trackers.get_strava_with_athlete_id(changeset[:athlete_id]) do
       nil ->
-        Accounts.Strava.create_user_with_tracker_and_email(changeset)
+        Accounts.Strava.create_user_with_tracker(changeset)
 
-      user ->
+      strava ->
         updated_user =
-          case Accounts.update_user(user, changeset) do
+          case Accounts.update_user(strava.user, changeset) do
             {:ok, u} -> u
-            {:error, _} -> user
+            {:error, _} -> strava.user
           end
 
         Trackers.create_or_update_tracker(updated_user, changeset)
@@ -381,6 +372,11 @@ defmodule OmegaBravera.Accounts do
   """
   def change_user(%User{} = user) do
     User.changeset(user, %{})
+  end
+
+  def amount_of_current_users() do
+    from(u in User, where: not is_nil(u.additional_info), select: count(u.id))
+    |> Repo.one()
   end
 
   @doc """

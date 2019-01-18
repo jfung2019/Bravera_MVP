@@ -62,13 +62,40 @@ defmodule OmegaBraveraWeb.UserController do
     user = Guardian.Plug.current_resource(conn)
 
     case Accounts.update_user(user, user_params) do
-      {:ok, _user} ->
+      {:ok, user} ->
+        if not is_nil(user.email) do
+          Accounts.Notifier.send_user_signup_email(user)
+        end
+
+        # TODO: if email exists, send another email and deactivate previous email.
         conn
-        |> put_flash(:info, "Account updated successfully.")
+        |> put_flash(:info, "Email updated. Please check your inbox now!")
         |> redirect(to: user_path(conn, :show, %{}))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)
+    end
+  end
+
+  def activate_email(conn, %{"email_activation_token" => email_activation_token}) do
+    user = Accounts.get_user_by_token(email_activation_token)
+
+    case user do
+      nil ->
+        conn
+        |> put_flash(:error, "Invalid email activation link. Please check your link in your email again.")
+        |> redirect(to: "/")
+      user ->
+        case Accounts.update_user(user, %{email_verified: true}) do
+          {:ok, _user} ->
+            conn
+            |> put_flash(:info, "Thank you for activating your account. You can now join challenges!")
+            |> redirect(to: page_path(conn, :index))
+          {:error, _} ->
+            conn
+            |> put_flash(:error, "Could not activate your email. Please contact admin@bravera.co")
+            |> redirect(to: "/")
+        end
     end
   end
 end

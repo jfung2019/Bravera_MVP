@@ -101,6 +101,23 @@ defmodule OmegaBravera.Money do
 
   def change_donation(%Donation{} = donation), do: Donation.changeset(donation, %{})
 
+  def amount_of_donors() do
+    from(d in Donation, select: count(d.user_id, :distinct))
+    |> Repo.one()
+  end
+
+  def count_of_donations() do
+    from(d in Donation, select: count(d.id))
+    |> Repo.one()
+  end
+
+  def total_secured_donations() do
+    from(d in Donation, select: {sum(d.amount), fragment("upper(?)", d.currency)}, group_by: fragment("upper(?)", d.currency))
+    |> Repo.all()
+    |> Enum.map(fn {amount, currency} -> "#{currency}: #{amount}" end)
+    |> Enum.join(", ")
+  end
+
   def list_tips, do: Repo.all(Tip)
 
   def get_tip!(id), do: Repo.get!(Tip, id)

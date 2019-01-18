@@ -16,22 +16,29 @@ defmodule OmegaBraveraWeb.NGOController do
 
   def leaderboard(conn, %{"ngo_slug" => slug}) do
     ngo = Fundraisers.get_ngo_by_slug(slug)
-    milestone_challenges_task = Task.async(fn ->
-      Challenges.get_ngo_milestone_ngo_chals(ngo)
-      |> add_stats()
-      |> order_by_total_secured()
-    end)
 
-    km_challenges_task = Task.async(fn ->
-      Challenges.get_ngo_km_ngo_chals(ngo)
-      |> add_stats()
-      |> order_by_total_secured()
-    end)
+    milestone_challenges_task =
+      Task.async(fn ->
+        Challenges.get_ngo_milestone_ngo_chals(ngo)
+        |> add_stats()
+        |> order_by_total_secured()
+      end)
+
+    km_challenges_task =
+      Task.async(fn ->
+        Challenges.get_ngo_km_ngo_chals(ngo)
+        |> add_stats()
+        |> order_by_total_secured()
+      end)
 
     milestone_challenges = Task.await(milestone_challenges_task, 25000)
     km_challenges = Task.await(km_challenges_task, 25000)
 
-    render(conn, "leaderboard.html", %{ngo: ngo, milestone_challenges: milestone_challenges, km_challenges: km_challenges})
+    render(conn, "leaderboard.html", %{
+      ngo: ngo,
+      milestone_challenges: milestone_challenges,
+      km_challenges: km_challenges
+    })
   end
 
   defp add_stats(challenges) do
@@ -43,16 +50,21 @@ defmodule OmegaBraveraWeb.NGOController do
   end
 
   defp get_total_secured(%NGOChal{type: "PER_MILESTONE"} = challenge),
-   do: get_stats(challenge) |> get_in(["total", "charged"] || 0)
+    do: get_stats(challenge) |> get_in(["total", "charged"] || 0)
 
   defp get_total_secured(%NGOChal{type: "PER_KM"} = challenge) do
     challenge = Challenges.get_ngo_chal!(challenge.id)
-    Decimal.mult(Challenges.get_per_km_challenge_total_pledges(challenge.slug), challenge.distance_covered)
+
+    Decimal.mult(
+      Challenges.get_per_km_challenge_total_pledges(challenge.slug),
+      challenge.distance_covered
+    )
     |> Decimal.round(1)
   end
 
   defp get_total_pledged(%NGOChal{} = challenge),
-   do: get_stats(challenge) |> get_in(["total", "pending"] || 0)
+    do: get_stats(challenge) |> get_in(["total", "pending"] || 0)
 
-  defp order_by_total_secured(chals), do: Enum.sort(chals, &(&1.total_secured >= &2.total_secured))
+  defp order_by_total_secured(chals),
+    do: Enum.sort(chals, &(&1.total_secured >= &2.total_secured))
 end

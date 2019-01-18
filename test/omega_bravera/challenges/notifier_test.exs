@@ -24,7 +24,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-              "-challengeLink-" => "https://bravera.co/swcc/John-512",
+               "-challengeLink-" => "https://bravera.co/swcc/John-512",
                "-participantName-" => "John"
              },
              template_id: "fcd40945-8a55-4459-94b9-401a995246fb",

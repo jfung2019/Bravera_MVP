@@ -198,7 +198,7 @@ defmodule OmegaBravera.NotifierTest do
                "-cardNumber-" => "Card ending in 4242",
                "-donationName-" => "Donation to Save the children via Bravera.co",
                "-donationDate-" => "2018-09-11 23:12:13",
-               "-chargedAmount-" => "10.0 HKD"
+               "-chargedAmount-" => "10 HKD"
              },
              template_id: "f9448c06-ff05-4901-bb47-f21a7848c1e7",
              to: [%{email: donor.email}],

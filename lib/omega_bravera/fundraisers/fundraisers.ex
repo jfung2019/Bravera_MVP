@@ -73,38 +73,45 @@ defmodule OmegaBravera.Fundraisers do
   def get_ngo_with_stats(slug, preloads \\ [:ngo_chals]) do
     ngo = get_ngo_by_slug(slug, preloads)
 
-    total_pledged = Repo.one(
-      from(
-        donation in Donation,
-        where: donation.ngo_id == ^ngo.id,
-        select: fragment("SUM( CASE WHEN km_distance IS NOT NULL THEN amount * km_distance ELSE amount END )")
+    total_pledged =
+      Repo.one(
+        from(
+          donation in Donation,
+          where: donation.ngo_id == ^ngo.id,
+          select:
+            fragment(
+              "SUM( CASE WHEN km_distance IS NOT NULL THEN amount * km_distance ELSE amount END )"
+            )
+        )
       )
-    )
 
-    total_secured = Repo.aggregate(
+    total_secured =
+      Repo.aggregate(
+        from(
+          donation in Donation,
+          where: donation.ngo_id == ^ngo.id
+        ),
+        :sum,
+        :charged_amount
+      )
+
+    calories_and_activities_query =
       from(
-        donation in Donation,
-        where: donation.ngo_id == ^ngo.id
-      ),
-      :sum,
-      :charged_amount
-    )
+        activity in Activity,
+        join: challenge in assoc(activity, :challenge),
+        where: challenge.ngo_id == ^ngo.id and activity.challenge_id == challenge.id
+      )
 
-    calories_and_activities_query = from(
-      activity in Activity,
-      join: challenge in assoc(activity, :challenge),
-      where: challenge.ngo_id == ^ngo.id and activity.challenge_id == challenge.id
-    )
     total_distance_covered = Repo.aggregate(calories_and_activities_query, :sum, :distance)
     total_calories = Repo.aggregate(calories_and_activities_query, :sum, :calories)
 
     %{
-      ngo |
-      total_pledged: total_pledged,
-      total_secured: total_secured,
-      num_of_challenges: Enum.count(ngo.ngo_chals),
-      total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
-      total_calories: total_calories
+      ngo
+      | total_pledged: total_pledged,
+        total_secured: total_secured,
+        num_of_challenges: Enum.count(ngo.ngo_chals),
+        total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
+        total_calories: total_calories
     }
   end
 
@@ -119,7 +126,10 @@ defmodule OmegaBravera.Fundraisers do
         group_by: donation.ngo_id,
         select: %{
           ngo_id: donation.ngo_id,
-          total_pledged: fragment("SUM( CASE WHEN km_distance IS NOT NULL THEN amount * km_distance ELSE amount END )"),
+          total_pledged:
+            fragment(
+              "SUM( CASE WHEN km_distance IS NOT NULL THEN amount * km_distance ELSE amount END )"
+            ),
           # TODO: get distance covered and if the challenge type is PER_KM, multiply donation.amount with distance_covered. If not, donation.amount
           total_secured: fragment("round(sum(coalesce(?, 0)), 1)", donation.charged_amount)
         }
@@ -147,29 +157,31 @@ defmodule OmegaBravera.Fundraisers do
         where: ngo.hidden == ^hidden,
         join: ngo_pledged_secured in subquery(total_pledged_secured_query),
         on: ngo.id == ngo_pledged_secured.ngo_id,
-        join: ngo_distance_calories_challenges in subquery(total_distance_calories_challenges_query),
+        join:
+          ngo_distance_calories_challenges in subquery(total_distance_calories_challenges_query),
         on: ngo.id == ngo_distance_calories_challenges.ngo_id,
         order_by: [desc: ngo.id],
         select: %{
-          ngo |
-          total_pledged: ngo_pledged_secured.total_pledged,
-          total_secured: ngo_pledged_secured.total_secured,
-          total_distance_covered: ngo_distance_calories_challenges.total_distance_covered,
-          total_calories: ngo_distance_calories_challenges.total_calories,
-          num_of_challenges: ngo_distance_calories_challenges.num_of_challenges
-
+          ngo
+          | total_pledged: ngo_pledged_secured.total_pledged,
+            total_secured: ngo_pledged_secured.total_secured,
+            total_distance_covered: ngo_distance_calories_challenges.total_distance_covered,
+            total_calories: ngo_distance_calories_challenges.total_calories,
+            num_of_challenges: ngo_distance_calories_challenges.num_of_challenges
         }
-      ) |> Repo.all()
+      )
+      |> Repo.all()
 
-      # Hacky solution:
-      ngos_with_stats_ids = ngos_with_stats |> Enum.map(&(&1.id))
+    # Hacky solution:
+    ngos_with_stats_ids = ngos_with_stats |> Enum.map(& &1.id)
 
-      ngos_without_stats =
-        from(
-          ngo in NGO,
-          where: ngo.hidden == ^hidden and ngo.id not in ^ngos_with_stats_ids,
-          order_by: [desc: ngo.id]
-        ) |> Repo.all()
+    ngos_without_stats =
+      from(
+        ngo in NGO,
+        where: ngo.hidden == ^hidden and ngo.id not in ^ngos_with_stats_ids,
+        order_by: [desc: ngo.id]
+      )
+      |> Repo.all()
 
     ngos = ngos_with_stats ++ ngos_without_stats
 

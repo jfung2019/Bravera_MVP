@@ -145,8 +145,8 @@ defmodule OmegaBravera.Challenges do
 
     from(
       nc in NGOChal,
-      where: nc.type == "PER_KM" and ^now >= nc.end_date,
-      left_join: donations in assoc(nc, :donations),
+      where: nc.type == "PER_KM" and (nc.status == "complete" or ^now >= nc.end_date),
+      join: donations in assoc(nc, :donations),
       on: donations.ngo_chal_id == nc.id and donations.status == "pending",
       preload: [donations: donations]
     )
@@ -193,7 +193,22 @@ defmodule OmegaBravera.Challenges do
     |> Repo.one()
   end
 
+  def amount_of_activities() do
+    from(a in Activity, select: count(a.id))
+    |> Repo.one()
+  end
+
+  def total_actual_distance do
+    from(a in Activity, select: sum(a.distance))
+    |> Repo.one()
+  end
+
   def get_distances, do: NGOChal.distances_available()
+
+  def total_distance_target do
+    from(c in NGOChal, select: sum(c.distance_target))
+    |> Repo.one()
+  end
 
   @doc """
   Creates a ngo_chal.
@@ -325,6 +340,11 @@ defmodule OmegaBravera.Challenges do
   """
   def change_ngo_chal(%NGOChal{} = ngo_chal) do
     NGOChal.changeset(ngo_chal, %{})
+  end
+
+  def get_total_challenge_days() do
+    from(c in NGOChal, select: sum(fragment("?::date - ?::date", c.end_date, c.start_date)))
+    |> Repo.one()
   end
 
   @doc """

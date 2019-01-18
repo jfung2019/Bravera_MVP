@@ -7,16 +7,21 @@ defmodule OmegaBravera.ProfilePictureSyncer do
     Logger.info("ProfilePictureSyncer: started..")
 
     stravas = Trackers.list_stravas()
+
     Enum.map(stravas, fn strava ->
       profile_picture = get_profile_picture_link(strava)
 
       case Trackers.update_strava(strava, %{profile_picture: profile_picture}) do
         {:ok, _} ->
           Logger.info("ProfilePictureSyncer: updated #{inspect(strava.email)}'s profile picture'")
+
         {:error, reason} ->
-          Logger.error("ProfilePictureSyncer: failed to update profile picture. Reason: #{inspect(reason)}")
+          Logger.error(
+            "ProfilePictureSyncer: failed to update profile picture. Reason: #{inspect(reason)}"
+          )
       end
     end)
+
     Logger.info("ProfilePictureSyncer: done!")
   end
 

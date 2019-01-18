@@ -15,8 +15,7 @@ defmodule OmegaBravera.Trackers.Strava do
     timestamps(type: :utc_datetime)
   end
 
-
-  @required_attributes [:email, :athlete_id, :firstname, :lastname, :token]
+  @required_attributes [:athlete_id, :firstname, :lastname, :token]
   @allowed_attributes [:profile_picture | @required_attributes]
 
   @doc false
@@ -24,5 +23,6 @@ defmodule OmegaBravera.Trackers.Strava do
     strava
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
+    |> unique_constraint(:athlete_id)
   end
 end

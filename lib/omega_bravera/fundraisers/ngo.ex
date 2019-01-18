@@ -80,7 +80,17 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :hidden,
     :hide_donor_pays_fees
   ]
-  @required_attributes [:name, :slug, :minimum_donation, :url, :logo, :image, :fundraising_goal, :user_id, :hide_donor_pays_fees]
+  @required_attributes [
+    :name,
+    :slug,
+    :minimum_donation,
+    :url,
+    :logo,
+    :image,
+    :fundraising_goal,
+    :hide_donor_pays_fees,
+    :user_id
+  ]
 
   @doc false
   def changeset(ngo, attrs) do

@@ -15,8 +15,7 @@ defmodule OmegaBravera.Donations.Processor do
 
     case StripeHelpers.charge_stripe_customer(
            donation.ngo,
-           charge_params(donation, donation.ngo_chal),
-           donation.ngo_chal_id
+           charge_params(donation, donation.ngo_chal)
          ) do
       {:ok, %{body: body}, exchange_rate} ->
         case Poison.decode!(body) do

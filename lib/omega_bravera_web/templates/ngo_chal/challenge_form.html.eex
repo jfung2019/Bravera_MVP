@@ -46,9 +46,9 @@
   </div>
   <%= if logged_in?(@conn) && has_tracker?(@conn) do %>
     <%= if pre_registration_ngo?(@ngo) do %>
-      <%= render "challenge_pre_registration_signed_in.html", f: f, ngo: @ngo, available_challenge_types: @available_challenge_types %>
+      <%= render "challenge_pre_registration_signed_in.html", Map.put(assigns, :f, f) %>
     <% else %>
-      <%= render "challenge_form_signed_in.html", f: f, ngo: @ngo, available_challenge_types: @available_challenge_types %>
+      <%= render "challenge_form_signed_in.html", Map.put(assigns, :f, f) %>
     <% end %>
   <% else %>
     <%= if pre_registration_ngo?(@ngo) do %>

@@ -81,7 +81,11 @@ defmodule OmegaBravera.Challenges.Activity do
     |> validate_inclusion(:type, @activity_type)
   end
 
-  def create_activity_by_admin_changeset(%Strava.Activity{} = strava_activity, %NGOChal{} = challenge, admin_user_id) do
+  def create_activity_by_admin_changeset(
+        %Strava.Activity{} = strava_activity,
+        %NGOChal{} = challenge,
+        admin_user_id
+      ) do
     %__MODULE__{}
     |> cast(strava_attributes(strava_activity), @required_attributes_for_admin)
     |> change(%{
