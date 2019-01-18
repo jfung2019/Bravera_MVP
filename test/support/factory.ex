@@ -54,7 +54,7 @@ defmodule OmegaBravera.Factory do
   def activity_factory do
     %OmegaBravera.Challenges.Activity{
       strava_id: 1_836_709_368,
-      distance: Decimal.new(1.74),
+      distance: Decimal.from_float(1.74),
       start_date: ~N[2018-09-11 07:58:01],
       type: "Walk",
       name: "Morning Walk",
@@ -66,13 +66,15 @@ defmodule OmegaBravera.Factory do
 
   def donation_factory do
     %OmegaBravera.Money.Donation{
-      amount: Decimal.new(10),
-      currency: "HKD",
+      amount: Decimal.new(150),
+      currency: "hkd",
       str_src: "src_1D7qTcHjHTiyg867gAya4pe5",
       str_cus_id: "cus_DYyQTnYmbkDjBV",
       milestone: 1,
       status: "pending",
       milestone_distance: 0,
+      donor_pays_fees: false,
+      charged_amount: Decimal.new(150),
       exchange_rate: Decimal.new(1),
       user: build(:user),
       ngo: build(:ngo),

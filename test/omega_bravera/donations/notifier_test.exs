@@ -53,7 +53,7 @@ defmodule OmegaBravera.NotifierTest do
              substitutions: %{
                "-challengeURL-" => "https://bravera.co/swcc/John-594",
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
-               "-donorPledge-" => "HK$40",
+               "-donorPledge-" => "HK$600",
                "-participantName-" => user.firstname
              },
              template_id: "79561f40-9939-406c-bdbe-0ecca63a1e1a",
@@ -198,7 +198,7 @@ defmodule OmegaBravera.NotifierTest do
                "-cardNumber-" => "Card ending in 4242",
                "-donationName-" => "Donation to Save the children via Bravera.co",
                "-donationDate-" => "2018-09-11 23:12:13",
-               "-chargedAmount-" => "10 HKD"
+               "-chargedAmount-" => "10 hkd"
              },
              template_id: "f9448c06-ff05-4901-bb47-f21a7848c1e7",
              to: [%{email: donor.email}],

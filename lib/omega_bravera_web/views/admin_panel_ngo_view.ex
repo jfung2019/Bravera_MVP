@@ -12,7 +12,6 @@ defmodule OmegaBraveraWeb.AdminPanelNGOView do
         donation.charged_amount
       end
 
-
     bravera = Decimal.mult(Decimal.from_float(0.06), amount)
     gateway_percent = Decimal.mult(Decimal.from_float(0.034), amount)
     gateway_base_fee = Decimal.from_float(2.35)

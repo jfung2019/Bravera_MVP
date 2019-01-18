@@ -1,62 +1,62 @@
 defmodule OmegaBraveraWeb.AdminPanelNGOViewTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
+  import OmegaBravera.Factory
+
   alias OmegaBraveraWeb.AdminPanelNGOView
 
   describe "render_fees/2" do
     test "returns correct bravera fees" do
+      donation = insert(:donation)
+
       assert Decimal.equal?(
-               AdminPanelNGOView.render_fees(Decimal.new(50), Decimal.new(1), "hkd", "bravera"),
-               Decimal.new(3.00)
+               AdminPanelNGOView.render_fees(donation, "bravera"),
+               Decimal.new(9.00)
              )
 
       refute Decimal.equal?(
-               AdminPanelNGOView.render_fees(Decimal.new(50), Decimal.new(1), "hkd", "bravera"),
+               AdminPanelNGOView.render_fees(donation, "bravera"),
                Decimal.new(1.00)
              )
     end
 
     test "returns correct net donation" do
+      donation = insert(:donation)
+
       assert Decimal.equal?(
                AdminPanelNGOView.render_fees(
-                 Decimal.new(50),
-                 Decimal.new(1),
-                 "hkd",
+                 donation,
                  "net_donation"
                ),
-               Decimal.new(43)
+               Decimal.from_float(133.6)
              )
 
       refute Decimal.equal?(
                AdminPanelNGOView.render_fees(
-                 Decimal.new(50),
-                 Decimal.new(1),
-                 "hkd",
-                 "net_donation"
+                donation,
+                "net_donation"
                ),
-               Decimal.new(1.00)
+               Decimal.from_float(1.00)
              )
     end
 
     test "returns gateway fees" do
+      donation = insert(:donation)
+
       assert Decimal.equal?(
                AdminPanelNGOView.render_fees(
-                 Decimal.new(50),
-                 Decimal.new(1),
-                 "hkd",
+                 donation,
                  "gateway_fee"
                ),
-               Decimal.new(4.1)
+               Decimal.from_float(7.5)
              )
 
       refute Decimal.equal?(
                AdminPanelNGOView.render_fees(
-                 Decimal.new(50),
-                 Decimal.new(1),
-                 "hkd",
+                 donation,
                  "gateway_fee"
                ),
-               Decimal.new(1.00)
+               Decimal.from_float(1.00)
              )
     end
   end

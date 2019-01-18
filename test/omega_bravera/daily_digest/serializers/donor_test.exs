@@ -68,7 +68,7 @@ defmodule OmegaBravera.DailyDigest.Serializers.DonorTest do
              lastname: "Garcia",
              email: "simon.garciar@gmail.com",
              challenge_urls: expected_challenge_urls,
-             pledged_amount: "$80 HKD"
+             pledged_amount: "$1200 HKD"
            }
   end
 end

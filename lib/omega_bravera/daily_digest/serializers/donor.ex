@@ -37,7 +37,7 @@ defmodule OmegaBravera.DailyDigest.Serializers.Donor do
         "$0"
 
       [%{currency: currency}] ->
-        "$#{amount} #{currency}"
+        "$#{amount} #{String.upcase(currency)}"
     end
   end
 end
