@@ -14,7 +14,7 @@ defmodule OmegaBravera.Challenges.Team do
 
     belongs_to(:user, User)
     belongs_to(:challenge, NGOChal)
-    # TODO: add members assoc
+    many_to_many(:users, User, join_through: "team_members")
 
     timestamps(type: :utc_datetime)
   end

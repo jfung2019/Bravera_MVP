@@ -5,7 +5,7 @@ defmodule OmegaBravera.Challenges do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
-  alias OmegaBravera.Challenges.{NGOChal, Activity, Team}
+  alias OmegaBravera.Challenges.{NGOChal, Activity, Team, TeamMembers}
   alias OmegaBravera.Fundraisers.NGO
 
   use Timex
@@ -439,6 +439,13 @@ defmodule OmegaBravera.Challenges do
   """
   def change_team(%Team{} = team) do
     Team.changeset(team, %{})
+  end
+
+
+  def add_user_to_team(attrs \\ %{}) do
+    %TeamMembers{}
+    |> TeamMembers.changeset(attrs)
+    |> Repo.insert()
   end
 
   def available_challenge_types, do: NGOChal.challenge_type_options()

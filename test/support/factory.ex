@@ -96,4 +96,13 @@ defmodule OmegaBravera.Factory do
       ngo_chal: build(:ngo_challenge)
     }
   end
+
+  def team_factory do
+    %OmegaBravera.Challenges.Team{
+      name: "Team Save Stuff",
+      slug: sequence(:slug, &"team-#{&1}"),
+      user: build(:user),
+      challenge: build(:ngo_challenge)
+    }
+  end
 end

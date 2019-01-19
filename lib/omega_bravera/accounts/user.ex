@@ -5,7 +5,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Accounts.{Credential, Setting}
   alias OmegaBravera.Trackers.Strava
   alias OmegaBravera.Fundraisers.NGO
-  alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.Challenges.{NGOChal, Team}
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Stripe.StrCustomer
 
@@ -28,6 +28,7 @@ defmodule OmegaBravera.Accounts.User do
     has_many(:ngo_chals, NGOChal)
     has_many(:donations, Donation)
     has_many(:str_customers, StrCustomer)
+    many_to_many(:teams, Team, join_through: "team_members")
 
     timestamps(type: :utc_datetime)
   end
