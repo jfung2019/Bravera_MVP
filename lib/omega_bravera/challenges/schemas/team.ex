@@ -2,17 +2,15 @@ defmodule OmegaBravera.Challenges.Team do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.Accounts.User
-  alias OmegaBravera.Fundraisers.NGO
-  alias OmegaBravera.Challenges.NGOChal
+  alias OmegaBravera.{Accounts.User, Challenges.NGOChal}
 
   schema "teams" do
-    field(:activity, :string)
-    field(:location, :string)
     field(:name, :string)
+    field(:slug, :string)
+
     belongs_to(:user, User)
-    belongs_to(:ngo, NGO)
-    has_many(:ngo_chals, NGOChal)
+    belongs_to(:challenge, NGOChal)
+    # TODO: add members assoc
 
     timestamps(type: :utc_datetime)
   end
@@ -20,7 +18,7 @@ defmodule OmegaBravera.Challenges.Team do
   @doc false
   def changeset(team, attrs) do
     team
-    |> cast(attrs, [:activity, :name, :location])
-    |> validate_required([:activity, :name, :location])
+    |> cast(attrs, [:name, :slug])
+    |> validate_required([:name, :slug])
   end
 end

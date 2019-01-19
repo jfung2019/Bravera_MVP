@@ -39,7 +39,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
 
     belongs_to(:user, User)
     belongs_to(:ngo, NGO)
-    belongs_to(:team, Team)
+    has_one(:team, Team)
     has_many(:donations, Donation)
     has_many(:activities, Activity, foreign_key: :challenge_id)
 
