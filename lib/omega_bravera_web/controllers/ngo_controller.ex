@@ -50,7 +50,7 @@ defmodule OmegaBraveraWeb.NGOController do
   end
 
   defp get_total_secured(%NGOChal{type: "PER_MILESTONE"} = challenge),
-    do: get_stats(challenge) |> get_in(["total", "charged"] || 0)
+    do: get_stats(challenge) |> get_in(["total", "charged"]) || 0
 
   defp get_total_secured(%NGOChal{type: "PER_KM"} = challenge) do
     challenge = Challenges.get_ngo_chal!(challenge.id)
@@ -63,7 +63,7 @@ defmodule OmegaBraveraWeb.NGOController do
   end
 
   defp get_total_pledged(%NGOChal{} = challenge),
-    do: get_stats(challenge) |> get_in(["total", "pending"] || 0)
+    do: get_stats(challenge) |> get_in(["total", "pending"]) || 0
 
   defp order_by_total_secured(chals),
     do: Enum.sort(chals, &(&1.total_secured >= &2.total_secured))

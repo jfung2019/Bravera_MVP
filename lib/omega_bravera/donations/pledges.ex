@@ -51,7 +51,7 @@ defmodule OmegaBravera.Donations.Pledges do
   end
 
   defp create_pledge(
-         {step, charge_amount} = milestone,
+         {_step, _charge_amount} = milestone,
          %NGOChal{type: "PER_MILESTONE"} = challenge,
          donation_params,
          stripe_customer
@@ -134,7 +134,7 @@ defmodule OmegaBravera.Donations.Pledges do
     challenge.self_donated || challenge.user_id == donation_params["donor_id"]
   end
 
-  defp filter_pledge({:ok, pledge}), do: true
+  defp filter_pledge({:ok, _pledge}), do: true
   defp filter_pledge({:error, _}), do: false
 
   defp milestone_distance_from_total_distance(%NGOChal{} = challenge, step) do

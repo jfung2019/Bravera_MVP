@@ -115,16 +115,6 @@ defmodule OmegaBravera.Accounts do
     end)
   end
 
-  defp donors_for_ngo_query(ngo) do
-    from(user in User,
-      join: donation in Donation,
-      on: donation.user_id == user.id,
-      where: donation.ngo_chal_id == ^ngo.id,
-      distinct: donation.user_id,
-      order_by: user.id
-    )
-  end
-
   # TODO Optimize the preload below
   def get_user_strava(user_id) do
     query = from(s in Strava, where: s.user_id == ^user_id)
