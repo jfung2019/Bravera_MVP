@@ -40,6 +40,8 @@ defmodule OmegaBravera.ChallengesTest do
       insert(:ngo_challenge)
     end
 
+    #TODO test if change set refuses a duplicate slug.
+
     test "inactive_for_five_days/0 returns the challenges that have been inactive for five days or more" do
       ngo = insert(:ngo)
 
@@ -84,19 +86,16 @@ defmodule OmegaBravera.ChallengesTest do
 
       insert(:ngo_challenge, %{
         last_activity_received: Timex.shift(Timex.now(), days: -6),
-        slug: "John-325",
         ngo: ngo
       })
 
       insert(:ngo_challenge, %{
         last_activity_received: Timex.shift(Timex.now(), days: -8),
-        slug: "John-325",
         ngo: ngo
       })
 
       insert(:ngo_challenge, %{
         last_activity_received: Timex.shift(Timex.now(), days: -2),
-        slug: "Peter-411",
         ngo: ngo
       })
 
@@ -200,74 +199,6 @@ defmodule OmegaBravera.ChallengesTest do
     test "change_ngo_chal/1 returns a ngo_chal changeset" do
       ngo_chal = ngo_chal_fixture()
       assert %Ecto.Changeset{} = Challenges.change_ngo_chal(ngo_chal)
-    end
-  end
-
-  describe "teams" do
-    alias OmegaBravera.Challenges.Team
-
-    @valid_attrs %{activity: "some activity", location: "some location", name: "some name"}
-    @update_attrs %{
-      activity: "some updated activity",
-      location: "some updated location",
-      name: "some updated name"
-    }
-    @invalid_attrs %{activity: nil, location: nil, name: nil}
-
-    def team_fixture(attrs \\ %{}) do
-      {:ok, team} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Challenges.create_team()
-
-      team
-    end
-
-    test "list_teams/0 returns all teams" do
-      team = team_fixture()
-      assert Challenges.list_teams() == [team]
-    end
-
-    test "get_team!/1 returns the team with given id" do
-      team = team_fixture()
-      assert Challenges.get_team!(team.id) == team
-    end
-
-    test "create_team/1 with valid data creates a team" do
-      assert {:ok, %Team{} = team} = Challenges.create_team(@valid_attrs)
-      assert team.activity == "some activity"
-      assert team.location == "some location"
-      assert team.name == "some name"
-    end
-
-    test "create_team/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Challenges.create_team(@invalid_attrs)
-    end
-
-    test "update_team/2 with valid data updates the team" do
-      team = team_fixture()
-      assert {:ok, team} = Challenges.update_team(team, @update_attrs)
-      assert %Team{} = team
-      assert team.activity == "some updated activity"
-      assert team.location == "some updated location"
-      assert team.name == "some updated name"
-    end
-
-    test "update_team/2 with invalid data returns error changeset" do
-      team = team_fixture()
-      assert {:error, %Ecto.Changeset{}} = Challenges.update_team(team, @invalid_attrs)
-      assert team == Challenges.get_team!(team.id)
-    end
-
-    test "delete_team/1 deletes the team" do
-      team = team_fixture()
-      assert {:ok, %Team{}} = Challenges.delete_team(team)
-      assert_raise Ecto.NoResultsError, fn -> Challenges.get_team!(team.id) end
-    end
-
-    test "change_team/1 returns a team changeset" do
-      team = team_fixture()
-      assert %Ecto.Changeset{} = Challenges.change_team(team)
     end
   end
 end

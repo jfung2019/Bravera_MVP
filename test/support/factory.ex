@@ -44,7 +44,7 @@ defmodule OmegaBravera.Factory do
       end_date: Timex.shift(Timex.now(), days: 5),
       duration: 5,
       status: "active",
-      slug: "John-512",
+      slug: sequence(:slug, &"sherief-#{&1}"),
       type: "PER_MILESTONE",
       user: build(:user),
       ngo: build(:ngo)

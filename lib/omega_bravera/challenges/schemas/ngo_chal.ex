@@ -39,7 +39,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
 
     belongs_to(:user, User)
     belongs_to(:ngo, NGO)
-    has_one(:team, Team)
+    has_one(:team, Team, foreign_key: :challenge_id)
     has_many(:donations, Donation)
     has_many(:activities, Activity, foreign_key: :challenge_id)
 
@@ -102,6 +102,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_inclusion(:distance_target, distances_available())
     |> validate_number(:money_target, greater_than: 0)
     |> validate_inclusion(:activity_type, @activity_types)
+    |> unique_constraint(:slug, name: :ngo_chals_slug_unique_index, message: "Challenge's slug must be unique.")
   end
 
   def create_changeset(ngo_chal, ngo, attrs) do

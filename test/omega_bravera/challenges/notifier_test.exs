@@ -122,7 +122,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
     }
 
-    email = Notifier.challenge_signup_email(challenge, "/swcc/John-512")
+    email = Notifier.challenge_signup_email(challenge, "/swcc/#{challenge.slug}")
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -139,8 +139,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              substitutions: %{
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-challengeMilestones-" => NGOChal.milestones_string(challenge),
-               "-challengeName-" => "John-512",
-               "-challengeURL-" => "https://bravera.co/swcc/John-512",
+               "-challengeName-" => "#{challenge.slug}",
+               "-challengeURL-" => "https://bravera.co/swcc/#{challenge.slug}",
                "-startDate-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
                "-daysDuration-" => "5 days",
                "-firstName-" => "John",

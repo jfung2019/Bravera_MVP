@@ -55,13 +55,11 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     setup do
       ngo_1 = insert(:ngo, %{slug: "ngo-1"})
       ngo_2 = insert(:ngo, %{slug: "ngo-2"})
-      slug = "random-123"
       strava = insert(:strava)
 
       challenge_1 =
         insert(:ngo_challenge, %{
           ngo: ngo_1,
-          slug: slug,
           default_currency: "hkd",
           user: strava.user
         })
@@ -69,7 +67,6 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       challenge_2 =
         insert(:ngo_challenge, %{
           ngo: ngo_2,
-          slug: slug,
           default_currency: "myr",
           user: strava.user
         })
