@@ -23,7 +23,7 @@
           </p>
         <% true -> %>
           <h5 class=" text-500 text-center mt-2 mb-0">
-            Challenge <%= String.capitalize(@challenge.status) %>
+            Challenge <%= render_status(@challenge.status) %>
           </h5>
       <% end %>
     </div>

@@ -53,16 +53,20 @@ defmodule OmegaBravera.Accounts.User do
         |> Ecto.Changeset.change(%{
           email_activation_token: gen_token()
         })
+
       _ ->
         changeset
     end
   end
 
   defp gen_token(length \\ 32),
-    do: :crypto.strong_rand_bytes(length)|> Base.url_encode64 |> binary_part(0, length)
+    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 
   def full_name(%__MODULE__{firstname: first, lastname: last}), do: "#{first} #{last}"
-  def email_activation_link(%__MODULE__{} = user),
-    do: "#{Application.get_env(:omega_bravera, :app_base_url)}/user/account/activate/#{user.email_activation_token}"
 
+  def email_activation_link(%__MODULE__{} = user),
+    do:
+      "#{Application.get_env(:omega_bravera, :app_base_url)}/user/account/activate/#{
+        user.email_activation_token
+      }"
 end

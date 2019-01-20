@@ -134,7 +134,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   def get_user_by_token(token) do
-    from(u in User, where: u.email_activation_token == ^ token) |> Repo.one()
+    from(u in User, where: u.email_activation_token == ^token) |> Repo.one()
   end
 
   def insert_or_update_strava_user(%{athlete_id: nil}), do: {:error, "No athlete id!"}
