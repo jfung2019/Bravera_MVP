@@ -83,14 +83,22 @@ defmodule OmegaBraveraWeb.UserController do
     case user do
       nil ->
         conn
-        |> put_flash(:error, "Invalid email activation link. Please check your link in your email again.")
+        |> put_flash(
+          :error,
+          "Invalid email activation link. Please check your link in your email again."
+        )
         |> redirect(to: "/")
+
       user ->
         case Accounts.update_user(user, %{email_verified: true}) do
           {:ok, _user} ->
             conn
-            |> put_flash(:info, "Thank you for activating your account. You can now join challenges!")
+            |> put_flash(
+              :info,
+              "Thank you for activating your account. You can now join challenges!"
+            )
             |> redirect(to: page_path(conn, :index))
+
           {:error, _} ->
             conn
             |> put_flash(:error, "Could not activate your email. Please contact admin@bravera.co")

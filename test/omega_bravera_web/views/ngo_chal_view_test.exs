@@ -77,4 +77,14 @@ defmodule OmegaBraveraWeb.NGOChalViewTest do
       assert NGOChalView.render_percentage(120, 130, 20) == 100
     end
   end
+
+  describe "render status" do
+    test "status is expired should show finished" do
+      assert NGOChalView.render_status("expired") == "Finished"
+    end
+
+    test "another status is just capitalized" do
+      assert NGOChalView.render_status("completed") == "Completed"
+    end
+  end
 end

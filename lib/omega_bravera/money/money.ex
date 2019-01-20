@@ -112,7 +112,10 @@ defmodule OmegaBravera.Money do
   end
 
   def total_secured_donations() do
-    from(d in Donation, select: {sum(d.amount), fragment("upper(?)", d.currency)}, group_by: fragment("upper(?)", d.currency))
+    from(d in Donation,
+      select: {sum(d.amount), fragment("upper(?)", d.currency)},
+      group_by: fragment("upper(?)", d.currency)
+    )
     |> Repo.all()
     |> Enum.map(fn {amount, currency} -> "#{currency}: #{amount}" end)
     |> Enum.join(", ")

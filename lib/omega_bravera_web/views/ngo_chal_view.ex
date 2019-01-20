@@ -231,4 +231,8 @@ defmodule OmegaBraveraWeb.NGOChalView do
       not is_nil(email) and email_verified == true -> true
     end
   end
+
+  def render_status("expired"), do: "Finished"
+
+  def render_status(status), do: String.capitalize(status)
 end
