@@ -25,6 +25,11 @@ defmodule OmegaBravera.NgoTest do
       assert ngo.valid?
     end
 
+    test "changeset/2 passes if correct params are given for team challenges" do
+      ngo = NGO.changeset(%NGO{}, Map.put(@create_attrs, :additional_members, 5))
+      assert ngo.valid?
+    end
+
     test "changeset/2 fails if pre-registration-start-date is equal to or greater than launch date" do
       ngo =
         NGO.changeset(

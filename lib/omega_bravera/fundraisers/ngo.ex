@@ -34,6 +34,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:currency, :string, default: "hkd")
     field(:minimum_donation, :integer, default: 0)
     field(:fundraising_goal, :integer, default: 0)
+    field(:additional_members, :integer, default: 0)
     field(:pre_registration_start_date, :utc_datetime)
     field(:launch_date, :utc_datetime)
     field(:open_registration, :boolean, default: true)
@@ -77,6 +78,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :challenge_types,
     :minimum_donation,
     :fundraising_goal,
+    :additional_members,
     :pre_registration_start_date,
     :launch_date,
     :open_registration,

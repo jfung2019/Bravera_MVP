@@ -13,6 +13,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     open_registration: false,
     pre_registration_start_date: Timex.shift(Timex.now(), days: 1),
     launch_date: Timex.shift(Timex.now(), days: 10),
+    additional_members: 0,
     user_id: nil
   }
 
@@ -157,6 +158,14 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
       ngo_chal = updated_ngo.ngo_chals |> List.first()
 
       assert Timex.equal?(updated_ngo.launch_date, ngo_chal.start_date)
+    end
+
+    test "redirects and accepts additional_members (teams enabled ngo)", %{conn: conn, ngo: ngo} do
+      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: Map.put(@update_attrs, :additional_members, 5))
+      updated_ngo = Fundraisers.get_ngo!(ngo.id)
+      assert ngo.additional_members == 0
+      assert updated_ngo.additional_members == 5
+      assert redirected_to(conn) == admin_panel_ngo_path(conn, :index)
     end
   end
 
