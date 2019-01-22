@@ -3,9 +3,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
   use Timex
   alias Numbers
 
-  alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money}
+  alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money, Fundraisers.NGO}
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Money.Donation
+  alias OmegaBravera.Slugify
   alias OmegaBravera.Slugify
 
   plug(:assign_available_options when action in [:new, :edit, :create])
@@ -34,34 +35,16 @@ defmodule OmegaBraveraWeb.NGOChalController do
       "ngo_slug" => ngo_slug,
       "ngo_id" => ngo.id,
       "slug" => sluggified_username,
-      "default_currency" => ngo.currency
+      "default_currency" => ngo.currency,
+      "status" => gen_challenge_status(ngo)
     }
-
-    extra_params =
-      case ngo.open_registration == false and Timex.compare(ngo.utc_launch_date, Timex.now()) == 1 do
-        true ->
-          Map.put(extra_params, "status", "pre_registration")
-
-        _ ->
-          Map.put(extra_params, "status", "active")
-      end
 
     changeset_params = Map.merge(chal_params, extra_params)
 
     case Challenges.create_ngo_chal(%NGOChal{}, ngo, changeset_params) do
       {:ok, challenge} ->
         challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
-
-        case changeset_params["status"] do
-          "pre_registration" ->
-            Challenges.Notifier.send_pre_registration_challenge_sign_up_email(
-              challenge,
-              challenge_path
-            )
-
-          _ ->
-            Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
-        end
+        send_emails(challenge, challenge_path)
 
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
@@ -139,6 +122,29 @@ defmodule OmegaBraveraWeb.NGOChalController do
       total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
       ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug)
     }
+  end
+
+  defp gen_challenge_status(%NGO{open_registration: open_registration, utc_launch_date: utc_launch_date}) do
+    case open_registration == false and Timex.after?(utc_launch_date, Timex.now()) do
+      true ->
+        "pre_registration"
+
+      _ ->
+        "active"
+    end
+  end
+
+  defp send_emails(%NGOChal{status: status} = challenge, challenge_path) do
+    case status do
+      "pre_registration" ->
+        Challenges.Notifier.send_pre_registration_challenge_sign_up_email(
+          challenge,
+          challenge_path
+        )
+
+      _ ->
+        Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+    end
   end
 
   defp assign_available_options(conn, _opts) do

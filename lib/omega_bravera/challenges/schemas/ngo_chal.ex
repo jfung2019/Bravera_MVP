@@ -21,7 +21,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
   schema "ngo_chals" do
     field(:activity_type, :string)
     field(:distance_target, :integer, default: 100)
-    field(:distance_covered, :decimal, default: 0, virtual: true)
     field(:duration, :integer)
     field(:milestones, :integer, default: 4)
     field(:money_target, :decimal, default: 2000)
@@ -33,9 +32,12 @@ defmodule OmegaBravera.Challenges.NGOChal do
     field(:last_activity_received, :utc_datetime)
     field(:type, :string)
 
+    field(:has_team, :boolean, default: false)
     field(:participant_notified_of_inactivity, :boolean, default: false)
     field(:donor_notified_of_inactivity, :boolean, default: false)
     field(:self_donated, :boolean, default: false)
+
+    field(:distance_covered, :decimal, default: 0, virtual: true)
 
     belongs_to(:user, User)
     belongs_to(:ngo, NGO)
@@ -60,6 +62,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :ngo_id,
     :self_donated,
     :type,
+    :has_team,
     :start_date
   ]
 

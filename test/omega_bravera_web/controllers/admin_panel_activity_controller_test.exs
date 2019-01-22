@@ -8,7 +8,7 @@ defmodule OmegaBraveraWeb.Admin.ActivityControllerTest do
   @activity_create_attrs %{
     "start_date" => %{
       # Must be in the furture so that ActivityIngestion doesn't refuse it
-      "hour" => Integer.to_string(Timex.now("Asia/Hong_Kong").hour + 1),
+      "hour" => Integer.to_string(Timex.shift(Timex.now("Asia/Hong_Kong"),  hours: 1).hour ),
       "minute" => "00",
       "year" => Integer.to_string(Timex.now("Asia/Hong_Kong").year),
       "month" => Integer.to_string(Timex.now("Asia/Hong_Kong").month),

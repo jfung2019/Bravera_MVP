@@ -21,6 +21,24 @@
         </div>
       </div>
       <div class="col-lg-12">
+        <label for="ngo_chal_activity">
+          <h4 class="text-green mb-0">
+            Single user or a Team Challenge?
+          </h4>
+        </label>
+        <br/>  <%= error_tag @f, :has_team %>
+        <div class="form-group" id="ngo_chal_activity">
+          <%= label class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
+            <h4 class="activity-text mb-0 mt-4 pt-2">Single</h4>
+            <%= radio_button @f, :has_team, "false", class: "radio-img" %>
+          <% end %>
+          <%= label class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
+            <h4 class="activity-text mb-0 mt-4 pt-2">Team</h4>
+            <%= radio_button @f, :has_team, "true", class: "radio-img" %>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-lg-12">
         <label for="ngo_chal_challenge_type">
           <h4 class="text-green mb-0">
             Select an Challenge Type

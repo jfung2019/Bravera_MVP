@@ -1,7 +1,13 @@
 defmodule OmegaBraveraWeb.NGOView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.{Accounts.User, Challenges.NGOChal}
+  alias OmegaBravera.{Accounts.User, Challenges.NGOChal, Fundraisers.NGO}
+
+  def team_enabled_ngo?(%NGO{additional_members: additional_members})
+    when additional_members > 0, do: true
+
+  def team_enabled_ngo?(%NGO{additional_members: additional_members})
+    when additional_members <= 0, do: false
 
   def user_full_name(%User{} = user), do: User.full_name(user)
 
