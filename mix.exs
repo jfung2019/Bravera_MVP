@@ -60,7 +60,8 @@ defmodule OmegaBravera.Mixfile do
       {:sched_ex, "~> 1.0"},
       {:csv, "~> 2.0.0"},
       {:mock, "~> 0.3.0", only: :test},
-      {:number, "~> 1.0.0"}
+      {:number, "~> 1.0.0"},
+      {:slugify, "~> 1.1"}
     ]
   end
 

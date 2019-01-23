@@ -5,7 +5,7 @@
       <div class="col-lg-12">
         <label for="ngo_chal_activity">
           <h4 class="text-green mb-0">
-            Select an Activity
+            <%= gettext("Select an Activity")%>
           </h4>
         </label>
         <br/>  <%= error_tag @f, :activity_type %>
@@ -20,28 +20,57 @@
           <% end %>
         </div>
       </div>
-      <div class="col-lg-12">
-        <label for="ngo_chal_activity">
-          <h4 class="text-green mb-0">
-            Single user or a Team Challenge?
-          </h4>
-        </label>
-        <br/>  <%= error_tag @f, :has_team %>
-        <div class="form-group" id="ngo_chal_activity">
-          <%= label class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
-            <h4 class="activity-text mb-0 mt-4 pt-2">Single</h4>
-            <%= radio_button @f, :has_team, "false", class: "radio-img" %>
-          <% end %>
-          <%= label class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
-            <h4 class="activity-text mb-0 mt-4 pt-2">Team</h4>
-            <%= radio_button @f, :has_team, "true", class: "radio-img" %>
-          <% end %>
+      <%= if OmegaBraveraWeb.NGOView.team_enabled_ngo?(@ngo) do %>
+
+        <div class="col-lg-12">
+          <label for="ngo_chal_activity">
+            <h4 class="text-green mb-0">
+              <%= gettext("Single user or a Team Challenge?") %>
+            </h4>
+          </label>
+          <br/>  <%= error_tag @f, :has_team %>
+          <div class="form-group" id="ngo_chal_activity">
+            <%= label class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
+              <h4 class="activity-text mb-0 mt-4 pt-2"><%= gettext("Single") %></h4>
+              <%= radio_button @f, :has_team, "false", class: "radio-img" %>
+            <% end %>
+            <%= label class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
+              <h4 class="activity-text mb-0 mt-4 pt-2"><%= gettext("Team") %></h4>
+              <%= radio_button @f, :has_team, "true", class: "radio-img" %>
+            <% end %>
+          </div>
         </div>
-      </div>
+
+        <div id="team_block" class="col-lg-2 mx-auto d-none">
+          <label for="ngo_chal_activity">
+            <h4 class="text-green mb-0">
+              <%= gettext("Team name and members") %>
+            </h4>
+          </label>
+          <%= inputs_for @f, :team, fn fp -> %>
+            <br/>
+            <div class="row mx-auto">
+              <%= error_tag fp, :name %>
+              <%= label fp, :name, class: "form-control" do %>
+                <%= text_input fp, :name, class: "form-control", required: "", placeholder: "Enter your Team's name" %>
+              <% end %>
+            </div>
+            <div class="row mx-auto">
+              <%= error_tag fp, :count %>
+              <%= label fp, :count, class: "form-control" do %>
+                Members:
+                <%= select fp, :count, 2..@ngo.additional_members, class: "form-control" %>
+              <% end %>
+            </div>
+            <span id="team-members-note" class="small mb-2">You have can invite 1 member(s) to your team after creating the challenge.</span>
+            <% end %>
+        </div>
+
+      <% end %>
       <div class="col-lg-12">
         <label for="ngo_chal_challenge_type">
           <h4 class="text-green mb-0">
-            Select an Challenge Type
+            <%= gettext("Select an Challenge Type") %>
           </h4>
         </label>
         <br/>  <%= error_tag @f, :type %>
@@ -50,14 +79,14 @@
           <%= if Enum.member?(@ngo.challenge_types, "PER_MILESTONE") do %>
             <div class="card mx-auto mb-2 mr-3" style="width: 18rem; display: inline-block;">
               <div class="card-header">
-                <b>Per Goal</b>
+                <b><%= gettext("Per Goal") %></b>
                 <br />
                 <%= radio_button @f, :type, "PER_MILESTONE", class: "radio-img" %>
               </div>
               <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
               <div class="card-body">
                 <p class="card-text">
-                  Select a total distance but your goals are broken down into x3 milestones that release pledged funds, automatically.
+                  <%= gettext("Select a total distance but your goals are broken down into x3 milestones that release pledged funds, automatically.") %>
                 </p>
               </div>
             </div>
@@ -65,14 +94,14 @@
           <%= if Enum.member?(@ngo.challenge_types, "PER_KM") do %>
             <div class="card mx-auto mb-2 mr-3" style="width: 18rem; display: inline-block;">
               <div class="card-header">
-                <b>Per KM</b>
+                <b><%= gettext("Per KM") %></b>
                 <br />
                 <%= radio_button @f, :type, "PER_KM", class: "radio-img" %>
               </div>
               <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
               <div class="card-body">
                 <p class="card-text">
-                  Select a total distance and ask for donations per KM. Pledged funds released at the end of your challenge.
+                  <%= gettext("Select a total distance and ask for donations per KM. Pledged funds released at the end of your challenge.") %>
                 </p>
               </div>
             </div>
@@ -86,7 +115,7 @@
     <div class="distance-select">
       <label>
         <h4 class="text-green mb-0">
-          Choose Duration and Distance
+          <%= gettext("Choose Duration and Distance") %>
         </h4>
       </label>
 
@@ -112,7 +141,7 @@
     </div>
     <div class="mt-2 mb-4 text-center fund-input-container">
       <label for="ngo_chal_money_target">
-        <h4 class="text-green my-2">Set Fundraising Target</h4>
+        <h4 class="text-green my-2"><%= gettext("Set Fundraising Target") %> </h4>
       </label>
       <div class="input-group">
         <div class="input-group-prepend">
@@ -130,41 +159,20 @@
 
     <div class="form-button">
       <button type="submit" class="btn btn-bravera btn-lg btn-block form-button">
-        Submit
+        <%= gettext("Submit") %>
       </button>
     </div>
   <% else %>
     <div class="row text-center mx-auto">
       <div class="col-lg-12">
-        <p><b>Please activate your account by visting this <%= link "link", to: user_path(@conn, :edit) %> and add your email address.</b></p>
+        <p>
+          <b>
+            Please activate your account by visting this <%="#{link(:link, to: user_path(@conn, :edit))}"%> and add your email address.
+          </b>
+        </p>
       </div>
     </div>
   <% end %>
 </div>
 
-<script>
-  $(function() {
-    $("#per-km-effort-education").text("Average of "
-      + calculate_avg_km_per_day($("#ngo_chal_distance_target").val(), $("#ngo_chal_duration").val())
-      + "KM per day."
-    );
-
-    $("#ngo_chal_distance_target").change(function(){
-      $("#per-km-effort-education").text("Average of "
-        + calculate_avg_km_per_day($("#ngo_chal_distance_target").val(), $("#ngo_chal_duration").val())
-        + "KM per day."
-      );
-    });
-
-    $("#ngo_chal_duration").change(function(){
-      $("#per-km-effort-education").text("Average of "
-        + calculate_avg_km_per_day($("#ngo_chal_distance_target").val(), $("#ngo_chal_duration").val())
-        + "KM per day."
-      );
-    });
-  });
-
-  function calculate_avg_km_per_day(kms, days) {
-    return Math.round((kms / days) * 100) / 100
-  }
-</script>
+<%= render "form_script.html" %>

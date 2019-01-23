@@ -50,6 +50,8 @@ defmodule OmegaBravera.DailyDigest.Notifier do
   defp add_csv_attachment(email, params, type) do
     list = Map.get(params, type)
 
+    {:ok, yesterday} = Timex.shift(Timex.now("Asia/Hong_Kong"), days: -1) |> Timex.format("{D}_{M}_{WYY}")
+
     if length(list) > 0 do
       Email.add_attachment(email, %{
         content: to_csv(list, type),

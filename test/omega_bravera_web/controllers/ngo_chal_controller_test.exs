@@ -3,26 +3,45 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
 
   import OmegaBravera.Factory
 
+  alias OmegaBravera.{Accounts, Trackers}
+
   @create_attrs %{
-    activity: "some activity",
-    distance_target: "120.5",
-    duration: 42,
-    money_target: "120.5",
-    slug: "some slug",
-    start_date: "2010-04-17 14:00:00.000000Z",
-    status: "some status",
-    type: "Per Goal"
+    "activity_type" => "Walk",
+    "distance_target" => "100",
+    "duration" => "20",
+    "has_team" => "false",
+    "money_target" => "500",
+    "type" => "PER_MILESTONE"
+  }
+  @tracker_create_attrs %{
+    email: "user@example.com",
+    firstname: "some firstname",
+    lastname: "some lastname",
+    athlete_id: 123_456,
+    token: "132kans81h23"
   }
   @invalid_attrs %{
-    activity: nil,
-    distance_target: nil,
-    duration: nil,
-    money_target: nil,
-    slug: nil,
-    start_date: nil,
-    status: nil,
-    type: nil
+    "activity_type" => "",
+    "distance_target" => "",
+    "duration" => "",
+    "has_team" => "",
+    "money_target" => "",
+    "type" => ""
   }
+
+  setup %{conn: conn} do
+    attrs = %{
+      firstname: "sherief",
+      lastname: "alaa ",
+      email: "user@example.com",
+      email_verified: true
+    }
+
+    with {:ok, user} <- Accounts.create_user(attrs),
+         {:ok, _strava} = Trackers.create_strava(user.id, @tracker_create_attrs),
+         {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
+         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+  end
 
   @tag :authenticated
   test "new ngo_chal renders form", %{conn: conn} do
@@ -33,22 +52,24 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
   end
 
   describe "create ngo_chal" do
-    @tag :skip
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, ngo_ngo_chal_path(conn, :create, "foo"), ngo_chal: @create_attrs)
+      ngo = insert(:ngo, %{url: "http://localhost:4000"})
+      conn = post(conn, ngo_ngo_chal_path(conn, :create, ngo), ngo_chal: @create_attrs)
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == ngo_ngo_chal_path(conn, :show, ngo_slug: "foo", slug: "bar")
+      assert %{slug: slug} = redirected_params(conn)
+      assert redirected_to(conn) == ngo_ngo_chal_path(conn, :show, ngo.slug, slug)
 
-      conn = get(conn, ngo_ngo_chal_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "Show Ngo chal"
+      conn = get(conn, ngo_ngo_chal_path(conn, :show, ngo.slug, slug))
+      assert html_response(conn, 200) =~ ngo.name
     end
 
-    @tag :skip
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, ngo_ngo_chal_path(conn, :create, "foo"), ngo_chal: @invalid_attrs)
-      assert html_response(conn, 200) =~ "New Ngo chal"
+      ngo = insert(:ngo, %{url: "http://localhost:4000"})
+      conn = post(conn, ngo_ngo_chal_path(conn, :create, ngo), ngo_chal: @invalid_attrs)
+      assert html_response(conn, 200) =~ ngo.name
     end
+
+    # TODO: add a positive and negative team test
   end
 
   describe "show ngo_chal" do

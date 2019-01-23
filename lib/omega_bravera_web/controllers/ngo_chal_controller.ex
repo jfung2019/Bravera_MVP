@@ -3,11 +3,16 @@ defmodule OmegaBraveraWeb.NGOChalController do
   use Timex
   alias Numbers
 
-  alias OmegaBravera.{Accounts, Challenges, Fundraisers, Money, Fundraisers.NGO}
-  alias OmegaBravera.Challenges.NGOChal
-  alias OmegaBravera.Money.Donation
-  alias OmegaBravera.Slugify
-  alias OmegaBravera.Slugify
+  alias OmegaBravera.{
+    Accounts,
+    Challenges,
+    Challenges.NGOChal,
+    Fundraisers,
+    Money,
+    Fundraisers.NGO,
+    Money.Donation,
+    Slugify
+  }
 
   plug(:assign_available_options when action in [:new, :edit, :create])
 
@@ -41,7 +46,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     changeset_params = Map.merge(chal_params, extra_params)
 
-    case Challenges.create_ngo_chal(%NGOChal{}, ngo, changeset_params) do
+    case create_challenge(ngo, changeset_params) do
       {:ok, challenge} ->
         challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
         send_emails(challenge, challenge_path)
@@ -52,7 +57,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> render("new.html", changeset: changeset, ngo: ngo)
+        |> render("new.html", changeset: changeset, ngo: ngo, current_user: Guardian.Plug.current_resource(conn))
     end
   end
 
@@ -131,6 +136,18 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
       _ ->
         "active"
+    end
+  end
+
+  defp create_challenge(%NGO{} = ngo, attrs) do
+    case attrs["has_team"] do
+      "true" ->
+        case Challenges.create_ngo_chal_with_team(ngo, attrs) do
+          {:ok, %{ngo_chal: ngo_chal}} -> {:ok, ngo_chal}
+          {:error, :ngo_chal, changeset, _} -> {:error, changeset}
+          {:error, :team, changeset, _} -> {:error, changeset}
+        end
+        _ -> Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
     end
   end
 

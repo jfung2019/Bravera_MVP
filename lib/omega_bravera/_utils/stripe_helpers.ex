@@ -16,7 +16,6 @@ defmodule OmegaBravera.StripeHelpers do
         currency: currency,
         ngo_id: ngo_id,
         user_id: user_id,
-        ngo_chal_id: ngo_chal_id,
         str_cust_id: customer
       } = donation
 

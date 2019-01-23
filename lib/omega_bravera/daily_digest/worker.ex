@@ -19,8 +19,6 @@ defmodule OmegaBravera.DailyDigest.Worker do
     challenges_with_milestones = Repo.all(challenges_with_milestones_query())
     challenges_completed = Repo.all(challenges_completed_query())
 
-    challenges = Repo.all(NGOChal)
-
     %{signups: new_users}
     |> Map.put(:new_donors, new_donors)
     |> Map.put(:new_challenges, new_challenges)

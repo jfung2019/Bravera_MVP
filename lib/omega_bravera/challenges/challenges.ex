@@ -4,6 +4,8 @@ defmodule OmegaBravera.Challenges do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Multi
+
   alias OmegaBravera.Repo
   alias OmegaBravera.Challenges.{NGOChal, Activity, Team, TeamMembers}
   alias OmegaBravera.Fundraisers.NGO
@@ -226,6 +228,18 @@ defmodule OmegaBravera.Challenges do
     chal
     |> NGOChal.create_changeset(ngo, attrs)
     |> Repo.insert()
+  end
+
+   def create_ngo_chal_with_team(ngo, attrs) do
+    Multi.new()
+    |> Multi.run(:ngo_chal, fn %{} -> create_ngo_chal(%NGOChal{}, ngo, attrs) end)
+    |> Multi.run(:team, fn %{ngo_chal: %{id: challenge_id}} ->
+      attrs["team"]
+      |> Map.put("challenge_id", challenge_id)
+      |> Map.put("user_id", attrs["user_id"])
+      |> create_team()
+    end)
+    |> Repo.transaction()
   end
 
   @doc """
