@@ -16,7 +16,8 @@ config :logger, level: :warn
 # Useful when debugging ActivityIngestion tests
 # config :logger,
 #   backends: [:console],
-#   compile_time_purge_level: :debug
+#   compile_time_purge_level: :debug,
+#   level: :debug
 
 # Configure your database
 host = System.get_env("BRAVERA_DB_HOST") || "localhost"
