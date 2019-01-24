@@ -102,6 +102,8 @@ defmodule OmegaBravera.Factory do
     %OmegaBravera.Challenges.Team{
       name: "Team Save Stuff",
       slug: sequence(:slug, &"team-#{&1}"),
+      count: 3,
+      invite_tokens: ["9BG57484A5h2vaAvL9oEn-lf-kU-sH4y", "j81_R7fKBZSwEwPmU1YHV0_cWChIY4IS", "j81_R7fKBZSwEwPmU1YHV0_cWCaskdn1"],
       user: build(:user),
       challenge: build(:ngo_challenge)
     }

@@ -106,6 +106,19 @@ defmodule OmegaBraveraWeb.NGOChalController do
     redirect(conn, to: challenge_path)
   end
 
+  def invite_team_members(conn, %{"ngo_chal_slug" => slug, "ngo_slug" => ngo_slug, "team_members" => team_members}) do
+    # challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, :ngo])
+    IO.inspect team_members
+
+    # To trigger social share modal on invites.
+    challenge_path = ngo_ngo_chal_path(conn, :show, ngo_slug, slug) <> "#share"
+    # Challenges.Notifier.send_team_member_invite_email(challenge, Map.values(team_members))
+
+    conn
+    |> put_flash(:info, "Sucessfully invited your team members!")
+    |> redirect(to: challenge_path)
+  end
+
   defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset, ngo_slug) do
     %{
       challenge: challenge,
