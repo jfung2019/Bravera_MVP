@@ -4,14 +4,14 @@ defmodule OmegaBravera.Challenges.Team do
 
   alias OmegaBravera.{Accounts.User, Challenges.NGOChal}
 
-  @allowed_attributes [:name, :slug, :challenge_id, :user_id]
+  @allowed_attributes [:name, :slug, :challenge_id, :user_id, :count]
   @required_attributes [:name, :challenge_id, :user_id]
 
   @derive {Phoenix.Param, key: :slug}
   schema "teams" do
     field(:name, :string)
     field(:slug, :string)
-    field(:count, :integer)
+    field(:count, :integer, default: 1)
 
     belongs_to(:user, User)
     belongs_to(:challenge, NGOChal)

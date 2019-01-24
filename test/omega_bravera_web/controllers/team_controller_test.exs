@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.TeamControllerTest do
-  use OmegaBraveraWeb.ConnCase
+  use OmegaBraveraWeb.ConnCase, async: true
 
   alias OmegaBravera.Challenges
 

@@ -76,14 +76,16 @@ defmodule OmegaBraveraWeb.NGOChalController do
     render(conn, "edit.html", ngo_chal: ngo_chal, changeset: changeset)
   end
 
+  # Not used but we can use it if we decide to enable editing a Challenge.
   def update(conn, %{"id" => id, "ngo_chal" => ngo_chal_params}) do
     ngo_chal = Challenges.get_ngo_chal!(id)
 
     case Challenges.update_ngo_chal(ngo_chal, ngo_chal_params) do
       {:ok, ngo_chal} ->
+        ngo_chal = ngo_chal |> OmegaBravera.Repo.preload(:ngo)
         conn
         |> put_flash(:info, "Ngo chal updated successfully.")
-        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_chal))
+        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_chal.ngo.slug, ngo_chal.slug))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", ngo_chal: ngo_chal, changeset: changeset)

@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts, Trackers}
+  alias OmegaBravera.{Accounts, Trackers, Challenges}
 
   @create_attrs %{
     "activity_type" => "Walk",
@@ -11,7 +11,8 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     "duration" => "20",
     "has_team" => "false",
     "money_target" => "500",
-    "type" => "PER_MILESTONE"
+    "type" => "PER_MILESTONE",
+    "team" => %{"name" => "", "count" => ""}
   }
   @tracker_create_attrs %{
     email: "user@example.com",
@@ -69,7 +70,45 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert html_response(conn, 200) =~ ngo.name
     end
 
-    # TODO: add a positive and negative team test
+    test "redirects to show when team data is valid", %{conn: conn} do
+      ngo = insert(:ngo, %{url: "http://localhost:4000", additional_members: 5})
+
+      create_attrs_with_team =
+        @create_attrs
+        |> Map.put("has_team", "true")
+        |> put_in(["team", "name"], "Sherief's team 7")
+        |> put_in(["team", "count"], ngo.additional_members)
+
+      conn = post(conn, ngo_ngo_chal_path(conn, :create, ngo), ngo_chal: create_attrs_with_team)
+
+      assert %{slug: slug} = redirected_params(conn)
+      assert redirected_to(conn) == ngo_ngo_chal_path(conn, :show, ngo.slug, slug)
+
+      ngo_chal_with_team = Challenges.get_ngo_chal_by_slugs(ngo.slug, slug, [:team])
+      assert ngo_chal_with_team.team.name == create_attrs_with_team["team"]["name"]
+      assert ngo_chal_with_team.team.count == ngo.additional_members
+    end
+
+
+    # Fails because the changeset returned to the form is for a team struct and inputs_for is expecting
+    # a challenge struct that contains a team struct.
+    # This is due to using
+    # {:error, :ngo_chal, changeset, _} -> {:error, changeset}
+    # {:error, :team, changeset, _} -> {:error, changeset}
+
+    # test "renders errors when tea, data is invalid", %{conn: conn} do
+    #   ngo = insert(:ngo, %{url: "http://localhost:4000", additional_members: 5})
+
+    #   create_attrs_with_team =
+    #     @create_attrs
+    #     |> Map.put("has_team", "true")
+    #     |> put_in(["team", "name"], "")
+    #     |> put_in(["team", "count"], ngo.additional_members)
+
+    #   conn = post(conn, ngo_ngo_chal_path(conn, :create, ngo), ngo_chal: create_attrs_with_team)
+    #   assert html_response(conn, 200) =~ ngo.name
+
+    # end
   end
 
   describe "show ngo_chal" do

@@ -63,7 +63,7 @@
               <% end %>
             </div>
             <span id="team-members-note" class="small mb-2">You have can invite 1 member(s) to your team after creating the challenge.</span>
-            <% end %>
+          <% end %>
         </div>
 
       <% end %>

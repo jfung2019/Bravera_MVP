@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.NGOControllerTest do
-  use OmegaBraveraWeb.ConnCase
+  use OmegaBraveraWeb.ConnCase, async: true
 
   alias OmegaBravera.Fundraisers
 

@@ -1,5 +1,5 @@
 defmodule OmegaBravera.ChallengesTest do
-  use OmegaBravera.DataCase
+  use OmegaBravera.DataCase, async: true
 
   import OmegaBravera.Factory
 
