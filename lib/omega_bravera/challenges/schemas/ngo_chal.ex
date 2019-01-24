@@ -105,7 +105,10 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_inclusion(:distance_target, distances_available())
     |> validate_number(:money_target, greater_than: 0)
     |> validate_inclusion(:activity_type, @activity_types)
-    |> unique_constraint(:slug, name: :ngo_chals_slug_unique_index, message: "Challenge's slug must be unique.")
+    |> unique_constraint(:slug,
+      name: :ngo_chals_slug_unique_index,
+      message: "Challenge's slug must be unique."
+    )
   end
 
   def create_changeset(ngo_chal, ngo, attrs) do

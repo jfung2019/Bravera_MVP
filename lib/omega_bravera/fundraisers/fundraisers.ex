@@ -53,21 +53,22 @@ defmodule OmegaBravera.Fundraisers do
         donations.milestone,
         ngo_chal.default_currency,
         fragment("ROUND((? * ?), 1)", donations.charged_amount, donations.exchange_rate),
-        fragment("ROUND(((CASE WHEN type = 'PER_KM' THEN charged_amount * exchange_rate ELSE amount * exchange_rate END) * 0.034) + 2.35, 1)"),
-        fragment("ROUND((CASE WHEN type = 'PER_KM' THEN charged_amount * exchange_rate ELSE amount * exchange_rate END) * 0.06, 1)"),
+        fragment(
+          "ROUND(((CASE WHEN type = 'PER_KM' THEN charged_amount * exchange_rate ELSE amount * exchange_rate END) * 0.034) + 2.35, 1)"
+        ),
+        fragment(
+          "ROUND((CASE WHEN type = 'PER_KM' THEN charged_amount * exchange_rate ELSE amount * exchange_rate END) * 0.06, 1)"
+        ),
         fragment("CASE
               WHEN type = 'PER_KM' THEN
                 ROUND(((charged_amount * exchange_rate) - (((charged_amount * exchange_rate) * 0.034) + 2.35)) - ((charged_amount * exchange_rate) * 0.06), 1)
               ELSE
                 ROUND(((charged_amount * exchange_rate) - (((amount * exchange_rate) * 0.034) + 2.35)) - ((amount * exchange_rate) * 0.06), 1)
-            END"
-        )
+            END")
       ]
     )
     |> Repo.all()
   end
-
-
 
   def get_ngo_with_stats(slug, preloads \\ [:ngo_chals]) do
     ngo = get_ngo_by_slug(slug, preloads)

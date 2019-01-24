@@ -33,8 +33,8 @@ defmodule OmegaBraveraWeb.AdminPanelNGOViewTest do
 
       refute Decimal.equal?(
                AdminPanelNGOView.render_fees(
-                donation,
-                "net_donation"
+                 donation,
+                 "net_donation"
                ),
                Decimal.from_float(1.00)
              )

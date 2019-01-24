@@ -57,7 +57,11 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> render("new.html", changeset: changeset, ngo: ngo, current_user: Guardian.Plug.current_resource(conn))
+        |> render("new.html",
+          changeset: changeset,
+          ngo: ngo,
+          current_user: Guardian.Plug.current_resource(conn)
+        )
     end
   end
 
@@ -83,6 +87,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     case Challenges.update_ngo_chal(ngo_chal, ngo_chal_params) do
       {:ok, ngo_chal} ->
         ngo_chal = ngo_chal |> OmegaBravera.Repo.preload(:ngo)
+
         conn
         |> put_flash(:info, "Ngo chal updated successfully.")
         |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_chal.ngo.slug, ngo_chal.slug))
@@ -106,9 +111,13 @@ defmodule OmegaBraveraWeb.NGOChalController do
     redirect(conn, to: challenge_path)
   end
 
-  def invite_team_members(conn, %{"ngo_chal_slug" => slug, "ngo_slug" => ngo_slug, "team_members" => team_members}) do
+  def invite_team_members(conn, %{
+        "ngo_chal_slug" => slug,
+        "ngo_slug" => ngo_slug,
+        "team_members" => team_members
+      }) do
     # challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, :ngo])
-    IO.inspect team_members
+    IO.inspect(team_members)
 
     # To trigger social share modal on invites.
     challenge_path = ngo_ngo_chal_path(conn, :show, ngo_slug, slug) <> "#share"
@@ -144,7 +153,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
     }
   end
 
-  defp gen_challenge_status(%NGO{open_registration: open_registration, utc_launch_date: utc_launch_date}) do
+  defp gen_challenge_status(%NGO{
+         open_registration: open_registration,
+         utc_launch_date: utc_launch_date
+       }) do
     case open_registration == false and Timex.after?(utc_launch_date, Timex.now()) do
       true ->
         "pre_registration"
@@ -162,7 +174,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
           {:error, :ngo_chal, changeset, _} -> {:error, changeset}
           {:error, :team, changeset, _} -> {:error, changeset}
         end
-        _ -> Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
+
+      _ ->
+        Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
     end
   end
 

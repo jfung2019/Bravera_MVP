@@ -89,7 +89,6 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert ngo_chal_with_team.team.count == ngo.additional_members
     end
 
-
     # Fails because the changeset returned to the form is for a team struct and inputs_for is expecting
     # a challenge struct that contains a team struct.
     # This is due to using

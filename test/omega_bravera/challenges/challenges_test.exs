@@ -40,7 +40,7 @@ defmodule OmegaBravera.ChallengesTest do
       insert(:ngo_challenge)
     end
 
-    #TODO test if change set refuses a duplicate slug.
+    # TODO test if change set refuses a duplicate slug.
 
     test "inactive_for_five_days/0 returns the challenges that have been inactive for five days or more" do
       ngo = insert(:ngo)

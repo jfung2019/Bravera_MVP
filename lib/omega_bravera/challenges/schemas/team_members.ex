@@ -10,7 +10,6 @@ defmodule OmegaBravera.Challenges.TeamMembers do
     belongs_to(:team, Team)
   end
 
-
   def changeset(struct, params \\ %{}) do
     struct
     |> Ecto.Changeset.cast(params, [:user_id, :team_id])

@@ -58,6 +58,7 @@ defmodule OmegaBravera.Donations.Processor do
           donation.amount
           |> Decimal.mult(challenge.distance_covered)
           |> amount_with_fees()
+
         donation.donor_pays_fees == false ->
           donation.amount
           |> Decimal.mult(challenge.distance_covered)
@@ -77,12 +78,13 @@ defmodule OmegaBravera.Donations.Processor do
       cond do
         donation.donor_pays_fees == true ->
           amount_with_fees(donation.amount)
+
         donation.donor_pays_fees == false ->
           donation.amount
       end
 
     %{
-      "amount" =>  amount,
+      "amount" => amount,
       "currency" => donation.currency,
       "source" => donation.str_src,
       "receipt_email" => donation.user.email,
@@ -91,7 +93,9 @@ defmodule OmegaBravera.Donations.Processor do
   end
 
   defp amount_with_fees(%Decimal{} = amount) do
-    gateway = Decimal.mult(amount, Decimal.from_float(0.034)) |> Decimal.add(Decimal.from_float(2.35))
+    gateway =
+      Decimal.mult(amount, Decimal.from_float(0.034)) |> Decimal.add(Decimal.from_float(2.35))
+
     bravera = Decimal.mult(amount, Decimal.from_float(0.06))
 
     Decimal.add(gateway, bravera) |> Decimal.add(amount)

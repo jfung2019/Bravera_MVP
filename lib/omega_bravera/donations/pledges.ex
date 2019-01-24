@@ -71,7 +71,7 @@ defmodule OmegaBravera.Donations.Pledges do
            "str_src" => stripe_source,
            "donor_id" => donor_id,
            "donor_pays_fees" => donor_pays_fees
-          },
+         },
          %{"id" => stripe_customer_id}
        ) do
     %{

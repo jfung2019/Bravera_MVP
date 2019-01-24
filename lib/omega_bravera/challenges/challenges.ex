@@ -230,7 +230,7 @@ defmodule OmegaBravera.Challenges do
     |> Repo.insert()
   end
 
-   def create_ngo_chal_with_team(ngo, attrs) do
+  def create_ngo_chal_with_team(ngo, attrs) do
     Multi.new()
     |> Multi.run(:ngo_chal, fn %{} -> create_ngo_chal(%NGOChal{}, ngo, attrs) end)
     |> Multi.run(:team, fn %{ngo_chal: %{id: challenge_id}} ->
@@ -454,7 +454,6 @@ defmodule OmegaBravera.Challenges do
   def change_team(%Team{} = team) do
     Team.changeset(team, %{})
   end
-
 
   def add_user_to_team(attrs \\ %{}) do
     %TeamMembers{}

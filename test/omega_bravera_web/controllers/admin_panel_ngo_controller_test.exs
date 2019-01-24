@@ -161,7 +161,11 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     end
 
     test "redirects and accepts additional_members (teams enabled ngo)", %{conn: conn, ngo: ngo} do
-      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: Map.put(@update_attrs, :additional_members, 5))
+      conn =
+        put(conn, admin_panel_ngo_path(conn, :update, ngo),
+          ngo: Map.put(@update_attrs, :additional_members, 5)
+        )
+
       updated_ngo = Fundraisers.get_ngo!(ngo.id)
       assert ngo.additional_members == 0
       assert updated_ngo.additional_members == 5

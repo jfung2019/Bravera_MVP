@@ -49,7 +49,13 @@ defmodule OmegaBravera.TeamsTest do
     test "create_team/1 with valid data creates a team" do
       challenge = insert(:ngo_challenge)
 
-      assert {:ok, %Team{} = team} = Challenges.create_team(%{@valid_attrs | challenge_id: challenge.id, user_id: challenge.user_id})
+      assert {:ok, %Team{} = team} =
+               Challenges.create_team(%{
+                 @valid_attrs
+                 | challenge_id: challenge.id,
+                   user_id: challenge.user_id
+               })
+
       assert team.name == "some name"
       assert team.slug == "some-unique-slug-123"
       assert team.challenge_id == challenge.id

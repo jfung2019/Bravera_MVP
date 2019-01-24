@@ -22,7 +22,7 @@ defmodule OmegaBravera.Donations.ProcessorTest do
       str_src: "src_1D9JN4EXtHU8QBy8JErKq6fH",
       user: donor,
       ngo: ngo,
-      ngo_chal: challenge,
+      ngo_chal: challenge
     }
 
     donation = insert(:donation, donation_attrs)

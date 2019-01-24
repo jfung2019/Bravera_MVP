@@ -238,4 +238,3 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def render_status(status), do: String.capitalize(status)
 end
-
