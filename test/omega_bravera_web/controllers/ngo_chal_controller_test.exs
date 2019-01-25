@@ -27,7 +27,8 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     "duration" => "",
     "has_team" => "",
     "money_target" => "",
-    "type" => ""
+    "type" => "",
+    "team" => %{"name" => "", "count" => ""}
   }
 
   setup %{conn: conn} do
@@ -89,25 +90,19 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert ngo_chal_with_team.team.count == ngo.additional_members
     end
 
-    # Fails because the changeset returned to the form is for a team struct and inputs_for is expecting
-    # a challenge struct that contains a team struct.
-    # This is due to using
-    # {:error, :ngo_chal, changeset, _} -> {:error, changeset}
-    # {:error, :team, changeset, _} -> {:error, changeset}
+    test "renders errors when tea, data is invalid", %{conn: conn} do
+      ngo = insert(:ngo, %{url: "http://localhost:4000", additional_members: 5})
 
-    # test "renders errors when tea, data is invalid", %{conn: conn} do
-    #   ngo = insert(:ngo, %{url: "http://localhost:4000", additional_members: 5})
+      create_attrs_with_team =
+        @create_attrs
+        |> Map.put("has_team", "true")
+        |> put_in(["team", "name"], "")
+        |> put_in(["team", "count"], ngo.additional_members)
 
-    #   create_attrs_with_team =
-    #     @create_attrs
-    #     |> Map.put("has_team", "true")
-    #     |> put_in(["team", "name"], "")
-    #     |> put_in(["team", "count"], ngo.additional_members)
+      conn = post(conn, ngo_ngo_chal_path(conn, :create, ngo), ngo_chal: create_attrs_with_team)
+      assert html_response(conn, 200) =~ ngo.name
 
-    #   conn = post(conn, ngo_ngo_chal_path(conn, :create, ngo), ngo_chal: create_attrs_with_team)
-    #   assert html_response(conn, 200) =~ ngo.name
-
-    # end
+    end
   end
 
   describe "show ngo_chal" do

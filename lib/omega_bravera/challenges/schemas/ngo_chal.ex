@@ -119,6 +119,12 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_required([:start_date, :end_date])
   end
 
+  def create_with_team_changeset(ngo_chal, ngo, attrs) do
+    ngo_chal
+    |> create_changeset(ngo, attrs)
+    |> cast_assoc(:team, with: &Team.changeset/2, required: true)
+  end
+
   defp add_status(%Ecto.Changeset{} = changeset, %NGO{} = ngo) do
     status =
       case ngo.open_registration == false and Timex.after?(ngo.utc_launch_date, Timex.now()) do

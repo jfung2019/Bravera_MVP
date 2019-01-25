@@ -31,10 +31,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
   def create(conn, %{"ngo_slug" => ngo_slug, "ngo_chal" => chal_params}) do
     current_user = Guardian.Plug.current_resource(conn)
+    ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
     sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
-    ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
-
+    chal_params = put_in(chal_params, ["team", "user_id"], current_user.id)
     extra_params = %{
       "user_id" => current_user.id,
       "ngo_slug" => ngo_slug,
@@ -169,12 +169,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
   defp create_challenge(%NGO{} = ngo, attrs) do
     case attrs["has_team"] do
       "true" ->
-        case Challenges.create_ngo_chal_with_team(ngo, attrs) do
-          {:ok, %{ngo_chal: ngo_chal}} -> {:ok, ngo_chal}
-          {:error, :ngo_chal, changeset, _} -> {:error, changeset}
-          {:error, :team, changeset, _} -> {:error, changeset}
-        end
-
+        Challenges.create_ngo_chal_with_team(%NGOChal{}, ngo, attrs)
       _ ->
         Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
     end
