@@ -49,19 +49,20 @@ defmodule OmegaBravera.Donations.Processor do
   end
 
   def charge_params(%Donation{} = donation, %NGOChal{type: "PER_KM"} = challenge) do
-    # To get the calculated field distance_covered
-    challenge = Challenges.get_ngo_chal!(challenge.id)
+    distance_covered =
+      Challenges.get_ngo_chal!(challenge.id)
+      |> truncate_exceeding_distance()
 
     amount =
       cond do
         donation.donor_pays_fees == true ->
           donation.amount
-          |> Decimal.mult(challenge.distance_covered)
+          |> Decimal.mult(distance_covered)
           |> amount_with_fees()
 
         donation.donor_pays_fees == false ->
           donation.amount
-          |> Decimal.mult(challenge.distance_covered)
+          |> Decimal.mult(distance_covered)
       end
 
     %{
@@ -99,5 +100,12 @@ defmodule OmegaBravera.Donations.Processor do
     bravera = Decimal.mult(amount, Decimal.from_float(0.06))
 
     Decimal.add(gateway, bravera) |> Decimal.add(amount)
+  end
+
+  defp truncate_exceeding_distance(%NGOChal{distance_covered: distance_covered, distance_target: distance_target}) do
+    # Do not let the transaction pass target_distance.
+    distance_covered = distance_covered |> Decimal.round |> Decimal.to_integer
+    Enum.min([distance_covered, distance_target])
+    |> Decimal.new()
   end
 end

@@ -100,5 +100,51 @@ defmodule OmegaBravera.Donations.ProcessorTest do
     end
   end
 
+  test "charge_donation/1 charges km challenge pledge sucessfully and distance_covered cannot exceed distance_target" do
+    donor = insert(:user, %{email: "sheriefalaa.w@gmail.com"})
+    ngo = insert(:ngo, %{slug: "stc", name: "Save the children"})
+    challenge = insert(:ngo_challenge, %{ngo: ngo, type: "PER_KM", activity_type: "Walk", distance_target: 50})
+    insert(:activity, %{challenge: challenge, distance: Decimal.new(60)})
+
+    donation_attrs = %{
+      str_cus_id: "cus_DaUL9L27e843XN",
+      str_src: "src_1D9JN4EXtHU8QBy8JErKq6fH",
+      user: donor,
+      ngo: ngo,
+      ngo_chal: challenge,
+      donor_pays_fees: false,
+      amount: Decimal.new(10)
+    }
+
+    donation = insert(:donation, donation_attrs)
+
+    use_cassette "charge_km_donation_cannot_exceed_distance_target" do
+      {:ok, %Donation{status: "charged"} = donation} = Processor.charge_donation(donation)
+      result = Repo.get(Donation, donation.id)
+
+      fields = [
+        :charge_id,
+        :last_digits,
+        :card_brand,
+        :charged_description,
+        :charged_status,
+        :charged_amount
+      ]
+
+      charged_fields = Map.take(result, fields)
+
+      assert charged_fields == %{
+               card_brand: "Visa",
+               charge_id: "ch_1DwSC6EXtHU8QBy8f95J7Zsn",
+               charged_amount: Decimal.new(500.0),
+               charged_description: "Donation to Save the children via Bravera.co",
+               charged_status: "succeeded",
+               last_digits: "4242"
+             }
+
+      assert Timex.equal?(result.charged_at, DateTime.from_unix!(1_548_413_154))
+    end
+  end
+
   # TODO: write a test for a non-hkd challenge and see if the exchange rate comes back other than nil inside balance_transaction
 end
