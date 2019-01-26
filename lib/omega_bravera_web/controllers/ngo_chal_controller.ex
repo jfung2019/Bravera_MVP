@@ -36,6 +36,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
     chal_params = put_in(chal_params, ["team", "user_id"], current_user.id)
+
     extra_params = %{
       "user_id" => current_user.id,
       "ngo_slug" => ngo_slug,
@@ -67,7 +68,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def show(conn, %{"ngo_slug" => ngo_slug, "slug" => slug}) do
-    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [user: [:strava], ngo: [], team: []])
+    challenge =
+      Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [], team: [])
+
     changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
     render_attrs = get_render_attrs(conn, challenge, changeset, ngo_slug)
@@ -118,16 +121,22 @@ defmodule OmegaBraveraWeb.NGOChalController do
         "team_members" => team_members
       }) do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, :ngo, :team])
-    sent_invite_tokens = Challenges.Notifier.send_team_members_invite_email(challenge, Map.values(team_members))
+
+    sent_invite_tokens =
+      Challenges.Notifier.send_team_members_invite_email(challenge, Map.values(team_members))
 
     remaining_invite_tokens = challenge.team.invite_tokens -- sent_invite_tokens
-    all_sent_invite_tokens =  sent_invite_tokens ++ (challenge.team.sent_invite_tokens || [])
+    all_sent_invite_tokens = sent_invite_tokens ++ (challenge.team.sent_invite_tokens || [])
 
-    case Challenges.update_team(challenge.team, %{invite_tokens: remaining_invite_tokens, sent_invite_tokens: all_sent_invite_tokens}) do
+    case Challenges.update_team(challenge.team, %{
+           invite_tokens: remaining_invite_tokens,
+           sent_invite_tokens: all_sent_invite_tokens
+         }) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Sucessfully invited your team members!")
         |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+
       {:error, _reason} ->
         conn
         |> put_flash(:info, "Something went wrong while updating your team.")
@@ -186,6 +195,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     case attrs["has_team"] do
       "true" ->
         Challenges.create_ngo_chal_with_team(%NGOChal{}, ngo, attrs)
+
       _ ->
         Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
     end

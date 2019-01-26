@@ -101,7 +101,6 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
 
       conn = post(conn, ngo_ngo_chal_path(conn, :create, ngo), ngo_chal: create_attrs_with_team)
       assert html_response(conn, 200) =~ ngo.name
-
     end
   end
 
@@ -140,10 +139,12 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert html_response(conn, 200) =~ "RM"
     end
 
-    test "invite_team_members/2 invites team members and moves used invite_tokens to sent_invite_tokens", %{conn: conn} do
-      team = insert(:team, %{challenge: build(:ngo_challenge, %{has_team: true}) })
+    test "invite_team_members/2 invites team members and moves used invite_tokens to sent_invite_tokens",
+         %{conn: conn} do
+      team = insert(:team, %{challenge: build(:ngo_challenge, %{has_team: true})})
       token1 = hd(team.invite_tokens)
       token2 = List.last(team.invite_tokens)
+
       team_members = %{
         "1" => %{
           "email" => "sheriefalaa.w@gmail.com",
@@ -162,8 +163,21 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
         }
       }
 
-      conn = post(conn, ngo_ngo_chal_ngo_chal_path(conn, :invite_team_members, team.challenge.ngo.slug, team.challenge.slug), team_members: team_members)
-      assert redirected_to(conn) == ngo_ngo_chal_path(conn, :show, team.challenge.ngo.slug, team.challenge.slug)
+      conn =
+        post(
+          conn,
+          ngo_ngo_chal_ngo_chal_path(
+            conn,
+            :invite_team_members,
+            team.challenge.ngo.slug,
+            team.challenge.slug
+          ),
+          team_members: team_members
+        )
+
+      assert redirected_to(conn) ==
+               ngo_ngo_chal_path(conn, :show, team.challenge.ngo.slug, team.challenge.slug)
+
       assert get_flash(conn, :info) =~ "Sucessfully invited your team members!"
 
       updated_team = Challenges.get_team!(team.id)
@@ -171,6 +185,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert updated_team.sent_invite_tokens == [token1, token2]
 
       token3 = Enum.at(team.invite_tokens, 1)
+
       team_members = %{
         "1" => %{
           "email" => "sheriefalaa.w@gmail.com",
@@ -179,7 +194,16 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
         }
       }
 
-      post(conn, ngo_ngo_chal_ngo_chal_path(conn, :invite_team_members, team.challenge.ngo.slug, team.challenge.slug), team_members: team_members)
+      post(
+        conn,
+        ngo_ngo_chal_ngo_chal_path(
+          conn,
+          :invite_team_members,
+          team.challenge.ngo.slug,
+          team.challenge.slug
+        ),
+        team_members: team_members
+      )
 
       # Ensure sent_invite_tokens accumulates correctly.
       updated_team = Challenges.get_team!(team.id)
@@ -187,5 +211,4 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert updated_team.sent_invite_tokens == [token3, token1, token2]
     end
   end
-
 end

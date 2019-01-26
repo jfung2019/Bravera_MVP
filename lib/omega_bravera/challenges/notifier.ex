@@ -216,10 +216,14 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Enum.each(&Mailer.send(elem(&1, 0)))
 
     emails_with_tokens
-    |> Enum.map(&(elem(&1, 1)))
+    |> Enum.map(&elem(&1, 1))
   end
 
-  def team_member_invite_email(%NGOChal{} = challenge, %{"name" => name, "email" => email, "token" => token})
+  def team_member_invite_email(%NGOChal{} = challenge, %{
+        "name" => name,
+        "email" => email,
+        "token" => token
+      })
       when not is_nil(name) and not is_nil(email) and name != "" and email != "" do
     {
       Email.build()
@@ -231,7 +235,6 @@ defmodule OmegaBravera.Challenges.Notifier do
       |> Email.put_from("admin@bravera.co", "Bravera")
       |> Email.add_bcc("admin@bravera.co")
       |> Email.add_to(email),
-
       token
     }
   end

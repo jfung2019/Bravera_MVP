@@ -102,9 +102,13 @@ defmodule OmegaBravera.Donations.Processor do
     Decimal.add(gateway, bravera) |> Decimal.add(amount)
   end
 
-  defp truncate_exceeding_distance(%NGOChal{distance_covered: distance_covered, distance_target: distance_target}) do
+  defp truncate_exceeding_distance(%NGOChal{
+         distance_covered: distance_covered,
+         distance_target: distance_target
+       }) do
     # Do not let the transaction pass target_distance.
-    distance_covered = distance_covered |> Decimal.round |> Decimal.to_integer
+    distance_covered = distance_covered |> Decimal.round() |> Decimal.to_integer()
+
     Enum.min([distance_covered, distance_target])
     |> Decimal.new()
   end

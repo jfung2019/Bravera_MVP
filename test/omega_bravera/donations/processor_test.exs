@@ -103,7 +103,15 @@ defmodule OmegaBravera.Donations.ProcessorTest do
   test "charge_donation/1 charges km challenge pledge sucessfully and distance_covered cannot exceed distance_target" do
     donor = insert(:user, %{email: "sheriefalaa.w@gmail.com"})
     ngo = insert(:ngo, %{slug: "stc", name: "Save the children"})
-    challenge = insert(:ngo_challenge, %{ngo: ngo, type: "PER_KM", activity_type: "Walk", distance_target: 50})
+
+    challenge =
+      insert(:ngo_challenge, %{
+        ngo: ngo,
+        type: "PER_KM",
+        activity_type: "Walk",
+        distance_target: 50
+      })
+
     insert(:activity, %{challenge: challenge, distance: Decimal.new(60)})
 
     donation_attrs = %{
