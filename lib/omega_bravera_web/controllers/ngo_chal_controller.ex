@@ -7,7 +7,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
     Accounts,
     Challenges,
     Challenges.NGOChal,
-    Challenges.Team,
     Fundraisers,
     Money,
     Fundraisers.NGO,
@@ -144,14 +143,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end
   end
 
-  def add_team_member(conn, %{"invitation_token" => invitation_token}) do
-    # TODO: either create an account for the user and join the team for him
-    # or force him to go to /login first. But I will also need to store the
-    # invite token somewhere so that
-    # OR say in the email: someone invited you to his team:
-    # 1- create your account.
-    # 2- click the invitation link while you are logged in.
-  end
+  # TODO: create a user and sign him in and also
+  # def add_team_member(conn, %{"invitation_token" => invitation_token}) do
+  # end
 
   defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset, ngo_slug) do
     %{
