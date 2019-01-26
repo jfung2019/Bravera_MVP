@@ -157,6 +157,8 @@ defmodule OmegaBraveraWeb.Router do
         get("/donors", DonationController, :index)
         get("/activities", ActivityController, :index)
         post("/invite_buddies", NGOChalController, :invite_buddies)
+        post("/invite_team_members", NGOChalController, :invite_team_members)
+        get("/add_team_member/:invitation_token", NGOChalController, :add_team_member)
       end
     end
   end

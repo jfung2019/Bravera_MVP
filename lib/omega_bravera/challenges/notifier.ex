@@ -206,6 +206,39 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_to(donor.email)
   end
 
+  def send_team_members_invite_email(%NGOChal{} = challenge, team_members) do
+    emails_with_tokens =
+      team_members
+      |> Enum.map(&team_member_invite_email(challenge, &1))
+      |> Enum.reject(&is_nil/1)
+
+    emails_with_tokens
+    |> Enum.each(&Mailer.send(elem(&1, 0)))
+
+    emails_with_tokens
+    |> Enum.map(&(elem(&1, 1)))
+  end
+
+  def team_member_invite_email(%NGOChal{} = challenge, %{"name" => name, "email" => email, "token" => token})
+      when not is_nil(name) and not is_nil(email) and name != "" and email != "" do
+    {
+      Email.build()
+      |> Email.put_template("3fa051ce-c858-4bfa-806a-30980114f3e4")
+      |> Email.add_substitution("-teamMemberName-", name)
+      |> Email.add_substitution("-participantName-", User.full_name(challenge.user))
+      |> Email.add_substitution("-participantFirstName-", challenge.user.firstname)
+      |> Email.add_substitution("-teamInvitationLink-", team_member_invite_link(challenge, token))
+      |> Email.put_from("admin@bravera.co", "Bravera")
+      |> Email.add_bcc("admin@bravera.co")
+      |> Email.add_to(email),
+
+      token
+    }
+  end
+
+  def team_member_invite_email(_, _) do
+  end
+
   def send_buddies_invite_email(%NGOChal{} = challenge, buddies) do
     buddies
     |> Enum.map(&buddy_invite_email(challenge, &1))
@@ -231,6 +264,10 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   defp challenge_url(challenge) do
     "#{Application.get_env(:omega_bravera, :app_base_url)}/#{challenge.ngo.slug}/#{challenge.slug}"
+  end
+
+  defp team_member_invite_link(challenge, token) do
+    "#{challenge_url(challenge)}/add_team_member/#{token}"
   end
 
   defp remaining_time(%NGOChal{end_date: end_date}) do

@@ -3,8 +3,8 @@ defmodule OmegaBravera.Repo.Migrations.AddTeamInvitationsTrackingFields do
 
   def change do
     alter table("teams") do
-      add :invite_tokens, {:array, :string}, null: false
-      add :invitations_sent, :integer, default: 0
+      add :invite_tokens, {:array, :string}
+      add :sent_invite_tokens, {:array, :string}
       add :invitations_accepted, :integer, default: 0
     end
 

@@ -6,6 +6,11 @@ defmodule OmegaBravera.Challenges.Team do
 
   @allowed_attributes [:name, :slug, :challenge_id, :user_id, :count]
   @required_attributes [:name, :user_id]
+  @update_attributes [
+    :invite_tokens,
+    :sent_invite_tokens,
+    :invitations_accepted
+  ]
 
   @derive {Phoenix.Param, key: :slug}
   schema "teams" do
@@ -13,7 +18,7 @@ defmodule OmegaBravera.Challenges.Team do
     field(:slug, :string)
     field(:count, :integer, default: 1)
     field(:invite_tokens, {:array, :string})
-    field(:invitations_sent, :integer, default: 0)
+    field(:sent_invite_tokens, {:array, :string})
     field(:invitations_accepted, :integer, default: 0)
 
     belongs_to(:user, User)
@@ -31,6 +36,10 @@ defmodule OmegaBravera.Challenges.Team do
     |> add_slug()
     |> add_invite_tokens()
     |> unique_constraint(:slug, name: :teams_slug_index)
+  end
+
+  def update_changeset(team, attrs) do
+    team |> cast(attrs, @update_attributes)
   end
 
   def add_slug(%Ecto.Changeset{} = changeset) do

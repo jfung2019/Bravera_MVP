@@ -13,16 +13,8 @@ defmodule OmegaBravera.TeamsTest do
       user_id: nil
     }
     @update_attrs %{
-      slug: "updated-unique-slug-123",
-      name: "some updated name",
-      challenge_id: nil,
-      user_id: nil
-    }
-    @invalid_attrs %{
-      name: nil,
-      slug: nil,
-      challenge_id: nil,
-      user_id: nil
+      invite_tokens: ["123", "321"],
+      sent_invite_tokens: ["991199"]
     }
 
     def team_fixture(attrs \\ %{}) do
@@ -70,22 +62,15 @@ defmodule OmegaBravera.TeamsTest do
     end
 
     test "create_team/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Challenges.create_team(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Challenges.create_team(%{})
     end
 
     test "update_team/2 with valid data updates the team" do
       team = team_fixture()
-      attrs = %{@update_attrs | challenge_id: team.challenge_id, user_id: team.user_id}
-      assert {:ok, team} = Challenges.update_team(team, attrs)
+      assert {:ok, team} = Challenges.update_team(team, @update_attrs)
       assert %Team{} = team
-      assert team.name == "some updated name"
-      assert team.slug == "updated-unique-slug-123"
-    end
-
-    test "update_team/2 with invalid data returns error changeset" do
-      team = team_fixture()
-      assert {:error, %Ecto.Changeset{}} = Challenges.update_team(team, @invalid_attrs)
-      assert team == Challenges.get_team!(team.id)
+      assert team.invite_tokens == ["123", "321"]
+      assert team.sent_invite_tokens == ["991199"]
     end
 
     test "delete_team/1 deletes the team" do

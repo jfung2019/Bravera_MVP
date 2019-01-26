@@ -7,6 +7,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     Accounts,
     Challenges,
     Challenges.NGOChal,
+    Challenges.Team,
     Fundraisers,
     Money,
     Fundraisers.NGO,
@@ -66,7 +67,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def show(conn, %{"ngo_slug" => ngo_slug, "slug" => slug}) do
-    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [user: [:strava], ngo: [], team: []])
     changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
     render_attrs = get_render_attrs(conn, challenge, changeset, ngo_slug)
@@ -116,16 +117,31 @@ defmodule OmegaBraveraWeb.NGOChalController do
         "ngo_slug" => ngo_slug,
         "team_members" => team_members
       }) do
-    # challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, :ngo])
-    IO.inspect(team_members)
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, :ngo, :team])
+    sent_invite_tokens = Challenges.Notifier.send_team_members_invite_email(challenge, Map.values(team_members))
 
-    # To trigger social share modal on invites.
-    challenge_path = ngo_ngo_chal_path(conn, :show, ngo_slug, slug) <> "#share"
-    # Challenges.Notifier.send_team_member_invite_email(challenge, Map.values(team_members))
+    remaining_invite_tokens = challenge.team.invite_tokens -- sent_invite_tokens
+    all_sent_invite_tokens =  sent_invite_tokens ++ (challenge.team.sent_invite_tokens || [])
 
-    conn
-    |> put_flash(:info, "Sucessfully invited your team members!")
-    |> redirect(to: challenge_path)
+    case Challenges.update_team(challenge.team, %{invite_tokens: remaining_invite_tokens, sent_invite_tokens: all_sent_invite_tokens}) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Sucessfully invited your team members!")
+        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+      {:error, _reason} ->
+        conn
+        |> put_flash(:info, "Something went wrong while updating your team.")
+        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+    end
+  end
+
+  def add_team_member(conn, %{"invitation_token" => invitation_token}) do
+    # TODO: either create an account for the user and join the team for him
+    # or force him to go to /login first. But I will also need to store the
+    # invite token somewhere so that
+    # OR say in the email: someone invited you to his team:
+    # 1- create your account.
+    # 2- click the invitation link while you are logged in.
   end
 
   defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset, ngo_slug) do

@@ -115,8 +115,8 @@
 
  $("#add-buddy-button").click(function() {
    var nextBuddyLength = $(".buddy").length + 1;
-   var nameHTML = $("<div class='form-group col-4 mb-0 pr-0'><input name=\"buddies[" + nextBuddyLength + "][name]\" type='text' placeholder=\"Buddy\'s name\" class='form-control'/></div>");
-   var emailHTML = $("<div class='form-group col-5 mb-0 pl-1'><input name=\"buddies[" + nextBuddyLength + "][email]\" type='text' placeholder=\"Buddy\'s email\" class='form-control'/></div>");
+   var nameHTML = $("<div class='form-group col-4 mb-0 pr-0'><input name=\"buddies[" + nextBuddyLength + "][name]\" type='text' placeholder=\"Name\" class='form-control'/></div>");
+   var emailHTML = $("<div class='form-group col-5 mb-0 pl-1'><input name=\"buddies[" + nextBuddyLength + "][email]\" type='text' placeholder=\"Email\" class='form-control'/></div>");
    var iconHTML = $("<i class='fa fa-minus-circle remove-buddy-icon'>");
    var containerHTML = $("<div class='form-group row mb-1 buddy'>");
 

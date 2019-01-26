@@ -106,10 +106,10 @@ defmodule OmegaBravera.Factory do
       invite_tokens: [
         "9BG57484A5h2vaAvL9oEn-lf-kU-sH4y",
         "j81_R7fKBZSwEwPmU1YHV0_cWChIY4IS",
-        "j81_R7fKBZSwEwPmU1YHV0_cWCaskdn1"
+        "x78_12fKBZSwEwPmU1Y223_XyBaskdn1"
       ],
       user: build(:user),
-      challenge: build(:ngo_challenge)
+      challenge: build(:ngo_challenge, %{has_team: true})
     }
   end
 end

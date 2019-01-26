@@ -4,7 +4,6 @@ defmodule OmegaBravera.Challenges do
   """
 
   import Ecto.Query, warn: false
-  alias Ecto.Multi
 
   alias OmegaBravera.Repo
   alias OmegaBravera.Challenges.{NGOChal, Activity, Team, TeamMembers}
@@ -416,7 +415,7 @@ defmodule OmegaBravera.Challenges do
   """
   def update_team(%Team{} = team, attrs) do
     team
-    |> Team.changeset(attrs)
+    |> Team.update_changeset(attrs)
     |> Repo.update()
   end
 
