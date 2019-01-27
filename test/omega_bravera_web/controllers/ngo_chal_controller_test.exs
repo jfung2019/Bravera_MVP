@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts, Trackers, Challenges}
+  alias OmegaBravera.{Accounts, Trackers, Challenges, Accounts.User}
 
   @create_attrs %{
     "activity_type" => "Walk",
@@ -209,6 +209,54 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       updated_team = Challenges.get_team!(team.id)
       assert updated_team.invite_tokens == []
       assert updated_team.sent_invite_tokens == [token3, token1, token2]
+    end
+
+    test "add_team_member/2 adds user to a team", %{conn: conn} do
+      sent_invite_token = "x78_12fKBZSwEwPmU1Y223_XyBaskdn1"
+      team = insert(:team, %{sent_invite_tokens: [sent_invite_token]})
+      conn =
+        get(
+          conn,
+          ngo_ngo_chal_ngo_chal_path(
+            conn,
+            :add_team_member,
+            team.challenge.ngo.slug,
+            team.challenge.slug,
+            sent_invite_token
+          )
+
+        )
+
+        assert get_flash(conn, :info) =~ "You are now part of #{inspect(User.full_name(team.user))} team."
+
+        updated_team = Challenges.get_team!(team.id)
+
+        assert updated_team.sent_invite_tokens == []
+        assert updated_team.invitations_accepted == 1
+    end
+
+    test "add_team_member/2 does not invite user if token is invalid", %{conn: conn} do
+      bad_token = "non-existent-token"
+      team = insert(:team, %{sent_invite_tokens: ["x78_12fKBZSwEwPmU1Y223_XyBaskdn1"]})
+      conn =
+        get(
+          conn,
+          ngo_ngo_chal_ngo_chal_path(
+            conn,
+            :add_team_member,
+            team.challenge.ngo.slug,
+            team.challenge.slug,
+            bad_token
+          )
+
+        )
+
+        assert get_flash(conn, :error) =~ "Could not add you to team. Something is wrong with your invitation link!"
+
+        updated_team = Challenges.get_team!(team.id)
+
+        refute updated_team.sent_invite_tokens == []
+        refute updated_team.invitations_accepted == 1
     end
   end
 end
