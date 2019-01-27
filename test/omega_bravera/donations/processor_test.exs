@@ -154,5 +154,31 @@ defmodule OmegaBravera.Donations.ProcessorTest do
     end
   end
 
+  test "charge_donation/1 switches status to failed when donation fails to be charged" do
+    donor = insert(:user, %{email: "sheriefalaa.w@gmail.com"})
+
+    ngo = insert(:ngo, %{slug: "stc", name: "Save the children"})
+
+    challenge = insert(:ngo_challenge, %{ngo: ngo})
+
+    donation_attrs = %{
+      str_cus_id: "cus_DaUL9L27e843XN",
+      str_src: "src_1D9JN4EXtHU8QBy8JErKq6fH",
+      user: donor,
+      ngo: ngo,
+      ngo_chal: challenge,
+      amount: Decimal.new(0)
+    }
+
+    donation = insert(:donation, donation_attrs)
+
+    use_cassette "charge_donation_fails" do
+      {:error, :unknown_error} = Processor.charge_donation(donation)
+      result = Repo.get(Donation, donation.id)
+
+      assert result.status == "failed"
+    end
+  end
+
   # TODO: write a test for a non-hkd challenge and see if the exchange rate comes back other than nil inside balance_transaction
 end

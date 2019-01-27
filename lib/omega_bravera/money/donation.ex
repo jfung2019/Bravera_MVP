@@ -82,6 +82,10 @@ defmodule OmegaBravera.Money.Donation do
     )
   end
 
+  def failed_to_charge_changeset(%__MODULE__{} = donation) do
+    change(donation, %{status: "failed"})
+  end
+
   defp charged_attributes(stripe_attributes, %Decimal{} = exchange_rate \\ Decimal.new(1)) do
     %{
       charge_id: stripe_attributes["id"],
