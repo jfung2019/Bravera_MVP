@@ -151,7 +151,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       challenge_owner = insert(:user, %{strava: build(:strava, user: nil)})
       team = insert(:team, user: challenge_owner, challenge: build(:ngo_challenge, %{has_team: true, user: challenge_owner}))
       team_user = insert(:user, strava: build(:strava, user: nil))
-      Challenges.add_user_to_team(%{user_id: team_user.id, team_id: team.id})
+      insert(:team_member, %{user_id: team_user.id, team_id: team.id})
 
       donation = insert(:donation, %{ngo_chal: team.challenge, user: team_user})
       strava_activity = Map.replace!(strava_activity, :type, team.challenge.activity_type)

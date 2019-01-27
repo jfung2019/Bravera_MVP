@@ -112,4 +112,11 @@ defmodule OmegaBravera.Factory do
       challenge: build(:ngo_challenge, %{has_team: true})
     }
   end
+
+  def team_member_factory do
+    %OmegaBravera.Challenges.TeamMembers{
+      team_id: nil,
+      user_id: nil,
+    }
+  end
 end
