@@ -1,0 +1,38 @@
+[
+  {
+    "request": {
+      "body": "",
+      "headers": {
+        "Authorization": "Bearer sk_test_xgwHvfr4GBgJ9wrUDHoa1E57",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Stripe-Version": "2017-06-05"
+      },
+      "method": "post",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.stripe.com/v1/charges?amount=0&currency=hkd&customer=cus_DaUL9L27e843XN&description=Donation+to+Save+the+children+via+Bravera.co&expand%5B%5D=balance_transaction&receipt_email=sheriefalaa.w%40gmail.com"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\n  \"error\": {\n    \"code\": \"parameter_invalid_integer\",\n    \"doc_url\": \"https://stripe.com/docs/error-codes/parameter-invalid-integer\",\n    \"message\": \"Invalid positive integer\",\n    \"param\": \"amount\",\n    \"type\": \"invalid_request_error\"\n  }\n}\n",
+      "headers": {
+        "Server": "nginx",
+        "Date": "Sun, 27 Jan 2019 13:37:10 GMT",
+        "Content-Type": "application/json",
+        "Content-Length": "244",
+        "Connection": "keep-alive",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Methods": "GET, POST, HEAD, OPTIONS, DELETE",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Expose-Headers": "Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required",
+        "Access-Control-Max-Age": "300",
+        "Cache-Control": "no-cache, no-store",
+        "Request-Id": "req_hKL9L0NnWahwEQ",
+        "Stripe-Version": "2017-06-05",
+        "Strict-Transport-Security": "max-age=31556926; includeSubDomains; preload"
+      },
+      "status_code": 400,
+      "type": "ok"
+    }
+  }
+]
