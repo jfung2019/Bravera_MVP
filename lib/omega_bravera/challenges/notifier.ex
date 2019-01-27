@@ -227,10 +227,10 @@ defmodule OmegaBravera.Challenges.Notifier do
       when not is_nil(name) and not is_nil(email) and name != "" and email != "" do
     {
       Email.build()
-      |> Email.put_template("3fa051ce-c858-4bfa-806a-30980114f3e4")
-      |> Email.add_substitution("-teamMemberName-", name)
-      |> Email.add_substitution("-participantName-", User.full_name(challenge.user))
-      |> Email.add_substitution("-participantFirstName-", challenge.user.firstname)
+      |> Email.put_template("e1869afd-8cd1-4789-b444-dabff9b7f3f1")
+      |> Email.add_substitution("-inviteeName-", name)
+      |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
+      |> Email.add_substitution("-ngoName-", challenge.ngo.name)
       |> Email.add_substitution("-teamInvitationLink-", team_member_invite_link(challenge, token))
       |> Email.put_from("admin@bravera.co", "Bravera")
       |> Email.add_bcc("admin@bravera.co")

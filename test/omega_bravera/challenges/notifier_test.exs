@@ -30,15 +30,15 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-teamMemberName-" => team_member["name"],
-               "-participantName-" => "John Doe",
-               "-participantFirstName-" => "John",
+               "-inviteeName-" => team_member["name"],
+               "-teamOwnerName-" => "John Doe",
+               "-ngoName-" => team.challenge.ngo.name,
                "-teamInvitationLink-" =>
                  "https://bravera.co/#{team.challenge.ngo.slug}/#{team.challenge.slug}/add_team_member/#{
                    elem(email_with_token, 1)
                  }"
              },
-             template_id: "3fa051ce-c858-4bfa-806a-30980114f3e4",
+             template_id: "e1869afd-8cd1-4789-b444-dabff9b7f3f1",
              to: [%{email: team_member["email"]}],
              bcc: [%{email: "admin@bravera.co"}]
            }

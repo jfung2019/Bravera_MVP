@@ -143,9 +143,8 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end
   end
 
-  # TODO: create a user and sign him in and also
-  # def add_team_member(conn, %{"invitation_token" => invitation_token}) do
-  # end
+  def add_team_member(conn, %{"invitation_token" => invitation_token}) do
+  end
 
   defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE"} = challenge, changeset, ngo_slug) do
     %{
