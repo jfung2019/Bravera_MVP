@@ -16,6 +16,8 @@ defmodule OmegaBravera.Accounts do
     Trackers,
     Trackers.Strava,
     Challenges.NGOChal,
+    Challenges.Team,
+    Challenges.TeamMembers,
     Money.Donation,
     Challenges.Activity
   }
@@ -36,7 +38,24 @@ defmodule OmegaBravera.Accounts do
   end
 
   def get_strava_challengers(athlete_id) do
-    query =
+    team_challengers =
+      from(s in Strava,
+        where: s.athlete_id == ^athlete_id,
+        join: nc in NGOChal,
+        where: nc.status == "active",
+        join: t in Team,
+        on: nc.id == t.challenge_id,
+        join: tm in TeamMembers,
+        on: t.id == tm.team_id,
+        where: tm.user_id == s.user_id,
+        select: {
+          nc.id,
+          s.token
+        }
+      ) |> Repo.all()
+
+
+    single_challengers =
       from(s in Strava,
         where: s.athlete_id == ^athlete_id,
         join: nc in NGOChal,
@@ -45,9 +64,9 @@ defmodule OmegaBravera.Accounts do
           nc.id,
           s.token
         }
-      )
+      ) |> Repo.all()
 
-    Repo.all(query)
+    team_challengers ++ single_challengers
   end
 
   defp donors_for_challenge_query(challenge) do

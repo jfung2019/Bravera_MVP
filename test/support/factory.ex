@@ -11,11 +11,11 @@ defmodule OmegaBravera.Factory do
 
   def strava_factory do
     %OmegaBravera.Trackers.Strava{
-      athlete_id: 12_345_678,
+      athlete_id: Enum.random(10_000_000..20_000_000),
       email: sequence(:email, &"john.doe.#{&1}@example.com"),
       firstname: "John",
       lastname: "Doe",
-      token: "abcdef123456",
+      token: "abcd#{Enum.random(10_000_000..20_000_000)}",
       profile_picture: "some-profile-picture.png",
       user: build(:user)
     }

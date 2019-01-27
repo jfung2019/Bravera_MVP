@@ -146,6 +146,34 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       assert ActivitiesIngestion.process_challenges(challengers, %{"object_id" => 123_456}) ==
                {:error, :no_challengers_found}
     end
+
+    test "processes team member activity", %{strava_activity: strava_activity} do
+      challenge_owner = insert(:user, %{strava: build(:strava, user: nil)})
+      team = insert(:team, user: challenge_owner, challenge: build(:ngo_challenge, %{has_team: true, user: challenge_owner}))
+      team_user = insert(:user, strava: build(:strava, user: nil))
+      Challenges.add_user_to_team(%{user_id: team_user.id, team_id: team.id})
+
+      donation = insert(:donation, %{ngo_chal: team.challenge, user: team_user})
+      strava_activity = Map.replace!(strava_activity, :type, team.challenge.activity_type)
+      challengers = Accounts.get_strava_challengers(team_user.strava.athlete_id)
+
+      with_mocks([
+        {Strava.Activity, [], [retrieve: fn _, _, _ -> strava_activity end]},
+        {Processor, [],
+         [
+           charge_donation: fn _ ->
+             {:ok, Map.put(donation, :status, "charged")}
+           end
+         ]}
+      ]) do
+        assert ActivitiesIngestion.process_challenges(challengers, %{"object_id" => 123_456}) ==
+                 [ok: :challenge_updated]
+
+        assert called(Strava.Activity.retrieve(:_, :_, :_))
+        assert called(Processor.charge_donation(:_))
+      end
+
+    end
   end
 
   describe "process_challenge/2" do
