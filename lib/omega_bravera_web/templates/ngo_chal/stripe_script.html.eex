@@ -32,6 +32,9 @@
 
     form.addEventListener('submit', function(event) {
       event.preventDefault();
+		  document.querySelectorAll('[data-disable-button]').forEach((el) => {
+        el.parentElement.removeChild(el);
+      });
       var ownerInfo = {
         owner: {
           name: fullName,

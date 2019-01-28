@@ -34,5 +34,5 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-render-countdown]').forEach((el) => {
     const date = new Date(el.getAttribute('data-render-countdown'));
     init_countdown(date, el);
-  })
+  });
 });
