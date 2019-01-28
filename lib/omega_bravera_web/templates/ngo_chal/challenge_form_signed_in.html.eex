@@ -174,5 +174,3 @@
     </div>
   <% end %>
 </div>
-
-<%= render "form_script.html" %>

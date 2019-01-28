@@ -26,3 +26,4 @@ import "moment";
 // import socket from "./socket"
 
 import "./timezone_stuff";
+import "./challenge_creation";
