@@ -237,4 +237,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
   def render_status("expired"), do: "Finished"
 
   def render_status(status), do: String.capitalize(status)
+
+  def user_firstname_or_team_name(%NGOChal{has_team: false, user: %{firstname: firstname}}), do: firstname
+  def user_firstname_or_team_name(%NGOChal{has_team: true, team: %{name: name}}), do: name
 end

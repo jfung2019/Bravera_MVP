@@ -264,6 +264,13 @@ input[type=number]::-webkit-outer-spin-button {
 ////////////////////////////////
 
 // TODO: put everything related to challenge participant page in here.
+
+.team-members {
+  .team-member{
+    max-width: 100px !important;
+  }
+}
+
 .challenge-details {
   .challenge-desc {
     @include media-breakpoint-up(xs) {

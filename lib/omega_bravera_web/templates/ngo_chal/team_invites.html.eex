@@ -3,7 +3,7 @@
     <span class="mb-2">Invite your <b>team members</b>!</span>
     <span class="pull-right mb-2">Accepted: <b> <%= @challenge.team.invitations_accepted %> </b></span>
     <%= form_tag(ngo_ngo_chal_ngo_chal_path(@conn, :invite_team_members, @challenge.ngo.slug, @challenge.slug)) do %>
-      <div class="mb-3 mt-3">
+      <div class="mt-3">
       <%= if length(@challenge.team.invite_tokens) > 0 do %>
         <%= for {token, index} <- Enum.with_index(@challenge.team.invite_tokens) do %>
           <div class="form-group row buddy mb-1">
@@ -16,11 +16,11 @@
             <input name="team_members[<%=index%>][token]" type="hidden" value="<%=token%>" placeholder="Email" class="form-control"/>
           </div>
         <% end %>
+        <button class="btn btn-success mt-4" type="submit">Invite</button>
       <% else %>
         <p>You have spent all of your team invitations.</p>
       <% end %>
       </div>
-      <button class="btn btn-success" type="submit">Invite</button>
     <% end %>
   </div>
 </div>
