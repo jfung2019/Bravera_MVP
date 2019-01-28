@@ -67,7 +67,7 @@
             <% end %>
           </div>
           <div class="card-body text-center mx-3 pb-2">
-            <h4>Latest Activities</h4>
+            <h4> <%=user_firstname_or_team_name(@challenge)%>'s Latest Activities</h4>
             <%= if length(@activities) > 0 do %>
               <%= render(OmegaBraveraWeb.ActivityView, "_activity.html", assigns) %>
               <%= link("View all", to: ngo_ngo_chal_activity_path(@conn, :index, @challenge.ngo.slug, @challenge.slug)) %>
