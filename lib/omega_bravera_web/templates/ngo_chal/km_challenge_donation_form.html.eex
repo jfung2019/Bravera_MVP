@@ -147,7 +147,7 @@
               </div>
 
               <div class="text-center mx-auto">
-                <button class="btn btn-bravera btn-block" style="width:200px;">Submit</button>
+                <button data-disable-button class="btn btn-bravera btn-block" style="width:200px;">Submit</button>
               </div>
 
               </form>
