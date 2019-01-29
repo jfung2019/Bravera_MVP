@@ -33,10 +33,11 @@ defmodule OmegaBravera.Challenges do
     Repo.all(query)
   end
 
-  def latest_activities(%NGOChal{} = challenge, limit \\ nil) do
+  def latest_activities(%NGOChal{} = challenge, limit \\ nil, preloads \\ [user: [:strava]]) do
     query =
       from(activity in Activity,
         where: activity.challenge_id == ^challenge.id,
+        preload: ^preloads,
         order_by: [desc: :start_date]
       )
 
