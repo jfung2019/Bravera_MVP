@@ -34,7 +34,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-teamOwnerName-" => "John Doe",
                "-ngoName-" => team.challenge.ngo.name,
                "-teamInvitationLink-" =>
-                 "https://bravera.co/#{team.challenge.ngo.slug}/#{team.challenge.slug}/add_team_member/#{
+                 "https://bravera.co/login?team_invitation=/#{team.challenge.ngo.slug}/#{team.challenge.slug}/add_team_member/#{
                    elem(email_with_token, 1)
                  }"
              },
