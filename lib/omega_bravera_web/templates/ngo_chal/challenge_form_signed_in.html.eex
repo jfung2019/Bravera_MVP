@@ -58,7 +58,7 @@
             <div class="row mx-auto">
               <%= error_tag fp, :count %>
               <%= label fp, :count, class: "form-control" do %>
-                Members:
+                Team Size
                 <%= select fp, :count, 2..@ngo.additional_members, class: "form-control" %>
               <% end %>
             </div>
