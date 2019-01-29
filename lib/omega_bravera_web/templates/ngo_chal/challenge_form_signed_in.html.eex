@@ -62,7 +62,7 @@
                 <%= select fp, :count, 2..@ngo.additional_members, class: "form-control" %>
               <% end %>
             </div>
-            <span id="team-members-note" class="small mb-2">You have can invite 1 member(s) to your team after creating the challenge.</span>
+            <span id="team-members-note" class="small mb-2">You will invite 1 more member(s) after configuring your challenge by adding name and email address.</span>
           <% end %>
         </div>
 
