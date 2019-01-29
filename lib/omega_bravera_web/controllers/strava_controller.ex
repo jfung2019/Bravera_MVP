@@ -21,6 +21,15 @@ defmodule OmegaBraveraWeb.StravaController do
     render(conn, "hub_challenge.json", hub_challenge: params["hub.challenge"])
   end
 
+  def authenticate(conn, %{"team_invitation" => team_invitation}) do
+    redirect_url =
+      OmegaBraveraWeb.Endpoint.url() <> "/strava/callback?redirect_to=#{team_invitation}"
+
+    redirect(conn,
+      external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url)
+    )
+  end
+
   def authenticate(conn, _params) do
     redirect_url =
       OmegaBraveraWeb.Endpoint.url() <> "/strava/callback?redirect_to=" <> get_redirect_url(conn)
@@ -70,6 +79,7 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   defp get_redirect_url(conn) do
+    # Return the user back the very last page he was on (used only for logins in the :ngo/:ngo_chal/new page)
     try do
       uri =
         conn

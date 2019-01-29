@@ -54,7 +54,8 @@ defmodule OmegaBraveraWeb.Router do
   scope "/strava", OmegaBraveraWeb do
     pipe_through(:browser)
 
-    get("/login", StravaController, :authenticate)
+    get("/login/", StravaController, :authenticate)
+    get("/login/:team_invitation", StravaController, :authenticate)
     get("/callback", StravaController, :strava_callback)
     get("/logout", StravaController, :logout)
   end
@@ -135,6 +136,7 @@ defmodule OmegaBraveraWeb.Router do
     get("/signup", PageController, :signup)
 
     get("/login", PageController, :login)
+    get("/login/:team_invitation", PageController, :login)
 
     get("/404", PageController, :notFound)
     get("/500", PageController, :notFound)
