@@ -50,7 +50,7 @@
           </div>
         </div>
 
-        <div id="team_block" class="col-lg-2 mx-auto d-none">
+        <div id="team_block" class="col-lg-2 mx-auto d-none team-form"">
           <label for="ngo_chal_activity">
             <h4 class="text-green mb-0">
               <%= gettext("Team name and members") %>
