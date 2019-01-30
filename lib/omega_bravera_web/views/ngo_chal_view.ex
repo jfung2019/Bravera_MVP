@@ -245,4 +245,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
     do: has_team and (invitations_accepted > 0)
 
   def challenge_with_team_has_members(_), do: false
+
+  def all_team_invitations_sent?(%NGOChal{has_team: true, team: %{count: count, invitations_accepted: invitations_accepted}}),
+    do: (count - 1) == invitations_accepted
 end
