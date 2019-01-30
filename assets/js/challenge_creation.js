@@ -22,10 +22,12 @@ $(function() {
 
     $("#ngo_chal_has_team_false").change(function(){
         $("#team_block").addClass("d-none");
+        $('input#ngo_chal_team_name').removeAttr('required');
     });
 
     $("#ngo_chal_has_team_true").change(function(){
         $("#team_block").removeClass("d-none");
+        $('input#ngo_chal_team_name').attr('required', 'required');
     });
 
     // If server side validations fails, show team-block

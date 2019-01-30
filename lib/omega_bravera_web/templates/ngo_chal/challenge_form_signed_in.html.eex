@@ -52,7 +52,7 @@
             <div class="row mx-auto">
               <%= error_tag fp, :name %>
               <%= label fp, :name, class: "form-control" do %>
-                <%= text_input fp, :name, class: "form-control", required: "", placeholder: "Enter your Team's name" %>
+                <%= text_input fp, :name, class: "form-control", placeholder: "Enter your Team's name" %>
               <% end %>
             </div>
             <div class="row mx-auto">
