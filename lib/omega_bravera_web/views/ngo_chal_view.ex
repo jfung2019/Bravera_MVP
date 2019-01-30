@@ -240,4 +240,9 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def user_firstname_or_team_name(%NGOChal{has_team: false, user: %{firstname: firstname}}), do: firstname
   def user_firstname_or_team_name(%NGOChal{has_team: true, team: %{name: name}}), do: name
+
+  def challenge_with_team_has_members(%NGOChal{has_team: has_team, team: %{invitations_accepted: invitations_accepted}}),
+    do: has_team and (invitations_accepted > 0)
+
+  def challenge_with_team_has_members(_), do: false
 end
