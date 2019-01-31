@@ -7,7 +7,7 @@ defmodule OmegaBraveraWeb.DonationController do
   alias OmegaBravera.Donations.{Pledges, Processor, Notifier}
 
   def index(conn, %{"ngo_chal_slug" => slug, "ngo_slug" => ngo_slug}) do
-    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [], team: [:user])
 
     donors =
       case challenge.type do
