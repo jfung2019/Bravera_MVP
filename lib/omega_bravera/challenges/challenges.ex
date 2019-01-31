@@ -125,9 +125,7 @@ defmodule OmegaBravera.Challenges do
   def get_ngo_milestone_ngo_chals(%NGO{} = ngo) do
     from(nc in NGOChal,
       where: nc.ngo_id == ^ngo.id and nc.type == "PER_MILESTONE",
-      join: user in assoc(nc, :user),
-      join: strava in assoc(user, :strava),
-      preload: [user: {user, strava: strava}]
+      preload: [user: [:strava], team: [users: [:strava]]]
     )
     |> Repo.all()
   end
@@ -135,9 +133,7 @@ defmodule OmegaBravera.Challenges do
   def get_ngo_km_ngo_chals(%NGO{} = ngo) do
     from(nc in NGOChal,
       where: nc.ngo_id == ^ngo.id and nc.type == "PER_KM",
-      join: user in assoc(nc, :user),
-      join: strava in assoc(user, :strava),
-      preload: [user: {user, strava: strava}]
+      preload: [user: [:strava], team: [users: [:strava]]]
     )
     |> Repo.all()
   end

@@ -157,6 +157,11 @@ input[type=number]::-webkit-outer-spin-button {
         max-height: 100%;
       }
     }
+
+    .team-members-count {
+      font-size: 7px;
+      float: right;
+    }
   }
 
   @include media-breakpoint-up(lg) {
@@ -171,6 +176,11 @@ input[type=number]::-webkit-outer-spin-button {
         max-width: 100%;
         max-height: 100%;
       }
+    }
+
+    .team-members-count {
+      font-size: 14px;
+      float: right;
     }
   }
 }

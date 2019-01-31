@@ -32,7 +32,7 @@
                 <thead>
                   <tr>
                     <th scope="col">Rank</th>
-                    <th scope="col">Profile</th>
+                    <th scope="col"></th>
                     <th scope="col">Name</th>
                     <th scope="col">Pledged</th>
                     <th scope="col">Secured</th>
@@ -40,19 +40,42 @@
                 </thead>
                 <tbody>
                   <%= for {challenge, index} <- Enum.with_index(@milestone_challenges) do %>
-                    <tr>
-                      <td><%= index + 1 %></td>
-                      <td>
-                        <div class="avatars mx-auto">
-                          <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
-                            <%= img_tag(profile_picture_or_default(challenge.user.strava.profile_picture, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
-                          <% end %>
-                        </div>
-                      </td>
-                      <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
-                      <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
-                      <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
-                    </tr>
+                    <%= if !challenge.has_team do %>
+                      <tr>
+                        <td><%= index + 1 %></td>
+                        <td>
+                          <div class="avatars mx-auto">
+                            <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
+                              <%= img_tag(profile_picture_or_default(
+                                challenge.user.strava.profile_picture,
+                                static_path(@conn, "/images/profile_default.jpeg")),
+                                class: "thumbnail img-fluid rounded-circle border"
+                              ) %>
+                            <% end %>
+                          </div>
+                        </td>
+                        <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                        <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
+                        <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
+                      </tr>
+                    <% else %>
+                      <tr>
+                        <td><%= index + 1 %></td>
+                        <td>
+                          <div class="avatars mx-auto">
+                            <%= img_tag(profile_picture_or_default(
+                              challenge.user.strava.profile_picture,
+                              static_path(@conn, "/images/profile_default.jpeg")),
+                              class: "thumbnail img-fluid rounded-circle border"
+                            ) %>
+                          </div>
+                          <span class="team-members-count"><%= Enum.count(challenge.team.users) + 1%></span>
+                        </td>
+                        <td><%= link(challenge.team.name, to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                        <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
+                        <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
+                      </tr>
+                    <% end %>
                   <% end %>
                 </tbody>
               </table>
@@ -65,27 +88,50 @@
               <thead>
                 <tr>
                   <th scope="col">Rank</th>
-                  <th scope="col">Profile</th>
-                  <th scope="col">Participant</th>
+                  <th scope="col"></th>
+                  <th scope="col">Name</th>
                   <th scope="col">Pledged</th>
                   <th scope="col">Secured</th>
                 </tr>
               </thead>
               <tbody>
                 <%= for {challenge, index} <- Enum.with_index(@km_challenges) do %>
-                  <tr>
-                    <td><%= index + 1 %></td>
-                    <td>
-                      <div class="avatars mx-auto">
-                        <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
-                          <%= img_tag(profile_picture_or_default(challenge.user.strava.profile_picture, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
-                        <% end %>
-                      </div>
-                    </td>
-                    <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
-                    <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
-                    <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
-                  </tr>
+                  <%= if !challenge.has_team do %>
+                    <tr>
+                      <td><%= index + 1 %></td>
+                      <td>
+                        <div class="avatars mx-auto">
+                          <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
+                            <%= img_tag(profile_picture_or_default(
+                              challenge.user.strava.profile_picture,
+                              static_path(@conn, "/images/profile_default.jpeg")),
+                              class: "thumbnail img-fluid rounded-circle border"
+                            ) %>
+                          <% end %>
+                        </div>
+                      </td>
+                      <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                      <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
+                      <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
+                    </tr>
+                  <% else %>
+                    <tr>
+                      <td><%= index + 1 %></td>
+                      <td>
+                        <div class="avatars mx-auto">
+                          <%= img_tag(profile_picture_or_default(
+                            challenge.user.strava.profile_picture,
+                            static_path(@conn, "/images/profile_default.jpeg")),
+                            class: "thumbnail img-fluid rounded-circle border"
+                          ) %>
+                        </div>
+                        <span class="team-members-count"><%= Enum.count(challenge.team.users) + 1%></span>
+                      </td>
+                      <td><%= link(challenge.team.name, to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                      <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
+                      <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
+                    </tr>
+                  <% end %>
                 <% end %>
               </tbody>
             </table>
