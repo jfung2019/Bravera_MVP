@@ -452,7 +452,7 @@ defmodule OmegaBravera.Challenges do
   def add_user_to_team(attrs \\ %{}) do
     %TeamMembers{}
     |> TeamMembers.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(on_conflict: :nothing)
   end
 
   def available_challenge_types, do: NGOChal.challenge_type_options()

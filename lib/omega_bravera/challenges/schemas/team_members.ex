@@ -1,5 +1,6 @@
 defmodule OmegaBravera.Challenges.TeamMembers do
   use Ecto.Schema
+  import Ecto.Changeset
 
   alias OmegaBravera.{Accounts.User, Challenges.Team}
 
@@ -10,9 +11,9 @@ defmodule OmegaBravera.Challenges.TeamMembers do
     belongs_to(:team, Team)
   end
 
-  def changeset(struct, params \\ %{}) do
-    struct
-    |> Ecto.Changeset.cast(params, [:user_id, :team_id])
-    |> Ecto.Changeset.validate_required([:user_id, :team_id])
+  def changeset(team_member, params \\ %{}) do
+    team_member
+    |> cast(params, [:user_id, :team_id])
+    |> validate_required([:user_id, :team_id])
   end
 end
