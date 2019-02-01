@@ -6,6 +6,88 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   alias OmegaBravera.Challenges.{NGOChal, Notifier}
   alias OmegaBravera.Accounts.User
 
+  test "team_owner_member_added_notification_email" do
+    team = insert(:team)
+    user = insert(:user)
+    insert(:team_member, %{team_id: team.id, user_id: user.id})
+
+    challenge = %{
+      team.challenge
+      | start_date: Timex.to_datetime(team.challenge.start_date, "Asia/Hong_Kong")
+    }
+
+    email = Notifier.team_owner_member_added_notification_email(challenge, user)
+
+    assert email == %SendGrid.Email{
+             __phoenix_layout__: nil,
+             __phoenix_view__: nil,
+             attachments: nil,
+             cc: nil,
+             content: nil,
+             custom_args: nil,
+             headers: nil,
+             reply_to: nil,
+             send_at: nil,
+             subject: nil,
+             from: %{email: "admin@bravera.co", name: "Bravera"},
+             substitutions: %{
+               "-teamOwnerName-" => User.full_name(challenge.user),
+               "-inviteeName-" => User.full_name(user),
+               "-challengeDistance-" => "#{challenge.distance_target} Km",
+               "-ngoName-" => "Save the children worldwide",
+               "-challengeURL-" => "https://bravera.co/#{team.challenge.ngo.slug}/#{team.challenge.slug}",
+               "-startDate-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
+               "-challengeMilestones-" => NGOChal.milestones_string(challenge),
+               "-daysDuration-" => challenge.duration
+             },
+             template_id: "0f853118-211f-429f-8975-12f88c937855",
+             to: [%{email: challenge.user.email}],
+             bcc: [%{email: "admin@bravera.co"}]
+           }
+  end
+
+
+  # TODO: check the following error:
+
+  # {:error,
+  #   [
+  #     %{
+  #       "field" => "send_at",
+  #       "help" => "http://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/errors.html#message.send_at",
+  #       "message" => "Invalid type. Expected: integer, given: null."
+  #     },
+  #     %{
+  #       "field" => "subject",
+  #       "help" => "http://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/errors.html#message.subject",
+  #       "message" => "Invalid type. Expected: string, given: null."
+  #     },
+  #     %{
+  #       "field" => "content",
+  #       "help" => "http://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/errors.html#message.content",
+  #       "message" => "Invalid type. Expected: array, given: null."
+  #     },
+  #     %{
+  #       "field" => "reply_to",
+  #       "help" => "http://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/errors.html#message.reply_to",
+  #       "message" => "Invalid type. Expected: object, given: null."
+  #     },
+  #     %{
+  #       "field" => "attachments",
+  #       "help" => "http://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/errors.html#message.attachments",
+  #       "message" => "Invalid type. Expected: array, given: null."
+  #     }
+  #   ]}
+
+  @tag :skip
+  test "send_team_owner_member_added_notification/2 sends the email" do
+    team = insert(:team)
+    user = insert(:user)
+    insert(:team_member, %{team_id: team.id, user_id: user.id})
+
+    assert Notifier.send_team_owner_member_added_notification(team.challenge, user) ==
+             :ok
+  end
+
   test "team_member_invite_email" do
     team = insert(:team, %{challenge: build(:ngo_challenge, %{has_team: true})})
 

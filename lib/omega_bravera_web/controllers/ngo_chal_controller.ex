@@ -156,7 +156,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
         |> put_flash(:info, "Please login using Strava first then click the invitation link again from your email.")
         |> redirect(to: page_path(conn, :login))
       user ->
-        challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user])
+        challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user, :ngo])
 
         # Make sure challenge owner cannot invite himself.
         if challenge.user.id == user.id do
@@ -172,6 +172,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
               {:ok, _} ->
                 # Update accepted invitations counter.
                 Challenges.update_team(challenge.team, %{invitations_accepted: 1 + challenge.team.invitations_accepted, sent_invite_tokens: List.delete(challenge.team.sent_invite_tokens, invitation_token)})
+
+                Challenges.Notifier.send_team_owner_member_added_notification(challenge, user)
+
                 conn
                 |> put_flash(:info, "You are now part of #{inspect(User.full_name(challenge.user))} team.")
                 |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))

@@ -242,6 +242,37 @@ defmodule OmegaBravera.Challenges.Notifier do
   def team_member_invite_email(_, _) do
   end
 
+  def send_team_owner_member_added_notification(%NGOChal{} = challenge, %User{} = user) do
+    challenge
+    |> team_owner_member_added_notification_email(user)
+    |> Mailer.send()
+    |> IO.inspect
+  end
+
+  def team_owner_member_added_notification_email(%NGOChal{} = challenge, %User{} = user) do
+    challenge = %{
+      challenge
+      | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
+    }
+
+    Email.build()
+    |> Email.put_template("0f853118-211f-429f-8975-12f88c937855")
+    |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
+    |> Email.add_substitution("-inviteeName-", User.full_name(user))
+    |> Email.add_substitution("-ngoName-", challenge.ngo.name)
+    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution(
+      "-startDate-",
+      Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
+    )
+    |> Email.add_substitution("-daysDuration-", challenge.duration)
+    |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
+    |> Email.add_substitution("-challengeMilestones-", "#{NGOChal.milestones_string(challenge)}")
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(challenge.user.email)
+  end
+
   def send_buddies_invite_email(%NGOChal{} = challenge, buddies) do
     buddies
     |> Enum.map(&buddy_invite_email(challenge, &1))
