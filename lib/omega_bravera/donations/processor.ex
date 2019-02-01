@@ -33,12 +33,14 @@ defmodule OmegaBravera.Donations.Processor do
             donation
             |> Donation.failed_to_charge_changeset()
             |> Repo.update!()
+
             {:error, :stripe_error}
 
           _ ->
             donation
             |> Donation.failed_to_charge_changeset()
             |> Repo.update!()
+
             {:error, :unknown_error}
         end
 
@@ -49,6 +51,7 @@ defmodule OmegaBravera.Donations.Processor do
         donation
         |> Donation.failed_to_charge_changeset()
         |> Repo.update!()
+
         {:error, :unknown_error}
     end
   end

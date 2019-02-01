@@ -116,7 +116,7 @@ defmodule OmegaBravera.Factory do
   def team_member_factory do
     %OmegaBravera.Challenges.TeamMembers{
       team_id: nil,
-      user_id: nil,
+      user_id: nil
     }
   end
 end

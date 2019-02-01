@@ -52,8 +52,8 @@ defmodule OmegaBravera.Accounts do
           nc.id,
           s.token
         }
-      ) |> Repo.all()
-
+      )
+      |> Repo.all()
 
     single_challengers =
       from(s in Strava,
@@ -64,7 +64,8 @@ defmodule OmegaBravera.Accounts do
           nc.id,
           s.token
         }
-      ) |> Repo.all()
+      )
+      |> Repo.all()
 
     team_challengers ++ single_challengers
   end

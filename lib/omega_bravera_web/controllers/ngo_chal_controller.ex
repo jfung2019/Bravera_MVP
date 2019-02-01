@@ -71,7 +71,11 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
   def show(conn, %{"ngo_slug" => ngo_slug, "slug" => slug}) do
     challenge =
-      Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [], team: [users: [:strava]])
+      Challenges.get_ngo_chal_by_slugs(ngo_slug, slug,
+        user: [:strava],
+        ngo: [],
+        team: [users: [:strava]]
+      )
 
     changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
@@ -146,50 +150,70 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end
   end
 
-  def add_team_member(conn, %{"ngo_slug" => ngo_slug, "ngo_chal_slug" => slug, "invitation_token" => invitation_token}) do
+  def add_team_member(conn, %{
+        "ngo_slug" => ngo_slug,
+        "ngo_chal_slug" => slug,
+        "invitation_token" => invitation_token
+      }) do
     current_user = Guardian.Plug.current_resource(conn)
 
     # Is the user logged in?
     case current_user do
       nil ->
         conn
-        |> put_flash(:info, "Please login using Strava first then click the invitation link again from your email.")
+        |> put_flash(
+          :info,
+          "Please login using Strava first then click the invitation link again from your email."
+        )
         |> redirect(to: page_path(conn, :login))
+
       user ->
         challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user, :ngo])
 
         # Make sure challenge owner cannot invite himself.
         if challenge.user.id == user.id do
           conn
-          |> put_flash(:error, "You are the challenge and team leader. You cannot invite yourself.")
+          |> put_flash(
+            :error,
+            "You are the challenge and team leader. You cannot invite yourself."
+          )
           |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
         else
           # Verify if token is related to this team.
           if Enum.member?(challenge.team.sent_invite_tokens, invitation_token) do
-
             # Add New TeamMember to Team.
             case Challenges.add_user_to_team(%{team_id: challenge.team.id, user_id: user.id}) do
               {:ok, _} ->
                 # Update accepted invitations counter.
-                Challenges.update_team(challenge.team, %{invitations_accepted: 1 + challenge.team.invitations_accepted, sent_invite_tokens: List.delete(challenge.team.sent_invite_tokens, invitation_token)})
+                Challenges.update_team(challenge.team, %{
+                  invitations_accepted: 1 + challenge.team.invitations_accepted,
+                  sent_invite_tokens:
+                    List.delete(challenge.team.sent_invite_tokens, invitation_token)
+                })
 
                 Challenges.Notifier.send_team_owner_member_added_notification(challenge, user)
 
                 conn
-                |> put_flash(:info, "You are now part of #{inspect(User.full_name(challenge.user))} team.")
+                |> put_flash(
+                  :info,
+                  "You are now part of #{inspect(User.full_name(challenge.user))} team."
+                )
                 |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
 
               {:error, reason} ->
                 Logger.error("Could not add user to team, reason: #{inspect(reason)}")
+
                 conn
                 |> put_flash(:error, "Could not add you to team. Please contact admin@bravera.co")
                 |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
             end
-
           else
             # Invitation token is wrong or someone is being clever.
             conn
-            |> put_flash(:error, "Could not add you to team. Something is wrong with your invitation link!")
+            |> put_flash(
+              :error,
+              "Could not add you to team. Something is wrong with your invitation link!"
+            )
             |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
           end
         end

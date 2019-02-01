@@ -246,7 +246,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     challenge
     |> team_owner_member_added_notification_email(user)
     |> Mailer.send()
-    |> IO.inspect
+    |> IO.inspect()
   end
 
   def team_owner_member_added_notification_email(%NGOChal{} = challenge, %User{} = user) do
@@ -301,7 +301,9 @@ defmodule OmegaBravera.Challenges.Notifier do
   end
 
   defp team_member_invite_link(challenge, token) do
-    "#{Application.get_env(:omega_bravera, :app_base_url)}/login?team_invitation=/#{challenge.ngo.slug}/#{challenge.slug}/add_team_member/#{token}"
+    "#{Application.get_env(:omega_bravera, :app_base_url)}/login?team_invitation=/#{
+      challenge.ngo.slug
+    }/#{challenge.slug}/add_team_member/#{token}"
   end
 
   defp remaining_time(%NGOChal{end_date: end_date}) do

@@ -149,7 +149,13 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
     test "processes team member activity", %{strava_activity: strava_activity} do
       challenge_owner = insert(:user, %{strava: build(:strava, user: nil)})
-      team = insert(:team, user: challenge_owner, challenge: build(:ngo_challenge, %{has_team: true, user: challenge_owner}))
+
+      team =
+        insert(:team,
+          user: challenge_owner,
+          challenge: build(:ngo_challenge, %{has_team: true, user: challenge_owner})
+        )
+
       team_user = insert(:user, strava: build(:strava, user: nil))
       insert(:team_member, %{user_id: team_user.id, team_id: team.id})
 
@@ -172,7 +178,6 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         assert called(Strava.Activity.retrieve(:_, :_, :_))
         assert called(Processor.charge_donation(:_))
       end
-
     end
   end
 

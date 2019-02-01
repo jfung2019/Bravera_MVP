@@ -39,7 +39,10 @@ defmodule OmegaBraveraWeb.PageController do
         redirect(conn, to: team_invitation)
 
       _ ->
-        render(conn, "login.html", team_invitation: team_invitation, layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+        render(conn, "login.html",
+          team_invitation: team_invitation,
+          layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"}
+        )
     end
   end
 
@@ -52,7 +55,10 @@ defmodule OmegaBraveraWeb.PageController do
         redirect(conn, to: user_profile_path(conn, :show))
 
       _ ->
-        render(conn, "login.html", team_invitation: nil, layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+        render(conn, "login.html",
+          team_invitation: nil,
+          layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"}
+        )
     end
   end
 end

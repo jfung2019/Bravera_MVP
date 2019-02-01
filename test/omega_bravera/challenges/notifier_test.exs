@@ -35,7 +35,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-inviteeName-" => User.full_name(user),
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-ngoName-" => "Save the children worldwide",
-               "-challengeURL-" => "https://bravera.co/#{team.challenge.ngo.slug}/#{team.challenge.slug}",
+               "-challengeURL-" =>
+                 "https://bravera.co/#{team.challenge.ngo.slug}/#{team.challenge.slug}",
                "-startDate-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
                "-challengeMilestones-" => NGOChal.milestones_string(challenge),
                "-daysDuration-" => challenge.duration
@@ -45,7 +46,6 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              bcc: [%{email: "admin@bravera.co"}]
            }
   end
-
 
   # TODO: check the following error:
 
@@ -84,8 +84,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     user = insert(:user)
     insert(:team_member, %{team_id: team.id, user_id: user.id})
 
-    assert Notifier.send_team_owner_member_added_notification(team.challenge, user) ==
-             :ok
+    assert Notifier.send_team_owner_member_added_notification(team.challenge, user) == :ok
   end
 
   test "team_member_invite_email" do
@@ -116,9 +115,9 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-teamOwnerName-" => "John Doe",
                "-ngoName-" => team.challenge.ngo.name,
                "-teamInvitationLink-" =>
-                 "https://bravera.co/login?team_invitation=/#{team.challenge.ngo.slug}/#{team.challenge.slug}/add_team_member/#{
-                   elem(email_with_token, 1)
-                 }"
+                 "https://bravera.co/login?team_invitation=/#{team.challenge.ngo.slug}/#{
+                   team.challenge.slug
+                 }/add_team_member/#{elem(email_with_token, 1)}"
              },
              template_id: "e1869afd-8cd1-4789-b444-dabff9b7f3f1",
              to: [%{email: team_member["email"]}],
