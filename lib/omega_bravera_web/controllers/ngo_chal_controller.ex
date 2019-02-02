@@ -38,7 +38,11 @@ defmodule OmegaBraveraWeb.NGOChalController do
     ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
     sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
-    chal_params = put_in(chal_params, ["team", "user_id"], current_user.id)
+    chal_params =
+      case Map.has_key?(chal_params, "team") do
+        true -> put_in(chal_params, ["team", "user_id"], current_user.id)
+        false -> chal_params
+      end
 
     extra_params = %{
       "user_id" => current_user.id,
