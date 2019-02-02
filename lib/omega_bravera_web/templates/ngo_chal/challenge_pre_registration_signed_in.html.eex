@@ -34,16 +34,16 @@
         <div class="col-lg-12">
           <label for="ngo_chal_activity">
             <h4 class="text-green mb-0">
-              <%= gettext("Single user or a Team Challenge?") %>
+              <%= gettext("Individual or Team Challenge?") %>
             </h4>
           </label>
           <br/>  <%= error_tag @f, :has_team %>
           <div class="form-group" id="ngo_chal_activity">
-            <%= label class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
-              <h4 class="activity-text mb-0 mt-4 pt-2"><%= gettext("Single") %></h4>
+            <%= label class: "btn btn-sq-xl btn-outline-secondary mx-md-2 mx-lg-3" do %>
+              <h4 class="activity-text mb-0 mt-4 pt-2"><%= gettext("Individual") %></h4>
               <%= radio_button @f, :has_team, "false", class: "radio-img" %>
             <% end %>
-            <%= label class: "btn btn-sq-lg btn-outline-secondary mx-md-2 mx-lg-3" do %>
+            <%= label class: "btn btn-sq-xl btn-outline-secondary mx-md-2 mx-lg-3" do %>
               <h4 class="activity-text mb-0 mt-4 pt-2"><%= gettext("Team") %></h4>
               <%= radio_button @f, :has_team, "true", class: "radio-img" %>
             <% end %>
