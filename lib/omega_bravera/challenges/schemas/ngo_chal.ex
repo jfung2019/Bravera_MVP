@@ -95,6 +95,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> changeset(attrs)
     |> add_start_and_end_dates(ngo, attrs)
     |> add_status(ngo)
+    |> add_last_activity_received(ngo)
     |> validate_required([:start_date, :end_date])
   end
 
@@ -104,14 +105,15 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> cast_assoc(:team, with: &Team.changeset/2, required: true)
   end
 
-  defp add_status(%Ecto.Changeset{} = changeset, %NGO{} = ngo) do
+  defp add_status(%Ecto.Changeset{} = changeset, %NGO{open_registration: open_registration, utc_launch_date: utc_launch_date}) do
     status =
-      case ngo.open_registration == false and Timex.after?(ngo.utc_launch_date, Timex.now()) do
+      case open_registration == false and Timex.after?(utc_launch_date, Timex.now()) do
         true -> "pre_registration"
         _ -> "active"
       end
 
-    changeset |> change(status: status)
+    changeset
+    |> change(status: status)
   end
 
   def activity_completed_changeset(%__MODULE__{} = challenge, %{distance: distance}) do
@@ -140,6 +142,19 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> Map.values()
     |> Enum.map(&"#{&1} Km")
     |> Enum.join(", ")
+  end
+
+  defp add_last_activity_received(%Ecto.Changeset{} = changeset, %NGO{launch_date: launch_date}) do
+    status = get_field(changeset, :status)
+
+    last_activity_received =
+      case status do
+        "pre_registration" -> launch_date
+        _ -> Timex.now()
+      end
+
+    changeset
+    |> change(last_activity_received: last_activity_received)
   end
 
   defp add_start_and_end_dates(

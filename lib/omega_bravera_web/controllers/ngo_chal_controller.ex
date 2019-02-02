@@ -49,8 +49,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       "ngo_slug" => ngo_slug,
       "ngo_id" => ngo.id,
       "slug" => sluggified_username,
-      "default_currency" => ngo.currency,
-      "status" => gen_challenge_status(ngo)
+      "default_currency" => ngo.currency
     }
 
     changeset_params = Map.merge(chal_params, extra_params)
@@ -248,19 +247,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
       total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
       ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug)
     }
-  end
-
-  defp gen_challenge_status(%NGO{
-         open_registration: open_registration,
-         utc_launch_date: utc_launch_date
-       }) do
-    case open_registration == false and Timex.after?(utc_launch_date, Timex.now()) do
-      true ->
-        "pre_registration"
-
-      _ ->
-        "active"
-    end
   end
 
   defp create_challenge(%NGO{} = ngo, attrs) do
