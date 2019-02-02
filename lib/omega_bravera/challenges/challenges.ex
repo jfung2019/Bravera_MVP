@@ -179,8 +179,6 @@ defmodule OmegaBravera.Challenges do
     |> Repo.one()
   end
 
-  def get_activity_types, do: NGOChal.activity_types()
-
   def get_number_of_activities_by_user(user_id) do
     from(a in Activity, where: a.user_id == ^user_id, select: count(a.id))
     |> Repo.one()
@@ -200,8 +198,6 @@ defmodule OmegaBravera.Challenges do
     from(a in Activity, select: sum(a.distance))
     |> Repo.one()
   end
-
-  def get_distances, do: NGOChal.distances_available()
 
   def total_distance_target do
     from(c in NGOChal, select: sum(c.distance_target))
@@ -450,6 +446,4 @@ defmodule OmegaBravera.Challenges do
     |> TeamMembers.changeset(attrs)
     |> Repo.insert(on_conflict: :nothing)
   end
-
-  def available_challenge_types, do: NGOChal.challenge_type_options()
 end

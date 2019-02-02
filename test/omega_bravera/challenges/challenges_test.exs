@@ -11,20 +11,20 @@ defmodule OmegaBravera.ChallengesTest do
     @valid_attrs %{
       "activity_type" => "Walk",
       "distance_target" => 50,
-      "duration" => 42,
+      "duration" => 40,
       "money_target" => "120.5",
       "slug" => "some slug",
       "status" => "",
-      "type" => "Per Goal"
+      "type" => "PER_MILESTONE"
     }
     @update_attrs %{
       "activity_type" => "Run",
       "distance_target" => 75,
-      "duration" => 43,
+      "duration" => 50,
       "money_target" => "456.7",
       "slug" => "some updated slug",
       "status" => "some updated status",
-      "type" => "Per Goal"
+      "type" => "PER_MILESTONE"
     }
     @invalid_attrs %{
       "activity_type" => nil,
@@ -138,7 +138,7 @@ defmodule OmegaBravera.ChallengesTest do
 
       assert ngo_chal.activity_type == "Walk"
       assert ngo_chal.distance_target == 50
-      assert ngo_chal.duration == 42
+      assert ngo_chal.duration == 40
       assert ngo_chal.money_target == Decimal.new("120.5")
       assert ngo_chal.slug == "some slug"
       assert ngo_chal.status == "active"
@@ -157,7 +157,7 @@ defmodule OmegaBravera.ChallengesTest do
       assert ngo_chal.end_date == Timex.shift(ngo.launch_date, days: ngo_chal.duration)
       assert ngo_chal.activity_type == "Walk"
       assert ngo_chal.distance_target == 50
-      assert ngo_chal.duration == 42
+      assert ngo_chal.duration == 40
       assert ngo_chal.money_target == Decimal.new("120.5")
       assert ngo_chal.slug == "some slug"
       assert ngo_chal.status == "pre_registration"
@@ -177,7 +177,7 @@ defmodule OmegaBravera.ChallengesTest do
 
       assert ngo_chal.activity_type == "Run"
       assert ngo_chal.distance_target == 75
-      assert ngo_chal.duration == 43
+      assert ngo_chal.duration == 50
       assert ngo_chal.money_target == Decimal.new("456.7")
       assert ngo_chal.slug == "some updated slug"
       assert ngo_chal.status == "some updated status"

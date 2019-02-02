@@ -374,14 +374,4 @@ defmodule OmegaBravera.Fundraisers do
   def change_ngo(%NGO{} = ngo) do
     NGO.changeset(ngo, %{})
   end
-
-  def available_currencies, do: NGO.currency_options()
-
-  def available_activities, do: NGO.activity_options()
-
-  def available_distances, do: NGO.distance_options()
-
-  def available_durations, do: NGO.duration_options()
-
-  def available_challenge_type_options, do: NGO.challenge_type_options()
 end

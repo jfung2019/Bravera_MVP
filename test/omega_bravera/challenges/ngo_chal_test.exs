@@ -17,11 +17,11 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
       "activity_type" => "Walk",
       "money_target" => Decimal.new(10000),
       "distance_target" => 50,
-      "duration" => 10,
+      "duration" => 50,
       "ngo_id" => ngo.id,
       "user_id" => user.id,
       "slug" => Slugify.gen_random_slug(user.firstname),
-      "type" => "Per Goal"
+      "type" => "PER_MILESTONE"
     }
 
     changeset = NGOChal.create_changeset(%NGOChal{}, ngo, attrs)

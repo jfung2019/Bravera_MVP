@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.AdminPanelNGOController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Accounts, Fundraisers, Slugify, Challenges}
+  alias OmegaBravera.{Accounts, Fundraisers, Fundraisers.NgoOptions, Slugify, Challenges}
   alias OmegaBravera.Fundraisers.NGO
 
   use Timex
@@ -122,10 +122,10 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
 
   defp assign_available_options(conn, _opts) do
     conn
-    |> assign(:available_currencies, Fundraisers.available_currencies())
-    |> assign(:available_activities, Fundraisers.available_activities())
-    |> assign(:available_distances, Fundraisers.available_distances())
-    |> assign(:available_durations, Fundraisers.available_durations())
-    |> assign(:available_challenge_type_options, Fundraisers.available_challenge_type_options())
+    |> assign(:available_currencies, NgoOptions.currency_options_human())
+    |> assign(:available_activities, NgoOptions.activity_options())
+    |> assign(:available_distances, NgoOptions.distance_options())
+    |> assign(:available_durations, NgoOptions.duration_options())
+    |> assign(:available_challenge_type_options, NgoOptions.challenge_type_options_human())
   end
 end

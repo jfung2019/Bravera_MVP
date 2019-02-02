@@ -1,6 +1,7 @@
 defmodule OmegaBravera.Challenges.NGOChal do
   use Ecto.Schema
   import Ecto.Changeset
+  import OmegaBravera.Fundraisers.NgoOptions
 
   alias OmegaBravera.{
     Accounts.User,
@@ -10,14 +11,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     Challenges.Activity
   }
 
-  @per_km "PER_KM"
-  @per_milestone "PER_MILESTONE"
-
-  @available_challenge_types [
-    [key: "Per Goal", value: @per_milestone],
-    [key: "Per KM", value: @per_km]
-  ]
-
+  @derive {Phoenix.Param, key: :slug}
   schema "ngo_chals" do
     field(:activity_type, :string)
     field(:distance_target, :integer, default: 100)
@@ -78,33 +72,18 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :type
   ]
 
-  @activity_types [
-    "Run",
-    "Cycle",
-    "Walk",
-    "Hike"
-  ]
-
-  @available_distances %{
-    50 => %{"1" => 0, "2" => 15, "3" => 25, "4" => 50},
-    75 => %{"1" => 0, "2" => 25, "3" => 45, "4" => 75},
-    100 => %{"1" => 0, "2" => 35, "3" => 65, "4" => 100},
-    150 => %{"1" => 0, "2" => 50, "3" => 100, "4" => 150},
-    250 => %{"1" => 0, "2" => 75, "3" => 150, "4" => 250},
-    300 => %{"1" => 0, "2" => 75, "3" => 150, "4" => 300},
-    400 => %{"1" => 0, "2" => 100, "3" => 250, "4" => 400},
-    500 => %{"1" => 0, "2" => 150, "3" => 350, "4" => 500}
-  }
-
   @doc false
   def changeset(ngo_chal, attrs) do
     ngo_chal
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
     |> validate_number(:distance_target, greater_than: 0)
-    |> validate_inclusion(:distance_target, distances_available())
+    |> validate_inclusion(:distance_target, distance_options())
     |> validate_number(:money_target, greater_than: 0)
-    |> validate_inclusion(:activity_type, @activity_types)
+    |> validate_inclusion(:activity_type, activity_options())
+    |> validate_inclusion(:default_currency, currency_options())
+    |> validate_inclusion(:duration, duration_options())
+    |> validate_inclusion(:type, challenge_type_options())
     |> unique_constraint(:slug,
       name: :ngo_chals_slug_unique_index,
       message: "Challenge's slug must be unique."
@@ -163,23 +142,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> Enum.join(", ")
   end
 
-  def milestones_distances(%__MODULE__{distance_target: target}) do
-    case target do
-      50 -> %{"1" => 0, "2" => 15, "3" => 25, "4" => 50}
-      75 -> %{"1" => 0, "2" => 25, "3" => 45, "4" => 75}
-      100 -> %{"1" => 0, "2" => 35, "3" => 65, "4" => 100}
-      150 -> %{"1" => 0, "2" => 50, "3" => 100, "4" => 150}
-      250 -> %{"1" => 0, "2" => 75, "3" => 150, "4" => 250}
-      300 -> %{"1" => 0, "2" => 75, "3" => 150, "4" => 300}
-      400 -> %{"1" => 0, "2" => 100, "3" => 250, "4" => 400}
-      500 -> %{"1" => 0, "2" => 150, "3" => 350, "4" => 500}
-    end
-  end
-
-  def activity_types, do: @activity_types
-
-  def distances_available, do: Map.keys(@available_distances)
-
   defp add_start_and_end_dates(
          %Ecto.Changeset{} = changeset,
          %NGO{} = ngo,
@@ -219,9 +181,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
     end
   end
 
-  def challenge_type_options, do: @available_challenge_types
-
-  defimpl Phoenix.Param, for: OmegaBravera.Challenges.NGOChal do
-    def to_param(%{slug: slug}), do: slug
-  end
+  def milestones_distances(%__MODULE__{distance_target: target}),
+    do: milestone_distances(target)
 end

@@ -1,9 +1,7 @@
 defmodule OmegaBraveraWeb.AdminPanelChallengesController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.Challenges
-  alias OmegaBravera.Accounts
-  alias OmegaBravera.Fundraisers
+  alias OmegaBravera.{Accounts, Challenges, Fundraisers.NgoOptions}
 
   plug(:assign_available_options when action in [:edit])
 
@@ -46,10 +44,10 @@ defmodule OmegaBraveraWeb.AdminPanelChallengesController do
 
   defp assign_available_options(conn, _opts) do
     conn
-    |> assign(:available_currencies, Fundraisers.available_currencies())
-    |> assign(:available_activities, Fundraisers.available_activities())
-    |> assign(:available_distances, Fundraisers.available_distances())
-    |> assign(:available_durations, Fundraisers.available_durations())
-    |> assign(:available_challenge_types, Challenges.available_challenge_types())
+    |> assign(:available_currencies, NgoOptions.currency_options_human())
+    |> assign(:available_activities, NgoOptions.activity_options())
+    |> assign(:available_distances, NgoOptions.distance_options())
+    |> assign(:available_durations, NgoOptions.duration_options())
+    |> assign(:available_challenge_types, NgoOptions.challenge_type_options_human())
   end
 end

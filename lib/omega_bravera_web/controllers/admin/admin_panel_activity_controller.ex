@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   use OmegaBraveraWeb, :controller
 
   alias OmegaBravera.Challenges.{Activity, NGOChal, ActivitiesIngestion}
-  alias OmegaBravera.{Challenges, Activities, Fundraisers, Repo}
+  alias OmegaBravera.{Challenges, Activities, Fundraisers.NgoOptions, Repo}
 
   plug(:assign_available_options when action in [:create, :new])
 
@@ -181,7 +181,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
   defp assign_available_options(conn, _opts) do
     conn
-    |> assign(:available_activities, Fundraisers.available_activities())
+    |> assign(:available_activities, NgoOptions.activity_options())
   end
 
   defp add_average_speed(%Strava.Activity{} = activity, activity_params) do

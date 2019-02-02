@@ -1,25 +1,11 @@
 defmodule OmegaBravera.Fundraisers.NGO do
   use Ecto.Schema
   import Ecto.Changeset
+  import OmegaBravera.Fundraisers.NgoOptions
 
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Money.Donation
-
-  @available_activities ["Run", "Cycle", "Walk", "Hike"]
-  @available_distances [50, 75, 100, 150, 250, 300, 400, 500]
-  @available_durations [20, 24, 30, 40, 50, 60, 70, 80]
-
-  # TODO: put NGO Challenge and NGO together in same module
-  @per_km "PER_KM"
-  @per_milestone "PER_MILESTONE"
-
-  @available_challenge_type_options [
-    [key: "Per Goal", value: @per_milestone],
-    [key: "Per KM", value: @per_km]
-  ]
-
-  @available_challenge_types [@per_milestone, @per_km]
 
   @derive {Phoenix.Param, key: :slug}
   schema "ngos" do
@@ -49,10 +35,10 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:total_distance_covered, :decimal, defailt: 0, virtual: true)
     field(:total_calories, :decimal, defailt: 0, virtual: true)
 
-    field(:activities, {:array, :string}, default: @available_activities)
-    field(:distances, {:array, :integer}, default: @available_distances)
-    field(:durations, {:array, :integer}, default: @available_durations)
-    field(:challenge_types, {:array, :string}, default: @available_challenge_types)
+    field(:activities, {:array, :string}, default: activity_options())
+    field(:distances, {:array, :integer}, default: distance_options())
+    field(:durations, {:array, :integer}, default: duration_options())
+    field(:challenge_types, {:array, :string}, default: challenge_type_options())
 
     belongs_to(:user, User)
     has_many(:ngo_chals, NGOChal)
@@ -104,11 +90,11 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_required(@required_attributes)
     |> validate_number(:minimum_donation, greater_than_or_equal_to: 0)
     |> validate_number(:fundraising_goal, greater_than_or_equal_to: 0)
-    |> validate_inclusion(:currency, valid_currencies())
-    |> validate_subset(:activities, @available_activities)
-    |> validate_subset(:distances, @available_distances)
-    |> validate_subset(:durations, @available_durations)
-    |> validate_subset(:challenge_types, @available_challenge_types)
+    |> validate_inclusion(:currency, currency_options())
+    |> validate_subset(:activities, activity_options())
+    |> validate_subset(:distances, distance_options())
+    |> validate_subset(:durations, duration_options())
+    |> validate_subset(:challenge_types, challenge_type_options())
     |> validate_format(:url, ~r/^(https|http):\/\/\w+/)
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
@@ -121,17 +107,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> changeset(attrs)
     |> validate_pre_registration_start_date_modification(ngo)
     |> validate_no_active_challenges(ngo)
-  end
-
-  def currency_options do
-    %{
-      "Hong Kong Dollar (HKD)" => "hkd",
-      "South Korean Won (KRW)" => "krw",
-      "Singapore Dollar (SGD)" => "sgd",
-      "Malaysian Ringgit (MYR)" => "myr",
-      "United States Dollar (USD)" => "usd",
-      "British Pound (GBP)" => "gbp"
-    }
   end
 
   defp validate_pre_registration_start_date(
@@ -268,18 +243,4 @@ defmodule OmegaBravera.Fundraisers.NGO do
   end
 
   defp changeset_to_hk_date(%Ecto.Changeset{} = changeset), do: changeset
-
-  defp valid_currencies, do: Map.values(currency_options())
-
-  def activity_options, do: @available_activities
-
-  def distance_options, do: @available_distances
-
-  def duration_options, do: @available_durations
-
-  def challenge_type_options, do: @available_challenge_type_options
-end
-
-defimpl Phoenix.Param, for: OmegaBravera.Fundraisers.NGO do
-  def to_param(%{slug: slug}), do: slug
 end

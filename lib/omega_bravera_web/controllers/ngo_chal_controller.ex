@@ -12,6 +12,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     Fundraisers,
     Money,
     Fundraisers.NGO,
+    Fundraisers.NgoOptions,
     Money.Donation,
     Slugify,
     Accounts.User
@@ -283,6 +284,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
   defp assign_available_options(conn, _opts) do
     conn
-    |> assign(:available_challenge_types, Challenges.available_challenge_types())
+    |> assign(:available_challenge_types, NgoOptions.challenge_type_options_human())
   end
 end
