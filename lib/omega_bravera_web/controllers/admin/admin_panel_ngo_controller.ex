@@ -84,6 +84,16 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
     render(conn, "statement.html", ngo: ngo, layout: {OmegaBraveraWeb.LayoutView, "print.html"})
   end
 
+  def export_ngo_opt_in_mailing_list(conn, %{"slug" => slug}) do
+    ngo = Fundraisers.get_ngo_by_slug(slug, [])
+    csv_rows = Accounts.get_opt_in_ngo_mailing_list(ngo.id)
+
+    conn
+    |> put_resp_content_type("text/csv")
+    |> put_resp_header("content-disposition", "attachment; filename=\"#{slug}_opt_in.csv\"")
+    |> send_resp(200, to_csv(csv_donor_opt_in_ngo_headers(), csv_rows))
+  end
+
   def export_statement(conn, %{"slug" => slug, "month" => month, "year" => year}) do
     {:ok, start_date} = Date.new(String.to_integer(year), String.to_integer(month), 1)
     start_datetime = Timex.to_datetime(start_date)
@@ -93,11 +103,18 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
     conn
     |> put_resp_content_type("text/csv")
     |> put_resp_header("content-disposition", "attachment; filename=\"statement.csv\"")
-    |> send_resp(200, csv_content(csv_rows))
+    |> send_resp(200, to_csv(csv_statement_headers(), csv_rows))
   end
 
-  defp csv_content(rows) do
-    cols = [
+  def to_csv(cols, rows) do
+    (cols ++ rows)
+    |> CSV.encode()
+    |> Enum.to_list()
+    |> to_string
+  end
+
+  defp csv_statement_headers() do
+    [
       [
         "Challenge Name",
         "Transaction Reference",
@@ -113,11 +130,18 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
         "Net Donation"
       ]
     ]
+  end
 
-    (cols ++ rows)
-    |> CSV.encode()
-    |> Enum.to_list()
-    |> to_string
+  defp csv_donor_opt_in_ngo_headers() do
+    [
+      [
+        "First Name",
+        "Last Name",
+        "Email",
+        "NGO",
+        "Opt-in-date"
+      ]
+    ]
   end
 
   defp assign_available_options(conn, _opts) do

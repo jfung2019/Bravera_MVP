@@ -727,4 +727,21 @@ defmodule OmegaBravera.Accounts do
         {:error, :not_found}
     end
   end
+
+  def get_opt_in_ngo_mailing_list(id) do
+    from(
+      donor_opt_in in Accounts.DonorOptInMailingList,
+      where: donor_opt_in.ngo_id == ^id and donor_opt_in.opt_in == true,
+      join: user in assoc(donor_opt_in, :user),
+      join: ngo in assoc(donor_opt_in, :ngo),
+      select: [
+        user.firstname,
+        user.lastname,
+        user.email,
+        ngo.name,
+        fragment("TO_CHAR(? :: DATE, 'dd-mm-yyyy mm-hh')", donor_opt_in.updated_at)
+      ]
+    )
+    |> Repo.all()
+  end
 end

@@ -1,6 +1,7 @@
 <div class="row">
 	<div class="col-6 offset-3">
 		<h2><%= @ngo.name%>'s Challenges:</h2>
+		<%= link("Download Opt-in mailing list", to: admin_panel_ngo_path(@conn, :export_ngo_opt_in_mailing_list, @ngo.slug)) %>
 		<ul>
       <%= for ngo_chal <- @ngo.ngo_chals do %>
 		    <li><%= link ngo_chal.slug, to: admin_panel_ngo_admin_panel_challenges_path(@conn, :show, @ngo, ngo_chal) %></li>

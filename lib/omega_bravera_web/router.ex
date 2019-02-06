@@ -121,6 +121,7 @@ defmodule OmegaBraveraWeb.Router do
       put("/ngos/:slug", AdminPanelNGOController, :update)
       get("/ngo/:slug/statement", AdminPanelNGOController, :statement)
       get("/ngo/:slug/statement/monthly/", AdminPanelNGOController, :export_statement)
+      get("/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list)
     end
 
     scope "/api" do
