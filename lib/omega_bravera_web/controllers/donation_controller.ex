@@ -60,9 +60,6 @@ defmodule OmegaBraveraWeb.DonationController do
 
         case result do
           :ok ->
-            # To trigger social share modal on successful pledges.
-            challenge_path = challenge_path <> "#share"
-
             conn
             |> put_flash(:info, "Donations pledged! Check your email for more information.")
             |> redirect(to: challenge_path)
@@ -91,9 +88,6 @@ defmodule OmegaBraveraWeb.DonationController do
 
         case result do
           :ok ->
-            # To trigger social share modal on successful pledges.
-            challenge_path = challenge_path <> "#share"
-
             conn
             |> put_flash(:info, "Donations pledged! Check your email for more information.")
             |> redirect(to: challenge_path)
