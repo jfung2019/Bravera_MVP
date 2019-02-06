@@ -671,6 +671,39 @@ defmodule OmegaBravera.Accounts do
     AdminUser.changeset(admin_user, %{})
   end
 
+  def create_or_update_donor_opt_in_mailing_list(user, ngo, attrs) do
+    attrs =
+      attrs
+      |> Map.put_new("user_id", user.id)
+      |> Map.put_new("ngo_id", ngo.id)
+
+    case Repo.get_by(Accounts.DonorOptInMailingList, user_id: user.id, ngo_id: ngo.id) do
+      nil ->
+        case create_donor_opt_in_mailing_list(attrs) do
+          {:error, reason} -> {:error, reason}
+          updated -> updated
+        end
+
+      donor_opt_in_mailing_list ->
+        case update_donor_opt_in_mailing_list(donor_opt_in_mailing_list, attrs) do
+          {:error, reason} -> {:error, reason}
+          inserted -> inserted
+        end
+    end
+  end
+
+  def create_donor_opt_in_mailing_list(attrs) do
+    %Accounts.DonorOptInMailingList{}
+    |> Accounts.DonorOptInMailingList.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_donor_opt_in_mailing_list(donor_opt_in_mailing_list, attrs) do
+    donor_opt_in_mailing_list
+    |> Accounts.DonorOptInMailingList.update_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Returns a user in an :ok tuple if user is found by email and correct password.
   Otherwise an error tuple is returned.

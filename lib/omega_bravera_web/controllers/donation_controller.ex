@@ -32,6 +32,8 @@ defmodule OmegaBraveraWeb.DonationController do
     donor = Accounts.insert_or_return_email_user(donation_params)
     challenge_path = ngo_ngo_chal_path(conn, :show, challenge.ngo.slug, challenge.slug)
 
+    Accounts.create_or_update_donor_opt_in_mailing_list(donor, challenge.ngo, donation_params)
+
     case challenge.type do
       "PER_MILESTONE" ->
         result =

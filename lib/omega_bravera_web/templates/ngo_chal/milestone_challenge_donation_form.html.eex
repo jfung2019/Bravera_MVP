@@ -94,6 +94,12 @@
                 <p class="col-10 text-center small">Yes! I want to maximize my donation to the Cause and cover service fees (card payment & platform service fees).</p>
               </div>
             <% end %>
+
+            <div class="form-group row">
+                <%= checkbox f, :opt_in, class: "col-1 mt-1", checked: "checked" %>
+                <p class="col-11 text-center small">Please also add me to the NGO newsletter mailing list.</p>
+            </div>
+
             <h5 class="text-420 mt-2 mb-1" style="text-align: left;">
               Total Support:
               <span style="float:right;" id="donation-total"></span>
