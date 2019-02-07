@@ -25,7 +25,8 @@
             type: "button",
             data: [toggle: "tooltip", placement: "top"], title: "You’ll be redirected to Strava to create an account,
             when you’ve created anaccount and downloaded the Strava App on your smartphone,
-            come back to Bravera and finish your registration.")
+            come back to Bravera and finish your registration.",
+            target: "_blank")
           %>
           <div class="no-strava-btn-text">
             <span>*</span>
