@@ -22,12 +22,12 @@ defmodule OmegaBravera.Fundraisers do
     from(
       n in NGO,
       where: n.slug == ^slug,
-      left_join: ngo_user in assoc(n, :user),
-      left_join: donations in assoc(n, :donations),
+      join: donations in assoc(n, :donations),
       on: donations.status == "charged",
-      left_join: user in assoc(donations, :user),
-      left_join: ngo_chal in assoc(donations, :ngo_chal),
-      preload: [user: ngo_user, donations: {donations, user: user, ngo_chal: ngo_chal}]
+      join: user in assoc(donations, :user),
+      join: ngo_chal in assoc(donations, :ngo_chal),
+      join: participant in assoc(ngo_chal, :user),
+      preload: [donations: {donations, user: user, ngo_chal: {ngo_chal, user: participant}}]
     )
     |> Repo.one()
   end
@@ -36,20 +36,20 @@ defmodule OmegaBravera.Fundraisers do
     from(
       n in NGO,
       where: n.slug == ^slug,
-      left_join: ngo_user in assoc(n, :user),
-      left_join: donations in assoc(n, :donations),
+      join: donations in assoc(n, :donations),
       on:
         donations.status == "charged" and donations.charged_at >= ^start_date and
           donations.charged_at <= ^end_date,
-      left_join: user in assoc(donations, :user),
-      left_join: ngo_chal in assoc(donations, :ngo_chal),
+      join: donor in assoc(donations, :user),
+      join: ngo_chal in assoc(donations, :ngo_chal),
+      join: participant in assoc(ngo_chal, :user),
       select: [
         ngo_chal.slug,
         donations.charge_id,
         fragment("to_char(?, 'YYYY-MM-DD HH:MI')", donations.charged_at),
-        fragment("concat(?, ' - ', ?)", ngo_user.firstname, ngo_user.lastname),
-        fragment("concat(?, ' - ', ?)", user.firstname, user.lastname),
-        user.email,
+        fragment("concat(?, ' ', ?)", participant.firstname, participant.lastname),
+        fragment("concat(?, ' ', ?)", donor.firstname, donor.lastname),
+        donor.email,
         donations.milestone,
         ngo_chal.default_currency,
         fragment("ROUND((? * ?), 1)", donations.charged_amount, donations.exchange_rate),

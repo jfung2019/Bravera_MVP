@@ -57,7 +57,7 @@
           <td data-title="Challenge Name"><%= "#{@ngo.slug}:#{donation.ngo_chal.slug}" %></td>
           <td data-title="Transaction Reference"><%= donation.charge_id %></td>
           <td data-title="Payment Date"><%= render_datetime(donation.charged_at) %></td>
-          <td data-title="Participant"><%= @ngo.user.firstname <> " " <> @ngo.user.lastname %></td>
+          <td data-title="Participant"><%= donation.ngo_chal.user.firstname <> " " <> donation.ngo_chal.user.lastname %></td>
           <td data-title="Challenge URL"><%= link("URL", to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, donation.ngo_chal.slug ), target: "_blank") %></td>
           <td data-title="Supporter Name"><%= donation.user.firstname <> " " <> donation.user.lastname %></td>
           <td data-title="Supporter Email"><%= donation.user.email %></td>
