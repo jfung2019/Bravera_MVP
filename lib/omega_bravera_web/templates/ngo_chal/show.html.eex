@@ -10,7 +10,7 @@
           <%= render "_self_donate_cta.html", assigns %>
         <% end %>
 
-        <%= if @current_user != nil and @challenge.user.id == @current_user.id do %>
+        <%= if @current_user != nil and @challenge.user.id == @current_user.id  and !@challenge.has_team do %>
           <%= render "_invite_buddies.html", assigns %>
         <% end %>
         <%= render "challenge_header.html", assigns %>
