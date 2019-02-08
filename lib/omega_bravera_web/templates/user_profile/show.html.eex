@@ -102,5 +102,73 @@
 <% end %>
 
 
+<br />
+<div class="row">
+  <div class="col-5"><h5>Teams you are in:</h5></div>
+</div>
+<br />
+
+<%= unless Enum.empty?(@teams_memberships) do %>
+  <div class="row">
+
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <!-- <b>Charity</b> Be-->
+            </div>
+            <div class="col-sm-2">
+              <b> Start Date</b>
+            </div>
+            <div class="col-sm-2">
+              <b>End Date</b>
+            </div>
+            <div class="col-sm-3">
+              <b> Distance Covered</b>
+            </div>
+            <div class="col-sm-2">
+              <b>Link</b>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <br />
+    <%= for team_membership <- @teams_memberships do %>
+      <div class="card bg-light text-dark">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <%= team_membership.team.challenge.ngo.name %>
+            </div>
+            <div class="col-sm-2">
+              <%= render_datetime(team_membership.team.challenge.start_date) %>
+            </div>
+            <div class="col-sm-2">
+              <%= render_datetime(team_membership.team.challenge.end_date) %>
+            </div>
+            <div class="col-sm-3">
+              <%= team_membership.team.challenge.distance_covered %> KM
+            </div>
+            <div class="col-sm-2">
+              <%= link("View", to: ngo_ngo_chal_path(@conn, :show, team_membership.team.challenge.ngo.slug, team_membership.team.challenge.slug)) %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+    <% end %>
+
+    </div>
+  </div>
+<% else %>
+
+  <p>You did not join any teams yet!
+    <%= link("here!", to: ngo_path(@conn, :index)) %>
+  </p>
+<% end %>
+
+
 </div>
 <br />

@@ -70,6 +70,21 @@ defmodule OmegaBravera.Challenges do
     |> Repo.all()
   end
 
+  def get_user_teams(user_id) do
+    from(
+      tm in TeamMembers,
+      where: tm.user_id == ^user_id,
+      join: team in Team,
+      on: tm.team_id == team.id,
+      join: challenge in NGOChal,
+      on: team.challenge_id == challenge.id,
+      left_join: activity in Activity,
+      on: challenge.id == activity.challenge_id,
+      preload: [team: {team, challenge: {challenge, :ngo} }]
+    )
+    |> Repo.all()
+  end
+
   def get_user_ngo_chals_ids(user_id) do
     from(
       c in NGOChal,
