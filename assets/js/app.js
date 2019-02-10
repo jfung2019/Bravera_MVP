@@ -27,3 +27,4 @@ import "moment";
 
 import "./timezone_stuff";
 import "./challenge_creation";
+import "./team_invitation";

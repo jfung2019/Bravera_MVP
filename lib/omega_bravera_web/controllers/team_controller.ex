@@ -37,20 +37,6 @@ defmodule OmegaBraveraWeb.TeamController do
     render(conn, "edit.html", team: team, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "team" => team_params}) do
-    team = Challenges.get_team!(id)
-
-    case Challenges.update_team(team, team_params) do
-      {:ok, team} ->
-        conn
-        |> put_flash(:info, "Team updated successfully.")
-        |> redirect(to: team_path(conn, :show, team))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", team: team, changeset: changeset)
-    end
-  end
-
   def delete(conn, %{"id" => id}) do
     team = Challenges.get_team!(id)
     {:ok, _team} = Challenges.delete_team(team)

@@ -6,7 +6,7 @@ defmodule OmegaBravera.Challenges do
   import Ecto.Query, warn: false
 
   alias OmegaBravera.Repo
-  alias OmegaBravera.Challenges.{NGOChal, Activity, Team, TeamMembers}
+  alias OmegaBravera.Challenges.{NGOChal, Activity, Team, TeamMembers, TeamInvitations}
   alias OmegaBravera.Fundraisers.NGO
 
   use Timex
@@ -219,18 +219,6 @@ defmodule OmegaBravera.Challenges do
     |> Repo.one()
   end
 
-  @doc """
-  Creates a ngo_chal.
-
-  ## Examples
-
-      iex> create_ngo_chal(%{field: value})
-      {:ok, %NGOChal{}}
-
-      iex> create_ngo_chal(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_ngo_chal(%NGOChal{} = chal, %NGO{} = ngo, attrs \\ %{}) do
     chal
     |> NGOChal.create_changeset(ngo, attrs)
@@ -243,15 +231,6 @@ defmodule OmegaBravera.Challenges do
     |> Repo.insert()
   end
 
-  @doc """
-  Returns the list of ngo_chals.
-
-  ## Examples
-
-      iex> list_ngo_chals()
-      [%NGOChal{}, ...]
-
-  """
   def list_ngo_chals(preloads \\ [:user, :ngo, :donations]) do
     from(nc in NGOChal,
       left_join: a in Activity,
@@ -284,20 +263,6 @@ defmodule OmegaBravera.Challenges do
     |> Repo.all()
   end
 
-  @doc """
-  Gets a single ngo_chal.
-
-  Raises `Ecto.NoResultsError` if the Ngo chal does not exist.
-
-  ## Examples
-
-      iex> get_ngo_chal!(123)
-      %NGOChal{}
-
-      iex> get_ngo_chal!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_ngo_chal!(id) do
     from(nc in NGOChal,
       left_join: a in Activity,
@@ -310,49 +275,16 @@ defmodule OmegaBravera.Challenges do
     |> Repo.one!()
   end
 
-  @doc """
-  Updates a ngo_chal.
-
-  ## Examples
-
-      iex> update_ngo_chal(ngo_chal, %{field: new_value})
-      {:ok, %NGOChal{}}
-
-      iex> update_ngo_chal(ngo_chal, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_ngo_chal(%NGOChal{} = ngo_chal, attrs) do
     ngo_chal
     |> NGOChal.changeset(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a NGOChal.
-
-  ## Examples
-
-      iex> delete_ngo_chal(ngo_chal)
-      {:ok, %NGOChal{}}
-
-      iex> delete_ngo_chal(ngo_chal)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_ngo_chal(%NGOChal{} = ngo_chal) do
     Repo.delete(ngo_chal)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking ngo_chal changes.
-
-  ## Examples
-
-      iex> change_ngo_chal(ngo_chal)
-      %Ecto.Changeset{source: %NGOChal{}}
-
-  """
   def change_ngo_chal(%NGOChal{} = ngo_chal) do
     NGOChal.changeset(ngo_chal, %{})
   end
@@ -362,96 +294,22 @@ defmodule OmegaBravera.Challenges do
     |> Repo.one()
   end
 
-  @doc """
-  Returns the list of teams.
-
-  ## Examples
-
-      iex> list_teams()
-      [%Team{}, ...]
-
-  """
   def list_teams do
     Repo.all(Team)
   end
 
-  @doc """
-  Gets a single team.
-
-  Raises `Ecto.NoResultsError` if the Team does not exist.
-
-  ## Examples
-
-      iex> get_team!(123)
-      %Team{}
-
-      iex> get_team!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_team!(id), do: Repo.get!(Team, id)
 
-  @doc """
-  Creates a team.
-
-  ## Examples
-
-      iex> create_team(%{field: value})
-      {:ok, %Team{}}
-
-      iex> create_team(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_team(attrs \\ %{}) do
     %Team{}
     |> Team.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a team.
-
-  ## Examples
-
-      iex> update_team(team, %{field: new_value})
-      {:ok, %Team{}}
-
-      iex> update_team(team, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_team(%Team{} = team, attrs) do
-    team
-    |> Team.update_changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a Team.
-
-  ## Examples
-
-      iex> delete_team(team)
-      {:ok, %Team{}}
-
-      iex> delete_team(team)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_team(%Team{} = team) do
     Repo.delete(team)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking team changes.
-
-  ## Examples
-
-      iex> change_team(team)
-      %Ecto.Changeset{source: %Team{}}
-
-  """
   def change_team(%Team{} = team) do
     Team.changeset(team, %{})
   end
@@ -460,5 +318,37 @@ defmodule OmegaBravera.Challenges do
     %TeamMembers{}
     |> TeamMembers.changeset(attrs)
     |> Repo.insert(on_conflict: :nothing)
+  end
+
+  def get_team_member_invitation_by_token(token) do
+    from(
+      invitation in TeamInvitations,
+      where: invitation.token == ^token
+    )
+    |> Repo.one()
+  end
+
+  def resend_team_member_invitation(%TeamInvitations{} = team_invitation) do
+    team_invitation
+    |> TeamInvitations.invitation_resent_changeset()
+    |> Repo.update()
+  end
+
+  def create_team_member_invitation(team, attrs \\ %{}) do
+    %TeamInvitations{}
+    |> TeamInvitations.changeset(team, attrs)
+    |> Repo.insert()
+  end
+
+  def cancel_team_member_invitation(%TeamInvitations{} = team_invitation) do
+    team_invitation
+    |> TeamInvitations.invitation_cancelled_changeset()
+    |> Repo.update()
+  end
+
+  def accepted_team_member_invitation(%TeamInvitations{} = team_invitation) do
+    team_invitation
+    |> TeamInvitations.invitation_accepted_changeset()
+    |> Repo.update()
   end
 end

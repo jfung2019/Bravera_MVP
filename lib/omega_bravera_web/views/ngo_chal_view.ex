@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.NGOChalView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.{Challenges.NGOChal, Accounts.User, Fundraisers.NGO}
+  alias OmegaBravera.{Challenges.NGOChal, Accounts.User, Fundraisers.NGO, Challenges.TeamInvitations}
 
   def user_full_name(%User{} = user), do: User.full_name(user)
 
@@ -251,9 +251,40 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def challenge_with_team_has_members(_), do: false
 
-  def all_team_invitations_sent?(%NGOChal{
-        has_team: true,
-        team: %{count: count, invitations_accepted: invitations_accepted}
-      }),
-      do: count - 1 == invitations_accepted
+  defp number_of_sent_and_accepted_invites(%NGOChal{has_team: true, team: %{invitations: invitations}}) do
+    Enum.count(invitations, fn invitation ->
+      invitation.status == "pending_acceptance" or
+      invitation.status == "accepted"
+    end)
+  end
+
+  def invitations_exhaused?(%NGOChal{has_team: true, team: %{count: count}} = challenge),
+    do: count == number_of_sent_and_accepted_invites(challenge)
+
+  def left_invitations(%NGOChal{has_team: true, team: %{count: count}} = challenge) do
+    sent_and_accepted = number_of_sent_and_accepted_invites(challenge)
+
+    cond do
+      sent_and_accepted == count -> []
+      sent_and_accepted < count -> Range.new(1, count - sent_and_accepted)
+    end
+  end
+
+  def accepted_invitations(%NGOChal{has_team: true, team: %{invitations: invitations}}),
+   do: Enum.count(invitations, fn invitation -> invitation.status == "accepted" end)
+
+  def team_full?(%NGOChal{has_team: true, team: %{count: count}} = challenge),
+    do: count == accepted_invitations(challenge)
+
+  def pending_invitations(%NGOChal{has_team: true, team: %{invitations: invitations}}) do
+    Enum.map(invitations, fn invitation ->
+      if invitation.status == "pending_acceptance" do
+        invitation
+      end
+    end)
+    |> Enum.reject(&is_nil/1)
+  end
+
+  def can_resend?(%TeamInvitations{updated_at: updated_at}),
+   do: Timex.before?(Timex.now(), Timex.shift(updated_at, days: 1))
 end

@@ -78,7 +78,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       Challenges.get_ngo_chal_by_slugs(ngo_slug, slug,
         user: [:strava],
         ngo: [],
-        team: [users: [:strava]]
+        team: [users: [:strava], invitations: []]
       )
 
     changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
@@ -129,25 +129,67 @@ defmodule OmegaBraveraWeb.NGOChalController do
       }) do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, :ngo, :team])
 
-    sent_invite_tokens =
-      Challenges.Notifier.send_team_members_invite_email(challenge, Map.values(team_members))
+    Enum.map(Map.values(team_members), fn team_member ->
+      case Challenges.create_team_member_invitation(challenge.team, team_member) do
+        {:ok, created_team_member} ->
+          # Send invitation
+          Challenges.Notifier.send_team_members_invite_email(challenge, created_team_member)
 
-    remaining_invite_tokens = challenge.team.invite_tokens -- sent_invite_tokens
-    all_sent_invite_tokens = sent_invite_tokens ++ (challenge.team.sent_invite_tokens || [])
+          {:error, reason} ->
+          Logger.error("Could not invite team member, reason: #{inspect(reason)}")
+      end
+    end)
 
-    case Challenges.update_team(challenge.team, %{
-           invite_tokens: remaining_invite_tokens,
-           sent_invite_tokens: all_sent_invite_tokens
-         }) do
-      {:ok, _} ->
-        conn
-        |> put_flash(:info, "Sucessfully invited your team members!")
-        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+    conn
+    |> put_flash(:info, "Sucessfully invited your team member(s)!")
+    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+  end
 
-      {:error, _reason} ->
-        conn
-        |> put_flash(:info, "Something went wrong while updating your team.")
-        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+  def resend_invitation(conn, %{
+    "ngo_slug" => ngo_slug,
+    "ngo_chal_slug" => slug,
+    "invitation_token" => invitation_token}
+  ) do
+    current_user = Guardian.Plug.current_resource(conn)
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user, :ngo])
+    invitation = Challenges.get_team_member_invitation_by_token(invitation_token)
+
+    # Make sure the user has the permission and whether the invite was recently sent or not.
+    if current_user.id == challenge.user.id and Timex.before?(Timex.now(), Timex.shift(invitation.updated_at, days: 1)) do
+      Challenges.Notifier.send_team_members_invite_email(challenge, invitation)
+
+      # Remember when was the last email was sent
+      Challenges.resend_team_member_invitation(invitation)
+
+      conn
+      |> put_flash(:info, "Resent invite to #{invitation.invitee_name}!")
+      |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+    else
+      conn
+      |> put_flash(:error, "Action not allowed.")
+      |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+    end
+  end
+
+  def cancel_invitation(conn, %{
+    "ngo_slug" => ngo_slug,
+    "ngo_chal_slug" => slug,
+    "invitation_token" => invitation_token}
+  ) do
+    current_user = Guardian.Plug.current_resource(conn)
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user, :ngo])
+
+    if current_user.id == challenge.user.id do
+      Challenges.get_team_member_invitation_by_token(invitation_token)
+      |> Challenges.cancel_team_member_invitation()
+
+      conn
+      |> put_flash(:info, "Invitation canceled.")
+      |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+    else
+      conn
+      |> put_flash(:error, "Action not allowed.")
+      |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
     end
   end
 
@@ -181,16 +223,14 @@ defmodule OmegaBraveraWeb.NGOChalController do
           |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
         else
           # Verify if token is related to this team.
-          if Enum.member?(challenge.team.sent_invite_tokens, invitation_token) do
+          invitation = Challenges.get_team_member_invitation_by_token(invitation_token)
+
+          if challenge.team.id == invitation.team_id do
             # Add New TeamMember to Team.
             case Challenges.add_user_to_team(%{team_id: challenge.team.id, user_id: user.id}) do
               {:ok, _} ->
                 # Update accepted invitations counter.
-                Challenges.update_team(challenge.team, %{
-                  invitations_accepted: 1 + challenge.team.invitations_accepted,
-                  sent_invite_tokens:
-                    List.delete(challenge.team.sent_invite_tokens, invitation_token)
-                })
+                Challenges.accepted_team_member_invitation(invitation)
 
                 Challenges.Notifier.send_team_owner_member_added_notification(challenge, user)
 

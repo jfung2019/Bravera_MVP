@@ -162,6 +162,8 @@ defmodule OmegaBraveraWeb.Router do
         post("/invite_buddies", NGOChalController, :invite_buddies)
         post("/invite_team_members", NGOChalController, :invite_team_members)
         get("/add_team_member/:invitation_token", NGOChalController, :add_team_member)
+        get("/resend_invitation/:invitation_token", NGOChalController, :resend_invitation)
+        get("/cancel_invitation/:invitation_token", NGOChalController, :cancel_invitation)
       end
     end
   end
