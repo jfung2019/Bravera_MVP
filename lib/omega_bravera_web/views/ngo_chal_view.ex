@@ -1,7 +1,12 @@
 defmodule OmegaBraveraWeb.NGOChalView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.{Challenges.NGOChal, Accounts.User, Fundraisers.NGO, Challenges.TeamInvitations}
+  alias OmegaBravera.{
+    Challenges.NGOChal,
+    Accounts.User,
+    Fundraisers.NGO,
+    Challenges.TeamInvitations
+  }
 
   def user_full_name(%User{} = user), do: User.full_name(user)
 
@@ -251,10 +256,12 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def challenge_with_team_has_members(_), do: false
 
-  defp number_of_sent_and_accepted_invites(%NGOChal{has_team: true, team: %{invitations: invitations}}) do
+  defp number_of_sent_and_accepted_invites(%NGOChal{
+         has_team: true,
+         team: %{invitations: invitations}
+       }) do
     Enum.count(invitations, fn invitation ->
-      invitation.status == "pending_acceptance" or
-      invitation.status == "accepted"
+      invitation.status == "pending_acceptance" or invitation.status == "accepted"
     end)
   end
 
@@ -271,7 +278,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
   end
 
   def accepted_invitations(%NGOChal{has_team: true, team: %{invitations: invitations}}),
-   do: Enum.count(invitations, fn invitation -> invitation.status == "accepted" end)
+    do: Enum.count(invitations, fn invitation -> invitation.status == "accepted" end)
 
   def team_full?(%NGOChal{has_team: true, team: %{count: count}} = challenge),
     do: count == accepted_invitations(challenge)
@@ -286,5 +293,5 @@ defmodule OmegaBraveraWeb.NGOChalView do
   end
 
   def can_resend?(%TeamInvitations{updated_at: updated_at}),
-   do: Timex.before?(Timex.now(), Timex.shift(updated_at, days: 1))
+    do: Timex.before?(Timex.now(), Timex.shift(updated_at, days: 1))
 end

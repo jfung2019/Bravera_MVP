@@ -211,16 +211,20 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Mailer.send()
   end
 
-  def team_member_invite_email(%NGOChal{} = challenge, %{invitee_name: invitee_name, token: token, email: email}) do
-      Email.build()
-      |> Email.put_template("e1869afd-8cd1-4789-b444-dabff9b7f3f1")
-      |> Email.add_substitution("-inviteeName-", invitee_name)
-      |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
-      |> Email.add_substitution("-ngoName-", challenge.ngo.name)
-      |> Email.add_substitution("-teamInvitationLink-", team_member_invite_link(challenge, token))
-      |> Email.put_from("admin@bravera.co", "Bravera")
-      |> Email.add_bcc("admin@bravera.co")
-      |> Email.add_to(email)
+  def team_member_invite_email(%NGOChal{} = challenge, %{
+        invitee_name: invitee_name,
+        token: token,
+        email: email
+      }) do
+    Email.build()
+    |> Email.put_template("e1869afd-8cd1-4789-b444-dabff9b7f3f1")
+    |> Email.add_substitution("-inviteeName-", invitee_name)
+    |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
+    |> Email.add_substitution("-ngoName-", challenge.ngo.name)
+    |> Email.add_substitution("-teamInvitationLink-", team_member_invite_link(challenge, token))
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(email)
   end
 
   def team_member_invite_email(_, _) do

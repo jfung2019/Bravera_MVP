@@ -135,7 +135,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
           # Send invitation
           Challenges.Notifier.send_team_members_invite_email(challenge, created_team_member)
 
-          {:error, reason} ->
+        {:error, reason} ->
           Logger.error("Could not invite team member, reason: #{inspect(reason)}")
       end
     end)
@@ -146,16 +146,17 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def resend_invitation(conn, %{
-    "ngo_slug" => ngo_slug,
-    "ngo_chal_slug" => slug,
-    "invitation_token" => invitation_token}
-  ) do
+        "ngo_slug" => ngo_slug,
+        "ngo_chal_slug" => slug,
+        "invitation_token" => invitation_token
+      }) do
     current_user = Guardian.Plug.current_resource(conn)
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user, :ngo])
     invitation = Challenges.get_team_member_invitation_by_token(invitation_token)
 
     # Make sure the user has the permission and whether the invite was recently sent or not.
-    if current_user.id == challenge.user.id and Timex.before?(Timex.now(), Timex.shift(invitation.updated_at, days: 1)) do
+    if current_user.id == challenge.user.id and
+         Timex.before?(Timex.now(), Timex.shift(invitation.updated_at, days: 1)) do
       Challenges.Notifier.send_team_members_invite_email(challenge, invitation)
 
       # Remember when was the last email was sent
@@ -172,10 +173,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def cancel_invitation(conn, %{
-    "ngo_slug" => ngo_slug,
-    "ngo_chal_slug" => slug,
-    "invitation_token" => invitation_token}
-  ) do
+        "ngo_slug" => ngo_slug,
+        "ngo_chal_slug" => slug,
+        "invitation_token" => invitation_token
+      }) do
     current_user = Guardian.Plug.current_resource(conn)
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user, :ngo])
 

@@ -42,7 +42,10 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     with {:ok, user} <- Accounts.create_user(attrs),
          {:ok, _strava} = Trackers.create_strava(user.id, @tracker_create_attrs),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
-         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), current_user: user}
+         do:
+           {:ok,
+            conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token),
+            current_user: user}
   end
 
   @tag :authenticated
@@ -141,7 +144,9 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
 
     test "add_team_member/2 adds user to a team", %{conn: conn, current_user: current_user} do
       team = insert(:team)
-      invitation = insert(:team_invitation, %{email: current_user.email, team_id: team.id, team: nil})
+
+      invitation =
+        insert(:team_invitation, %{email: current_user.email, team_id: team.id, team: nil})
 
       conn =
         get(

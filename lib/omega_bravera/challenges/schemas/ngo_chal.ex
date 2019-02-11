@@ -105,7 +105,10 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> cast_assoc(:team, with: &Team.changeset/2, required: true)
   end
 
-  defp add_status(%Ecto.Changeset{} = changeset, %NGO{open_registration: open_registration, utc_launch_date: utc_launch_date}) do
+  defp add_status(%Ecto.Changeset{} = changeset, %NGO{
+         open_registration: open_registration,
+         utc_launch_date: utc_launch_date
+       }) do
     status =
       case open_registration == false and Timex.after?(utc_launch_date, Timex.now()) do
         true -> "pre_registration"
