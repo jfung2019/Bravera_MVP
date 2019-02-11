@@ -226,7 +226,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
           # Verify if token is related to this team.
           invitation = Challenges.get_team_member_invitation_by_token(invitation_token)
 
-          if not is_nil(invitation) and challenge.team.id == invitation.team_id do
+          if not is_nil(invitation) and challenge.team.id == invitation.team_id and invitation.status == "pending_acceptance" do
             # Add New TeamMember to Team.
             case Challenges.add_user_to_team(%{team_id: challenge.team.id, user_id: user.id}) do
               {:ok, _} ->
