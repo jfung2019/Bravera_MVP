@@ -80,7 +80,7 @@ defmodule OmegaBravera.Challenges do
       on: team.challenge_id == challenge.id,
       left_join: activity in Activity,
       on: challenge.id == activity.challenge_id,
-      preload: [team: {team, challenge: {challenge, :ngo} }]
+      preload: [team: {team, challenge: {challenge, :ngo}}]
     )
     |> Repo.all()
   end
