@@ -56,17 +56,11 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   end
 
   test "team_member_invite_email" do
-    team = insert(:team, %{challenge: build(:ngo_challenge, %{has_team: true})})
+    invitation = insert(:team_invitation)
 
-    team_member = %{
-      "email" => "sheriefalaa.w@gmail.com",
-      "name" => "Sherief Alaa",
-      "token" => hd(team.invite_tokens)
-    }
+    email = Notifier.team_member_invite_email(invitation.team.challenge, invitation)
 
-    email_with_token = Notifier.team_member_invite_email(team.challenge, team_member)
-
-    assert elem(email_with_token, 0) == %SendGrid.Email{
+    assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
              __phoenix_view__: nil,
              attachments: nil,
@@ -79,45 +73,24 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-inviteeName-" => team_member["name"],
+               "-inviteeName-" => invitation.invitee_name,
                "-teamOwnerName-" => "John Doe",
-               "-ngoName-" => team.challenge.ngo.name,
+               "-ngoName-" => invitation.team.challenge.ngo.name,
                "-teamInvitationLink-" =>
-                 "https://bravera.co/login?team_invitation=/#{team.challenge.ngo.slug}/#{
-                   team.challenge.slug
-                 }/add_team_member/#{elem(email_with_token, 1)}"
+                 "https://bravera.co/login?team_invitation=/#{invitation.team.challenge.ngo.slug}/#{
+                   invitation.team.challenge.slug
+                 }/add_team_member/#{invitation.token}"
              },
              template_id: "e1869afd-8cd1-4789-b444-dabff9b7f3f1",
-             to: [%{email: team_member["email"]}],
+             to: [%{email: invitation.email}],
              bcc: [%{email: "admin@bravera.co"}]
            }
   end
 
   test "send_team_members_invite_email/2" do
-    team = insert(:team, %{challenge: build(:ngo_challenge, %{has_team: true})})
-    token1 = hd(team.invite_tokens)
-    token2 = List.last(team.invite_tokens)
+    invitation = insert(:team_invitation)
 
-    team_members = [
-      %{
-        "email" => "sheriefalaa.w@gmail.com",
-        "name" => "Sherief Alaa",
-        "token" => token1
-      },
-      %{
-        "email" => "",
-        "name" => "",
-        "token" => ""
-      },
-      %{
-        "email" => "sherief@plangora.com",
-        "name" => "Sherief A.",
-        "token" => token2
-      }
-    ]
-
-    assert [token1, token2] ==
-             Notifier.send_team_members_invite_email(team.challenge, team_members)
+    assert Notifier.send_team_members_invite_email(invitation.team.challenge, invitation) == :ok
   end
 
   test "manual_activity_blocked_email" do

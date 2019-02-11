@@ -12,10 +12,6 @@ defmodule OmegaBravera.TeamsTest do
       challenge_id: nil,
       user_id: nil
     }
-    @update_attrs %{
-      invite_tokens: ["123", "321"],
-      sent_invite_tokens: ["991199"]
-    }
 
     def team_fixture(attrs \\ %{}) do
       challenge = insert(:ngo_challenge)
@@ -63,14 +59,6 @@ defmodule OmegaBravera.TeamsTest do
 
     test "create_team/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Challenges.create_team(%{})
-    end
-
-    test "update_team/2 with valid data updates the team" do
-      team = team_fixture()
-      assert {:ok, team} = Challenges.update_team(team, @update_attrs)
-      assert %Team{} = team
-      assert team.invite_tokens == ["123", "321"]
-      assert team.sent_invite_tokens == ["991199"]
     end
 
     test "delete_team/1 deletes the team" do

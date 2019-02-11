@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts, Trackers, Challenges, Accounts.User}
+  alias OmegaBravera.{Accounts, Trackers, Challenges, Accounts.User, Repo}
 
   @create_attrs %{
     "activity_type" => "Walk",
@@ -42,7 +42,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     with {:ok, user} <- Accounts.create_user(attrs),
          {:ok, _strava} = Trackers.create_strava(user.id, @tracker_create_attrs),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
-         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), current_user: user}
   end
 
   @tag :authenticated
@@ -139,81 +139,9 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert html_response(conn, 200) =~ "RM"
     end
 
-    test "invite_team_members/2 invites team members and moves used invite_tokens to sent_invite_tokens",
-         %{conn: conn} do
-      team = insert(:team, %{challenge: build(:ngo_challenge, %{has_team: true})})
-      token1 = hd(team.invite_tokens)
-      token2 = List.last(team.invite_tokens)
-
-      team_members = %{
-        "1" => %{
-          "email" => "sheriefalaa.w@gmail.com",
-          "name" => "Sherief Alaa",
-          "token" => token1
-        },
-        "2" => %{
-          "email" => "",
-          "name" => "",
-          "token" => ""
-        },
-        "3" => %{
-          "email" => "sherief@plangora.com",
-          "name" => "Sherief A.",
-          "token" => token2
-        }
-      }
-
-      conn =
-        post(
-          conn,
-          ngo_ngo_chal_ngo_chal_path(
-            conn,
-            :invite_team_members,
-            team.challenge.ngo.slug,
-            team.challenge.slug
-          ),
-          team_members: team_members
-        )
-
-      assert redirected_to(conn) ==
-               ngo_ngo_chal_path(conn, :show, team.challenge.ngo.slug, team.challenge.slug)
-
-      assert get_flash(conn, :info) =~ "Sucessfully invited your team members!"
-
-      updated_team = Challenges.get_team!(team.id)
-      assert updated_team.invite_tokens == ["j81_R7fKBZSwEwPmU1YHV0_cWChIY4IS"]
-      assert updated_team.sent_invite_tokens == [token1, token2]
-
-      token3 = Enum.at(team.invite_tokens, 1)
-
-      team_members = %{
-        "1" => %{
-          "email" => "sheriefalaa.w@gmail.com",
-          "name" => "Sherief Alaa",
-          "token" => token3
-        }
-      }
-
-      post(
-        conn,
-        ngo_ngo_chal_ngo_chal_path(
-          conn,
-          :invite_team_members,
-          team.challenge.ngo.slug,
-          team.challenge.slug
-        ),
-        team_members: team_members
-      )
-
-      # Ensure sent_invite_tokens accumulates correctly.
-      updated_team = Challenges.get_team!(team.id)
-      assert updated_team.invite_tokens == []
-      assert updated_team.sent_invite_tokens == [token3, token1, token2]
-    end
-
-    test "add_team_member/2 adds user to a team", %{conn: conn} do
-      sent_invite_token = "x78_12fKBZSwEwPmU1Y223_XyBaskdn1"
-      team = insert(:team, %{sent_invite_tokens: [sent_invite_token]})
+    test "add_team_member/2 adds user to a team", %{conn: conn, current_user: current_user} do
+      team = insert(:team)
+      invitation = insert(:team_invitation, %{email: current_user.email, team_id: team.id, team: nil})
 
       conn =
         get(
@@ -223,22 +151,27 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
             :add_team_member,
             team.challenge.ngo.slug,
             team.challenge.slug,
-            sent_invite_token
+            invitation.token
           )
         )
 
       assert get_flash(conn, :info) =~
                "You are now part of #{inspect(User.full_name(team.user))} team."
 
-      updated_team = Challenges.get_team!(team.id)
+      updated_team =
+        Challenges.get_team!(team.id)
+        |> Repo.preload(:invitations)
+        |> Repo.preload(:users)
 
-      assert updated_team.sent_invite_tokens == []
-      assert updated_team.invitations_accepted == 1
+      assert length(updated_team.invitations) == 1
+      assert %{status: "accepted"} = hd(updated_team.invitations)
+      assert invitation.email == hd(updated_team.users).email
     end
 
     test "add_team_member/2 does not invite user if token is invalid", %{conn: conn} do
+      team = insert(:team)
+      insert(:team_invitation, %{team_id: team.id, team: nil})
       bad_token = "non-existent-token"
-      team = insert(:team, %{sent_invite_tokens: ["x78_12fKBZSwEwPmU1Y223_XyBaskdn1"]})
 
       conn =
         get(
@@ -255,10 +188,12 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert get_flash(conn, :error) =~
                "Could not add you to team. Something is wrong with your invitation link!"
 
-      updated_team = Challenges.get_team!(team.id)
+      updated_team =
+        Challenges.get_team!(team.id)
+        |> Repo.preload(:invitations)
 
-      refute updated_team.sent_invite_tokens == []
-      refute updated_team.invitations_accepted == 1
+      assert length(updated_team.invitations) == 1
+      assert %{status: "pending_acceptance"} = hd(updated_team.invitations)
     end
   end
 end

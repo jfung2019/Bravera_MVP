@@ -103,11 +103,6 @@ defmodule OmegaBravera.Factory do
       name: "Team Save Stuff",
       slug: sequence(:slug, &"team-#{&1}"),
       count: 3,
-      invite_tokens: [
-        "9BG57484A5h2vaAvL9oEn-lf-kU-sH4y",
-        "j81_R7fKBZSwEwPmU1YHV0_cWChIY4IS",
-        "x78_12fKBZSwEwPmU1Y223_XyBaskdn1"
-      ],
       user: build(:user),
       challenge: build(:ngo_challenge, %{has_team: true})
     }
@@ -117,6 +112,16 @@ defmodule OmegaBravera.Factory do
     %OmegaBravera.Challenges.TeamMembers{
       team_id: nil,
       user_id: nil
+    }
+  end
+
+  def team_invitation_factory do
+    %OmegaBravera.Challenges.TeamInvitations{
+      email: sequence(:email, &"john.doe.#{&1}@example.com"),
+      invitee_name: "Sherief Alaa",
+      status: "pending_acceptance",
+      token: "abcd#{Enum.random(10_000_000..20_000_000)}",
+      team: build(:team)
     }
   end
 end
