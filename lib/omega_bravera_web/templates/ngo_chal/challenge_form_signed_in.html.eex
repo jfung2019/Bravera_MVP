@@ -167,7 +167,7 @@
       <div class="col-lg-12">
         <p>
           <b>
-            Please activate your account by visting this <%="#{link(:link, to: user_path(@conn, :edit))}"%> and add your email address.
+            Please activate your account by visiting this <%= link("link", to: user_path(@conn, :edit)) %> and adding your email address.
           </b>
         </p>
       </div>

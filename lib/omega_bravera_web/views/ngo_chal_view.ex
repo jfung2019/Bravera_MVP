@@ -231,13 +231,10 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def hide_donor_pays_fees?(%NGO{} = ngo), do: ngo.hide_donor_pays_fees
 
-  def verified_email?(%User{email: email, email_verified: email_verified}) do
-    cond do
-      is_nil(email) -> false
-      email_verified == false -> false
-      not is_nil(email) and email_verified == true -> true
-    end
-  end
+
+  def verified_email?(%User{email: nil}), do: false
+  def verified_email?(%User{email_verified: false}), do: false
+  def verified_email?(%User{}), do: true
 
   def render_status("expired"), do: "Finished"
 
