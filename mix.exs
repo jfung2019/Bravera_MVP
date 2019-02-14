@@ -61,7 +61,11 @@ defmodule OmegaBravera.Mixfile do
       {:csv, "~> 2.0.0"},
       {:mock, "~> 0.3.0", only: :test},
       {:number, "~> 1.0.0"},
-      {:slugify, "~> 1.1"}
+      {:slugify, "~> 1.1"},
+      {:ex_aws, "~> 2.0"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:hackney, "~> 1.9"},
+      {:sweet_xml, "~> 0.6"},
     ]
   end
 
