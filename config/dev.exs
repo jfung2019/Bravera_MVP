@@ -53,7 +53,7 @@ config :ex_aws,
   region: "ap-southeast-1"
 
 config :omega_bravera,
-  images_bucket_name: "bravera-staging-images"
+  :images_bucket_name, "bravera-staging-images"
 
 config :ex_aws, :hackney_opts,
   follow_redirect: true,

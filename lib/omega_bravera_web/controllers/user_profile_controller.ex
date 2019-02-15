@@ -1,7 +1,9 @@
 defmodule OmegaBraveraWeb.UserProfileController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Money, Challenges}
+  import Mogrify
+
+  alias OmegaBravera.{Money, Challenges, Accounts.User, Repo}
 
   def show(conn, _) do
     user = Guardian.Plug.current_resource(conn)
@@ -18,11 +20,43 @@ defmodule OmegaBraveraWeb.UserProfileController do
           total_distance: Challenges.get_total_distance_by_user(user.id),
           challenges: Challenges.get_user_ngo_chals(user.id),
           teams_memberships: Challenges.get_user_teams(user.id),
-          num_of_supporters: get_supporters_num(user.id)
+          num_of_supporters: get_supporters_num(user.id),
+          changeset: User.changeset(user, %{})
         )
 
       user == nil ->
         redirect(conn, to: "/404")
+    end
+  end
+
+  def update_profile_picture(conn, %{"user" => %{"profile_picture" => image_params}}) do
+    file_uuid = UUID.uuid4(:hex)
+    image_filename = image_params.filename
+    unique_filename = "#{file_uuid}-#{image_filename}"
+    user = Guardian.Plug.current_resource(conn)
+
+    bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
+
+    resized_image =
+      image_params.path
+      |> open()
+      |> resize("600x600")
+      |> save(in_place: true)
+
+    resized_image.path
+    |> ExAws.S3.Upload.stream_file
+    |> ExAws.S3.upload(bucket_name, "profile_pictures/#{unique_filename}", acl: :public_read)
+    |> ExAws.request!
+
+    changeset = User.update_profile_picture_changeset(user, %{profile_picture: "https://#{bucket_name}.s3.amazonaws.com/profile_pictures/#{unique_filename}"})
+
+    case Repo.update(changeset) do
+      {:ok, _upload} ->
+          conn
+          |> put_flash(:info, "Profile picture uploaded successfully!")
+          |> redirect(to: user_profile_path(conn, :show))
+      {:error, changeset} ->
+          render conn, "show.html", changeset: changeset
     end
   end
 

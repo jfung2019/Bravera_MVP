@@ -54,7 +54,7 @@ config :ex_aws,
   region: System.get_env("AWS-REGION")
 
 config :omega_bravera,
-  images_bucket_name: System.get_env("S3_BUCKET_NAME")
+  :images_bucket_name, System.get_env("S3_BUCKET_NAME")
 
 config :ex_aws, :hackney_opts,
   follow_redirect: true,

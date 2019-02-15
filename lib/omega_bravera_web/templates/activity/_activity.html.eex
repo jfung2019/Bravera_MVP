@@ -31,7 +31,7 @@
             <div class="p-1 col">
               <div class="mx-auto profile-picture">
                 <%= link to: "https://www.strava.com/athletes/#{activity.user.strava.athlete_id}", target: "_blank" do %>
-                  <%= img_tag(profile_picture_or_default(activity.user.strava.profile_picture, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
+                  <%= img_tag(profile_picture_or_default(activity.user, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
                 <% end %>
               </div>
             </div>

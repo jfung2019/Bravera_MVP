@@ -89,8 +89,20 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     tag(:span, "data-render-countdown": formatted_date_time)
   end
 
-  def profile_picture_or_default(saved_profile_picture, default) do
-    if valid_uri?(saved_profile_picture), do: saved_profile_picture, else: default
+  @doc """
+  Return one profile picture.
+
+  Priority is:
+  Bravera profile picture
+  Tracker profile picture
+  Default profile picture.
+  """
+  def profile_picture_or_default(%User{profile_picture: bravera_pp, strava: %{profile_picture: strava_pp}}, default) do
+    cond do
+      valid_uri?(bravera_pp) == true -> bravera_pp
+      valid_uri?(strava_pp) == true -> strava_pp
+      true -> default
+    end
   end
 
   defp valid_uri?(nil), do: false
