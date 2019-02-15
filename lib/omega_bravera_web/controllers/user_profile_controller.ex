@@ -37,6 +37,15 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
     bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
 
+    if not is_nil(user.profile_picture) do
+      filename =
+        URI.parse(user.profile_picture).path
+
+      bucket_name
+      |> ExAws.S3.delete_object(filename)
+      |> ExAws.request()
+    end
+
     resized_image =
       image_params.path
       |> open()
