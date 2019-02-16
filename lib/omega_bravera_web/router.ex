@@ -39,6 +39,7 @@ defmodule OmegaBraveraWeb.Router do
     get("/profile/settings", SettingController, :show)
     put("/profile/settings", SettingController, :update)
     get("/profile", UserProfileController, :show)
+    put("/profile/upload_profile_picture", UserProfileController, :update_profile_picture)
     get("/profile/settings/edit", SettingController, :edit)
     resources("/password", ChangePasswordController, only: [:new, :create])
     get("/password/edit", ChangePasswordController, :edit)

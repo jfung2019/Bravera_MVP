@@ -39,6 +39,27 @@ config :sendgrid,
   api_key: "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",
   sandbox_enable: true
 
+
+# S3 bucket
+# Have to set these because ExAws does not support adding defaults.
+# For examble: secret_access_key: [{:system, "2zCdtR7An6okd6mwDbizUHdo1/zZQtXkN+foHYW5"}, :instance_role]
+# is not supported and will complain the variable is not a string.
+System.put_env("AWS_ACCESS_KEY_ID", "AKIAJQUCEKCP2T5JG2WA")
+System.put_env("AWS_SECRET_ACCESS_KEY", "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")
+
+config :ex_aws,
+  access_key_id: [{:system, "AWS_ACCESS_KEY_ID"}, :instance_role],
+  secret_access_key: [{:system, "AWS_SECRET_ACCESS_KEY"}, :instance_role],
+  region: "ap-southeast-1"
+
+config :omega_bravera,
+  :images_bucket_name, "bravera-staging-images"
+
+config :ex_aws, :hackney_opts,
+  follow_redirect: true,
+  recv_timeout: 30_000
+
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

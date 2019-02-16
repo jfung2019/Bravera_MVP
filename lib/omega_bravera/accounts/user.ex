@@ -10,7 +10,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Stripe.StrCustomer
 
   @required_attributes [:firstname, :lastname]
-  @allowed_attributes [:email, :firstname, :lastname, :additional_info, :email_verified]
+  @allowed_attributes [:email, :firstname, :lastname, :additional_info, :email_verified, :profile_picture]
 
   schema "users" do
     field(:email, :string)
@@ -19,6 +19,7 @@ defmodule OmegaBravera.Accounts.User do
     field(:firstname, :string)
     field(:lastname, :string)
     field(:additional_info, :map, default: %{})
+    field(:profile_picture, :string, default: nil)
 
     # associations
     has_one(:credential, Credential)
@@ -42,6 +43,11 @@ defmodule OmegaBravera.Accounts.User do
     |> validate_length(:email, max: 254)
     |> unique_constraint(:email)
     |> add_email_activation_token()
+  end
+
+  def update_profile_picture_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:profile_picture])
   end
 
   def add_email_activation_token(%Ecto.Changeset{} = changeset) do
