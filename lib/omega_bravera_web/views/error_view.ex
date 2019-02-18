@@ -6,4 +6,6 @@ defmodule OmegaBraveraWeb.ErrorView do
   def template_not_found(_template, assigns) do
     render("500.html", assigns)
   end
+
+  def render("500.json", _assigns), do: %{error: "Server error"}
 end
