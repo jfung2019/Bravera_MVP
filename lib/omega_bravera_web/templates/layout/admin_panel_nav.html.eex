@@ -14,11 +14,8 @@
       </ul>
 
       <ul class="navbar-nav">
-       <li class="nav-item">
-          <%= link("Sync Profile Pictures", to: admin_panel_profile_picture_path(@conn, :index)) %>
-        </li>
         <li class="nav-item">
-          <%= link("Sync Exchange Rate", to: admin_panel_exchange_rate_path(@conn, :index)) %>
+          <%= link("Sync Activities", to: admin_panel_activities_syncer_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
           <%= link("Users", to: admin_panel_user_path(@conn, :index)) %>
