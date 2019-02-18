@@ -68,13 +68,13 @@ defmodule OmegaBravera.ActivitySyncer do
         |> Challenges.get_ngo_chal!()
         |> Repo.preload([:user, :ngo])
 
-      ActivitiesIngestion.process_challenge(challenge, activity)
+      ActivitiesIngestion.process_challenge(challenge, activity, false)
     end
   end
 
   def sync() do
-    Logger.info("Syncer: Dropping existing active challenges activities")
-    Accounts.drop_active_challenges_activities()
+    # Logger.info("Syncer: Dropping existing active challenges activities")
+    # Accounts.drop_active_challenges_activities()
 
     Logger.info("Syncer: Starting ActivitySyncer model...")
     prepare_challengers() |> process_activities()

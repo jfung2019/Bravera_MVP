@@ -108,8 +108,7 @@ defmodule OmegaBraveraWeb.Router do
         :create_imported_strava_activity
       )
 
-      resources("/sync_exchange_rate", AdminPanelExchangeRateController, only: [:index])
-      resources("/sync_profile_pictures", AdminPanelProfilePictureController, only: [:index])
+      resources("/sync_activities", AdminPanelActivitiesSyncerController, only: [:index])
       get("/challenges", AdminPanelChallengesController, :index)
 
       resources("/ngos", AdminPanelNGOController, only: [:index, :new, :create]) do

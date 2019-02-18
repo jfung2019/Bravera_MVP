@@ -35,7 +35,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       challenge_id
       |> Challenges.get_ngo_chal!()
       |> Repo.preload([:user, :ngo])
-      |> process_challenge(activity)
+      |> process_challenge(activity, true)
     end)
   end
 
@@ -44,20 +44,25 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     {:error, :no_challengers_found}
   end
 
+  def process_challenges(challenge, activity, send_emails \\ true) do
+    process_challenge(challenge, activity, send_emails)
+  end
+
   def process_challenge(
         %NGOChal{type: "PER_KM"} = challenge,
-        %Strava.Activity{distance: distance} = strava_activity
+        %Strava.Activity{distance: distance} = strava_activity,
+        send_emails
       )
       when distance > 0 do
     Logger.info("ActivityIngestion: Processing km challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, _donations} =
       challenge
-      |> create_activity(strava_activity)
+      |> create_activity(strava_activity, send_emails)
       |> update_challenge
-      |> notify_participant_of_activity
+      |> notify_participant_of_activity(send_emails)
       |> get_donations
-      |> notify_participant_of_milestone
+      |> notify_participant_of_milestone(send_emails)
 
     Logger.info(
       "ActivityIngestion: Processing has finished for km challenge: #{inspect(challenge.id)}"
@@ -82,19 +87,20 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   def process_challenge(
         %NGOChal{type: "PER_MILESTONE"} = challenge,
-        %Strava.Activity{distance: distance} = strava_activity
+        %Strava.Activity{distance: distance} = strava_activity,
+        send_emails
       )
       when distance > 0 do
     Logger.info("ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity, donations} =
       challenge
-      |> create_activity(strava_activity)
+      |> create_activity(strava_activity, send_emails)
       |> update_challenge
-      |> notify_participant_of_activity
+      |> notify_participant_of_activity(send_emails)
       |> get_donations
-      |> notify_participant_of_milestone
-      |> charge_donations()
+      |> notify_participant_of_milestone(send_emails)
+      |> charge_donations(send_emails)
 
     Logger.info(
       "ActivityIngestion: Processing has finished for milestone challenge: #{
@@ -121,9 +127,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     end
   end
 
-  def process_challenge(_, _), do: {:error, :activity_not_processed}
+  def process_challenge(_, _, _), do: {:error, :activity_not_processed}
 
-  def create_activity(challenge, activity) do
+  def create_activity(challenge, activity, send_emails) do
     # Check if the strava activity is an admin created one.
     changeset =
       case Map.has_key?(activity, :admin_id) do
@@ -138,7 +144,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
           )
       end
 
-    if valid_activity?(activity, challenge) and
+    if valid_activity?(activity, challenge, send_emails) and
          activity_type_matches_challenge_activity_type?(activity, challenge) do
       case Repo.insert(changeset) do
         {:ok, activity} ->
@@ -169,8 +175,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   defp update_challenge({:error, _, _} = params), do: params
 
-  defp notify_participant_of_activity({status, challenge, activity} = params) do
-    if status == :ok do
+  defp notify_participant_of_activity({status, challenge, activity} = params, send_emails) do
+    if status == :ok and send_emails do
       Challenges.Notifier.send_activity_completed_email(challenge, activity)
     end
 
@@ -182,26 +188,28 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   defp get_donations({:error, _, _} = params), do: Tuple.append(params, nil)
 
-  defp notify_participant_of_milestone({status, challenge, _, donations} = params) do
-    if status == :ok and length(donations) > 0 do
+  defp notify_participant_of_milestone({status, challenge, _, donations} = params, send_emails) do
+    if status == :ok and length(donations) > 0 and send_emails do
       Challenges.Notifier.send_participant_milestone_email(challenge)
     end
 
     params
   end
 
-  defp charge_donations({status, _, _, donations} = params) do
+  defp charge_donations({status, _, _, donations} = params, send_emails) do
     charged_donations =
       case status do
-        :ok -> Enum.map(donations, &notify_donor_and_charge_donation/1)
+        :ok -> Enum.map(donations, fn donation -> notify_donor_and_charge_donation(donation, send_emails) end)
         :error -> []
       end
 
     put_elem(params, 3, charged_donations)
   end
 
-  defp notify_donor_and_charge_donation(donation) do
-    Challenges.Notifier.send_donor_milestone_email(donation)
+  defp notify_donor_and_charge_donation(donation, send_emails) do
+    if send_emails do
+      Challenges.Notifier.send_donor_milestone_email(donation)
+    end
 
     case Processor.charge_donation(donation) do
       {:ok, %Donation{status: "charged"} = charged_donation} ->
@@ -215,7 +223,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   defp strava_client({_, token}), do: Strava.Client.new(token)
 
-  defp valid_activity?(activity, challenge) do
+  defp valid_activity?(activity, challenge, send_emails) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
     challenge_started_first = Timex.compare(challenge.start_date, activity.start_date) == -1
     if !challenge_started_first, do: Logger.info("Activity before start date of challenge")
@@ -227,10 +235,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
            activity.manual == true do
         Logger.info("Manual activity triggered and blocked!")
 
-        Challenges.Notifier.send_manual_activity_blocked_email(
-          challenge,
-          Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
-        )
+        if (send_emails) do
+          Challenges.Notifier.send_manual_activity_blocked_email(
+            challenge,
+            Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
+          )
+        end
 
         false
       else

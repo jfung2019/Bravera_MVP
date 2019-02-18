@@ -50,7 +50,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     activity =
       Strava.Activity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
 
-    case ActivitiesIngestion.process_challenge(challenge, activity) do
+    case ActivitiesIngestion.process_challenge(challenge, activity, true) do
       {:ok, :challenge_updated} ->
         conn
         |> put_flash(:info, "Activity imported successfully.")
@@ -92,7 +92,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
     case changeset.valid? do
       true ->
-        case ActivitiesIngestion.process_challenge(challenge, activity) do
+        case ActivitiesIngestion.process_challenge(challenge, activity, true) do
           {:ok, :challenge_updated} ->
             conn
             |> put_flash(:info, "Activity created successfully.")
