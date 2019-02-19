@@ -186,7 +186,10 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   defp get_donations({:ok, challenge, _} = params),
     do: Tuple.append(params, Money.chargeable_donations_for_challenge(challenge))
 
-  defp get_donations({:error, _, _} = params), do: Tuple.append(params, nil)
+  defp get_donations({:error, challenge, _} = params) do
+    Logger.error("Could not get donations for challenge #{inspect(challenge.slug)}")
+    Tuple.append(params, nil)
+  end
 
   defp notify_participant_of_milestone({status, challenge, _, donations} = params, send_emails) do
     if status == :ok and length(donations) > 0 and send_emails do
@@ -216,7 +219,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         charged_donation
 
       {:error, reason} ->
-        Logger.error(reason)
+        Logger.error("Failed to charge donation, reason: #{inspect(reason)}")
         nil
     end
   end
@@ -251,19 +254,19 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   end
 
   defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
-         activity_type: activity_type
-       }),
-       do: true
-
-  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
          activity_type: challenge_activity_type
        }) do
-    Logger.info(
-      "Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{
-        activity_type
-      }"
-    )
 
-    false
+    equal? = activity_type == challenge_activity_type
+
+    if !equal? do
+      Logger.info(
+        "Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{
+          activity_type
+        }"
+      )
+    end
+
+    equal?
   end
 end
