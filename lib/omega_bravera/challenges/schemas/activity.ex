@@ -47,7 +47,15 @@ defmodule OmegaBravera.Challenges.Activity do
     :challenge_id
   ]
 
-  @allowed_attributes [:name, :manual | @required_attributes]
+  @allowed_attributes [
+    :name,
+    :manual,
+    :average_speed,
+    :calories,
+    :moving_time,
+    :elapsed_time |
+    @required_attributes
+  ]
   @activity_type [
     "Run",
     "Cycle",
