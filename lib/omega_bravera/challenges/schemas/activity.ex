@@ -11,10 +11,10 @@ defmodule OmegaBravera.Challenges.Activity do
     field(:start_date, :utc_datetime)
     field(:manual, :boolean)
     field(:type, :string)
-    field(:average_speed, :decimal)
-    field(:moving_time, :integer)
-    field(:elapsed_time, :integer)
-    field(:calories, :decimal)
+    field(:average_speed, :decimal, default: 0)
+    field(:moving_time, :integer, default: 0)
+    field(:elapsed_time, :integer, default: 0)
+    field(:calories, :decimal, default: 0)
 
     # Only used for to record which admin created the activity
     field(:admin_id, :integer)
@@ -29,15 +29,11 @@ defmodule OmegaBravera.Challenges.Activity do
   @meters_per_km 1000
   @km_per_hour Decimal.new(3.6)
   @required_attributes [
-    :average_speed,
-    :moving_time,
-    :elapsed_time,
     :distance,
     :start_date,
     :type,
     :user_id,
-    :challenge_id,
-    :calories
+    :challenge_id
   ]
 
   @required_attributes_for_admin [
