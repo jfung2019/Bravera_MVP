@@ -44,7 +44,7 @@
   </div>
 
   <div class="row">
-    <div class="col-5"><h5>Your Challenges:</h5></div>
+    <div class="col-5"><h5>Solo Challenges:</h5></div>
     <div class="col-7 mt-1">
       <%= img_tag(static_path(@conn, "/images/icons/if_ic_screen_rotation_48px.png")) %>
       <span class="small">Turn your mobile screen for better view.</span>
@@ -118,7 +118,7 @@
 
 <br />
 <div class="row">
-  <div class="col-5"><h5>Teams you are in:</h5></div>
+  <div class="col-5"><h5>Team Challenges:</h5></div>
 </div>
 <br />
 
