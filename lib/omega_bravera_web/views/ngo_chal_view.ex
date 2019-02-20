@@ -214,6 +214,8 @@ defmodule OmegaBraveraWeb.NGOChalView do
         %Decimal{} = total_km_pledges,
         distance_target
       ) do
+    distance_target = Decimal.new(distance_target)
+
     Decimal.mult(total_km_pledges, distance_target)
     |> Decimal.round(1)
     |> Decimal.to_string()

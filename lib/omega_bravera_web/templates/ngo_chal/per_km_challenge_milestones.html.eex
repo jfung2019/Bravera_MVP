@@ -45,7 +45,7 @@
         Current Distance Value:
         <strong class="text-500 float-right">
           <%= currency_to_symbol(@challenge.default_currency)%>
-          <%= render_km_challenge_total_support(@total_pledges_per_km, @challenge.distance_covered) %>
+          <%= render_km_challenge_total_support(@total_pledges_per_km, @challenge.distance_target) %>
         </strong>
       </h5>
       <div style="clear: both;"></div>
