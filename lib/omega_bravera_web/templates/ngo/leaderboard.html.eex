@@ -20,10 +20,10 @@
 
           <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
             <label class="btn btn-green active">
-              <input type="radio" name="options" id="milestone_leaderboard" autocomplete="off" checked> Milestone 
+              <input type="radio" name="options" id="milestone_leaderboard" autocomplete="off" checked> Per Goal
             </label>
             <label class="btn btn-green">
-              <input type="radio" name="options" id="km_leaderboard" autocomplete="off"> KM
+              <input type="radio" name="options" id="km_leaderboard" autocomplete="off"> Per KM
             </label>
           </div>
           <div class="leaderboard">
@@ -47,7 +47,7 @@
                           <div class="avatars mx-auto">
                             <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
                               <%= img_tag(profile_picture_or_default(
-                                challenge.user.strava.profile_picture,
+                                challenge.user,
                                 static_path(@conn, "/images/profile_default.jpeg")),
                                 class: "thumbnail img-fluid rounded-circle border"
                               ) %>
@@ -64,7 +64,7 @@
                         <td>
                           <div class="avatars mx-auto">
                             <%= img_tag(profile_picture_or_default(
-                              challenge.user.strava.profile_picture,
+                              challenge.user,
                               static_path(@conn, "/images/profile_default.jpeg")),
                               class: "thumbnail img-fluid rounded-circle border"
                             ) %>
@@ -103,7 +103,7 @@
                         <div class="avatars mx-auto">
                           <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
                             <%= img_tag(profile_picture_or_default(
-                              challenge.user.strava.profile_picture,
+                              challenge.user,
                               static_path(@conn, "/images/profile_default.jpeg")),
                               class: "thumbnail img-fluid rounded-circle border"
                             ) %>
@@ -120,7 +120,7 @@
                       <td>
                         <div class="avatars mx-auto">
                           <%= img_tag(profile_picture_or_default(
-                            challenge.user.strava.profile_picture,
+                            challenge.user,
                             static_path(@conn, "/images/profile_default.jpeg")),
                             class: "thumbnail img-fluid rounded-circle border"
                           ) %>

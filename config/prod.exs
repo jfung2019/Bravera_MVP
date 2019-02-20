@@ -39,7 +39,6 @@ config :omega_bravera, OmegaBravera.Guardian,
   secret_key: System.get_env("GUARDIAN_SECRET_KEY")
 
 # Email config
-
 config :omega_bravera, OmegaBravera.Mailer,
   adapter: Bamboo.SendgridAdapter,
   api_key: System.get_env("SENDGRID_API_KEY")
@@ -47,6 +46,19 @@ config :omega_bravera, OmegaBravera.Mailer,
 config :sendgrid,
   api_key: System.get_env("SENDGRID_API_KEY"),
   sandbox_enable: is_nil(System.get_env("ENABLE_EMAILS"))
+
+# S3 Bucket
+config :ex_aws,
+  access_key_id: [{:system, "AWS_ACCESS_KEY_ID"}, :instance_role],
+  secret_access_key: [{:system, "AWS_SECRET_ACCESS_KEY"}, :instance_role],
+  region: System.get_env("AWS_REGION")
+
+config :omega_bravera,
+  :images_bucket_name, System.get_env("S3_BUCKET_NAME")
+
+config :ex_aws, :hackney_opts,
+  follow_redirect: true,
+  recv_timeout: 30_000
 
 # Manual activities
 config :omega_bravera,

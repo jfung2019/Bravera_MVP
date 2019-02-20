@@ -1,10 +1,25 @@
 <div class="container user-profile">
   <div class="row">
     <div class="col-sm-3 float-right profile-pic-padding">
-      <%= img_tag(profile_picture_or_default(@user.strava.profile_picture, static_path(@conn, "/images/profile_default.jpeg")), class: "img-thumbnail") %>
-      <div>
-        <span class="small">Note: to edit profile picture, please change inside your connected fitness tracker account.</span>
-      </div>
+      <%= img_tag(profile_picture_or_default(@user, static_path(@conn, "/images/profile_default.jpeg")), class: "img-thumbnail") %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col col-sm-4 mt-3">
+        <%= form_for @changeset, user_profile_path(@conn, :update_profile_picture), [multipart: true], fn f -> %>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Update</span>
+          </div>
+          <div class="custom-file">
+            <%= file_input f, :profile_picture, class: "custom-file-input", id: "profile_picture_label" %>    
+            <%= label f, "Profile picture", class: "custom-file-label", for: "profile_picture_label" %>    
+            <%= error_tag f, :profile_picture %>  
+          </div>
+        </div>
+        <%= submit "Save", class: "btn mb-1 mt-2" %>
+      <% end %>
     </div>
   </div>
   <div class="row">
@@ -28,9 +43,8 @@
     </div>
   </div>
 
-
   <div class="row">
-    <div class="col-5"><h5>Your Challenges:</h5></div>
+    <div class="col-5"><h5>Solo Challenges:</h5></div>
     <div class="col-7 mt-1">
       <%= img_tag(static_path(@conn, "/images/icons/if_ic_screen_rotation_48px.png")) %>
       <span class="small">Turn your mobile screen for better view.</span>
@@ -104,7 +118,7 @@
 
 <br />
 <div class="row">
-  <div class="col-5"><h5>Teams you are in:</h5></div>
+  <div class="col-5"><h5>Team Challenges:</h5></div>
 </div>
 <br />
 
