@@ -43,9 +43,32 @@ defmodule OmegaBraveraWeb.NGOController do
 
   defp add_stats(challenges) do
     Enum.map(challenges, fn challenge ->
-      challenge
-      |> Map.put(:total_secured, get_total_secured(challenge))
-      |> Map.put(:total_pledged, get_total_pledged(challenge))
+      case challenge.type do
+        "PER_KM" ->
+          total_support =
+            Challenges.get_per_km_challenge_total_pledges(challenge.slug)
+            |> Decimal.mult(Decimal.new(challenge.distance_target))
+            |> Decimal.round(1)
+
+          current_distance_value = get_total_secured(challenge)
+
+          secured =
+            cond do
+              Decimal.cmp(current_distance_value, total_support) == :gt -> total_support
+              Decimal.cmp(current_distance_value, total_support) == :lt -> current_distance_value
+              true -> total_support
+            end
+
+          challenge
+          |> Map.put(:total_secured, secured)
+          |> Map.put(:total_pledged, get_total_pledged(challenge))
+
+        "PER_MILESTONE" ->
+          challenge
+          |> Map.put(:total_secured, get_total_secured(challenge))
+          |> Map.put(:total_pledged, get_total_pledged(challenge))
+      end
+
     end)
   end
 
