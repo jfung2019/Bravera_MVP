@@ -31,27 +31,6 @@
         <% end %>
       </div>
       <div class="col-lg-4 max-w-775 margin-auto">
-        <div class="card">
-          <div class="card-body text-center mx-3 pb-2">
-            <h4 style="font-weight: 350;">
-              Join a challenge and Fundraise while you Train!
-            </h4>
-          </div>
-          <div class="card-footer text-center">
-            <%= if is_own_challenge?(@challenge, @current_user) do %>
-              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
-            <% else %>
-              <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %>
-              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
-            <% end %>
-          </div>
-        </div>
-
-        <div class="mt-4 d-none d-lg-block">
-          <%= render("ngo_card.html", ngo: @ngo_with_stats, conn: @conn) %>
-          <%= render(OmegaBraveraWeb.NGOView, "ngo_stats.html", ngo: @ngo_with_stats, conn: @conn) %>
-        </div>
-
         <div class="card mt-4">
           <div class="card-body text-center mx-3 pb-2">
             <h4>Latest Supporters</h4>
@@ -80,7 +59,23 @@
           </div>
         </div>
 
-        <div class="mt-4 d-block d-sm-none">
+        <div class="card mt-4">
+          <div class="card-body text-center mx-3 pb-2">
+            <h4 style="font-weight: 350;">
+              Join a challenge and Fundraise while you Train!
+            </h4>
+          </div>
+          <div class="card-footer text-center">
+            <%= if is_own_challenge?(@challenge, @current_user) do %>
+              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+            <% else %>
+              <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %>
+              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="mt-4">
           <%= render("ngo_card.html", ngo: @ngo_with_stats, conn: @conn) %>
           <%= render(OmegaBraveraWeb.NGOView, "ngo_stats.html", ngo: @ngo_with_stats, conn: @conn) %>
         </div>

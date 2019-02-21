@@ -41,13 +41,15 @@
           <%= render_pledge_per_km(@total_pledges_per_km) %> per KM
         </strong>
       </h5>
-      <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
-        Current Distance Value:
-        <strong class="text-500 float-right">
-          <%= currency_to_symbol(@challenge.default_currency)%>
-          <%= render_km_challenge_total_support(@total_pledges_per_km, @challenge.distance_covered) %>
-        </strong>
-      </h5>
+      <%= if @challenge.status == "active" do %>
+        <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
+          Current Distance Value:
+          <strong class="text-500 float-right">
+            <%= currency_to_symbol(@challenge.default_currency)%>
+            <%= render_km_current_distance_value(@total_pledges_per_km, @challenge) %>
+          </strong>
+        </h5>
+      <% end %>
       <div style="clear: both;"></div>
     </div>
     <h5 class="text-420 mt-0 mb-3 text-center">

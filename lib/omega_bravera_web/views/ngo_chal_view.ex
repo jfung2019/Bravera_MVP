@@ -208,12 +208,32 @@ defmodule OmegaBraveraWeb.NGOChalView do
     Decimal.mult(total_km_pledges, distance_covered)
   end
 
+  def render_km_current_distance_value(nil, _), do: 0
+
+  def render_km_current_distance_value(%Decimal{} = total_km_pledges, %NGOChal{} = challenge) do
+    current_distance_value =
+      Decimal.mult(total_km_pledges, challenge.distance_covered)
+      |> Decimal.round(1)
+
+    total_support =
+      Decimal.mult(total_km_pledges, Decimal.new(challenge.distance_target))
+      |> Decimal.round(1)
+
+    cond do
+      Decimal.cmp(current_distance_value, total_support) == :gt -> total_support
+      Decimal.cmp(current_distance_value, total_support) == :lt -> current_distance_value
+      true -> total_support
+    end
+  end
+
   def render_km_challenge_total_support(nil, _), do: 0
 
   def render_km_challenge_total_support(
         %Decimal{} = total_km_pledges,
         distance_target
       ) do
+    distance_target = Decimal.new(distance_target)
+
     Decimal.mult(total_km_pledges, distance_target)
     |> Decimal.round(1)
     |> Decimal.to_string()
