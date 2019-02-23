@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.RemoveDistanceCoveredFromChallenge do
 
   def change do
     alter table(:ngo_chals) do
-      remove :distance_covered
+      remove(:distance_covered)
     end
   end
 end

@@ -39,7 +39,6 @@ config :sendgrid,
   api_key: "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",
   sandbox_enable: true
 
-
 # S3 bucket
 # Have to set these because ExAws does not support adding defaults.
 # For examble: secret_access_key: [{:system, "2zCdtR7An6okd6mwDbizUHdo1/zZQtXkN+foHYW5"}, :instance_role]
@@ -52,13 +51,11 @@ config :ex_aws,
   secret_access_key: [{:system, "AWS_SECRET_ACCESS_KEY"}, :instance_role],
   region: "ap-southeast-1"
 
-config :omega_bravera,
-  :images_bucket_name, "bravera-staging-images"
+config :omega_bravera, :images_bucket_name, "bravera-staging-images"
 
 config :ex_aws, :hackney_opts,
   follow_redirect: true,
   recv_timeout: 30_000
-
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -116,7 +113,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 config :omega_bravera, OmegaBravera.Repo,
-  adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
   database: "omega_bravera_dev",

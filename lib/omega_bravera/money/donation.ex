@@ -99,5 +99,5 @@ defmodule OmegaBravera.Money.Donation do
     }
   end
 
-  defp moneyfied_stripe_amount(amount), do: Decimal.new(amount / 100)
+  defp moneyfied_stripe_amount(amount), do: Decimal.from_float(amount / 100)
 end

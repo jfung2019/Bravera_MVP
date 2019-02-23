@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddNgoHideDonorPaysFees do
 
   def change do
     alter table(:ngos) do
-      add :hide_donor_pays_fees, :boolean, null: false, default: true
+      add(:hide_donor_pays_fees, :boolean, null: false, default: true)
     end
   end
 end

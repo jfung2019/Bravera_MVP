@@ -52,7 +52,11 @@ defmodule OmegaBravera.Accounts.StravaTest do
 
       {:error, :strava, changeset, _} = Accounts.Strava.create_user_with_tracker(attrs)
 
-      assert changeset.errors == [athlete_id: {"has already been taken", []}]
+      assert changeset.errors == [
+               athlete_id:
+                 {"has already been taken",
+                  [constraint: :unique, constraint_name: "stravas_athlete_id_index"]}
+             ]
     end
   end
 end

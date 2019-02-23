@@ -28,13 +28,13 @@ defmodule OmegaBravera.Accounts.Strava do
 
   def create_user_with_tracker(attrs) do
     Multi.new()
-    |> Multi.run(:user, &do_create_user(&1, attrs))
-    |> Multi.run(:strava, &do_create_tracker(&1, attrs))
+    |> Multi.run(:user, fn _repo, _changes -> do_create_user(attrs) end)
+    |> Multi.run(:strava, fn _repo, %{user: user} -> do_create_tracker(user, attrs) end)
     |> Repo.transaction()
   end
 
-  defp do_create_user(_, attrs), do: Accounts.create_user(attrs)
-  defp do_create_tracker(%{user: user}, attrs), do: Trackers.create_strava(user.id, attrs)
+  defp do_create_user(attrs), do: Accounts.create_user(attrs)
+  defp do_create_tracker(user, attrs), do: Trackers.create_strava(user.id, attrs)
 
   defp build_additional_info(%Strava.Athlete.Summary{} = athlete) do
     %{sex: athlete.sex, location: "#{athlete.country}/#{athlete.city}/#{athlete.city}"}

@@ -123,7 +123,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     challenge
     |> change(distance_covered: Decimal.add(challenge.distance_covered, distance))
     |> change(%{
-      last_activity_received: Timex.now(),
+      last_activity_received: DateTime.truncate(Timex.now(), :second),
       participant_notified_of_inactivity: false,
       donor_notified_of_inactivity: false
     })
@@ -157,7 +157,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
       end
 
     changeset
-    |> change(last_activity_received: last_activity_received)
+    |> change(last_activity_received: DateTime.truncate(last_activity_received, :second))
   end
 
   defp add_start_and_end_dates(
@@ -180,14 +180,17 @@ defmodule OmegaBravera.Challenges.NGOChal do
        })
        when is_number(duration) do
     {start_date, end_date} =
-      case ngo.open_registration == false and Timex.after?(ngo.utc_launch_date, Timex.now()) do
-        true -> {ngo.utc_launch_date, Timex.shift(ngo.utc_launch_date, days: duration)}
-        _ -> {Timex.now(), Timex.shift(Timex.now(), days: duration)}
+      cond do
+        ngo.open_registration == false and Timex.after?(ngo.utc_launch_date, Timex.now()) ->
+          {ngo.utc_launch_date, Timex.shift(ngo.utc_launch_date, days: duration)}
+
+        true ->
+          {Timex.now(), Timex.shift(Timex.now(), days: duration)}
       end
 
     changeset
-    |> change(start_date: start_date)
-    |> change(end_date: end_date)
+    |> change(start_date: DateTime.truncate(start_date, :second))
+    |> change(end_date: DateTime.truncate(end_date, :second))
   end
 
   defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _, _), do: changeset

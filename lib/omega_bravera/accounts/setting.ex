@@ -29,7 +29,7 @@ defmodule OmegaBravera.Accounts.Setting do
   defp get_weight_fraction(),
     do:
       Enum.map(0..9, fn x ->
-        Decimal.new(x * 0.1) |> Decimal.round(1) |> Decimal.to_string()
+        Decimal.from_float(x * 0.1) |> Decimal.round(1) |> Decimal.to_string()
       end)
 
   def weight_list, do: get_weight_whole_number()

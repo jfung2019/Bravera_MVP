@@ -189,7 +189,7 @@ defmodule OmegaBravera.AccountsTest do
       valid_attrs = Map.put(@valid_attrs, :user_id, user.id)
       assert {:ok, %Setting{} = setting} = Accounts.create_setting(valid_attrs)
       assert setting.location == "UK"
-      assert setting.weight == Decimal.new(35.5)
+      assert setting.weight == Decimal.from_float(35.5)
       assert setting.date_of_birth == ~D[1940-07-14]
       assert setting.gender == "Female"
       assert setting.user_id == user.id

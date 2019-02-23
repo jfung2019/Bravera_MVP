@@ -137,8 +137,22 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     for {key, val} <- map, into: %{}, do: {String.to_atom(key), val}
   end
 
-  defp to_utc(datetime_map) do
-    {:ok, datetime} = Ecto.DateTime.cast(datetime_map)
+  defp to_utc(%{
+         "day" => day,
+         "hour" => hour,
+         "minute" => minute,
+         "month" => month,
+         "year" => year
+       }) do
+    {:ok, datetime} =
+      NaiveDateTime.new(
+        String.to_integer(year),
+        String.to_integer(month),
+        String.to_integer(day),
+        String.to_integer(hour),
+        String.to_integer(minute),
+        0
+      )
 
     datetime
     |> Timex.to_datetime()
@@ -214,10 +228,10 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
     # Metabolic equivalent
     met_values = %{
-      "Run" => Decimal.new(9.0),
-      "Cycle" => Decimal.new(4.5),
-      "Walk" => Decimal.new(2.9),
-      "Hike" => Decimal.new(7.0)
+      "Run" => Decimal.new(9),
+      "Cycle" => Decimal.from_float(4.5),
+      "Walk" => Decimal.from_float(2.9),
+      "Hike" => Decimal.new(7)
     }
 
     # Calculate calories based on MET value and Weight and Duration.

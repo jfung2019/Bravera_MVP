@@ -19,8 +19,7 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id],
-  backends: [{LoggerFileBackend, :error_log}]
+  metadata: [:request_id]
 
 config :logger, :error_log,
   path: "/var/log/my_app/error.log",
@@ -42,6 +41,10 @@ config :omega_bravera, :app_base_url, System.get_env("APP_BASE_URL") || "https:/
 
 # Manual activities
 config :omega_bravera, :enable_manual_activities, false
+
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
+config :postgrex, :json_library, Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

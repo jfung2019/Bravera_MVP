@@ -3,7 +3,10 @@ defmodule OmegaBravera.Repo.Migrations.AddDistancesToNgos do
 
   def change do
     alter table(:ngos) do
-      add :distances, {:array, :integer}, null: false, default: fragment("ARRAY[50, 75, 150, 250]")
+      add(:distances, {:array, :integer},
+        null: false,
+        default: fragment("ARRAY[50, 75, 150, 250]")
+      )
     end
   end
 end

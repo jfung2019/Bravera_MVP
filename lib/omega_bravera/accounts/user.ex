@@ -10,7 +10,14 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Stripe.StrCustomer
 
   @required_attributes [:firstname, :lastname]
-  @allowed_attributes [:email, :firstname, :lastname, :additional_info, :email_verified, :profile_picture]
+  @allowed_attributes [
+    :email,
+    :firstname,
+    :lastname,
+    :additional_info,
+    :email_verified,
+    :profile_picture
+  ]
 
   schema "users" do
     field(:email, :string)

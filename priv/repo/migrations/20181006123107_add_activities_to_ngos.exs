@@ -3,7 +3,10 @@ defmodule OmegaBravera.Repo.Migrations.AddActivitiesToNgos do
 
   def change do
     alter table(:ngos) do
-      add :activities, {:array, :string}, null: false, default: fragment("ARRAY['Run', 'Cycle', 'Walk', 'Hike']")
+      add(:activities, {:array, :string},
+        null: false,
+        default: fragment("ARRAY['Run', 'Cycle', 'Walk', 'Hike']")
+      )
     end
   end
 end

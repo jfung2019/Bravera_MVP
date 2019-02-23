@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddBraveraUserProfilePicture do
 
   def change do
     alter table("users") do
-      add :profile_picture, :string, default: nil
+      add(:profile_picture, :string, default: nil)
     end
   end
 end

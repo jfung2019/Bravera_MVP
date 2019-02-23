@@ -11,12 +11,12 @@ defmodule OmegaBraveraWeb.AdminPanelNGOViewTest do
 
       assert Decimal.equal?(
                AdminPanelNGOView.render_fees(donation, "bravera"),
-               Decimal.new(9.00)
+               Decimal.new(9)
              )
 
       refute Decimal.equal?(
                AdminPanelNGOView.render_fees(donation, "bravera"),
-               Decimal.new(1.00)
+               Decimal.new(1)
              )
     end
 

@@ -5,12 +5,12 @@ defmodule OmegaBravera.Repo.Migrations.AddAthleteIdUniqueIndex do
   alias OmegaBravera.{Repo, Trackers.Strava}
 
   def up do
-    from(s in Strava, where: s.athlete_id == 33762738) |> Repo.delete_all
+    from(s in Strava, where: s.athlete_id == 33_762_738) |> Repo.delete_all()
 
-    create unique_index(:stravas, [:athlete_id])
+    create(unique_index(:stravas, [:athlete_id]))
   end
 
   def down do
-    drop unique_index(:stravas, [:athlete_id])
+    drop(unique_index(:stravas, [:athlete_id]))
   end
 end

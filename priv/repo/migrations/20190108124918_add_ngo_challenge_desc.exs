@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddNgoChallengeDesc do
 
   def change do
     alter table(:ngos) do
-      add :challenge_desc, :text, default: nil
+      add(:challenge_desc, :text, default: nil)
     end
   end
 end

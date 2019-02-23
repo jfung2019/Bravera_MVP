@@ -3,13 +3,13 @@ defmodule OmegaBravera.Repo.Migrations.CreateTips do
 
   def change do
     create table(:tips) do
-      add :amount, :integer
-      add :currency, :string
-      add :user_id, references(:users, on_delete: :nothing)
+      add(:amount, :integer)
+      add(:currency, :string)
+      add(:user_id, references(:users, on_delete: :nothing))
 
       timestamps(type: :timestamptz)
     end
 
-    create index(:tips, [:user_id])
+    create(index(:tips, [:user_id]))
   end
 end

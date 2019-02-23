@@ -53,7 +53,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       challenge = insert(:ngo_challenge)
       strava_activity = Map.put(strava_activity, :manual, true)
 
-      assert {:error, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity, true)
+      assert {:error, _, _} =
+               ActivitiesIngestion.create_activity(challenge, strava_activity, true)
     end
 
     test "returns error when activity dates are invalid", %{
@@ -65,7 +66,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: -10))
         |> Map.replace!(:type, challenge.activity_type)
 
-      assert {:error, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity, true)
+      assert {:error, _, _} =
+               ActivitiesIngestion.create_activity(challenge, strava_activity, true)
     end
 
     test "challenge not processed when activity type does not match challenge type", %{
@@ -74,7 +76,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       challenge = insert(:ngo_challenge)
       strava_activity = Map.replace!(strava_activity, :type, "invalid_type")
 
-      assert {:error, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity, true)
+      assert {:error, _, _} =
+               ActivitiesIngestion.create_activity(challenge, strava_activity, true)
     end
   end
 
@@ -185,19 +188,27 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     test "does nothing if the Strava activity distance is <= 0" do
       challenge = insert(:ngo_challenge)
 
-      assert ActivitiesIngestion.process_challenge(challenge.id, %Strava.Activity{
-               distance: 0,
-               type: challenge.activity_type
-             }, true) == {:error, :activity_not_processed}
+      assert ActivitiesIngestion.process_challenge(
+               challenge.id,
+               %Strava.Activity{
+                 distance: 0,
+                 type: challenge.activity_type
+               },
+               true
+             ) == {:error, :activity_not_processed}
     end
 
     test "does nothing if the Strava activity distance is <= 0 for km challenge" do
       challenge = insert(:ngo_challenge, %{type: "PER_KM"})
 
-      assert ActivitiesIngestion.process_challenge(challenge.id, %Strava.Activity{
-               distance: 0,
-               type: challenge.activity_type
-             }, true) == {:error, :activity_not_processed}
+      assert ActivitiesIngestion.process_challenge(
+               challenge.id,
+               %Strava.Activity{
+                 distance: 0,
+                 type: challenge.activity_type
+               },
+               true
+             ) == {:error, :activity_not_processed}
     end
 
     test "does nothing if the Strava activity start date is before the challenge start date", %{
@@ -247,7 +258,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
       updated_challenge = Challenges.get_ngo_chal_by_slugs(challenge.ngo.slug, challenge.slug)
 
-      assert updated_challenge.distance_covered == Decimal.new(1.7)
+      assert updated_challenge.distance_covered == Decimal.from_float(1.7)
     end
 
     test "updates a km challenge with the new covered distance", %{
@@ -261,7 +272,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
       updated_challenge = Challenges.get_ngo_chal_by_slugs(challenge.ngo.slug, challenge.slug)
 
-      assert updated_challenge.distance_covered == Decimal.new(1.7)
+      assert updated_challenge.distance_covered == Decimal.from_float(1.7)
     end
 
     test "updates the challenge status if the covered distance is greater than the target distance",
@@ -378,9 +389,13 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
         assert donation.status == "pending"
 
+        end_date =
+          Timex.now()
+          |> Timex.shift(days: -10)
+          |> DateTime.truncate(:second)
+
         # End the challenge
-        changeset =
-          Ecto.Changeset.change(challenge, %{end_date: Timex.shift(Timex.now(), days: -10)})
+        changeset = Ecto.Changeset.change(challenge, %{end_date: end_date})
 
         {:ok, _updated_challenge} = Repo.update(changeset)
 

@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddNgoFundraisingGoal do
 
   def change do
     alter table(:ngos) do
-      add :fundraising_goal, :integer, null: false, default: 0
+      add(:fundraising_goal, :integer, null: false, default: 0)
     end
   end
 end

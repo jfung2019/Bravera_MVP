@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddAdditionalInfoToUser do
 
   def change do
     alter table("users") do
-      add :additional_info, :map
+      add(:additional_info, :map)
     end
   end
 end

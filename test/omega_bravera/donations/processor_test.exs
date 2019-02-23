@@ -45,7 +45,7 @@ defmodule OmegaBravera.Donations.ProcessorTest do
       assert charged_fields == %{
                card_brand: "Visa",
                charge_id: "ch_1Ds8ugEXtHU8QBy8i6WT5pk6",
-               charged_amount: Decimal.new(10.0),
+               charged_amount: Decimal.from_float(10.0),
                charged_description: "Donation to Save the children via Bravera.co",
                charged_status: "succeeded",
                last_digits: "4242"
@@ -90,7 +90,7 @@ defmodule OmegaBravera.Donations.ProcessorTest do
       assert charged_fields == %{
                card_brand: "Visa",
                charge_id: "ch_1Ds9ADEXtHU8QBy8S5PkhhSG",
-               charged_amount: Decimal.new(111.75),
+               charged_amount: Decimal.from_float(111.75),
                charged_description: "Donation to Save the children via Bravera.co",
                charged_status: "succeeded",
                last_digits: "4242"
@@ -144,7 +144,7 @@ defmodule OmegaBravera.Donations.ProcessorTest do
       assert charged_fields == %{
                card_brand: "Visa",
                charge_id: "ch_1DwSC6EXtHU8QBy8f95J7Zsn",
-               charged_amount: Decimal.new(500.0),
+               charged_amount: Decimal.from_float(500.0),
                charged_description: "Donation to Save the children via Bravera.co",
                charged_status: "succeeded",
                last_digits: "4242"
