@@ -59,14 +59,14 @@ defmodule OmegaBravera.Mixfile do
       {:ex_machina, "~> 2.2"},
       {:sched_ex, "~> 1.0"},
       {:csv, "~> 2.0.0"},
-      {:mock, "~> 0.3.0", only: :test},
+      {:mock, "~> 0.3.3", only: :test},
       {:number, "~> 1.0.0"},
       {:slugify, "~> 1.1"},
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
-      { :uuid, "~> 1.1" },
+      {:uuid, "~> 1.1"},
       {:mogrify, "~> 0.7.0"}
     ]
   end
