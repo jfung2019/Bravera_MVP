@@ -16,7 +16,7 @@ defmodule OmegaBravera.Factory do
       firstname: "John",
       lastname: "Doe",
       token: "abcd#{Enum.random(10_000_000..20_000_000)}",
-      profile_picture: "some-profile-picture.png",
+      strava_profile_picture: "some-profile-picture.png",
       user: build(:user)
     }
   end

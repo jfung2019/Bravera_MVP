@@ -78,7 +78,7 @@ defmodule OmegaBravera.AccountsTest do
         lastname: "Garcia",
         token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
         additional_info: %{sex: "M", location: "Spain/Barcelona/Barcelona"},
-        profile_picture: "some-profile-picture.png"
+        strava_profile_picture: "some-profile-picture.png"
       }
 
       {:ok, user} = Accounts.insert_or_update_strava_user(attrs)
