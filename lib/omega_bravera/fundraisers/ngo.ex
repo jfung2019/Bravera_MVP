@@ -14,6 +14,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:image, :string)
     field(:name, :string)
     field(:slug, :string)
+    # Per NGO Google Analytics ID
+    field(:ga_id, :string)
     field(:url, :string)
     field(:full_desc, :string)
     field(:challenge_desc, :string)
@@ -53,6 +55,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :logo,
     :image,
     :slug,
+    :ga_id,
     :url,
     :full_desc,
     :challenge_desc,

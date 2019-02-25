@@ -88,6 +88,12 @@
 
 <script>
 
+  <%= if !is_nil(@challenge.ngo.ga_id) do %>
+    $(document).ready(function() {
+      ga('create', '<%=@challenge.ngo.ga_id%>', 'auto', '<%=@challenge.ngo.slug%>');
+    })
+  <% end %>
+
  $("#add-buddy-button").click(function() {
    var nextBuddyLength = $(".buddy").length + 1;
    var nameHTML = $("<div class='form-group col-4 mb-0 pr-0'><input name=\"buddies[" + nextBuddyLength + "][name]\" type='text' placeholder=\"Name\" class='form-control'/></div>");
