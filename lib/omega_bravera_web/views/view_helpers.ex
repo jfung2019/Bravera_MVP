@@ -98,7 +98,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   Default profile picture.
   """
   def profile_picture_or_default(
-        %User{profile_picture: bravera_pp, strava: %{profile_picture: strava_pp}},
+        %User{profile_picture: bravera_pp, strava: %{strava_profile_picture: strava_pp}},
         default
       ) do
     cond do
