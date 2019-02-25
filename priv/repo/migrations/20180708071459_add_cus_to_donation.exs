@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddCusToDonation do
 
   def change do
     alter table(:donations) do
-      add :str_cus_id, :string
+      add(:str_cus_id, :string)
     end
   end
 end

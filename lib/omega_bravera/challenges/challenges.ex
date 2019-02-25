@@ -277,7 +277,7 @@ defmodule OmegaBravera.Challenges do
 
   def update_ngo_chal(%NGOChal{} = ngo_chal, attrs) do
     ngo_chal
-    |> NGOChal.changeset(attrs)
+    |> NGOChal.update_changeset(attrs)
     |> Repo.update()
   end
 

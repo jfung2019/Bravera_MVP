@@ -27,7 +27,7 @@ defmodule OmegaBravera.Challenges.Activity do
   end
 
   @meters_per_km 1000
-  @km_per_hour Decimal.new(3.6)
+  @km_per_hour Decimal.from_float(3.6)
   @required_attributes [
     :distance,
     :start_date,
@@ -53,8 +53,8 @@ defmodule OmegaBravera.Challenges.Activity do
     :average_speed,
     :calories,
     :moving_time,
-    :elapsed_time |
-    @required_attributes
+    :elapsed_time
+    | @required_attributes
   ]
   @activity_type [
     "Run",
@@ -112,6 +112,9 @@ defmodule OmegaBravera.Challenges.Activity do
   end
 
   defp to_km(nil), do: nil
+
+  defp to_km(meters) when is_float(meters),
+    do: Decimal.div(Decimal.from_float(meters), @meters_per_km)
 
   defp to_km(meters),
     do: Decimal.div(Decimal.new(meters), @meters_per_km)

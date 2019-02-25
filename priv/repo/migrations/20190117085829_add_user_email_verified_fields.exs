@@ -6,8 +6,8 @@ defmodule OmegaBravera.Repo.Migrations.AddUserEmailVerifiedFields do
 
   def up do
     alter table(:users) do
-      add :email_verified, :boolean, default: false
-      add :email_activation_token, :string
+      add(:email_verified, :boolean, default: false)
+      add(:email_activation_token, :string)
     end
 
     flush()
@@ -18,9 +18,8 @@ defmodule OmegaBravera.Repo.Migrations.AddUserEmailVerifiedFields do
 
   def down do
     alter table(:users) do
-      remove :email_verified
-      remove :email_activation_token
+      remove(:email_verified)
+      remove(:email_activation_token)
     end
   end
-
 end

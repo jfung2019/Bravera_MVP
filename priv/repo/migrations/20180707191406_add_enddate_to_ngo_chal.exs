@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddEnddateToNgoChal do
 
   def change do
     alter table(:ngo_chals) do
-      add :end_date, :utc_datetime
+      add(:end_date, :utc_datetime)
     end
   end
 end

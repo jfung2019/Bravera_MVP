@@ -11,8 +11,8 @@ defmodule OmegaBravera.Repo.Migrations.SetTimestampsToUtc do
 
   defp alter_timestamps(name, type) do
     alter table(name) do
-      modify :inserted_at, type, null: false
-      modify :updated_at, type, null: false
+      modify(:inserted_at, type, null: false)
+      modify(:updated_at, type, null: false)
     end
   end
 

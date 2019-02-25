@@ -3,8 +3,8 @@ defmodule OmegaBravera.Repo.Migrations.AddUrlToNgo do
 
   def change do
     alter table(:ngos) do
-      add :url, :string
-      add :full_desc, :text
+      add(:url, :string)
+      add(:full_desc, :text)
     end
   end
 end

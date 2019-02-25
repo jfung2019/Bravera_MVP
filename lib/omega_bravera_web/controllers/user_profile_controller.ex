@@ -38,8 +38,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
     bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
 
     if not is_nil(user.profile_picture) do
-      filename =
-        URI.parse(user.profile_picture).path
+      filename = URI.parse(user.profile_picture).path
 
       bucket_name
       |> ExAws.S3.delete_object(filename)
@@ -53,19 +52,24 @@ defmodule OmegaBraveraWeb.UserProfileController do
       |> save(in_place: true)
 
     resized_image.path
-    |> ExAws.S3.Upload.stream_file
+    |> ExAws.S3.Upload.stream_file()
     |> ExAws.S3.upload(bucket_name, "profile_pictures/#{unique_filename}", acl: :public_read)
-    |> ExAws.request!
+    |> ExAws.request!()
 
-    changeset = User.update_profile_picture_changeset(user, %{profile_picture: "https://#{bucket_name}.s3.amazonaws.com/profile_pictures/#{unique_filename}"})
+    changeset =
+      User.update_profile_picture_changeset(user, %{
+        profile_picture:
+          "https://#{bucket_name}.s3.amazonaws.com/profile_pictures/#{unique_filename}"
+      })
 
     case Repo.update(changeset) do
       {:ok, _upload} ->
-          conn
-          |> put_flash(:info, "Profile picture uploaded successfully!")
-          |> redirect(to: user_profile_path(conn, :show))
+        conn
+        |> put_flash(:info, "Profile picture uploaded successfully!")
+        |> redirect(to: user_profile_path(conn, :show))
+
       {:error, changeset} ->
-          render conn, "show.html", changeset: changeset
+        render(conn, "show.html", changeset: changeset)
     end
   end
 

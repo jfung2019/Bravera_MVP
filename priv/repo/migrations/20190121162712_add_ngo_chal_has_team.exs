@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddNgoChalHasTeam do
 
   def change do
     alter table("ngo_chals") do
-      add :has_team, :boolean, default: false, null: false
+      add(:has_team, :boolean, default: false, null: false)
     end
   end
 end

@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddSelfDonatedFieldToChallenge do
 
   def change do
     alter table("ngo_chals") do
-      add :self_donated, :boolean, default: false
+      add(:self_donated, :boolean, default: false)
     end
   end
 end

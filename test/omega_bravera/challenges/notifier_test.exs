@@ -245,13 +245,13 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   end
 
   test "activity_completed_email/2" do
-    challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(4.215)})
+    challenge = insert(:ngo_challenge, %{distance_covered: Decimal.from_float(4.215)})
 
     activity =
       insert(:activity, %{
         challenge: challenge,
         user: challenge.user,
-        distance: Decimal.new(4.215)
+        distance: Decimal.from_float(4.215)
       })
 
     email = Notifier.activity_completed_email(challenge, activity)
@@ -270,8 +270,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
                "-firstName-" => "John",
-               "-activityDistance-" => "#{Decimal.new(4.215)} Km",
-               "-completedChallengeDistance-" => "#{Decimal.new(4.215)} Km",
+               "-activityDistance-" => "#{Decimal.from_float(4.215)} Km",
+               "-completedChallengeDistance-" => "#{Decimal.from_float(4.215)} Km",
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-timeRemaining-" => "4 days",
                "-challengeURL-" => "https://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
@@ -289,14 +289,14 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       insert(:activity, %{
         challenge: challenge,
         user: challenge.user,
-        distance: Decimal.new(4.215)
+        distance: Decimal.from_float(4.215)
       })
 
     assert Notifier.send_activity_completed_email(challenge, activity) == :ok
   end
 
   test "participant_milestone_email/1" do
-    challenge = insert(:ngo_challenge, %{distance_covered: Decimal.new(4.215)})
+    challenge = insert(:ngo_challenge, %{distance_covered: Decimal.from_float(4.215)})
 
     email = Notifier.participant_milestone_email(challenge)
 

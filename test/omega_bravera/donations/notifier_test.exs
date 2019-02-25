@@ -170,7 +170,7 @@ defmodule OmegaBravera.NotifierTest do
       str_src: "src_1D9JN4EXtHU8QBy8JErKq6fH",
       card_brand: "Visa",
       charge_id: "ch_1D9L1lEXtHU8QBy8sVLJxp7P",
-      charged_amount: Decimal.new(10.0),
+      charged_amount: Decimal.from_float(10.0),
       charged_description: "Donation to Save the children via Bravera.co",
       charged_status: "succeeded",
       last_digits: "4242",

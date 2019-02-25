@@ -5,13 +5,6 @@ defmodule OmegaBraveraWeb.StravaController do
 
   alias OmegaBravera.{Guardian, Accounts, Challenges.ActivitiesIngestion}
 
-  # TODO Check if activity was manual update or GPS upload
-  # Is upload_id only for file uploads?
-  # upload_id: 123123123121
-  #
-  # Is created_at nil only for file updates or also for third-party trackers?
-  # created_at: nil
-
   def post_webhook_callback(conn, params) do
     ActivitiesIngestion.process_strava_webhook(params)
     render(conn, "webhook_callback.json", status: 200)

@@ -78,7 +78,7 @@ defmodule OmegaBravera.AccountsTest do
         lastname: "Garcia",
         token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
         additional_info: %{sex: "M", location: "Spain/Barcelona/Barcelona"},
-        profile_picture: "some-profile-picture.png"
+        strava_profile_picture: "some-profile-picture.png"
       }
 
       {:ok, user} = Accounts.insert_or_update_strava_user(attrs)
@@ -189,7 +189,7 @@ defmodule OmegaBravera.AccountsTest do
       valid_attrs = Map.put(@valid_attrs, :user_id, user.id)
       assert {:ok, %Setting{} = setting} = Accounts.create_setting(valid_attrs)
       assert setting.location == "UK"
-      assert setting.weight == Decimal.new(35.5)
+      assert setting.weight == Decimal.from_float(35.5)
       assert setting.date_of_birth == ~D[1940-07-14]
       assert setting.gender == "Female"
       assert setting.user_id == user.id

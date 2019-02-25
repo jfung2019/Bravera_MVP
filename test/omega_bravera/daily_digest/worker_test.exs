@@ -107,7 +107,8 @@ defmodule OmegaBravera.DailyDigest.WorkerTest do
   end
 
   def inserted_at(hour, shift \\ [days: -1]) do
-    Timex.Timezone.resolve("Etc/UTC", {Timex.to_erl(Timex.today()), {hour, 0, 0}})
+    {Timex.to_erl(Timex.today()), {hour, 0, 0}}
+    |> Timex.to_datetime()
     |> Timex.shift(shift)
   end
 end

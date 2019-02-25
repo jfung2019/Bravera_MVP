@@ -202,8 +202,13 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   defp charge_donations({status, _, _, donations} = params, send_emails) do
     charged_donations =
       case status do
-        :ok -> Enum.map(donations, fn donation -> notify_donor_and_charge_donation(donation, send_emails) end)
-        :error -> []
+        :ok ->
+          Enum.map(donations, fn donation ->
+            notify_donor_and_charge_donation(donation, send_emails)
+          end)
+
+        :error ->
+          []
       end
 
     put_elem(params, 3, charged_donations)
@@ -238,7 +243,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
            activity.manual == true do
         Logger.info("Manual activity triggered and blocked!")
 
-        if (send_emails) do
+        if send_emails do
           Challenges.Notifier.send_manual_activity_blocked_email(
             challenge,
             Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
@@ -256,7 +261,6 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
          activity_type: challenge_activity_type
        }) do
-
     equal? = activity_type == challenge_activity_type
 
     if !equal? do

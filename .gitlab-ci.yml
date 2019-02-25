@@ -1,5 +1,5 @@
 test:
-  image: elixir:1.7
+  image: elixir:1.8
   services:
   - postgres:latest
   variables:

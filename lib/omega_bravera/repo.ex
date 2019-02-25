@@ -1,5 +1,5 @@
 defmodule OmegaBravera.Repo do
-  use Ecto.Repo, otp_app: :omega_bravera
+  use Ecto.Repo, otp_app: :omega_bravera, adapter: Ecto.Adapters.Postgres
 
   @doc """
   Dynamically loads the repository url from the

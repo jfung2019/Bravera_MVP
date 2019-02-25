@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddMDistanceToDonation do
 
   def change do
     alter table(:donations) do
-      add :milestone_distance, :integer
+      add(:milestone_distance, :integer)
     end
   end
 end

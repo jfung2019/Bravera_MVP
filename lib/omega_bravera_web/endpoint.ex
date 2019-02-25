@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :omega_bravera
 
-  socket("/socket", OmegaBraveraWeb.UserSocket)
+  socket "/socket", OmegaBraveraWeb.UserSocket, websocket: true
 
   # Serve at "/" the static files from "priv/static" directory.
   #

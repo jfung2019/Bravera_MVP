@@ -89,6 +89,8 @@ defmodule OmegaBravera.Donations.Pledges do
     }
   end
 
+  defp pledge_attributes(_, _, _, _), do: %{}
+
   defp create_pledge(%NGOChal{type: "PER_KM"} = challenge, donation_params, stripe_customer) do
     attrs = pledge_attributes(challenge, donation_params, stripe_customer)
 
@@ -122,13 +124,7 @@ defmodule OmegaBravera.Donations.Pledges do
     }
   end
 
-  defp pledge_attributes(_, _, _) do
-    %{}
-  end
-
-  defp pledge_attributes(_, _, _, _) do
-    %{}
-  end
+  defp pledge_attributes(_, _, _), do: %{}
 
   defp self_donated(challenge, donation_params) do
     challenge.self_donated || challenge.user_id == donation_params["donor_id"]

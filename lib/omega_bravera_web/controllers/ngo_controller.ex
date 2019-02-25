@@ -68,7 +68,6 @@ defmodule OmegaBraveraWeb.NGOController do
           |> Map.put(:total_secured, get_total_secured(challenge))
           |> Map.put(:total_pledged, get_total_pledged(challenge))
       end
-
     end)
   end
 

@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddCurrencyToNgoChal do
 
   def change do
     alter table(:ngo_chals) do
-      add :default_currency, :string
+      add(:default_currency, :string)
     end
   end
 end

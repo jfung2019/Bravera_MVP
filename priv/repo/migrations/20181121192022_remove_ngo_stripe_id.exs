@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.RemoveNgoStripeId do
 
   def change do
     alter table(:ngos) do
-      remove :stripe_id
+      remove(:stripe_id)
     end
   end
 end

@@ -17,7 +17,6 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
   secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE")
 
 config :omega_bravera, OmegaBravera.Repo,
-  adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),
   pool_size: 20
 
@@ -53,8 +52,7 @@ config :ex_aws,
   secret_access_key: [{:system, "AWS_SECRET_ACCESS_KEY"}, :instance_role],
   region: System.get_env("AWS_REGION")
 
-config :omega_bravera,
-  :images_bucket_name, System.get_env("S3_BUCKET_NAME")
+config :omega_bravera, :images_bucket_name, System.get_env("S3_BUCKET_NAME")
 
 config :ex_aws, :hackney_opts,
   follow_redirect: true,

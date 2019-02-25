@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddActivityCalories do
 
   def change do
     alter table(:activities) do
-      add :calories, :decimal, default: 0
+      add(:calories, :decimal, default: 0)
     end
   end
 end
