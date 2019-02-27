@@ -5,8 +5,8 @@ defmodule OmegaBravera.Repo.Migrations.CreateEmailCategories do
 
   def change do
     create table(:email_categories) do
-      add :title, :string
-      add :description, :string
+      add(:title, :string)
+      add(:description, :string)
     end
 
     flush()
@@ -16,7 +16,8 @@ defmodule OmegaBravera.Repo.Migrations.CreateEmailCategories do
       [
         %{
           title: "Supporter goals reached emails",
-          description: "Notifications when someone you support has reached a goal or completed a challenge."
+          description:
+            "Notifications when someone you support has reached a goal or completed a challenge."
         },
         %{
           title: "Challenge Support Updates",
@@ -36,6 +37,5 @@ defmodule OmegaBravera.Repo.Migrations.CreateEmailCategories do
         }
       ]
     )
-
   end
 end

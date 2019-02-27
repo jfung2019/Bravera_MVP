@@ -24,7 +24,9 @@ defmodule OmegaBravera.EmailsTest do
   end
 
   defp create_email_category(_) do
-    email_category = email_category_fixture(%{description: "some description", title: "some title"})
+    email_category =
+      email_category_fixture(%{description: "some description", title: "some title"})
+
     {:ok, email_category: email_category}
   end
 
@@ -41,7 +43,9 @@ defmodule OmegaBravera.EmailsTest do
       assert length(Emails.list_email_categories()) == 6
     end
 
-    test "get_email_category!/1 returns the email_category with given id", %{email_category: email_category} do
+    test "get_email_category!/1 returns the email_category with given id", %{
+      email_category: email_category
+    } do
       assert Emails.get_email_category!(email_category.id) == email_category
     end
 
@@ -55,14 +59,22 @@ defmodule OmegaBravera.EmailsTest do
       assert {:error, %Ecto.Changeset{}} = Emails.create_email_category(@invalid_attrs)
     end
 
-    test "update_email_category/2 with valid data updates the email_category", %{email_category: email_category} do
-      assert {:ok, %EmailCategory{} = email_category} = Emails.update_email_category(email_category, @update_attrs)
+    test "update_email_category/2 with valid data updates the email_category", %{
+      email_category: email_category
+    } do
+      assert {:ok, %EmailCategory{} = email_category} =
+               Emails.update_email_category(email_category, @update_attrs)
+
       assert email_category.description == "some updated description"
       assert email_category.title == "some updated title"
     end
 
-    test "update_email_category/2 with invalid data returns error changeset", %{email_category: email_category} do
-      assert {:error, %Ecto.Changeset{}} = Emails.update_email_category(email_category, @invalid_attrs)
+    test "update_email_category/2 with invalid data returns error changeset", %{
+      email_category: email_category
+    } do
+      assert {:error, %Ecto.Changeset{}} =
+               Emails.update_email_category(email_category, @invalid_attrs)
+
       assert email_category == Emails.get_email_category!(email_category.id)
     end
 
@@ -71,7 +83,9 @@ defmodule OmegaBravera.EmailsTest do
       assert_raise Ecto.NoResultsError, fn -> Emails.get_email_category!(email_category.id) end
     end
 
-    test "change_email_category/1 returns a email_category changeset", %{email_category: email_category} do
+    test "change_email_category/1 returns a email_category changeset", %{
+      email_category: email_category
+    } do
       assert %Ecto.Changeset{} = Emails.change_email_category(email_category)
     end
   end
@@ -99,12 +113,16 @@ defmodule OmegaBravera.EmailsTest do
       assert Emails.list_sendgrid_emails() == [sendgrid_email]
     end
 
-    test "get_sendgrid_email!/1 returns the sendgrid_email with given id", %{email_category: email_category} do
+    test "get_sendgrid_email!/1 returns the sendgrid_email with given id", %{
+      email_category: email_category
+    } do
       sendgrid_email = sendgrid_email_fixture(%{category_id: email_category.id})
       assert Emails.get_sendgrid_email!(sendgrid_email.id) == sendgrid_email
     end
 
-    test "create_sendgrid_email/1 with valid data creates a sendgrid_email", %{email_category: email_category} do
+    test "create_sendgrid_email/1 with valid data creates a sendgrid_email", %{
+      email_category: email_category
+    } do
       attrs = Map.put(@valid_attrs, :category_id, email_category.id)
       assert {:ok, %SendgridEmail{} = sendgrid_email} = Emails.create_sendgrid_email(attrs)
       assert sendgrid_email.sendgrid_id == "some sendgrid_id"
@@ -114,15 +132,25 @@ defmodule OmegaBravera.EmailsTest do
       assert {:error, %Ecto.Changeset{}} = Emails.create_sendgrid_email(@invalid_attrs)
     end
 
-    test "update_sendgrid_email/2 with valid data updates the sendgrid_email", %{email_category: email_category} do
+    test "update_sendgrid_email/2 with valid data updates the sendgrid_email", %{
+      email_category: email_category
+    } do
       sendgrid_email = sendgrid_email_fixture(%{category_id: email_category.id})
-      assert {:ok, %SendgridEmail{} = sendgrid_email} = Emails.update_sendgrid_email(sendgrid_email, @update_attrs)
+
+      assert {:ok, %SendgridEmail{} = sendgrid_email} =
+               Emails.update_sendgrid_email(sendgrid_email, @update_attrs)
+
       assert sendgrid_email.sendgrid_id == "some updated sendgrid_id"
     end
 
-    test "update_sendgrid_email/2 with invalid data returns error changeset", %{email_category: email_category} do
+    test "update_sendgrid_email/2 with invalid data returns error changeset", %{
+      email_category: email_category
+    } do
       sendgrid_email = sendgrid_email_fixture(%{category_id: email_category.id})
-      assert {:error, %Ecto.Changeset{}} = Emails.update_sendgrid_email(sendgrid_email, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Emails.update_sendgrid_email(sendgrid_email, @invalid_attrs)
+
       assert sendgrid_email == Emails.get_sendgrid_email!(sendgrid_email.id)
     end
 
@@ -132,7 +160,9 @@ defmodule OmegaBravera.EmailsTest do
       assert_raise Ecto.NoResultsError, fn -> Emails.get_sendgrid_email!(sendgrid_email.id) end
     end
 
-    test "change_sendgrid_email/1 returns a sendgrid_email changeset", %{email_category: email_category} do
+    test "change_sendgrid_email/1 returns a sendgrid_email changeset", %{
+      email_category: email_category
+    } do
       sendgrid_email = sendgrid_email_fixture(%{category_id: email_category.id})
       assert %Ecto.Changeset{} = Emails.change_sendgrid_email(sendgrid_email)
     end
@@ -156,44 +186,87 @@ defmodule OmegaBravera.EmailsTest do
       user_email_categories
     end
 
-    test "list_user_email_categories/0 returns all user_email_categories", %{email_category: email_category, user: user} do
-      user_email_categories = user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
+    test "list_user_email_categories/0 returns all user_email_categories", %{
+      email_category: email_category,
+      user: user
+    } do
+      user_email_categories =
+        user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
+
       assert Emails.list_user_email_categories() == [user_email_categories]
     end
 
-    test "get_user_email_categories!/1 returns the user_email_categories with given id", %{email_category: email_category, user: user} do
-      user_email_categories = user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
+    test "get_user_email_categories!/1 returns the user_email_categories with given id", %{
+      email_category: email_category,
+      user: user
+    } do
+      user_email_categories =
+        user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
+
       assert Emails.get_user_email_categories!(user_email_categories.id) == user_email_categories
     end
 
-    test "create_user_email_categories/1 with valid data creates a user_email_categories", %{email_category: email_category, user: user} do
-
-      assert {:ok, %UserEmailCategories{} = user_email_categories} = Emails.create_user_email_categories(%{category_id: email_category.id, user_id: user.id})
+    test "create_user_email_categories/1 with valid data creates a user_email_categories", %{
+      email_category: email_category,
+      user: user
+    } do
+      assert {:ok, %UserEmailCategories{} = user_email_categories} =
+               Emails.create_user_email_categories(%{
+                 category_id: email_category.id,
+                 user_id: user.id
+               })
     end
 
     test "create_user_email_categories/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Emails.create_user_email_categories(@invalid_attrs)
     end
 
-    test "update_user_email_categories/2 with valid data updates the user_email_categories", %{email_category: email_category, user: user} do
-      user_email_categories = user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
-      assert {:ok, %UserEmailCategories{} = user_email_categories} = Emails.update_user_email_categories(user_email_categories, @update_attrs)
+    test "update_user_email_categories/2 with valid data updates the user_email_categories", %{
+      email_category: email_category,
+      user: user
+    } do
+      user_email_categories =
+        user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
+
+      assert {:ok, %UserEmailCategories{} = user_email_categories} =
+               Emails.update_user_email_categories(user_email_categories, @update_attrs)
     end
 
-    test "update_user_email_categories/2 with invalid data returns error changeset", %{email_category: email_category, user: user} do
-      user_email_categories = user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
-      assert {:error, %Ecto.Changeset{}} = Emails.update_user_email_categories(user_email_categories, @invalid_attrs)
+    test "update_user_email_categories/2 with invalid data returns error changeset", %{
+      email_category: email_category,
+      user: user
+    } do
+      user_email_categories =
+        user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
+
+      assert {:error, %Ecto.Changeset{}} =
+               Emails.update_user_email_categories(user_email_categories, @invalid_attrs)
+
       assert user_email_categories == Emails.get_user_email_categories!(user_email_categories.id)
     end
 
-    test "delete_user_email_categories/1 deletes the user_email_categories", %{email_category: email_category, user: user} do
-      user_email_categories = user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
-      assert {:ok, %UserEmailCategories{}} = Emails.delete_user_email_categories(user_email_categories)
-      assert_raise Ecto.NoResultsError, fn -> Emails.get_user_email_categories!(user_email_categories.id) end
+    test "delete_user_email_categories/1 deletes the user_email_categories", %{
+      email_category: email_category,
+      user: user
+    } do
+      user_email_categories =
+        user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
+
+      assert {:ok, %UserEmailCategories{}} =
+               Emails.delete_user_email_categories(user_email_categories)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Emails.get_user_email_categories!(user_email_categories.id)
+      end
     end
 
-    test "change_user_email_categories/1 returns a user_email_categories changeset", %{email_category: email_category, user: user} do
-      user_email_categories = user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
+    test "change_user_email_categories/1 returns a user_email_categories changeset", %{
+      email_category: email_category,
+      user: user
+    } do
+      user_email_categories =
+        user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
+
       assert %Ecto.Changeset{} = Emails.change_user_email_categories(user_email_categories)
     end
   end

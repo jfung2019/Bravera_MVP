@@ -4,9 +4,8 @@ defmodule OmegaBravera.Emails.UserEmailCategories do
 
   alias OmegaBravera.Emails.EmailCategory
 
-
   schema "user_email_categories" do
-    field :user_id, :id
+    field(:user_id, :id)
 
     belongs_to(:category, EmailCategory)
 

@@ -34,7 +34,12 @@ defmodule OmegaBraveraWeb.AdminPanelEmailsController do
     sendgrid_email = Emails.get_sendgrid_email!(id)
     categories = Emails.list_email_categories()
     changeset = Emails.change_sendgrid_email(sendgrid_email)
-    render(conn, "edit.html", sendgrid_email: sendgrid_email, categories: categories, changeset: changeset)
+
+    render(conn, "edit.html",
+      sendgrid_email: sendgrid_email,
+      categories: categories,
+      changeset: changeset
+    )
   end
 
   def update(conn, %{"id" => id, "sendgrid_email" => sendgrid_email_params}) do

@@ -5,8 +5,8 @@ defmodule OmegaBravera.Emails.EmailCategory do
   alias OmegaBravera.Emails.SendgridEmail
 
   schema "email_categories" do
-    field :description, :string
-    field :title, :string
+    field(:description, :string)
+    field(:title, :string)
 
     has_many(:sendgrid_emails, SendgridEmail, foreign_key: :category_id)
   end

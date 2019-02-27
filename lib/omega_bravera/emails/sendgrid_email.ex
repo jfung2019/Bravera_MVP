@@ -5,7 +5,7 @@ defmodule OmegaBravera.Emails.SendgridEmail do
   alias OmegaBravera.Emails.EmailCategory
 
   schema "sendgrid_emails" do
-    field :sendgrid_id, :string
+    field(:sendgrid_id, :string)
 
     belongs_to(:category, EmailCategory)
 

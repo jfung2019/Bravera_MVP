@@ -110,7 +110,11 @@ defmodule OmegaBraveraWeb.Router do
       )
 
       resources("/sync_activities", AdminPanelActivitiesSyncerController, only: [:index])
-      resources("/emails", AdminPanelEmailsController, only: [:index, :new, :create, :edit, :update])
+
+      resources("/emails", AdminPanelEmailsController,
+        only: [:index, :new, :create, :edit, :update]
+      )
+
       get("/challenges", AdminPanelChallengesController, :index)
 
       resources("/ngos", AdminPanelNGOController, only: [:index, :new, :create]) do
