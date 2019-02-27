@@ -1,0 +1,26 @@
+<div class="row">
+	<div class="col-6 offset-3">
+		<h2>Listing Emails</h2>
+
+        <span><%= link "Create New Email", to: admin_panel_emails_path(@conn, :new) %></span>
+		<table class="table">
+		  <thead>
+		    <tr>
+		      <th>Sendgrid ID</th>
+		      <th>Category</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		<%= for email <- @emails do %>
+		    <tr>
+		      <td><%= email.sendgrid_id %></td>
+		      <td><%= email.category.title %></td>
+					<td class="text-right">
+            <span><%= link "Edit", to: admin_panel_emails_path(@conn, :edit, email), class: "btn btn-default btn-xs"%> </span>
+          </td>   
+		    </tr>
+		<% end %>
+		  </tbody>
+		</table>
+	</div>
+</div>

@@ -110,6 +110,7 @@ defmodule OmegaBraveraWeb.Router do
       )
 
       resources("/sync_activities", AdminPanelActivitiesSyncerController, only: [:index])
+      resources("/emails", AdminPanelEmailsController, only: [:index, :new, :create, :edit, :update])
       get("/challenges", AdminPanelChallengesController, :index)
 
       resources("/ngos", AdminPanelNGOController, only: [:index, :new, :create]) do
@@ -168,12 +169,13 @@ defmodule OmegaBraveraWeb.Router do
     end
   end
 
-  scope "/pass-reset", OmegaBraveraWeb do
-    pipe_through(:browser)
+  # TODO: refactor PasswordController -Sherief
+  # scope "/pass-reset", OmegaBraveraWeb do
+  #   pipe_through(:browser)
 
-    resources("/", PasswordController, only: [:new, :create])
+  #   resources("/", PasswordController, only: [:new, :create])
 
-    get("/:token/edit", PasswordController, :edit)
-    put("/:token", PasswordController, :update)
-  end
+  #   get("/:token/edit", PasswordController, :edit)
+  #   put("/:token", PasswordController, :update)
+  # end
 end

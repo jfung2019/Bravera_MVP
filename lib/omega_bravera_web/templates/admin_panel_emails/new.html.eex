@@ -1,0 +1,6 @@
+<div class="container">
+<h2>Add Sendgrid email to Category</h2>
+<%= render "form.html", Map.put(assigns, :action, admin_panel_emails_path(@conn, :create)) %>
+<span><%= link "Back", to: admin_panel_emails_path(@conn, :index) %></span>
+</div>
+

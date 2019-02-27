@@ -10,5 +10,6 @@ defmodule OmegaBravera.Repo.Migrations.CreateSendgridEmails do
     end
 
     create index(:sendgrid_emails, [:category_id])
+    create unique_index(:sendgrid_emails, [:sendgrid_id])
   end
 end

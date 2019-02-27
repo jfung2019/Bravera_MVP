@@ -9,8 +9,6 @@ defmodule OmegaBravera.Emails.EmailCategory do
     field :title, :string
 
     has_many(:sendgrid_emails, SendgridEmail, foreign_key: :category_id)
-
-    timestamps(type: :utc_datetime)
   end
 
   @doc false
