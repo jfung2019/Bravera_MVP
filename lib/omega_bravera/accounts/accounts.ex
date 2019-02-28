@@ -52,7 +52,8 @@ defmodule OmegaBravera.Accounts do
         on: s.user_id == u.id,
         select: {
           nc.id,
-          u
+          u,
+          s.token
         }
       )
       |> Repo.all()
@@ -66,7 +67,8 @@ defmodule OmegaBravera.Accounts do
         on: s.user_id == u.id,
         select: {
           nc.id,
-          u
+          u,
+          s.token
         }
       )
       |> Repo.all()

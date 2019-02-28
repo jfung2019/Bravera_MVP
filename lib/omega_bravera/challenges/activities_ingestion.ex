@@ -26,12 +26,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   def process_strava_webhook(_), do: {:error, :webhook_not_processed}
 
-  def process_challenges([hd | _] = challenges, %{"object_id" => object_id}) do
+  def process_challenges([{_challenge_id, _user, token} | _] = challenges, %{"object_id" => object_id}) do
     Logger.info("ActivityIngestion: Processing challenges")
-    activity = Strava.Activity.retrieve(object_id, %{}, strava_client(hd))
+    activity = Strava.Activity.retrieve(object_id, %{}, strava_client(token))
     Logger.info("ActivityIngestion: Processing activity: #{inspect(activity)}")
 
-    Enum.map(challenges, fn {challenge_id, user} ->
+    Enum.map(challenges, fn {challenge_id, user, _token} ->
       challenge_id
       |> Challenges.get_ngo_chal!()
       |> Repo.preload([:ngo])
@@ -232,7 +232,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     end
   end
 
-  defp strava_client({_, token}), do: Strava.Client.new(token)
+  defp strava_client(token), do: Strava.Client.new(token)
 
   defp valid_activity?(activity, challenge, send_emails) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date

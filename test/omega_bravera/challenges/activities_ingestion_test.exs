@@ -168,7 +168,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       donation = insert(:donation, %{ngo_chal: team.challenge, user: team_user})
       strava_activity = Map.replace!(strava_activity, :type, team.challenge.activity_type)
 
-      [{challenge_id, _} | _tail] =
+      [{challenge_id, _user, _token} | _tail] =
         challengers = Accounts.get_strava_challengers(team_user.strava.athlete_id)
 
       with_mocks([
