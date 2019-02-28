@@ -36,6 +36,9 @@ defmodule OmegaBraveraWeb.Router do
 
     resources("/sessions", UserSessionController, only: [:create])
     resources("/profile/settings", SettingController, only: [:new, :create])
+    get("/profile/email_settings", EmailSettingsController, :edit)
+    post("/profile/email_settings", EmailSettingsController, :update)
+
     get("/profile/settings", SettingController, :show)
     put("/profile/settings", SettingController, :update)
     get("/profile", UserProfileController, :show)

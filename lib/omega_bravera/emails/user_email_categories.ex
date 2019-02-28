@@ -17,5 +17,6 @@ defmodule OmegaBravera.Emails.UserEmailCategories do
     user_email_categories
     |> cast(attrs, [:category_id, :user_id])
     |> validate_required([:category_id, :user_id])
+    |> unique_constraint(:category_id_user_id)
   end
 end

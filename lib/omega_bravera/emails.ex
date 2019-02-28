@@ -5,6 +5,7 @@ defmodule OmegaBravera.Emails do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
+  alias Ecto.Multi
 
   alias OmegaBravera.Emails.EmailCategory
 
@@ -229,6 +230,15 @@ defmodule OmegaBravera.Emails do
   """
   def get_user_email_categories!(id), do: Repo.get!(UserEmailCategories, id)
 
+  def get_user_subscribed_email_categories(user_id, preloads \\ [:category]) do
+    from(
+      user_categories in UserEmailCategories,
+      where: user_categories.user_id == ^user_id,
+      preload: ^preloads
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Creates a user_email_categories.
 
@@ -292,5 +302,28 @@ defmodule OmegaBravera.Emails do
   """
   def change_user_email_categories(%UserEmailCategories{} = user_email_categories) do
     UserEmailCategories.changeset(user_email_categories, %{})
+  end
+
+  def delete_and_update_user_email_categories(new_subscribed_categories, user) do
+    delete_existing =
+      from(
+        uec in UserEmailCategories,
+        where: uec.user_id == ^user.id
+      )
+
+    new_subscribed_categories =
+      Enum.map(new_subscribed_categories, fn new_subscribed_category ->
+        %{
+          category_id: new_subscribed_category,
+          user_id: user.id,
+          inserted_at: DateTime.truncate(Timex.now(), :second),
+          updated_at: DateTime.truncate(Timex.now(), :second)
+        }
+    end)
+
+    Multi.new()
+    |> Multi.delete_all(:delete_all, delete_existing)
+    |> Multi.insert_all(:insert_all, UserEmailCategories, new_subscribed_categories)
+    |> Repo.transaction()
   end
 end
