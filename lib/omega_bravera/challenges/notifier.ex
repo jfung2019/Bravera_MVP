@@ -105,7 +105,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
     if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
       challenge
-      |> challenge_signup_email(path, sendgrid_email.category.id)
+      |> challenge_signup_email(path, template_id)
       |> Mailer.send()
     end
   end
@@ -166,7 +166,7 @@ defmodule OmegaBravera.Challenges.Notifier do
   def send_donor_milestone_email(%Donation{} = donation) do
     template_id = "c8573175-93a6-4f8c-b1bb-9368ad75981a"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
-    donation = Repo.preload(donation, ngo_chal: [:ngo, user: [:subscribed_email_categories]], user: [], ngo: [])
+    donation = Repo.preload(donation, [user: [:subscribed_email_categories], ngo_chal: [:ngo, :user]])
 
     if user_subscribed_in_category?(donation.user.subscribed_email_categories, sendgrid_email.category.id) do
       donation
