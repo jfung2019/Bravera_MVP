@@ -10,6 +10,7 @@ mix edeliver deploy release to production
 mix edeliver stop production
 mix edeliver start production
 mix edeliver migrate production
+mix edeliver ping production
 ```
 
 ### Migration Issue
