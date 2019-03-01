@@ -312,6 +312,13 @@ defmodule OmegaBravera.Emails do
     UserEmailCategories.changeset(user_email_categories, %{})
   end
 
+  @doc """
+    Deletes all existing rows of user email subscriptions to categories
+    and creates new ones based on their choosing from the UI.
+
+    By default, a user is subscribed to all emails.
+    By default, a user has no rows in user_email_categories
+  """
   def delete_and_update_user_email_categories(new_subscribed_categories, user) do
     delete_existing =
       from(
