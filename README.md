@@ -18,3 +18,9 @@ If the DB migration edeliver task fails, for some reason, the DB migration can b
 cd /home/ubuntu/omega_bravera/builds
 MIX_ENV=prod mix ecto.migrate
 ```
+
+### General Edeliver Debugging
+If a command is freezing or not working properly, adding `--verbose` should give some insight:
+```bash
+mix edeliver build release ---verbose
+```
