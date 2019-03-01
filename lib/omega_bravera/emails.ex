@@ -38,6 +38,14 @@ defmodule OmegaBravera.Emails do
   """
   def get_email_category!(id), do: Repo.get!(EmailCategory, id)
 
+  def get_email_category_by_title(title) do
+    from(
+      email_category in EmailCategory,
+      where: email_category.title == ^title
+    )
+    |> Repo.one()
+  end
+
   @doc """
   Creates a email_category.
 

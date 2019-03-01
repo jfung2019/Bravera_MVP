@@ -20,14 +20,25 @@ defmodule OmegaBraveraWeb.EmailSettingsController do
       subscribed_categories
       |> to_integers()
 
-    Emails.delete_and_update_user_email_categories(subscribed_categories, current_user)
-    conn
-    |> put_flash(:info, "Updated email settings sucessfully.")
-    |> redirect(to: email_settings_path(conn, :edit))
-
+    if require_main_category(subscribed_categories) do
+      Emails.delete_and_update_user_email_categories(subscribed_categories, current_user)
+      conn
+      |> put_flash(:info, "Updated email settings sucessfully.")
+      |> redirect(to: email_settings_path(conn, :edit))
+    else
+      # To protect vs removing the hidden element for the main category.
+      conn
+      |> put_flash(:error, "Cannot unsubscribe from platform notification. Please request account termination from admin@bravera.co")
+      |> redirect(to: email_settings_path(conn, :edit))
+    end
   end
 
   defp to_integers(list), do: Enum.map(list ,&(String.to_integer/1))
+  defp require_main_category(subscribed_categories) do
+    main_category = Emails.get_email_category_by_title("Platform Notifications")
+
+    Enum.member?(subscribed_categories, main_category.id)
+  end
 end
 
 

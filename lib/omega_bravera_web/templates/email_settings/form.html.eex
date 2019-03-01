@@ -16,7 +16,10 @@
   <% else %>
     <%= for category <- @all_categories do %>
       <div class="form-group">
-        <input type="checkbox" name="subscribed_categories[]" value="<%=category.id%>" <%=subscribed?(category.id, @user_categories)%> disabled="<%=readonly_main_category(category)%>" >
+        <input type="checkbox" name="subscribed_categories[]" value="<%=category.id%>" <%=subscribed?(category.id, @user_categories)%> <%=readonly_main_category(category)%> >
+        <%= if !is_nil(readonly_main_category(category)) do %>
+          <input type="hidden" name="subscribed_categories[]" value="<%=category.id%>" <%=subscribed?(category.id, @user_categories)%> >
+        <% end %>
         <%= label f, "#{category.title} (#{category.description})", class: "control-label small" %>
         <%= error_tag f, :id %>
       </div>
