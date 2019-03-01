@@ -108,9 +108,9 @@ defmodule OmegaBravera.EmailsTest do
       sendgrid_email
     end
 
-    test "list_sendgrid_emails/0 returns all sendgrid_emails", %{email_category: email_category} do
+    test "list_sendgrid_emails/0 returns all sendgrid_emails" do
       sendgrid_email = sendgrid_email_fixture(%{category_id: email_category.id})
-      assert Emails.list_sendgrid_emails() == [sendgrid_email]
+      assert length(Emails.list_sendgrid_emails()) == 21
     end
 
     test "get_sendgrid_email!/1 returns the sendgrid_email with given id", %{
