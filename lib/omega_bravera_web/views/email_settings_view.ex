@@ -13,6 +13,8 @@ defmodule OmegaBraveraWeb.EmailSettingsView do
   # This was done to avoid creating user_email_categories rows for each user.
   def default_categories(user_categories), do: Enum.empty?(user_categories)
 
-  def readonly_main_category(%EmailCategory{title: title}) when title == "Platform Notifications", do: "disabled"
+  def readonly_main_category(%EmailCategory{title: title}) when title == "Platform Notifications",
+    do: "disabled"
+
   def readonly_main_category(_), do: nil
 end

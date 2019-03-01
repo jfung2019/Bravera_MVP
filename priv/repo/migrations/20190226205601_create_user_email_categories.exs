@@ -12,6 +12,6 @@ defmodule OmegaBravera.Repo.Migrations.CreateUserEmailCategories do
     create(index(:user_email_categories, [:category_id]))
     create(index(:user_email_categories, [:user_id]))
 
-    create unique_index(:user_email_categories, [:category_id, :user_id])
+    create(unique_index(:user_email_categories, [:category_id, :user_id]))
   end
 end

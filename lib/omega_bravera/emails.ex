@@ -334,7 +334,7 @@ defmodule OmegaBravera.Emails do
           inserted_at: DateTime.truncate(Timex.now(), :second),
           updated_at: DateTime.truncate(Timex.now(), :second)
         }
-    end)
+      end)
 
     Multi.new()
     |> Multi.delete_all(:delete_all, delete_existing)
