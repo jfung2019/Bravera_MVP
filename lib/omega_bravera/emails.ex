@@ -142,6 +142,15 @@ defmodule OmegaBravera.Emails do
   """
   def get_sendgrid_email!(id), do: Repo.get!(SendgridEmail, id)
 
+  def get_sendgrid_email_by_sendgrid_id(sendgrid_id) do
+    from(
+      sendgrid_email in SendgridEmail,
+      where: sendgrid_email.sendgrid_id == ^sendgrid_id,
+      preload: [:category]
+    )
+    |> Repo.one()
+  end
+
   @doc """
   Creates a sendgrid_email.
 
