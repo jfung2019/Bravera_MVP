@@ -63,12 +63,12 @@ defmodule OmegaBravera.Challenges.Activity do
     "Hike"
   ]
 
-  def create_changeset(%Strava.Activity{} = strava_activity, %NGOChal{} = challenge) do
+  def create_changeset(%Strava.Activity{} = strava_activity, %NGOChal{} = challenge, user) do
     %__MODULE__{}
     |> cast(strava_attributes(strava_activity), @allowed_attributes)
     |> change(%{
       strava_id: strava_activity.id,
-      user_id: challenge.user_id,
+      user_id: user.id,
       challenge_id: challenge.id,
       distance: to_km(strava_activity.distance),
       average_speed: to_km_per_hour(strava_activity.average_speed),
@@ -88,13 +88,14 @@ defmodule OmegaBravera.Challenges.Activity do
   def create_activity_by_admin_changeset(
         %Strava.Activity{} = strava_activity,
         %NGOChal{} = challenge,
+        user,
         admin_user_id
       ) do
     %__MODULE__{}
     |> cast(strava_attributes(strava_activity), @required_attributes_for_admin)
     |> change(%{
       strava_id: strava_activity.id,
-      user_id: challenge.user_id,
+      user_id: user.id,
       challenge_id: challenge.id,
       distance: strava_activity.distance,
       average_speed: strava_activity.average_speed,

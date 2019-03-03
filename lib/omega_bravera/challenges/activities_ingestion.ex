@@ -26,16 +26,16 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   def process_strava_webhook(_), do: {:error, :webhook_not_processed}
 
-  def process_challenges([hd | _] = challenges, %{"object_id" => object_id}) do
+  def process_challenges([{_challenge_id, _user, token} | _] = challenges, %{"object_id" => object_id}) do
     Logger.info("ActivityIngestion: Processing challenges")
-    activity = Strava.Activity.retrieve(object_id, %{}, strava_client(hd))
+    activity = Strava.Activity.retrieve(object_id, %{}, strava_client(token))
     Logger.info("ActivityIngestion: Processing activity: #{inspect(activity)}")
 
-    Enum.map(challenges, fn {challenge_id, _} ->
+    Enum.map(challenges, fn {challenge_id, user, _token} ->
       challenge_id
       |> Challenges.get_ngo_chal!()
-      |> Repo.preload([:user, :ngo])
-      |> process_challenge(activity, true)
+      |> Repo.preload([:ngo])
+      |> process_challenge(activity, user, true)
     end)
   end
 
@@ -45,12 +45,13 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   end
 
   def process_challenges(challenge, activity, send_emails \\ true) do
-    process_challenge(challenge, activity, send_emails)
+    process_challenge(challenge, activity, challenge.user, send_emails)
   end
 
   def process_challenge(
         %NGOChal{type: "PER_KM"} = challenge,
         %Strava.Activity{distance: distance} = strava_activity,
+        user,
         send_emails
       )
       when distance > 0 do
@@ -58,7 +59,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
     {status, _challenge, _activity, _donations} =
       challenge
-      |> create_activity(strava_activity, send_emails)
+      |> create_activity(strava_activity, user, send_emails)
       |> update_challenge
       |> notify_participant_of_activity(send_emails)
       |> get_donations
@@ -88,6 +89,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def process_challenge(
         %NGOChal{type: "PER_MILESTONE"} = challenge,
         %Strava.Activity{distance: distance} = strava_activity,
+        user,
         send_emails
       )
       when distance > 0 do
@@ -95,10 +97,10 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
     {status, _challenge, _activity, donations} =
       challenge
-      |> create_activity(strava_activity, send_emails)
-      |> update_challenge
+      |> create_activity(strava_activity, user, send_emails)
+      |> update_challenge()
       |> notify_participant_of_activity(send_emails)
-      |> get_donations
+      |> get_donations()
       |> notify_participant_of_milestone(send_emails)
       |> charge_donations(send_emails)
 
@@ -127,19 +129,20 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     end
   end
 
-  def process_challenge(_, _, _), do: {:error, :activity_not_processed}
+  def process_challenge(_, _, _, _), do: {:error, :activity_not_processed}
 
-  def create_activity(challenge, activity, send_emails) do
+  def create_activity(challenge, activity, user, send_emails) do
     # Check if the strava activity is an admin created one.
     changeset =
       case Map.has_key?(activity, :admin_id) do
         false ->
-          Challenges.Activity.create_changeset(activity, challenge)
+          Challenges.Activity.create_changeset(activity, challenge, user)
 
         true ->
           Challenges.Activity.create_activity_by_admin_changeset(
             activity,
             challenge,
+            user,
             activity.admin_id
           )
       end
@@ -229,7 +232,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     end
   end
 
-  defp strava_client({_, token}), do: Strava.Client.new(token)
+  defp strava_client(token), do: Strava.Client.new(token)
 
   defp valid_activity?(activity, challenge, send_emails) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date

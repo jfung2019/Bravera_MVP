@@ -48,8 +48,11 @@ defmodule OmegaBravera.Accounts do
         join: tm in TeamMembers,
         on: t.id == tm.team_id,
         where: tm.user_id == s.user_id,
+        join: u in User,
+        on: s.user_id == u.id,
         select: {
           nc.id,
+          u,
           s.token
         }
       )
@@ -60,8 +63,11 @@ defmodule OmegaBravera.Accounts do
         where: s.athlete_id == ^athlete_id,
         join: nc in NGOChal,
         where: s.user_id == nc.user_id and nc.status == "active",
+        join: u in User,
+        on: s.user_id == u.id,
         select: {
           nc.id,
+          u,
           s.token
         }
       )

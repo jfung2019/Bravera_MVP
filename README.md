@@ -1,27 +1,27 @@
-## TODO
+# Bravera
 
-Deal with user going "back" and seeing cached pages
+## Deployment steps
+```bash
+git checkout master
+git pull
+mix deps.get
+mix edeliver build release
+mix edeliver deploy release to production
+mix edeliver stop production
+mix edeliver start production
+mix edeliver migrate production
+mix edeliver ping production
+```
 
-# OmegaBravera
+### Migration Issue
+If the DB migration edeliver task fails, for some reason, the DB migration can be run with mix through SSH:
+```bash
+cd /home/ubuntu/omega_bravera/builds
+MIX_ENV=prod mix ecto.migrate
+```
 
-
-
-Got to
-mix local.hex
-
-and
-
-mix archive.install https://github.com/phoenixframework/archives/raw/master/phx_new-1.3.3.ez
-
-on https://www.digitalocean.com/community/tutorials/how-to-automate-elixir-phoenix-deployment-with-distillery-and-edeliver-on-ubuntu-16-04
-
-To start your Phoenix server:
-
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
+### General Edeliver Debugging
+If a command is freezing or not working properly, adding `--verbose` should give some insight:
+```bash
+mix edeliver build release ---verbose
+```

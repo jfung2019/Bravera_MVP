@@ -18,6 +18,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
       Activity.create_activity_by_admin_changeset(
         %Strava.Activity{},
         %NGOChal{},
+        %{id: nil},
         current_admin_user.id
       )
 
@@ -50,7 +51,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     activity =
       Strava.Activity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
 
-    case ActivitiesIngestion.process_challenge(challenge, activity, true) do
+    case ActivitiesIngestion.process_challenge(challenge, activity, user, true) do
       {:ok, :challenge_updated} ->
         conn
         |> put_flash(:info, "Activity imported successfully.")
@@ -70,6 +71,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
       Activity.create_activity_by_admin_changeset(
         %Strava.Activity{},
         %NGOChal{},
+        %{id: nil},
         current_admin_user.id
       )
 
@@ -87,12 +89,13 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
       Activity.create_activity_by_admin_changeset(
         activity,
         challenge,
+        challenge.user,
         current_admin_user.id
       )
 
     case changeset.valid? do
       true ->
-        case ActivitiesIngestion.process_challenge(challenge, activity, true) do
+        case ActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true) do
           {:ok, :challenge_updated} ->
             conn
             |> put_flash(:info, "Activity created successfully.")
