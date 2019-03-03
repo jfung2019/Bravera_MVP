@@ -187,7 +187,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     do: Tuple.append(params, Money.chargeable_donations_for_challenge(challenge))
 
   defp get_donations({:error, challenge, _} = params) do
-    Logger.error("Could not get donations for challenge #{inspect(challenge.slug)}")
+    Logger.info("Could not get donations for challenge #{inspect(challenge.slug)}")
     Tuple.append(params, nil)
   end
 
