@@ -35,8 +35,9 @@ defmodule OmegaBravera.NotifierTest do
       insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     pledges = donations(context, donor)
+    template_id = "79561f40-9939-406c-bdbe-0ecca63a1e1a"
 
-    result = Notifier.participant_email(challenge, donor, pledges, "/swcc/#{user.firstname}-594")
+    result = Notifier.participant_email(challenge, donor, pledges, "/swcc/#{user.firstname}-594", template_id)
 
     assert result == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -56,7 +57,7 @@ defmodule OmegaBravera.NotifierTest do
                "-donorPledge-" => "HK$600",
                "-participantName-" => user.firstname
              },
-             template_id: "79561f40-9939-406c-bdbe-0ecca63a1e1a",
+             template_id: template_id,
              to: [%{email: user.email}],
              bcc: [%{email: "admin@bravera.co"}]
            }
@@ -69,11 +70,14 @@ defmodule OmegaBravera.NotifierTest do
     donor =
       insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
+    template_id = "9fc14299-96a0-4a4d-9917-c19f747270ff"
+
     result =
       Notifier.pre_registration_donor_email(
         pre_registration_challenge,
         donor,
-        "/swcc/#{user.firstname}-594"
+        "/swcc/#{user.firstname}-594",
+        template_id
       )
 
     assert result == %SendGrid.Email{
@@ -95,7 +99,7 @@ defmodule OmegaBravera.NotifierTest do
                "-challengeStartDate-" =>
                  Timex.format!(pre_registration_challenge.start_date, "%Y-%m-%d", :strftime)
              },
-             template_id: "9fc14299-96a0-4a4d-9917-c19f747270ff",
+             template_id: template_id,
              to: [%{email: donor.email}],
              bcc: [%{email: "admin@bravera.co"}]
            }
@@ -105,7 +109,8 @@ defmodule OmegaBravera.NotifierTest do
     donor =
       insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
-    result = Notifier.donor_email(challenge, donor, "/swcc/#{user.firstname}-594")
+    template_id = "4ab4a0f8-79ac-4f82-9ee2-95db6fafb986"
+    result = Notifier.donor_email(challenge, donor, "/swcc/#{user.firstname}-594", template_id)
 
     assert result == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -124,7 +129,7 @@ defmodule OmegaBravera.NotifierTest do
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
                "-participantName-" => user.firstname
              },
-             template_id: "4ab4a0f8-79ac-4f82-9ee2-95db6fafb986",
+             template_id: template_id,
              to: [%{email: donor.email}],
              bcc: [%{email: "admin@bravera.co"}]
            }
@@ -177,7 +182,9 @@ defmodule OmegaBravera.NotifierTest do
       charged_at: DateTime.from_unix!(1_536_707_533)
     }
 
-    result = Notifier.donation_charged_email(insert(:donation, donation_params))
+    template_id = "f9448c06-ff05-4901-bb47-f21a7848c1e7"
+
+    result = Notifier.donation_charged_email(insert(:donation, donation_params), template_id)
 
     assert result == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -200,7 +207,7 @@ defmodule OmegaBravera.NotifierTest do
                "-donationDate-" => "2018-09-11 23:12:13",
                "-chargedAmount-" => "10 hkd"
              },
-             template_id: "f9448c06-ff05-4901-bb47-f21a7848c1e7",
+             template_id: template_id,
              to: [%{email: donor.email}],
              bcc: [%{email: "admin@bravera.co"}]
            }

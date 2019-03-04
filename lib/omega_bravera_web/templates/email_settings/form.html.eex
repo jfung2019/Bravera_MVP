@@ -1,0 +1,35 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <%= if default_categories(@user_categories) do %>
+    <%= for category <- @all_categories do %>
+      <div class="form-group">
+        <input type="checkbox" name="subscribed_categories[]" value="<%=category.id%>" checked <%=readonly_main_category(category)%> >
+        <%= if !is_nil(readonly_main_category(category)) do %>
+          <input type="hidden" name="subscribed_categories[]" value="<%=category.id%>">
+        <% end %>
+        <%= label f, "#{category.title} (#{category.description})", class: "control-label small" %>
+        <%= error_tag f, :id %>
+      </div>
+    <% end %>
+  <% else %>
+    <%= for category <- @all_categories do %>
+      <div class="form-group">
+        <input type="checkbox" name="subscribed_categories[]" value="<%=category.id%>" <%=subscribed?(category.id, @user_categories)%> <%=readonly_main_category(category)%> >
+        <%= if !is_nil(readonly_main_category(category)) do %>
+          <input type="hidden" name="subscribed_categories[]" value="<%=category.id%>">
+        <% end %>
+        <%= label f, "#{category.title} (#{category.description})", class: "control-label small" %>
+        <%= error_tag f, :id %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="form-group">
+    <%= submit "Save", class: "btn btn-primary" %>
+  </div>
+<% end %>

@@ -2,11 +2,11 @@ defmodule OmegaBravera.Repo.Migrations.SetTimestampsToUtc do
   use Ecto.Migration
 
   def up do
-    Enum.map(tables, &alter_timestamps(&1, :utc_datetime))
+    Enum.map(tables(), &alter_timestamps(&1, :utc_datetime))
   end
 
   def down do
-    Enum.map(tables, &alter_timestamps(&1, :naive_datetime))
+    Enum.map(tables(), &alter_timestamps(&1, :naive_datetime))
   end
 
   defp alter_timestamps(name, type) do
