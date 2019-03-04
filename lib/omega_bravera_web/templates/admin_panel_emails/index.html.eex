@@ -6,6 +6,7 @@
 		<table class="table">
 		  <thead>
 		    <tr>
+          <th>Category ID</th>
 		      <th>Sendgrid ID</th>
 		      <th>Category</th>
 		    </tr>
@@ -13,6 +14,7 @@
 		  <tbody>
 		<%= for email <- @emails do %>
 		    <tr>
+          <td><%= email.category.id %></td>
 		      <td><%= email.sendgrid_id %></td>
 		      <td><%= email.category.title %></td>
 					<td class="text-right">
