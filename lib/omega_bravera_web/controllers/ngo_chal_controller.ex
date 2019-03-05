@@ -81,11 +81,20 @@ defmodule OmegaBraveraWeb.NGOChalController do
         team: [users: [:strava], invitations: []]
       )
 
-    changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
+    case challenge do
+      nil ->
+        conn
+        |> put_view(OmegaBraveraWeb.PageView)
+        |> put_status(:not_found)
+        |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
 
-    render_attrs = get_render_attrs(conn, challenge, changeset, ngo_slug)
+      challenge ->
+        changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
-    render(conn, "show.html", Map.merge(render_attrs, get_stats(challenge)))
+        render_attrs = get_render_attrs(conn, challenge, changeset, ngo_slug)
+
+        render(conn, "show.html", Map.merge(render_attrs, get_stats(challenge)))
+    end
   end
 
   def edit(conn, %{"id" => id}) do

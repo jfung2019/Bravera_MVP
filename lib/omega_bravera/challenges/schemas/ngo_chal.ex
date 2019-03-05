@@ -111,21 +111,33 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> update_end_date(ngo_chal)
   end
 
-  def update_end_date(%Ecto.Changeset{} = changeset, %__MODULE__{end_date: end_date, duration: old_duration}) do
+  def update_end_date(%Ecto.Changeset{} = changeset, %__MODULE__{
+        end_date: end_date,
+        duration: old_duration
+      }) do
     new_duration = get_change(changeset, :duration)
 
     cond do
-      is_nil(new_duration) -> changeset
-      new_duration == old_duration -> changeset
+      is_nil(new_duration) ->
+        changeset
+
+      new_duration == old_duration ->
+        changeset
+
       new_duration > old_duration ->
-        change(changeset, end_date: end_date_without_seconds(end_date, new_duration - old_duration))
+        change(changeset,
+          end_date: end_date_without_seconds(end_date, new_duration - old_duration)
+        )
+
       new_duration < old_duration ->
-        change(changeset, end_date: end_date_without_seconds(end_date, -(old_duration - new_duration)))
+        change(changeset,
+          end_date: end_date_without_seconds(end_date, -(old_duration - new_duration))
+        )
     end
   end
 
-  defp end_date_without_seconds(%DateTime{} = start_date, new_duration), do:
-    Timex.shift(start_date, days: new_duration) |> DateTime.truncate(:second)
+  defp end_date_without_seconds(%DateTime{} = start_date, new_duration),
+    do: Timex.shift(start_date, days: new_duration) |> DateTime.truncate(:second)
 
   defp add_status(%Ecto.Changeset{} = changeset, %NGO{
          open_registration: open_registration,

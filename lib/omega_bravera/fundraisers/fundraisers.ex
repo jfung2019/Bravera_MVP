@@ -221,8 +221,11 @@ defmodule OmegaBravera.Fundraisers do
       )
       |> Repo.one()
 
-    case Timex.is_valid?(ngo.pre_registration_start_date) and Timex.is_valid?(ngo.launch_date) do
-      true ->
+    cond do
+      ngo == nil ->
+        nil
+
+      Timex.is_valid?(ngo.pre_registration_start_date) and Timex.is_valid?(ngo.launch_date) ->
         ngo
         |> Map.put(
           :pre_registration_start_date,
@@ -230,7 +233,7 @@ defmodule OmegaBravera.Fundraisers do
         )
         |> Map.put(:launch_date, Timex.to_datetime(ngo.launch_date))
 
-      _ ->
+      true ->
         ngo
     end
   end

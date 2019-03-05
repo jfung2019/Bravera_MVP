@@ -14,7 +14,8 @@ defmodule OmegaBravera.Accounts.StravaTest do
       firstname: "Rafael",
       lastname: "Garcia",
       token: "8089de39cdfb41470291b9a116f1fc6b94633ad0",
-      strava_profile_picture: "https://graph.facebook.com/10160635840075043/picture?height=256&width=256"
+      strava_profile_picture:
+        "https://graph.facebook.com/10160635840075043/picture?height=256&width=256"
     }
 
     [attrs: attrs]
