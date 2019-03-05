@@ -84,5 +84,9 @@ defmodule OmegaBravera.FundraisersTest do
       ngo = ngo_fixture()
       assert %Ecto.Changeset{} = Fundraisers.change_ngo(ngo)
     end
+
+    test "get_ngo_by_slug/1 with invalid slug will return nil value" do
+      assert nil == Fundraisers.get_ngo_by_slug("invalid")
+    end
   end
 end

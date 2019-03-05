@@ -50,7 +50,7 @@
           </div>
         </div>
 
-        <div id="team_block" class="col-lg-2 mx-auto d-none team-form"">
+        <div class="col-lg-2 mx-auto d-none team_block team-form"">
           <label for="ngo_chal_activity">
             <h4 class="text-green mb-0">
               <%= gettext("Team name and members") %>
@@ -71,7 +71,7 @@
                 <%= select fp, :count, 2..@ngo.additional_members, class: "form-control" %>
               <% end %>
             </div>
-            <span id="team-members-note" class="small mb-2">You will invite 1 more member(s) after configuring your challenge by adding name and email address.</span>
+            <span id="team-members-note" class="small mb-2">Invite <span>1</span> more member(s) after setting-up your challenge.</span>
             <% end %>
         </div>
 
@@ -125,7 +125,8 @@
     <div class="distance-select">
       <label>
         <h4 class="text-green mb-0">
-          <%= gettext("Choose Duration and Distance") %>
+          <span class="team_block d-none"><%= gettext("Choose Team Duration and Distance") %></span>
+          <span class="solo-block"><%= gettext("Choose Your Duration and Distance") %></span>
         </h4>
       </label>
 
