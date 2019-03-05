@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.PageController do
 
   alias OmegaBravera.Accounts.{AdminUser, User}
 
-  def notFound(conn, _params) do
+  def not_found(conn, _params) do
     render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
   end
 

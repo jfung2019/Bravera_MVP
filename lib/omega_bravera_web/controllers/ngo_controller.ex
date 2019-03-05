@@ -10,8 +10,16 @@ defmodule OmegaBraveraWeb.NGOController do
   end
 
   def show(conn, %{"slug" => slug}) do
-    ngo = Fundraisers.get_ngo_by_slug(slug)
-    render(conn, "show.html", ngo: ngo)
+    case Fundraisers.get_ngo_by_slug(slug) do
+      nil ->
+        conn
+        |> put_view(OmegaBraveraWeb.PageView)
+        |> put_status(:not_found)
+        |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+
+      ngo ->
+        render(conn, "show.html", ngo: ngo)
+    end
   end
 
   def leaderboard(conn, %{"ngo_slug" => slug}) do

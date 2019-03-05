@@ -142,6 +142,24 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       assert html_response(conn, 200) =~ "RM"
     end
 
+    test "invalid slug for NGO and challenge will render 404", %{conn: conn} do
+      conn = get(conn, "/invalid-ngo/invalid-challenge")
+
+      assert html_response(conn, 404) =~ "You look lost, Mate."
+    end
+
+    test "invalid slug for NGO, valid challenge will render 404", %{conn: conn, challenge_1: chal} do
+      conn = get(conn, "/invalid-ngo/i#{chal.slug}")
+
+      assert html_response(conn, 404) =~ "You look lost, Mate."
+    end
+
+    test "valid slug for NGO, valid challenge will render 404", %{conn: conn, ngo_1: ngo} do
+      conn = get(conn, "/#{ngo.slug}/invalid-challenge")
+
+      assert html_response(conn, 404) =~ "You look lost, Mate."
+    end
+
     test "add_team_member/2 adds user to a team", %{conn: conn, current_user: current_user} do
       team = insert(:team)
 

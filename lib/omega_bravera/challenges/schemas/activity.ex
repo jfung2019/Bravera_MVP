@@ -122,6 +122,9 @@ defmodule OmegaBravera.Challenges.Activity do
 
   defp to_km_per_hour(nil), do: nil
 
+  defp to_km_per_hour(meters_per_second) when is_float(meters_per_second),
+    do: Decimal.mult(Decimal.from_float(meters_per_second), @km_per_hour)
+
   defp to_km_per_hour(meters_per_second),
     do: Decimal.mult(Decimal.new(meters_per_second), @km_per_hour)
 

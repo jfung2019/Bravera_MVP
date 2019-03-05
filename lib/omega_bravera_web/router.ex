@@ -147,8 +147,8 @@ defmodule OmegaBraveraWeb.Router do
     get("/login", PageController, :login)
     get("/login/:team_invitation", PageController, :login)
 
-    get("/404", PageController, :notFound)
-    get("/500", PageController, :notFound)
+    get("/404", PageController, :not_found)
+    get("/500", PageController, :not_found)
 
     resources("/email-signup", UserController, only: [:new, :create])
 
