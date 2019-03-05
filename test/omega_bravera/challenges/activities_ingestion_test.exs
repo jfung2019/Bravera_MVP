@@ -44,7 +44,13 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       challenge = insert(:ngo_challenge)
       strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
-      assert {:ok, _, _} = ActivitiesIngestion.create_activity(challenge, strava_activity, challenge.user, true)
+      assert {:ok, _, _} =
+               ActivitiesIngestion.create_activity(
+                 challenge,
+                 strava_activity,
+                 challenge.user,
+                 true
+               )
     end
 
     test "returns error when activity is manual and the environment is set to accept only non-manual activities",
@@ -55,7 +61,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       strava_activity = Map.put(strava_activity, :manual, true)
 
       assert {:error, _, _} =
-               ActivitiesIngestion.create_activity(challenge, strava_activity, challenge.user, true)
+               ActivitiesIngestion.create_activity(
+                 challenge,
+                 strava_activity,
+                 challenge.user,
+                 true
+               )
     end
 
     test "returns error when activity dates are invalid", %{
@@ -68,7 +79,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         |> Map.replace!(:type, challenge.activity_type)
 
       assert {:error, _, _} =
-               ActivitiesIngestion.create_activity(challenge, strava_activity, challenge.user, true)
+               ActivitiesIngestion.create_activity(
+                 challenge,
+                 strava_activity,
+                 challenge.user,
+                 true
+               )
     end
 
     test "challenge not processed when activity type does not match challenge type", %{
@@ -78,7 +94,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       strava_activity = Map.replace!(strava_activity, :type, "invalid_type")
 
       assert {:error, _, _} =
-               ActivitiesIngestion.create_activity(challenge, strava_activity, challenge.user, true)
+               ActivitiesIngestion.create_activity(
+                 challenge,
+                 strava_activity,
+                 challenge.user,
+                 true
+               )
     end
   end
 
@@ -230,7 +251,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: -10))
         |> Map.replace!(:type, challenge.activity_type)
 
-      assert ActivitiesIngestion.process_challenge(challenge.id, strava_activity, challenge.user, true) ==
+      assert ActivitiesIngestion.process_challenge(
+               challenge.id,
+               strava_activity,
+               challenge.user,
+               true
+             ) ==
                {:error, :activity_not_processed}
     end
 
@@ -243,7 +269,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         Map.put(strava_activity, :start_date, Timex.shift(Timex.now(), days: 6))
         |> Map.replace!(:type, challenge.activity_type)
 
-      assert ActivitiesIngestion.process_challenge(challenge, strava_activity, challenge.user, true) ==
+      assert ActivitiesIngestion.process_challenge(
+               challenge,
+               strava_activity,
+               challenge.user,
+               true
+             ) ==
                {:error, :activity_not_processed}
     end
 
@@ -296,7 +327,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         |> Map.put(:distance, 50500)
         |> Map.put(:id, 1)
 
-      {:ok, :challenge_updated} = ActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)
+      {:ok, :challenge_updated} =
+        ActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)
 
       updated_challenge = Repo.get!(NGOChal, challenge.id)
 
@@ -313,7 +345,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         |> Map.put(:distance, 50500)
         |> Map.put(:id, 1)
 
-      {:ok, :challenge_updated} = ActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)
+      {:ok, :challenge_updated} =
+        ActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)
 
       updated_challenge = Repo.get!(NGOChal, challenge.id)
 

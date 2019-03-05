@@ -26,7 +26,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   def process_strava_webhook(_), do: {:error, :webhook_not_processed}
 
-  def process_challenges([{_challenge_id, _user, token} | _] = challenges, %{"object_id" => object_id}) do
+  def process_challenges([{_challenge_id, _user, token} | _] = challenges, %{
+        "object_id" => object_id
+      }) do
     Logger.info("ActivityIngestion: Processing challenges")
     activity = Strava.Activity.retrieve(object_id, %{}, strava_client(token))
     Logger.info("ActivityIngestion: Processing activity: #{inspect(activity)}")
