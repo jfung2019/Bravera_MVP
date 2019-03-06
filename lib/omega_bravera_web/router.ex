@@ -130,6 +130,14 @@ defmodule OmegaBraveraWeb.Router do
       get("/ngo/:slug/statement", AdminPanelNGOController, :statement)
       get("/ngo/:slug/statement/monthly/", AdminPanelNGOController, :export_statement)
       get("/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list)
+
+      resources("/offers", AdminPanelOfferController, only: [:index, :new, :create]) do
+        resources("/offer_challenges", AdminPanelOfferChallengeController, only: [:show, :edit, :update])
+      end
+
+      get("/offers/:slug", AdminPanelOfferController, :show)
+      get("/offers/:slug/edit", AdminPanelOfferController, :edit)
+      put("/offers/:slug", AdminPanelOfferController, :update)
     end
 
     scope "/api" do

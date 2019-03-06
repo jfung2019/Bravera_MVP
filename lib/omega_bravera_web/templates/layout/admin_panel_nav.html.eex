@@ -27,6 +27,9 @@
           <%= link("Activities", to: admin_panel_activity_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
+          <%= link("Offers", to: admin_panel_offer_path(@conn, :index)) %>
+        </li>
+        <li class="nav-item">
           <%= link("NGOs", to: admin_panel_ngo_path(@conn, :index)) %>
         </li>
         <li class="nav-item">

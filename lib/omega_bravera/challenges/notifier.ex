@@ -15,7 +15,10 @@ defmodule OmegaBravera.Challenges.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
-    if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       challenge
       |> manual_activity_blocked_email(path, template_id)
       |> Mailer.send()
@@ -40,7 +43,10 @@ defmodule OmegaBravera.Challenges.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
-    if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       challenge
       |> challenge_activated_email(path, template_id)
       |> Mailer.send()
@@ -65,7 +71,10 @@ defmodule OmegaBravera.Challenges.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
-    if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       challenge
       |> pre_registration_challenge_signup_email(path, template_id)
       |> Mailer.send()
@@ -103,7 +112,10 @@ defmodule OmegaBravera.Challenges.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
-    if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       challenge
       |> challenge_signup_email(path, template_id)
       |> Mailer.send()
@@ -142,7 +154,10 @@ defmodule OmegaBravera.Challenges.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
-    if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       challenge
       |> activity_completed_email(activity, template_id)
       |> Mailer.send()
@@ -166,9 +181,14 @@ defmodule OmegaBravera.Challenges.Notifier do
   def send_donor_milestone_email(%Donation{} = donation) do
     template_id = "c8573175-93a6-4f8c-b1bb-9368ad75981a"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
-    donation = Repo.preload(donation, [user: [:subscribed_email_categories], ngo_chal: [:ngo, :user]])
 
-    if user_subscribed_in_category?(donation.user.subscribed_email_categories, sendgrid_email.category.id) do
+    donation =
+      Repo.preload(donation, user: [:subscribed_email_categories], ngo_chal: [:ngo, :user])
+
+    if user_subscribed_in_category?(
+         donation.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       donation
       |> donor_milestone_email(template_id)
       |> Mailer.send()
@@ -191,7 +211,10 @@ defmodule OmegaBravera.Challenges.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
-    if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       challenge
       |> participant_milestone_email(template_id)
       |> Mailer.send()
@@ -212,7 +235,10 @@ defmodule OmegaBravera.Challenges.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
-    if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       challenge
       |> participant_inactivity_email(template_id)
       |> Mailer.send()
@@ -281,16 +307,23 @@ defmodule OmegaBravera.Challenges.Notifier do
   def send_team_owner_member_added_notification(%NGOChal{} = challenge, %User{} = user) do
     template_id = "0f853118-211f-429f-8975-12f88c937855"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
-    challenge = Repo.preload(challenge, [user: [:subscribed_email_categories]])
+    challenge = Repo.preload(challenge, user: [:subscribed_email_categories])
 
-    if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       challenge
       |> team_owner_member_added_notification_email(user, template_id)
       |> Mailer.send()
     end
   end
 
-  def team_owner_member_added_notification_email(%NGOChal{} = challenge, %User{} = user, template_id) do
+  def team_owner_member_added_notification_email(
+        %NGOChal{} = challenge,
+        %User{} = user,
+        template_id
+      ) do
     challenge = %{
       challenge
       | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
@@ -373,7 +406,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     else
       # User actually choose specific categories of emails.
       user_subscribed_categories
-      |> Enum.map(&(&1.category_id))
+      |> Enum.map(& &1.category_id)
       |> Enum.member?(email_category_id)
     end
   end

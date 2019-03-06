@@ -27,7 +27,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateOffers do
         default: fragment("ARRAY['PER_KM', 'PER_MILESTONE']")
       )
 
-      add(:distances, {:array, :string},
+      add(:distances, {:array, :integer},
         null: false,
         default: fragment("ARRAY[50, 75, 150, 250]")
       )

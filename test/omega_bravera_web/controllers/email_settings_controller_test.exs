@@ -15,7 +15,9 @@ defmodule OmegaBraveraWeb.EmailSettingsControllerTest do
 
     with {:ok, user} <- Accounts.create_user(attrs),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
-         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), user: user}
+         do:
+           {:ok,
+            conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), user: user}
   end
 
   describe "edit email settings" do
@@ -45,7 +47,10 @@ defmodule OmegaBraveraWeb.EmailSettingsControllerTest do
       refute Notifier.send_participant_inactivity_email(challenge) == :ok
     end
 
-    test "update/2 refuses to unsubscribe user from main emails category", %{conn: conn, user: user} do
+    test "update/2 refuses to unsubscribe user from main emails category", %{
+      conn: conn,
+      user: user
+    } do
       user =
         user
         |> Repo.preload(:subscribed_email_categories)
@@ -57,7 +62,9 @@ defmodule OmegaBraveraWeb.EmailSettingsControllerTest do
         Accounts.get_user!(user.id)
         |> Repo.preload(:subscribed_email_categories)
 
-      assert get_flash(conn, :error) =~ "Cannot unsubscribe from platform notification. Please request account termination from admin@bravera.co"
+      assert get_flash(conn, :error) =~
+               "Cannot unsubscribe from platform notification. Please request account termination from admin@bravera.co"
+
       assert Enum.empty?(updated_user.subscribed_email_categories)
     end
   end

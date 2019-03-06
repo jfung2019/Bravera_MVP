@@ -31,11 +31,11 @@ defmodule OmegaBravera.Fundraisers.NGO do
 
     field(:active_challenges, :integer, default: 0, virtual: true)
     field(:utc_launch_date, :utc_datetime, virtual: true)
-    field(:total_pledged, :decimal, defailt: 0, virtual: true)
-    field(:total_secured, :decimal, defailt: 0, virtual: true)
-    field(:num_of_challenges, :decimal, defailt: 0, virtual: true)
-    field(:total_distance_covered, :decimal, defailt: 0, virtual: true)
-    field(:total_calories, :decimal, defailt: 0, virtual: true)
+    field(:total_pledged, :decimal, default: 0, virtual: true)
+    field(:total_secured, :decimal, default: 0, virtual: true)
+    field(:num_of_challenges, :decimal, default: 0, virtual: true)
+    field(:total_distance_covered, :decimal, default: 0, virtual: true)
+    field(:total_calories, :decimal, default: 0, virtual: true)
 
     field(:activities, {:array, :string}, default: activity_options())
     field(:distances, {:array, :integer}, default: distance_options())

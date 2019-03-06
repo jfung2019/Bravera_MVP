@@ -16,7 +16,12 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       | start_date: Timex.to_datetime(team.challenge.start_date, "Asia/Hong_Kong")
     }
 
-    email = Notifier.team_owner_member_added_notification_email(challenge, user, "0f853118-211f-429f-8975-12f88c937855")
+    email =
+      Notifier.team_owner_member_added_notification_email(
+        challenge,
+        user,
+        "0f853118-211f-429f-8975-12f88c937855"
+      )
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -96,7 +101,12 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   test "manual_activity_blocked_email" do
     challenge = insert(:ngo_challenge)
 
-    email = Notifier.manual_activity_blocked_email(challenge, "/swcc/John-512", "fcd40945-8a55-4459-94b9-401a995246fb")
+    email =
+      Notifier.manual_activity_blocked_email(
+        challenge,
+        "/swcc/John-512",
+        "fcd40945-8a55-4459-94b9-401a995246fb"
+      )
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -128,7 +138,12 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   test "challenge_activated_email" do
     challenge = insert(:ngo_challenge)
 
-    email = Notifier.challenge_activated_email(challenge, "/swcc/John-512", "75516ad9-3ce8-4742-bd70-1227ce3cba1d")
+    email =
+      Notifier.challenge_activated_email(
+        challenge,
+        "/swcc/John-512",
+        "75516ad9-3ce8-4742-bd70-1227ce3cba1d"
+      )
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -165,7 +180,12 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
     }
 
-    email = Notifier.pre_registration_challenge_signup_email(challenge, "/swcc/John-512", "0e8a21f6-234f-4293-b5cf-fc9805042d82")
+    email =
+      Notifier.pre_registration_challenge_signup_email(
+        challenge,
+        "/swcc/John-512",
+        "0e8a21f6-234f-4293-b5cf-fc9805042d82"
+      )
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -209,7 +229,12 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
     }
 
-    email = Notifier.challenge_signup_email(challenge, "/swcc/#{challenge.slug}", "e5402f0b-a2c2-4786-955b-21d1cac6211d")
+    email =
+      Notifier.challenge_signup_email(
+        challenge,
+        "/swcc/#{challenge.slug}",
+        "e5402f0b-a2c2-4786-955b-21d1cac6211d"
+      )
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -254,7 +279,12 @@ defmodule OmegaBravera.Challenges.NotifierTest do
         distance: Decimal.from_float(4.215)
       })
 
-    email = Notifier.activity_completed_email(challenge, activity, "d92b0884-818d-4f54-926a-a529e5caa7d8")
+    email =
+      Notifier.activity_completed_email(
+        challenge,
+        activity,
+        "d92b0884-818d-4f54-926a-a529e5caa7d8"
+      )
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -298,7 +328,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   test "participant_milestone_email/1" do
     challenge = insert(:ngo_challenge, %{distance_covered: Decimal.from_float(4.215)})
 
-    email = Notifier.participant_milestone_email(challenge, "e4c626a0-ad9a-4479-8228-6c02e7318789")
+    email =
+      Notifier.participant_milestone_email(challenge, "e4c626a0-ad9a-4479-8228-6c02e7318789")
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -372,7 +403,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   test "participant_inactivity_email/1" do
     challenge = insert(:ngo_challenge)
 
-    email = Notifier.participant_inactivity_email(challenge, "1395a042-ef5a-48a5-b890-c6340dd8eeff")
+    email =
+      Notifier.participant_inactivity_email(challenge, "1395a042-ef5a-48a5-b890-c6340dd8eeff")
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -405,7 +437,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     challenge = insert(:ngo_challenge)
     donor = insert(:user)
 
-    email = Notifier.donor_inactivity_email(challenge, donor, "b91a66e1-d7f5-404f-804a-9a21f4ec70d4")
+    email =
+      Notifier.donor_inactivity_email(challenge, donor, "b91a66e1-d7f5-404f-804a-9a21f4ec70d4")
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,

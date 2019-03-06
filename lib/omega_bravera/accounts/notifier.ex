@@ -31,7 +31,7 @@ defmodule OmegaBravera.Accounts.Notifier do
     else
       # User actually choose specific categories of emails.
       user_subscribed_categories
-      |> Enum.map(&(&1.category_id))
+      |> Enum.map(& &1.category_id)
       |> Enum.member?(email_category_id)
     end
   end

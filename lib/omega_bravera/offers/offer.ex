@@ -3,8 +3,9 @@ defmodule OmegaBravera.Offers.Offer do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.Accounts.User
+  alias OmegaBravera.{Accounts.User, Offers.OfferChallenge}
 
+  @derive {Phoenix.Param, key: :slug}
   schema "offers" do
     field(:currency, :string, default: "hkd")
     field(:desc, :string)
@@ -17,7 +18,7 @@ defmodule OmegaBravera.Offers.Offer do
     field(:offer_challenge_desc, :string)
     field(:offer_percent, :float)
     field(:hidden, :boolean, default: false)
-    field(:open_registration, :boolean, default: false)
+    field(:open_registration, :boolean, default: true)
     field(:pre_registration_start_date, :utc_datetime)
     field(:reward_value, :integer)
     field(:additional_members, :integer, default: 0)
@@ -25,12 +26,15 @@ defmodule OmegaBravera.Offers.Offer do
     field(:toc, :string)
     field(:url, :string)
 
+    field(:active_offer_challenges, :integer, default: 0, virtual: true)
+
     field(:activities, {:array, :string}, default: activity_options())
-    field(:distances, {:array, :string}, default: distance_options())
-    field(:durations, {:array, :string}, default: duration_options())
+    field(:distances, {:array, :integer}, default: distance_options())
+    field(:durations, {:array, :integer}, default: duration_options())
     field(:offer_challenge_types, {:array, :string}, default: challenge_type_options())
 
     belongs_to(:user, User)
+    has_many(:offer_challenges, OfferChallenge)
 
     timestamps(type: :utc_datetime)
   end
@@ -85,6 +89,13 @@ defmodule OmegaBravera.Offers.Offer do
     |> unique_constraint(:slug)
   end
 
+  def update_changeset(offer, attrs) do
+    offer
+    |> changeset(attrs)
+    |> validate_pre_registration_start_date_modification(offer)
+    |> validate_no_active_challenges(offer)
+  end
+
   defp validate_pre_registration_start_date(
          %Ecto.Changeset{
            valid?: true,
@@ -124,7 +135,7 @@ defmodule OmegaBravera.Offers.Offer do
         add_error(
           changeset_to_hk_date(changeset),
           :open_registration,
-          "Cannot create non-closed registration NGO without registration dates."
+          "Cannot create non-closed registration Offer without registration dates."
         )
 
       _ ->
@@ -153,6 +164,46 @@ defmodule OmegaBravera.Offers.Offer do
   end
 
   defp validate_launch_date(%Ecto.Changeset{} = changeset), do: changeset
+
+  defp validate_pre_registration_start_date_modification(
+         %Ecto.Changeset{
+           valid?: true,
+           changes: %{pre_registration_start_date: pre_registration_start_date}
+         } = changeset,
+         %__MODULE__{} = _offer
+       ) do
+    open_registration = get_field(changeset, :open_registration)
+
+    case open_registration == false and Timex.after?(pre_registration_start_date, Timex.now()) do
+      true ->
+        add_error(
+          changeset_to_hk_date(changeset),
+          :pre_registration_start_date,
+          "Pre registration date cannot be modified because it has been reached."
+        )
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp validate_pre_registration_start_date_modification(%Ecto.Changeset{} = changeset, _offer),
+    do: changeset
+
+  defp validate_no_active_challenges(
+         %Ecto.Changeset{valid?: true, changes: %{open_registration: _}} = changeset,
+         %__MODULE__{active_offer_challenges: chals}
+       )
+       when chals > 0 do
+    add_error(
+      changeset_to_hk_date(changeset),
+      :open_registration,
+      "Cannot close/open registration due to the presence of active offer challenges."
+    )
+  end
+
+  defp validate_no_active_challenges(changeset, _ngo), do: changeset
+
 
   defp changeset_to_hk_date(
          %Ecto.Changeset{

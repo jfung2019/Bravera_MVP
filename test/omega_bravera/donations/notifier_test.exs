@@ -37,7 +37,14 @@ defmodule OmegaBravera.NotifierTest do
     pledges = donations(context, donor)
     template_id = "79561f40-9939-406c-bdbe-0ecca63a1e1a"
 
-    result = Notifier.participant_email(challenge, donor, pledges, "/swcc/#{user.firstname}-594", template_id)
+    result =
+      Notifier.participant_email(
+        challenge,
+        donor,
+        pledges,
+        "/swcc/#{user.firstname}-594",
+        template_id
+      )
 
     assert result == %SendGrid.Email{
              __phoenix_layout__: nil,

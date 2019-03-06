@@ -1,0 +1,12 @@
+<div class="row">
+	<div class="col-6 offset-3">
+		<h2><%= @offer.name%>'s Offer Challenges:</h2>
+		<ul>
+      <%= for offer_challenge <- @offer.offer_challenges do %>
+		    <li><%= link offer_challenge.slug, to: admin_panel_offer_admin_panel_offer_challenge_path(@conn, :show, @offer, offer_challenge) %></li>
+      <% end %>
+      <% %>
+		</ul>
+		<span><%= link "Back", to: admin_panel_offer_path(@conn, :index) %></span>
+	</div>
+</div>

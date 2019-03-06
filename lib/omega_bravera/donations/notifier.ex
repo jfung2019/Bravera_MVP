@@ -20,7 +20,10 @@ defmodule OmegaBravera.Donations.Notifier do
     template_id = "79561f40-9939-406c-bdbe-0ecca63a1e1a"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
 
-    if user_subscribed_in_category?(challenge.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       challenge
       |> participant_email(donor, pledges, challenge_path, template_id)
       |> Mailer.send()
@@ -31,21 +34,35 @@ defmodule OmegaBravera.Donations.Notifier do
     pre_registration_donor_template_id = "9fc14299-96a0-4a4d-9917-c19f747270ff"
     donor_email_template_id = "4ab4a0f8-79ac-4f82-9ee2-95db6fafb986"
 
-    pre_registration_donor_sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(pre_registration_donor_template_id)
-    donor_email_template_id_sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(donor_email_template_id)
+    pre_registration_donor_sendgrid_email =
+      Emails.get_sendgrid_email_by_sendgrid_id(pre_registration_donor_template_id)
+
+    donor_email_template_id_sendgrid_email =
+      Emails.get_sendgrid_email_by_sendgrid_id(donor_email_template_id)
 
     donor = Repo.preload(donor, [:subscribed_email_categories])
 
     cond do
-      challenge.status == "pre_registration" and Timex.after?(challenge.start_date, Timex.now("Asia/Hong_Kong")) ->
-        if user_subscribed_in_category?(donor.subscribed_email_categories, donor_email_template_id_sendgrid_email.category.id) do
+      challenge.status == "pre_registration" and
+          Timex.after?(challenge.start_date, Timex.now("Asia/Hong_Kong")) ->
+        if user_subscribed_in_category?(
+             donor.subscribed_email_categories,
+             donor_email_template_id_sendgrid_email.category.id
+           ) do
           challenge
-          |> pre_registration_donor_email(donor, challenge_path, pre_registration_donor_template_id)
+          |> pre_registration_donor_email(
+            donor,
+            challenge_path,
+            pre_registration_donor_template_id
+          )
           |> Mailer.send()
         end
 
       true ->
-        if user_subscribed_in_category?(donor.subscribed_email_categories, pre_registration_donor_sendgrid_email.category.id) do
+        if user_subscribed_in_category?(
+             donor.subscribed_email_categories,
+             pre_registration_donor_sendgrid_email.category.id
+           ) do
           challenge
           |> donor_email(donor, challenge_path, donor_email_template_id)
           |> Mailer.send()
@@ -53,7 +70,13 @@ defmodule OmegaBravera.Donations.Notifier do
     end
   end
 
-  def participant_email(%NGOChal{} = challenge, %User{} = donor, pledges, challenge_path, template_id) do
+  def participant_email(
+        %NGOChal{} = challenge,
+        %User{} = donor,
+        pledges,
+        challenge_path,
+        template_id
+      ) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-donorName-", User.full_name(donor))
@@ -73,7 +96,12 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def pre_registration_donor_email(%NGOChal{} = challenge, %User{} = donor, challenge_path, pre_registration_donor_template_id) do
+  def pre_registration_donor_email(
+        %NGOChal{} = challenge,
+        %User{} = donor,
+        challenge_path,
+        pre_registration_donor_template_id
+      ) do
     challenge = %{
       challenge
       | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
@@ -96,7 +124,12 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.add_to(donor.email)
   end
 
-  def donor_email(%NGOChal{} = challenge, %User{} = donor, challenge_path, donor_email_template_id) do
+  def donor_email(
+        %NGOChal{} = challenge,
+        %User{} = donor,
+        challenge_path,
+        donor_email_template_id
+      ) do
     Email.build()
     |> Email.put_template(donor_email_template_id)
     |> Email.add_substitution("-donorName-", User.full_name(donor))
@@ -113,9 +146,12 @@ defmodule OmegaBravera.Donations.Notifier do
   def send_donation_charged_email(%Donation{} = donation) do
     template_id = "f9448c06-ff05-4901-bb47-f21a7848c1e7"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
-    donation = Repo.preload(donation, [user: [:subscribed_email_categories]])
+    donation = Repo.preload(donation, user: [:subscribed_email_categories])
 
-    if user_subscribed_in_category?(donation.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         donation.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       donation
       |> donation_charged_email(template_id)
       |> Mailer.send()
@@ -154,7 +190,7 @@ defmodule OmegaBravera.Donations.Notifier do
     else
       # User actually choose specific categories of emails.
       user_subscribed_categories
-      |> Enum.map(&(&1.category_id))
+      |> Enum.map(& &1.category_id)
       |> Enum.member?(email_category_id)
     end
   end
