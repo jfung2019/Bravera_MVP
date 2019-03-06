@@ -21,23 +21,26 @@ $(function() {
     });
 
     $("#ngo_chal_has_team_false").change(function(){
-        $("#team_block").addClass("d-none");
+        $(".team_block").addClass("d-none");
+        $('.solo-block').removeClass('d-none');
         $('input#ngo_chal_team_name').removeAttr('required');
     });
 
     $("#ngo_chal_has_team_true").change(function(){
-        $("#team_block").removeClass("d-none");
+        $(".team_block").removeClass("d-none");
+        $('.solo-block').addClass('d-none');
         $('input#ngo_chal_team_name').attr('required', 'required');
     });
 
     // If server side validations fails, show team-block
     if ($("#ngo_chal_has_team_true").is(":checked")) {
-        $("#team_block").removeClass("d-none");
+        $(".team_block").removeClass("d-none");
+        $('.solo-block').addClass('d-none');
     }
 
     $("#ngo_chal_team_count").change(function(){
         const members_count = $(this).val();
-        $("#team-members-note").text(`You have can invite ${members_count - 1} member(s) to your team after creating the challenge.`);
+        $("#team-members-note span").text(members_count - 1);
     });
 });
 

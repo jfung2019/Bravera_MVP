@@ -1,3 +1,5 @@
+import $ from "jquery";
+
 $(function() {
   $('#profile_picture_label').on('change',function(){
     //get the file name

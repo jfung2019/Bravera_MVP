@@ -1,7 +1,7 @@
 defmodule OmegaBravera.Repo.Migrations.AddActivityProcessingDetailsToNgoChal do
   use Ecto.Migration
 
-  alias OmegaBravera.{Repo, Challenges.NGOChal}
+  alias OmegaBravera.{Challenges.NGOChal}
 
   def change do
     alter table("ngo_chals") do

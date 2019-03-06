@@ -18,6 +18,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, "Google Analytics ID", class: "control-label" %>
+    <%= text_input f, :ga_id, class: "form-control" %>
+    <%= error_tag f, :ga_id %>
+  </div>
+
+  <div class="form-group">
     <%= label f, "Pre-registration start: ", class: "control-label" %>
     <%= registration_date_builder(f, :pre_registration_start_date, class: "form-control") %>
     <%= error_tag f, :pre_registration_start_date %>

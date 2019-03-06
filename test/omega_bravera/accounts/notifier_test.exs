@@ -13,7 +13,7 @@ defmodule OmegaBravera.Accounts.NotifierTest do
         email_activation_token: "8wqfT-c2L1V1lSRb_2eum3Ep3Tf2bDP4"
       })
 
-    result = Notifier.user_signup_email(user)
+    result = Notifier.user_signup_email(user, "b47d2224-792a-43d8-b4b2-f53b033d2f41")
 
     assert result == %SendGrid.Email{
              __phoenix_layout__: nil,

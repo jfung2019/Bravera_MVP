@@ -68,7 +68,8 @@ defmodule OmegaBravera.ActivitySyncer do
         |> Challenges.get_ngo_chal!()
         |> Repo.preload([:user, :ngo])
 
-      ActivitiesIngestion.process_challenge(challenge, activity, false)
+      #TODO: look in to getting the right user, in case of team activities
+      ActivitiesIngestion.process_challenge(challenge, activity, challenge.user, false)
     end
   end
 
