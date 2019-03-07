@@ -182,6 +182,8 @@ defmodule OmegaBraveraWeb.Router do
         get("/cancel_invitation/:invitation_token", NGOChalController, :cancel_invitation)
       end
     end
+
+    get("/*path", PageController, :not_found)
   end
 
   # TODO: refactor PasswordController -Sherief

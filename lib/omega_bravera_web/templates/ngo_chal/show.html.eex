@@ -87,64 +87,34 @@
 </div>
 
 <script>
-
+document.addEventListener('DOMContentLoaded', () => {
   <%= if !is_nil(@challenge.ngo.ga_id) do %>
-    $(document).ready(function() {
-      ga('create', '<%=@challenge.ngo.ga_id%>', 'auto', '<%=@challenge.ngo.slug%>');
-    })
+    ga('create', '<%=@challenge.ngo.ga_id%>', 'auto', '<%=@challenge.ngo.slug%>');
   <% end %>
 
- $("#add-buddy-button").click(function() {
-   var nextBuddyLength = $(".buddy").length + 1;
-   var nameHTML = $("<div class='form-group col-4 mb-0 pr-0'><input name=\"buddies[" + nextBuddyLength + "][name]\" type='text' placeholder=\"Name\" class='form-control'/></div>");
-   var emailHTML = $("<div class='form-group col-5 mb-0 pl-1'><input name=\"buddies[" + nextBuddyLength + "][email]\" type='text' placeholder=\"Email\" class='form-control'/></div>");
-   var iconHTML = $("<i class='fa fa-minus-circle remove-buddy-icon'>");
-   var containerHTML = $("<div class='form-group row mb-1 buddy'>");
-
-   containerHTML.append(nameHTML);
-   containerHTML.append(emailHTML);
-   containerHTML.append(iconHTML);
-
-   $("#buddies-container").append(containerHTML);
- });
-
- $(document).on("click", "i.remove-buddy-icon", function(){
-   $(this).parent().remove()
- });
-
- var numInputs = document.querySelectorAll('input[type=number]');
-
- numInputs.forEach(function (input) {
-   input.addEventListener('change', function (e) {
-     if (e.target.value === '') {
-       e.target.value = 0
-     }
-   })
- });
-
-$('#amount').change(function(){
-  if ($(this).val() == 600){
-    $('#kickstarter').val(150);
-    $('#m1-donation').val(150);
-    $('#m2-donation').val(150);
-    $('#m3-donation').val(150);
-  } else if ($(this).val() == 400){
-    $('#kickstarter').val(100);
-    $('#m1-donation').val(100);
-    $('#m2-donation').val(100);
-    $('#m3-donation').val(100);
-  } else if ($(this).val() == 320){
-    $('#kickstarter').val(80);
-    $('#m1-donation').val(80);
-    $('#m2-donation').val(80);
-    $('#m3-donation').val(80);
-  } else if ($(this).val() == 160){
-    $('#kickstarter').val(40);
-    $('#m1-donation').val(40);
-    $('#m2-donation').val(40);
-    $('#m3-donation').val(40);
-  }
-}).change();
+  $('#amount').change(function(){
+    if ($(this).val() == 600){
+      $('#kickstarter').val(150);
+      $('#m1-donation').val(150);
+      $('#m2-donation').val(150);
+      $('#m3-donation').val(150);
+    } else if ($(this).val() == 400){
+      $('#kickstarter').val(100);
+      $('#m1-donation').val(100);
+      $('#m2-donation').val(100);
+      $('#m3-donation').val(100);
+    } else if ($(this).val() == 320){
+      $('#kickstarter').val(80);
+      $('#m1-donation').val(80);
+      $('#m2-donation').val(80);
+      $('#m3-donation').val(80);
+    } else if ($(this).val() == 160){
+      $('#kickstarter').val(40);
+      $('#m1-donation').val(40);
+      $('#m2-donation').val(40);
+      $('#m3-donation').val(40);
+    }
+  }).change();
 
  var kickValue = 0,
      m1Value = 0,
@@ -327,4 +297,5 @@ var fees = 0;
     }
     return 0;
   }
+});
 </script>

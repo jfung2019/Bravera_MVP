@@ -22,3 +22,5 @@ import "./timezone_stuff";
 import "./challenge_creation";
 import "./team_invitation";
 import "./user_profile";
+import "./challenge_show";
+import "./leaderboard";

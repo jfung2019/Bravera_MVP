@@ -77,17 +77,6 @@
                 <p class="text-center small">Your card will not be charged until the challenge ends.</p>
               </div>
             </div>
-
-            <h5 class="text-420 mt-2 mb-1">
-              <div class="d-flex">
-                <span class="mr-auto p-2">Current Total Support:</span>
-                <span class="p-2">
-                  <%="#{currency_to_symbol(@challenge.default_currency)}#{render_km_challenge_total_support(@total_pledges_per_km, @challenge.distance_target)}"%>
-                </span>
-              </div>
-            </h5>
-            <div style="clear: both;"></div>
-      
           </div>
       
         </div> <!-- End Milestone Form -->
@@ -166,8 +155,6 @@
   <script>
     (function() {
       'use strict';
-
-      <%= render "support_accordion_trigger.html" %>
 
       const target_distance = <%=@challenge.distance_target%>;
 

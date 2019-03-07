@@ -50,7 +50,14 @@ module.exports = (env, options) => ({
                     publicPath: '../fonts'       // override the default path
                   }
                 }]
-              }
+            },
+            {
+                test: require.resolve('jquery'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: '$'
+                }]
+            }
         ]
     },
     plugins: [
