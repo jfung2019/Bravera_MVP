@@ -1,0 +1,46 @@
+<div class="container-fluid mb-2">
+  <div class="mt-3">
+    <h5 class="text-center text-420">
+      Offers
+    </h5>
+  </div>
+
+  <div class="row">
+  <%= for offer <- @offers do %>
+    <div class="col-s-12 col-md-6 max-w-775">
+      <div class="card mt-3 chal-header">
+        <img class="card-img-top" src="/<%= offer.image %>" alt=<%= offer.name %> />
+        <div class="card-img-overlay text-white card-img-text-shadow">
+          <div class="row">
+            <div class="col-4 col-sm-3">
+              <div class="mb-0 mt-2 mt-sm-1 mt-md-3 mt-lg-4 mt-xl-4">
+                  <%= img_tag("/#{offer.logo}", class: "img-thumbnail img-fluid cause-thumb", alt: offer.name) %>
+              </div>
+            </div>
+
+            <div class="col-8 col-sm-9">
+              <h3 class="mb-0 mt-4 mt-sm-4 mt-md-2 mt-lg-4 mt-xl-5"><%= offer.name %></h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <p class="card-text"><%= raw offer.desc %></p>
+        </div>
+        <div>
+          <%= render(OmegaBraveraWeb.Offer.OfferView, "offer_stats.html", offer: offer, conn: @conn) %>
+        </div>
+        <div class="card-footer">
+          <div class="text-center">
+            <%= form_for @offer_challenge_changeset, offer_offer_challenge_path(@conn, :create, offer.slug), fn _f -> %>
+              <%= submit "Join the Challenge", class: "btn btn-green sign-up" %>
+            <% end %>
+          </div>
+        </div> <!-- end of foot -->
+      </div>  <!-- end of card -->
+  </div> <!-- end col -->
+  <% end %>
+</div>
+
+</div>

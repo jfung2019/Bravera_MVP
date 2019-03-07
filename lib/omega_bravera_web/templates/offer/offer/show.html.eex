@@ -2,12 +2,12 @@
   <div class="row">
       <div class="col-12 max-w-775 margin-auto">
         <div class="card mt-3">
-          <img class="card-img-top" src=<%= @ngo.image %> alt=<%= @ngo.name %> />
+          <img class="card-img-top" src=<%= "/#{@offer.image}"%> alt=<%= @offer.name %> />
           <div class="card-img-overlay text-white card-img-text-shadow cause-cover">
             <div class="row">
               <div class="col-4 col-sm-3">
                 <div class="thumbnail-container ml-3">
-                  <%= img_tag( @ngo.logo, class: "img-thumbnail float-left cause-thumb mt-2", alt: @ngo.name) %>
+                  <%= img_tag("/" <> @offer.logo, class: "img-thumbnail float-left cause-thumb mt-2", alt: @offer.name) %>
                 </div>
               </div>
             </div>
@@ -16,16 +16,16 @@
           <div class="card">
             <div class="card-body text-center">
               <h2 class="card-title text-420">
-                <%= @ngo.name %>
+                <%= @offer.name %>
               </h2>
               <p class="card-text">
-                <%= raw @ngo.desc %>
+                <%= raw @offer.desc %>
               </p>
 
       <%= if has_tracker?(@conn) do %>
 
             <div class="text-center">
-              <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @ngo.slug), class: "btn btn-green sign-up") %>
+              
             </div>
           </div>
 
@@ -38,11 +38,11 @@
       </a>
 
       <% end %>
-      <%= if @ngo.url do %>
+      <%= if @offer.url do %>
         <div class="card-footer text-center">
 
-          <a href=<%= @ngo.url %> target="_blank" rel="noopener noreferrer">
-            Click here to visit <%= @ngo.name %> online!
+          <a href=<%= @offer.url %> target="_blank" rel="noopener noreferrer">
+            Click here to visit <%= @offer.name %> online!
           </a>
         </div>
       <% end %>

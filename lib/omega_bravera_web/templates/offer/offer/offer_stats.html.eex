@@ -1,0 +1,17 @@
+<div class="card offer-stats-card">
+   <div class="card-body">
+      <div class="container">
+         <div class="mb-3 mx-lg-3">
+            <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
+               Participants:
+               <strong class="text-500 float-right"><%= @offer.num_of_challenges || 0 %></strong>
+            </div>
+            <%= if pre_registration_offer?(@offer) do %>
+              <div class="text-500 text-center mt-2 mb-0 stats-font">Challenge starts</div>
+              <div class="text-center text-danger" On <%= render_date(@offer.launch_date) %> </div>
+            <% end %>
+            <div style="clear: both;"></div>
+         </div>
+      </div>
+   </div>
+</div>

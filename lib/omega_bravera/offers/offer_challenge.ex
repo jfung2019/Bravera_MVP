@@ -3,7 +3,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.{Offers.Offer, Accounts.User}
+  alias OmegaBravera.{Offers.Offer, Accounts.User, Offers.OfferChallengeActivity}
 
   schema "offer_challenges" do
     field(:activity_type, :string)
@@ -23,6 +23,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
     belongs_to(:user, User)
     belongs_to(:offer, Offer)
+    has_many(:offer_challenge_activities, OfferChallengeActivity)
 
     timestamps(type: :utc_datetime)
   end

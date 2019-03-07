@@ -109,22 +109,22 @@
 
   <div class="form-group">
     <%= label f, :activities, class: "control-label" %>
-    <%= multiple_select f, :activities, @available_activities, class: "form-control" %>
+    <%= select f, :activities, @available_activities, class: "form-control" %>
   </div>
 
   <div class="form-group">
     <%= label f, :distances, class: "control-label" %>
-    <%= multiple_select f, :distances, @available_distances, class: "form-control" %>
+    <%= select f, :distances, @available_distances, class: "form-control" %>
   </div>
 
   <div class="form-group">
     <%= label f, :durations, class: "control-label" %>
-    <%= multiple_select f, :durations, @available_durations, class: "form-control" %>
+    <%= select f, :durations, @available_durations, class: "form-control" %>
   </div>
 
   <div class="form-group">
     <%= label f, :challenge_types, class: "control-label" %>
-    <%= multiple_select f, :challenge_types, @available_challenge_type_options, class: "form-control" %>
+    <%= select f, :challenge_types, @available_challenge_type_options, class: "form-control" %>
   </div>
 
   <div class="form-group">

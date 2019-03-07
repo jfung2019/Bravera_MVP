@@ -17,8 +17,59 @@ defmodule OmegaBravera.Offers do
       [%Offer{}, ...]
 
   """
-  def list_offers do
-    Repo.all(Offer)
+
+  def list_offers(hidden \\ false) do
+    # The problem: total_pledged_secured_query + total_distance_calories_challenges_query + ngos_with_stats query for offers
+    # with stats and do that correctly. However, any new Offer or an existing Offer without challenges, activities, and donations
+    # are not included.
+
+    total_distance_calories_challenges_query =
+      from(
+        offer in Offer,
+        where: offer.hidden == ^hidden,
+        join: offer_challenge in assoc(offer, :offer_challenges),
+        left_join: activity in assoc(offer_challenge, :offer_challenge_activities),
+        group_by: offer.id,
+        select: %{
+          offer_id: offer.id,
+          total_distance_covered: fragment("round(sum(coalesce(?, 0)), 0)", activity.distance),
+          total_calories: fragment("round(sum(coalesce(?, 0)), 0)", activity.calories),
+          num_of_challenges: fragment("round(count( distinct coalesce(?, 0)), 0)", offer_challenge.id)
+        }
+      )
+
+    ngos_with_stats =
+      from(
+        offer in Offer,
+        where: offer.hidden == ^hidden,
+        join:
+          offer_distance_calories_challenges in subquery(total_distance_calories_challenges_query),
+        on: offer.id == offer_distance_calories_challenges.offer_id,
+        order_by: [desc: offer.id],
+        select: %{
+          offer
+          | total_distance_covered: offer_distance_calories_challenges.total_distance_covered,
+            total_calories: offer_distance_calories_challenges.total_calories,
+            num_of_challenges: offer_distance_calories_challenges.num_of_challenges
+        }
+      )
+      |> Repo.all()
+
+    # Hacky solution:
+    ngos_with_stats_ids = ngos_with_stats |> Enum.map(& &1.id)
+
+    ngos_without_stats =
+      from(
+        offer in Offer,
+        where: offer.hidden == ^hidden and offer.id not in ^ngos_with_stats_ids,
+        order_by: [desc: offer.id]
+      )
+      |> Repo.all()
+
+    offers = ngos_with_stats ++ ngos_without_stats
+
+    # Sort by desc: id.
+    Enum.sort(offers, &(&1.id >= &2.id))
   end
 
   @doc """
@@ -38,7 +89,7 @@ defmodule OmegaBravera.Offers do
   def get_offer!(id), do: Repo.get!(Offer, id)
 
   def get_offer_by_slug(slug, preloads \\ [:offer_challenges]) do
-    ngo =
+    offer =
       from(o in Offer,
         where: o.slug == ^slug,
         left_join: offer_challenges in assoc(o, :offer_challenges),
@@ -56,19 +107,19 @@ defmodule OmegaBravera.Offers do
       |> Repo.one()
 
     cond do
-      ngo == nil ->
+      offer == nil ->
         nil
 
-      Timex.is_valid?(ngo.pre_registration_start_date) and Timex.is_valid?(ngo.launch_date) ->
-        ngo
+      Timex.is_valid?(offer.pre_registration_start_date) and Timex.is_valid?(offer.launch_date) ->
+        offer
         |> Map.put(
           :pre_registration_start_date,
-          Timex.to_datetime(ngo.pre_registration_start_date)
+          Timex.to_datetime(offer.pre_registration_start_date)
         )
-        |> Map.put(:launch_date, Timex.to_datetime(ngo.launch_date))
+        |> Map.put(:launch_date, Timex.to_datetime(offer.launch_date))
 
       true ->
-        ngo
+        offer
     end
   end
 

@@ -4,6 +4,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   alias OmegaBravera.Accounts.AdminUser
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Fundraisers.NGO
+  alias OmegaBravera.Offers.Offer
 
   def logged_in?(conn) do
     user = Guardian.Plug.current_resource(conn)
@@ -149,6 +150,11 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     do: Timex.after?(ngo.launch_date, Timex.now())
 
   def pre_registration_ngo?(%NGO{}), do: false
+
+  def pre_registration_offer?(%Offer{open_registration: false, launch_date: launch_date}),
+  do: Timex.after?(launch_date, Timex.now())
+
+  def pre_registration_offer?(%Offer{}), do: false
 
   def number_with_commas(number) when is_integer(number),
     do: Number.Delimit.number_to_delimited(number, precision: 0)
