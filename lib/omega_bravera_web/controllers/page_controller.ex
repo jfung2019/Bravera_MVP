@@ -4,7 +4,9 @@ defmodule OmegaBraveraWeb.PageController do
   alias OmegaBravera.Accounts.{AdminUser, User}
 
   def not_found(conn, _params) do
-    render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+    conn
+    |> put_status(:not_found)
+    |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
   end
 
   def index(conn, _params) do
