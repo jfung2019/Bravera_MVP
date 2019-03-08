@@ -10,6 +10,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     field(:default_currency, :string, default: "hkd")
     field(:distance_target, :integer, default: 100)
     field(:duration, :integer)
+    field(:milestones, :integer, default: 4)
     field(:end_date, :utc_datetime)
     field(:has_team, :boolean, default: false)
     field(:last_activity_received, :utc_datetime)
@@ -84,6 +85,49 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> change(status: status)
   end
 
+  def update_end_date(%Ecto.Changeset{} = changeset, %__MODULE__{
+        end_date: end_date,
+        duration: old_duration
+      }) do
+    new_duration = get_change(changeset, :duration)
+
+    cond do
+      is_nil(new_duration) ->
+        changeset
+
+      new_duration == old_duration ->
+        changeset
+
+      new_duration > old_duration ->
+        change(changeset,
+          end_date: end_date_without_seconds(end_date, new_duration - old_duration)
+        )
+
+      new_duration < old_duration ->
+        change(changeset,
+          end_date: end_date_without_seconds(end_date, -(old_duration - new_duration))
+        )
+    end
+  end
+
+  defp end_date_without_seconds(%DateTime{} = start_date, new_duration),
+    do: Timex.shift(start_date, days: new_duration) |> DateTime.truncate(:second)
+
+  def activity_completed_changeset(%__MODULE__{} = challenge, %{distance: distance}) do
+    challenge
+    |> change(distance_covered: Decimal.add(challenge.distance_covered, distance))
+    |> change(%{
+      last_activity_received: DateTime.truncate(Timex.now(), :second),
+      participant_notified_of_inactivity: false,
+      donor_notified_of_inactivity: false
+    })
+    |> update_challenge_status(challenge)
+  end
+
+  def participant_inactivity_notification_changeset(%__MODULE__{} = challenge) do
+    change(challenge, %{participant_notified_of_inactivity: true})
+  end
+
   defp add_last_activity_received(%Ecto.Changeset{} = changeset, %Offer{launch_date: launch_date}) do
     status = get_field(changeset, :status)
 
@@ -117,4 +161,23 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   end
 
   defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _, _), do: changeset
+
+  defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do
+    case Decimal.cmp(changeset.changes[:distance_covered], challenge.distance_target) do
+      :lt -> changeset
+      _ -> change(changeset, status: "complete")
+    end
+  end
+
+  def milestones_string(%__MODULE__{} = challenge) do
+    challenge
+    |> milestones_distances()
+    |> Map.take(["2", "3", "4"])
+    |> Map.values()
+    |> Enum.map(&"#{&1} Km")
+    |> Enum.join(", ")
+  end
+
+  def milestones_distances(%__MODULE__{distance_target: target}),
+    do: milestone_distances(target)
 end

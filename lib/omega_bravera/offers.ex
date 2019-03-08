@@ -6,7 +6,7 @@ defmodule OmegaBravera.Offers do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Offers.Offer
+  alias OmegaBravera.{Offers.Offer, Offers.OfferChallengeActivity, Offers.OfferChallenge}
 
   @doc """
   Returns the list of offers.
@@ -79,6 +79,27 @@ defmodule OmegaBravera.Offers do
     end
   end
 
+  def get_offer_chal_by_slugs(ngo_slug, slug, preloads \\ [:ngo]) do
+    query =
+      from(oc in OfferChallenge,
+        join: offer in Offer,
+        on: oc.ngo_id == offer.id,
+        left_join: a in OfferChallengeActivity,
+        on: oc.id == a.challenge_id,
+        where: oc.slug == ^slug and offer.slug == ^ngo_slug,
+        preload: ^preloads,
+        group_by: oc.id,
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+            start_date: fragment("? at time zone 'utc'", oc.start_date),
+            end_date: fragment("? at time zone 'utc'", oc.end_date)
+        }
+      )
+
+    Repo.one(query)
+  end
+
   def get_offer_by_slug_with_hk_time(slug, preloads \\ [:offer_challenges]) do
     offer =
       from(o in Offer,
@@ -121,6 +142,25 @@ defmodule OmegaBravera.Offers do
       _ ->
         offer
     end
+  end
+
+  def get_offer_with_stats(slug, preloads \\ [:offer_challenges]) do
+    offer = get_offer_by_slug(slug, preloads)
+
+    calories_and_activities_query =
+      from(
+        activity in OfferChallengeActivity,
+        join: challenge in assoc(activity, :offer_challenge_activities),
+        where: challenge.offer_id == ^offer.id and activity.offer_challenge_activities == challenge.id
+      )
+
+    total_distance_covered = Repo.aggregate(calories_and_activities_query, :sum, :distance)
+    total_calories = Repo.aggregate(calories_and_activities_query, :sum, :calories)
+
+    %{offer | num_of_challenges: Enum.count(offer.offer_challenges),
+            total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
+            total_calories: total_calories
+    }
   end
 
   @doc """
@@ -350,5 +390,23 @@ defmodule OmegaBravera.Offers do
   """
   def change_offer_challenge(%OfferChallenge{} = offer_challenge) do
     OfferChallenge.changeset(offer_challenge, %{})
+  end
+
+  def latest_activities(%OfferChallenge{} = challenge, limit \\ nil, preloads \\ [user: [:strava]]) do
+    query =
+      from(activity in OfferChallengeActivity,
+        where: activity.offer_challenge_id == ^challenge.id,
+        preload: ^preloads,
+        order_by: [desc: :start_date]
+      )
+
+    query =
+      if !is_nil(limit) and is_number(limit) and limit > 0 do
+        limit(query, ^limit)
+      else
+        query
+      end
+
+    Repo.all(query)
   end
 end

@@ -6,6 +6,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferChallenges do
       add(:activity_type, :string)
       add(:distance_target, :integer)
       add(:duration, :integer)
+      add(:milestones, :integer)
       add(:default_currency, :string)
       add(:slug, :string)
       add(:start_date, :utc_datetime)

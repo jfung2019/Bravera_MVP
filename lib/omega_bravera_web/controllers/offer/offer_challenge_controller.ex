@@ -7,7 +7,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   alias OmegaBravera.{
     # Accounts,
-    # Offers.OfferChallenge,
+    Offers.OfferChallenge,
     Offers.Offer,
     Offers,
     Fundraisers.NgoOptions,
@@ -16,7 +16,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   }
 
   plug(:assign_available_options when action in [:create])
-
 
   def create(conn, params) do
     case Guardian.Plug.current_resource(conn)do
@@ -57,28 +56,23 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     end
   end
 
-  # TODO:
-  # def show(conn, %{"ngo_slug" => ngo_slug, "slug" => slug}) do
-  #   challenge =
-  #     Challenges.get_ngo_chal_by_slugs(ngo_slug, slug,
-  #       user: [:strava],
-  #       ngo: [],
-  #       team: [users: [:strava], invitations: []]
-  #     )
+  def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do
+    offer_challenge =
+      Offers.get_offer_chal_by_slugs(offer_slug, slug, [user: [:strava], ngo: []])
 
-  #   case challenge do
-  #     nil ->
-  #       conn
-  #       |> put_view(OmegaBraveraWeb.PageView)
-  #       |> put_status(:not_found)
-  #       |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+    case offer_challenge do
+      nil ->
+        conn
+        |> put_view(OmegaBraveraWeb.PageView)
+        |> put_status(:not_found)
+        |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
 
-  #     challenge ->
-  #       render_attrs = get_render_attrs(conn, challenge, ngo_slug)
-
-  #       render(conn, "show.html", Map.merge(render_attrs, get_stats(challenge)))
-  #   end
-  # end
+      offer_challenge ->
+        render_attrs = get_render_attrs(conn, offer_challenge, offer_slug)
+        # TODO: Work on helpers.ex's get_stats to match Offers structs..
+        render(conn, "show.html", Map.merge(render_attrs, get_stats(offer_challenge)))
+    end
+  end
 
   # def invite_buddies(conn, %{
   #       "ngo_chal_slug" => slug,
@@ -92,28 +86,25 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   # end
 
 
-  # defp get_render_attrs(conn, %OfferChallenge{type: "PER_MILESTONE"} = challenge, changeset, ngo_slug) do
-  #   %{
-  #     challenge: challenge,
-  #     m_targets: NGOChal.milestones_distances(challenge),
-  #     changeset: changeset,
-  #     stats: get_stats(challenge),
-  #     activities: Challenges.latest_activities(challenge, 5),
-  #     current_user: Guardian.Plug.current_resource(conn),
-  #     ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug)
-  #   }
-  # end
+  defp get_render_attrs(conn, %OfferChallenge{type: "PER_MILESTONE"} = challenge, offer_slug) do
+    %{
+      challenge: challenge,
+      activities: Offers.latest_activities(challenge, 5),
+      current_user: Guardian.Plug.current_resource(conn),
+      offer_with_stats: Offers.get_offer_with_stats(offer_slug),
+      m_targets: OfferChallenge.milestones_distances(challenge),
+      stats: get_stats(challenge)
+    }
+  end
 
-  # defp get_render_attrs(conn, %OfferChallenge{type: "PER_KM"} = challenge, changeset, ngo_slug) do
-  #   %{
-  #     challenge: challenge,
-  #     changeset: changeset,
-  #     activities: Challenges.latest_activities(challenge, 5),
-  #     current_user: Guardian.Plug.current_resource(conn),
-  #     total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
-  #     ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug)
-  #   }
-  # end
+  defp get_render_attrs(conn, %OfferChallenge{type: "PER_KM"} = challenge, offer_slug) do
+    %{
+      challenge: challenge,
+      activities: Offers.latest_activities(challenge, 5),
+      current_user: Guardian.Plug.current_resource(conn),
+      offer_with_stats: Offers.get_offer_with_stats(offer_slug)
+    }
+  end
 
   # TODO: support teams
   defp create_offer_challenge(%Offer{} = offer, attrs) do
