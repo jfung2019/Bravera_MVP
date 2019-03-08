@@ -36,6 +36,18 @@
   </div>
 
   <div class="form-group">
+    <%= label f, "Start date: ", class: "control-label" %>
+    <%= registration_date_builder(f, :start_date, class: "form-control") %>
+    <%= error_tag f, :start_date %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, "End date: ", class: "control-label" %>
+    <%= registration_date_builder(f, :end_date, class: "form-control") %>
+    <%= error_tag f, :end_date %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :open_registration, class: "control-label" %>
     <%= checkbox f, :open_registration %>
     <%= error_tag f, :open_registration %>
@@ -109,22 +121,26 @@
 
   <div class="form-group">
     <%= label f, :activities, class: "control-label" %>
-    <%= select f, :activities, @available_activities, class: "form-control" %>
+    <%= multiple_select f, :activities, @available_activities, class: "form-control" %>
+    <%= error_tag f, :activities %>
   </div>
 
   <div class="form-group">
     <%= label f, :distances, class: "control-label" %>
-    <%= select f, :distances, @available_distances, class: "form-control" %>
+    <%= multiple_select f, :distances, @available_distances, class: "form-control" %>
+    <%= error_tag f, :distances %>
   </div>
 
   <div class="form-group">
     <%= label f, :durations, class: "control-label" %>
-    <%= select f, :durations, @available_durations, class: "form-control" %>
+    <%= multiple_select f, :durations, @available_durations, class: "form-control" %>
+    <%= error_tag f, :durations %>
   </div>
 
   <div class="form-group">
-    <%= label f, :challenge_types, class: "control-label" %>
-    <%= select f, :challenge_types, @available_challenge_type_options, class: "form-control" %>
+    <%= label f, :offer_challenge_types, class: "control-label" %>
+    <%= multiple_select f, :offer_challenge_types, @available_challenge_type_options, class: "form-control" %>
+    <%= error_tag f, :offer_challenge_types %>
   </div>
 
   <div class="form-group">

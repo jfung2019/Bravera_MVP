@@ -20,6 +20,8 @@ defmodule OmegaBravera.Offers.Offer do
     field(:hidden, :boolean, default: false)
     field(:open_registration, :boolean, default: true)
     field(:pre_registration_start_date, :utc_datetime)
+    field(:start_date, :utc_datetime)
+    field(:end_date, :utc_datetime)
     field(:reward_value, :integer)
     field(:additional_members, :integer, default: 0)
     field(:slug, :string)
@@ -29,10 +31,10 @@ defmodule OmegaBravera.Offers.Offer do
     field(:active_offer_challenges, :integer, default: 0, virtual: true)
     field(:num_of_challenges, :decimal, default: 0, virtual: true)
 
-    field(:activities, {:array, :string}, default: activity_options())
-    field(:distances, {:array, :integer}, default: distance_options())
-    field(:durations, {:array, :integer}, default: duration_options())
-    field(:offer_challenge_types, {:array, :string}, default: challenge_type_options())
+    field(:activities, {:array, :string})
+    field(:distances, {:array, :integer})
+    field(:durations, {:array, :integer})
+    field(:offer_challenge_types, {:array, :string})
 
     belongs_to(:user, User)
     has_many(:offer_challenges, OfferChallenge)
@@ -46,6 +48,8 @@ defmodule OmegaBravera.Offers.Offer do
     :ga_id,
     :pre_registration_start_date,
     :launch_date,
+    :start_date,
+    :end_date,
     :open_registration,
     :hidden,
     :desc,
@@ -70,7 +74,13 @@ defmodule OmegaBravera.Offers.Offer do
     :slug,
     :url,
     :logo,
-    :user_id
+    :user_id,
+    :offer_challenge_types,
+    :distances,
+    :durations,
+    :activities,
+    :start_date,
+    :end_date
   ]
 
   @doc false
@@ -113,7 +123,7 @@ defmodule OmegaBravera.Offers.Offer do
               Timex.equal?(pre_registration_start_date, launch_date)) do
       true ->
         add_error(
-          changeset_to_hk_date(changeset),
+          changeset,
           :pre_registration_start_date,
           "Pre-registration start date cannot be greater than or equal to the Launch date."
         )
@@ -134,7 +144,7 @@ defmodule OmegaBravera.Offers.Offer do
            (is_nil(pre_registration_start_date) or is_nil(launch_date)) do
       true ->
         add_error(
-          changeset_to_hk_date(changeset),
+          changeset,
           :open_registration,
           "Cannot create non-closed registration Offer without registration dates."
         )
@@ -154,7 +164,7 @@ defmodule OmegaBravera.Offers.Offer do
     case open_registration == false and Timex.before?(launch_date, Timex.now()) do
       true ->
         add_error(
-          changeset_to_hk_date(changeset),
+          changeset,
           :launch_date,
           "Launch date cannot be less than today's date."
         )
@@ -210,7 +220,9 @@ defmodule OmegaBravera.Offers.Offer do
          %Ecto.Changeset{
            changes: %{
              launch_date: launch_date,
-             pre_registration_start_date: pre_registration_start_date
+             pre_registration_start_date: pre_registration_start_date,
+             start_date: start_date,
+             end_date: end_date
            }
          } = changeset
        ) do
@@ -224,10 +236,22 @@ defmodule OmegaBravera.Offers.Offer do
       |> Timex.to_datetime("Asia/Hong_Kong")
       |> DateTime.to_naive()
 
+      start_date =
+        start_date
+        |> Timex.to_datetime("Asia/Hong_Kong")
+        |> DateTime.to_naive()
+
+      end_date =
+        end_date
+        |> Timex.to_datetime("Asia/Hong_Kong")
+        |> DateTime.to_naive()
+
     changeset
     |> change(%{
       pre_registration_start_date: pre_registration_start_date,
-      launch_date: launch_date
+      launch_date: launch_date,
+      start_date: start_date,
+      end_date: end_date
     })
   end
 

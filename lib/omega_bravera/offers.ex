@@ -18,58 +18,14 @@ defmodule OmegaBravera.Offers do
 
   """
 
-  def list_offers(hidden \\ false) do
-    # The problem: total_pledged_secured_query + total_distance_calories_challenges_query + ngos_with_stats query for offers
-    # with stats and do that correctly. However, any new Offer or an existing Offer without challenges, activities, and donations
-    # are not included.
-
-    total_distance_calories_challenges_query =
-      from(
-        offer in Offer,
-        where: offer.hidden == ^hidden,
-        join: offer_challenge in assoc(offer, :offer_challenges),
-        left_join: activity in assoc(offer_challenge, :offer_challenge_activities),
-        group_by: offer.id,
-        select: %{
-          offer_id: offer.id,
-          total_distance_covered: fragment("round(sum(coalesce(?, 0)), 0)", activity.distance),
-          total_calories: fragment("round(sum(coalesce(?, 0)), 0)", activity.calories),
-          num_of_challenges: fragment("round(count( distinct coalesce(?, 0)), 0)", offer_challenge.id)
-        }
-      )
-
-    ngos_with_stats =
-      from(
-        offer in Offer,
-        where: offer.hidden == ^hidden,
-        join:
-          offer_distance_calories_challenges in subquery(total_distance_calories_challenges_query),
-        on: offer.id == offer_distance_calories_challenges.offer_id,
-        order_by: [desc: offer.id],
-        select: %{
-          offer
-          | total_distance_covered: offer_distance_calories_challenges.total_distance_covered,
-            total_calories: offer_distance_calories_challenges.total_calories,
-            num_of_challenges: offer_distance_calories_challenges.num_of_challenges
-        }
-      )
-      |> Repo.all()
-
-    # Hacky solution:
-    ngos_with_stats_ids = ngos_with_stats |> Enum.map(& &1.id)
-
-    ngos_without_stats =
-      from(
-        offer in Offer,
-        where: offer.hidden == ^hidden and offer.id not in ^ngos_with_stats_ids,
-        order_by: [desc: offer.id]
-      )
-      |> Repo.all()
-
-    offers = ngos_with_stats ++ ngos_without_stats
-
-    # Sort by desc: id.
-    Enum.sort(offers, &(&1.id >= &2.id))
+  def list_offers(hidden \\ false, preloads \\ [:offer_challenges]) do
+    from(
+      offer in Offer,
+      where: offer.hidden == ^hidden,
+      order_by: [desc: offer.id],
+      preload: ^preloads
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -141,10 +97,17 @@ defmodule OmegaBravera.Offers do
               fragment(
                 "? at time zone 'utc' at time zone 'asia/hong_kong'",
                 o.pre_registration_start_date
-              )
+              ),
+            start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.start_date),
+            end_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.end_date),
         }
       )
       |> Repo.one()
+
+    offer =
+      offer
+      |> Map.put(:start_date, Timex.to_datetime(offer.start_date))
+      |> Map.put(:end_date, Timex.to_datetime(offer.end_date))
 
     case Timex.is_valid?(offer.pre_registration_start_date) and Timex.is_valid?(offer.launch_date) do
       true ->
@@ -177,8 +140,27 @@ defmodule OmegaBravera.Offers do
     |> Offer.changeset(attrs)
     |> switch_pre_registration_date_to_utc()
     |> switch_launch_date_to_utc()
+    |> switch_start_and_end_dates_to_utc()
     |> Repo.insert()
   end
+
+  defp switch_start_and_end_dates_to_utc(
+    %Ecto.Changeset{
+      valid?: true,
+      changes: %{
+        start_date: start_date,
+        end_date: end_date
+      }
+    } = changeset
+  ) do
+    changeset
+    |> Ecto.Changeset.change(%{
+      start_date: to_utc(start_date),
+      end_date: to_utc(end_date)
+    })
+  end
+
+  defp switch_start_and_end_dates_to_utc(%Ecto.Changeset{} = changeset), do: changeset
 
   defp switch_pre_registration_date_to_utc(
          %Ecto.Changeset{
@@ -188,7 +170,7 @@ defmodule OmegaBravera.Offers do
        ) do
     changeset
     |> Ecto.Changeset.change(%{
-      pre_registration_start_date: pre_registration_start_date |> to_utc()
+      pre_registration_start_date: to_utc(pre_registration_start_date)
     })
   end
 
@@ -199,7 +181,7 @@ defmodule OmegaBravera.Offers do
        ) do
     changeset
     |> Ecto.Changeset.change(%{
-      launch_date: launch_date |> to_utc()
+      launch_date: to_utc(launch_date)
     })
   end
 
@@ -228,6 +210,9 @@ defmodule OmegaBravera.Offers do
   def update_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.changeset(attrs)
+    |> switch_pre_registration_date_to_utc()
+    |> switch_launch_date_to_utc()
+    |> switch_start_and_end_dates_to_utc()
     |> Repo.update()
   end
 
@@ -314,9 +299,9 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_offer_challenge(attrs \\ %{}) do
+  def create_offer_challenge(%Offer{} = offer, attrs \\ %{}) do
     %OfferChallenge{}
-    |> OfferChallenge.changeset(attrs)
+    |> OfferChallenge.create_changeset(offer, attrs)
     |> Repo.insert()
   end
 

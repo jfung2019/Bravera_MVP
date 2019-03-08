@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
   def registration_date_builder(form, field, opts \\ []) do
     builder = fn b ->
       ~e"""
-      Date: <%= b.(:year, [prompt: "", options: 2018..2021]) %> / <%= b.(:month, [prompt: ""]) %> / <%= b.(:day, [prompt: ""]) %>
+      Date: <%= b.(:year, [prompt: "", options: 2019..2021]) %> / <%= b.(:month, [prompt: ""]) %> / <%= b.(:day, [prompt: ""]) %>
       Time: <%= b.(:hour, [prompt: ""]) %> : <%= b.(:minute, [prompt: ""]) %>
       """
     end

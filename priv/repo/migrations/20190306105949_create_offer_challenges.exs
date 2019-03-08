@@ -22,6 +22,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferChallenges do
     end
 
     create(unique_index(:offer_challenges, [:slug], name: :offer_challenges_slug_unique_index))
+    create(unique_index(:offer_challenges, [:user_id, :offer_id], name: :one_offer_per_user_index))
     create(index(:offer_challenges, [:offer_id]))
     create(index(:offer_challenges, [:user_id]))
   end

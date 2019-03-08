@@ -8,6 +8,8 @@ defmodule OmegaBravera.Repo.Migrations.CreateOffers do
       add(:ga_id, :string)
       add(:pre_registration_start_date, :utc_datetime)
       add(:launch_date, :utc_datetime)
+      add(:start_date, :utc_datetime)
+      add(:end_date, :utc_datetime)
       add(:open_registration, :boolean, default: false, null: false)
       add(:hidden, :boolean, default: false, null: false)
       add(:desc, :string)
@@ -21,27 +23,10 @@ defmodule OmegaBravera.Repo.Migrations.CreateOffers do
       add(:url, :string)
       add(:currency, :string, null: false, default: "hkd")
       add(:additional_members, :integer)
-
-      add(:offer_challenge_types, {:array, :string},
-        null: false,
-        default: fragment("ARRAY['PER_KM', 'PER_MILESTONE']")
-      )
-
-      add(:distances, {:array, :integer},
-        null: false,
-        default: fragment("ARRAY[50, 75, 150, 250]")
-      )
-
-      add(:durations, {:array, :integer},
-        null: false,
-        default: fragment("ARRAY[30, 40, 50, 60]")
-      )
-
-      add(:activities, {:array, :string},
-        null: false,
-        default: fragment("ARRAY['Run', 'Cycle', 'Walk', 'Hike']")
-      )
-
+      add(:offer_challenge_types, {:array, :string}, null: false)
+      add(:distances, {:array, :integer}, null: false)
+      add(:durations, {:array, :integer}, null: false)
+      add(:activities, {:array, :string}, null: false)
       add(:user_id, references(:users, on_delete: :nothing))
 
       timestamps(type: :timestamptz)

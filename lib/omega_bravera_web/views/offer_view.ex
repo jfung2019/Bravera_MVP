@@ -12,4 +12,11 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
       do: false
 
   def user_full_name(%User{} = user), do: User.full_name(user)
+
+  def user_joined_offer_before?(%Offer{id: id}, %User{offer_challenges: offer_challenges}) do
+    Enum.map(offer_challenges, &(&1.id))
+    |> Enum.member?(id)
+  end
+
+  def user_joined_offer_before?(_, nil), do: false
 end

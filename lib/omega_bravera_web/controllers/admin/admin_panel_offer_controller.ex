@@ -66,7 +66,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
         end)
 
         conn
-        |> put_flash(:info, "NGO updated successfully.")
+        |> put_flash(:info, "Offer updated successfully.")
         |> redirect(to: admin_panel_offer_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->

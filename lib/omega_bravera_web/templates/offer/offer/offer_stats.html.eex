@@ -4,12 +4,16 @@
          <div class="mb-3 mx-lg-3">
             <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
                Participants:
-               <strong class="text-500 float-right"><%= @offer.num_of_challenges || 0 %></strong>
+               <strong class="text-500 float-right"><%= length(@offer.offer_challenges) %></strong>
             </div>
-            <%= if pre_registration_offer?(@offer) do %>
-              <div class="text-500 text-center mt-2 mb-0 stats-font">Challenge starts</div>
-              <div class="text-center text-danger" On <%= render_date(@offer.launch_date) %> </div>
-            <% end %>
+            <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
+               Start Date:
+               <strong class="text-500 float-right"><%= render_date(@offer.start_date) %></strong>
+            </div>
+            <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
+               End Date:
+               <strong class="text-500 float-right"><%= render_date(@offer.end_date) %></strong>
+            </div>
             <div style="clear: both;"></div>
          </div>
       </div>

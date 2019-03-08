@@ -6,45 +6,43 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   require Logger
 
   alias OmegaBravera.{
-    Accounts,
-    Offers.OfferChallenge,
+    # Accounts,
+    # Offers.OfferChallenge,
     Offers.Offer,
     Offers,
     Fundraisers.NgoOptions,
-    Slugify,
-    Accounts.User
+    Slugify
+    # Accounts.User
   }
 
   plug(:assign_available_options when action in [:create])
 
-  def create(conn, %{"offer_slug" => offer_slug}) do
-    current_user = Guardian.Plug.current_resource(conn)
+
+  def create(conn, params) do
+    case Guardian.Plug.current_resource(conn)do
+      nil ->
+        conn
+        |> put_flash(:error, "Please login first")
+        |> redirect(to: page_path(conn, :login))
+
+      user -> create(conn, params, user)
+    end
+  end
+
+  def create(conn, %{"offer_slug" => offer_slug}, current_user) do
     offer = Offers.get_offer_by_slug(offer_slug)
     sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
-    # TODO: Team support if offer.additional_members is > 0. team_name should the slug.
-    # offer_chal_params =
-    #   case Map.has_key?(chal_params, "team") do
-    #     true -> put_in(chal_params, ["team", "user_id"], current_user.id)
-    #     false -> offer_chal_params
-    #   end
-
-    create_offer_challenge_params = %{
+    attrs = %{
       "user_id" => current_user.id,
-      "offer_slug" => offer_slug,
-      "offer_id" => offer.id,
-      "slug" => sluggified_username,
-      "default_currency" => offer.currency,
-      "type" => hd(offer.offer_challenge_types),
-      "activity_type" => hd(offer.activities),
-      "distance_target" => hd(offer.distances),
-      "duration" => hd(offer.duration)
+      "slug" => sluggified_username
     }
 
-    case create_offer_challenge(offer, create_offer_challenge_params) do
-      {:ok, offer_challenge} ->
+    case create_offer_challenge(offer, attrs) do
+      {:ok, _offer_challenge} ->
         offer_challenge_path = offer_offer_challenge_path(conn, :show, offer.slug, sluggified_username)
-        send_emails(offer_challenge, offer_challenge_path)
+        # TODO: waiting for templates from Alyn -Sherief
+        #send_emails(offer_challenge, offer_challenge_path)
 
         conn
         |> put_flash(:info, "Success! You have registered for this offer!")
@@ -54,7 +52,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         Logger.error("Could not sign up user for offer. Reason: #{inspect(changeset)}")
 
         conn
-        |> put_flash(:error, "Something went wrong while signing you up to this offer.")
+        |> put_flash(:error, "You cannot signup for an offer twice.")
         |> redirect(to: offer_path(conn, :index))
     end
   end
@@ -117,16 +115,15 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   #   }
   # end
 
-  # TODO:
-  # defp create_offer_challenge(%Offer{} = offer, attrs) do
-  #   case attrs["has_team"] do
-  #     "true" ->
-  #       Challenges.create_ngo_chal_with_team(%NGOChal{}, ngo, attrs)
-
-  #     _ ->
-  #       Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
-  #   end
-  # end
+  # TODO: support teams
+  defp create_offer_challenge(%Offer{} = offer, attrs) do
+    if offer.additional_members > 0 do
+      nil
+      # Challenges.create_ngo_chal_with_team(%NGOChal{}, ngo, attrs)
+    else
+      Offers.create_offer_challenge(offer, attrs)
+    end
+  end
 
   # TODO:
   # defp send_emails(%NGOChal{status: status} = challenge, challenge_path) do
