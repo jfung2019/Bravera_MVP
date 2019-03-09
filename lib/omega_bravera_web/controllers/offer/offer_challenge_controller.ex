@@ -58,7 +58,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do
     offer_challenge =
-      Offers.get_offer_chal_by_slugs(offer_slug, slug, [user: [:strava], ngo: []])
+      Offers.get_offer_chal_by_slugs(offer_slug, slug, [user: [:strava], offer: []])
 
     case offer_challenge do
       nil ->
@@ -69,22 +69,21 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
       offer_challenge ->
         render_attrs = get_render_attrs(conn, offer_challenge, offer_slug)
-        # TODO: Work on helpers.ex's get_stats to match Offers structs..
-        render(conn, "show.html", Map.merge(render_attrs, get_stats(offer_challenge)))
+        render(conn, "show.html", render_attrs)
     end
   end
 
-  # def invite_buddies(conn, %{
-  #       "ngo_chal_slug" => slug,
-  #       "ngo_slug" => ngo_slug,
-  #       "buddies" => buddies
-  #     }) do
-  #   challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, :ngo])
+  # TODO: add email templates or rewrite old ones.
+  def invite_buddies(conn, %{
+        "offer_challenge_slug" => slug,
+        "offer_slug" => offer_slug,
+        "buddies" => _buddies
+      }) do
+    # challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, :ngo])
 
-  #   Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
-  #   redirect(conn, to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
-  # end
-
+    # Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
+    redirect(conn, to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+  end
 
   defp get_render_attrs(conn, %OfferChallenge{type: "PER_MILESTONE"} = challenge, offer_slug) do
     %{
@@ -92,8 +91,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       activities: Offers.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
       offer_with_stats: Offers.get_offer_with_stats(offer_slug),
-      m_targets: OfferChallenge.milestones_distances(challenge),
-      stats: get_stats(challenge)
+      m_targets: OfferChallenge.milestones_distances(challenge)
     }
   end
 

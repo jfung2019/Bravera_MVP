@@ -155,7 +155,7 @@ defmodule OmegaBraveraWeb.Router do
     resources "/", Offer.OfferController, only: [:show], param: "slug" do
       resources "/", Offer.OfferChallengeController, only: [:show, :create], param: "slug" do
         # get("/activities", OfferChallengeActivityController, :index)
-        # post("/invite_buddies", OfferChallengeController, :invite_buddies)
+        post("/invite_buddies", Offer.OfferChallengeController, :invite_buddies)
         # post("/invite_team_members", OfferChallengeController, :invite_team_members)
         # get("/add_team_member/:invitation_token", OfferChallengeController, :add_team_member)
         # get("/resend_invitation/:invitation_token", OfferChallengeController, :resend_invitation)

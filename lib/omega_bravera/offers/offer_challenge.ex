@@ -24,7 +24,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
     belongs_to(:user, User)
     belongs_to(:offer, Offer)
-    has_many(:offer_challenge_activities, OfferChallengeActivity)
+    has_many(:offer_challenge_activities, OfferChallengeActivity, foreign_key: :offer_challenge_id)
 
     timestamps(type: :utc_datetime)
   end

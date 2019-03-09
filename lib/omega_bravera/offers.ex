@@ -79,14 +79,14 @@ defmodule OmegaBravera.Offers do
     end
   end
 
-  def get_offer_chal_by_slugs(ngo_slug, slug, preloads \\ [:ngo]) do
+  def get_offer_chal_by_slugs(offer_slug, slug, preloads \\ [:offer]) do
     query =
       from(oc in OfferChallenge,
         join: offer in Offer,
-        on: oc.ngo_id == offer.id,
+        on: oc.offer_id == offer.id,
         left_join: a in OfferChallengeActivity,
-        on: oc.id == a.challenge_id,
-        where: oc.slug == ^slug and offer.slug == ^ngo_slug,
+        on: oc.id == a.offer_challenge_id,
+        where: oc.slug == ^slug and offer.slug == ^offer_slug,
         preload: ^preloads,
         group_by: oc.id,
         select: %{
@@ -150,8 +150,9 @@ defmodule OmegaBravera.Offers do
     calories_and_activities_query =
       from(
         activity in OfferChallengeActivity,
-        join: challenge in assoc(activity, :offer_challenge_activities),
-        where: challenge.offer_id == ^offer.id and activity.offer_challenge_activities == challenge.id
+        join: challenge in OfferChallenge,
+        on: challenge.id == activity.offer_challenge_id,
+        where: challenge.offer_id == ^offer.id and activity.offer_challenge_id == challenge.id
       )
 
     total_distance_covered = Repo.aggregate(calories_and_activities_query, :sum, :distance)
@@ -159,7 +160,7 @@ defmodule OmegaBravera.Offers do
 
     %{offer | num_of_challenges: Enum.count(offer.offer_challenges),
             total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
-            total_calories: total_calories
+            total_calories: total_calories || 0
     }
   end
 

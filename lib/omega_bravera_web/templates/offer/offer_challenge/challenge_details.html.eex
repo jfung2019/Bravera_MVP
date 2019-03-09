@@ -1,0 +1,10 @@
+<%= if @challenge.has_team do %>
+  <%= render "team_members.html", assigns %>
+<% end %>
+
+<%= if @challenge.type == "PER_MILESTONE" do %>
+  <%= render("per_goal_challenge_milestones.html", assigns) %>
+<% end %>
+<%= if @challenge.type == "PER_KM" do %>
+  <%= render("per_km_challenge_milestones.html", assigns) %>
+<% end %>

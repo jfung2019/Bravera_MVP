@@ -1,0 +1,267 @@
+<div class="gray-background pt-3 pb-3">
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-8 max-w-775 margin-auto mb-3">
+        <%= if @current_user != nil and @challenge.user.id == @current_user.id  and !@challenge.has_team do %>
+          <%= render "_invite_buddies.html", assigns %>
+        <% end %>
+        <%= render "challenge_header.html", assigns %>
+        <%= render "challenge_details.html", assigns %>
+      </div>
+      <div class="col-lg-4 max-w-775 margin-auto">
+        <div class="card mt-4">
+          <div class="card-body text-center mx-3 pb-2">
+            <h4> <%=@challenge.user.firstname%>'s Latest Activities</h4>
+            <%= if length(@activities) > 0 do %>
+              <%= render(OmegaBraveraWeb.ActivityView, "_activity.html", assigns) %>
+              <%= link("View all", to: ngo_ngo_chal_activity_path(@conn, :index, @challenge.offer.slug, @challenge.slug)) %>
+            <% else %>
+              <%= @challenge.user.firstname %> hasn't logged any activites yet.
+            <% end %>
+          </div>
+          <div class="card-body text-center mx-3 pb-2">
+            <h6><%= link("View Leaderboard", to: ngo_ngo_path(@conn, :leaderboard, @challenge.offer.slug), class: "btn btn-bravera mb-2") %></h6>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-body text-center mx-3 pb-2">
+            <h4 style="font-weight: 350;">
+              Join a challenge and Fundraise while you Train!
+            </h4>
+          </div>
+          <div class="card-footer text-center">
+            <%= if is_own_challenge?(@challenge, @current_user) do %>
+              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+            <% else %>
+              <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @challenge.offer.slug), class: "btn btn-bravera mb-2") %>
+              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <%= render("offer_card.html", offer: @offer_with_stats, conn: @conn) %>
+          <%= render(OmegaBraveraWeb.Offer.OfferView, "offer_stats.html", offer: @offer_with_stats, conn: @conn) %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  <%= if !is_nil(@challenge.offer.ga_id) do %>
+    ga('create', '<%=@challenge.offer.ga_id%>', 'auto', '<%=@challenge.offer.slug%>');
+  <% end %>
+
+  $('#amount').change(function(){
+    if ($(this).val() == 600){
+      $('#kickstarter').val(150);
+      $('#m1-donation').val(150);
+      $('#m2-donation').val(150);
+      $('#m3-donation').val(150);
+    } else if ($(this).val() == 400){
+      $('#kickstarter').val(100);
+      $('#m1-donation').val(100);
+      $('#m2-donation').val(100);
+      $('#m3-donation').val(100);
+    } else if ($(this).val() == 320){
+      $('#kickstarter').val(80);
+      $('#m1-donation').val(80);
+      $('#m2-donation').val(80);
+      $('#m3-donation').val(80);
+    } else if ($(this).val() == 160){
+      $('#kickstarter').val(40);
+      $('#m1-donation').val(40);
+      $('#m2-donation').val(40);
+      $('#m3-donation').val(40);
+    }
+  }).change();
+
+ var kickValue = 0,
+     m1Value = 0,
+     m2Value = 0,
+     m3Value = 0;
+
+ if (parseInt($('#kickstarter').val())){
+   kickValue = parseInt($('#kickstarter').val());
+ }
+
+ if (parseInt($('#m1-donation').val())){
+   m1Value = parseInt($('#m1-donation').val());
+ }
+
+ if (parseInt($('#m2-donation').val())){
+   m2Value =   parseInt($('#m2-donation').val());
+ }
+
+ if (parseInt($('#m3-donation').val())){
+   m3Value =   parseInt($('#m3-donation').val());
+ }
+
+ var totalSupport = kickValue +
+                    m1Value +
+                    m2Value +
+                    m3Value;
+
+var fees = 0;
+
+ var mComplete = 0;
+ $('#amount').change(function(){
+   if (mComplete === 0){
+     totalSupport = parseInt($('#kickstarter').val()) +
+                    parseInt($('#m1-donation').val()) +
+                    parseInt($('#m2-donation').val()) +
+                    parseInt($('#m3-donation').val());
+   } else if (mComplete === 1){
+     totalSupport = parseInt($('#kickstarter').val()) +
+                    parseInt($('#m2-donation').val()) +
+                    parseInt($('#m3-donation').val());
+   } else if (mComplete === 2){
+     totalSupport = parseInt($('#kickstarter').val()) +
+                    parseInt($('#m3-donation').val());
+   } else if (mComplete === 3){
+     totalSupport = parseInt($('#kickstarter').val());
+   }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
+
+   $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
+ }).change();
+ //
+ $('#kickstarter').change(function(){
+   if (mComplete === 0){
+     totalSupport = parseInt($('#kickstarter').val()) +
+                    parseInt($('#m1-donation').val()) +
+                    parseInt($('#m2-donation').val()) +
+                    parseInt($('#m3-donation').val());
+   } else if (mComplete === 1){
+     totalSupport = parseInt($('#kickstarter').val()) +
+                    parseInt($('#m2-donation').val()) +
+                    parseInt($('#m3-donation').val());
+   } else if (mComplete === 2){
+     totalSupport = parseInt($('#kickstarter').val()) +
+                    parseInt($('#m3-donation').val());
+   } else if (mComplete === 3){
+     totalSupport = parseInt($('#kickstarter').val());
+   }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
+
+   $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
+ }).change();
+
+ if(mComplete === 0) {
+   $('#m1-donation').change(function(){
+     if (mComplete === 0){
+       totalSupport = parseInt($('#kickstarter').val()) +
+                      parseInt($('#m1-donation').val()) +
+                      parseInt($('#m2-donation').val()) +
+                      parseInt($('#m3-donation').val());
+     } else if (mComplete === 1){
+       totalSupport = parseInt($('#kickstarter').val()) +
+                      parseInt($('#m2-donation').val()) +
+                      parseInt($('#m3-donation').val());
+     } else if (mComplete === 2){
+       totalSupport = parseInt($('#kickstarter').val()) +
+                      parseInt($('#m3-donation').val());
+     } else if (mComplete === 3){
+       totalSupport = parseInt($('#kickstarter').val());
+     }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
+     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
+   }).change();
+ }
+
+ if(mComplete !== 2 && mComplete !== 3) {
+   $('#m2-donation').change(function(){
+     if (mComplete === 0){
+       totalSupport = parseInt($('#kickstarter').val()) +
+                      parseInt($('#m1-donation').val()) +
+                      parseInt($('#m2-donation').val()) +
+                      parseInt($('#m3-donation').val());
+     }
+     if (mComplete === 1){
+       totalSupport = parseInt($('#kickstarter').val()) +
+                      parseInt($('#m2-donation').val()) +
+                      parseInt($('#m3-donation').val());;
+     } else if (mComplete === 2){
+       totalSupport = parseInt($('#kickstarter').val()) +
+                      parseInt($('#m3-donation').val());
+     } else if (mComplete === 3){
+       totalSupport = parseInt($('#kickstarter').val());
+     }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
+
+     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
+   }).change();
+ }
+
+ if(mComplete !== 3) {
+   $('#m3-donation').change(function(){
+     if (mComplete === 0){
+       totalSupport = parseInt($('#kickstarter').val()) +
+                      parseInt($('#m1-donation').val()) +
+                      parseInt($('#m2-donation').val()) +
+                      parseInt($('#m3-donation').val());
+     }
+     if (mComplete === 1){
+       totalSupport = parseInt($('#kickstarter').val()) +
+                      parseInt($('#m2-donation').val()) +
+                      parseInt($('#m3-donation').val());
+     } else if (mComplete === 2){
+       totalSupport = parseInt($('#kickstarter').val()) +
+                      parseInt($('#m3-donation').val());
+     } else if (mComplete === 3){
+       totalSupport = parseInt($('#kickstarter').val());
+     }
+
+    if ($("#donation_donor_pays_fees:checked").length > 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees
+    }
+
+     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
+   }).change();
+ }
+
+  $(document).on("click", "#donation_donor_pays_fees", function(){
+    if ($("#donation_donor_pays_fees:checked").length > 0 && fees === 0) {
+      fees = total_donation_fees(totalSupport);
+      totalSupport = totalSupport + fees;
+    } else {
+      totalSupport = totalSupport - fees;
+      fees = 0;
+    }
+
+     $('#donation-total').text("<%= currency_to_symbol(@challenge.default_currency) %>" + totalSupport);
+  });
+
+  function total_donation_fees(amount = 0) {
+    if(amount > 0) {
+      const bravera_fees = amount * 0.06;
+      const gateway_fees = (amount * 0.034) + 9.4;
+      return Math.ceil(Math.round((bravera_fees + gateway_fees) * 100) / 100);
+    }
+    return 0;
+  }
+});
+</script>
