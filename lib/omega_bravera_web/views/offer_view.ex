@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.Offer.OfferView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.{Accounts.User, Offers.Offer}
+  alias OmegaBravera.{Accounts.User, Offers.Offer, Offers.OfferChallenge}
 
   def team_enabled_ngo?(%Offer{additional_members: additional_members})
       when additional_members > 0,
@@ -21,14 +21,10 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
   def user_joined_offer_before?(_, nil), do: false
 
   def user_challenge_slug(%Offer{id: id}, %User{offer_challenges: offer_challenges}) do
-    user_challenge_slug(id, offer_challenges)
+    Enum.find(offer_challenges, &(&1.offer_id == id))
+    |> offer_challenge_slug()
   end
 
-  def user_challenge_slug(id, [hd | tail]) do
-    if id == hd.offer_id do
-      hd.slug
-    else
-      user_challenge_slug(id, tail)
-    end
-  end
+  defp offer_challenge_slug(%OfferChallenge{slug: slug}), do: slug
+  defp offer_challenge_slug(_), do: ""
 end
