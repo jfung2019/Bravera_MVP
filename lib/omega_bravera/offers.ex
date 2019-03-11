@@ -326,7 +326,17 @@ defmodule OmegaBravera.Offers do
       ** (Ecto.NoResultsError)
 
   """
-  def get_offer_challenge!(id), do: Repo.get!(OfferChallenge, id)
+  def get_offer_challenge!(id) do
+    from(oc in OfferChallenge,
+      left_join: a in OfferChallengeActivity,
+      on: oc.id == a.challenge_id,
+      preload: [:donations],
+      group_by: oc.id,
+      select: %{oc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)},
+      where: oc.id == ^id
+    )
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a offer_challenge.

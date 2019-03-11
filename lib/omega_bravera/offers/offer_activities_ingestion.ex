@@ -1,31 +1,24 @@
-defmodule OmegaBravera.Challenges.ActivitiesIngestion do
+defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
   require Logger
 
   alias OmegaBravera.{
     Accounts,
-    Challenges,
-    Challenges.NGOChal,
-    Donations.Processor,
-    Money,
-    Money.Donation,
-    Repo,
-    Offers.OfferActivitiesIngestion
+    Offers,
+    Offers.OfferChallenge,
+    Offers.OfferChallengeActivity,
+    Repo
   }
 
-  alias OmegaBraveraWeb.Router.Helpers, as: Routes
-  alias OmegaBraveraWeb.Endpoint
+  # alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  # alias OmegaBraveraWeb.Endpoint
 
-  def process_strava_webhook(
+  def start(
         %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
       ) do
-    Logger.info("ActivityIngestion: Strava POST webhook processing: #{inspect(params)}")
+    Logger.info("Offers:ActivityIngestion: Strava POST webhook processing: #{inspect(params)}")
 
-    # Start activity ingestion for offer challenges.
-    OfferActivitiesIngestion.start(params)
-
-    # Start activity ingestion for ngo challenges.
     owner_id
-    |> Accounts.get_strava_challengers()
+    |> Accounts.get_strava_challengers_for_offers()
     |> process_challenges(params)
   end
 
@@ -34,20 +27,20 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   def process_challenges([{_challenge_id, _user, token} | _] = challenges, %{
         "object_id" => object_id
       }) do
-    Logger.info("ActivityIngestion: Processing challenges")
+    Logger.info("Offers:ActivityIngestion: Processing challenges")
     activity = Strava.Activity.retrieve(object_id, %{}, strava_client(token))
-    Logger.info("ActivityIngestion: Processing activity: #{inspect(activity)}")
+    Logger.info("Offers:ActivityIngestion: Processing activity: #{inspect(activity)}")
 
     Enum.map(challenges, fn {challenge_id, user, _token} ->
       challenge_id
-      |> Challenges.get_ngo_chal!()
-      |> Repo.preload([:ngo])
+      |> Offers.get_offer_challenge!()
+      |> Repo.preload([:offer])
       |> process_challenge(activity, user, true)
     end)
   end
 
   def process_challenges([], _) do
-    Logger.info("ActivityIngestion: No challengers found")
+    Logger.info("Offers:ActivityIngestion: No challengers found")
     {:error, :no_challengers_found}
   end
 
@@ -56,35 +49,34 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   end
 
   def process_challenge(
-        %NGOChal{type: "PER_KM"} = challenge,
+        %OfferChallenge{type: "PER_KM"} = challenge,
         %Strava.Activity{distance: distance} = strava_activity,
         user,
         send_emails
       )
       when distance > 0 do
-    Logger.info("ActivityIngestion: Processing km challenge: #{inspect(challenge.id)}")
+    Logger.info("Offers:ActivityIngestion: Processing km challenge: #{inspect(challenge.id)}")
 
-    {status, _challenge, _activity, _donations} =
+    {status, _challenge, _activity} =
       challenge
       |> create_activity(strava_activity, user, send_emails)
       |> update_challenge
       |> notify_participant_of_activity(send_emails)
-      |> get_donations
       |> notify_participant_of_milestone(send_emails)
 
     Logger.info(
-      "ActivityIngestion: Processing has finished for km challenge: #{inspect(challenge.id)}"
+      "Offers:ActivityIngestion: Processing has finished for km challenge: #{inspect(challenge.id)}"
     )
 
     if status == :ok do
       Logger.info(
-        "ActivityIngestion: Processing was successful for km challenge: #{inspect(challenge.id)}"
+        "Offers:ActivityIngestion: Processing was successful for km challenge: #{inspect(challenge.id)}"
       )
 
       {:ok, :challenge_updated}
     else
       Logger.info(
-        "ActivityIngestion: Processing was not successful for km challenge: #{
+        "Offers:ActivityIngestion: Processing was not successful for km challenge: #{
           inspect(challenge.id)
         }"
       )
@@ -94,32 +86,30 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   end
 
   def process_challenge(
-        %NGOChal{type: "PER_MILESTONE"} = challenge,
+        %OfferChallenge{type: "PER_MILESTONE"} = challenge,
         %Strava.Activity{distance: distance} = strava_activity,
         user,
         send_emails
       )
       when distance > 0 do
-    Logger.info("ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}")
+    Logger.info("Offers:ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}")
 
-    {status, _challenge, _activity, donations} =
+    {status, _challenge, _activity} =
       challenge
       |> create_activity(strava_activity, user, send_emails)
       |> update_challenge()
       |> notify_participant_of_activity(send_emails)
-      |> get_donations()
       |> notify_participant_of_milestone(send_emails)
-      |> charge_donations(send_emails)
 
     Logger.info(
-      "ActivityIngestion: Processing has finished for milestone challenge: #{
+      "Offers:ActivityIngestion: Processing has finished for milestone challenge: #{
         inspect(challenge.id)
       }"
     )
 
-    if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
+    if status == :ok do
       Logger.info(
-        "ActivityIngestion: Processing was successful for milestone challenge: #{
+        "Offers:ActivityIngestion: Processing was successful for milestone challenge: #{
           inspect(challenge.id)
         }"
       )
@@ -127,7 +117,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       {:ok, :challenge_updated}
     else
       Logger.info(
-        "ActivityIngestion: Processing was not successful for milestone challenge: #{
+        "Offers:ActivityIngestion: Processing was not successful for milestone challenge: #{
           inspect(challenge.id)
         }"
       )
@@ -143,10 +133,10 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     changeset =
       case Map.has_key?(activity, :admin_id) do
         false ->
-          Challenges.Activity.create_changeset(activity, challenge, user)
+          OfferChallengeActivity.create_changeset(activity, challenge, user)
 
         true ->
-          Challenges.Activity.create_activity_by_admin_changeset(
+          OfferChallengeActivity.create_activity_by_admin_changeset(
             activity,
             challenge,
             user,
@@ -162,7 +152,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
         {:error, changeset} ->
           Logger.error(
-            "ActivityIngestion: activity could not be saved. Changeset errors: #{
+            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{
               inspect(changeset.errors)
             }"
           )
@@ -177,7 +167,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
   defp update_challenge({:ok, challenge, activity}) do
     updated =
       challenge
-      |> NGOChal.activity_completed_changeset(activity)
+      |> OfferChallenge.activity_completed_changeset(activity)
       |> Repo.update!()
 
     {:ok, updated, activity}
@@ -185,58 +175,20 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
   defp update_challenge({:error, _, _} = params), do: params
 
-  defp notify_participant_of_activity({status, challenge, activity} = params, send_emails) do
+  defp notify_participant_of_activity({status, _challenge, _activity} = params, send_emails) do
     if status == :ok and send_emails do
-      Challenges.Notifier.send_activity_completed_email(challenge, activity)
+      # Challenges.Notifier.send_activity_completed_email(challenge, activity)
     end
 
     params
   end
 
-  defp get_donations({:ok, challenge, _} = params),
-    do: Tuple.append(params, Money.chargeable_donations_for_challenge(challenge))
-
-  defp get_donations({:error, challenge, _} = params) do
-    Logger.info("Could not get donations for challenge #{inspect(challenge.slug)}")
-    Tuple.append(params, nil)
-  end
-
-  defp notify_participant_of_milestone({status, challenge, _, donations} = params, send_emails) do
-    if status == :ok and length(donations) > 0 and send_emails do
-      Challenges.Notifier.send_participant_milestone_email(challenge)
+  defp notify_participant_of_milestone({status, _challenge, _} = params, send_emails) do
+    if status == :ok and send_emails do
+      # Challenges.Notifier.send_participant_milestone_email(challenge)
     end
 
     params
-  end
-
-  defp charge_donations({status, _, _, donations} = params, send_emails) do
-    charged_donations =
-      case status do
-        :ok ->
-          Enum.map(donations, fn donation ->
-            notify_donor_and_charge_donation(donation, send_emails)
-          end)
-
-        :error ->
-          []
-      end
-
-    put_elem(params, 3, charged_donations)
-  end
-
-  defp notify_donor_and_charge_donation(donation, send_emails) do
-    if send_emails do
-      Challenges.Notifier.send_donor_milestone_email(donation)
-    end
-
-    case Processor.charge_donation(donation) do
-      {:ok, %Donation{status: "charged"} = charged_donation} ->
-        charged_donation
-
-      {:error, reason} ->
-        Logger.error("Failed to charge donation, reason: #{inspect(reason)}")
-        nil
-    end
   end
 
   defp strava_client(token), do: Strava.Client.new(token)
@@ -254,10 +206,10 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
         Logger.info("Manual activity triggered and blocked!")
 
         if send_emails do
-          Challenges.Notifier.send_manual_activity_blocked_email(
-            challenge,
-            Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
-          )
+          # Challenges.Notifier.send_manual_activity_blocked_email(
+          #   challenge,
+          #   Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
+          # )
         end
 
         false
