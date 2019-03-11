@@ -11,8 +11,8 @@
           <div class="card-body text-center mx-3 pb-2">
             <h4> <%=@challenge.user.firstname%>'s Latest Activities</h4>
             <%= if length(@activities) > 0 do %>
-              <%= render(OmegaBraveraWeb.ActivityView, "_activity.html", assigns) %>
-              <%= link("View all", to: ngo_ngo_chal_activity_path(@conn, :index, @challenge.offer.slug, @challenge.slug)) %>
+              <%= render(OmegaBraveraWeb.Offer.OfferChallengeActivityView, "_activities.html", assigns) %>
+              <%= link("View all", to: offer_offer_challenge_offer_challenge_activity_path(@conn, :index, @challenge.offer.slug, @challenge.slug)) %>
             <% else %>
               <%= @challenge.user.firstname %> hasn't logged any activites yet.
             <% end %>

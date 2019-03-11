@@ -154,7 +154,7 @@ defmodule OmegaBraveraWeb.Router do
 
     resources "/", Offer.OfferController, only: [:show], param: "slug" do
       resources "/", Offer.OfferChallengeController, only: [:show, :create], param: "slug" do
-        # get("/activities", OfferChallengeActivityController, :index)
+        get("/activities", Offer.OfferChallengeActivityController, :index)
 
         # TODO: delayed.
         # post("/invite_buddies", Offer.OfferChallengeController, :invite_buddies)

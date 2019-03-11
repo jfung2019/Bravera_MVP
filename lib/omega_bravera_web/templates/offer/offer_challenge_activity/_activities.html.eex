@@ -1,0 +1,59 @@
+<div class="container activity-list">
+    <div class="card" style="width: 100%">
+      <div class="card-body" style="width: 100%">
+        <div class="row">
+          <div class="p-1 activity-text-size col">
+            <b>User</b>
+          </div>
+          <div class="p-1 activity-text-size col">
+            <b>Date</b>
+          </div>
+          <div class="p-1 activity-text-size col">
+            <b>Duration</b> <!-- moving time -->
+          </div>
+          <div class="p-1 activity-text-size col">
+            <b>Distance <br/> (km)</b>
+          </div>
+          <div class="p-1 activity-text-size col">
+            <b>Calories</b>
+          </div>
+          <div class="p-1 activity-text-size col">
+            <b>Speed <br/> (average)</b>
+          </div>
+        </div>
+    </div>
+  </div>
+  <br />
+    <%= for activity <- @activities do %>
+      <div class="card bg-light text-dark" style="width: 100%">
+        <div class="card-body" style="width: 100%">
+          <div class="row">
+            <div class="p-1 col">
+              <div class="mx-auto profile-picture">
+                <%= link to: "https://www.strava.com/athletes/#{activity.user.strava.athlete_id}", target: "_blank" do %>
+                  <%= img_tag(profile_picture_or_default(activity.user, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
+                <% end %>
+              </div>
+            </div>
+            <div class="p-1 pt-2 activity-text-size col">
+              <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%b %d", :strftime) %>
+            </div>
+            <div class="p-1 pt-2 activity-text-size col">
+              <%= render_time(activity.moving_time) %>
+            </div>
+            <div class="p-1 pt-2 activity-text-size col">
+              <%= render_activity(activity.distance) %> km
+            </div>
+            <div class="p-1 pt-2 activity-text-size col">
+              <%= activity.calories %>
+            </div>
+            <div class="p-1 pt-2 activity-text-size col">
+              <%= render_activity(activity.average_speed) %> km/h
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+    <% end %>
+</div>
+<br/>
