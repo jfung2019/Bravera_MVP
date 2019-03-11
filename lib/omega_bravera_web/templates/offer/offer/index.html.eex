@@ -32,15 +32,17 @@
         <div>
           <%= render(OmegaBraveraWeb.Offer.OfferView, "offer_stats.html", offer: offer, conn: @conn) %>
         </div>
-        <%= if !user_joined_offer_before?(offer, @current_user) do %>
         <div class="card-footer">
           <div class="text-center">
-            <%= form_for @offer_challenge_changeset, offer_offer_challenge_path(@conn, :create, offer.slug), fn _f -> %>
-                <%= submit "Join the Challenge", class: "btn btn-green sign-up" %>
-              <% end %>
+            <%= if !user_joined_offer_before?(offer, @current_user) do %>
+              <%= form_for @offer_challenge_changeset, offer_offer_challenge_path(@conn, :create, offer.slug), fn _f -> %>
+                  <%= submit "Join the Challenge", class: "btn btn-green sign-up" %>
+                <% end %>
+            <% else %>
+              <%= link("Go To Your Challenge", to: offer_offer_challenge_path(@conn, :show, offer.slug, user_challenge_slug(offer, @current_user)), class: "btn btn-green sign-up") %>
+            <% end %>
           </div>
         </div> <!-- end of foot -->
-        <% end %>
       </div>  <!-- end of card -->
   </div> <!-- end col -->
   <% end %>

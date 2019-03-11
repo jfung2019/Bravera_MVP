@@ -3,9 +3,6 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-8 max-w-775 margin-auto mb-3">
-        <%= if @current_user != nil and @challenge.user.id == @current_user.id  and !@challenge.has_team do %>
-          <%= render "_invite_buddies.html", assigns %>
-        <% end %>
         <%= render "challenge_header.html", assigns %>
         <%= render "challenge_details.html", assigns %>
       </div>

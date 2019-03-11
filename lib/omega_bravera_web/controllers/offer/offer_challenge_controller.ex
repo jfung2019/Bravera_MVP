@@ -8,7 +8,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   alias OmegaBravera.{
     # Accounts,
     Offers.OfferChallenge,
-    Offers.Offer,
+    # Offers.Offer,
     Offers,
     Fundraisers.NgoOptions,
     Slugify
@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       "slug" => sluggified_username
     }
 
-    case create_offer_challenge(offer, attrs) do
+    case Offers.create_offer_challenge(offer, attrs) do
       {:ok, _offer_challenge} ->
         offer_challenge_path = offer_offer_challenge_path(conn, :show, offer.slug, sluggified_username)
         # TODO: waiting for templates from Alyn -Sherief
@@ -73,17 +73,17 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     end
   end
 
-  # TODO: add email templates or rewrite old ones.
-  def invite_buddies(conn, %{
-        "offer_challenge_slug" => slug,
-        "offer_slug" => offer_slug,
-        "buddies" => _buddies
-      }) do
-    # challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, :ngo])
+  # TODO: delayed.
+  # def invite_buddies(conn, %{
+  #       "offer_challenge_slug" => slug,
+  #       "offer_slug" => offer_slug,
+  #       "buddies" => _buddies
+  #     }) do
+  #   challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, :ngo])
 
-    # Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
-    redirect(conn, to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
-  end
+  #   Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
+  #   redirect(conn, to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+  # end
 
   defp get_render_attrs(conn, %OfferChallenge{type: "PER_MILESTONE"} = challenge, offer_slug) do
     %{
@@ -104,15 +104,15 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     }
   end
 
-  # TODO: support teams
-  defp create_offer_challenge(%Offer{} = offer, attrs) do
-    if offer.additional_members > 0 do
-      nil
-      # Challenges.create_ngo_chal_with_team(%NGOChal{}, ngo, attrs)
-    else
-      Offers.create_offer_challenge(offer, attrs)
-    end
-  end
+  # TODO: support teams. delayed.
+  # defp create_offer_challenge(%Offer{} = offer, attrs) do
+  #   if offer.additional_members > 0 do
+  #     nil
+  #     # Challenges.create_ngo_chal_with_team(%NGOChal{}, ngo, attrs)
+  #   else
+  #     Offers.create_offer_challenge(offer, attrs)
+  #   end
+  # end
 
   # TODO:
   # defp send_emails(%NGOChal{status: status} = challenge, challenge_path) do

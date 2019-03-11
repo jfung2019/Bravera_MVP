@@ -147,15 +147,17 @@ defmodule OmegaBraveraWeb.Router do
     end
   end
 
+  # Offers
   scope "/offers", OmegaBraveraWeb do
     pipe_through(:browser)
-    # Offers
     get("/", Offer.OfferController, :index)
 
     resources "/", Offer.OfferController, only: [:show], param: "slug" do
       resources "/", Offer.OfferChallengeController, only: [:show, :create], param: "slug" do
         # get("/activities", OfferChallengeActivityController, :index)
-        post("/invite_buddies", Offer.OfferChallengeController, :invite_buddies)
+
+        # TODO: delayed.
+        # post("/invite_buddies", Offer.OfferChallengeController, :invite_buddies)
         # post("/invite_team_members", OfferChallengeController, :invite_team_members)
         # get("/add_team_member/:invitation_token", OfferChallengeController, :add_team_member)
         # get("/resend_invitation/:invitation_token", OfferChallengeController, :resend_invitation)
