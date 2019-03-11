@@ -17,9 +17,6 @@
               <%= @challenge.user.firstname %> hasn't logged any activites yet.
             <% end %>
           </div>
-          <div class="card-body text-center mx-3 pb-2">
-            <h6><%= link("View Leaderboard", to: ngo_ngo_path(@conn, :leaderboard, @challenge.offer.slug), class: "btn btn-bravera mb-2") %></h6>
-          </div>
         </div>
 
         <div class="card mt-4">
@@ -30,10 +27,9 @@
           </div>
           <div class="card-footer text-center">
             <%= if is_own_challenge?(@challenge, @current_user) do %>
-              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link("View Offers", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% else %>
-              <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @challenge.offer.slug), class: "btn btn-bravera mb-2") %>
-              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link("View Challenges", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% end %>
           </div>
         </div>
