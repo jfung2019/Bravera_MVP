@@ -128,7 +128,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
               Timex.equal?(pre_registration_start_date, launch_date)) do
       true ->
         add_error(
-          changeset_to_hk_date(changeset),
+          changeset,
           :pre_registration_start_date,
           "Pre-registration start date cannot be greater than or equal to the Launch date."
         )
@@ -149,7 +149,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
            (is_nil(pre_registration_start_date) or is_nil(launch_date)) do
       true ->
         add_error(
-          changeset_to_hk_date(changeset),
+          changeset,
           :open_registration,
           "Cannot create non-closed registration NGO without registration dates."
         )
@@ -208,7 +208,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     case open_registration == false and Timex.before?(launch_date, Timex.now()) do
       true ->
         add_error(
-          changeset_to_hk_date(changeset),
+          changeset,
           :launch_date,
           "Launch date cannot be less than today's date."
         )
