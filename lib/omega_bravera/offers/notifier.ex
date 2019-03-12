@@ -70,7 +70,7 @@ defmodule OmegaBravera.Offers.Notifier do
       "-EndDate-",
       Timex.format!(end_date, "%Y-%m-%d", :strftime)
     )
-    |> Email.add_substitution("-ChallengeName-", challenge.ngo.name)
+    |> Email.add_substitution("-ChallengeName-", challenge.offer.name)
     |> Email.add_substitution("-Duration-", "#{challenge.duration} days")
     |> Email.add_substitution("-Distance-", "#{challenge.distance_target} Km")
     |> Email.put_from("admin@bravera.co", "Bravera")
@@ -112,7 +112,7 @@ defmodule OmegaBravera.Offers.Notifier do
       "-EndDate-",
       Timex.format!(end_date, "%Y-%m-%d", :strftime)
     )
-    |> Email.add_substitution("-ChallengeName-", challenge.ngo.name)
+    |> Email.add_substitution("-ChallengeName-", challenge.offer.name)
     |> Email.add_substitution("-Duration-", "#{challenge.duration} days")
     |> Email.add_substitution("-Distance-", "#{challenge.distance_target} Km")
     |> Email.put_from("admin@bravera.co", "Bravera")
@@ -123,7 +123,7 @@ defmodule OmegaBravera.Offers.Notifier do
   def send_activity_completed_email(%OfferChallenge{} = challenge, %OfferChallengeActivity{} = activity) do
     template_id = "3364ef25-3318-4958-a3c3-4cb97f85dc7d"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
-    challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
+    challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
