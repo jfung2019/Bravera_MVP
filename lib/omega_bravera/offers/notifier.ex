@@ -71,7 +71,7 @@ defmodule OmegaBravera.Offers.Notifier do
       Timex.format!(end_date, "%Y-%m-%d", :strftime)
     )
     |> Email.add_substitution("-ChallengeName-", challenge.offer.name)
-    |> Email.add_substitution("-Duration-", "#{challenge.duration} days")
+    |> Email.add_substitution("-Duration-", "#{get_offer_duration(challenge)} days")
     |> Email.add_substitution("-Distance-", "#{challenge.distance_target} Km")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
@@ -113,7 +113,7 @@ defmodule OmegaBravera.Offers.Notifier do
       Timex.format!(end_date, "%Y-%m-%d", :strftime)
     )
     |> Email.add_substitution("-ChallengeName-", challenge.offer.name)
-    |> Email.add_substitution("-Duration-", "#{challenge.duration} days")
+    |> Email.add_substitution("-Duration-", "#{get_offer_duration(challenge)} days")
     |> Email.add_substitution("-Distance-", "#{challenge.distance_target} Km")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
@@ -209,6 +209,9 @@ defmodule OmegaBravera.Offers.Notifier do
         "0 minutes"
     end
   end
+
+  defp get_offer_duration(%OfferChallenge{start_date: start_date, end_date: end_date}),
+    do: Timex.diff(end_date, start_date, :days)
 
   defp challenge_url(challenge) do
     "#{Application.get_env(:omega_bravera, :app_base_url)}/#{challenge.offer.slug}/#{challenge.slug}"
