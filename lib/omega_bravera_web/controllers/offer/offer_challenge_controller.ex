@@ -6,13 +6,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   require Logger
 
   alias OmegaBravera.{
-    # Accounts,
     Offers.OfferChallenge,
-    # Offers.Offer,
     Offers,
     Fundraisers.NgoOptions,
     Slugify
-    # Accounts.User
   }
 
   plug(:assign_available_options when action in [:create])
@@ -38,10 +35,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     }
 
     case Offers.create_offer_challenge(offer, attrs) do
-      {:ok, _offer_challenge} ->
+      {:ok, offer_challenge} ->
         offer_challenge_path = offer_offer_challenge_path(conn, :show, offer.slug, sluggified_username)
-        # TODO: waiting for templates from Alyn -Sherief
-        #send_emails(offer_challenge, offer_challenge_path)
+        send_emails(offer_challenge, offer_challenge_path)
 
         conn
         |> put_flash(:info, "Success! You have registered for this offer!")
@@ -73,18 +69,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     end
   end
 
-  # TODO: delayed.
-  # def invite_buddies(conn, %{
-  #       "offer_challenge_slug" => slug,
-  #       "offer_slug" => offer_slug,
-  #       "buddies" => _buddies
-  #     }) do
-  #   challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, :ngo])
-
-  #   Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
-  #   redirect(conn, to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
-  # end
-
   defp get_render_attrs(conn, %OfferChallenge{type: "PER_MILESTONE"} = challenge, offer_slug) do
     %{
       challenge: challenge,
@@ -104,29 +88,18 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     }
   end
 
-  # TODO: support teams. delayed.
-  # defp create_offer_challenge(%Offer{} = offer, attrs) do
-  #   if offer.additional_members > 0 do
-  #     nil
-  #     # Challenges.create_ngo_chal_with_team(%NGOChal{}, ngo, attrs)
-  #   else
-  #     Offers.create_offer_challenge(offer, attrs)
-  #   end
-  # end
+  defp send_emails(%OfferChallenge{status: status} = challenge, challenge_path) do
+    case status do
+      "pre_registration" ->
+        Offers.Notifier.send_pre_registration_challenge_sign_up_email(
+          challenge,
+          challenge_path
+        )
 
-  # TODO:
-  # defp send_emails(%NGOChal{status: status} = challenge, challenge_path) do
-  #   case status do
-  #     "pre_registration" ->
-  #       Challenges.Notifier.send_pre_registration_challenge_sign_up_email(
-  #         challenge,
-  #         challenge_path
-  #       )
-
-  #     _ ->
-  #       Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
-  #   end
-  # end
+      _ ->
+        Offers.Notifier.send_challenge_signup_email(challenge, challenge_path)
+    end
+  end
 
   defp assign_available_options(conn, _opts) do
     conn

@@ -6,6 +6,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     Offers,
     Offers.OfferChallenge,
     Offers.OfferChallengeActivity,
+    Offers.Notifier,
     Repo
   }
 
@@ -62,7 +63,6 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       |> create_activity(strava_activity, user, send_emails)
       |> update_challenge
       |> notify_participant_of_activity(send_emails)
-      |> notify_participant_of_milestone(send_emails)
 
     Logger.info(
       "Offers:ActivityIngestion: Processing has finished for km challenge: #{inspect(challenge.id)}"
@@ -99,7 +99,6 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       |> create_activity(strava_activity, user, send_emails)
       |> update_challenge()
       |> notify_participant_of_activity(send_emails)
-      |> notify_participant_of_milestone(send_emails)
 
     Logger.info(
       "Offers:ActivityIngestion: Processing has finished for milestone challenge: #{
@@ -175,17 +174,17 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
   defp update_challenge({:error, _, _} = params), do: params
 
-  defp notify_participant_of_activity({status, _challenge, _activity} = params, send_emails) do
+  defp notify_participant_of_activity({status, %OfferChallenge{status: "active"} = challenge, activity} = params, send_emails) do
     if status == :ok and send_emails do
-      # Challenges.Notifier.send_activity_completed_email(challenge, activity)
+      Notifier.send_activity_completed_email(challenge, activity)
     end
 
     params
   end
 
-  defp notify_participant_of_milestone({status, _challenge, _} = params, send_emails) do
+  defp notify_participant_of_activity({status, %OfferChallenge{status: "complete"} = challenge, _activity} = params, send_emails) do
     if status == :ok and send_emails do
-      # Challenges.Notifier.send_participant_milestone_email(challenge)
+      Notifier.send_reward_completion_email(challenge)
     end
 
     params
@@ -193,7 +192,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
   defp strava_client(token), do: Strava.Client.new(token)
 
-  defp valid_activity?(activity, challenge, send_emails) do
+  defp valid_activity?(activity, challenge, _send_emails) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
     challenge_started_first = Timex.compare(challenge.start_date, activity.start_date) == -1
     if !challenge_started_first, do: Logger.info("Activity before start date of challenge")
@@ -205,12 +204,12 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
            activity.manual == true do
         Logger.info("Manual activity triggered and blocked!")
 
-        if send_emails do
-          # Challenges.Notifier.send_manual_activity_blocked_email(
-          #   challenge,
-          #   Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
-          # )
-        end
+        # if send_emails do
+        #   Challenges.Notifier.send_manual_activity_blocked_email(
+        #     challenge,
+        #     Routes.ngo_ngo_chal_path(Endpoint, :show, challenge.ngo.slug, challenge.slug)
+        #   )
+        # end
 
         false
       else

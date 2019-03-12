@@ -4,8 +4,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
   alias OmegaBravera.{
     Offers.OfferChallenge,
     Accounts.User,
-    Offers.Offer,
-    Challenges.TeamInvitations
+    Offers.Offer
   }
 
   def user_full_name(%User{} = user), do: User.full_name(user)

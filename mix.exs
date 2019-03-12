@@ -69,7 +69,8 @@ defmodule OmegaBravera.Mixfile do
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
       {:uuid, "~> 1.1"},
-      {:mogrify, "~> 0.7.0"}
+      {:mogrify, "~> 0.7.0"},
+      {:eqrcode, "~> 0.1.5"}
     ]
   end
 
