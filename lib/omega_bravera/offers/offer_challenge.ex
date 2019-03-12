@@ -146,18 +146,9 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   end
 
   defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %Offer{} = offer, duration) when is_number(duration) do
-    {start_date, end_date} =
-      cond do
-        offer.open_registration == false and Timex.after?(offer.launch_date, Timex.now()) ->
-          {offer.launch_date, Timex.shift(offer.launch_date, days: duration)}
-
-        true ->
-          {Timex.now(), Timex.shift(Timex.now(), days: duration)}
-      end
-
     changeset
-    |> change(start_date: DateTime.truncate(start_date, :second))
-    |> change(end_date: DateTime.truncate(end_date, :second))
+    |> change(start_date: DateTime.truncate(offer.start_date, :second))
+    |> change(end_date: DateTime.truncate(offer.end_date, :second))
   end
 
   defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _, _), do: changeset
