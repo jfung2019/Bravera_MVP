@@ -124,4 +124,25 @@ defmodule OmegaBravera.Factory do
       team: build(:team)
     }
   end
+
+  def offer_factory do
+    %OmegaBravera.Offers.Offer{
+      name: "Save the children worldwide",
+      slug: sequence(:slug, &"swcc-#{&1}"),
+      pre_registration_start_date: Timex.now("Asia/Hong_Kong"),
+      launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10),
+      start_date: Timex.now("Asia/Hong_Kong"),
+      end_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10),
+      additional_members: 0,
+      open_registration: true,
+      logo: "/logo.png",
+      image: "/image.png",
+      url: "http://test.com",
+      offer_challenge_types: ["PER_KM"],
+      distances: ["50"],
+      durations: ["100"],
+      activities: ["Run"],
+      user: build(:user)
+    }
+  end
 end

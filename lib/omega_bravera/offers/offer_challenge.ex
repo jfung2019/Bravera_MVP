@@ -20,7 +20,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     field(:status, :string, default: "active")
     field(:type, :string)
 
-    field(:distance_covered, :decimal, default: 0, virtual: true)
+    field(:distance_covered, :decimal, default: Decimal.new(0), virtual: true)
 
     belongs_to(:user, User)
     belongs_to(:offer, Offer)

@@ -329,8 +329,7 @@ defmodule OmegaBravera.Offers do
   def get_offer_challenge!(id) do
     from(oc in OfferChallenge,
       left_join: a in OfferChallengeActivity,
-      on: oc.id == a.challenge_id,
-      preload: [:donations],
+      on: oc.id == a.offer_challenge_id,
       group_by: oc.id,
       select: %{oc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)},
       where: oc.id == ^id

@@ -17,7 +17,7 @@ defmodule OmegaBravera.OffersTest do
       durations: [],
       full_desc: "some full_desc",
       ga_id: "some ga_id",
-      hidden: true,
+      hidden: false,
       image: "some image",
       logo: "some logo",
       name: "some name",
@@ -29,7 +29,9 @@ defmodule OmegaBravera.OffersTest do
       slug: "some slug",
       toc: "some toc",
       url: "https://bravera.co",
-      user_id: nil
+      user_id: nil,
+      start_date: Timex.now(),
+      end_date: Timex.now()
     }
     @update_attrs %{
       activities: [],
@@ -40,7 +42,7 @@ defmodule OmegaBravera.OffersTest do
       durations: [],
       full_desc: "some updated full_desc",
       ga_id: "some updated ga_id",
-      hidden: false,
+      hidden: true,
       image: "some updated image",
       logo: "some updated logo",
       name: "some updated name",
@@ -51,7 +53,9 @@ defmodule OmegaBravera.OffersTest do
       reward_value: 43,
       slug: "some updated slug",
       toc: "some updated toc",
-      url: "https://staging.bravera.co"
+      url: "https://staging.bravera.co",
+      start_date: Timex.shift(Timex.now(), days: 1),
+      end_date: Timex.shift(Timex.now(), days: 1)
     }
     @invalid_attrs %{
       activities: nil,
@@ -75,7 +79,9 @@ defmodule OmegaBravera.OffersTest do
       reward_value: nil,
       slug: nil,
       toc: nil,
-      url: nil
+      url: nil,
+      start_date: nil,
+      end_date: nil
     }
 
     def offer_fixture(attrs \\ %{}) do
@@ -95,7 +101,7 @@ defmodule OmegaBravera.OffersTest do
     end
 
     test "list_offers/0 returns all offers" do
-      offer = offer_fixture()
+      offer = offer_fixture() |> Repo.preload(:offer_challenges)
       assert Offers.list_offers() == [offer]
     end
 
@@ -114,7 +120,7 @@ defmodule OmegaBravera.OffersTest do
       assert offer.durations == []
       assert offer.full_desc == "some full_desc"
       assert offer.ga_id == "some ga_id"
-      assert offer.hidden == true
+      assert offer.hidden == false
       assert offer.image == "some image"
       assert offer.logo == "some logo"
       assert offer.name == "some name"
@@ -144,7 +150,7 @@ defmodule OmegaBravera.OffersTest do
       assert offer.durations == []
       assert offer.full_desc == "some updated full_desc"
       assert offer.ga_id == "some updated ga_id"
-      assert offer.hidden == false
+      assert offer.hidden == true
       assert offer.image == "some updated image"
       assert offer.logo == "some updated logo"
       assert offer.name == "some updated name"
@@ -185,28 +191,14 @@ defmodule OmegaBravera.OffersTest do
       default_currency: "some default_currency",
       distance_target: 42,
       duration: 42,
-      end_date: "2010-04-17T14:00:00Z",
+      end_date: Timex.now(),
       has_team: true,
-      last_activity_received: "2010-04-17T14:00:00Z",
-      participant_notified_of_inactivity: true,
-      slug: "some slug",
-      start_date: "2010-04-17T14:00:00Z",
-      status: "some status",
-      type: "some type"
-    }
-    @update_attrs %{
-      activity_type: "some updated activity_type",
-      default_currency: "some updated default_currency",
-      distance_target: 43,
-      duration: 43,
-      end_date: "2011-05-18T15:01:01Z",
-      has_team: false,
-      last_activity_received: "2011-05-18T15:01:01Z",
+      last_activity_received: Timex.now(),
       participant_notified_of_inactivity: false,
-      slug: "some updated slug",
-      start_date: "2011-05-18T15:01:01Z",
-      status: "some updated status",
-      type: "some updated type"
+      slug: "some slug",
+      start_date: Timex.now(),
+      status: "active",
+      type: "PER_KM"
     }
     @invalid_attrs %{
       activity_type: nil,
@@ -224,10 +216,16 @@ defmodule OmegaBravera.OffersTest do
     }
 
     def offer_challenge_fixture(attrs \\ %{}) do
-      {:ok, offer_challenge} =
+      offer = insert(:offer)
+
+      attrs =
         attrs
+        |> Map.put(:user_id, offer.user_id)
         |> Enum.into(@valid_attrs)
-        |> Offers.create_offer_challenge()
+
+      {:ok, offer_challenge} =
+        offer
+        |> Offers.create_offer_challenge(attrs)
 
       offer_challenge
     end
@@ -243,66 +241,21 @@ defmodule OmegaBravera.OffersTest do
     end
 
     test "create_offer_challenge/1 with valid data creates a offer_challenge" do
+      offer = insert(:offer)
       assert {:ok, %OfferChallenge{} = offer_challenge} =
-               Offers.create_offer_challenge(@valid_attrs)
+               Offers.create_offer_challenge(offer, Map.put(@valid_attrs, :user_id, offer.user_id))
 
-      assert offer_challenge.activity_type == "some activity_type"
-      assert offer_challenge.default_currency == "some default_currency"
-      assert offer_challenge.distance_target == 42
-      assert offer_challenge.duration == 42
-      assert offer_challenge.end_date == DateTime.from_naive!(~N[2010-04-17T14:00:00Z], "Etc/UTC")
-      assert offer_challenge.has_team == true
-
-      assert offer_challenge.last_activity_received ==
-               DateTime.from_naive!(~N[2010-04-17T14:00:00Z], "Etc/UTC")
-
-      assert offer_challenge.participant_notified_of_inactivity == true
-      assert offer_challenge.slug == "some slug"
-
-      assert offer_challenge.start_date ==
-               DateTime.from_naive!(~N[2010-04-17T14:00:00Z], "Etc/UTC")
-
-      assert offer_challenge.status == "some status"
-      assert offer_challenge.type == "some type"
+      assert offer_challenge.activity_type == "Run"
+      assert offer_challenge.default_currency == "hkd"
+      assert offer_challenge.distance_target == 50
+      assert offer_challenge.duration == 100
+      assert offer_challenge.participant_notified_of_inactivity == false
+      assert offer_challenge.status == "active"
+      assert offer_challenge.type == "PER_KM"
     end
 
     test "create_offer_challenge/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Offers.create_offer_challenge(@invalid_attrs)
-    end
-
-    test "update_offer_challenge/2 with valid data updates the offer_challenge" do
-      offer_challenge = offer_challenge_fixture()
-
-      assert {:ok, %OfferChallenge{} = offer_challenge} =
-               Offers.update_offer_challenge(offer_challenge, @update_attrs)
-
-      assert offer_challenge.activity_type == "some updated activity_type"
-      assert offer_challenge.default_currency == "some updated default_currency"
-      assert offer_challenge.distance_target == 43
-      assert offer_challenge.duration == 43
-      assert offer_challenge.end_date == DateTime.from_naive!(~N[2011-05-18T15:01:01Z], "Etc/UTC")
-      assert offer_challenge.has_team == false
-
-      assert offer_challenge.last_activity_received ==
-               DateTime.from_naive!(~N[2011-05-18T15:01:01Z], "Etc/UTC")
-
-      assert offer_challenge.participant_notified_of_inactivity == false
-      assert offer_challenge.slug == "some updated slug"
-
-      assert offer_challenge.start_date ==
-               DateTime.from_naive!(~N[2011-05-18T15:01:01Z], "Etc/UTC")
-
-      assert offer_challenge.status == "some updated status"
-      assert offer_challenge.type == "some updated type"
-    end
-
-    test "update_offer_challenge/2 with invalid data returns error changeset" do
-      offer_challenge = offer_challenge_fixture()
-
-      assert {:error, %Ecto.Changeset{}} =
-               Offers.update_offer_challenge(offer_challenge, @invalid_attrs)
-
-      assert offer_challenge == Offers.get_offer_challenge!(offer_challenge.id)
+      assert {:error, %Ecto.Changeset{}} = Offers.create_offer_challenge(insert(:offer), @invalid_attrs)
     end
 
     test "delete_offer_challenge/1 deletes the offer_challenge" do
