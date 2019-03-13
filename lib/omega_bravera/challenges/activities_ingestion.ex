@@ -21,7 +21,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     Logger.info("ActivityIngestion: Strava POST webhook processing: #{inspect(params)}")
 
     # Start activity ingestion for offer challenges.
-    OfferActivitiesIngestion.start(params)
+    Task.async(OfferActivitiesIngestion, :start, [params])
 
     # Start activity ingestion for ngo challenges.
     owner_id

@@ -81,9 +81,12 @@ defmodule OmegaBravera.Accounts do
     from(s in Strava,
       where: s.athlete_id == ^athlete_id,
       join: oc in OfferChallenge,
+      join: u in User,
+      on: s.user_id == u.id,
       where: s.user_id == oc.user_id and oc.status == "active",
       select: {
         oc.id,
+        u,
         s.token
       }
     )
