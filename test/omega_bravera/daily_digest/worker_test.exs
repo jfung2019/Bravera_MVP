@@ -4,6 +4,7 @@ defmodule OmegaBravera.DailyDigest.WorkerTest do
 
   alias OmegaBravera.DailyDigest.Worker
 
+  @tag :skip
   test "process_signups/0 finds all new users signups, all new challenges, all challenges with milestones and all completed challenges" do
     old_user = insert(:user, %{inserted_at: inserted_at(21, days: -3)})
     insert(:strava, %{user: old_user, athlete_id: 33_762_321})
