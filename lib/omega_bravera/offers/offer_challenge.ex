@@ -19,6 +19,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     field(:start_date, :utc_datetime)
     field(:status, :string, default: "active")
     field(:type, :string)
+    # TODO: rename to qr_code_png_base64
     field(:link_qr_code, :string)
     field(:redeemed, :integer, default: 0)
     field(:redeem_token, :string)
@@ -182,7 +183,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     if !is_nil(offer_slug) and !is_nil(slug) do
       qr_code =
         challenge_url(offer_slug, slug)
-        |> gen_qr_code_as_svg()
+        |> gen_qr_code_as_png()
 
       changeset
       |> change(link_qr_code: qr_code)
@@ -193,10 +194,14 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
   def add_qr_code(%Ecto.Changeset{} = changeset, _, _), do: changeset
 
-  defp gen_qr_code_as_svg(content) when is_binary(content) do
+  @doc """
+  Convert string into QR code saved in .PNG format then return the base64 of it.
+  """
+  defp gen_qr_code_as_png(content) when is_binary(content) do
     content
     |> EQRCode.encode()
-    |> EQRCode.svg()
+    |> EQRCode.png()
+    |> Base.encode64()
   end
 
   defp challenge_url(offer_slug, slug) do
