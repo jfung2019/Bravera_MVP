@@ -2,10 +2,22 @@
   <div class="row text-center">
     <div class="col-lg-12">
       <div class="form-group">
+
+        <%= if pre_registration_ngo?(@ngo) do %>
+          <p>Challenge starts in:</p>
+          <h3 id="countdown" class="font-weight-bold mb-3 text-danger">
+            <%= render_countdown_date(@ngo.launch_date) %>
+          </h3>
+        <% end %>
+
         <p>Using Bravera is easy! Just follow the steps below.</p>
         <p>1. Connect with a fitness Tracker</p>
         <%= img_tag(static_path(@conn, "/images/connect-icon.png"))%>
-        <p>2. Configure your challenge</p>
+
+        <%= if pre_registration_ngo?(@ngo) do %>
+          <p>2. Configure your challenge</p>
+        <% end %>
+    
         <%= img_tag(static_path(@conn, "/images/accept-icon.png"))%>
         <p>3. Get friends and family involved</p>
         <%= img_tag(static_path(@conn, "/images/invite-icon.png"))%>
