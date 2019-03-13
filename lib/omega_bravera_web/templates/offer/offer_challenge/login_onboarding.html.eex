@@ -1,12 +1,48 @@
+ <div class="card-body border-bottom pb-0 mb-3">
+      <!-- card image and logo start-->
+    <div class="text-center mb-1">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+            <div class="card mt-3 chal-header">
+                <img class="card-img-top chal-image" src=<%= @offer.image %> alt=<%= @offer.name %> />
+                <div class="card-img-overlay text-white card-img-text-shadow">
+                <div class="row">
+                    <div class="col-4 col-sm-3">
+                    <div class="mb-0 mt-2 mt-sm-1 mt-md-3 mt-lg-4 mt-xl-4">
+                        <a href="<%= ngo_ngo_chal_path(@conn, :new, @offer.slug) %>">
+                        <%= img_tag(@offer.logo, class: "img-thumbnail img-fluid cause-thumb", alt: @offer.name) %>
+                        </a>
+                    </div>
+                    </div>
+
+                    <div class="col-8 col-sm-9">
+                    <h3 class="mb-0 mt-4 mt-sm-4 mt-md-2 mt-lg-4 mt-xl-5"><%= @offer.name %></h5>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                <span><%= link @offer.url, to: @offer.url %></span>
+                <p class="card-text"><%= raw @offer.full_desc %></p>
+                </div>
+            </div>
+            <div class="mt-2 mb-2">
+                <%= render(OmegaBraveraWeb.Offer.OfferView, "offer_stats.html", assigns) %>
+            </div>
+        </div>
+      <!-- card image and logo end-->
+    </div>
+</div>
 <div class="card-body pt-0 justify-content-center text-center">
   <div class="row text-center">
     <div class="col-lg-12">
       <div class="form-group">
 
-        <%= if pre_registration_ngo?(@ngo) do %>
+        <%= if pre_registration_offer?(@offer) do %>
           <p>Challenge starts in:</p>
           <h3 id="countdown" class="font-weight-bold mb-3 text-danger">
-            <%= render_countdown_date(@ngo.launch_date) %>
+            <%= render_countdown_date(@offer.launch_date) %>
           </h3>
         <% end %>
 
@@ -14,14 +50,7 @@
         <p>1. Connect with a fitness Tracker</p>
         <%= img_tag(static_path(@conn, "/images/connect-icon.png"))%>
 
-        <%= if pre_registration_ngo?(@ngo) do %>
-          <p>2. Configure your challenge</p>
-        <% end %>
-    
-        <%= img_tag(static_path(@conn, "/images/accept-icon.png"))%>
-        <p>3. Get friends and family involved</p>
-        <%= img_tag(static_path(@conn, "/images/invite-icon.png"))%>
-        <p>4. Use your activity Tracker app and turn activities into automatic fundraising.</p>
+        <p>2. Turn activity data into rewards.</p>
         <%= img_tag(static_path(@conn, "/images/continue-icon.png"))%>
         <p>Bravera currently works with STRAVA  activity data to convert activities into fundraising.</p>
         <div class="form-button">

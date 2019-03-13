@@ -34,12 +34,18 @@
         </div>
         <div class="card-footer">
           <div class="text-center">
-            <%= if !user_joined_offer_before?(offer, @current_user) do %>
-              <%= form_for @offer_challenge_changeset, offer_offer_challenge_path(@conn, :create, offer.slug), fn _f -> %>
-                  <%= submit "Join the Challenge", class: "btn btn-green sign-up" %>
-                <% end %>
+            <%= if logged_in?(@conn) do %>
+
+              <%= if !user_joined_offer_before?(offer, @current_user) do %>
+                <%= form_for @offer_challenge_changeset, offer_offer_challenge_path(@conn, :create, offer.slug), fn _f -> %>
+                    <%= submit "Join the Challenge", class: "btn btn-green sign-up" %>
+                  <% end %>
+              <% else %>
+                <%= link("Go To Your Challenge", to: offer_offer_challenge_path(@conn, :show, offer.slug, user_challenge_slug(offer, @current_user)), class: "btn btn-green sign-up") %>
+              <% end %>
+
             <% else %>
-              <%= link("Go To Your Challenge", to: offer_offer_challenge_path(@conn, :show, offer.slug, user_challenge_slug(offer, @current_user)), class: "btn btn-green sign-up") %>
+                <%= link("Join the Challenge", to: offer_offer_challenge_path(@conn, :new, offer.slug), class: "btn btn-green sign-up") %>
             <% end %>
           </div>
         </div> <!-- end of foot -->

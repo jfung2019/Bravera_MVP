@@ -14,18 +14,17 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   plug(:assign_available_options when action in [:create])
 
-  def create(conn, params) do
-    case Guardian.Plug.current_resource(conn)do
+  def new(conn, params) do
+    case Guardian.Plug.current_resource(conn) do
       nil ->
-        conn
-        |> put_flash(:error, "Please login first")
-        |> redirect(to: page_path(conn, :login))
-
-      user -> create(conn, params, user)
+        render(conn, "login_onboarding.html", offer: Offers.get_offer_by_slug(params["offer_slug"]))
+      _user ->
+        create(conn, params)
     end
   end
 
-  def create(conn, %{"offer_slug" => offer_slug}, current_user) do
+  def create(conn, %{"offer_slug" => offer_slug}) do
+    current_user = Guardian.Plug.current_resource(conn)
     offer = Offers.get_offer_by_slug(offer_slug)
     sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 

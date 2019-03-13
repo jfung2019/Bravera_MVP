@@ -151,8 +151,8 @@ defmodule OmegaBraveraWeb.ViewHelpers do
 
   def pre_registration_ngo?(%NGO{}), do: false
 
-  def pre_registration_offer?(%Offer{open_registration: false, launch_date: launch_date}),
-  do: Timex.after?(launch_date, Timex.now())
+  def pre_registration_offer?(%Offer{open_registration: false, end_date: end_date}),
+  do: Timex.after?(end_date, Timex.now())
 
   def pre_registration_offer?(%Offer{}), do: false
 
