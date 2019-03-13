@@ -20,7 +20,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug)
 
     if redeem_token == offer_challenge.redeem_token do
-      render(conn, "qr_code.html", offer_challenge: offer_challenge)
+      conn
+      |> put_resp_content_type("image/svg+xml")
+      |> put_resp_header("content-disposition", "attachment; filename=\"qr.svg\"")
+      |> send_resp(200, offer_challenge.link_qr_code)
     else
       render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
