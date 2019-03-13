@@ -1,0 +1,1 @@
+<%= raw @offer_challenge.link_qr_code %>

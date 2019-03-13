@@ -19,6 +19,10 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     field(:start_date, :utc_datetime)
     field(:status, :string, default: "active")
     field(:type, :string)
+    field(:link_qr_code, :string)
+    field(:redeemed, :integer, default: 0)
+    field(:redeem_token, :string)
+
 
     field(:distance_covered, :decimal, default: Decimal.new(0), virtual: true)
 
@@ -67,6 +71,8 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> validate_inclusion(:type, challenge_type_options())
     |> add_start_and_end_dates(offer)
     |> add_status(offer)
+    |> put_change(:redeem_token, gen_token())
+    |> add_qr_code(offer, attrs)
     |> add_last_activity_received(offer)
     |> validate_required([:start_date, :end_date])
   end
@@ -171,4 +177,32 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
   def milestones_distances(%__MODULE__{distance_target: target}),
     do: milestone_distances(target)
+
+  def add_qr_code(%Ecto.Changeset{} = changeset, %Offer{slug: offer_slug}, %{"slug" => slug}) do
+    if !is_nil(offer_slug) and !is_nil(slug) do
+      qr_code =
+        challenge_url(offer_slug, slug)
+        |> gen_qr_code_as_svg()
+
+      changeset
+      |> change(link_qr_code: qr_code)
+    else
+        changeset
+    end
+  end
+
+  def add_qr_code(%Ecto.Changeset{} = changeset, _, _), do: changeset
+
+  defp gen_qr_code_as_svg(content) when is_binary(content) do
+    content
+    |> EQRCode.encode()
+    |> EQRCode.svg()
+  end
+
+  defp challenge_url(offer_slug, slug) do
+    "#{Application.get_env(:omega_bravera, :app_base_url)}/#{offer_slug}/#{slug}"
+  end
+
+  defp gen_token(length \\ 32),
+    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 end

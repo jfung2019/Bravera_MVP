@@ -14,6 +14,18 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   plug(:assign_available_options when action in [:create])
 
+  plug :put_layout, false when action in [:qr_code]
+
+  def qr_code(conn, %{"offer_challenge_slug" => slug, "offer_slug" => offer_slug, "redeem_token" => redeem_token}) do
+    offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug)
+
+    if redeem_token == offer_challenge.redeem_token do
+      render(conn, "qr_code.html", offer_challenge: offer_challenge)
+    else
+      render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+    end
+  end
+
   def new(conn, params) do
     case Guardian.Plug.current_resource(conn) do
       nil ->
