@@ -24,12 +24,23 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug)
 
     if redeem_token == offer_challenge.redeem_token do
-      {:ok, png} = Base.decode64(offer_challenge.link_qr_code)
+      qr_code_png =
+        "#{Application.get_env(:omega_bravera, :app_base_url)}#{
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :qr_code,
+            offer_slug,
+            slug,
+            offer_challenge.redeem_token
+          )
+        }"
+        |> EQRCode.encode()
+        |> EQRCode.png()
 
       conn
       |> put_resp_content_type("image/png")
       |> put_resp_header("content-disposition", "attachment; filename=qr.png")
-      |> send_resp(200, png)
+      |> send_resp(200, qr_code_png)
     else
       render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
