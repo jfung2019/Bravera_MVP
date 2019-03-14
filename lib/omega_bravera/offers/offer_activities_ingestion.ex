@@ -65,12 +65,16 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       |> notify_participant_of_activity(send_emails)
 
     Logger.info(
-      "Offers:ActivityIngestion: Processing has finished for km challenge: #{inspect(challenge.id)}"
+      "Offers:ActivityIngestion: Processing has finished for km challenge: #{
+        inspect(challenge.id)
+      }"
     )
 
     if status == :ok do
       Logger.info(
-        "Offers:ActivityIngestion: Processing was successful for km challenge: #{inspect(challenge.id)}"
+        "Offers:ActivityIngestion: Processing was successful for km challenge: #{
+          inspect(challenge.id)
+        }"
       )
 
       {:ok, :challenge_updated}
@@ -92,7 +96,9 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
         send_emails
       )
       when distance > 0 do
-    Logger.info("Offers:ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}")
+    Logger.info(
+      "Offers:ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}"
+    )
 
     {status, _challenge, _activity} =
       challenge
@@ -174,7 +180,10 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
   defp update_challenge({:error, _, _} = params), do: params
 
-  defp notify_participant_of_activity({status, %OfferChallenge{status: "active"} = challenge, activity} = params, send_emails) do
+  defp notify_participant_of_activity(
+         {status, %OfferChallenge{status: "active"} = challenge, activity} = params,
+         send_emails
+       ) do
     if status == :ok and send_emails do
       Notifier.send_activity_completed_email(challenge, activity)
     end
@@ -182,7 +191,10 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     params
   end
 
-  defp notify_participant_of_activity({status, %OfferChallenge{status: "complete"} = challenge, _activity} = params, send_emails) do
+  defp notify_participant_of_activity(
+         {status, %OfferChallenge{status: "complete"} = challenge, _activity} = params,
+         send_emails
+       ) do
     if status == :ok and send_emails do
       Notifier.send_reward_completion_email(challenge)
     end

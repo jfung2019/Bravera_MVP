@@ -53,8 +53,8 @@ defmodule OmegaBravera.Offers do
         preload: ^preloads,
         group_by: [o.id],
         select: %{
-          o |
-            active_offer_challenges: count(offer_challenges.id),
+          o
+          | active_offer_challenges: count(offer_challenges.id),
             launch_date: o.launch_date,
             pre_registration_start_date:
               fragment("? at time zone 'utc'", o.pre_registration_start_date)
@@ -119,8 +119,9 @@ defmodule OmegaBravera.Offers do
                 "? at time zone 'utc' at time zone 'asia/hong_kong'",
                 o.pre_registration_start_date
               ),
-            start_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.start_date),
-            end_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.end_date),
+            start_date:
+              fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.start_date),
+            end_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.end_date)
         }
       )
       |> Repo.one()
@@ -158,9 +159,11 @@ defmodule OmegaBravera.Offers do
     total_distance_covered = Repo.aggregate(calories_and_activities_query, :sum, :distance)
     total_calories = Repo.aggregate(calories_and_activities_query, :sum, :calories)
 
-    %{offer | num_of_challenges: Enum.count(offer.offer_challenges),
-            total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
-            total_calories: total_calories || 0
+    %{
+      offer
+      | num_of_challenges: Enum.count(offer.offer_challenges),
+        total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
+        total_calories: total_calories || 0
     }
   end
 
@@ -186,14 +189,14 @@ defmodule OmegaBravera.Offers do
   end
 
   defp switch_start_and_end_dates_to_utc(
-    %Ecto.Changeset{
-      valid?: true,
-      changes: %{
-        start_date: start_date,
-        end_date: end_date
-      }
-    } = changeset
-  ) do
+         %Ecto.Changeset{
+           valid?: true,
+           changes: %{
+             start_date: start_date,
+             end_date: end_date
+           }
+         } = changeset
+       ) do
     changeset
     |> Ecto.Changeset.change(%{
       start_date: to_utc(start_date),
@@ -402,7 +405,11 @@ defmodule OmegaBravera.Offers do
     OfferChallenge.changeset(offer_challenge, %{})
   end
 
-  def latest_activities(%OfferChallenge{} = challenge, limit \\ nil, preloads \\ [user: [:strava]]) do
+  def latest_activities(
+        %OfferChallenge{} = challenge,
+        limit \\ nil,
+        preloads \\ [user: [:strava]]
+      ) do
     query =
       from(activity in OfferChallengeActivity,
         where: activity.offer_challenge_id == ^challenge.id,

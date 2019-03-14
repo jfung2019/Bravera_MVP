@@ -16,7 +16,11 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   plug :put_layout, false when action in [:qr_code]
 
-  def qr_code(conn, %{"offer_challenge_slug" => slug, "offer_slug" => offer_slug, "redeem_token" => redeem_token}) do
+  def qr_code(conn, %{
+        "offer_challenge_slug" => slug,
+        "offer_slug" => offer_slug,
+        "redeem_token" => redeem_token
+      }) do
     offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug)
 
     if redeem_token == offer_challenge.redeem_token do
@@ -26,7 +30,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       |> put_resp_content_type("image/png")
       |> put_resp_header("content-disposition", "attachment; filename=qr.png")
       |> send_resp(200, png)
-
     else
       render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
@@ -35,7 +38,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   def new(conn, params) do
     case Guardian.Plug.current_resource(conn) do
       nil ->
-        render(conn, "login_onboarding.html", offer: Offers.get_offer_by_slug(params["offer_slug"]))
+        render(conn, "login_onboarding.html",
+          offer: Offers.get_offer_by_slug(params["offer_slug"])
+        )
+
       _user ->
         create(conn, params)
     end
@@ -53,7 +59,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
     case Offers.create_offer_challenge(offer, attrs) do
       {:ok, offer_challenge} ->
-        offer_challenge_path = offer_offer_challenge_path(conn, :show, offer.slug, sluggified_username)
+        offer_challenge_path =
+          offer_offer_challenge_path(conn, :show, offer.slug, sluggified_username)
+
         send_emails(offer_challenge, offer_challenge_path)
 
         conn
@@ -70,8 +78,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   end
 
   def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do
-    offer_challenge =
-      Offers.get_offer_chal_by_slugs(offer_slug, slug, [user: [:strava], offer: []])
+    offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, user: [:strava], offer: [])
 
     case offer_challenge do
       nil ->

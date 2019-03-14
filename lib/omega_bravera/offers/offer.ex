@@ -217,7 +217,6 @@ defmodule OmegaBravera.Offers.Offer do
 
   defp validate_no_active_challenges(changeset, _ngo), do: changeset
 
-
   defp changeset_to_hk_date(
          %Ecto.Changeset{
            changes: %{
@@ -238,15 +237,15 @@ defmodule OmegaBravera.Offers.Offer do
       |> Timex.to_datetime("Asia/Hong_Kong")
       |> DateTime.to_naive()
 
-      start_date =
-        start_date
-        |> Timex.to_datetime("Asia/Hong_Kong")
-        |> DateTime.to_naive()
+    start_date =
+      start_date
+      |> Timex.to_datetime("Asia/Hong_Kong")
+      |> DateTime.to_naive()
 
-      end_date =
-        end_date
-        |> Timex.to_datetime("Asia/Hong_Kong")
-        |> DateTime.to_naive()
+    end_date =
+      end_date
+      |> Timex.to_datetime("Asia/Hong_Kong")
+      |> DateTime.to_naive()
 
     changeset
     |> change(%{

@@ -202,7 +202,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
 
   def render_km_current_distance_value(nil, _), do: 0
 
-  def render_km_current_distance_value(%Decimal{} = total_km_pledges, %OfferChallenge{} = challenge) do
+  def render_km_current_distance_value(
+        %Decimal{} = total_km_pledges,
+        %OfferChallenge{} = challenge
+      ) do
     current_distance_value =
       Decimal.mult(total_km_pledges, challenge.distance_covered)
       |> Decimal.round(1)
@@ -264,42 +267,42 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
 
   # def challenge_with_team_has_members(_), do: false
 
-#   defp number_of_sent_and_accepted_invites(%OfferChallenge{
-#          has_team: true,
-#          team: %{invitations: invitations}
-#        }) do
-#     Enum.count(invitations, fn invitation ->
-#       invitation.status == "pending_acceptance" or invitation.status == "accepted"
-#     end)
-#   end
+  #   defp number_of_sent_and_accepted_invites(%OfferChallenge{
+  #          has_team: true,
+  #          team: %{invitations: invitations}
+  #        }) do
+  #     Enum.count(invitations, fn invitation ->
+  #       invitation.status == "pending_acceptance" or invitation.status == "accepted"
+  #     end)
+  #   end
 
-#   def invitations_exhaused?(%OfferChallenge{has_team: true, team: %{count: count}} = challenge),
-#     do: count == number_of_sent_and_accepted_invites(challenge)
+  #   def invitations_exhaused?(%OfferChallenge{has_team: true, team: %{count: count}} = challenge),
+  #     do: count == number_of_sent_and_accepted_invites(challenge)
 
-#   def left_invitations(%OfferChallenge{has_team: true, team: %{count: count}} = challenge) do
-#     sent_and_accepted = number_of_sent_and_accepted_invites(challenge)
+  #   def left_invitations(%OfferChallenge{has_team: true, team: %{count: count}} = challenge) do
+  #     sent_and_accepted = number_of_sent_and_accepted_invites(challenge)
 
-#     cond do
-#       sent_and_accepted == count -> []
-#       sent_and_accepted < count -> Range.new(1, count - sent_and_accepted)
-#     end
-#   end
+  #     cond do
+  #       sent_and_accepted == count -> []
+  #       sent_and_accepted < count -> Range.new(1, count - sent_and_accepted)
+  #     end
+  #   end
 
-#   def accepted_invitations(%OfferChallenge{has_team: true, team: %{invitations: invitations}}),
-#     do: Enum.count(invitations, fn invitation -> invitation.status == "accepted" end)
+  #   def accepted_invitations(%OfferChallenge{has_team: true, team: %{invitations: invitations}}),
+  #     do: Enum.count(invitations, fn invitation -> invitation.status == "accepted" end)
 
-#   def team_full?(%OfferChallenge{has_team: true, team: %{count: count}} = challenge),
-#     do: count == accepted_invitations(challenge)
+  #   def team_full?(%OfferChallenge{has_team: true, team: %{count: count}} = challenge),
+  #     do: count == accepted_invitations(challenge)
 
-#   def pending_invitations(%OfferChallenge{has_team: true, team: %{invitations: invitations}}) do
-#     Enum.map(invitations, fn invitation ->
-#       if invitation.status == "pending_acceptance" do
-#         invitation
-#       end
-#     end)
-#     |> Enum.reject(&is_nil/1)
-#   end
+  #   def pending_invitations(%OfferChallenge{has_team: true, team: %{invitations: invitations}}) do
+  #     Enum.map(invitations, fn invitation ->
+  #       if invitation.status == "pending_acceptance" do
+  #         invitation
+  #       end
+  #     end)
+  #     |> Enum.reject(&is_nil/1)
+  #   end
 
-#   def can_resend?(%TeamInvitations{updated_at: updated_at}),
-#     do: Timex.before?(Timex.now(), Timex.shift(updated_at, days: 1))
+  #   def can_resend?(%TeamInvitations{updated_at: updated_at}),
+  #     do: Timex.before?(Timex.now(), Timex.shift(updated_at, days: 1))
 end

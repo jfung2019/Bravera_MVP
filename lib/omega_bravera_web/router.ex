@@ -132,7 +132,9 @@ defmodule OmegaBraveraWeb.Router do
       get("/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list)
 
       resources("/offers", AdminPanelOfferController, only: [:index, :new, :create]) do
-        resources("/offer_challenges", AdminPanelOfferChallengeController, only: [:show, :edit, :update])
+        resources("/offer_challenges", AdminPanelOfferChallengeController,
+          only: [:show, :edit, :update]
+        )
       end
 
       get("/offers/:slug", AdminPanelOfferController, :show)
@@ -152,7 +154,6 @@ defmodule OmegaBraveraWeb.Router do
     pipe_through(:browser)
 
     get("/", Offer.OfferController, :index)
-
 
     resources "/", Offer.OfferController, only: [:show], param: "slug" do
       resources "/", Offer.OfferChallengeController, only: [:show, :new, :create], param: "slug" do

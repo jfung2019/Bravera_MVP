@@ -93,7 +93,6 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-
   defp donors_for_challenge_query(challenge) do
     from(user in User,
       join: donation in Donation,

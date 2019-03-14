@@ -242,8 +242,12 @@ defmodule OmegaBravera.OffersTest do
 
     test "create_offer_challenge/1 with valid data creates a offer_challenge" do
       offer = insert(:offer)
+
       assert {:ok, %OfferChallenge{} = offer_challenge} =
-               Offers.create_offer_challenge(offer, Map.put(@valid_attrs, :user_id, offer.user_id))
+               Offers.create_offer_challenge(
+                 offer,
+                 Map.put(@valid_attrs, :user_id, offer.user_id)
+               )
 
       assert offer_challenge.activity_type == "Run"
       assert offer_challenge.default_currency == "hkd"
@@ -255,7 +259,8 @@ defmodule OmegaBravera.OffersTest do
     end
 
     test "create_offer_challenge/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Offers.create_offer_challenge(insert(:offer), @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Offers.create_offer_challenge(insert(:offer), @invalid_attrs)
     end
 
     test "delete_offer_challenge/1 deletes the offer_challenge" do

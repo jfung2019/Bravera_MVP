@@ -25,7 +25,6 @@ defmodule OmegaBravera.Offers.Notifier do
   end
 
   def reward_completion_email(%OfferChallenge{} = challenge, template_id) do
-
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
@@ -120,7 +119,10 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_activity_completed_email(%OfferChallenge{} = challenge, %OfferChallengeActivity{} = activity) do
+  def send_activity_completed_email(
+        %OfferChallenge{} = challenge,
+        %OfferChallengeActivity{} = activity
+      ) do
     template_id = "3364ef25-3318-4958-a3c3-4cb97f85dc7d"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
@@ -135,7 +137,11 @@ defmodule OmegaBravera.Offers.Notifier do
     end
   end
 
-  def activity_completed_email(%OfferChallenge{} = challenge, %OfferChallengeActivity{} = activity, template_id) do
+  def activity_completed_email(
+        %OfferChallenge{} = challenge,
+        %OfferChallengeActivity{} = activity,
+        template_id
+      ) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
@@ -152,7 +158,7 @@ defmodule OmegaBravera.Offers.Notifier do
   def send_challenge_failed_email(%OfferChallenge{} = challenge) do
     template_id = "52c97f2f-7c27-43eb-a9cf-655603eeb7cf"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
-    challenge = Repo.preload(challenge, [user: [:subscribed_email_categories]])
+    challenge = Repo.preload(challenge, user: [:subscribed_email_categories])
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
@@ -208,7 +214,9 @@ defmodule OmegaBravera.Offers.Notifier do
     do: Timex.diff(end_date, start_date, :days)
 
   defp challenge_url(challenge) do
-    "#{Application.get_env(:omega_bravera, :app_base_url)}/#{challenge.offer.slug}/#{challenge.slug}"
+    "#{Application.get_env(:omega_bravera, :app_base_url)}/#{challenge.offer.slug}/#{
+      challenge.slug
+    }"
   end
 
   defp challenge_qr_code_url(challenge) do

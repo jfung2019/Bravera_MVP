@@ -24,11 +24,11 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     field(:redeemed, :integer, default: 0)
     field(:redeem_token, :string)
 
-
     field(:distance_covered, :decimal, default: Decimal.new(0), virtual: true)
 
     belongs_to(:user, User)
     belongs_to(:offer, Offer)
+
     has_many(:offer_challenge_activities, OfferChallengeActivity, foreign_key: :offer_challenge_id)
 
     timestamps(type: :utc_datetime)
@@ -56,7 +56,10 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     offer_challenge
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
-    |> unique_constraint(:user_id_offer_id, name: :one_offer_per_user_index, message: "You cannot join an offer more then once.")
+    |> unique_constraint(:user_id_offer_id,
+      name: :one_offer_per_user_index,
+      message: "You cannot join an offer more then once."
+    )
     |> unique_constraint(:slug)
   end
 
@@ -159,7 +162,8 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     add_start_and_end_dates(changeset, offer, get_field(changeset, :duration))
   end
 
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %Offer{} = offer, duration) when is_number(duration) do
+  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %Offer{} = offer, duration)
+       when is_number(duration) do
     changeset
     |> change(start_date: DateTime.truncate(offer.start_date, :second))
     |> change(end_date: DateTime.truncate(offer.end_date, :second))
@@ -195,7 +199,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       changeset
       |> change(link_qr_code: qr_code)
     else
-        changeset
+      changeset
     end
   end
 

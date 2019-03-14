@@ -4,19 +4,18 @@ defmodule OmegaBravera.Offers.OfferChallengeActivity do
 
   alias OmegaBravera.{Accounts.User, Offers.OfferChallenge}
 
-
   schema "offer_challenge_activities" do
-    field :admin_id, :integer
-    field :average_speed, :decimal
-    field :calories, :decimal
-    field :distance, :decimal
-    field :elapsed_time, :integer
-    field :manual, :boolean, default: false
-    field :moving_time, :integer
-    field :name, :string
-    field :start_date, :utc_datetime
-    field :strava_id, :integer
-    field :type, :string
+    field(:admin_id, :integer)
+    field(:average_speed, :decimal)
+    field(:calories, :decimal)
+    field(:distance, :decimal)
+    field(:elapsed_time, :integer)
+    field(:manual, :boolean, default: false)
+    field(:moving_time, :integer)
+    field(:name, :string)
+    field(:start_date, :utc_datetime)
+    field(:strava_id, :integer)
+    field(:type, :string)
 
     timestamps(type: :utc_datetime)
 
@@ -62,7 +61,11 @@ defmodule OmegaBravera.Offers.OfferChallengeActivity do
     "Hike"
   ]
 
-  def create_changeset(%Strava.Activity{} = strava_activity, %OfferChallenge{} = offer_challenge, user) do
+  def create_changeset(
+        %Strava.Activity{} = strava_activity,
+        %OfferChallenge{} = offer_challenge,
+        user
+      ) do
     %__MODULE__{}
     |> cast(strava_attributes(strava_activity), @allowed_attributes)
     |> change(%{
