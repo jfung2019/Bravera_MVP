@@ -37,11 +37,18 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   @allowed_attributes [
     :user_id,
     :slug,
+    :start_date,
+    :end_date,
+    :activity_type,
+    :distance_target,
+    :status,
+    :default_currency,
+    :type
   ]
 
   @required_attributes [
     :user_id,
-    :slug,
+    :slug
   ]
 
   @doc false
