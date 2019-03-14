@@ -6,14 +6,25 @@
                Participants:
                <strong class="text-500 float-right"><%= length(@offer.offer_challenges) %></strong>
             </div>
-            <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-               Start Date:
-               <strong class="text-500 float-right"><%= render_date(@offer.start_date) %></strong>
-            </div>
-            <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-               End Date:
-               <strong class="text-500 float-right"><%= render_date(@offer.end_date) %></strong>
-            </div>
+            <%= if !pre_registration_offer?(@offer) do %>
+               <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
+                  Start Date:
+                  <strong class="text-500 float-right"><%= render_date(@offer.start_date) %></strong>
+               </div>
+               <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
+                  End Date:
+                  <strong class="text-500 float-right"><%= render_date(@offer.end_date) %></strong>
+               </div>
+            <% else %>
+               <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
+                  Pre-registration Start Date:
+                  <strong class="text-500 float-right"><%= render_date(@offer.start_date) %></strong>
+               </div>
+               <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
+                  Launch/Start Date:
+                  <strong class="text-500 float-right text-danger"><%= render_date(@offer.end_date) %></strong>
+               </div>
+            <% end %>
             <div style="clear: both;"></div>
          </div>
       </div>

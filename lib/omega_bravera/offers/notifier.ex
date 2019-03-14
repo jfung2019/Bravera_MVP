@@ -6,6 +6,9 @@ defmodule OmegaBravera.Offers.Notifier do
     Emails
   }
 
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
+
   alias SendGrid.{Email, Mailer}
 
   def send_reward_completion_email(%OfferChallenge{} = challenge) do
@@ -214,9 +217,7 @@ defmodule OmegaBravera.Offers.Notifier do
     do: Timex.diff(end_date, start_date, :days)
 
   defp challenge_url(challenge) do
-    "#{Application.get_env(:omega_bravera, :app_base_url)}/#{challenge.offer.slug}/#{
-      challenge.slug
-    }"
+    "#{Application.get_env(:omega_bravera, :app_base_url)}#{Routes.offer_offer_challenge_path(Endpoint, :show, challenge.offer.slug, challenge.slug)}"
   end
 
   defp challenge_qr_code_url(challenge) do
