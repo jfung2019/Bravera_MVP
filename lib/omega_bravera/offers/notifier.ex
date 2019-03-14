@@ -220,6 +220,6 @@ defmodule OmegaBravera.Offers.Notifier do
   end
 
   defp challenge_qr_code_url(challenge) do
-    "#{challenge_url(challenge)}/challenge.redeem_token"
+    "#{challenge_url(challenge)}/#{challenge.redeem_token}"
   end
 end
