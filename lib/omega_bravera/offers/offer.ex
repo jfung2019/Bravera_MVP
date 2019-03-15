@@ -3,7 +3,7 @@ defmodule OmegaBravera.Offers.Offer do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.{Accounts.User, Offers.OfferChallenge}
+  alias OmegaBravera.{Accounts.User, Offers.OfferChallenge, Offers.OfferReward}
 
   @derive {Phoenix.Param, key: :slug}
   schema "offers" do
@@ -22,7 +22,6 @@ defmodule OmegaBravera.Offers.Offer do
     field(:pre_registration_start_date, :utc_datetime)
     field(:start_date, :utc_datetime)
     field(:end_date, :utc_datetime)
-    field(:reward_value, :integer)
     field(:additional_members, :integer, default: 0)
     field(:slug, :string)
     field(:toc, :string)
@@ -40,6 +39,7 @@ defmodule OmegaBravera.Offers.Offer do
 
     belongs_to(:user, User)
     has_many(:offer_challenges, OfferChallenge)
+    has_many(:offer_rewards, OfferReward)
 
     timestamps(type: :utc_datetime)
   end
@@ -58,7 +58,6 @@ defmodule OmegaBravera.Offers.Offer do
     :full_desc,
     :toc,
     :offer_challenge_desc,
-    :reward_value,
     :offer_percent,
     :image,
     :logo,

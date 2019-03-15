@@ -25,7 +25,6 @@ defmodule OmegaBravera.OffersTest do
       offer_challenge_types: [],
       offer_percent: 120.5,
       open_registration: true,
-      reward_value: 42,
       slug: "some slug",
       toc: "some toc",
       url: "https://bravera.co",
@@ -50,7 +49,6 @@ defmodule OmegaBravera.OffersTest do
       offer_challenge_types: [],
       offer_percent: 456.7,
       open_registration: true,
-      reward_value: 43,
       slug: "some updated slug",
       toc: "some updated toc",
       url: "https://staging.bravera.co",
@@ -76,7 +74,6 @@ defmodule OmegaBravera.OffersTest do
       offer_percent: nil,
       open_registration: nil,
       pre_registration_start_date: nil,
-      reward_value: nil,
       slug: nil,
       toc: nil,
       url: nil,
@@ -129,7 +126,6 @@ defmodule OmegaBravera.OffersTest do
       assert offer.offer_percent == 120.5
       assert offer.open_registration == true
 
-      assert offer.reward_value == 42
       assert offer.slug == "some slug"
       assert offer.toc == "some toc"
       assert offer.url == "https://bravera.co"
@@ -159,7 +155,6 @@ defmodule OmegaBravera.OffersTest do
       assert offer.offer_percent == 456.7
       assert offer.open_registration == true
 
-      assert offer.reward_value == 43
       assert offer.slug == "some updated slug"
       assert offer.toc == "some updated toc"
       assert offer.url == "https://staging.bravera.co"
@@ -272,6 +267,67 @@ defmodule OmegaBravera.OffersTest do
     test "change_offer_challenge/1 returns a offer_challenge changeset" do
       offer_challenge = offer_challenge_fixture()
       assert %Ecto.Changeset{} = Offers.change_offer_challenge(offer_challenge)
+    end
+  end
+
+  describe "offer_rewards" do
+    alias OmegaBravera.Offers.OfferReward
+
+    @valid_attrs %{name: "some name", value: 42}
+    @update_attrs %{name: "some updated name", value: 43}
+    @invalid_attrs %{name: nil, value: nil}
+
+    def offer_reward_fixture(attrs \\ %{}) do
+      {:ok, offer_reward} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Offers.create_offer_reward()
+
+      offer_reward
+    end
+
+    test "list_offer_rewards/0 returns all offer_rewards" do
+      offer_reward = offer_reward_fixture()
+      assert Offers.list_offer_rewards() == [offer_reward]
+    end
+
+    test "get_offer_reward!/1 returns the offer_reward with given id" do
+      offer_reward = offer_reward_fixture()
+      assert Offers.get_offer_reward!(offer_reward.id) == offer_reward
+    end
+
+    test "create_offer_reward/1 with valid data creates a offer_reward" do
+      assert {:ok, %OfferReward{} = offer_reward} = Offers.create_offer_reward(@valid_attrs)
+      assert offer_reward.name == "some name"
+      assert offer_reward.value == 42
+    end
+
+    test "create_offer_reward/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Offers.create_offer_reward(@invalid_attrs)
+    end
+
+    test "update_offer_reward/2 with valid data updates the offer_reward" do
+      offer_reward = offer_reward_fixture()
+      assert {:ok, %OfferReward{} = offer_reward} = Offers.update_offer_reward(offer_reward, @update_attrs)
+      assert offer_reward.name == "some updated name"
+      assert offer_reward.value == 43
+    end
+
+    test "update_offer_reward/2 with invalid data returns error changeset" do
+      offer_reward = offer_reward_fixture()
+      assert {:error, %Ecto.Changeset{}} = Offers.update_offer_reward(offer_reward, @invalid_attrs)
+      assert offer_reward == Offers.get_offer_reward!(offer_reward.id)
+    end
+
+    test "delete_offer_reward/1 deletes the offer_reward" do
+      offer_reward = offer_reward_fixture()
+      assert {:ok, %OfferReward{}} = Offers.delete_offer_reward(offer_reward)
+      assert_raise Ecto.NoResultsError, fn -> Offers.get_offer_reward!(offer_reward.id) end
+    end
+
+    test "change_offer_reward/1 returns a offer_reward changeset" do
+      offer_reward = offer_reward_fixture()
+      assert %Ecto.Changeset{} = Offers.change_offer_reward(offer_reward)
     end
   end
 end

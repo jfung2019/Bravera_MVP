@@ -114,12 +114,6 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :reward_value, class: "control-label" %>
-    <%= number_input f, :reward_value, class: "form-control" %>
-    <%= error_tag f, :reward_value %>
-  </div>
-
-  <div class="form-group">
     <%= label f, "Additional Members (0 for Solo user challenges. More for Team Challenges)", class: "control-label" %>
     <%= text_input f, :additional_members, class: "form-control" %>
     <%= error_tag f, :additional_members %>

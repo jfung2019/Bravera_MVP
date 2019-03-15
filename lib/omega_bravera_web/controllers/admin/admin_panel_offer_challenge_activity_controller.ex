@@ -233,7 +233,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
       # calories per hour = met_value * weight in kg
       calories_per_hour =
         if athlete.weight != nil do
-          Decimal.new(athlete.weight)
+          Decimal.from_float(athlete.weight)
           |> Decimal.mult(met_values[activity.type])
           |> Decimal.round(1)
         else

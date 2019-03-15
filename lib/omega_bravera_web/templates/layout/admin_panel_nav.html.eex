@@ -30,6 +30,9 @@
           <%= link("Offer Activities", to: admin_panel_offer_challenge_activity_path(@conn, :new)) %>
         </li>
         <li class="nav-item">
+          <%= link("Offer Rewards", to: admin_panel_offer_reward_path(@conn, :index)) %>
+        </li>
+        <li class="nav-item">
           <%= link("Offers", to: admin_panel_offer_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
@@ -39,12 +42,12 @@
           <%= link("Challenges", to: admin_panel_challenges_path(@conn, :index)) %>
         </li>
 
-        <div class="ml-md-4 pt-1">
-        <%= form_for @conn, admin_user_session_path(@conn, :logout), [method: :get, class: "navbar-form"], fn _f -> %>
-            <button class="btn btn-dark">Log Out</button>
-        <% end %>
-        </div>
       </ul>
+      <div class="ml-md-4 pt-1">
+      <%= form_for @conn, admin_user_session_path(@conn, :logout), [method: :get, class: "navbar-form"], fn _f -> %>
+          <button class="btn btn-dark">Log Out</button>
+      <% end %>
+      </div>
     </div>
   </div>
 </nav>

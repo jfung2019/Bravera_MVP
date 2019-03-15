@@ -439,4 +439,100 @@ defmodule OmegaBravera.Offers do
     )
     |> Repo.all()
   end
+
+  alias OmegaBravera.Offers.OfferReward
+
+  @doc """
+  Returns the list of offer_rewards.
+
+  ## Examples
+
+      iex> list_offer_rewards()
+      [%OfferReward{}, ...]
+
+  """
+  def list_offer_rewards do
+    Repo.all(OfferReward)
+  end
+
+  @doc """
+  Gets a single offer_reward.
+
+  Raises `Ecto.NoResultsError` if the Offer reward does not exist.
+
+  ## Examples
+
+      iex> get_offer_reward!(123)
+      %OfferReward{}
+
+      iex> get_offer_reward!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_offer_reward!(id), do: Repo.get!(OfferReward, id)
+
+  @doc """
+  Creates a offer_reward.
+
+  ## Examples
+
+      iex> create_offer_reward(%{field: value})
+      {:ok, %OfferReward{}}
+
+      iex> create_offer_reward(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_offer_reward(attrs \\ %{}) do
+    %OfferReward{}
+    |> OfferReward.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a offer_reward.
+
+  ## Examples
+
+      iex> update_offer_reward(offer_reward, %{field: new_value})
+      {:ok, %OfferReward{}}
+
+      iex> update_offer_reward(offer_reward, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_offer_reward(%OfferReward{} = offer_reward, attrs) do
+    offer_reward
+    |> OfferReward.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a OfferReward.
+
+  ## Examples
+
+      iex> delete_offer_reward(offer_reward)
+      {:ok, %OfferReward{}}
+
+      iex> delete_offer_reward(offer_reward)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_offer_reward(%OfferReward{} = offer_reward) do
+    Repo.delete(offer_reward)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking offer_reward changes.
+
+  ## Examples
+
+      iex> change_offer_reward(offer_reward)
+      %Ecto.Changeset{source: %OfferReward{}}
+
+  """
+  def change_offer_reward(%OfferReward{} = offer_reward) do
+    OfferReward.changeset(offer_reward, %{})
+  end
 end

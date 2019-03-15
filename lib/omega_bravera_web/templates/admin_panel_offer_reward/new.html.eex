@@ -1,0 +1,7 @@
+<div class="container">
+    <h2>New Offer Reward</h2>
+    
+    <%= render "form.html", Map.put(assigns, :action, admin_panel_offer_reward_path(@conn, :create)) %>
+    
+    <span><%= link "Back", to: admin_panel_offer_reward_path(@conn, :index) %></span>
+</div>
