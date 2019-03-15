@@ -34,7 +34,6 @@ defmodule OmegaBravera.Offers.Offer do
 
     field(:activities, {:array, :string})
     field(:distances, {:array, :integer})
-    field(:durations, {:array, :integer})
     field(:offer_challenge_types, {:array, :string})
 
     belongs_to(:user, User)
@@ -66,7 +65,6 @@ defmodule OmegaBravera.Offers.Offer do
     :additional_members,
     :offer_challenge_types,
     :distances,
-    :durations,
     :activities,
     :user_id
   ]
@@ -78,7 +76,6 @@ defmodule OmegaBravera.Offers.Offer do
     :user_id,
     :offer_challenge_types,
     :distances,
-    :durations,
     :activities,
     :start_date,
     :end_date,
@@ -93,7 +90,6 @@ defmodule OmegaBravera.Offers.Offer do
     |> validate_inclusion(:currency, currency_options())
     |> validate_subset(:activities, activity_options())
     |> validate_subset(:distances, distance_options())
-    |> validate_subset(:durations, duration_options())
     |> validate_subset(:offer_challenge_types, challenge_type_options())
     |> validate_format(:url, ~r/^(https|http):\/\/\w+/)
     |> validate_open_registration()

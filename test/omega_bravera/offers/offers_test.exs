@@ -14,7 +14,6 @@ defmodule OmegaBravera.OffersTest do
       currency: "gbp",
       desc: "some desc",
       distances: [],
-      durations: [],
       full_desc: "some full_desc",
       ga_id: "some ga_id",
       hidden: false,
@@ -38,7 +37,6 @@ defmodule OmegaBravera.OffersTest do
       currency: "hkd",
       desc: "some updated desc",
       distances: [],
-      durations: [],
       full_desc: "some updated full_desc",
       ga_id: "some updated ga_id",
       hidden: true,
@@ -61,7 +59,6 @@ defmodule OmegaBravera.OffersTest do
       currency: nil,
       desc: nil,
       distances: nil,
-      durations: nil,
       full_desc: nil,
       ga_id: nil,
       hidden: nil,
@@ -114,7 +111,6 @@ defmodule OmegaBravera.OffersTest do
       assert offer.currency == "gbp"
       assert offer.desc == "some desc"
       assert offer.distances == []
-      assert offer.durations == []
       assert offer.full_desc == "some full_desc"
       assert offer.ga_id == "some ga_id"
       assert offer.hidden == false
@@ -143,7 +139,6 @@ defmodule OmegaBravera.OffersTest do
       assert offer.currency == "hkd"
       assert offer.desc == "some updated desc"
       assert offer.distances == []
-      assert offer.durations == []
       assert offer.full_desc == "some updated full_desc"
       assert offer.ga_id == "some updated ga_id"
       assert offer.hidden == true
@@ -185,7 +180,6 @@ defmodule OmegaBravera.OffersTest do
       activity_type: "some activity_type",
       default_currency: "some default_currency",
       distance_target: 42,
-      duration: 42,
       end_date: Timex.now(),
       has_team: true,
       last_activity_received: Timex.now(),
@@ -199,7 +193,6 @@ defmodule OmegaBravera.OffersTest do
       activity_type: nil,
       default_currency: nil,
       distance_target: nil,
-      duration: nil,
       end_date: nil,
       has_team: nil,
       last_activity_received: nil,
@@ -247,7 +240,6 @@ defmodule OmegaBravera.OffersTest do
       assert offer_challenge.activity_type == "Run"
       assert offer_challenge.default_currency == "hkd"
       assert offer_challenge.distance_target == 50
-      assert offer_challenge.duration == 100
       assert offer_challenge.participant_notified_of_inactivity == false
       assert offer_challenge.status == "active"
       assert offer_challenge.type == "PER_KM"
@@ -278,8 +270,11 @@ defmodule OmegaBravera.OffersTest do
     @invalid_attrs %{name: nil, value: nil}
 
     def offer_reward_fixture(attrs \\ %{}) do
+      offer = insert(:offer)
+
       {:ok, offer_reward} =
         attrs
+        |> Map.put(:offer_id, offer.id)
         |> Enum.into(@valid_attrs)
         |> Offers.create_offer_reward()
 
@@ -297,7 +292,8 @@ defmodule OmegaBravera.OffersTest do
     end
 
     test "create_offer_reward/1 with valid data creates a offer_reward" do
-      assert {:ok, %OfferReward{} = offer_reward} = Offers.create_offer_reward(@valid_attrs)
+      offer = insert(:offer)
+      assert {:ok, %OfferReward{} = offer_reward} = Offers.create_offer_reward(Map.put(@valid_attrs, :offer_id, offer.id))
       assert offer_reward.name == "some name"
       assert offer_reward.value == 42
     end

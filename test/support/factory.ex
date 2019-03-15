@@ -140,7 +140,6 @@ defmodule OmegaBravera.Factory do
       url: "http://test.com",
       offer_challenge_types: ["PER_KM"],
       distances: ["50"],
-      durations: ["100"],
       activities: ["Run"],
       user: build(:user)
     }
@@ -151,7 +150,6 @@ defmodule OmegaBravera.Factory do
       activity_type: "Run",
       default_currency: "HKD",
       distance_target: 42,
-      duration: 42,
       end_date: Timex.now(),
       has_team: false,
       last_activity_received: Timex.now("Asia/Hong_Kong"),

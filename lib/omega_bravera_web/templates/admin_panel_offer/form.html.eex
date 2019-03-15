@@ -132,12 +132,6 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :durations, class: "control-label" %>
-    <%= multiple_select f, :durations, @available_durations, class: "form-control" %>
-    <%= error_tag f, :durations %>
-  </div>
-
-  <div class="form-group">
     <%= label f, :offer_challenge_types, class: "control-label" %>
     <%= multiple_select f, :offer_challenge_types, @available_challenge_type_options, class: "form-control" %>
     <%= error_tag f, :offer_challenge_types %>

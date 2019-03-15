@@ -10,7 +10,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     field(:activity_type, :string)
     field(:default_currency, :string, default: "hkd")
     field(:distance_target, :integer, default: 100)
-    field(:duration, :integer)
     field(:milestones, :integer, default: 4)
     field(:end_date, :utc_datetime)
     field(:has_team, :boolean, default: false)
@@ -70,14 +69,12 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       default_currency: offer.currency,
       type: hd(offer.offer_challenge_types),
       activity_type: hd(offer.activities),
-      distance_target: hd(offer.distances),
-      duration: hd(offer.durations)
+      distance_target: hd(offer.distances)
     })
     |> validate_number(:distance_target, greater_than: 0)
     |> validate_inclusion(:distance_target, distance_options())
     |> validate_inclusion(:activity_type, activity_options())
     |> validate_inclusion(:default_currency, currency_options())
-    |> validate_inclusion(:duration, duration_options())
     |> validate_inclusion(:type, challenge_type_options())
     |> add_start_and_end_dates(offer)
     |> add_status(offer)
@@ -99,34 +96,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     changeset
     |> change(status: status)
   end
-
-  def update_end_date(%Ecto.Changeset{} = changeset, %__MODULE__{
-        end_date: end_date,
-        duration: old_duration
-      }) do
-    new_duration = get_change(changeset, :duration)
-
-    cond do
-      is_nil(new_duration) ->
-        changeset
-
-      new_duration == old_duration ->
-        changeset
-
-      new_duration > old_duration ->
-        change(changeset,
-          end_date: end_date_without_seconds(end_date, new_duration - old_duration)
-        )
-
-      new_duration < old_duration ->
-        change(changeset,
-          end_date: end_date_without_seconds(end_date, -(old_duration - new_duration))
-        )
-    end
-  end
-
-  defp end_date_without_seconds(%DateTime{} = start_date, new_duration),
-    do: Timex.shift(start_date, days: new_duration) |> DateTime.truncate(:second)
 
   def activity_completed_changeset(%__MODULE__{} = challenge, %{distance: distance}) do
     challenge
@@ -157,17 +126,10 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   end
 
   defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
-    add_start_and_end_dates(changeset, offer, get_field(changeset, :duration))
-  end
-
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %Offer{} = offer, duration)
-       when is_number(duration) do
     changeset
     |> change(start_date: DateTime.truncate(offer.start_date, :second))
     |> change(end_date: DateTime.truncate(offer.end_date, :second))
   end
-
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _, _), do: changeset
 
   defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do
     case Decimal.cmp(changeset.changes[:distance_covered], challenge.distance_target) do
