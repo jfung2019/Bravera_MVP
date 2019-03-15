@@ -5,6 +5,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
   alias OmegaBravera.{Offers.Offer, Accounts.User, Offers.OfferChallengeActivity}
 
+  @derive {Phoenix.Param, key: :slug}
   schema "offer_challenges" do
     field(:activity_type, :string)
     field(:default_currency, :string, default: "hkd")

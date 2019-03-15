@@ -426,4 +426,17 @@ defmodule OmegaBravera.Offers do
 
     Repo.all(query)
   end
+
+  def list_activities_added_by_admin() do
+    from(
+      activity in OfferChallengeActivity,
+      where: not is_nil(activity.admin_id),
+      left_join: challenge in assoc(activity, :offer_challenge),
+      left_join: offer in assoc(challenge, :offer),
+      left_join: user in assoc(activity, :user),
+      preload: [offer_challenge: {challenge, offer: offer}, user: user],
+      order_by: [desc: :id]
+    )
+    |> Repo.all()
+  end
 end

@@ -145,4 +145,22 @@ defmodule OmegaBravera.Factory do
       user: build(:user)
     }
   end
+
+  def offer_challenge_factory do
+    %OmegaBravera.Offers.OfferChallenge{
+      activity_type: "Run",
+      default_currency: "HKD",
+      distance_target: 42,
+      duration: 42,
+      end_date: Timex.now(),
+      has_team: false,
+      last_activity_received: Timex.now("Asia/Hong_Kong"),
+      participant_notified_of_inactivity: false,
+      slug: "some slug",
+      start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10),
+      status: "active",
+      type: "PER_KM",
+      offer: build(:offer)
+    }
+  end
 end
