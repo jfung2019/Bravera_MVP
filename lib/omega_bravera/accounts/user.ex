@@ -17,7 +17,8 @@ defmodule OmegaBravera.Accounts.User do
     :lastname,
     :additional_info,
     :email_verified,
-    :profile_picture
+    :profile_picture,
+    :vendor_id
   ]
 
   schema "users" do
@@ -28,6 +29,7 @@ defmodule OmegaBravera.Accounts.User do
     field(:lastname, :string)
     field(:additional_info, :map, default: %{})
     field(:profile_picture, :string, default: nil)
+    field(:vendor_id, :string, default: nil)
 
     # associations
     has_one(:credential, Credential)

@@ -326,4 +326,61 @@ defmodule OmegaBravera.OffersTest do
       assert %Ecto.Changeset{} = Offers.change_offer_reward(offer_reward)
     end
   end
+
+  # describe "offer_redeems" do
+  #   alias OmegaBravera.Offers.OfferRedeem
+
+  #   @valid_attrs %{}
+  #   @update_attrs %{}
+  #   @invalid_attrs %{}
+
+  #   def offer_redeems_fixture(attrs \\ %{}) do
+  #     {:ok, offer_redeems} =
+  #       attrs
+  #       |> Enum.into(@valid_attrs)
+  #       |> Offers.create_offer_redeems()
+
+  #     offer_redeems
+  #   end
+
+  #   test "list_offer_redeems/0 returns all offer_redeems" do
+  #     offer_redeems = offer_redeems_fixture()
+  #     assert Offers.list_offer_redeems() == [offer_redeems]
+  #   end
+
+  #   test "get_offer_redeems!/1 returns the offer_redeems with given id" do
+  #     offer_redeems = offer_redeems_fixture()
+  #     assert Offers.get_offer_redeems!(offer_redeems.id) == offer_redeems
+  #   end
+
+  #   test "create_offer_redeems/1 with valid data creates a offer_redeems" do
+  #     assert {:ok, %OfferRedeem{} = offer_redeems} = Offers.create_offer_redeems(@valid_attrs)
+  #   end
+
+  #   test "create_offer_redeems/1 with invalid data returns error changeset" do
+  #     assert {:error, %Ecto.Changeset{}} = Offers.create_offer_redeems(@invalid_attrs)
+  #   end
+
+  #   test "update_offer_redeems/2 with valid data updates the offer_redeems" do
+  #     offer_redeems = offer_redeems_fixture()
+  #     assert {:ok, %OfferRedeem{} = offer_redeems} = Offers.update_offer_redeems(offer_redeems, @update_attrs)
+  #   end
+
+  #   test "update_offer_redeems/2 with invalid data returns error changeset" do
+  #     offer_redeems = offer_redeems_fixture()
+  #     assert {:error, %Ecto.Changeset{}} = Offers.update_offer_redeems(offer_redeems, @invalid_attrs)
+  #     assert offer_redeems == Offers.get_offer_redeems!(offer_redeems.id)
+  #   end
+
+  #   test "delete_offer_redeems/1 deletes the offer_redeems" do
+  #     offer_redeems = offer_redeems_fixture()
+  #     assert {:ok, %OfferRedeem{}} = Offers.delete_offer_redeems(offer_redeems)
+  #     assert_raise Ecto.NoResultsError, fn -> Offers.get_offer_redeems!(offer_redeems.id) end
+  #   end
+
+  #   test "change_offer_redeems/1 returns a offer_redeems changeset" do
+  #     offer_redeems = offer_redeems_fixture()
+  #     assert %Ecto.Changeset{} = Offers.change_offer_redeems(offer_redeems)
+  #   end
+  # end
 end

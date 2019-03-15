@@ -3,7 +3,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.{Offers.Offer, Accounts.User, Offers.OfferChallengeActivity}
+  alias OmegaBravera.{Offers.Offer, Accounts.User, Offers.OfferChallengeActivity, Offers.OfferRedeem}
 
   @derive {Phoenix.Param, key: :slug}
   schema "offer_challenges" do
@@ -26,6 +26,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
     belongs_to(:user, User)
     belongs_to(:offer, Offer)
+    has_many(:offer_redeems, OfferRedeem)
 
     has_many(:offer_challenge_activities, OfferChallengeActivity, foreign_key: :offer_challenge_id)
 

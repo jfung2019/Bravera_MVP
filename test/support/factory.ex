@@ -150,7 +150,6 @@ defmodule OmegaBravera.Factory do
       activity_type: "Run",
       default_currency: "HKD",
       distance_target: 42,
-      end_date: Timex.now(),
       has_team: false,
       last_activity_received: Timex.now("Asia/Hong_Kong"),
       participant_notified_of_inactivity: false,

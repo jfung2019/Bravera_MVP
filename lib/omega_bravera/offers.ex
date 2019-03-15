@@ -6,7 +6,7 @@ defmodule OmegaBravera.Offers do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.{Offers.Offer, Offers.OfferChallengeActivity, Offers.OfferChallenge}
+  alias OmegaBravera.{Offers.Offer, Offers.OfferChallengeActivity, Offers.OfferChallenge, Accounts.User}
 
   @doc """
   Returns the list of offers.
@@ -534,5 +534,101 @@ defmodule OmegaBravera.Offers do
   """
   def change_offer_reward(%OfferReward{} = offer_reward) do
     OfferReward.changeset(offer_reward, %{})
+  end
+
+  alias OmegaBravera.Offers.OfferRedeem
+
+  @doc """
+  Returns the list of offer_redeems.
+
+  ## Examples
+
+      iex> list_offer_redeems()
+      [%OfferRedeem{}, ...]
+
+  """
+  def list_offer_redeems do
+    Repo.all(OfferRedeem)
+  end
+
+  @doc """
+  Gets a single offer_redeems.
+
+  Raises `Ecto.NoResultsError` if the Offer redeems does not exist.
+
+  ## Examples
+
+      iex> get_offer_redeems!(123)
+      %OfferRedeem{}
+
+      iex> get_offer_redeems!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_offer_redeems!(id), do: Repo.get!(OfferRedeem, id)
+
+  @doc """
+  Creates a offer_redeems.
+
+  ## Examples
+
+      iex> create_offer_redeems(%{field: value})
+      {:ok, %OfferRedeem{}}
+
+      iex> create_offer_redeems(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_offer_redeems(%OfferChallenge{} = offer_challenge, %User{} = vendor, attrs \\ %{}) do
+    %OfferRedeem{}
+    |> OfferRedeem.create_changeset(offer_challenge, vendor, attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a offer_redeems.
+
+  ## Examples
+
+      iex> update_offer_redeems(offer_redeems, %{field: new_value})
+      {:ok, %OfferRedeem{}}
+
+      iex> update_offer_redeems(offer_redeems, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_offer_redeems(%OfferRedeem{} = offer_redeems, attrs) do
+    offer_redeems
+    |> OfferRedeem.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a OfferRedeem.
+
+  ## Examples
+
+      iex> delete_offer_redeems(offer_redeems)
+      {:ok, %OfferRedeem{}}
+
+      iex> delete_offer_redeems(offer_redeems)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_offer_redeems(%OfferRedeem{} = offer_redeems) do
+    Repo.delete(offer_redeems)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking offer_redeems changes.
+
+  ## Examples
+
+      iex> change_offer_redeems(offer_redeems)
+      %Ecto.Changeset{source: %OfferRedeem{}}
+
+  """
+  def change_offer_redeems(%OfferRedeem{} = offer_redeem, attrs \\ %{}) do
+    OfferRedeem.changeset(offer_redeem, attrs)
   end
 end
