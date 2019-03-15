@@ -1,7 +1,7 @@
 <div class="card challenge-details">
   <div class="container border-bottom">
     <div class="m-3 text-justify challenge-desc">
-      <%= @challenge.offer.offer_challenge_desc %>
+      <%= raw @challenge.offer.offer_challenge_desc %>
     </div>
     <div id="challenge-status-container" class="<%= @challenge.status %>">
       <%= cond do %>

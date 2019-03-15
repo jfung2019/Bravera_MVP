@@ -27,7 +27,7 @@
       <div class="card">
         <div class="card-body">
           <p class="card-text"><%= raw offer.desc %></p>
-          <span class="small"> terms and conditions: Challenge only available in Hong Kong. Must be redeemed at selected</span>
+          <span class="small"><%= raw offer.toc %></span>
         </div>
         <div>
           <%= render(OmegaBraveraWeb.Offer.OfferView, "offer_stats.html", offer: offer, conn: @conn) %>

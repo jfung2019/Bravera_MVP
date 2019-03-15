@@ -82,7 +82,8 @@ defmodule OmegaBravera.Offers.Offer do
     :durations,
     :activities,
     :start_date,
-    :end_date
+    :end_date,
+    :toc
   ]
 
   @doc false
