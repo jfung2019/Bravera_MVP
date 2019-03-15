@@ -157,7 +157,8 @@ defmodule OmegaBravera.Factory do
       last_activity_received: Timex.now("Asia/Hong_Kong"),
       participant_notified_of_inactivity: false,
       slug: "some slug",
-      start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 10),
+      start_date: Timex.now(),
+      end_date: Timex.shift(Timex.now(), days: 5),
       status: "active",
       type: "PER_KM",
       offer: build(:offer)
