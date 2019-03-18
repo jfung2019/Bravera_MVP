@@ -10,6 +10,14 @@ defmodule OmegaBraveraWeb.DonationControllerTest do
   }
   @invalid_attrs %{amount: nil, currency: nil, milestone: nil, status: nil, str_src: nil}
 
+  describe "show donations" do
+    test "invalid challenge will show 404 instead of 500 error", %{conn: conn} do
+      conn = get(conn, "/invalid-ngo/invalid-challenge/donors")
+
+      assert html_response(conn, 404) =~ "You look lost, Mate."
+    end
+  end
+
   describe "create donation" do
     @tag :skip
     test "redirects to show when data is valid", %{conn: conn} do
