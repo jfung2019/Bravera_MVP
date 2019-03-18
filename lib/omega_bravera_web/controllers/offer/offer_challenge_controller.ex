@@ -8,9 +8,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   alias OmegaBravera.{
     Offers,
     Offers.OfferChallenge,
+    Offers.OfferVendor,
     Fundraisers.NgoOptions,
     Repo,
-    Accounts.User,
     Slugify
   }
 
@@ -84,7 +84,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     "offer_redeem" => offer_redeem_params
   }) do
     offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:offer_redeems, :user, offer: [:offer_rewards]])
-    vendor = Repo.get_by(User, vendor_id: offer_redeem_params["vendor_id"])
+    vendor = Repo.get_by(OfferVendor, vendor_id: offer_redeem_params["vendor_id"])
 
     # Make sure the vendor_id is in our database.
     if is_nil(vendor) do

@@ -2,7 +2,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.Offers.{Offer, OfferChallenge, OfferReward}
+  alias OmegaBravera.Offers.{Offer, OfferChallenge, OfferReward, OfferVendor}
   alias OmegaBravera.Accounts.User
 
 
@@ -11,7 +11,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     belongs_to(:offer_challenge, OfferChallenge)
     belongs_to(:offer, Offer)
     belongs_to(:user, User)
-    belongs_to(:vendor, User)
+    belongs_to(:vendor, OfferVendor)
 
     timestamps(type: :utc_datetime)
   end
@@ -26,7 +26,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> validate_required(@required_attributes)
   end
 
-  def create_changeset(%__MODULE__{} = offer_redeems, %OfferChallenge{offer: offer, user: user} = offer_challenge, %User{} = vendor, attrs \\ %{}) do
+  def create_changeset(%__MODULE__{} = offer_redeems, %OfferChallenge{offer: offer, user: user} = offer_challenge, %OfferVendor{} = vendor, attrs \\ %{}) do
     changeset =
       changeset(offer_redeems, attrs)
       |> put_change(:user_id, user.id)
@@ -38,6 +38,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     if changeset.valid? do
       changeset
     else
+      # Important to show the string vendor_id for the user in case of an error
       changeset
       |> put_change(:vendor_id, attrs["vendor_id"])
     end
