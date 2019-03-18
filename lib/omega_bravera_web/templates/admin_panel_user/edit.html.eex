@@ -1,9 +1,0 @@
-<div class="row">
-	<div class="col-6 offset-3">
-		<h2 class="mt-3 mb-4">Edit User</h2>
-
-		<%= render "form.html", Map.put(assigns, :action, admin_panel_user_path(@conn, :update, @user.id)) %>
-
-		<span><%= link "Back", to: admin_panel_user_path(@conn, :index) %></span>
-	</div>
-</div>
