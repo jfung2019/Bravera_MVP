@@ -27,7 +27,7 @@ defmodule OmegaBravera.OffersTest do
       slug: "some slug",
       toc: "some toc",
       url: "https://bravera.co",
-      user_id: nil,
+      vendor_id: nil,
       start_date: Timex.now(),
       end_date: Timex.now()
     }
@@ -79,18 +79,18 @@ defmodule OmegaBravera.OffersTest do
     }
 
     def offer_fixture(attrs \\ %{}) do
-      user = insert(:user)
+      vendor = insert(:vendor)
 
       {:ok, offer} =
         attrs
-        |> Enum.into(%{@valid_attrs | user_id: user.id})
+        |> Enum.into(%{@valid_attrs | vendor_id: vendor.id})
         |> Offers.create_offer()
 
       offer
     end
 
     def create_offer(attrs) do
-      Map.put(attrs, :user_id, insert(:user).id)
+      Map.put(attrs, :vendor_id, insert(:vendor).id)
       |> Offers.create_offer()
     end
 
@@ -208,7 +208,7 @@ defmodule OmegaBravera.OffersTest do
 
       attrs =
         attrs
-        |> Map.put(:user_id, offer.user_id)
+        |> Map.put(:user_id, insert(:user).id)
         |> Enum.into(@valid_attrs)
 
       {:ok, offer_challenge} =
@@ -229,12 +229,10 @@ defmodule OmegaBravera.OffersTest do
     end
 
     test "create_offer_challenge/1 with valid data creates a offer_challenge" do
-      offer = insert(:offer)
-
       assert {:ok, %OfferChallenge{} = offer_challenge} =
                Offers.create_offer_challenge(
-                 offer,
-                 Map.put(@valid_attrs, :user_id, offer.user_id)
+                insert(:offer),
+                 Map.put(@valid_attrs, :user_id, insert(:user).id)
                )
 
       assert offer_challenge.activity_type == "Run"

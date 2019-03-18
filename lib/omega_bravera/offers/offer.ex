@@ -3,7 +3,7 @@ defmodule OmegaBravera.Offers.Offer do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.{Accounts.User, Offers.OfferChallenge, Offers.OfferReward, Offers.OfferVendor}
+  alias OmegaBravera.{Offers.OfferChallenge, Offers.OfferReward, Offers.OfferVendor}
 
   @derive {Phoenix.Param, key: :slug}
   schema "offers" do
@@ -26,7 +26,6 @@ defmodule OmegaBravera.Offers.Offer do
     field(:slug, :string)
     field(:toc, :string)
     field(:url, :string)
-    field(:offer_vendor_id, :string)
 
     field(:active_offer_challenges, :integer, default: 0, virtual: true)
     field(:num_of_challenges, :decimal, default: 0, virtual: true)
@@ -37,7 +36,6 @@ defmodule OmegaBravera.Offers.Offer do
     field(:distances, {:array, :integer})
     field(:offer_challenge_types, {:array, :string})
 
-    belongs_to(:user, User)
     belongs_to(:vendor, OfferVendor)
     has_many(:offer_challenges, OfferChallenge)
     has_many(:offer_rewards, OfferReward)
@@ -68,22 +66,20 @@ defmodule OmegaBravera.Offers.Offer do
     :offer_challenge_types,
     :distances,
     :activities,
-    :user_id,
-    :offer_vendor_id
+    :vendor_id
   ]
   @required_attributes [
     :name,
     :slug,
     :url,
     :logo,
-    :user_id,
     :offer_challenge_types,
     :distances,
     :activities,
     :start_date,
     :end_date,
     :toc,
-    :offer_vendor_id
+    :vendor_id
   ]
 
   @doc false

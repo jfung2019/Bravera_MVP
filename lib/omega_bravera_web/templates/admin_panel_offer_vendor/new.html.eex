@@ -1,0 +1,8 @@
+<div class="container">
+
+    <h1>New Offer vendor</h1>
+
+    <%= render "form.html", Map.put(assigns, :action, admin_panel_offer_vendor_path(@conn, :create)) %>
+
+    <span><%= link "Back", to: admin_panel_offer_vendor_path(@conn, :index) %></span>
+</div>

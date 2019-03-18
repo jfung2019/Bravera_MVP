@@ -7,7 +7,7 @@ defmodule OmegaBravera.Offers.OfferVendor do
   schema "offer_vendors" do
     field :vendor_id, :string
 
-    has_many(:offers, Offer, foreign_key: :offer_vendor_id)
+    has_many(:offers, Offer, foreign_key: :vendor_id)
 
     timestamps(type: :utc_datetime)
   end

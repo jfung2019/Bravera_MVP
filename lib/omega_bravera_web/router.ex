@@ -101,6 +101,7 @@ defmodule OmegaBraveraWeb.Router do
       resources("/activities", AdminPanelActivityController, only: [:index, :new, :create])
       resources("/offer-activities", AdminPanelOfferChallengeActivityController, only: [:index, :new, :create])
       resources("/offer-rewards", AdminPanelOfferRewardController, only: [:index, :new, :create, :edit, :update])
+      resources("/offer-vendors", AdminPanelOfferVendorController, only: [:index, :new, :create, :edit, :update])
 
       get(
         "/activities/import_activity_from_strava",

@@ -19,8 +19,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
   def new(conn, _params) do
     users = Accounts.list_users()
+    vendors = Offers.list_offer_vendors()
     changeset = Offers.change_offer(%Offer{})
-    render(conn, "new.html", changeset: changeset, users: users)
+    render(conn, "new.html", changeset: changeset, users: users, vendors: vendors)
   end
 
   def create(conn, %{"offer" => offer_params}) do
@@ -38,18 +39,21 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         users = Accounts.list_users()
+        vendors = Offers.list_offer_vendors()
 
         conn
         |> assign_available_options(nil)
-        |> render("new.html", changeset: changeset, users: users)
+        |> render("new.html", changeset: changeset, users: users, vendors: vendors)
     end
   end
 
   def edit(conn, %{"slug" => slug}) do
     offer = Offers.get_offer_by_slug_with_hk_time(slug)
     users = Accounts.list_users()
+    vendors = Offers.list_offer_vendors()
     changeset = Offers.change_offer(offer)
-    render(conn, "edit.html", offer: offer, users: users, changeset: changeset)
+
+    render(conn, "edit.html", offer: offer, users: users, vendors: vendors, changeset: changeset)
   end
 
   def update(conn, %{"slug" => slug, "offer" => offer_params}) do
@@ -84,10 +88,11 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         users = Accounts.list_users()
+        vendors = Offers.list_offer_vendors()
 
         conn
         |> assign_available_options(nil)
-        |> render("edit.html", users: users, offer: offer, changeset: changeset)
+        |> render("edit.html", users: users, offer: offer, vendors: vendors, changeset: changeset)
     end
   end
 

@@ -1,0 +1,8 @@
+<h1>Show Offer vendor</h1>
+
+<ul>
+
+</ul>
+
+<span><%= link "Edit", to: admin_panel_offer_vendor_path(@conn, :edit, @offer_vendor) %></span>
+<span><%= link "Back", to: admin_panel_offer_vendor_path(@conn, :index) %></span>

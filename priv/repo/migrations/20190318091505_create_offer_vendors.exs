@@ -11,7 +11,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferVendors do
     create unique_index(:offer_vendors, [:vendor_id])
 
     alter table("offers") do
-      add :vendor_id, :string
+      add :vendor_id, :id
     end
   end
 end

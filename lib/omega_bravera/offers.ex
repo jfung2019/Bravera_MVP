@@ -307,9 +307,7 @@ defmodule OmegaBravera.Offers do
   def list_offers_preload() do
     from(
       o in Offer,
-      join: user in assoc(o, :user),
-      join: strava in assoc(user, :strava),
-      preload: [user: {user, strava: strava}],
+      preload: [:vendor],
       order_by: o.inserted_at
     )
     |> Repo.all()

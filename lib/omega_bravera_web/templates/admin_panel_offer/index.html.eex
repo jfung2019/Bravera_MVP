@@ -7,22 +7,15 @@
       <thead>
         <tr>
           <th>offer Name</th>
-          <th>User ID</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Currency</th>
+          <th>Vendor ID</th>
+
         </tr>
       </thead>
       <tbody>
     <%= for offer <- @offers do %>
         <tr>
           <td><%= offer.name %></td>
-          <td><%= offer.user.id %></td>
-          <td><%= offer.user.firstname %></td>
-          <td><%= offer.user.lastname %></td>
-          <td><%= offer.user.email %></td>
-          <td><%= offer.currency %></td>
+          <td><%= offer.vendor.vendor_id %></td>
           <td class="text-right">
             <span><%= link "Show", to: admin_panel_offer_path(@conn, :show, offer), class: "btn btn-default btn-xs"%> </span>
           </td>
