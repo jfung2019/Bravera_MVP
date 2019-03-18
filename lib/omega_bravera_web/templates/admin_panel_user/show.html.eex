@@ -12,6 +12,10 @@
 				<strong>Strava URL: </strong>
 				<%= link("Visit", to: "https://www.strava.com/athletes/#{@user.strava.athlete_id}", target: "_blank") %>
 			</li>
+			<li>
+		    <strong>Vendor ID:</strong>
+				<%= @user.vendor_id %>
+			</li>
 
 		</ul>
 
