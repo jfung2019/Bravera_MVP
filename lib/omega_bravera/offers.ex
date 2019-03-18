@@ -631,4 +631,100 @@ defmodule OmegaBravera.Offers do
   def change_offer_redeems(%OfferRedeem{} = offer_redeem, attrs \\ %{}) do
     OfferRedeem.changeset(offer_redeem, attrs)
   end
+
+  alias OmegaBravera.Offers.OfferVendor
+
+  @doc """
+  Returns the list of offer_vendors.
+
+  ## Examples
+
+      iex> list_offer_vendors()
+      [%OfferVendor{}, ...]
+
+  """
+  def list_offer_vendors do
+    Repo.all(OfferVendor)
+  end
+
+  @doc """
+  Gets a single offer_vendor.
+
+  Raises `Ecto.NoResultsError` if the Offer vendor does not exist.
+
+  ## Examples
+
+      iex> get_offer_vendor!(123)
+      %OfferVendor{}
+
+      iex> get_offer_vendor!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_offer_vendor!(id), do: Repo.get!(OfferVendor, id)
+
+  @doc """
+  Creates a offer_vendor.
+
+  ## Examples
+
+      iex> create_offer_vendor(%{field: value})
+      {:ok, %OfferVendor{}}
+
+      iex> create_offer_vendor(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_offer_vendor(attrs \\ %{}) do
+    %OfferVendor{}
+    |> OfferVendor.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a offer_vendor.
+
+  ## Examples
+
+      iex> update_offer_vendor(offer_vendor, %{field: new_value})
+      {:ok, %OfferVendor{}}
+
+      iex> update_offer_vendor(offer_vendor, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_offer_vendor(%OfferVendor{} = offer_vendor, attrs) do
+    offer_vendor
+    |> OfferVendor.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a OfferVendor.
+
+  ## Examples
+
+      iex> delete_offer_vendor(offer_vendor)
+      {:ok, %OfferVendor{}}
+
+      iex> delete_offer_vendor(offer_vendor)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_offer_vendor(%OfferVendor{} = offer_vendor) do
+    Repo.delete(offer_vendor)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking offer_vendor changes.
+
+  ## Examples
+
+      iex> change_offer_vendor(offer_vendor)
+      %Ecto.Changeset{source: %OfferVendor{}}
+
+  """
+  def change_offer_vendor(%OfferVendor{} = offer_vendor) do
+    OfferVendor.changeset(offer_vendor, %{})
+  end
 end

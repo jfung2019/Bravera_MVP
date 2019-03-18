@@ -383,4 +383,63 @@ defmodule OmegaBravera.OffersTest do
   #     assert %Ecto.Changeset{} = Offers.change_offer_redeems(offer_redeems)
   #   end
   # end
+
+  describe "offer_vendors" do
+    alias OmegaBravera.Offers.OfferVendor
+
+    @valid_attrs %{vendor_id: "some vendor_id"}
+    @update_attrs %{vendor_id: "some updated vendor_id"}
+    @invalid_attrs %{vendor_id: nil}
+
+    def offer_vendor_fixture(attrs \\ %{}) do
+      {:ok, offer_vendor} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Offers.create_offer_vendor()
+
+      offer_vendor
+    end
+
+    test "list_offer_vendors/0 returns all offer_vendors" do
+      offer_vendor = offer_vendor_fixture()
+      assert Offers.list_offer_vendors() == [offer_vendor]
+    end
+
+    test "get_offer_vendor!/1 returns the offer_vendor with given id" do
+      offer_vendor = offer_vendor_fixture()
+      assert Offers.get_offer_vendor!(offer_vendor.id) == offer_vendor
+    end
+
+    test "create_offer_vendor/1 with valid data creates a offer_vendor" do
+      assert {:ok, %OfferVendor{} = offer_vendor} = Offers.create_offer_vendor(@valid_attrs)
+      assert offer_vendor.vendor_id == "some vendor_id"
+    end
+
+    test "create_offer_vendor/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Offers.create_offer_vendor(@invalid_attrs)
+    end
+
+    test "update_offer_vendor/2 with valid data updates the offer_vendor" do
+      offer_vendor = offer_vendor_fixture()
+      assert {:ok, %OfferVendor{} = offer_vendor} = Offers.update_offer_vendor(offer_vendor, @update_attrs)
+      assert offer_vendor.vendor_id == "some updated vendor_id"
+    end
+
+    test "update_offer_vendor/2 with invalid data returns error changeset" do
+      offer_vendor = offer_vendor_fixture()
+      assert {:error, %Ecto.Changeset{}} = Offers.update_offer_vendor(offer_vendor, @invalid_attrs)
+      assert offer_vendor == Offers.get_offer_vendor!(offer_vendor.id)
+    end
+
+    test "delete_offer_vendor/1 deletes the offer_vendor" do
+      offer_vendor = offer_vendor_fixture()
+      assert {:ok, %OfferVendor{}} = Offers.delete_offer_vendor(offer_vendor)
+      assert_raise Ecto.NoResultsError, fn -> Offers.get_offer_vendor!(offer_vendor.id) end
+    end
+
+    test "change_offer_vendor/1 returns a offer_vendor changeset" do
+      offer_vendor = offer_vendor_fixture()
+      assert %Ecto.Changeset{} = Offers.change_offer_vendor(offer_vendor)
+    end
+  end
 end

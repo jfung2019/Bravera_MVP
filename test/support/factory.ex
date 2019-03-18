@@ -141,7 +141,8 @@ defmodule OmegaBravera.Factory do
       offer_challenge_types: ["PER_KM"],
       distances: ["50"],
       activities: ["Run"],
-      user: build(:user)
+      user: build(:user),
+      vendor: build(:vendor)
     }
   end
 
@@ -159,6 +160,12 @@ defmodule OmegaBravera.Factory do
       status: "active",
       type: "PER_KM",
       offer: build(:offer)
+    }
+  end
+
+  def vendor_factory do
+    %OmegaBravera.Offers.OfferVendor{
+      vendor_id: Enum.random(10_000_000..20_000_000)
     }
   end
 end
