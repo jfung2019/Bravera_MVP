@@ -5,8 +5,8 @@ defmodule OmegaBravera.Offers do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
-
-  alias OmegaBravera.{Offers.Offer, Offers.OfferChallengeActivity, Offers.OfferChallenge, Accounts.User}
+  alias OmegaBravera.Offers.{Offer, OfferChallenge, OfferChallengeActivity, OfferVendor}
+  alias OmegaBravera.Accounts.User
 
   @doc """
   Returns the list of offers.
@@ -577,7 +577,7 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_offer_redeems(%OfferChallenge{} = offer_challenge, %User{} = vendor, attrs \\ %{}) do
+  def create_offer_redeems(%OfferChallenge{} = offer_challenge, %OfferVendor{} = vendor, attrs \\ %{}) do
     %OfferRedeem{}
     |> OfferRedeem.create_changeset(offer_challenge, vendor, attrs)
     |> Repo.insert()
@@ -629,8 +629,6 @@ defmodule OmegaBravera.Offers do
   def change_offer_redeems(%OfferRedeem{} = offer_redeem, attrs \\ %{}) do
     OfferRedeem.changeset(offer_redeem, attrs)
   end
-
-  alias OmegaBravera.Offers.OfferVendor
 
   @doc """
   Returns the list of offer_vendors.
