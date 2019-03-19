@@ -10,16 +10,24 @@ defmodule OmegaBraveraWeb.DonationController do
     challenge =
       Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [], team: [:user])
 
-    donors =
-      case challenge.type do
-        "PER_KM" ->
-          Accounts.latest_km_donors(challenge)
+    case challenge do
+      %Challenges.NGOChal{} = challenge ->
+        donors =
+          case challenge.type do
+            "PER_KM" ->
+              Accounts.latest_km_donors(challenge)
 
-        "PER_MILESTONE" ->
-          Accounts.latest_donors(challenge)
-      end
+            "PER_MILESTONE" ->
+              Accounts.latest_donors(challenge)
+          end
 
-    render(conn, "index.html", %{challenge: challenge, donors: donors})
+        render(conn, "index.html", %{challenge: challenge, donors: donors})
+      _ ->
+        conn
+        |> put_view(OmegaBraveraWeb.PageView)
+        |> put_status(:not_found)
+        |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+    end
   end
 
   def create(conn, %{
