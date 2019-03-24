@@ -246,10 +246,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
 
   def hide_donor_pays_fees?(%Offer{} = ngo), do: ngo.hide_donor_pays_fees
 
-  def verified_email?(%User{email: nil}), do: false
-  def verified_email?(%User{email_verified: false}), do: false
-  def verified_email?(%User{}), do: true
-
   def render_status("expired"), do: "Finished"
 
   def render_status(status), do: String.capitalize(status)
