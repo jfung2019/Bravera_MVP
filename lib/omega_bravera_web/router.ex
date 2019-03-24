@@ -48,10 +48,15 @@ defmodule OmegaBraveraWeb.Router do
     get("/password/edit", ChangePasswordController, :edit)
     post("/password/update", ChangePasswordController, :update)
     put("/password/update", ChangePasswordController, :update)
-    get("/account", UserController, :show)
-    get("/account/edit", UserController, :edit)
-    put("/account", UserController, :update)
-    post("/account", UserController, :update)
+
+    scope "/" do
+      pipe_through :user_authenticated
+      get("/account", UserController, :show)
+      get("/account/edit", UserController, :edit)
+      put("/account", UserController, :update)
+      post("/account", UserController, :update)
+    end
+
     get("/account/activate/:email_activation_token", UserController, :activate_email)
   end
 
