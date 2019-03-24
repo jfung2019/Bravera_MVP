@@ -7,11 +7,13 @@ defmodule OmegaBraveraWeb.UserEmailVerified do
     case OmegaBravera.Guardian.Plug.current_resource(conn) do
       %User{email: email} when is_nil(email) ->
         conn
+        |> Phoenix.Controller.put_view(OmegaBraveraWeb.SharedView)
         |> Phoenix.Controller.render("verify_email.html", email: email)
         |> Plug.Conn.halt()
 
       %User{email: email, email_verified: false} when not is_nil(email) ->
         conn
+        |> Phoenix.Controller.put_view(OmegaBraveraWeb.SharedView)
         |> Phoenix.Controller.render("verify_email.html", email: email)
         |> Plug.Conn.halt()
 
