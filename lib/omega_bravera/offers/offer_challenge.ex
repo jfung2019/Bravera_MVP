@@ -3,7 +3,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.{Offers.Offer, Accounts.User, Offers.OfferChallengeActivity, Offers.OfferRedeem}
+  alias OmegaBravera.{Offers.Offer, Accounts.User, Offers.OfferChallengeActivity, Offers.OfferRedeem, Repo}
 
   @derive {Phoenix.Param, key: :slug}
   schema "offer_challenges" do
@@ -140,9 +140,11 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     end
   end
 
-  def validate_user_has_no_active_offer_challenges(%Ecto.Changeset{} = changeset, %User{offer_challenges: offer_challenges}) do
+  def validate_user_has_no_active_offer_challenges(%Ecto.Changeset{} = changeset, %User{} = user) do
+    user = Repo.preload(user, :offer_challenges)
+
     result =
-      Enum.map(offer_challenges, & &1.status == "active")
+      Enum.map(user.offer_challenges, & &1.status == "active")
       |> Enum.member?(true)
 
     if result do

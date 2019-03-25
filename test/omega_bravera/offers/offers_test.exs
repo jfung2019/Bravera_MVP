@@ -213,7 +213,7 @@ defmodule OmegaBravera.OffersTest do
 
       {:ok, offer_challenge} =
         offer
-        |> Offers.create_offer_challenge(attrs)
+        |> Offers.create_offer_challenge(insert(:user), attrs)
 
       offer_challenge
     end
@@ -232,7 +232,8 @@ defmodule OmegaBravera.OffersTest do
       assert {:ok, %OfferChallenge{} = offer_challenge} =
                Offers.create_offer_challenge(
                 insert(:offer),
-                 Map.put(@valid_attrs, :user_id, insert(:user).id)
+                insert(:user),
+                Map.put(@valid_attrs, :user_id, insert(:user).id)
                )
 
       assert offer_challenge.activity_type == "Run"
@@ -245,7 +246,7 @@ defmodule OmegaBravera.OffersTest do
 
     test "create_offer_challenge/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
-               Offers.create_offer_challenge(insert(:offer), @invalid_attrs)
+               Offers.create_offer_challenge(insert(:offer), insert(:user), @invalid_attrs)
     end
 
     test "delete_offer_challenge/1 deletes the offer_challenge" do
