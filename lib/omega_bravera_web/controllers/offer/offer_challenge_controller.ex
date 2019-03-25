@@ -118,7 +118,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   end
 
   def create(conn, %{"offer_slug" => offer_slug}) do
-    current_user = Guardian.Plug.current_resource(conn)
+    current_user =
+      Guardian.Plug.current_resource(conn)
+      |> Repo.preload(:offer_challenges)
     offer = Offers.get_offer_by_slug(offer_slug)
     sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
@@ -127,7 +129,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       "slug" => sluggified_username
     }
 
-    case Offers.create_offer_challenge(offer, attrs) do
+    case Offers.create_offer_challenge(offer, current_user, attrs) do
       {:ok, offer_challenge} ->
         offer_challenge_path =
           offer_offer_challenge_path(conn, :show, offer.slug, sluggified_username)
