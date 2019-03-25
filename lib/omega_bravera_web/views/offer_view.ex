@@ -13,12 +13,12 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
 
   def user_full_name(%User{} = user), do: User.full_name(user)
 
-  def user_joined_offer_before?(%Offer{id: id}, %User{offer_challenges: offer_challenges}) do
-    Enum.map(offer_challenges, & &1.offer_id)
-    |> Enum.member?(id)
+  def has_active_offer_challenge?(%Offer{id: id}, %User{offer_challenges: offer_challenges}) do
+    Enum.map(offer_challenges, & &1.offer_id == id and &1.status == "active")
+    |> Enum.member?(true)
   end
 
-  def user_joined_offer_before?(_, nil), do: false
+  def has_active_offer_challenge?(_, nil), do: false
 
   def user_challenge_slug(%Offer{id: id}, %User{offer_challenges: offer_challenges}) do
     Enum.find(offer_challenges, &(&1.offer_id == id))

@@ -62,7 +62,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> unique_constraint(:slug)
   end
 
-  def create_changeset(offer_challenge, offer, attrs) do
+  def create_changeset(offer_challenge, offer, user, attrs) do
     offer_challenge
     |> changeset(attrs)
     |> change(%{
@@ -82,6 +82,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> put_change(:redeem_token, gen_token())
     |> add_last_activity_received(offer)
     |> validate_required([:start_date, :end_date])
+    |> validate_user_has_no_active_offer_challenges(user)
   end
 
   defp add_status(%Ecto.Changeset{} = changeset, %Offer{
@@ -136,6 +137,19 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     case Decimal.cmp(changeset.changes[:distance_covered], challenge.distance_target) do
       :lt -> changeset
       _ -> change(changeset, status: "complete")
+    end
+  end
+
+  def validate_user_has_no_active_offer_challenges(%Ecto.Changeset{} = changeset, %User{offer_challenges: offer_challenges}) do
+    result =
+      Enum.map(offer_challenges, & &1.status == "active")
+      |> Enum.member?(true)
+
+    if result do
+      changeset
+      |> add_error(:offer_id, "Already participating in the challenge.")
+    else
+      changeset
     end
   end
 

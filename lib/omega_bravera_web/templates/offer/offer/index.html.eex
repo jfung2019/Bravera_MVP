@@ -36,7 +36,7 @@
           <div class="text-center">
             <%= if logged_in?(@conn) do %>
 
-              <%= if !user_joined_offer_before?(offer, @current_user) do %>
+              <%= if !has_active_offer_challenge?(offer, @current_user) do %>
                 <%= form_for @offer_challenge_changeset, offer_offer_challenge_path(@conn, :create, offer.slug), fn _f -> %>
                     <%= submit "Join the Challenge", class: "btn btn-green sign-up" %>
                   <% end %>
