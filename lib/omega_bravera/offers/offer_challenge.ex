@@ -141,13 +141,10 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   end
 
   def validate_user_has_no_active_offer_challenges(%Ecto.Changeset{} = changeset, %User{} = user) do
+    offer_id = get_field(changeset, :offer_id)
     user = Repo.preload(user, :offer_challenges)
 
-    result =
-      Enum.map(user.offer_challenges, & &1.status == "active")
-      |> Enum.member?(true)
-
-    if result do
+    if Enum.find(user.offer_challenges, & &1.offer_id == offer_id && &1.status == "active") do
       changeset
       |> add_error(:offer_id, "Already participating in the challenge.")
     else
