@@ -3,6 +3,8 @@ defmodule OmegaBraveraWeb.PageController do
 
   alias OmegaBravera.Accounts.{AdminUser, User}
 
+  plug OmegaBraveraWeb.AddDriftApp when action in [:index]
+
   def not_found(conn, _params) do
     conn
     |> put_status(:not_found)
