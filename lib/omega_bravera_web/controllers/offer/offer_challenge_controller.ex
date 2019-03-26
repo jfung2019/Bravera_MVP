@@ -28,19 +28,31 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         "redeem_token" => redeem_token,
         "redeem" => _redeem
       }) do
-    offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:offer_redeems, :user, offer: [:offer_rewards]])
+    offer_challenge =
+      Offers.get_offer_chal_by_slugs(offer_slug, slug, [
+        :offer_redeems,
+        :user,
+        offer: [:offer_rewards]
+      ])
+
     changeset = Offers.change_offer_redeems(%Offers.OfferRedeem{})
 
     cond do
       !Enum.empty?(offer_challenge.offer_redeems) ->
-        render(conn, "previously_redeemed.html", offer_challenge: offer_challenge, layout: {OmegaBraveraWeb.LayoutView, "app.html"})
+        render(conn, "previously_redeemed.html",
+          offer_challenge: offer_challenge,
+          layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+        )
 
       redeem_token == offer_challenge.redeem_token ->
-        render(conn, "new_redeem.html", offer_challenge: offer_challenge, changeset: changeset, layout: {OmegaBraveraWeb.LayoutView, "app.html"})
+        render(conn, "new_redeem.html",
+          offer_challenge: offer_challenge,
+          changeset: changeset,
+          layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+        )
 
-      redeem_token != offer_challenge.redeem_token ->
+      true ->
         render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
-
     end
   end
 
@@ -79,29 +91,51 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   end
 
   def save_redeem(conn, %{
-    "offer_challenge_slug" => slug,
-    "offer_slug" => offer_slug,
-    "redeem_token" => redeem_token,
-    "offer_redeem" => offer_redeem_params
-  }) do
-    offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:offer_redeems, :user, offer: [:offer_rewards]])
+        "offer_challenge_slug" => slug,
+        "offer_slug" => offer_slug,
+        "redeem_token" => redeem_token,
+        "offer_redeem" => offer_redeem_params
+      }) do
+    offer_challenge =
+      Offers.get_offer_chal_by_slugs(offer_slug, slug, [
+        :offer_redeems,
+        :user,
+        offer: [:offer_rewards]
+      ])
+
     vendor = Repo.get_by(OfferVendor, vendor_id: offer_redeem_params["vendor_id"])
 
     # Make sure the vendor_id is in our database.
     if is_nil(vendor) do
       conn
       |> put_flash(:error, "Your Vendor ID seems to be incorrect.")
-      |> redirect(to: offer_offer_challenge_offer_challenge_path(conn, :qr_code, offer_slug, slug, redeem_token, %{"redeem" => "true"}))
+      |> redirect(
+        to:
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :qr_code,
+            offer_slug,
+            slug,
+            redeem_token,
+            %{"redeem" => "true"}
+          )
+      )
     end
 
-    case Offers.create_offer_redeems(offer_challenge, vendor, %{"offer_reward_id" => offer_redeem_params["offer_reward_id"] }) do
+    case Offers.create_offer_redeems(offer_challenge, vendor, %{
+           "offer_reward_id" => offer_redeem_params["offer_reward_id"]
+         }) do
       {:ok, _offer_redeem} ->
         conn
         |> render("redeem_sucessful.html", layout: {OmegaBraveraWeb.LayoutView, "app.html"})
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> render("new_redeem.html", offer_challenge: offer_challenge, changeset: changeset, layout: {OmegaBraveraWeb.LayoutView, "app.html"})
+        |> render("new_redeem.html",
+          offer_challenge: offer_challenge,
+          changeset: changeset,
+          layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+        )
     end
   end
 
@@ -121,6 +155,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     current_user =
       Guardian.Plug.current_resource(conn)
       |> Repo.preload(:offer_challenges)
+
     offer = Offers.get_offer_by_slug(offer_slug)
     sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 

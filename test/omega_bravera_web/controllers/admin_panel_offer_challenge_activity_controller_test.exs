@@ -90,15 +90,15 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
           admin_panel_offer_challenge_activity_path(conn, :create),
           offer_challenge_activity: %{
             @activity_create_attrs
-          | "type" => challenge.activity_type,
-            "start_date" => %{
-              # Must be in the furture so that ActivityIngestion doesn't refuse it
-              "hour" => Integer.to_string(Timex.now("Asia/Hong_Kong").hour),
-              "minute" => "00",
-              "year" => Integer.to_string(Timex.now("Asia/Hong_Kong").year - 2),
-              "month" => Integer.to_string(Timex.now("Asia/Hong_Kong").month),
-              "day" => Integer.to_string(Timex.now("Asia/Hong_Kong").day)
-            }
+            | "type" => challenge.activity_type,
+              "start_date" => %{
+                # Must be in the furture so that ActivityIngestion doesn't refuse it
+                "hour" => Integer.to_string(Timex.now("Asia/Hong_Kong").hour),
+                "minute" => "00",
+                "year" => Integer.to_string(Timex.now("Asia/Hong_Kong").year - 2),
+                "month" => Integer.to_string(Timex.now("Asia/Hong_Kong").month),
+                "day" => Integer.to_string(Timex.now("Asia/Hong_Kong").day)
+              }
           },
           challenge_id: challenge.id
         )

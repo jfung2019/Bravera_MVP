@@ -5,8 +5,8 @@ defmodule OmegaBravera.Offers.OfferReward do
   alias OmegaBravera.Offers.Offer
 
   schema "offer_rewards" do
-    field :name, :string
-    field :value, :integer
+    field(:name, :string)
+    field(:value, :integer)
 
     belongs_to(:offer, Offer)
 

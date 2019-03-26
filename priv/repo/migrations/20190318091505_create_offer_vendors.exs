@@ -3,15 +3,15 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferVendors do
 
   def change do
     create table(:offer_vendors) do
-      add :vendor_id, :string
+      add(:vendor_id, :string)
 
       timestamps(type: :timestamptz)
     end
 
-    create unique_index(:offer_vendors, [:vendor_id])
+    create(unique_index(:offer_vendors, [:vendor_id]))
 
     alter table("offers") do
-      add :vendor_id, :id
+      add(:vendor_id, :id)
     end
   end
 end
