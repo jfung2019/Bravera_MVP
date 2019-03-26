@@ -15,7 +15,7 @@
     <title>Bravera</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
-    <%= if Map.has_key?(@conn.assigns, :add_drift?) and @conn.assigns.add_drift? do %>
+    <%= if assigns[:drift_id] do %>
 
       <!-- Start of Async Drift Code -->
         <script>
@@ -42,7 +42,7 @@
           }
         }();
         drift.SNIPPET_VERSION = '0.3.1';
-        drift.load('b94ecn7n3byw');
+        drift.load('<%= assigns[:drift_id] %>');
         </script>
       <!-- End of Async Drift Code -->
 
