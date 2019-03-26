@@ -11,44 +11,43 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
     render(conn, "index.html", activities: activities)
   end
 
-
-#  def get_challenge_dates(conn, %{"challenge_id" => challenge_id}) do
-#    # Returns JSON start and end dates
-#    challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
-#    athlete = challenge.user |> Repo.preload(:strava)
-#
-#    data = %{
-#      start_date: challenge.start_date,
-#      end_date: Timex.now(),
-#      athlete_token: athlete.strava.token
-#    }
-#
-#    json(conn, data)
-#  end
-#
-#  def create_imported_strava_activity(conn, %{
-#    "strava_activiy_id" => strava_activity_id,
-#    "challenge_id" => challenge_id
-#  }) do
-#    challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
-#    user = challenge.user |> Repo.preload(:strava)
-#
-#    activity =
-#      Strava.Activity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
-#
-#    case ActivitiesIngestion.process_challenge(challenge, activity, user, true) do
-#      {:ok, :challenge_updated} ->
-#        conn
-#        |> put_flash(:info, "Activity imported successfully.")
-#        |> redirect(to: admin_panel_activity_path(conn, :index))
-#
-#      {:error, :activity_not_processed} ->
-#        conn
-#        |> put_flash(:error, "Activity could not be imported. Please check the logs.")
-#        |> redirect(to: admin_panel_activity_path(conn, :index))
-#    end
-#  end
-#
+  #  def get_challenge_dates(conn, %{"challenge_id" => challenge_id}) do
+  #    # Returns JSON start and end dates
+  #    challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
+  #    athlete = challenge.user |> Repo.preload(:strava)
+  #
+  #    data = %{
+  #      start_date: challenge.start_date,
+  #      end_date: Timex.now(),
+  #      athlete_token: athlete.strava.token
+  #    }
+  #
+  #    json(conn, data)
+  #  end
+  #
+  #  def create_imported_strava_activity(conn, %{
+  #    "strava_activiy_id" => strava_activity_id,
+  #    "challenge_id" => challenge_id
+  #  }) do
+  #    challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
+  #    user = challenge.user |> Repo.preload(:strava)
+  #
+  #    activity =
+  #      Strava.Activity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
+  #
+  #    case ActivitiesIngestion.process_challenge(challenge, activity, user, true) do
+  #      {:ok, :challenge_updated} ->
+  #        conn
+  #        |> put_flash(:info, "Activity imported successfully.")
+  #        |> redirect(to: admin_panel_activity_path(conn, :index))
+  #
+  #      {:error, :activity_not_processed} ->
+  #        conn
+  #        |> put_flash(:error, "Activity could not be imported. Please check the logs.")
+  #        |> redirect(to: admin_panel_activity_path(conn, :index))
+  #    end
+  #  end
+  #
   def new(conn, _) do
     current_admin_user = Guardian.Plug.current_resource(conn)
 
@@ -65,7 +64,10 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
     render(conn, "new.html", changeset: changeset, challenges: challenges)
   end
 
-  def create(conn, %{"offer_challenge_activity" => activity_params, "challenge_id" => challenge_id}) do
+  def create(conn, %{
+        "offer_challenge_activity" => activity_params,
+        "challenge_id" => challenge_id
+      }) do
     current_admin_user = Guardian.Plug.current_resource(conn)
     challenge = Offers.get_offer_challenge!(challenge_id) |> Repo.preload(:user)
     activity = create_strava_activity(activity_params, current_admin_user, challenge.user)
@@ -126,12 +128,12 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
   end
 
   defp to_utc(%{
-    "day" => day,
-    "hour" => hour,
-    "minute" => minute,
-    "month" => month,
-    "year" => year
-  }) do
+         "day" => day,
+         "hour" => hour,
+         "minute" => minute,
+         "month" => month,
+         "year" => year
+       }) do
     {:ok, datetime} =
       NaiveDateTime.new(
         String.to_integer(year),
@@ -167,10 +169,10 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
   end
 
   defp from_time_to_seconds(time_map),
-       do:
-         from_string_to_integer(time_map["hour"]) * 3600 +
-           from_string_to_integer(time_map["minute"]) * 60 +
-           from_string_to_integer(time_map["second"])
+    do:
+      from_string_to_integer(time_map["hour"]) * 3600 +
+        from_string_to_integer(time_map["minute"]) * 60 +
+        from_string_to_integer(time_map["second"])
 
   defp from_seconds_to_time_map(seconds) do
     {hour, minute} = Decimal.div_rem(Decimal.div(seconds, Decimal.new(60)), Decimal.new(60))

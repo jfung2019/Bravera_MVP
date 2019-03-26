@@ -16,7 +16,9 @@ defmodule OmegaBraveraWeb.UserControllerTest do
 
     with {:ok, user} <- Accounts.create_user(attrs),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(user, %{}),
-         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+         do:
+           {:ok,
+            conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), user: user}
   end
 
   describe "new user" do
@@ -44,6 +46,21 @@ defmodule OmegaBraveraWeb.UserControllerTest do
 
       assert html_response(conn, 200) =~
                "Oops, something went wrong! Please check the errors below."
+    end
+  end
+
+  describe "email activation" do
+    test "user activates email token, redirects when session has after_email_verify in session",
+         %{conn: conn, user: user} do
+      conn =
+        conn
+        |> bypass_through(OmegaBraveraWeb.Router, :browser)
+        |> get("/")
+        |> Plug.Conn.put_session(:after_email_verify, "/test")
+        |> send_resp(:ok, "")
+        |> get(user_path(conn, :activate_email, user.email_activation_token))
+
+      assert redirected_to(conn) == "/test"
     end
   end
 end

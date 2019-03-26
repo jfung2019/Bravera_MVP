@@ -3,7 +3,13 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.{Offers.Offer, Accounts.User, Offers.OfferChallengeActivity, Offers.OfferRedeem, Repo}
+  alias OmegaBravera.{
+    Offers.Offer,
+    Accounts.User,
+    Offers.OfferChallengeActivity,
+    Offers.OfferRedeem,
+    Repo
+  }
 
   @derive {Phoenix.Param, key: :slug}
   schema "offer_challenges" do
@@ -144,7 +150,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     offer_id = get_field(changeset, :offer_id)
     user = Repo.preload(user, :offer_challenges)
 
-    if Enum.find(user.offer_challenges, & &1.offer_id == offer_id && &1.status == "active") do
+    if Enum.find(user.offer_challenges, &(&1.offer_id == offer_id && &1.status == "active")) do
       changeset
       |> add_error(:offer_id, "Already participating in the challenge.")
     else

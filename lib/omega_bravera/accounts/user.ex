@@ -17,7 +17,7 @@ defmodule OmegaBravera.Accounts.User do
     :lastname,
     :additional_info,
     :email_verified,
-    :profile_picture,
+    :profile_picture
   ]
 
   schema "users" do
