@@ -304,10 +304,10 @@ defmodule OmegaBravera.Offers do
     Repo.all(OfferChallenge)
   end
 
-  def list_offers_preload() do
+  def list_offers_preload(preloads \\ [:vendor]) do
     from(
       o in Offer,
-      preload: [:vendor],
+      preload: ^preloads,
       order_by: o.inserted_at
     )
     |> Repo.all()

@@ -6,8 +6,10 @@
     <table class="table">
       <thead>
         <tr>
-          <th>offer Name</th>
+          <th>Name</th>
           <th>Vendor ID</th>
+          <th>Redeems</th>
+          <th>Total Value</th>
 
         </tr>
       </thead>
@@ -16,6 +18,8 @@
         <tr>
           <td><%= offer.name %></td>
           <td><%= offer.vendor.vendor_id %></td>
+          <td><%= length(offer.offer_redeems) %></td>
+          <td><%= get_total_redeems_value(offer.offer_redeems) %></td>
           <td class="text-right">
             <span><%= link "Show", to: admin_panel_offer_path(@conn, :show, offer), class: "btn btn-default btn-xs"%> </span>
           </td>

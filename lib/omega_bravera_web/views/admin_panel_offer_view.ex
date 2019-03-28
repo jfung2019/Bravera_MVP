@@ -1,6 +1,8 @@
 defmodule OmegaBraveraWeb.AdminPanelOfferView do
   use OmegaBraveraWeb, :view
 
+  alias OmegaBravera.Offers.Offer
+
   def registration_date_builder(form, field, opts \\ []) do
     builder = fn b ->
       ~e"""
@@ -10,5 +12,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
     end
 
     datetime_select(form, field, [builder: builder] ++ opts)
+  end
+
+  def get_total_redeems_value(offer_redeems) do
+    Enum.reduce(offer_redeems, 0, &(&1.offer_reward.value + &2))
   end
 end

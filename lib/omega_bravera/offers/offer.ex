@@ -3,7 +3,7 @@ defmodule OmegaBravera.Offers.Offer do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.{Offers.OfferChallenge, Offers.OfferReward, Offers.OfferVendor}
+  alias OmegaBravera.Offers.{OfferChallenge, OfferReward, OfferVendor, OfferRedeem}
 
   @derive {Phoenix.Param, key: :slug}
   schema "offers" do
@@ -39,6 +39,7 @@ defmodule OmegaBravera.Offers.Offer do
     belongs_to(:vendor, OfferVendor)
     has_many(:offer_challenges, OfferChallenge)
     has_many(:offer_rewards, OfferReward)
+    has_many(:offer_redeems, OfferRedeem)
 
     timestamps(type: :utc_datetime)
   end
