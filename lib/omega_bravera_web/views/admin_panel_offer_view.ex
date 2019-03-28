@@ -1,8 +1,6 @@
 defmodule OmegaBraveraWeb.AdminPanelOfferView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.Offers.Offer
-
   def registration_date_builder(form, field, opts \\ []) do
     builder = fn b ->
       ~e"""
