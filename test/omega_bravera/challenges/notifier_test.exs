@@ -41,7 +41,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-ngoName-" => "Save the children worldwide",
                "-challengeURL-" =>
-                 "https://bravera.co/#{team.challenge.ngo.slug}/#{team.challenge.slug}",
+                 "https://www.bravera.co/#{team.challenge.ngo.slug}/#{team.challenge.slug}",
                "-startDate-" => "#{Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)}",
                "-challengeMilestones-" => "#{NGOChal.milestones_string(challenge)}",
                "-daysDuration-" => "#{challenge.duration}"
@@ -82,7 +82,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-teamOwnerName-" => "John Doe",
                "-ngoName-" => invitation.team.challenge.ngo.name,
                "-teamInvitationLink-" =>
-                 "https://bravera.co/login?team_invitation=/#{invitation.team.challenge.ngo.slug}/#{
+                 "https://www.bravera.co/login?team_invitation=/#{invitation.team.challenge.ngo.slug}/#{
                    invitation.team.challenge.slug
                  }/add_team_member/#{invitation.token}"
              },
@@ -121,7 +121,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeLink-" => "https://bravera.co/swcc/John-512",
+               "-challengeLink-" => "https://www.bravera.co/swcc/John-512",
                "-participantName-" => "John"
              },
              template_id: "fcd40945-8a55-4459-94b9-401a995246fb",
@@ -158,7 +158,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeLink-" => "https://bravera.co/swcc/John-512",
+               "-challengeLink-" => "https://www.bravera.co/swcc/John-512",
                "-firstName-" => "John"
              },
              template_id: "75516ad9-3ce8-4742-bd70-1227ce3cba1d",
@@ -202,7 +202,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              substitutions: %{
                "-kms-" => "#{challenge.distance_target} Km",
                "-causeName-" => "Save the children worldwide",
-               "-challengeLink-" => "https://bravera.co/swcc/John-512",
+               "-challengeLink-" => "https://www.bravera.co/swcc/John-512",
                "-yearMonthDay-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
                "-days-" => "5 days",
                "-firstName-" => "John",
@@ -252,7 +252,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-challengeMilestones-" => NGOChal.milestones_string(challenge),
                "-challengeName-" => "#{challenge.slug}",
-               "-challengeURL-" => "https://bravera.co/swcc/#{challenge.slug}",
+               "-challengeURL-" => "https://www.bravera.co/swcc/#{challenge.slug}",
                "-startDate-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
                "-daysDuration-" => "5 days",
                "-firstName-" => "John",
@@ -304,7 +304,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-completedChallengeDistance-" => "#{Decimal.from_float(4.215)} Km",
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-timeRemaining-" => "4 days",
-               "-challengeURL-" => "https://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+               "-challengeURL-" => "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
              },
              template_id: "d92b0884-818d-4f54-926a-a529e5caa7d8",
              to: [%{email: challenge.user.email}],
@@ -382,7 +382,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-donorName-" => donation.user.firstname,
                "-participantName-" => donation.ngo_chal.user.firstname,
                "-challengeURL-" =>
-                 "https://bravera.co/#{donation.ngo.slug}/#{donation.ngo_chal.slug}"
+                 "https://www.bravera.co/#{donation.ngo.slug}/#{donation.ngo_chal.slug}"
              },
              template_id: "c8573175-93a6-4f8c-b1bb-9368ad75981a",
              to: [%{email: donation.user.email}],
@@ -420,7 +420,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
                "-firstName-" => challenge.user.firstname,
-               "-challengeURL-" => "https://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+               "-challengeURL-" => "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
              },
              template_id: "1395a042-ef5a-48a5-b890-c6340dd8eeff",
              to: [%{email: challenge.user.email}],
@@ -455,7 +455,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              substitutions: %{
                "-donorName-" => donor.firstname,
                "-participantName-" => User.full_name(challenge.user),
-               "-challengeURL-" => "https://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+               "-challengeURL-" => "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
              },
              template_id: "b91a66e1-d7f5-404f-804a-9a21f4ec70d4",
              to: [%{email: donor.email}],

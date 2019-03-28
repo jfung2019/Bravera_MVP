@@ -9,7 +9,7 @@ defmodule OmegaBravera.DailyDigest.Serializers.ChallengeTest do
 
     assert Challenge.serialize(challenge) == %{
              challenger: "#{challenge.user.firstname} #{challenge.user.lastname}",
-             url: "https://bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+             url: "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
            }
   end
 end
