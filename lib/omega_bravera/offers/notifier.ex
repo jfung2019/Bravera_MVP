@@ -130,10 +130,11 @@ defmodule OmegaBravera.Offers.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
-    if sendgrid_email != nil && user_subscribed_in_category?(
-         challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
-       ) do
+    if sendgrid_email != nil &&
+         user_subscribed_in_category?(
+           challenge.user.subscribed_email_categories,
+           sendgrid_email.category.id
+         ) do
       challenge
       |> activity_completed_email(activity, template_id)
       |> Mailer.send()
@@ -217,7 +218,9 @@ defmodule OmegaBravera.Offers.Notifier do
     do: Timex.diff(end_date, start_date, :days)
 
   defp challenge_url(challenge) do
-    "#{Application.get_env(:omega_bravera, :app_base_url)}#{Routes.offer_offer_challenge_path(Endpoint, :show, challenge.offer.slug, challenge.slug)}"
+    "#{Application.get_env(:omega_bravera, :app_base_url)}#{
+      Routes.offer_offer_challenge_path(Endpoint, :show, challenge.offer.slug, challenge.slug)
+    }"
   end
 
   defp challenge_qr_code_url(challenge) do

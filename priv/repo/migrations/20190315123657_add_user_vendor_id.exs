@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddUserVendorId do
 
   def change do
     alter table("users") do
-      add :vendor_id, :string
+      add(:vendor_id, :string)
     end
   end
 end

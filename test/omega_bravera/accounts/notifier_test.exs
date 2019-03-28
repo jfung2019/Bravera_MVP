@@ -30,7 +30,7 @@ defmodule OmegaBravera.Accounts.NotifierTest do
              substitutions: %{
                "-fullName-" => "Rafael Garcia",
                "-emailVerificationUrl-" =>
-                 "https://bravera.co/user/account/activate/8wqfT-c2L1V1lSRb_2eum3Ep3Tf2bDP4"
+                 "https://www.bravera.co/user/account/activate/8wqfT-c2L1V1lSRb_2eum3Ep3Tf2bDP4"
              },
              template_id: "b47d2224-792a-43d8-b4b2-f53b033d2f41",
              to: [%{email: "simon.garciar@gmail.com"}],

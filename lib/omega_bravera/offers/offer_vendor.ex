@@ -5,7 +5,7 @@ defmodule OmegaBravera.Offers.OfferVendor do
   alias OmegaBravera.Offers.Offer
 
   schema "offer_vendors" do
-    field :vendor_id, :string
+    field(:vendor_id, :string)
 
     has_many(:offers, Offer, foreign_key: :vendor_id)
 

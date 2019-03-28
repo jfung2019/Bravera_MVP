@@ -231,9 +231,9 @@ defmodule OmegaBravera.OffersTest do
     test "create_offer_challenge/1 with valid data creates a offer_challenge" do
       assert {:ok, %OfferChallenge{} = offer_challenge} =
                Offers.create_offer_challenge(
-                insert(:offer),
-                insert(:user),
-                Map.put(@valid_attrs, :user_id, insert(:user).id)
+                 insert(:offer),
+                 insert(:user),
+                 Map.put(@valid_attrs, :user_id, insert(:user).id)
                )
 
       assert offer_challenge.activity_type == "Run"
@@ -292,7 +292,10 @@ defmodule OmegaBravera.OffersTest do
 
     test "create_offer_reward/1 with valid data creates a offer_reward" do
       offer = insert(:offer)
-      assert {:ok, %OfferReward{} = offer_reward} = Offers.create_offer_reward(Map.put(@valid_attrs, :offer_id, offer.id))
+
+      assert {:ok, %OfferReward{} = offer_reward} =
+               Offers.create_offer_reward(Map.put(@valid_attrs, :offer_id, offer.id))
+
       assert offer_reward.name == "some name"
       assert offer_reward.value == 42
     end
@@ -303,14 +306,20 @@ defmodule OmegaBravera.OffersTest do
 
     test "update_offer_reward/2 with valid data updates the offer_reward" do
       offer_reward = offer_reward_fixture()
-      assert {:ok, %OfferReward{} = offer_reward} = Offers.update_offer_reward(offer_reward, @update_attrs)
+
+      assert {:ok, %OfferReward{} = offer_reward} =
+               Offers.update_offer_reward(offer_reward, @update_attrs)
+
       assert offer_reward.name == "some updated name"
       assert offer_reward.value == 43
     end
 
     test "update_offer_reward/2 with invalid data returns error changeset" do
       offer_reward = offer_reward_fixture()
-      assert {:error, %Ecto.Changeset{}} = Offers.update_offer_reward(offer_reward, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Offers.update_offer_reward(offer_reward, @invalid_attrs)
+
       assert offer_reward == Offers.get_offer_reward!(offer_reward.id)
     end
 
@@ -420,13 +429,19 @@ defmodule OmegaBravera.OffersTest do
 
     test "update_offer_vendor/2 with valid data updates the offer_vendor" do
       offer_vendor = offer_vendor_fixture()
-      assert {:ok, %OfferVendor{} = offer_vendor} = Offers.update_offer_vendor(offer_vendor, @update_attrs)
+
+      assert {:ok, %OfferVendor{} = offer_vendor} =
+               Offers.update_offer_vendor(offer_vendor, @update_attrs)
+
       assert offer_vendor.vendor_id == "some updated vendor_id"
     end
 
     test "update_offer_vendor/2 with invalid data returns error changeset" do
       offer_vendor = offer_vendor_fixture()
-      assert {:error, %Ecto.Changeset{}} = Offers.update_offer_vendor(offer_vendor, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Offers.update_offer_vendor(offer_vendor, @invalid_attrs)
+
       assert offer_vendor == Offers.get_offer_vendor!(offer_vendor.id)
     end
 

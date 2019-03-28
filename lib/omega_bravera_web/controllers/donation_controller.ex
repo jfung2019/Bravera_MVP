@@ -22,6 +22,7 @@ defmodule OmegaBraveraWeb.DonationController do
           end
 
         render(conn, "index.html", %{challenge: challenge, donors: donors})
+
       _ ->
         conn
         |> put_view(OmegaBraveraWeb.PageView)

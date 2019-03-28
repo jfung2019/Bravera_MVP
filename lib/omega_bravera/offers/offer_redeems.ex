@@ -5,7 +5,6 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   alias OmegaBravera.Offers.{Offer, OfferChallenge, OfferReward, OfferVendor}
   alias OmegaBravera.Accounts.User
 
-
   schema "offer_redeems" do
     belongs_to(:offer_reward, OfferReward)
     belongs_to(:offer_challenge, OfferChallenge)
@@ -26,7 +25,12 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> validate_required(@required_attributes)
   end
 
-  def create_changeset(%__MODULE__{} = offer_redeems, %OfferChallenge{offer: offer, user: user} = offer_challenge, %OfferVendor{} = vendor, attrs \\ %{}) do
+  def create_changeset(
+        %__MODULE__{} = offer_redeems,
+        %OfferChallenge{offer: offer, user: user} = offer_challenge,
+        %OfferVendor{} = vendor,
+        attrs \\ %{}
+      ) do
     changeset =
       changeset(offer_redeems, attrs)
       |> put_change(:user_id, user.id)
@@ -42,6 +46,5 @@ defmodule OmegaBravera.Offers.OfferRedeem do
       changeset
       |> put_change(:vendor_id, attrs["vendor_id"])
     end
-
   end
 end

@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.RemoveOfferUserId do
 
   def change do
     alter table("offers") do
-      remove (:user_id)
+      remove(:user_id)
     end
   end
 end

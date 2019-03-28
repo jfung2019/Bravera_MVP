@@ -97,13 +97,23 @@ defmodule OmegaBraveraWeb.UserController do
               :info,
               "Thank you for activating your account. You can now join challenges!"
             )
-            |> redirect(to: page_path(conn, :index))
+            |> redirect(to: redirect_path(conn))
 
           {:error, _} ->
             conn
             |> put_flash(:error, "Could not activate your email. Please contact admin@bravera.co")
             |> redirect(to: "/")
         end
+    end
+  end
+
+  defp redirect_path(conn) do
+    case get_session(conn, :after_email_verify) do
+      nil ->
+        page_path(conn, :index)
+
+      path ->
+        path
     end
   end
 end
