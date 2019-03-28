@@ -52,7 +52,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         )
 
       true ->
-        render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+        conn
+        |> put_view(OmegaBraveraWeb.PageView)
+        |> put_status(:not_found)
+        |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
   end
 
@@ -86,7 +89,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       |> put_resp_header("content-disposition", "attachment; filename=qr.png")
       |> send_resp(200, qr_code_png)
     else
-      render(conn, "404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+      conn
+      |> put_view(OmegaBraveraWeb.PageView)
+      |> put_status(:not_found)
+      |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
     end
   end
 
