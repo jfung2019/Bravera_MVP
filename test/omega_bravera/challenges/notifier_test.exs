@@ -82,9 +82,9 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-teamOwnerName-" => "John Doe",
                "-ngoName-" => invitation.team.challenge.ngo.name,
                "-teamInvitationLink-" =>
-                 "https://www.bravera.co/login?team_invitation=/#{invitation.team.challenge.ngo.slug}/#{
-                   invitation.team.challenge.slug
-                 }/add_team_member/#{invitation.token}"
+                 "https://www.bravera.co/login?team_invitation=/#{
+                   invitation.team.challenge.ngo.slug
+                 }/#{invitation.team.challenge.slug}/add_team_member/#{invitation.token}"
              },
              template_id: "e1869afd-8cd1-4789-b444-dabff9b7f3f1",
              to: [%{email: invitation.email}],
@@ -304,7 +304,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-completedChallengeDistance-" => "#{Decimal.from_float(4.215)} Km",
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-timeRemaining-" => "4 days",
-               "-challengeURL-" => "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+               "-challengeURL-" =>
+                 "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
              },
              template_id: "d92b0884-818d-4f54-926a-a529e5caa7d8",
              to: [%{email: challenge.user.email}],
@@ -420,7 +421,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
                "-firstName-" => challenge.user.firstname,
-               "-challengeURL-" => "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+               "-challengeURL-" =>
+                 "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
              },
              template_id: "1395a042-ef5a-48a5-b890-c6340dd8eeff",
              to: [%{email: challenge.user.email}],
@@ -455,7 +457,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              substitutions: %{
                "-donorName-" => donor.firstname,
                "-participantName-" => User.full_name(challenge.user),
-               "-challengeURL-" => "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+               "-challengeURL-" =>
+                 "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
              },
              template_id: "b91a66e1-d7f5-404f-804a-9a21f4ec70d4",
              to: [%{email: donor.email}],
