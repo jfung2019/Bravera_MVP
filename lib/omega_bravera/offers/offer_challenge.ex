@@ -170,6 +170,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   def milestones_distances(%__MODULE__{distance_target: target}),
     do: milestone_distances(target)
 
-  defp gen_token(length \\ 32),
+  defp gen_token(length \\ 20),
     do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 end
