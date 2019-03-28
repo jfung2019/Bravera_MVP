@@ -10,6 +10,6 @@
 
   <a href="/"><h5>Let's get back on the trail.</h5></a>
 
-  <p class="mt-5 mb-3 text-muted">© 2018 Bravera <br/>
+  <p class="mt-5 mb-3 text-muted">© <%= Timex.now.year %> Bravera <br/>
   Photo of Alyn by Fox @ CountryOfOrigin.asia</p>
 </div>

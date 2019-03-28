@@ -32,6 +32,6 @@
     </div>
 
     <button class="btn btn-lg btn-bravera btn-block" type="submit">Log in</button>
-    <p class="mt-5 mb-3 text-muted">© 2018 Bravera</p>
+    <p class="mt-5 mb-3 text-muted">© <%= Timex.now.year %> Bravera</p>
   <% end %>
 </div>

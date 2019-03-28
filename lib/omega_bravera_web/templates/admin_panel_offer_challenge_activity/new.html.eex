@@ -29,7 +29,7 @@
 
     <div class="form-group">
       <%= label f, :start_date, class: "control-label" %>
-      <%= datetime_select f, :start_date, class: "form-control", required: "", year: [options: 2018..2025] %>
+      <%= datetime_select f, :start_date, class: "form-control", required: "", year: [options: 2019..2025] %>
       <%= error_tag f, :start_date %>
     </div>
 
