@@ -1,5 +1,4 @@
 defmodule OmegaBraveraWeb.AddDriftApp do
-
   import Plug.Conn
 
   def init(opts) do
