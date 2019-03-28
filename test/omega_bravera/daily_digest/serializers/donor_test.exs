@@ -60,8 +60,8 @@ defmodule OmegaBravera.DailyDigest.Serializers.DonorTest do
     result = Donor.serialize(donor)
 
     expected_challenge_urls =
-      "https://bravera.co/#{first_challenge.ngo.slug}/#{first_challenge.slug}, " <>
-        "https://bravera.co/#{second_challenge.ngo.slug}/#{second_challenge.slug}"
+      "https://www.bravera.co/#{first_challenge.ngo.slug}/#{first_challenge.slug}, " <>
+        "https://www.bravera.co/#{second_challenge.ngo.slug}/#{second_challenge.slug}"
 
     assert result == %{
              firstname: "Simon",
