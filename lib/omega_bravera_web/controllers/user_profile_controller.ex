@@ -6,10 +6,11 @@ defmodule OmegaBraveraWeb.UserProfileController do
   alias OmegaBravera.{Money, Challenges, Accounts.User, Repo}
 
   def show(conn, _) do
-    user = Guardian.Plug.current_resource(conn)
+    case Guardian.Plug.current_resource(conn) do
+      nil ->
+        redirect(conn, to: "/404")
 
-    cond do
-      user != nil ->
+      user ->
         render(
           conn,
           "show.html",
@@ -23,9 +24,6 @@ defmodule OmegaBraveraWeb.UserProfileController do
           num_of_supporters: get_supporters_num(user.id),
           changeset: User.changeset(user, %{})
         )
-
-      user == nil ->
-        redirect(conn, to: "/404")
     end
   end
 
