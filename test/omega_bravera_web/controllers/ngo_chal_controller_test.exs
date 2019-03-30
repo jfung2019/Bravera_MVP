@@ -56,6 +56,12 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
     assert html_response(conn, 200) =~ "localhost"
   end
 
+  test "new ngo_chal renders 404 if missing ngo", %{conn: conn} do
+    conn = get(conn, ngo_ngo_chal_path(conn, :new, "invalid-ngo"))
+
+    assert html_response(conn, 404) =~ "You look lost, Mate."
+  end
+
   describe "create ngo_chal" do
     test "redirects to show when data is valid", %{conn: conn} do
       ngo = insert(:ngo, %{url: "http://localhost:4000"})
