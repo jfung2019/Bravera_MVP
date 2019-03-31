@@ -5,11 +5,21 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= label f, "Vendor ID", class: "control-label" %>
-    <%= text_input f, :vendor_id, class: "form-control", required: "required" %>
-    <%= error_tag f, :vendor_id %>
-  </div>
+
+  <%= if @changeset.action do %>
+    <div class="form-group">
+      <%= label f, "Vendor ID", class: "control-label" %>
+      <%= text_input f, :vendor_id, class: "form-control", required: "required", value: @vendor_id %>
+    </div>
+  <% else %>
+    <div class="form-group">
+      <%= label f, "Vendor ID", class: "control-label" %>
+      <%= text_input f, :vendor_id, class: "form-control", required: "required" %>
+      <%= error_tag f, :vendor_id %>
+    </div>
+  <% end %>
+
+
 
   <div class="form-group">
     <%= label f, "Reward", class: "control-label" %>
