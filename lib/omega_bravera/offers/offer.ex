@@ -88,6 +88,7 @@ defmodule OmegaBravera.Offers.Offer do
     offer
     |> cast(attrs, @allowed_atributes)
     |> validate_required(@required_attributes)
+    |> validate_length(:name, max: 77)
     |> validate_inclusion(:currency, currency_options())
     |> validate_subset(:activities, activity_options())
     |> validate_subset(:distances, distance_options())
