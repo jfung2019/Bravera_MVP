@@ -273,6 +273,19 @@ defmodule OmegaBravera.Accounts do
     end
   end
 
+  def insert_or_return_email_donor(%{"email" => email, "first_name" => first, "last_name" => last}) do
+    case Repo.get_by(Donor, email: email) do
+      nil ->
+        case create_donor(%{"email" => email, "firstname" => first, "lastname" => last}) do
+          {:ok, donor} -> donor
+          {:error, _reason} -> nil
+        end
+
+      donor ->
+        donor
+    end
+  end
+
   @doc """
   Functions for password-based user credentials
   """

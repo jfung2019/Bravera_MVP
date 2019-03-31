@@ -11,7 +11,7 @@ defmodule OmegaBravera.Donations.Processor do
   }
 
   def charge_donation(%Donation{} = dn) do
-    donation = Repo.preload(dn, [:ngo, :ngo_chal, :user])
+    donation = Repo.preload(dn, [:ngo, :ngo_chal, :donor])
 
     case StripeHelpers.charge_stripe_customer(
            donation.ngo,
@@ -81,7 +81,7 @@ defmodule OmegaBravera.Donations.Processor do
       "amount" => amount,
       "currency" => donation.currency,
       "source" => donation.str_src,
-      "receipt_email" => donation.user.email,
+      "receipt_email" => donation.donor.email,
       "customer" => donation.str_cus_id
     }
   end
@@ -100,7 +100,7 @@ defmodule OmegaBravera.Donations.Processor do
       "amount" => amount,
       "currency" => donation.currency,
       "source" => donation.str_src,
-      "receipt_email" => donation.user.email,
+      "receipt_email" => donation.donor.email,
       "customer" => donation.str_cus_id
     }
   end

@@ -361,9 +361,9 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   test "donor_milestone_email/1" do
     user = insert(:user)
     ngo = insert(:ngo, %{slug: "swcc-1"})
-    donor = insert(:user)
+    donor = insert(:donor)
     challenge = insert(:ngo_challenge, %{ngo: ngo, user: user})
-    donation = insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: donor})
+    donation = insert(:donation, %{ngo_chal: challenge, ngo: ngo, donor: donor})
 
     email = Notifier.donor_milestone_email(donation, "c8573175-93a6-4f8c-b1bb-9368ad75981a")
 
@@ -380,13 +380,13 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-donorName-" => donation.user.firstname,
+               "-donorName-" => donation.donor.firstname,
                "-participantName-" => donation.ngo_chal.user.firstname,
                "-challengeURL-" =>
                  "https://www.bravera.co/#{donation.ngo.slug}/#{donation.ngo_chal.slug}"
              },
              template_id: "c8573175-93a6-4f8c-b1bb-9368ad75981a",
-             to: [%{email: donation.user.email}],
+             to: [%{email: donation.donor.email}],
              bcc: [%{email: "admin@bravera.co"}]
            }
   end
@@ -394,9 +394,9 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   test "send_donor_milestone_email/1 sends the email" do
     user = insert(:user)
     ngo = insert(:ngo, %{slug: "swcc-1"})
-    donor = insert(:user)
+    donor = insert(:donor)
     challenge = insert(:ngo_challenge, %{ngo: ngo, user: user})
-    donation = insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: donor})
+    donation = insert(:donation, %{ngo_chal: challenge, ngo: ngo, donor: donor})
 
     assert Notifier.send_donor_milestone_email(donation) == :ok
   end
@@ -437,7 +437,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "donor_inactivity_email/1" do
     challenge = insert(:ngo_challenge)
-    donor = insert(:user)
+    donor = insert(:donor)
 
     email =
       Notifier.donor_inactivity_email(challenge, donor, "b91a66e1-d7f5-404f-804a-9a21f4ec70d4")
@@ -468,7 +468,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "send_donor_inactivity_email/1 sends the email" do
     challenge = insert(:ngo_challenge)
-    donor = insert(:user)
+    donor = insert(:donor)
     assert Notifier.send_donor_inactivity_email(challenge, donor) == :ok
   end
 end

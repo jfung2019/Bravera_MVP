@@ -5,6 +5,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     Repo,
     Money.Donation,
     Accounts.User,
+    Accounts.Donor,
     Emails
   }
 
@@ -180,30 +181,22 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_donor_milestone_email(%Donation{} = donation) do
     template_id = "c8573175-93a6-4f8c-b1bb-9368ad75981a"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
 
-    donation =
-      Repo.preload(donation, user: [:subscribed_email_categories], ngo_chal: [:ngo, :user])
-
-    if user_subscribed_in_category?(
-         donation.user.subscribed_email_categories,
-         sendgrid_email.category.id
-       ) do
-      donation
-      |> donor_milestone_email(template_id)
-      |> Mailer.send()
-    end
+    donation
+    |> Repo.preload([:donor, ngo_chal: [:ngo, :user]])
+    |> donor_milestone_email(template_id)
+    |> Mailer.send()
   end
 
   def donor_milestone_email(%Donation{} = donation, template_id) do
     Email.build()
     |> Email.put_template(template_id)
-    |> Email.add_substitution("-donorName-", donation.user.firstname)
+    |> Email.add_substitution("-donorName-", donation.donor.firstname)
     |> Email.add_substitution("-participantName-", donation.ngo_chal.user.firstname)
     |> Email.add_substitution("-challengeURL-", challenge_url(donation.ngo_chal))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
-    |> Email.add_to(donation.user.email)
+    |> Email.add_to(donation.donor.email)
   end
 
   def send_participant_milestone_email(%NGOChal{} = challenge) do
@@ -255,20 +248,16 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_donor_inactivity_email(%NGOChal{} = challenge, %User{} = donor) do
+  def send_donor_inactivity_email(%NGOChal{} = challenge, %Donor{} = donor) do
     template_id = "b91a66e1-d7f5-404f-804a-9a21f4ec70d4"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
-    donor = Repo.preload(donor, [:subscribed_email_categories])
 
-    if user_subscribed_in_category?(donor.subscribed_email_categories, sendgrid_email.category.id) do
-      challenge
-      |> Repo.preload([:user, :ngo])
-      |> donor_inactivity_email(donor, template_id)
-      |> Mailer.send()
-    end
+    challenge
+    |> Repo.preload([:user, :ngo])
+    |> donor_inactivity_email(donor, template_id)
+    |> Mailer.send()
   end
 
-  def donor_inactivity_email(%NGOChal{} = challenge, %User{} = donor, template_id) do
+  def donor_inactivity_email(%NGOChal{} = challenge, %Donor{} = donor, template_id) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-donorName-", donor.firstname)

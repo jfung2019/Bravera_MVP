@@ -38,7 +38,7 @@ defmodule OmegaBraveraWeb.DonationController do
       }) do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, ngo_chal_slug, [:ngo, :user])
     stripe_customer = StripeHelpers.create_stripe_customer(donation_params)
-    donor = Accounts.insert_or_return_email_user(donation_params)
+    donor = Accounts.insert_or_return_email_donor(donation_params)
     challenge_path = ngo_ngo_chal_path(conn, :show, challenge.ngo.slug, challenge.slug)
 
     Accounts.create_or_update_donor_opt_in_mailing_list(donor, challenge.ngo, donation_params)
