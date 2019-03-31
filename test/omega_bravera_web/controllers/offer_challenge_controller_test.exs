@@ -3,6 +3,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
   import OmegaBravera.Factory
 
+  alias OmegaBravera.Offers
+
   @tracker_create_attrs %{
     email: "user@example.com",
     firstname: "some firstname",
@@ -29,7 +31,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
   end
 
   test "unverified user should get their session saved with where to go when they verify email",
-       %{conn: conn, current_user: user} do
+       %{conn: conn, current_user: _user} do
     offer = insert(:offer, %{slug: "sherief-1"})
 
     conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
@@ -37,5 +39,79 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
     assert Plug.Conn.get_session(conn, :after_email_verify) ==
              offer_offer_challenge_path(conn, :new, offer)
+  end
+
+  describe "redeem" do
+    test "new_redeem/2 renders redeem form for vendor", %{conn: conn} do
+      offer_challenge = insert(:offer_challenge)
+
+      conn =
+        get(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :new_redeem,
+            offer_challenge.offer.slug,
+            offer_challenge.slug,
+            offer_challenge.redeem_token
+          )
+        )
+
+      assert html_response(conn, 200) =~ "New Redeem"
+    end
+
+    test "save_redeem/2 creates a redeem when valid data is given", %{conn: conn} do
+      vendor = insert(:vendor)
+      offer = insert(:offer, vendor: nil, vendor_id: vendor.vendor_id)
+      offer_challenge = insert(:offer_challenge, offer: nil, offer_id: offer.id)
+      offer_reward = insert(:offer_reward, offer: nil, offer_id: offer.id)
+
+      params = %{vendor_id: vendor.vendor_id, offer_reward_id: offer_reward.id}
+
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :save_redeem,
+            offer.slug,
+            offer_challenge.slug,
+            offer_challenge.redeem_token
+          ),
+          offer_redeem: params
+        )
+
+      assert html_response(conn, 200) =~ "Redeem sucessful!"
+
+      offer = Offers.get_offer_by_slug(offer.slug, [:offer_redeems])
+      assert length(offer.offer_redeems) == 1
+    end
+
+    test "save_redeem/2 renders errors when invalid data is given", %{conn: conn} do
+      vendor = insert(:vendor)
+      offer = insert(:offer, vendor: nil, vendor_id: vendor.vendor_id)
+      offer_challenge = insert(:offer_challenge, offer: nil, offer_id: offer.id)
+      offer_reward = insert(:offer_reward, offer: nil, offer_id: offer.id)
+
+      params = %{vendor_id: "", offer_reward_id: offer_reward.id}
+
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :save_redeem,
+            offer.slug,
+            offer_challenge.slug,
+            offer_challenge.redeem_token
+          ),
+          offer_redeem: params
+        )
+
+      assert get_flash(conn, :error) == "Your Vendor ID seems to be incorrect."
+
+      offer = Offers.get_offer_by_slug(offer.slug, [:offer_redeems])
+      assert length(offer.offer_redeems) == 0
+    end
   end
 end

@@ -218,12 +218,16 @@ defmodule OmegaBravera.Offers.Notifier do
     do: Timex.diff(end_date, start_date, :days)
 
   defp challenge_url(challenge) do
-    "#{Application.get_env(:omega_bravera, :app_base_url)}#{
-      Routes.offer_offer_challenge_path(Endpoint, :show, challenge.offer.slug, challenge.slug)
-    }"
+    Routes.offer_offer_challenge_url(Endpoint, :show, challenge.offer.slug, challenge.slug)
   end
 
   defp challenge_qr_code_url(challenge) do
-    "#{challenge_url(challenge)}/#{challenge.redeem_token}"
+    Routes.offer_offer_challenge_offer_challenge_url(
+      Endpoint,
+      :new_redeem,
+      challenge.offer.slug,
+      challenge.slug,
+      challenge.redeem_token
+    )
   end
 end

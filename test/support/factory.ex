@@ -158,6 +158,16 @@ defmodule OmegaBravera.Factory do
       end_date: Timex.shift(Timex.now(), days: 5),
       status: "active",
       type: "PER_KM",
+      redeem_token: Integer.to_string(Enum.random(10_000_000..20_000_000)),
+      offer: build(:offer),
+      user: build(:user)
+    }
+  end
+
+  def offer_reward_factory do
+    %OmegaBravera.Offers.OfferReward{
+      name: "Apple Watch",
+      value: 350,
       offer: build(:offer)
     }
   end

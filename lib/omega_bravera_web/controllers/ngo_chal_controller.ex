@@ -27,11 +27,19 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, %{"ngo_slug" => ngo_slug}) do
-    ngo = Fundraisers.get_ngo_with_stats(ngo_slug)
-    current_user = Guardian.Plug.current_resource(conn)
-    changeset = Challenges.change_ngo_chal(%NGOChal{})
+    case Fundraisers.get_ngo_with_stats(ngo_slug) do
+      nil ->
+        conn
+        |> put_view(OmegaBraveraWeb.PageView)
+        |> put_status(:not_found)
+        |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
 
-    render(conn, "new.html", changeset: changeset, ngo: ngo, current_user: current_user)
+      ngo ->
+        current_user = Guardian.Plug.current_resource(conn)
+        changeset = Challenges.change_ngo_chal(%NGOChal{})
+
+        render(conn, "new.html", changeset: changeset, ngo: ngo, current_user: current_user)
+    end
   end
 
   def create(conn, %{"ngo_slug" => ngo_slug, "ngo_chal" => chal_params}) do

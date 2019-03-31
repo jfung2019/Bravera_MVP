@@ -22,12 +22,26 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   @doc """
   Form for vendor that allows them to create redeems.
   """
+
+  def new_redeem(conn, %{
+        "offer_challenge_slug" => slug,
+        "offer_slug" => offer_slug,
+        "redeem_token" => redeem_token
+      }) do
+    redeem_form_page(conn, offer_slug, slug, redeem_token)
+  end
+
+  # TODO: remove after the Fineprint offer ends to avoid breaking redeem links. -Sherief
   def qr_code(conn, %{
         "offer_challenge_slug" => slug,
         "offer_slug" => offer_slug,
         "redeem_token" => redeem_token,
         "redeem" => _redeem
       }) do
+    redeem_form_page(conn, offer_slug, slug, redeem_token)
+  end
+
+  defp redeem_form_page(conn, offer_slug, slug, redeem_token) do
     offer_challenge =
       Offers.get_offer_chal_by_slugs(offer_slug, slug, [
         :offer_redeems,
@@ -35,27 +49,30 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         offer: [:offer_rewards]
       ])
 
-    changeset = Offers.change_offer_redeems(%Offers.OfferRedeem{})
+    case offer_challenge do
+      nil ->
+        render_404(conn)
 
-    cond do
-      !Enum.empty?(offer_challenge.offer_redeems) ->
-        render(conn, "previously_redeemed.html",
-          offer_challenge: offer_challenge,
-          layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-        )
+      _ ->
+        changeset = Offers.change_offer_redeems(%Offers.OfferRedeem{})
 
-      redeem_token == offer_challenge.redeem_token ->
-        render(conn, "new_redeem.html",
-          offer_challenge: offer_challenge,
-          changeset: changeset,
-          layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-        )
+        cond do
+          !Enum.empty?(offer_challenge.offer_redeems) ->
+            render(conn, "previously_redeemed.html",
+              offer_challenge: offer_challenge,
+              layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+            )
 
-      true ->
-        conn
-        |> put_view(OmegaBraveraWeb.PageView)
-        |> put_status(:not_found)
-        |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+          redeem_token == offer_challenge.redeem_token ->
+            render(conn, "new_redeem.html",
+              offer_challenge: offer_challenge,
+              changeset: changeset,
+              layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+            )
+
+          true ->
+            render_404(conn)
+        end
     end
   end
 
@@ -74,11 +91,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         "#{Application.get_env(:omega_bravera, :app_base_url)}#{
           offer_offer_challenge_offer_challenge_path(
             conn,
-            :qr_code,
+            :new_redeem,
             offer_slug,
             slug,
-            offer_challenge.redeem_token,
-            %{"redeem" => "true"}
+            offer_challenge.redeem_token
           )
         }"
         |> EQRCode.encode()
@@ -89,10 +105,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       |> put_resp_header("content-disposition", "attachment; filename=qr.png")
       |> send_resp(200, qr_code_png)
     else
-      conn
-      |> put_view(OmegaBraveraWeb.PageView)
-      |> put_status(:not_found)
-      |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+      render_404(conn)
     end
   end
 
@@ -119,29 +132,29 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         to:
           offer_offer_challenge_offer_challenge_path(
             conn,
-            :qr_code,
+            :new_redeem,
             offer_slug,
             slug,
-            redeem_token,
-            %{"redeem" => "true"}
+            redeem_token
           )
       )
-    end
+    else
+      case Offers.create_offer_redeems(offer_challenge, vendor, %{
+             "offer_reward_id" => offer_redeem_params["offer_reward_id"]
+           }) do
+        {:ok, _offer_redeem} ->
+          conn
+          |> render("redeem_sucessful.html", layout: {OmegaBraveraWeb.LayoutView, "app.html"})
 
-    case Offers.create_offer_redeems(offer_challenge, vendor, %{
-           "offer_reward_id" => offer_redeem_params["offer_reward_id"]
-         }) do
-      {:ok, _offer_redeem} ->
-        conn
-        |> render("redeem_sucessful.html", layout: {OmegaBraveraWeb.LayoutView, "app.html"})
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        conn
-        |> render("new_redeem.html",
-          offer_challenge: offer_challenge,
-          changeset: changeset,
-          layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-        )
+        {:error, %Ecto.Changeset{} = changeset} ->
+          conn
+          |> render("new_redeem.html",
+            offer_challenge: offer_challenge,
+            changeset: changeset,
+            vendor_id: offer_redeem_params["vendor_id"],
+            layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+          )
+      end
     end
   end
 
@@ -195,10 +208,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
     case offer_challenge do
       nil ->
-        conn
-        |> put_view(OmegaBraveraWeb.PageView)
-        |> put_status(:not_found)
-        |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+        render_404(conn)
 
       offer_challenge ->
         render_attrs = get_render_attrs(conn, offer_challenge, offer_slug)

@@ -71,48 +71,52 @@ defmodule OmegaBravera.Fundraisers do
   end
 
   def get_ngo_with_stats(slug, preloads \\ [:ngo_chals]) do
-    ngo = get_ngo_by_slug(slug, preloads)
+    case get_ngo_by_slug(slug, preloads) do
+      nil ->
+        nil
 
-    total_pledged =
-      Repo.one(
-        from(
-          donation in Donation,
-          where: donation.ngo_id == ^ngo.id,
-          select:
-            fragment(
-              "SUM( CASE WHEN km_distance IS NOT NULL THEN amount * km_distance ELSE amount END )"
+      ngo ->
+        total_pledged =
+          Repo.one(
+            from(
+              donation in Donation,
+              where: donation.ngo_id == ^ngo.id,
+              select:
+                fragment(
+                  "SUM( CASE WHEN km_distance IS NOT NULL THEN amount * km_distance ELSE amount END )"
+                )
             )
-        )
-      )
+          )
 
-    total_secured =
-      Repo.aggregate(
-        from(
-          donation in Donation,
-          where: donation.ngo_id == ^ngo.id
-        ),
-        :sum,
-        :charged_amount
-      )
+        total_secured =
+          Repo.aggregate(
+            from(
+              donation in Donation,
+              where: donation.ngo_id == ^ngo.id
+            ),
+            :sum,
+            :charged_amount
+          )
 
-    calories_and_activities_query =
-      from(
-        activity in Activity,
-        join: challenge in assoc(activity, :challenge),
-        where: challenge.ngo_id == ^ngo.id and activity.challenge_id == challenge.id
-      )
+        calories_and_activities_query =
+          from(
+            activity in Activity,
+            join: challenge in assoc(activity, :challenge),
+            where: challenge.ngo_id == ^ngo.id and activity.challenge_id == challenge.id
+          )
 
-    total_distance_covered = Repo.aggregate(calories_and_activities_query, :sum, :distance)
-    total_calories = Repo.aggregate(calories_and_activities_query, :sum, :calories)
+        total_distance_covered = Repo.aggregate(calories_and_activities_query, :sum, :distance)
+        total_calories = Repo.aggregate(calories_and_activities_query, :sum, :calories)
 
-    %{
-      ngo
-      | total_pledged: total_pledged,
-        total_secured: total_secured,
-        num_of_challenges: Enum.count(ngo.ngo_chals),
-        total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
-        total_calories: total_calories
-    }
+        %{
+          ngo
+          | total_pledged: total_pledged,
+            total_secured: total_secured,
+            num_of_challenges: Enum.count(ngo.ngo_chals),
+            total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
+            total_calories: total_calories
+        }
+    end
   end
 
   def list_ngos(hidden \\ false) do
