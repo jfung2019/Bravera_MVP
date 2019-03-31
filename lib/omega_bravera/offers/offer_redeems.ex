@@ -31,11 +31,11 @@ defmodule OmegaBravera.Offers.OfferRedeem do
         %OfferVendor{} = vendor,
         attrs \\ %{}
       ) do
-      changeset(offer_redeems, attrs)
-      |> put_change(:user_id, user.id)
-      |> put_change(:vendor_id, vendor.id)
-      |> put_change(:offer_challenge_id, offer_challenge.id)
-      |> put_change(:offer_id, offer.id)
-      |> validate_required([:vendor_id])
+    changeset(offer_redeems, attrs)
+    |> put_change(:user_id, user.id)
+    |> put_change(:vendor_id, vendor.id)
+    |> put_change(:offer_challenge_id, offer_challenge.id)
+    |> put_change(:offer_id, offer.id)
+    |> validate_required([:vendor_id])
   end
 end

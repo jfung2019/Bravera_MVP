@@ -24,10 +24,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   """
 
   def new_redeem(conn, %{
-    "offer_challenge_slug" => slug,
-    "offer_slug" => offer_slug,
-    "redeem_token" => redeem_token
-  }) do
+        "offer_challenge_slug" => slug,
+        "offer_slug" => offer_slug,
+        "redeem_token" => redeem_token
+      }) do
     redeem_form_page(conn, offer_slug, slug, redeem_token)
   end
 
@@ -139,8 +139,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       )
     else
       case Offers.create_offer_redeems(offer_challenge, vendor, %{
-            "offer_reward_id" => offer_redeem_params["offer_reward_id"]
-          }) do
+             "offer_reward_id" => offer_redeem_params["offer_reward_id"]
+           }) do
         {:ok, _offer_redeem} ->
           conn
           |> render("redeem_sucessful.html", layout: {OmegaBraveraWeb.LayoutView, "app.html"})

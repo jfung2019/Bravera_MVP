@@ -28,17 +28,17 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
   def new(conn, %{"ngo_slug" => ngo_slug}) do
     case Fundraisers.get_ngo_with_stats(ngo_slug) do
-    nil ->
-      conn
-      |> put_view(OmegaBraveraWeb.PageView)
-      |> put_status(:not_found)
-      |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+      nil ->
+        conn
+        |> put_view(OmegaBraveraWeb.PageView)
+        |> put_status(:not_found)
+        |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
 
-    ngo ->
-      current_user = Guardian.Plug.current_resource(conn)
-      changeset = Challenges.change_ngo_chal(%NGOChal{})
+      ngo ->
+        current_user = Guardian.Plug.current_resource(conn)
+        changeset = Challenges.change_ngo_chal(%NGOChal{})
 
-      render(conn, "new.html", changeset: changeset, ngo: ngo, current_user: current_user)
+        render(conn, "new.html", changeset: changeset, ngo: ngo, current_user: current_user)
     end
   end
 

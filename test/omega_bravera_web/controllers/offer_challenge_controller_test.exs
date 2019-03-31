@@ -44,7 +44,19 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
   describe "redeem" do
     test "new_redeem/2 renders redeem form for vendor", %{conn: conn} do
       offer_challenge = insert(:offer_challenge)
-      conn = get(conn, offer_offer_challenge_offer_challenge_path(conn, :new_redeem, offer_challenge.offer.slug, offer_challenge.slug, offer_challenge.redeem_token))
+
+      conn =
+        get(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :new_redeem,
+            offer_challenge.offer.slug,
+            offer_challenge.slug,
+            offer_challenge.redeem_token
+          )
+        )
+
       assert html_response(conn, 200) =~ "New Redeem"
     end
 
@@ -56,7 +68,18 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
       params = %{vendor_id: vendor.vendor_id, offer_reward_id: offer_reward.id}
 
-      conn = post(conn, offer_offer_challenge_offer_challenge_path(conn, :save_redeem, offer.slug, offer_challenge.slug, offer_challenge.redeem_token), offer_redeem: params)
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :save_redeem,
+            offer.slug,
+            offer_challenge.slug,
+            offer_challenge.redeem_token
+          ),
+          offer_redeem: params
+        )
 
       assert html_response(conn, 200) =~ "Redeem sucessful!"
 
@@ -72,7 +95,18 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
       params = %{vendor_id: "", offer_reward_id: offer_reward.id}
 
-      conn = post(conn, offer_offer_challenge_offer_challenge_path(conn, :save_redeem, offer.slug, offer_challenge.slug, offer_challenge.redeem_token), offer_redeem: params)
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :save_redeem,
+            offer.slug,
+            offer_challenge.slug,
+            offer_challenge.redeem_token
+          ),
+          offer_redeem: params
+        )
 
       assert get_flash(conn, :error) == "Your Vendor ID seems to be incorrect."
 
