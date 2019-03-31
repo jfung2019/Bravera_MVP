@@ -72,7 +72,9 @@ defmodule OmegaBravera.Fundraisers do
 
   def get_ngo_with_stats(slug, preloads \\ [:ngo_chals]) do
     case get_ngo_by_slug(slug, preloads) do
-      nil -> nil
+      nil ->
+        nil
+
       ngo ->
         total_pledged =
           Repo.one(
