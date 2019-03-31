@@ -224,6 +224,8 @@ defmodule OmegaBravera.Offers.Notifier do
   end
 
   defp challenge_qr_code_url(challenge) do
-    "#{challenge_url(challenge)}/#{challenge.redeem_token}"
+    "#{Application.get_env(:omega_bravera, :app_base_url)}#{
+      Routes.offer_offer_challenge_offer_challenge_path(Endpoint, :new_redeem, challenge.offer.slug, challenge.slug, challenge.redeem_token)
+    }"
   end
 end
