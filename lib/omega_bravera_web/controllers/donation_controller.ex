@@ -91,7 +91,7 @@ defmodule OmegaBraveraWeb.DonationController do
           case Pledges.create(
                  challenge,
                  stripe_customer,
-                 donation_params,
+                 donation_params
                ) do
             {:ok, pledge} ->
               Notifier.email_parties(challenge, donor, pledge, challenge_path)
