@@ -30,17 +30,17 @@ defmodule OmegaBravera.AccountsTest do
 
       # 2 famous runners
       matthew_wells =
-        insert(:user, %{firstname: "Matthew", lastname: "Wells", email: "matthew.wells@test.com"})
+        insert(:donor, %{firstname: "Matthew", lastname: "Wells", email: "matthew.wells@test.com"})
 
       carlos_cordero =
-        insert(:user, %{
+        insert(:donor, %{
           firstname: "Carlos",
           lastname: "Cordero",
           email: "carlos.cordero@test.com"
         })
 
-      insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: carlos_cordero})
-      insert(:donation, %{ngo_chal: challenge, ngo: ngo, user: matthew_wells})
+      insert(:donation, %{ngo_chal: challenge, ngo: ngo, donor: carlos_cordero})
+      insert(:donation, %{ngo_chal: challenge, ngo: ngo, donor: matthew_wells})
 
       donors =
         challenge
