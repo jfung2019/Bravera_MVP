@@ -4,11 +4,13 @@ defmodule OmegaBraveraWeb.NGOChalView do
   alias OmegaBravera.{
     Challenges.NGOChal,
     Accounts.User,
+    Accounts.Donor,
     Fundraisers.NGO,
     Challenges.TeamInvitations
   }
 
   def user_full_name(%User{} = user), do: User.full_name(user)
+  def user_full_name(%Donor{} = donor), do: Donor.full_name(donor)
 
   def user_profile_pic(nil), do: ""
 

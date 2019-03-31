@@ -36,12 +36,17 @@ defmodule OmegaBraveraWeb.DonationController do
         "ngo_chal_slug" => ngo_chal_slug,
         "ngo_slug" => ngo_slug
       }) do
-    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, ngo_chal_slug)
+    challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, ngo_chal_slug, [:ngo, :user])
     stripe_customer = StripeHelpers.create_stripe_customer(donation_params)
     donor = Accounts.insert_or_return_email_user(donation_params)
     challenge_path = ngo_ngo_chal_path(conn, :show, challenge.ngo.slug, challenge.slug)
 
     Accounts.create_or_update_donor_opt_in_mailing_list(donor, challenge.ngo, donation_params)
+
+    donation_params =
+      donation_params
+      |> Map.put("donor_id", donor.id)
+      |> Map.put("email", donor.email)
 
     case challenge.type do
       "PER_MILESTONE" ->
@@ -49,7 +54,7 @@ defmodule OmegaBraveraWeb.DonationController do
           case Pledges.create(
                  challenge,
                  stripe_customer,
-                 Map.put(donation_params, "donor_id", donor.id)
+                 donation_params
                ) do
             {:ok, pledges} ->
               Notifier.email_parties(challenge, donor, pledges, challenge_path)
@@ -86,7 +91,7 @@ defmodule OmegaBraveraWeb.DonationController do
           case Pledges.create(
                  challenge,
                  stripe_customer,
-                 Map.put(donation_params, "donor_id", donor.id)
+                 donation_params,
                ) do
             {:ok, pledge} ->
               Notifier.email_parties(challenge, donor, pledge, challenge_path)

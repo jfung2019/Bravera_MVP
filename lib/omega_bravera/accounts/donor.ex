@@ -20,4 +20,6 @@ defmodule OmegaBravera.Accounts.Donor do
     |> cast(attrs, [:firstname, :lastname, :email])
     |> validate_required([:firstname, :lastname, :email])
   end
+
+  def full_name(%__MODULE__{firstname: first, lastname: last}), do: "#{first} #{last}"
 end
