@@ -95,12 +95,12 @@ defmodule OmegaBravera.Accounts do
   end
 
   defp donors_for_challenge_query(challenge) do
-    from(user in User,
+    from(donor in Donor,
       join: donation in Donation,
-      on: donation.user_id == user.id,
+      on: donation.donor_id == donor.id,
       where: donation.ngo_chal_id == ^challenge.id,
-      distinct: donation.user_id,
-      order_by: user.id
+      distinct: donation.donor_id,
+      order_by: donor.id
     )
   end
 
@@ -116,8 +116,8 @@ defmodule OmegaBravera.Accounts do
       challenge
       |> donors_for_challenge_query()
       |> order_by(desc: :inserted_at)
-      |> group_by([user, donation], [user.id, donation.user_id, donation.currency])
-      |> select([user, donation], {user, sum(donation.amount), donation.currency})
+      |> group_by([donor, donation], [donor.id, donation.donor_id, donation.currency])
+      |> select([donor, donation], {donor, sum(donation.amount), donation.currency})
 
     query =
       if is_number(limit) and limit > 0 do
@@ -128,8 +128,8 @@ defmodule OmegaBravera.Accounts do
 
     query
     |> Repo.all()
-    |> Enum.map(fn {user, amount, currency} ->
-      %{"user" => user, "pledged" => amount, "currency" => currency}
+    |> Enum.map(fn {donor, amount, currency} ->
+      %{"user" => donor, "pledged" => amount, "currency" => currency}
     end)
   end
 
@@ -138,8 +138,8 @@ defmodule OmegaBravera.Accounts do
       challenge
       |> donors_for_challenge_query()
       |> order_by(desc: :inserted_at)
-      |> group_by([user, donation], [user.id, donation.user_id, donation.currency])
-      |> select([user, donation], {user, sum(donation.amount), donation.currency})
+      |> group_by([donor, donation], [donor.id, donation.user_id, donation.currency])
+      |> select([donor, donation], {donor, sum(donation.amount), donation.currency})
 
     query =
       if is_number(limit) and limit > 0 do
@@ -150,9 +150,9 @@ defmodule OmegaBravera.Accounts do
 
     query
     |> Repo.all()
-    |> Enum.map(fn {user, amount, currency} ->
+    |> Enum.map(fn {donor, amount, currency} ->
       %{
-        "user" => user,
+        "user" => donor,
         "pledged" => Decimal.mult(amount, challenge.distance_target),
         "currency" => currency
       }
