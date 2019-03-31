@@ -2,6 +2,7 @@ defmodule OmegaBravera.Money.Donation do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias OmegaBravera.Accounts.User
   alias OmegaBravera.Accounts.Donor
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Fundraisers.NGO
@@ -31,6 +32,7 @@ defmodule OmegaBravera.Money.Donation do
     field(:exchange_rate, :decimal, default: 1)
 
     # associations
+    belongs_to(:user, User)
     belongs_to(:donor, Donor)
     belongs_to(:ngo_chal, NGOChal)
     belongs_to(:ngo, NGO)
@@ -51,7 +53,8 @@ defmodule OmegaBravera.Money.Donation do
     :ngo_id,
     :exchange_rate,
     :donor_pays_fees,
-    :donor_id
+    :donor_id,
+    :user_id
   ]
   @required_attributes [
     :amount,
