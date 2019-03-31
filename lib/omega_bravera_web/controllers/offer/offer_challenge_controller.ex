@@ -31,6 +31,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     redeem_form_page(conn, offer_slug, slug, redeem_token)
   end
 
+  # TODO: remove after the Fineprint offer ends to avoid breaking redeem links. -Sherief
   def qr_code(conn, %{
         "offer_challenge_slug" => slug,
         "offer_slug" => offer_slug,
