@@ -1,6 +1,13 @@
 defmodule OmegaBraveraWeb.Controllers.Helpers do
   alias OmegaBravera.{Challenges, Challenges.NGOChal, Money}
 
+  def render_404(conn) do
+    conn
+    |> Phoenix.Controller.put_view(OmegaBraveraWeb.PageView)
+    |> Plug.Conn.put_status(:not_found)
+    |> Phoenix.Controller.render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
+  end
+
   def total_for_user_challenges(ngo_chals, type) do
     cond do
       Enum.empty?(ngo_chals) ->
