@@ -708,13 +708,13 @@ defmodule OmegaBravera.Accounts do
     AdminUser.changeset(admin_user, %{})
   end
 
-  def create_or_update_donor_opt_in_mailing_list(user, ngo, attrs) do
+  def create_or_update_donor_opt_in_mailing_list(donor, ngo, attrs) do
     attrs =
       attrs
-      |> Map.put_new("user_id", user.id)
+      |> Map.put_new("donor_id", donor.id)
       |> Map.put_new("ngo_id", ngo.id)
 
-    case Repo.get_by(Accounts.DonorOptInMailingList, user_id: user.id, ngo_id: ngo.id) do
+    case Repo.get_by(Accounts.DonorOptInMailingList, donor_id: donor.id, ngo_id: ngo.id) do
       nil ->
         case create_donor_opt_in_mailing_list(attrs) do
           {:error, reason} -> {:error, reason}
@@ -769,12 +769,12 @@ defmodule OmegaBravera.Accounts do
     from(
       donor_opt_in in Accounts.DonorOptInMailingList,
       where: donor_opt_in.ngo_id == ^id and donor_opt_in.opt_in == true,
-      join: user in assoc(donor_opt_in, :user),
+      join: donor in assoc(donor_opt_in, :donor),
       join: ngo in assoc(donor_opt_in, :ngo),
       select: [
-        user.firstname,
-        user.lastname,
-        user.email,
+        donor.firstname,
+        donor.lastname,
+        donor.email,
         ngo.name,
         fragment("TO_CHAR(? :: DATE, 'dd-mm-yyyy mm-hh')", donor_opt_in.updated_at)
       ]
