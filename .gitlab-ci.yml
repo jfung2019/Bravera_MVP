@@ -1,5 +1,5 @@
 test:
-  image: elixir:1.8
+  image: bitwalker/alpine-elixir-phoenix:latest
   services:
   - postgres:latest
   variables:
@@ -10,7 +10,7 @@ test:
       - deps/
       - _build/
   script:
-  - mix do local.hex --force, local.rebar --force, deps.get --only test
+  - mix do deps.get
   - mix test --exclude skip
 
 docker_build:
@@ -26,7 +26,7 @@ docker_build:
   before_script:
     - docker info
   script:
-      - docker build -t bravera .
+      - docker build -t bravera --build-arg APP_BASE_URL --build-arg APP_HOST --build-arg AWS_ACCESS_KEY_ID --build-arg DATABASE_URL --build-arg ENABLE_EMAILS --build-arg ENABLE_MANUAL_ACTIVITIES --build-arg GOOGLE_ANALYTICS_ID --build-arg GUARDIAN_SECRET_KEY --build-arg S3_BUCKET_NAME --build-arg SECRET_KEY_BASE  --build-arg SENDGRID_API_KEY --build-arg STRAVA_ACCESS_TOKEN --build-arg STRAVA_CLIENT_ID --build-arg STRAVA_CLIENT_SECRET --build-arg STRAVA_REDIRECT_URI --build-arg STRIPE_PUBLIC_KEY --build-arg STRIPE_SECRET_KEY .
 
 staging:
   stage: deploy
