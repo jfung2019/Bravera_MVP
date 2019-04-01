@@ -3,8 +3,12 @@ test:
   services:
   - postgres:latest
   variables:
-    BRAVERA_DB_HOST: "postgres"
     MIX_ENV: "test"
+  cache:
+    key: bravera
+    paths:
+      - deps/
+      - _build/
   script:
   - mix do local.hex --force, local.rebar --force, deps.get --only test
   - mix test --exclude skip
