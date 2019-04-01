@@ -12,7 +12,9 @@ defmodule OmegaBravera.Donations.Pledges do
       |> Enum.map(&elem(&1, 1))
 
     if length(pledges) == length(Map.keys(pledged_charges)) do
-      Challenges.update_ngo_chal(challenge, %{
+      challenge = challenge |> Repo.preload(:user)
+
+      Challenges.update_ngo_chal(challenge, challenge.user, %{
         self_donated: self_donated(challenge, donation_params)
       })
 
@@ -26,7 +28,9 @@ defmodule OmegaBravera.Donations.Pledges do
   def create(%NGOChal{type: "PER_KM"} = challenge, stripe_customer, donation_params) do
     case create_pledge(challenge, donation_params, stripe_customer) do
       {:ok, pledge} ->
-        Challenges.update_ngo_chal(challenge, %{
+        challenge = challenge |> Repo.preload(:user)
+
+        Challenges.update_ngo_chal(challenge, challenge.user, %{
           self_donated: self_donated(challenge, donation_params)
         })
 

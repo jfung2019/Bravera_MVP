@@ -3,7 +3,7 @@ defmodule OmegaBravera.ChallengesTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Challenges, Fundraisers.NGO}
+  alias OmegaBravera.{Challenges, Fundraisers.NGO, Accounts.User}
 
   describe "ngo_chals" do
     alias OmegaBravera.Challenges.NGOChal
@@ -13,25 +13,15 @@ defmodule OmegaBravera.ChallengesTest do
       "distance_target" => 50,
       "duration" => 40,
       "money_target" => "120.5",
-      "slug" => "some slug",
       "status" => "",
       "type" => "PER_MILESTONE"
     }
-    @update_attrs %{
-      "activity_type" => "Run",
-      "distance_target" => 75,
-      "duration" => 50,
-      "money_target" => "456.7",
-      "slug" => "some updated slug",
-      "status" => "some updated status",
-      "type" => "PER_MILESTONE"
-    }
+
     @invalid_attrs %{
       "activity_type" => nil,
       "distance_target" => "invalid",
       "duration" => "invalid",
       "money_target" => nil,
-      "slug" => nil,
       "status" => nil,
       "type" => nil
     }
@@ -134,13 +124,13 @@ defmodule OmegaBravera.ChallengesTest do
 
       attrs = Map.merge(@valid_attrs, %{"user_id" => user.id, "ngo_id" => ngo.id})
 
-      {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
+      {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, user, attrs)
 
       assert ngo_chal.activity_type == "Walk"
       assert ngo_chal.distance_target == 50
       assert ngo_chal.duration == 40
       assert ngo_chal.money_target == Decimal.new("120.5")
-      assert ngo_chal.slug == "some slug"
+      refute is_nil(ngo_chal.slug)
       assert ngo_chal.status == "active"
     end
 
@@ -151,7 +141,7 @@ defmodule OmegaBravera.ChallengesTest do
 
       attrs = Map.merge(@valid_attrs, %{"user_id" => user.id, "ngo_id" => ngo.id})
 
-      {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
+      {:ok, %NGOChal{} = ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, user, attrs)
 
       assert ngo_chal.start_date == ngo.launch_date
       assert ngo_chal.end_date == Timex.shift(ngo.launch_date, days: ngo_chal.duration)
@@ -159,35 +149,13 @@ defmodule OmegaBravera.ChallengesTest do
       assert ngo_chal.distance_target == 50
       assert ngo_chal.duration == 40
       assert ngo_chal.money_target == Decimal.new("120.5")
-      assert ngo_chal.slug == "some slug"
+      refute is_nil(ngo_chal.slug)
       assert ngo_chal.status == "pre_registration"
     end
 
     test "create_ngo_chal/2 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
-               Challenges.create_ngo_chal(%NGOChal{}, %NGO{}, @invalid_attrs)
-    end
-
-    test "update_ngo_chal/2 with valid data updates the ngo_chal" do
-      ngo_chal = ngo_chal_fixture()
-
-      {:ok, ngo_chal} = Challenges.update_ngo_chal(ngo_chal, @update_attrs)
-
-      assert match?(%NGOChal{}, ngo_chal) == true
-
-      assert ngo_chal.activity_type == "Run"
-      assert ngo_chal.distance_target == 75
-      assert ngo_chal.duration == 50
-      assert ngo_chal.money_target == Decimal.new("456.7")
-      assert ngo_chal.slug == "some updated slug"
-      assert ngo_chal.status == "some updated status"
-    end
-
-    test "update_ngo_chal/2 with invalid data returns error changeset" do
-      %NGOChal{id: id, updated_at: updated_at} = ngo_chal = ngo_chal_fixture()
-      assert {:error, %Ecto.Changeset{}} = Challenges.update_ngo_chal(ngo_chal, @invalid_attrs)
-      retrieved = Challenges.get_ngo_chal!(ngo_chal.id)
-      assert %NGOChal{id: ^id, updated_at: ^updated_at} = retrieved
+               Challenges.create_ngo_chal(%NGOChal{}, %NGO{}, %User{}, @invalid_attrs)
     end
 
     test "delete_ngo_chal/1 deletes the ngo_chal" do
@@ -198,7 +166,7 @@ defmodule OmegaBravera.ChallengesTest do
 
     test "change_ngo_chal/1 returns a ngo_chal changeset" do
       ngo_chal = ngo_chal_fixture()
-      assert %Ecto.Changeset{} = Challenges.change_ngo_chal(ngo_chal)
+      assert %Ecto.Changeset{} = Challenges.change_ngo_chal(ngo_chal, insert(:user))
     end
   end
 end

@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.AdminPanelNGOController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Accounts, Fundraisers, Fundraisers.NgoOptions, Slugify, Challenges}
+  alias OmegaBravera.{Accounts, Fundraisers, Fundraisers.NgoOptions, Challenges, Repo}
   alias OmegaBravera.Fundraisers.NGO
 
   use Timex
@@ -25,12 +25,6 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
   end
 
   def create(conn, %{"ngo" => ngo_params}) do
-    sluggified_ngo_name = Slugify.gen_slug(ngo_params["name"])
-
-    ngo_params =
-      ngo_params
-      |> Map.put("slug", sluggified_ngo_name)
-
     case Fundraisers.create_ngo(ngo_params) do
       {:ok, ngo} ->
         conn
@@ -62,7 +56,9 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
         ngo.ngo_chals
         |> Enum.map(fn challenge ->
           if challenge.status == "pre_registration" do
-            Challenges.update_ngo_chal(challenge, %{start_date: updated_ngo.launch_date})
+            challenge = challenge |> Repo.preload(:user)
+
+            Challenges.update_ngo_chal(challenge, challenge.user, %{start_date: updated_ngo.launch_date})
           end
         end)
 
