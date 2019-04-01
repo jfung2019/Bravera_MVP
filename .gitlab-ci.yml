@@ -19,6 +19,8 @@ docker_build:
   only:
     - staging
   image: docker:stable
+  variables:
+    DOCKER_HOST: tcp://localhost:2375
   services:
     - docker:dind
   before_script:
