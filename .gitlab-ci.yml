@@ -13,6 +13,17 @@ test:
   - mix do local.hex --force, local.rebar --force, deps.get --only test
   - mix test --exclude skip
 
+docker_build:
+  stage: docker
+  environment: build
+  only:
+    - staging
+  image: docker:stable
+  before_script:
+    - docker info
+  script:
+      - docker build -t bravera .
+
 staging:
   stage: deploy
   environment: staging
