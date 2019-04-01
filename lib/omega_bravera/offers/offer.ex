@@ -71,7 +71,6 @@ defmodule OmegaBravera.Offers.Offer do
   ]
   @required_attributes [
     :name,
-    :slug,
     :url,
     :logo,
     :offer_challenge_types,
@@ -89,6 +88,7 @@ defmodule OmegaBravera.Offers.Offer do
     |> cast(attrs, @allowed_atributes)
     |> validate_required(@required_attributes)
     |> validate_length(:name, max: 77)
+    |> generate_slug()
     |> validate_inclusion(:currency, currency_options())
     |> validate_subset(:activities, activity_options())
     |> validate_subset(:distances, distance_options())
@@ -97,6 +97,7 @@ defmodule OmegaBravera.Offers.Offer do
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
     |> validate_launch_date()
+    |> validate_required(:slug)
     |> unique_constraint(:slug)
   end
 
@@ -105,6 +106,22 @@ defmodule OmegaBravera.Offers.Offer do
     |> changeset(attrs)
     |> validate_pre_registration_start_date_modification(offer)
     |> validate_no_active_challenges(offer)
+  end
+
+  def generate_slug(%Ecto.Changeset{} = changeset) do
+    slug = get_field(changeset, :slug)
+    name = get_field(changeset, :name)
+
+    cond do
+      not is_nil(slug) ->
+        change(changeset, slug: slug)
+
+      is_nil(slug) and not is_nil(name) ->
+        change(changeset, slug: Slug.slugify(name))
+
+      true ->
+        changeset
+    end
   end
 
   defp validate_pre_registration_start_date(
