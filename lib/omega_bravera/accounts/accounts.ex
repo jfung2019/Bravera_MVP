@@ -138,7 +138,7 @@ defmodule OmegaBravera.Accounts do
       challenge
       |> donors_for_challenge_query()
       |> order_by(desc: :inserted_at)
-      |> group_by([donor, donation], [donor.id, donation.user_id, donation.currency])
+      |> group_by([donor, donation], [donor.id, donation.donor_id, donation.currency])
       |> select([donor, donation], {donor, sum(donation.amount), donation.currency})
 
     query =
