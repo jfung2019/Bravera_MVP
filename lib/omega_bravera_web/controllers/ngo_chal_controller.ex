@@ -14,7 +14,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
     Fundraisers.NGO,
     Fundraisers.NgoOptions,
     Money.Donation,
-    Slugify,
     Accounts.User
   }
 
@@ -36,7 +35,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
       ngo ->
         current_user = Guardian.Plug.current_resource(conn)
-        changeset = Challenges.change_ngo_chal(%NGOChal{})
+        changeset = Challenges.change_ngo_chal(%NGOChal{}, current_user)
 
         render(conn, "new.html", changeset: changeset, ngo: ngo, current_user: current_user)
     end
@@ -45,7 +44,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
   def create(conn, %{"ngo_slug" => ngo_slug, "ngo_chal" => chal_params}) do
     current_user = Guardian.Plug.current_resource(conn)
     ngo = Fundraisers.get_ngo_by_slug(ngo_slug)
-    sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
     chal_params =
       case Map.has_key?(chal_params, "team") do
@@ -57,15 +55,14 @@ defmodule OmegaBraveraWeb.NGOChalController do
       "user_id" => current_user.id,
       "ngo_slug" => ngo_slug,
       "ngo_id" => ngo.id,
-      "slug" => sluggified_username,
       "default_currency" => ngo.currency
     }
 
     changeset_params = Map.merge(chal_params, extra_params)
 
-    case create_challenge(ngo, changeset_params) do
+    case create_challenge(ngo, current_user, changeset_params) do
       {:ok, challenge} ->
-        challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, sluggified_username)
+        challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, challenge.slug)
         send_emails(challenge, challenge_path)
 
         conn
@@ -103,29 +100,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
         render_attrs = get_render_attrs(conn, challenge, changeset, ngo_slug)
 
         render(conn, "show.html", Map.merge(render_attrs, get_stats(challenge)))
-    end
-  end
-
-  def edit(conn, %{"id" => id}) do
-    ngo_chal = Challenges.get_ngo_chal!(id)
-    changeset = Challenges.change_ngo_chal(ngo_chal)
-    render(conn, "edit.html", ngo_chal: ngo_chal, changeset: changeset)
-  end
-
-  # Not used but we can use it if we decide to enable editing a Challenge.
-  def update(conn, %{"id" => id, "ngo_chal" => ngo_chal_params}) do
-    ngo_chal = Challenges.get_ngo_chal!(id)
-
-    case Challenges.update_ngo_chal(ngo_chal, ngo_chal_params) do
-      {:ok, ngo_chal} ->
-        ngo_chal = ngo_chal |> OmegaBravera.Repo.preload(:ngo)
-
-        conn
-        |> put_flash(:info, "Ngo chal updated successfully.")
-        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_chal.ngo.slug, ngo_chal.slug))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", ngo_chal: ngo_chal, changeset: changeset)
     end
   end
 
@@ -306,13 +280,13 @@ defmodule OmegaBraveraWeb.NGOChalController do
     }
   end
 
-  defp create_challenge(%NGO{} = ngo, attrs) do
+  defp create_challenge(%NGO{} = ngo, %User{} = user, attrs) do
     case attrs["has_team"] do
       "true" ->
-        Challenges.create_ngo_chal_with_team(%NGOChal{}, ngo, attrs)
+        Challenges.create_ngo_chal_with_team(%NGOChal{}, ngo, user, attrs)
 
       _ ->
-        Challenges.create_ngo_chal(%NGOChal{}, ngo, attrs)
+        Challenges.create_ngo_chal(%NGOChal{}, ngo, user, attrs)
     end
   end
 

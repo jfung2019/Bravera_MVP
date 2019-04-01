@@ -76,7 +76,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
   ]
   @required_attributes [
     :name,
-    :slug,
     :minimum_donation,
     :url,
     :logo,
@@ -91,6 +90,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     ngo
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
+    |> generate_slug()
     |> validate_number(:minimum_donation, greater_than_or_equal_to: 0)
     |> validate_number(:fundraising_goal, greater_than_or_equal_to: 0)
     |> validate_inclusion(:currency, currency_options())
@@ -102,6 +102,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
     |> validate_launch_date()
+    |> validate_required(:slug)
     |> unique_constraint(:slug)
   end
 
@@ -110,6 +111,22 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> changeset(attrs)
     |> validate_pre_registration_start_date_modification(ngo)
     |> validate_no_active_challenges(ngo)
+  end
+
+  def generate_slug(%Ecto.Changeset{} = changeset) do
+    slug = get_field(changeset, :slug)
+    name = get_field(changeset, :name)
+
+    cond do
+      not is_nil(slug) ->
+        change(changeset, slug: slug)
+
+      is_nil(slug) and not is_nil(name) ->
+        change(changeset, slug: Slug.slugify(name))
+
+      true ->
+        changeset
+    end
   end
 
   defp validate_pre_registration_start_date(

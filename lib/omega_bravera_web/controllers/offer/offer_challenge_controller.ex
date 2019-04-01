@@ -10,8 +10,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Offers.OfferChallenge,
     Offers.OfferVendor,
     Fundraisers.NgoOptions,
-    Repo,
-    Slugify
+    Repo
   }
 
   plug :put_layout, false when action in [:qr_code]
@@ -176,17 +175,11 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       |> Repo.preload(:offer_challenges)
 
     offer = Offers.get_offer_by_slug(offer_slug)
-    sluggified_username = Slugify.gen_random_slug(current_user.firstname)
 
-    attrs = %{
-      "user_id" => current_user.id,
-      "slug" => sluggified_username
-    }
-
-    case Offers.create_offer_challenge(offer, current_user, attrs) do
+    case Offers.create_offer_challenge(offer, current_user) do
       {:ok, offer_challenge} ->
         offer_challenge_path =
-          offer_offer_challenge_path(conn, :show, offer.slug, sluggified_username)
+          offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug)
 
         send_emails(offer_challenge, offer_challenge_path)
 

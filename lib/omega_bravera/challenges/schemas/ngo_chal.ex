@@ -47,7 +47,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :money_target,
     :distance_target,
     :distance_covered,
-    :slug,
     :status,
     :duration,
     :milestones,
@@ -57,7 +56,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :self_donated,
     :type,
     :has_team,
-    :start_date
+    :start_date,
+    :slug
   ]
 
   @required_attributes [
@@ -68,15 +68,15 @@ defmodule OmegaBravera.Challenges.NGOChal do
     :duration,
     :user_id,
     :ngo_id,
-    :slug,
     :type
   ]
 
   @doc false
-  def changeset(ngo_chal, attrs) do
+  def changeset(ngo_chal, user, attrs) do
     ngo_chal
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
+    |> generate_slug(user)
     |> validate_number(:distance_target, greater_than: 0)
     |> validate_inclusion(:distance_target, distance_options())
     |> validate_number(:money_target, greater_than: 0)
@@ -84,32 +84,51 @@ defmodule OmegaBravera.Challenges.NGOChal do
     |> validate_inclusion(:default_currency, currency_options())
     |> validate_inclusion(:duration, duration_options())
     |> validate_inclusion(:type, challenge_type_options())
+    |> validate_required(:slug)
     |> unique_constraint(:slug,
       name: :ngo_chals_slug_unique_index,
       message: "Challenge's slug must be unique."
     )
   end
 
-  def create_changeset(ngo_chal, ngo, attrs) do
+  def create_changeset(ngo_chal, ngo, user, attrs) do
     ngo_chal
-    |> changeset(attrs)
+    |> changeset(user, attrs)
     |> add_start_and_end_dates(ngo, attrs)
     |> add_status(ngo)
     |> add_last_activity_received(ngo)
     |> validate_required([:start_date, :end_date])
   end
 
-  def create_with_team_changeset(ngo_chal, ngo, attrs) do
+  def create_with_team_changeset(ngo_chal, ngo, user, attrs) do
     ngo_chal
-    |> create_changeset(ngo, attrs)
+    |> create_changeset(ngo, user, attrs)
     |> cast_assoc(:team, with: &Team.changeset/2, required: true)
   end
 
-  def update_changeset(ngo_chal, attrs) do
+  def update_changeset(ngo_chal, user, attrs) do
     ngo_chal
-    |> changeset(attrs)
+    |> changeset(user, attrs)
     |> update_end_date(ngo_chal)
   end
+
+  def generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do
+    slug = get_field(changeset, :slug)
+
+    cond do
+      not is_nil(slug) ->
+        changeset
+
+      is_nil(slug) and not is_nil(firstname) ->
+        change(changeset, slug: "#{Slug.slugify(firstname)}-#{gen_unique_string()}")
+
+      true ->
+        changeset
+    end
+  end
+
+  defp gen_unique_string(length \\ 4),
+    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 
   def update_end_date(%Ecto.Changeset{} = changeset, %__MODULE__{
         end_date: end_date,
