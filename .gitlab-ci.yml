@@ -18,7 +18,7 @@ docker_build:
   environment: staging
   only:
     - staging
-  image: docker:stable
+  image: docker:dind
   before_script:
     - docker info
   script:
