@@ -14,8 +14,8 @@ test:
   - mix test --exclude skip
 
 docker_build:
-  stage: docker
-  environment: build
+  stage: build
+  environment: staging
   only:
     - staging
   image: docker:stable
