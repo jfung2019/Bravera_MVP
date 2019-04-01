@@ -40,8 +40,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   end
 
   @allowed_attributes [
-    :user_id,
-    :slug,
     :start_date,
     :end_date,
     :activity_type,
@@ -51,24 +49,13 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     :type
   ]
 
-  @required_attributes [
-    :user_id,
-    :slug
-  ]
-
   @doc false
-  def changeset(offer_challenge, attrs) do
+  def changeset(offer_challenge, attrs \\ %{}) do
     offer_challenge
     |> cast(attrs, @allowed_attributes)
-    |> validate_required(@required_attributes)
-    |> unique_constraint(:user_id_offer_id,
-      name: :one_offer_per_user_index,
-      message: "You cannot join an offer more then once."
-    )
-    |> unique_constraint(:slug)
   end
 
-  def create_changeset(offer_challenge, offer, user, attrs) do
+  def create_changeset(offer_challenge, offer, user, attrs \\ %{}) do
     offer_challenge
     |> changeset(attrs)
     |> change(%{
@@ -85,11 +72,37 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> validate_inclusion(:type, challenge_type_options())
     |> add_start_and_end_dates(offer)
     |> add_status(offer)
+    |> generate_slug(user)
     |> put_change(:redeem_token, gen_token())
+    |> put_change(:user_id, user.id)
     |> add_last_activity_received(offer)
     |> validate_required([:start_date, :end_date])
     |> validate_user_has_no_active_offer_challenges(user)
+    |> validate_required(:slug)
+    |> unique_constraint(:user_id_offer_id,
+      name: :one_offer_per_user_index,
+      message: "You cannot join an offer more then once."
+    )
+    |> unique_constraint(:slug)
   end
+
+  defp generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do
+    slug = get_field(changeset, :slug)
+
+    cond do
+      not is_nil(slug) ->
+        changeset
+
+      is_nil(slug) and not is_nil(firstname) ->
+        change(changeset, slug: "#{Slug.slugify(firstname)}-#{gen_unique_string()}")
+
+      true ->
+        changeset
+    end
+  end
+
+  defp gen_unique_string(length \\ 4),
+    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 
   defp add_status(%Ecto.Changeset{} = changeset, %Offer{
          open_registration: open_registration,

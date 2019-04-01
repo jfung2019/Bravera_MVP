@@ -8,6 +8,7 @@ defmodule OmegaBravera.Challenges do
   alias OmegaBravera.Repo
   alias OmegaBravera.Challenges.{NGOChal, Activity, Team, TeamMembers, TeamInvitations}
   alias OmegaBravera.Fundraisers.NGO
+  alias OmegaBravera.Accounts.User
 
   use Timex
 
@@ -219,15 +220,15 @@ defmodule OmegaBravera.Challenges do
     |> Repo.one()
   end
 
-  def create_ngo_chal(%NGOChal{} = chal, %NGO{} = ngo, attrs \\ %{}) do
+  def create_ngo_chal(%NGOChal{} = chal, %NGO{} = ngo, %User{} = user, attrs \\ %{}) do
     chal
-    |> NGOChal.create_changeset(ngo, attrs)
+    |> NGOChal.create_changeset(ngo, user, attrs)
     |> Repo.insert()
   end
 
-  def create_ngo_chal_with_team(%NGOChal{} = chal, %NGO{} = ngo, attrs \\ %{}) do
+  def create_ngo_chal_with_team(%NGOChal{} = chal, %NGO{} = ngo, %User{} = user, attrs \\ %{}) do
     chal
-    |> NGOChal.create_with_team_changeset(ngo, attrs)
+    |> NGOChal.create_with_team_changeset(ngo, user, attrs)
     |> Repo.insert()
   end
 
@@ -275,9 +276,9 @@ defmodule OmegaBravera.Challenges do
     |> Repo.one!()
   end
 
-  def update_ngo_chal(%NGOChal{} = ngo_chal, attrs) do
+  def update_ngo_chal(%NGOChal{} = ngo_chal, %User{} = user, attrs) do
     ngo_chal
-    |> NGOChal.update_changeset(attrs)
+    |> NGOChal.update_changeset(user, attrs)
     |> Repo.update()
   end
 
@@ -285,8 +286,8 @@ defmodule OmegaBravera.Challenges do
     Repo.delete(ngo_chal)
   end
 
-  def change_ngo_chal(%NGOChal{} = ngo_chal) do
-    NGOChal.changeset(ngo_chal, %{})
+  def change_ngo_chal(%NGOChal{} = ngo_chal, %User{} = user) do
+    NGOChal.changeset(ngo_chal, user, %{})
   end
 
   def get_total_challenge_days() do

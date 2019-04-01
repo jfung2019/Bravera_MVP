@@ -3,10 +3,10 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Challenges.NGOChal, Slugify}
+  alias OmegaBravera.{Challenges.NGOChal, Accounts.User}
 
   test "changeset/2 is invalid if not provided the required attributes" do
-    assert NGOChal.changeset(%NGOChal{}, %{"activity_type" => "Walk"}).valid? == false
+    assert NGOChal.changeset(%NGOChal{}, %User{}, %{"activity_type" => "Walk"}).valid? == false
   end
 
   test "create_changeset/2 sets the start and end date based on the specified challenge duration" do
@@ -20,11 +20,10 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
       "duration" => 50,
       "ngo_id" => ngo.id,
       "user_id" => user.id,
-      "slug" => Slugify.gen_random_slug(user.firstname),
       "type" => "PER_MILESTONE"
     }
 
-    changeset = NGOChal.create_changeset(%NGOChal{}, ngo, attrs)
+    changeset = NGOChal.create_changeset(%NGOChal{}, ngo, user, attrs)
 
     assert changeset.valid? == true
     assert changeset.changes[:start_date] != nil

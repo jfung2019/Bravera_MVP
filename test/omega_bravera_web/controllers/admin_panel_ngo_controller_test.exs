@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     image: "/test.png",
     url: "http://test.com",
     name: "some name",
-    slug: "some-slug",
+    slug: nil,
     open_registration: false,
     pre_registration_start_date: Timex.shift(Timex.now(), days: 1),
     launch_date: Timex.shift(Timex.now(), days: 10),
@@ -68,7 +68,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
       "type" => "PER_KM"
     }
 
-    {:ok, _ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, ngo_chal_attrs)
+    {:ok, _ngo_chal} = Challenges.create_ngo_chal(%NGOChal{}, ngo, user, ngo_chal_attrs)
     ngo
   end
 
@@ -114,6 +114,10 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
         )
 
       assert %{slug: slug} = redirected_params(conn)
+
+      ngo = Fundraisers.get_ngo_by_slug(slug)
+      assert ngo.slug == "some-name"
+
       assert redirected_to(conn) == admin_panel_ngo_path(conn, :show, slug)
     end
 
@@ -137,6 +141,10 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
     test "redirects when data is valid after updating", %{conn: conn, ngo: ngo} do
       conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: @update_attrs)
+
+      updated_ngo = Fundraisers.get_ngo_by_slug(@update_attrs.slug)
+      assert updated_ngo.slug == @update_attrs.slug
+
       assert redirected_to(conn) == admin_panel_ngo_path(conn, :index)
     end
 

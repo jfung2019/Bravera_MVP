@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.AdminPanelOfferController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Accounts, Offers, Offers.Offer, Fundraisers.NgoOptions, Slugify}
+  alias OmegaBravera.{Accounts, Offers, Offers.Offer, Fundraisers.NgoOptions}
 
   use Timex
 
@@ -25,12 +25,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
   end
 
   def create(conn, %{"offer" => offer_params}) do
-    sluggified_offer_name = Slugify.gen_slug(offer_params["name"])
-
-    offer_params =
-      offer_params
-      |> Map.put("slug", sluggified_offer_name)
-
     case Offers.create_offer(offer_params) do
       {:ok, offer} ->
         conn
@@ -38,22 +32,20 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
         |> redirect(to: admin_panel_offer_path(conn, :show, offer))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        users = Accounts.list_users()
         vendors = Offers.list_offer_vendors()
 
         conn
         |> assign_available_options(nil)
-        |> render("new.html", changeset: changeset, users: users, vendors: vendors)
+        |> render("new.html", changeset: changeset, vendors: vendors)
     end
   end
 
   def edit(conn, %{"slug" => slug}) do
     offer = Offers.get_offer_by_slug_with_hk_time(slug)
-    users = Accounts.list_users()
     vendors = Offers.list_offer_vendors()
     changeset = Offers.change_offer(offer)
 
-    render(conn, "edit.html", offer: offer, users: users, vendors: vendors, changeset: changeset)
+    render(conn, "edit.html", offer: offer, vendors: vendors, changeset: changeset)
   end
 
   def update(conn, %{"slug" => slug, "offer" => offer_params}) do
@@ -87,12 +79,11 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
         |> redirect(to: admin_panel_offer_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        users = Accounts.list_users()
         vendors = Offers.list_offer_vendors()
 
         conn
         |> assign_available_options(nil)
-        |> render("edit.html", users: users, offer: offer, vendors: vendors, changeset: changeset)
+        |> render("edit.html", offer: offer, vendors: vendors, changeset: changeset)
     end
   end
 

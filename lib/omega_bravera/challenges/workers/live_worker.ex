@@ -8,9 +8,9 @@ defmodule OmegaBravera.Challenges.LiveWorker do
   def start() do
     Challenges.get_live_ngo_chals()
     |> Enum.map(fn challenge ->
-      challenge = challenge |> Repo.preload([:ngo])
+      challenge = challenge |> Repo.preload([:ngo, :user])
 
-      case Challenges.update_ngo_chal(challenge, %{status: "active"}) do
+      case Challenges.update_ngo_chal(challenge, challenge.user, %{status: "active"}) do
         {:ok, _} ->
           Logger.info("LiveChallenges worker: activated challenge: #{inspect(challenge.slug)}")
 

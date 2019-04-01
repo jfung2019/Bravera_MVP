@@ -3,7 +3,7 @@ defmodule OmegaBravera.OffersTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.Offers
+  alias OmegaBravera.{Offers, Accounts.User}
 
   describe "offers" do
     alias OmegaBravera.Offers.Offer
@@ -208,7 +208,6 @@ defmodule OmegaBravera.OffersTest do
 
       attrs =
         attrs
-        |> Map.put(:user_id, insert(:user).id)
         |> Enum.into(@valid_attrs)
 
       {:ok, offer_challenge} =
@@ -233,7 +232,7 @@ defmodule OmegaBravera.OffersTest do
                Offers.create_offer_challenge(
                  insert(:offer),
                  insert(:user),
-                 Map.put(@valid_attrs, :user_id, insert(:user).id)
+                 @valid_attrs
                )
 
       assert offer_challenge.activity_type == "Run"
@@ -246,7 +245,7 @@ defmodule OmegaBravera.OffersTest do
 
     test "create_offer_challenge/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
-               Offers.create_offer_challenge(insert(:offer), insert(:user), @invalid_attrs)
+               Offers.create_offer_challenge(insert(:offer), %User{}, @invalid_attrs)
     end
 
     test "delete_offer_challenge/1 deletes the offer_challenge" do
