@@ -2,6 +2,10 @@ defmodule OmegaBravera.Accounts.NotifierTest do
   use OmegaBravera.DataCase, async: true
 
   import OmegaBravera.Factory
+
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
+
   alias OmegaBravera.Accounts.Notifier
 
   test "user_signup_email/1 builds the signup email for the sendgrid template" do
@@ -29,8 +33,7 @@ defmodule OmegaBravera.Accounts.NotifierTest do
              subject: nil,
              substitutions: %{
                "-fullName-" => "Rafael Garcia",
-               "-emailVerificationUrl-" =>
-                 "https://www.bravera.co/user/account/activate/8wqfT-c2L1V1lSRb_2eum3Ep3Tf2bDP4"
+               "-emailVerificationUrl-" => Routes.user_url(Endpoint, :activate_email, user.email_activation_token)
              },
              template_id: "b47d2224-792a-43d8-b4b2-f53b033d2f41",
              to: [%{email: "simon.garciar@gmail.com"}],
@@ -39,7 +42,7 @@ defmodule OmegaBravera.Accounts.NotifierTest do
   end
 
   test "send_user_signup_email/1 sends the user signup email" do
-    user = insert(:user)
+    user = insert(:user, %{email_activation_token: "8wqfT-c2L1V1lSRb_2eum3Ep3Tf2bDP4"})
     result = Notifier.send_user_signup_email(user)
 
     assert result == :ok

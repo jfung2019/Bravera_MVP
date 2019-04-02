@@ -62,12 +62,11 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     case create_challenge(ngo, current_user, changeset_params) do
       {:ok, challenge} ->
-        challenge_path = ngo_ngo_chal_path(conn, :show, ngo.slug, challenge.slug)
-        send_emails(challenge, challenge_path)
+        send_emails(challenge)
 
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
-        |> redirect(to: challenge_path)
+        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo.slug, challenge.slug))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
@@ -290,16 +289,13 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end
   end
 
-  defp send_emails(%NGOChal{status: status} = challenge, challenge_path) do
+  defp send_emails(%NGOChal{status: status} = challenge) do
     case status do
       "pre_registration" ->
-        Challenges.Notifier.send_pre_registration_challenge_sign_up_email(
-          challenge,
-          challenge_path
-        )
+        Challenges.Notifier.send_pre_registration_challenge_sign_up_email(challenge)
 
       _ ->
-        Challenges.Notifier.send_challenge_signup_email(challenge, challenge_path)
+        Challenges.Notifier.send_challenge_signup_email(challenge)
     end
   end
 

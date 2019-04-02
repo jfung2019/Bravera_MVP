@@ -57,7 +57,7 @@ defmodule OmegaBraveraWeb.DonationController do
                  donation_params
                ) do
             {:ok, pledges} ->
-              Notifier.email_parties(challenge, donor, pledges, challenge_path)
+              Notifier.email_parties(challenge, donor, pledges)
 
               # TODO: kickstarter donation processing should be moved to a background process so we can have some fault tolerance - Simon
               kickstarter_processing_result =
@@ -94,7 +94,7 @@ defmodule OmegaBraveraWeb.DonationController do
                  donation_params
                ) do
             {:ok, pledge} ->
-              Notifier.email_parties(challenge, donor, pledge, challenge_path)
+              Notifier.email_parties(challenge, donor, pledge)
               :ok
 
             {:error, reason} ->

@@ -1,8 +1,10 @@
 defmodule OmegaBravera.Donations.Notifier do
   alias OmegaBravera.{Challenges.NGOChal, Accounts.Donor, Repo, Money.Donation, Emails}
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mailer}
 
-  def email_parties(%NGOChal{} = chal, %Donor{} = donor, pledges, challenge_path) do
+  def email_parties(%NGOChal{} = chal, %Donor{} = donor, pledges) do
     challenge = Repo.preload(chal, [:ngo, user: [:subscribed_email_categories]])
 
     challenge = %{
@@ -10,13 +12,13 @@ defmodule OmegaBravera.Donations.Notifier do
       | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
     }
 
-    donor_result = email_donor(challenge, donor, challenge_path)
-    participant_result = email_participant(challenge, donor, pledges, challenge_path)
+    donor_result = email_donor(challenge, donor)
+    participant_result = email_participant(challenge, donor, pledges)
 
     [donor_result, participant_result]
   end
 
-  def email_participant(%NGOChal{} = challenge, %Donor{} = donor, pledges, challenge_path) do
+  def email_participant(%NGOChal{} = challenge, %Donor{} = donor, pledges) do
     template_id = "79561f40-9939-406c-bdbe-0ecca63a1e1a"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
 
@@ -25,12 +27,12 @@ defmodule OmegaBravera.Donations.Notifier do
          sendgrid_email.category.id
        ) do
       challenge
-      |> participant_email(donor, pledges, challenge_path, template_id)
+      |> participant_email(donor, pledges, template_id)
       |> Mailer.send()
     end
   end
 
-  def email_donor(%NGOChal{} = challenge, %Donor{} = donor, challenge_path) do
+  def email_donor(%NGOChal{} = challenge, %Donor{} = donor) do
     pre_registration_donor_template_id = "9fc14299-96a0-4a4d-9917-c19f747270ff"
     donor_email_template_id = "4ab4a0f8-79ac-4f82-9ee2-95db6fafb986"
 
@@ -39,7 +41,6 @@ defmodule OmegaBravera.Donations.Notifier do
         challenge
         |> pre_registration_donor_email(
           donor,
-          challenge_path,
           pre_registration_donor_template_id
         )
         |> Mailer.send()
@@ -47,7 +48,7 @@ defmodule OmegaBravera.Donations.Notifier do
 
       true ->
         challenge
-        |> donor_email(donor, challenge_path, donor_email_template_id)
+        |> donor_email(donor, donor_email_template_id)
         |> Mailer.send()
     end
   end
@@ -56,7 +57,6 @@ defmodule OmegaBravera.Donations.Notifier do
         %NGOChal{} = challenge,
         %Donor{} = donor,
         pledges,
-        challenge_path,
         template_id
       ) do
     Email.build()
@@ -69,10 +69,7 @@ defmodule OmegaBravera.Donations.Notifier do
         pledged_amount(pledges)
       }"
     )
-    |> Email.add_substitution(
-      "-challengeURL-",
-      "#{Application.get_env(:omega_bravera, :app_base_url)}#{challenge_path}"
-    )
+    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
@@ -81,7 +78,6 @@ defmodule OmegaBravera.Donations.Notifier do
   def pre_registration_donor_email(
         %NGOChal{} = challenge,
         %Donor{} = donor,
-        challenge_path,
         pre_registration_donor_template_id
       ) do
     challenge = %{
@@ -97,10 +93,7 @@ defmodule OmegaBravera.Donations.Notifier do
       "-challengeStartDate-",
       Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
     )
-    |> Email.add_substitution(
-      "-challengeURL-",
-      "#{Application.get_env(:omega_bravera, :app_base_url)}#{challenge_path}"
-    )
+    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donor.email)
@@ -109,17 +102,13 @@ defmodule OmegaBravera.Donations.Notifier do
   def donor_email(
         %NGOChal{} = challenge,
         %Donor{} = donor,
-        challenge_path,
         donor_email_template_id
       ) do
     Email.build()
     |> Email.put_template(donor_email_template_id)
     |> Email.add_substitution("-donorName-", Donor.full_name(donor))
     |> Email.add_substitution("-participantName-", challenge.user.firstname)
-    |> Email.add_substitution(
-      "-challengeURL-",
-      "#{Application.get_env(:omega_bravera, :app_base_url)}#{challenge_path}"
-    )
+    |> Email.add_substitution("-challengeURL-",challenge_url(challenge))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donor.email)
@@ -153,6 +142,10 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donation.donor.email)
+  end
+
+  defp challenge_url(challenge) do
+    Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
   end
 
   defp pledged_amount(pledges),

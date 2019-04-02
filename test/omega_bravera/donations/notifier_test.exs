@@ -2,6 +2,9 @@ defmodule OmegaBravera.NotifierTest do
   use OmegaBravera.DataCase
   import OmegaBravera.Factory
 
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
+
   alias OmegaBravera.Donations.Notifier
 
   setup do
@@ -42,7 +45,6 @@ defmodule OmegaBravera.NotifierTest do
         challenge,
         donor,
         pledges,
-        "/swcc/#{user.firstname}-594",
         template_id
       )
 
@@ -59,7 +61,7 @@ defmodule OmegaBravera.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeURL-" => "https://www.bravera.co/swcc/John-594",
+               "-challengeURL-" => challenge_url(challenge),
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
                "-donorPledge-" => "HK$600",
                "-participantName-" => user.firstname
@@ -83,7 +85,6 @@ defmodule OmegaBravera.NotifierTest do
       Notifier.pre_registration_donor_email(
         pre_registration_challenge,
         donor,
-        "/swcc/#{user.firstname}-594",
         template_id
       )
 
@@ -100,7 +101,7 @@ defmodule OmegaBravera.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeURL-" => "https://www.bravera.co/swcc/John-594",
+               "-challengeURL-" => challenge_url(pre_registration_challenge),
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
                "-participantName-" => user.firstname,
                "-challengeStartDate-" =>
@@ -117,7 +118,7 @@ defmodule OmegaBravera.NotifierTest do
       insert(:donor, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     template_id = "4ab4a0f8-79ac-4f82-9ee2-95db6fafb986"
-    result = Notifier.donor_email(challenge, donor, "/swcc/#{user.firstname}-594", template_id)
+    result = Notifier.donor_email(challenge, donor, template_id)
 
     assert result == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -132,7 +133,7 @@ defmodule OmegaBravera.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeURL-" => "https://www.bravera.co/swcc/John-594",
+               "-challengeURL-" => challenge_url(challenge),
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
                "-participantName-" => user.firstname
              },
@@ -143,19 +144,19 @@ defmodule OmegaBravera.NotifierTest do
   end
 
   test "email_parties/4 sends the email to both donor and participant",
-       %{challenge: challenge, user: user} = context do
+       %{challenge: challenge, user: _user} = context do
     donor =
       insert(:donor, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     pledges = donations(context, donor)
 
-    result = Notifier.email_parties(challenge, donor, pledges, "/swcc/#{user.firstname}-594")
+    result = Notifier.email_parties(challenge, donor, pledges)
 
     assert result == [:ok, :ok]
   end
 
   test "email_parties/4 sends the email to both donor (pre_registration pledge) and participant",
-       %{pre_registration_challenge: pre_registration_challenge, user: user} = context do
+       %{pre_registration_challenge: pre_registration_challenge, user: _user} = context do
     donor =
       insert(:donor, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
@@ -165,8 +166,7 @@ defmodule OmegaBravera.NotifierTest do
       Notifier.email_parties(
         pre_registration_challenge,
         donor,
-        pledges,
-        "/swcc/#{user.firstname}-594"
+        pledges
       )
 
     assert result == [:ok, :ok]
@@ -245,5 +245,9 @@ defmodule OmegaBravera.NotifierTest do
         ngo_chal: challenge
       })
     ]
+  end
+
+  defp challenge_url(challenge) do
+    Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
   end
 end

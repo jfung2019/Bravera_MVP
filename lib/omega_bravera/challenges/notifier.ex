@@ -9,9 +9,12 @@ defmodule OmegaBravera.Challenges.Notifier do
     Emails
   }
 
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
+
   alias SendGrid.{Email, Mailer}
 
-  def send_manual_activity_blocked_email(%NGOChal{} = challenge, path) do
+  def send_manual_activity_blocked_email(%NGOChal{} = challenge) do
     template_id = "fcd40945-8a55-4459-94b9-401a995246fb"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
@@ -21,25 +24,22 @@ defmodule OmegaBravera.Challenges.Notifier do
          sendgrid_email.category.id
        ) do
       challenge
-      |> manual_activity_blocked_email(path, template_id)
+      |> manual_activity_blocked_email(template_id)
       |> Mailer.send()
     end
   end
 
-  def manual_activity_blocked_email(%NGOChal{} = challenge, path, template_id) do
+  def manual_activity_blocked_email(%NGOChal{} = challenge, template_id) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-participantName-", challenge.user.firstname)
-    |> Email.add_substitution(
-      "-challengeLink-",
-      "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}"
-    )
+    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_challenge_activated_email(%NGOChal{} = challenge, path) do
+  def send_challenge_activated_email(%NGOChal{} = challenge) do
     template_id = "75516ad9-3ce8-4742-bd70-1227ce3cba1d"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
@@ -49,25 +49,22 @@ defmodule OmegaBravera.Challenges.Notifier do
          sendgrid_email.category.id
        ) do
       challenge
-      |> challenge_activated_email(path, template_id)
+      |> challenge_activated_email(template_id)
       |> Mailer.send()
     end
   end
 
-  def challenge_activated_email(%NGOChal{} = challenge, path, template_id) do
+  def challenge_activated_email(%NGOChal{} = challenge, template_id) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution(
-      "-challengeLink-",
-      "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}"
-    )
+    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_pre_registration_challenge_sign_up_email(%NGOChal{} = challenge, path) do
+  def send_pre_registration_challenge_sign_up_email(%NGOChal{} = challenge) do
     template_id = "0e8a21f6-234f-4293-b5cf-fc9805042d82"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
@@ -77,12 +74,12 @@ defmodule OmegaBravera.Challenges.Notifier do
          sendgrid_email.category.id
        ) do
       challenge
-      |> pre_registration_challenge_signup_email(path, template_id)
+      |> pre_registration_challenge_signup_email(template_id)
       |> Mailer.send()
     end
   end
 
-  def pre_registration_challenge_signup_email(%NGOChal{} = challenge, path, template_id) do
+  def pre_registration_challenge_signup_email(%NGOChal{} = challenge, template_id) do
     challenge = %{
       challenge
       | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
@@ -91,10 +88,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution(
-      "-challengeLink-",
-      "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}"
-    )
+    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
     |> Email.add_substitution(
       "-yearMonthDay-",
       Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
@@ -108,7 +102,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_challenge_signup_email(%NGOChal{} = challenge, path) do
+  def send_challenge_signup_email(%NGOChal{} = challenge) do
     template_id = "e5402f0b-a2c2-4786-955b-21d1cac6211d"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
@@ -118,12 +112,12 @@ defmodule OmegaBravera.Challenges.Notifier do
          sendgrid_email.category.id
        ) do
       challenge
-      |> challenge_signup_email(path, template_id)
+      |> challenge_signup_email(template_id)
       |> Mailer.send()
     end
   end
 
-  def challenge_signup_email(%NGOChal{} = challenge, path, template_id) do
+  def challenge_signup_email(%NGOChal{} = challenge, template_id) do
     challenge = %{
       challenge
       | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
@@ -132,10 +126,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution(
-      "-challengeURL-",
-      "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}"
-    )
+    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
     |> Email.add_substitution(
       "-startDate-",
       Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
@@ -360,13 +351,11 @@ defmodule OmegaBravera.Challenges.Notifier do
   end
 
   defp challenge_url(challenge) do
-    "#{Application.get_env(:omega_bravera, :app_base_url)}/#{challenge.ngo.slug}/#{challenge.slug}"
+    Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
   end
 
   defp team_member_invite_link(challenge, token) do
-    "#{Application.get_env(:omega_bravera, :app_base_url)}/login?team_invitation=/#{
-      challenge.ngo.slug
-    }/#{challenge.slug}/add_team_member/#{token}"
+    Routes.page_url(Endpoint, :login, %{team_invitation: Routes.ngo_ngo_chal_ngo_chal_path(Endpoint, :add_team_member, challenge.ngo.slug, challenge.slug, token)})
   end
 
   defp remaining_time(%NGOChal{end_date: end_date}) do

@@ -38,7 +38,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_pre_registration_challenge_sign_up_email(%OfferChallenge{} = challenge, path) do
+  def send_pre_registration_challenge_sign_up_email(%OfferChallenge{} = challenge) do
     template_id = "75c0cbaa-5f00-410f-b0cc-4167c895d381"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
@@ -48,22 +48,19 @@ defmodule OmegaBravera.Offers.Notifier do
          sendgrid_email.category.id
        ) do
       challenge
-      |> pre_registration_challenge_signup_email(path, template_id)
+      |> pre_registration_challenge_signup_email(template_id)
       |> Mailer.send()
     end
   end
 
-  def pre_registration_challenge_signup_email(%OfferChallenge{} = challenge, path, template_id) do
+  def pre_registration_challenge_signup_email(%OfferChallenge{} = challenge, template_id) do
     start_date = Timex.to_datetime(challenge.offer.start_date, "Asia/Hong_Kong")
     end_date = Timex.to_datetime(challenge.offer.end_date, "Asia/Hong_Kong")
 
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution(
-      "-ChallengeLink-",
-      "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}"
-    )
+    |> Email.add_substitution("-ChallengeLink-", challenge_url(challenge))
     |> Email.add_substitution(
       "-StartDate-",
       Timex.format!(start_date, "%Y-%m-%d", :strftime)
@@ -80,7 +77,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_challenge_signup_email(%OfferChallenge{} = challenge, path) do
+  def send_challenge_signup_email(%OfferChallenge{} = challenge) do
     template_id = "34c53203-5dd3-4de3-8ae9-4a6abd52be9d"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
@@ -90,22 +87,19 @@ defmodule OmegaBravera.Offers.Notifier do
          sendgrid_email.category.id
        ) do
       challenge
-      |> challenge_signup_email(path, template_id)
+      |> challenge_signup_email(template_id)
       |> Mailer.send()
     end
   end
 
-  def challenge_signup_email(%OfferChallenge{} = challenge, path, template_id) do
+  def challenge_signup_email(%OfferChallenge{} = challenge, template_id) do
     start_date = Timex.to_datetime(challenge.offer.start_date, "Asia/Hong_Kong")
     end_date = Timex.to_datetime(challenge.offer.end_date, "Asia/Hong_Kong")
 
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution(
-      "-ChallengeLink-",
-      "#{Application.get_env(:omega_bravera, :app_base_url)}#{path}"
-    )
+    |> Email.add_substitution("-ChallengeLink-", challenge_url(challenge))
     |> Email.add_substitution(
       "-StartDate-",
       Timex.format!(start_date, "%Y-%m-%d", :strftime)

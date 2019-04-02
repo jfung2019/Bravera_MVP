@@ -1,4 +1,6 @@
 defmodule OmegaBravera.DailyDigest.Serializers.Donor do
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
   alias OmegaBravera.{Repo, Accounts.User}
 
   def fields, do: [:firstname, :lastname, :challenge_urls, :pledged_amount]
@@ -23,7 +25,7 @@ defmodule OmegaBravera.DailyDigest.Serializers.Donor do
   end
 
   defp challenge_url(challenge) do
-    "#{Application.get_env(:omega_bravera, :app_base_url)}/#{challenge.ngo.slug}/#{challenge.slug}"
+    Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
   end
 
   defp pledged_amount(donations) do

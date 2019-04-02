@@ -3,6 +3,9 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   import OmegaBravera.Factory
 
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
+
   alias OmegaBravera.Challenges.{NGOChal, Notifier}
   alias OmegaBravera.Accounts.User
 
@@ -41,7 +44,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-ngoName-" => "Save the children worldwide",
                "-challengeURL-" =>
-                 "https://www.bravera.co/#{team.challenge.ngo.slug}/#{team.challenge.slug}",
+                 challenge_url(challenge),
                "-startDate-" => "#{Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)}",
                "-challengeMilestones-" => "#{NGOChal.milestones_string(challenge)}",
                "-daysDuration-" => "#{challenge.duration}"
@@ -81,10 +84,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-inviteeName-" => invitation.invitee_name,
                "-teamOwnerName-" => "John Doe",
                "-ngoName-" => invitation.team.challenge.ngo.name,
-               "-teamInvitationLink-" =>
-                 "https://www.bravera.co/login?team_invitation=/#{
-                   invitation.team.challenge.ngo.slug
-                 }/#{invitation.team.challenge.slug}/add_team_member/#{invitation.token}"
+               "-teamInvitationLink-" => team_member_invite_link(invitation.team.challenge, invitation.token)
              },
              template_id: "e1869afd-8cd1-4789-b444-dabff9b7f3f1",
              to: [%{email: invitation.email}],
@@ -104,7 +104,6 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     email =
       Notifier.manual_activity_blocked_email(
         challenge,
-        "/swcc/John-512",
         "fcd40945-8a55-4459-94b9-401a995246fb"
       )
 
@@ -121,7 +120,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeLink-" => "https://www.bravera.co/swcc/John-512",
+               "-challengeLink-" => challenge_url(challenge),
                "-participantName-" => "John"
              },
              template_id: "fcd40945-8a55-4459-94b9-401a995246fb",
@@ -132,7 +131,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "send_manual_activity_blocked_email/1 sends the email" do
     challenge = insert(:ngo_challenge)
-    assert Notifier.send_manual_activity_blocked_email(challenge, "/swcc/John-512") == :ok
+    assert Notifier.send_manual_activity_blocked_email(challenge) == :ok
   end
 
   test "challenge_activated_email" do
@@ -141,7 +140,6 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     email =
       Notifier.challenge_activated_email(
         challenge,
-        "/swcc/John-512",
         "75516ad9-3ce8-4742-bd70-1227ce3cba1d"
       )
 
@@ -158,7 +156,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeLink-" => "https://www.bravera.co/swcc/John-512",
+               "-challengeLink-" => challenge_url(challenge),
                "-firstName-" => "John"
              },
              template_id: "75516ad9-3ce8-4742-bd70-1227ce3cba1d",
@@ -169,7 +167,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "send_challenge_activated_email/2 sends the email" do
     challenge = insert(:ngo_challenge)
-    assert Notifier.send_challenge_activated_email(challenge, "/swcc/John-582") == :ok
+    assert Notifier.send_challenge_activated_email(challenge) == :ok
   end
 
   test "pre_registration_challenge_signup_email" do
@@ -183,7 +181,6 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     email =
       Notifier.pre_registration_challenge_signup_email(
         challenge,
-        "/swcc/John-512",
         "0e8a21f6-234f-4293-b5cf-fc9805042d82"
       )
 
@@ -202,7 +199,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              substitutions: %{
                "-kms-" => "#{challenge.distance_target} Km",
                "-causeName-" => "Save the children worldwide",
-               "-challengeLink-" => "https://www.bravera.co/swcc/John-512",
+               "-challengeLink-" => challenge_url(challenge),
                "-yearMonthDay-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
                "-days-" => "5 days",
                "-firstName-" => "John",
@@ -217,7 +214,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   test "send_pre_registration_challenge_signup_email/2 sends the email" do
     challenge = insert(:ngo_challenge)
 
-    assert Notifier.send_pre_registration_challenge_sign_up_email(challenge, "/swcc/John-582") ==
+    assert Notifier.send_pre_registration_challenge_sign_up_email(challenge) ==
              :ok
   end
 
@@ -230,11 +227,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     }
 
     email =
-      Notifier.challenge_signup_email(
-        challenge,
-        "/swcc/#{challenge.slug}",
-        "e5402f0b-a2c2-4786-955b-21d1cac6211d"
-      )
+      Notifier.challenge_signup_email(challenge, "e5402f0b-a2c2-4786-955b-21d1cac6211d")
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -252,7 +245,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-challengeMilestones-" => NGOChal.milestones_string(challenge),
                "-challengeName-" => "#{challenge.slug}",
-               "-challengeURL-" => "https://www.bravera.co/swcc/#{challenge.slug}",
+               "-challengeURL-" => challenge_url(challenge),
                "-startDate-" => Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime),
                "-daysDuration-" => "5 days",
                "-firstName-" => "John",
@@ -266,7 +259,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
 
   test "send_challenge_signup_email/2 sends the email" do
     challenge = insert(:ngo_challenge)
-    assert Notifier.send_challenge_signup_email(challenge, "/swcc/John-582") == :ok
+    assert Notifier.send_challenge_signup_email(challenge) == :ok
   end
 
   test "activity_completed_email/2" do
@@ -305,7 +298,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-timeRemaining-" => "4 days",
                "-challengeURL-" =>
-                 "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+                 challenge_url(challenge)
              },
              template_id: "d92b0884-818d-4f54-926a-a529e5caa7d8",
              to: [%{email: challenge.user.email}],
@@ -383,7 +376,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-donorName-" => donation.donor.firstname,
                "-participantName-" => donation.ngo_chal.user.firstname,
                "-challengeURL-" =>
-                 "https://www.bravera.co/#{donation.ngo.slug}/#{donation.ngo_chal.slug}"
+                 challenge_url(donation.ngo_chal)
              },
              template_id: "c8573175-93a6-4f8c-b1bb-9368ad75981a",
              to: [%{email: donation.donor.email}],
@@ -422,7 +415,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              substitutions: %{
                "-firstName-" => challenge.user.firstname,
                "-challengeURL-" =>
-                 "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+                 challenge_url(challenge)
              },
              template_id: "1395a042-ef5a-48a5-b890-c6340dd8eeff",
              to: [%{email: challenge.user.email}],
@@ -458,7 +451,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-donorName-" => donor.firstname,
                "-participantName-" => User.full_name(challenge.user),
                "-challengeURL-" =>
-                 "https://www.bravera.co/#{challenge.ngo.slug}/#{challenge.slug}"
+                 challenge_url(challenge)
              },
              template_id: "b91a66e1-d7f5-404f-804a-9a21f4ec70d4",
              to: [%{email: donor.email}],
@@ -470,5 +463,13 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     challenge = insert(:ngo_challenge)
     donor = insert(:donor)
     assert Notifier.send_donor_inactivity_email(challenge, donor) == :ok
+  end
+
+  defp challenge_url(challenge) do
+    Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
+  end
+
+  defp team_member_invite_link(challenge, token) do
+    Routes.page_url(Endpoint, :login, %{team_invitation: Routes.ngo_ngo_chal_ngo_chal_path(Endpoint, :add_team_member, challenge.ngo.slug, challenge.slug, token)})
   end
 end

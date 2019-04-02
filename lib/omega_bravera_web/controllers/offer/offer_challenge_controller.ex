@@ -87,15 +87,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
     if redeem_token == offer_challenge.redeem_token do
       qr_code_png =
-        "#{Application.get_env(:omega_bravera, :app_base_url)}#{
-          offer_offer_challenge_offer_challenge_path(
-            conn,
-            :new_redeem,
-            offer_slug,
-            slug,
-            offer_challenge.redeem_token
-          )
-        }"
+        offer_offer_challenge_offer_challenge_url(conn, :new_redeem, offer_slug, slug, offer_challenge.redeem_token)
         |> EQRCode.encode()
         |> EQRCode.png()
 
@@ -178,14 +170,11 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
     case Offers.create_offer_challenge(offer, current_user) do
       {:ok, offer_challenge} ->
-        offer_challenge_path =
-          offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug)
-
-        send_emails(offer_challenge, offer_challenge_path)
+        send_emails(offer_challenge)
 
         conn
         |> put_flash(:info, "Success! You have registered for this offer!")
-        |> redirect(to: offer_challenge_path)
+        |> redirect(to: offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         Logger.error("Could not sign up user for offer. Reason: #{inspect(changeset)}")
@@ -228,16 +217,13 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     }
   end
 
-  defp send_emails(%OfferChallenge{status: status} = challenge, challenge_path) do
+  defp send_emails(%OfferChallenge{status: status} = challenge) do
     case status do
       "pre_registration" ->
-        Offers.Notifier.send_pre_registration_challenge_sign_up_email(
-          challenge,
-          challenge_path
-        )
+        Offers.Notifier.send_pre_registration_challenge_sign_up_email(challenge)
 
       _ ->
-        Offers.Notifier.send_challenge_signup_email(challenge, challenge_path)
+        Offers.Notifier.send_challenge_signup_email(challenge)
     end
   end
 
