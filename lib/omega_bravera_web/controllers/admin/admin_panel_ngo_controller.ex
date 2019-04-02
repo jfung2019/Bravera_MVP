@@ -58,7 +58,9 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
           if challenge.status == "pre_registration" do
             challenge = challenge |> Repo.preload(:user)
 
-            Challenges.update_ngo_chal(challenge, challenge.user, %{start_date: updated_ngo.launch_date})
+            Challenges.update_ngo_chal(challenge, challenge.user, %{
+              start_date: updated_ngo.launch_date
+            })
           end
         end)
 

@@ -358,7 +358,11 @@ defmodule OmegaBravera.AccountsTest do
     alias OmegaBravera.Accounts.Donor
 
     @valid_attrs %{email: "some email", firstname: "some firstname", lastname: "some lastname"}
-    @update_attrs %{email: "some updated email", firstname: "some updated firstname", lastname: "some updated lastname"}
+    @update_attrs %{
+      email: "some updated email",
+      firstname: "some updated firstname",
+      lastname: "some updated lastname"
+    }
     @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
 
     def donor_fixture(attrs \\ %{}) do

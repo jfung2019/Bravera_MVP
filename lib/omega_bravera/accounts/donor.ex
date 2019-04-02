@@ -5,9 +5,9 @@ defmodule OmegaBravera.Accounts.Donor do
   alias OmegaBravera.Money.Donation
 
   schema "donors" do
-    field :email, :string
-    field :firstname, :string
-    field :lastname, :string
+    field(:email, :string)
+    field(:firstname, :string)
+    field(:lastname, :string)
 
     timestamps(type: :utc_datetime)
 

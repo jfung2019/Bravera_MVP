@@ -43,8 +43,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-inviteeName-" => "#{User.full_name(user)}",
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-ngoName-" => "Save the children worldwide",
-               "-challengeURL-" =>
-                 challenge_url(challenge),
+               "-challengeURL-" => challenge_url(challenge),
                "-startDate-" => "#{Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)}",
                "-challengeMilestones-" => "#{NGOChal.milestones_string(challenge)}",
                "-daysDuration-" => "#{challenge.duration}"
@@ -84,7 +83,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-inviteeName-" => invitation.invitee_name,
                "-teamOwnerName-" => "John Doe",
                "-ngoName-" => invitation.team.challenge.ngo.name,
-               "-teamInvitationLink-" => team_member_invite_link(invitation.team.challenge, invitation.token)
+               "-teamInvitationLink-" =>
+                 team_member_invite_link(invitation.team.challenge, invitation.token)
              },
              template_id: "e1869afd-8cd1-4789-b444-dabff9b7f3f1",
              to: [%{email: invitation.email}],
@@ -226,8 +226,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
       | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
     }
 
-    email =
-      Notifier.challenge_signup_email(challenge, "e5402f0b-a2c2-4786-955b-21d1cac6211d")
+    email = Notifier.challenge_signup_email(challenge, "e5402f0b-a2c2-4786-955b-21d1cac6211d")
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -297,8 +296,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
                "-completedChallengeDistance-" => "#{Decimal.from_float(4.215)} Km",
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-timeRemaining-" => "4 days",
-               "-challengeURL-" =>
-                 challenge_url(challenge)
+               "-challengeURL-" => challenge_url(challenge)
              },
              template_id: "d92b0884-818d-4f54-926a-a529e5caa7d8",
              to: [%{email: challenge.user.email}],
@@ -375,8 +373,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              substitutions: %{
                "-donorName-" => donation.donor.firstname,
                "-participantName-" => donation.ngo_chal.user.firstname,
-               "-challengeURL-" =>
-                 challenge_url(donation.ngo_chal)
+               "-challengeURL-" => challenge_url(donation.ngo_chal)
              },
              template_id: "c8573175-93a6-4f8c-b1bb-9368ad75981a",
              to: [%{email: donation.donor.email}],
@@ -414,8 +411,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
                "-firstName-" => challenge.user.firstname,
-               "-challengeURL-" =>
-                 challenge_url(challenge)
+               "-challengeURL-" => challenge_url(challenge)
              },
              template_id: "1395a042-ef5a-48a5-b890-c6340dd8eeff",
              to: [%{email: challenge.user.email}],
@@ -450,8 +446,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              substitutions: %{
                "-donorName-" => donor.firstname,
                "-participantName-" => User.full_name(challenge.user),
-               "-challengeURL-" =>
-                 challenge_url(challenge)
+               "-challengeURL-" => challenge_url(challenge)
              },
              template_id: "b91a66e1-d7f5-404f-804a-9a21f4ec70d4",
              to: [%{email: donor.email}],
@@ -470,6 +465,15 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   end
 
   defp team_member_invite_link(challenge, token) do
-    Routes.page_url(Endpoint, :login, %{team_invitation: Routes.ngo_ngo_chal_ngo_chal_path(Endpoint, :add_team_member, challenge.ngo.slug, challenge.slug, token)})
+    Routes.page_url(Endpoint, :login, %{
+      team_invitation:
+        Routes.ngo_ngo_chal_ngo_chal_path(
+          Endpoint,
+          :add_team_member,
+          challenge.ngo.slug,
+          challenge.slug,
+          token
+        )
+    })
   end
 end

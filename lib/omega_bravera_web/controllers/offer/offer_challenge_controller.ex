@@ -87,7 +87,13 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
     if redeem_token == offer_challenge.redeem_token do
       qr_code_png =
-        offer_offer_challenge_offer_challenge_url(conn, :new_redeem, offer_slug, slug, offer_challenge.redeem_token)
+        offer_offer_challenge_offer_challenge_url(
+          conn,
+          :new_redeem,
+          offer_slug,
+          slug,
+          offer_challenge.redeem_token
+        )
         |> EQRCode.encode()
         |> EQRCode.png()
 

@@ -77,6 +77,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
   describe "create offer" do
     test "redirects to show when data is valid", %{conn: conn} do
       {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "331678"})
+
       conn =
         post(conn, admin_panel_offer_path(conn, :create),
           offer: Map.put(@offer_create_attrs, :vendor_id, vendor.id)
@@ -107,7 +108,9 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     test "update when data is valid", %{conn: conn, offer: offer} do
       {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "312322"})
 
-      put(conn, admin_panel_offer_path(conn, :update, offer.slug), offer: Map.put(@update_attrs, :vendor_id, vendor.id))
+      put(conn, admin_panel_offer_path(conn, :update, offer.slug),
+        offer: Map.put(@update_attrs, :vendor_id, vendor.id)
+      )
 
       updated_offer = Offers.get_offer!(offer.id)
       assert updated_offer.slug == @update_attrs.slug

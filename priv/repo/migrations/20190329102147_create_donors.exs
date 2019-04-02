@@ -6,15 +6,15 @@ defmodule OmegaBravera.Repo.Migrations.CreateDonors do
 
   def change do
     create table(:donors) do
-      add :firstname, :string
-      add :lastname, :string
-      add :email, :string, null: false
+      add(:firstname, :string)
+      add(:lastname, :string)
+      add(:email, :string, null: false)
 
       timestamps(type: :timestamptz)
     end
 
     alter table(:donations) do
-      add :donor_id, :id
+      add(:donor_id, :id)
     end
 
     flush()
@@ -30,13 +30,16 @@ defmodule OmegaBravera.Repo.Migrations.CreateDonors do
       |> Repo.all()
 
     donor_entries =
-      Enum.map(users_who_donated, &(%{
-        firstname: &1.firstname,
-        lastname: &1.lastname,
-        email: &1.email,
-        inserted_at: &1.inserted_at,
-        updated_at: &1.updated_at
-      }))
+      Enum.map(
+        users_who_donated,
+        &%{
+          firstname: &1.firstname,
+          lastname: &1.lastname,
+          email: &1.email,
+          inserted_at: &1.inserted_at,
+          updated_at: &1.updated_at
+        }
+      )
 
     # Insert users who donated as donors.
     Repo.insert_all(Donor, donor_entries)

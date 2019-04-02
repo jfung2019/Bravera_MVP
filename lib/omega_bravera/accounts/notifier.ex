@@ -20,7 +20,10 @@ defmodule OmegaBravera.Accounts.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-fullName-", User.full_name(user))
-    |> Email.add_substitution("-emailVerificationUrl-", Routes.user_url(Endpoint, :activate_email, user.email_activation_token))
+    |> Email.add_substitution(
+      "-emailVerificationUrl-",
+      Routes.user_url(Endpoint, :activate_email, user.email_activation_token)
+    )
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(user.email)

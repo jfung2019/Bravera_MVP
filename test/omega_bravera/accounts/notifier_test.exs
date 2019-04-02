@@ -33,7 +33,8 @@ defmodule OmegaBravera.Accounts.NotifierTest do
              subject: nil,
              substitutions: %{
                "-fullName-" => "Rafael Garcia",
-               "-emailVerificationUrl-" => Routes.user_url(Endpoint, :activate_email, user.email_activation_token)
+               "-emailVerificationUrl-" =>
+                 Routes.user_url(Endpoint, :activate_email, user.email_activation_token)
              },
              template_id: "b47d2224-792a-43d8-b4b2-f53b033d2f41",
              to: [%{email: "simon.garciar@gmail.com"}],

@@ -37,14 +37,14 @@ defmodule OmegaBravera.Donations.Notifier do
     donor_email_template_id = "4ab4a0f8-79ac-4f82-9ee2-95db6fafb986"
 
     cond do
-      challenge.status == "pre_registration" and Timex.after?(challenge.start_date, Timex.now("Asia/Hong_Kong")) ->
+      challenge.status == "pre_registration" and
+          Timex.after?(challenge.start_date, Timex.now("Asia/Hong_Kong")) ->
         challenge
         |> pre_registration_donor_email(
           donor,
           pre_registration_donor_template_id
         )
         |> Mailer.send()
-
 
       true ->
         challenge
@@ -108,7 +108,7 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.put_template(donor_email_template_id)
     |> Email.add_substitution("-donorName-", Donor.full_name(donor))
     |> Email.add_substitution("-participantName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeURL-",challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donor.email)
