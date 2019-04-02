@@ -35,7 +35,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
       ngo ->
         current_user = Guardian.Plug.current_resource(conn)
-        changeset = Challenges.change_ngo_chal(%NGOChal{}, current_user)
+        changeset = Challenges.change_ngo_chal(%NGOChal{}, %User{})
 
         render(conn, "new.html", changeset: changeset, ngo: ngo, current_user: current_user)
     end
