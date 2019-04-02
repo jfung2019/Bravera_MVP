@@ -218,7 +218,7 @@ defmodule OmegaBravera.Offers.Notifier do
   defp challenge_qr_code_url(challenge) do
     Routes.offer_offer_challenge_offer_challenge_url(
       Endpoint,
-      :new_redeem,
+      :qr_code,
       challenge.offer.slug,
       challenge.slug,
       challenge.redeem_token
