@@ -5,7 +5,7 @@ defmodule OmegaBravera.Money do
 
   import Ecto.Query, warn: false
 
-  alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges.NGOChal}
+  alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges.NGOChal, Accounts.Donor}
 
   def milestones_donations(%NGOChal{id: challenge_id}) do
     query =
@@ -33,10 +33,10 @@ defmodule OmegaBravera.Money do
 
   # for listing a user's donations
 
-  def get_donations_by_user(user_id) do
+  def get_donations_by_user_email(email) do
     query =
       from(d in Donation,
-        where: d.user_id == ^user_id
+        where: d.email == ^email
       )
 
     Repo.all(query)
@@ -81,7 +81,7 @@ defmodule OmegaBravera.Money do
     from(
       d in Donation,
       where: d.ngo_chal_id == ^ngo_chal_id,
-      select: count(d.user_id, :distinct)
+      select: count(d.donor_id, :distinct)
     )
     |> Repo.all()
     |> List.first()
@@ -102,7 +102,7 @@ defmodule OmegaBravera.Money do
   def change_donation(%Donation{} = donation), do: Donation.changeset(donation, %{})
 
   def amount_of_donors() do
-    from(d in Donation, select: count(d.user_id, :distinct))
+    from(d in Donor, select: count(d.id))
     |> Repo.one()
   end
 

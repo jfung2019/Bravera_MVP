@@ -12,6 +12,7 @@ defmodule OmegaBravera.Accounts do
     Accounts,
     Accounts.User,
     Accounts.Credential,
+    Accounts.Donor,
     Money.Donation,
     Trackers,
     Trackers.Strava,
@@ -94,12 +95,12 @@ defmodule OmegaBravera.Accounts do
   end
 
   defp donors_for_challenge_query(challenge) do
-    from(user in User,
+    from(donor in Donor,
       join: donation in Donation,
-      on: donation.user_id == user.id,
+      on: donation.donor_id == donor.id,
       where: donation.ngo_chal_id == ^challenge.id,
-      distinct: donation.user_id,
-      order_by: user.id
+      distinct: donation.donor_id,
+      order_by: donor.id
     )
   end
 
@@ -115,8 +116,8 @@ defmodule OmegaBravera.Accounts do
       challenge
       |> donors_for_challenge_query()
       |> order_by(desc: :inserted_at)
-      |> group_by([user, donation], [user.id, donation.user_id, donation.currency])
-      |> select([user, donation], {user, sum(donation.amount), donation.currency})
+      |> group_by([donor, donation], [donor.id, donation.donor_id, donation.currency])
+      |> select([donor, donation], {donor, sum(donation.amount), donation.currency})
 
     query =
       if is_number(limit) and limit > 0 do
@@ -127,8 +128,8 @@ defmodule OmegaBravera.Accounts do
 
     query
     |> Repo.all()
-    |> Enum.map(fn {user, amount, currency} ->
-      %{"user" => user, "pledged" => amount, "currency" => currency}
+    |> Enum.map(fn {donor, amount, currency} ->
+      %{"user" => donor, "pledged" => amount, "currency" => currency}
     end)
   end
 
@@ -137,8 +138,8 @@ defmodule OmegaBravera.Accounts do
       challenge
       |> donors_for_challenge_query()
       |> order_by(desc: :inserted_at)
-      |> group_by([user, donation], [user.id, donation.user_id, donation.currency])
-      |> select([user, donation], {user, sum(donation.amount), donation.currency})
+      |> group_by([donor, donation], [donor.id, donation.donor_id, donation.currency])
+      |> select([donor, donation], {donor, sum(donation.amount), donation.currency})
 
     query =
       if is_number(limit) and limit > 0 do
@@ -149,9 +150,9 @@ defmodule OmegaBravera.Accounts do
 
     query
     |> Repo.all()
-    |> Enum.map(fn {user, amount, currency} ->
+    |> Enum.map(fn {donor, amount, currency} ->
       %{
-        "user" => user,
+        "user" => donor,
         "pledged" => Decimal.mult(amount, challenge.distance_target),
         "currency" => currency
       }
@@ -269,6 +270,19 @@ defmodule OmegaBravera.Accounts do
 
       user ->
         user
+    end
+  end
+
+  def insert_or_return_email_donor(%{"email" => email, "first_name" => first, "last_name" => last}) do
+    case Repo.get_by(Donor, email: email) do
+      nil ->
+        case create_donor(%{"email" => email, "firstname" => first, "lastname" => last}) do
+          {:ok, donor} -> donor
+          {:error, _reason} -> nil
+        end
+
+      donor ->
+        donor
     end
   end
 
@@ -694,13 +708,13 @@ defmodule OmegaBravera.Accounts do
     AdminUser.changeset(admin_user, %{})
   end
 
-  def create_or_update_donor_opt_in_mailing_list(user, ngo, attrs) do
+  def create_or_update_donor_opt_in_mailing_list(donor, ngo, attrs) do
     attrs =
       attrs
-      |> Map.put_new("user_id", user.id)
+      |> Map.put_new("donor_id", donor.id)
       |> Map.put_new("ngo_id", ngo.id)
 
-    case Repo.get_by(Accounts.DonorOptInMailingList, user_id: user.id, ngo_id: ngo.id) do
+    case Repo.get_by(Accounts.DonorOptInMailingList, donor_id: donor.id, ngo_id: ngo.id) do
       nil ->
         case create_donor_opt_in_mailing_list(attrs) do
           {:error, reason} -> {:error, reason}
@@ -755,16 +769,110 @@ defmodule OmegaBravera.Accounts do
     from(
       donor_opt_in in Accounts.DonorOptInMailingList,
       where: donor_opt_in.ngo_id == ^id and donor_opt_in.opt_in == true,
-      join: user in assoc(donor_opt_in, :user),
+      join: donor in assoc(donor_opt_in, :donor),
       join: ngo in assoc(donor_opt_in, :ngo),
       select: [
-        user.firstname,
-        user.lastname,
-        user.email,
+        donor.firstname,
+        donor.lastname,
+        donor.email,
         ngo.name,
         fragment("TO_CHAR(? :: DATE, 'dd-mm-yyyy mm-hh')", donor_opt_in.updated_at)
       ]
     )
     |> Repo.all()
+  end
+
+  @doc """
+  Returns the list of donors.
+
+  ## Examples
+
+      iex> list_donors()
+      [%Donor{}, ...]
+
+  """
+  def list_donors do
+    Repo.all(Donor)
+  end
+
+  @doc """
+  Gets a single donor.
+
+  Raises `Ecto.NoResultsError` if the Donor does not exist.
+
+  ## Examples
+
+      iex> get_donor!(123)
+      %Donor{}
+
+      iex> get_donor!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_donor!(id), do: Repo.get!(Donor, id)
+
+  @doc """
+  Creates a donor.
+
+  ## Examples
+
+      iex> create_donor(%{field: value})
+      {:ok, %Donor{}}
+
+      iex> create_donor(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_donor(attrs \\ %{}) do
+    %Donor{}
+    |> Donor.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a donor.
+
+  ## Examples
+
+      iex> update_donor(donor, %{field: new_value})
+      {:ok, %Donor{}}
+
+      iex> update_donor(donor, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_donor(%Donor{} = donor, attrs) do
+    donor
+    |> Donor.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Donor.
+
+  ## Examples
+
+      iex> delete_donor(donor)
+      {:ok, %Donor{}}
+
+      iex> delete_donor(donor)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_donor(%Donor{} = donor) do
+    Repo.delete(donor)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking donor changes.
+
+  ## Examples
+
+      iex> change_donor(donor)
+      %Ecto.Changeset{source: %Donor{}}
+
+  """
+  def change_donor(%Donor{} = donor) do
+    Donor.changeset(donor, %{})
   end
 end

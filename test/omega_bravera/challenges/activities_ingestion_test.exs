@@ -118,7 +118,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       user = insert(:user, strava: build(:strava, user: nil))
       ngo = insert(:ngo, %{user: user})
       challenge = insert(:ngo_challenge, %{ngo: ngo, user: user})
-      donation = insert(:donation, %{ngo_chal: challenge})
+      donation = insert(:donation, %{ngo_chal: nil, ngo_chal_id: challenge.id})
 
       challengers = Accounts.get_strava_challengers(user.strava.athlete_id)
       strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
@@ -357,7 +357,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       use_cassette "process_milestone_donation" do
         user = insert(:user)
         ngo = insert(:ngo, %{slug: "swcc-1"})
-        donor = insert(:user, %{email: "camonz@camonz.com"})
+        donor = insert(:donor, %{email: "camonz@camonz.com"})
 
         challenge =
           insert(:ngo_challenge, %{
@@ -370,7 +370,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         donation_params = %{
           ngo_chal: challenge,
           ngo: ngo,
-          user: donor,
+          donor: donor,
           milestone: 2,
           milestone_distance: 50,
           str_cus_id: "cus_DaUL9L27e843XN",
@@ -395,7 +395,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       use_cassette "process_km_donation" do
         user = insert(:user)
         ngo = insert(:ngo, %{slug: "sherief-1"})
-        donor = insert(:user, %{email: "sheriefalaa.w@gmail.com"})
+        donor = insert(:donor, %{email: "sheriefalaa.w@gmail.com"})
 
         challenge =
           insert(:ngo_challenge, %{
@@ -408,7 +408,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         donation_params = %{
           ngo_chal: challenge,
           ngo: ngo,
-          user: donor,
+          donor: donor,
           str_cus_id: "cus_DaUL9L27e843XN",
           str_src: "src_1D7qTcHjHTiyg867gAya4pe5"
         }

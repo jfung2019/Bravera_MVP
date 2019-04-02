@@ -87,7 +87,7 @@ defmodule OmegaBravera.Donations.Pledges do
       str_cus_id: stripe_customer_id,
       ngo_chal_id: challenge.id,
       ngo_id: challenge.ngo_id,
-      user_id: donor_id,
+      donor_id: donor_id,
       status: "pending",
       donor_pays_fees: donor_pays_fees
     }
@@ -122,7 +122,7 @@ defmodule OmegaBravera.Donations.Pledges do
       str_cus_id: stripe_customer_id,
       ngo_chal_id: challenge.id,
       ngo_id: challenge.ngo_id,
-      user_id: donor_id,
+      donor_id: donor_id,
       status: "pending",
       donor_pays_fees: donor_pays_fees
     }
@@ -131,7 +131,7 @@ defmodule OmegaBravera.Donations.Pledges do
   defp pledge_attributes(_, _, _), do: %{}
 
   defp self_donated(challenge, donation_params) do
-    challenge.self_donated || challenge.user_id == donation_params["donor_id"]
+    challenge.self_donated || challenge.user.email == donation_params["email"]
   end
 
   defp filter_pledge({:ok, _pledge}), do: true

@@ -65,6 +65,14 @@ defmodule OmegaBravera.Factory do
     }
   end
 
+  def donor_factory do
+    %OmegaBravera.Accounts.Donor{
+      firstname: "John",
+      lastname: "Wick",
+      email: sequence(:email, &"john.wick.#{&1}@example.com")
+    }
+  end
+
   def donation_factory do
     %OmegaBravera.Money.Donation{
       amount: Decimal.new(150),
@@ -77,7 +85,7 @@ defmodule OmegaBravera.Factory do
       donor_pays_fees: false,
       charged_amount: Decimal.new(150),
       exchange_rate: Decimal.new(1),
-      user: build(:user),
+      donor: build(:donor),
       ngo: build(:ngo),
       ngo_chal: build(:ngo_challenge)
     }
@@ -92,7 +100,7 @@ defmodule OmegaBravera.Factory do
       km_distance: 50,
       status: "pending",
       exchange_rate: Decimal.new(1),
-      user: build(:user),
+      donor: build(:donor),
       ngo: build(:ngo),
       ngo_chal: build(:ngo_challenge)
     }

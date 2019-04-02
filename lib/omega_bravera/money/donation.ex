@@ -3,6 +3,7 @@ defmodule OmegaBravera.Money.Donation do
   import Ecto.Changeset
 
   alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Accounts.Donor
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Fundraisers.NGO
 
@@ -32,6 +33,7 @@ defmodule OmegaBravera.Money.Donation do
 
     # associations
     belongs_to(:user, User)
+    belongs_to(:donor, Donor)
     belongs_to(:ngo_chal, NGOChal)
     belongs_to(:ngo, NGO)
 
@@ -47,11 +49,12 @@ defmodule OmegaBravera.Money.Donation do
     :status,
     :milestone_distance,
     :km_distance,
-    :user_id,
     :ngo_chal_id,
     :ngo_id,
     :exchange_rate,
-    :donor_pays_fees
+    :donor_pays_fees,
+    :donor_id,
+    :user_id
   ]
   @required_attributes [
     :amount,
@@ -59,9 +62,9 @@ defmodule OmegaBravera.Money.Donation do
     :str_src,
     :str_cus_id,
     :status,
-    :user_id,
     :ngo_chal_id,
-    :ngo_id
+    :ngo_id,
+    :donor_id
   ]
 
   @doc false

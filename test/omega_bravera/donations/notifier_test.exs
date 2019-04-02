@@ -32,7 +32,7 @@ defmodule OmegaBravera.NotifierTest do
   test "participant_email creates the participant email",
        %{challenge: challenge, user: user} = context do
     donor =
-      insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
+      insert(:donor, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     pledges = donations(context, donor)
     template_id = "79561f40-9939-406c-bdbe-0ecca63a1e1a"
@@ -75,7 +75,7 @@ defmodule OmegaBravera.NotifierTest do
     user: user
   } do
     donor =
-      insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
+      insert(:donor, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     template_id = "9fc14299-96a0-4a4d-9917-c19f747270ff"
 
@@ -114,7 +114,7 @@ defmodule OmegaBravera.NotifierTest do
 
   test "donor_email", %{challenge: challenge, user: user} do
     donor =
-      insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
+      insert(:donor, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     template_id = "4ab4a0f8-79ac-4f82-9ee2-95db6fafb986"
     result = Notifier.donor_email(challenge, donor, "/swcc/#{user.firstname}-594", template_id)
@@ -145,7 +145,7 @@ defmodule OmegaBravera.NotifierTest do
   test "email_parties/4 sends the email to both donor and participant",
        %{challenge: challenge, user: user} = context do
     donor =
-      insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
+      insert(:donor, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     pledges = donations(context, donor)
 
@@ -157,7 +157,7 @@ defmodule OmegaBravera.NotifierTest do
   test "email_parties/4 sends the email to both donor (pre_registration pledge) and participant",
        %{pre_registration_challenge: pre_registration_challenge, user: user} = context do
     donor =
-      insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
+      insert(:donor, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     pledges = donations(context, donor)
 
@@ -174,10 +174,10 @@ defmodule OmegaBravera.NotifierTest do
 
   test "donation_charged_email" do
     donor =
-      insert(:user, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
+      insert(:donor, %{firstname: "Mike", lastname: "Dough", email: "mike.dough@example.com"})
 
     donation_params = %{
-      user: donor,
+      donor: donor,
       str_cus_id: "cus_DaUL9L27e843XN",
       str_src: "src_1D9JN4EXtHU8QBy8JErKq6fH",
       card_brand: "Visa",
@@ -226,21 +226,21 @@ defmodule OmegaBravera.NotifierTest do
       build(:donation, %{
         milestone: 2,
         milestone_distance: 15,
-        user: donor,
+        donor: donor,
         ngo: ngo,
         ngo_chal: challenge
       }),
       build(:donation, %{
         milestone: 3,
         milestone_distance: 25,
-        user: donor,
+        donor: donor,
         ngo: ngo,
         ngo_chal: challenge
       }),
       build(:donation, %{
         milestone: 4,
         milestone_distance: 50,
-        user: donor,
+        donor: donor,
         ngo: ngo,
         ngo_chal: challenge
       })
