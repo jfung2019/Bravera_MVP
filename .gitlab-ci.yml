@@ -58,6 +58,7 @@ production:
     - echo "$SSH_PRIVATE_KEY" | ssh-add -
     - mkdir -p ~/.ssh
     - echo -e "$SSH_CONFIG" >> ~/.ssh/config
+    - cat ~/.ssh/config
     - mix deps.get
   script:
     - mix edeliver ping production
