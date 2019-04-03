@@ -37,6 +37,8 @@ environment :prod do
   set include_erts: true
   set include_src: false
   set cookie: :"Oi(2dxixqRC^mD@5^fG8KZ,3O*RZ6Q,/rUIq_PnUVK%n@F$U&yT1YoT!h~CjAh_4"
+  #set pre_start_hooks: "rel/hooks/pre_start"
+  set post_start_hooks: "rel/hooks/post_start"
 end
 
 # You may define one or more releases in this file.
@@ -48,6 +50,9 @@ release :omega_bravera do
   set version: current_version(:omega_bravera)
   set applications: [
     :runtime_tools
+  ]
+  set commands: [
+    migrate: "rel/commands/migrate.sh",
   ]
 end
 

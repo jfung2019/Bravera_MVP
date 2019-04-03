@@ -42,7 +42,6 @@ staging:
   - flynn -a bravera-staging remote add flynn
   - git checkout staging
   - git push flynn staging:master
-  - flynn run mix ecto.migrate
 
 
 production:
