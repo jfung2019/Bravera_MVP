@@ -1,14 +1,15 @@
+cache:
+  key: bravera
+  paths:
+    - deps/
+    - _build/
+
 test:
   image: bitwalker/alpine-elixir-phoenix:latest
   services:
   - postgres:latest
   variables:
     MIX_ENV: "test"
-  cache:
-    key: bravera
-    paths:
-      - deps/
-      - _build/
   script:
   - mix do deps.get
   - mix test --exclude skip
