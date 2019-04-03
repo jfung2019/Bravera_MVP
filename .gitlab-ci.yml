@@ -60,4 +60,4 @@ production:
     - echo -e "$SSH_CONFIG" >> ~/.ssh/config
     - mix do deps.get, deps.compile
   script:
-    - mix edeliver ping production -P
+    - mix edeliver ping production -P -V -D
