@@ -1,3 +1,4 @@
 #!/bin/sh
 
-./bin/omega_bravera/migrate
+echo "Starting post_hook/migrate.sh.."
+./bin/omega_bravera migrate
