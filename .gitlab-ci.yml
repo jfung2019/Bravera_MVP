@@ -1,19 +1,21 @@
+cache:
+  key: bravera
+  paths:
+    - deps/
+    - _build/
+    - assets/node_modules/
+
 test:
   image: bitwalker/alpine-elixir-phoenix:latest
   services:
   - postgres:latest
   variables:
     MIX_ENV: "test"
-  cache:
-    key: bravera
-    paths:
-      - deps/
-      - _build/
   script:
   - mix do deps.get
   - mix test --exclude skip
 
-docker_build:
+build_staging:
   stage: build
   environment: staging
   only:
@@ -21,12 +23,16 @@ docker_build:
   image: docker:stable
   variables:
     DOCKER_HOST: tcp://localhost:2375
+    CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
   services:
     - docker:dind
   before_script:
-    - docker info
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-      - docker build -t bravera --build-arg APP_BASE_URL --build-arg APP_HOST --build-arg AWS_ACCESS_KEY_ID --build-arg DATABASE_URL --build-arg ENABLE_EMAILS --build-arg ENABLE_MANUAL_ACTIVITIES --build-arg GOOGLE_ANALYTICS_ID --build-arg GUARDIAN_SECRET_KEY --build-arg S3_BUCKET_NAME --build-arg SECRET_KEY_BASE  --build-arg SENDGRID_API_KEY --build-arg STRAVA_ACCESS_TOKEN --build-arg STRAVA_CLIENT_ID --build-arg STRAVA_CLIENT_SECRET --build-arg STRAVA_REDIRECT_URI --build-arg STRIPE_PUBLIC_KEY --build-arg STRIPE_SECRET_KEY .
+    - docker pull $CONTAINER_IMAGE:staging || true
+    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:staging --build-arg APP_BASE_URL --build-arg APP_HOST --build-arg AWS_ACCESS_KEY_ID --build-arg DATABASE_URL --build-arg ENABLE_EMAILS --build-arg ENABLE_MANUAL_ACTIVITIES --build-arg GOOGLE_ANALYTICS_ID --build-arg GUARDIAN_SECRET_KEY --build-arg S3_BUCKET_NAME --build-arg SECRET_KEY_BASE  --build-arg SENDGRID_API_KEY --build-arg STRAVA_ACCESS_TOKEN --build-arg STRAVA_CLIENT_ID --build-arg STRAVA_CLIENT_SECRET --build-arg STRAVA_REDIRECT_URI --build-arg STRIPE_PUBLIC_KEY --build-arg STRIPE_SECRET_KEY .
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
+    - docker push $CONTAINER_IMAGE:staging
 
 staging:
   stage: deploy
