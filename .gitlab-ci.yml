@@ -49,7 +49,7 @@ production:
   environment: production
   image: bitwalker/alpine-elixir-phoenix:latest
   variables:
-    MIX_ENV: "prod"
+    MIX_ENV: "dev"
   only:
   - master
   before_script:
