@@ -21,7 +21,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   @doc """
   Form for vendor that allows them to create redeems.
   """
-
   def new_redeem(conn, %{
         "offer_challenge_slug" => slug,
         "offer_slug" => offer_slug,
@@ -30,14 +29,21 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     redeem_form_page(conn, offer_slug, slug, redeem_token)
   end
 
-  # TODO: remove after the Fineprint offer ends to avoid breaking redeem links. -Sherief
+  @doc """
+  Form for vendor that allows them to create redeems.
+
+  TODO: remove redeem_form_page() and let new_redeem() handle rendering redeem forms. -Sherief
+  """
   def qr_code(conn, %{
         "offer_challenge_slug" => slug,
         "offer_slug" => offer_slug,
-        "redeem_token" => redeem_token,
-        "redeem" => _redeem
-      }) do
-    redeem_form_page(conn, offer_slug, slug, redeem_token)
+        "redeem_token" => redeem_token
+      } = params) do
+    if Map.has_key?(params, "redeem") do
+      redeem_form_page(conn, offer_slug, slug, redeem_token)
+    else
+      send_qr_code(conn, params)
+    end
   end
 
   defp redeem_form_page(conn, offer_slug, slug, redeem_token) do
@@ -78,7 +84,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   @doc """
   Sends a QR code file in png.
   """
-  def qr_code(conn, %{
+  def send_qr_code(conn, %{
         "offer_challenge_slug" => slug,
         "offer_slug" => offer_slug,
         "redeem_token" => redeem_token
