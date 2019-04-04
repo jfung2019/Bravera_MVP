@@ -1,6 +1,6 @@
 # Bravera
 
-## Deployment steps
+## Deployment steps (Long)
 ```bash
 git checkout master
 git pull
@@ -9,6 +9,15 @@ mix edeliver build release
 mix edeliver deploy release to production
 mix edeliver stop production
 mix edeliver start production
+mix edeliver migrate production
+mix edeliver ping production
+```
+## Deployment steps (Shorter)
+```bash
+git checkout master
+git pull
+mix deps.get
+mix edeliver update production --start-deploy --run-migrations
 mix edeliver migrate production
 mix edeliver ping production
 ```
