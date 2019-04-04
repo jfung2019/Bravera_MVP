@@ -12,8 +12,8 @@ test:
   variables:
     MIX_ENV: "test"
   script:
-  - mix do deps.get
-  - mix test --exclude skip
+    - cd assets && npm install && cd .. # cache NPM modules for future
+    - mix do deps.get, test --exclude skip
 
 build_staging:
   stage: build
@@ -23,30 +23,35 @@ build_staging:
   image: docker:stable
   variables:
     DOCKER_HOST: tcp://localhost:2375
-    CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+    CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH/staging
+    DOCKER_BUILD: true
   services:
     - docker:dind
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    - docker pull $CONTAINER_IMAGE:staging || true
-    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:staging --build-arg APP_BASE_URL --build-arg APP_HOST --build-arg AWS_ACCESS_KEY_ID --build-arg DATABASE_URL --build-arg ENABLE_EMAILS --build-arg ENABLE_MANUAL_ACTIVITIES --build-arg GOOGLE_ANALYTICS_ID --build-arg GUARDIAN_SECRET_KEY --build-arg S3_BUCKET_NAME --build-arg SECRET_KEY_BASE  --build-arg SENDGRID_API_KEY --build-arg STRAVA_ACCESS_TOKEN --build-arg STRAVA_CLIENT_ID --build-arg STRAVA_CLIENT_SECRET --build-arg STRAVA_REDIRECT_URI --build-arg STRIPE_PUBLIC_KEY --build-arg STRIPE_SECRET_KEY .
+    - docker pull $CONTAINER_IMAGE:latest || true
+    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA  --build-arg=$DOCKER_BUILD .
     - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
-    - docker push $CONTAINER_IMAGE:staging
 
 staging:
+  cache: {} # no need for cache
   stage: deploy
   environment: staging
-  image: docker:git
   only:
-  - staging
+    - staging
+  image: docker:stable
+  variables:
+    DOCKER_HOST: tcp://localhost:2375
+    CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH/staging
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-  - apk add --no-cache curl
-  - L=/usr/local/bin/flynn && curl -sSL -A "`uname -sp`" https://dl.flynn.io/cli | zcat >$L && chmod +x $L
-  - flynn cluster add -p $FLYNN_TLS_PIN $FLYNN_CLUSTER_NAME $FLYNN_CONTROLLER_URL $FLYNN_CONTROLLER_KEY --git-url=$FLYNN_GIT_URL
-  - flynn -a bravera-staging remote add flynn
-  - git checkout staging
-  - git push flynn staging:master
+    - docker pull $CONTAINER_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CONTAINER_IMAGE:$CI_COMMIT_SHA $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:latest
 
 
 production:

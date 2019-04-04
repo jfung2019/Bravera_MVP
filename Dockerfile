@@ -1,46 +1,27 @@
-FROM bitwalker/alpine-elixir-phoenix:latest
+FROM bitwalker/alpine-elixir-phoenix:latest as phx-builder
 
-# Set exposed ports
-EXPOSE 4000
 ENV PORT=4000 MIX_ENV=prod
 
-ARG APP_BASE_URL
-ARG APP_HOST
-ARG AWS_ACCESS_KEY_ID
-ARG DATABASE_URL
-ARG ENABLE_EMAILS
-ARG ENABLE_MANUAL_ACTIVITIES
-ARG GOOGLE_ANALYTICS_ID
-ARG GUARDIAN_SECRET_KEY
-ARG S3_BUCKET_NAME
-ARG SECRET_KEY_BASE
-ARG SENDGRID_API_KEY
-ARG STRAVA_ACCESS_TOKEN
-ARG STRAVA_CLIENT_ID
-ARG STRAVA_CLIENT_SECRET
-ARG STRAVA_REDIRECT_URI
-ARG STRIPE_PUBLIC_KEY
-ARG STRIPE_SECRET_KEY
-
-ENV APP_BASE_URL=$APP_BASE_URL APP_HOST=$APP_HOST AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID DATABASE_URL=$DATABASE_URL ENABLE_EMAILS=$ENABLE_EMAILS ENABLE_MANUAL_ACTIVITIE=$ENABLE_MANUAL_ACTIVITIES GOOGLE_ANALYTICS_ID=$GOOGLE_ANALYTICS_ID GUARDIAN_SECRET_KEY=$GUARDIAN_SECRET_KEY S3_BUCKET_NAME=$S3_BUCKET_NAME SECRET_KEY_BASE=$SECRET_KEY_BASE SENDGRID_API_KEY=$SENDGRID_API_KEY STRAVA_ACCESS_TOKEN=$STRAVA_ACCESS_TOKEN STRAVA_CLIENT_ID=$STRAVA_CLIENT_ID STRAVA_CLIENT_SECRET=$STRAVA_CLIENT_SECRET STRAVA_REDIRECT_URI=$STRAVA_REDIRECT_URI STRIPE_PUBLIC_KEY=$STRIPE_PUBLIC_KEY STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY
-
-# Cache elixir deps
-ADD mix.exs mix.lock ./
-RUN mix do deps.get, deps.compile
-
-# Same with npm deps
-ADD assets/package.json assets/
-RUN cd assets && \
-    npm install
+ARG DOCKER_BUILD
+ENV DOCKER_BUILD=$DOCKER_BUILD
 
 ADD . .
 
-# Run frontend build, compile, and digest assets
-RUN cd assets/ && \
+# Run frontend build, compile, and digest assets, and set default to own the directory
+RUN mix deps.get && cd assets/ && \
+		npm install && \
     npm run deploy && \
     cd - && \
     mix do compile, phx.digest, release
 
+FROM bitwalker/alpine-erlang:latest
+
+EXPOSE 4000
+ENV PORT=4000 MIX_ENV=prod
+
+COPY --from=phx-builder /opt/app/_build/prod/rel/omega_bravera/ /opt/app/
+RUN chown -R default /opt/app/
+
 USER default
 
-CMD ["/app/_build/prod/rel/omega_bravera/bin/omega_bravera", "foreground"]
+CMD ["/opt/app/bin/omega_bravera", "foreground"]
