@@ -21,7 +21,7 @@ use Mix.Releases.Config,
 # when building in that environment, this combination of release
 # and environment configuration is called a profile
 
-@docker_build Map.has_key?(System.get_env(), "DOCKER_BUILD")
+docker_build = Map.has_key?(System.get_env(), "DOCKER_BUILD")
 
 environment :dev do
   # If you are running Phoenix, you should make sure that
@@ -36,7 +36,7 @@ environment :dev do
 end
 
 environment :prod do
-  set include_erts: !@docker_build
+  set include_erts: !docker_build
   set include_src: false
   set cookie: :"Oi(2dxixqRC^mD@5^fG8KZ,3O*RZ6Q,/rUIq_PnUVK%n@F$U&yT1YoT!h~CjAh_4"
   set post_start_hooks: "rel/hooks/post_start"
@@ -55,7 +55,7 @@ release :omega_bravera do
   set commands: [
     migrate: "rel/commands/migrate.sh",
   ]
-  if @docker_build do
+  if docker_build do
     set config_providers: [
       {Mix.Releases.Config.Providers.Elixir, ["${RELEASE_ROOT_DIR}/etc/runtime_config.exs"]},
       {Mix.Releases.Config.Providers.Elixir, ["${RELEASE_ROOT_DIR}/etc/runtime_prod.exs"]}
