@@ -35,24 +35,18 @@
           </div>
 
           <div class="mx-auto" style="max-width: 360px;">
-
-            <div class="form-group row">
-              <span class="mr-auto p-2"><%= "#{@challenge.user.firstname}'s Target Distance:" %></span>
-              <span class="text-500 p-2"><%=@challenge.distance_target%>KM</span>
-            </div>
-
             <div class="form-group row justify-content-between">
-              <span class="mr-auto p-2">Your Pledge Per KM:</span>
-              <span class="p-2 pull-right" style="max-width: 100px;">
-                <input type="number" class="form-control p-2" id="pledge-per-km" name="donation[pledge_per_km]" required min="0.1" step="0.1" placeholder="0.0">
+              <span class="mr-auto pt-3">Your Donation Amount:</span>
+              <span class="pull-right" style="max-width: 80px;">
+                <input type="number" class="form-control p-2" id="follow-on-donation-amount" name="donation[follow_on_donation_amount]" required min="1" placeholder="0">
               </span>
             </div>
 
             <div class="form-group row">
-              <span class="mr-auto p-2">
-                <%= "Your Total Pledged Support: " %>
+              <span class="mr-auto">
+                <%= "Total Donation Amount: " %>
               </span>
-              <span class="p-2 text-500"><%="#{currency_to_symbol(@challenge.default_currency)}"%><span id="total-pledged">0</span>
+              <span class="text-500"><%="#{currency_to_symbol(@challenge.default_currency)}"%><span id="total-donation">0</span>
               </span>
             </div>
 
@@ -69,17 +63,9 @@
                 <%= checkbox f, :opt_in, class: "col-1 mt-1" %>
                 <p class="col-11 text-center small">Please also add me to the NGO newsletter mailing list.</p>
             </div>
-
-            <div class="form-group row">
-              <div class="mt-2">
-                <p class="text-center small">
-                <span class="text-danger">Note:</span> Your card will only be charged based on the actual distance covered.</p>
-                <p class="text-center small">Your card will not be charged until the challenge ends.</p>
-              </div>
-            </div>
           </div>
       
-        </div> <!-- End Milestone Form -->
+        </div> <!-- End Follow-on-donation Form -->
       
         <!-- Billing form -->
         <div class="card-body border-top">
@@ -151,44 +137,6 @@
       </div>
     </div>
   </div>
-
-  <script>
-    (function() {
-      'use strict';
-
-      const target_distance = Number(<%=@challenge.distance_target%>);
-
-      $('#pledge-per-km').on('input',function(e){
-        const amount = target_distance * Number($('#pledge-per-km').val());
-
-        if ($("#donation_donor_pays_fees:checked").length > 0) {
-          $("#total-pledged").text(amount + total_donation_fees(amount));
-        } else {
-          $("#total-pledged").text(amount);
-        }
-      });
-
-      $(document).on("click", "#donation_donor_pays_fees", function(){
-        const current_pledge = Number($('#pledge-per-km').val());
-        const amount = target_distance * current_pledge;
-
-        if ($("#donation_donor_pays_fees:checked").length > 0 && current_pledge != 0 && current_pledge !== '') {
-          $("#total-pledged").text(amount + total_donation_fees(amount));
-        } else {
-          $("#total-pledged").text(amount);
-        }
-      });
-
-      function total_donation_fees(amount = 0) {
-        if(amount > 0) {
-          const bravera_fees = amount * 0.06;
-          const gateway_fees = (amount * 0.034) + 2.35;
-          return Math.ceil(Math.round((bravera_fees + gateway_fees) * 100) / 100);
-        }
-        return '';
-      }
-    })();
-  </script>
 
  <%= render "stripe_script.html" %>
 <% end %>
