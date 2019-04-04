@@ -3,6 +3,9 @@
     <div class="m-3 text-justify challenge-desc">
       <%= raw @challenge.offer.offer_challenge_desc %>
     </div>
+    <div class="m-3 text-justify challenge-desc">
+      <span class="small"><%= raw @challenge.offer.toc %></span>
+    </div>
     <div id="challenge-status-container" class="<%= @challenge.status %>">
       <%= cond do %>
         <% active_challenge?(@challenge) -> %>

@@ -60,7 +60,7 @@
   </div>
 
   <div class="form-group">
-    <%= label f, "TOC (displayed on /offers)", class: "control-label" %>
+    <%= label f, "Terms and conditions", class: "control-label" %>
     <%= textarea f, :toc, class: "form-control", rows: 3 %>
     <%= error_tag f, :toc %>
   </div>

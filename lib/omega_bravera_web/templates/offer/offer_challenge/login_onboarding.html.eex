@@ -22,10 +22,11 @@
                 </div>
             </div>
             <div class="card">
-                <div class="card-body">
+              <div class="card-body">
                 <span><%= link @offer.url, to: @offer.url %></span>
                 <p class="card-text"><%= raw @offer.full_desc %></p>
-                </div>
+                <p class="card-text"><%= raw @offer.toc %></p>
+              </div>
             </div>
             <div class="mt-2 mb-2">
                 <%= render(OmegaBraveraWeb.Offer.OfferView, "offer_stats.html", assigns) %>
