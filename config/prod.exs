@@ -14,7 +14,7 @@ config :logger, level: :info
 config :phoenix, :serve_endpoints, true
 
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
-  secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE")
+  secret_key_base: System.get_env("SECRET_KEY_BASE")
 
 config :omega_bravera, OmegaBravera.Repo,
   url: System.get_env("DATABASE_URL"),
