@@ -23,7 +23,6 @@ defmodule OmegaBraveraWeb.Endpoint do
   end
 
   plug(Plug.RequestId)
-  plug(Plug.Logger)
 
   plug(Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],

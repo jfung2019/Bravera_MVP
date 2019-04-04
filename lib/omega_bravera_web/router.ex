@@ -4,6 +4,7 @@ defmodule OmegaBraveraWeb.Router do
   alias OmegaBravera.Guardian
 
   pipeline :browser do
+    plug(Plug.Logger)
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
@@ -27,7 +28,12 @@ defmodule OmegaBraveraWeb.Router do
   end
 
   pipeline :api do
+    plug(Plug.Logger)
     plug(:accepts, ["json"])
+  end
+
+  scope "/" do
+    get("/health-check", OmegaBraveraWeb.PageController, :health_check)
   end
 
   # Bravera user auth
