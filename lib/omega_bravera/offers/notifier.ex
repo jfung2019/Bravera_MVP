@@ -33,6 +33,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
     |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
     |> Email.add_substitution("-qrCode-", challenge_qr_code_url(challenge))
+    |> Email.add_substitution("-terms-", challenge.offer.toc)
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
