@@ -51,7 +51,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       Offers.get_offer_chal_by_slugs(offer_slug, slug, [
         :offer_redeems,
         :user,
-        offer: [:offer_rewards]
+        offer: [:offer_rewards, :offer_redeems]
       ])
 
     case offer_challenge do
@@ -122,42 +122,51 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       Offers.get_offer_chal_by_slugs(offer_slug, slug, [
         :offer_redeems,
         :user,
-        offer: [:offer_rewards]
+        offer: [:offer_rewards, :offer_redeems]
       ])
 
     vendor = Repo.get_by(OfferVendor, vendor_id: offer_redeem_params["vendor_id"])
 
-    # Make sure the vendor_id is in our database.
-    if is_nil(vendor) do
-      conn
-      |> put_flash(:error, "Your Vendor ID seems to be incorrect.")
-      |> redirect(
-        to:
-          offer_offer_challenge_offer_challenge_path(
-            conn,
-            :new_redeem,
-            offer_slug,
-            slug,
-            redeem_token
-          )
+    cond do
+      !Enum.empty?(offer_challenge.offer_redeems) ->
+        render(conn, "previously_redeemed.html",
+        offer_challenge: offer_challenge,
+        layout: {OmegaBraveraWeb.LayoutView, "app.html"}
       )
-    else
-      case Offers.create_offer_redeems(offer_challenge, vendor, %{
-             "offer_reward_id" => offer_redeem_params["offer_reward_id"]
-           }) do
-        {:ok, _offer_redeem} ->
-          conn
-          |> render("redeem_sucessful.html", layout: {OmegaBraveraWeb.LayoutView, "app.html"})
 
-        {:error, %Ecto.Changeset{} = changeset} ->
-          conn
-          |> render("new_redeem.html",
-            offer_challenge: offer_challenge,
-            changeset: changeset,
-            vendor_id: offer_redeem_params["vendor_id"],
-            layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-          )
-      end
+      # Make sure the vendor_id is in our database.
+      is_nil(vendor) ->
+        conn
+        |> put_flash(:error, "Your Vendor ID seems to be incorrect.")
+        |> redirect(
+          to:
+            offer_offer_challenge_offer_challenge_path(
+              conn,
+              :new_redeem,
+              offer_slug,
+              slug,
+              redeem_token
+            )
+        )
+
+      true ->
+        case Offers.create_offer_redeems(offer_challenge, vendor, %{
+             "offer_reward_id" => offer_redeem_params["offer_reward_id"]
+          }) do
+
+          {:ok, _offer_redeem} ->
+            conn
+            |> render("redeem_sucessful.html", layout: {OmegaBraveraWeb.LayoutView, "app.html"}, offer_challenge: offer_challenge)
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            conn
+            |> render("new_redeem.html",
+              offer_challenge: offer_challenge,
+              changeset: changeset,
+              vendor_id: offer_redeem_params["vendor_id"],
+              layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+            )
+        end
     end
   end
 
