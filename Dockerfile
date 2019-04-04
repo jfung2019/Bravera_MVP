@@ -21,6 +21,7 @@ ENV PORT=4000 MIX_ENV=prod
 
 COPY --from=phx-builder /opt/app/_build/prod/rel/omega_bravera/ /opt/app/
 RUN chown -R default /opt/app/
+RUN apk --update add imagemagick file
 
 USER default
 
