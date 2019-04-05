@@ -64,9 +64,9 @@ production:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 #    - echo "$SSH_PRIVATE_KEY" | ssh-add -
-    - mkdir -p ~/.ssh
-    - cp .deliver/ssh_config ~/.ssh/config
-    - chmod -R 700 ~/.ssh
+    - mkdir -p /root/.ssh
+    - cp .deliver/ssh_config /root/.ssh/config
+    - chmod -R 700 /root/.ssh
     - ssh -Tvvv ubuntu@ec2-18-136-17-44.ap-southeast-1.compute.amazonaws.com
     - mix do deps.get, deps.compile
   script:
