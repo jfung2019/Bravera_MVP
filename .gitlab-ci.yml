@@ -67,10 +67,14 @@ production:
     - apk add --no-cache openssh-client procps
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-#    - echo "$SSH_PRIVATE_KEY" | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo -e "$SSH_CONFIG" >> ~/.ssh/config
+    - mkdir -p /root/.ssh
+    - cp .deliver/ssh_config /root/.ssh/config
+    - chmod -R 700 /root/.ssh
     - mix do deps.get, deps.compile
+    - git branch -f master HEAD
+    - mix edeliver build release --revision="$CI_COMMIT_REF_NAME" -P
   script:
-    - mix edeliver ping production -P -V -D
+    - mix edeliver deploy release to production -P
+    - mix edeliver start production -P
+    - mix edeliver migrate production -P
+    - mix edeliver ping production -P
