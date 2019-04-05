@@ -66,9 +66,9 @@ production:
     - mkdir -p /root/.ssh
     - cp .deliver/ssh_config /root/.ssh/config
     - chmod -R 700 /root/.ssh
-    - git checkout master
     - mix do deps.get, deps.compile
   script:
+    - git checkout master
     - mix edeliver update production --start-deploy -P
     - mix edeliver migrate production -P
     - mix edeliver ping production -P
