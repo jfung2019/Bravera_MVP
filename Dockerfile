@@ -2,9 +2,6 @@ FROM bitwalker/alpine-elixir-phoenix:latest as phx-builder
 
 ENV PORT=4000 MIX_ENV=prod
 
-ARG DOCKER_BUILD
-ENV DOCKER_BUILD=$DOCKER_BUILD
-
 ADD . .
 
 # Run frontend build, compile, and digest assets, and set default to own the directory
@@ -12,7 +9,7 @@ RUN mix deps.get && cd assets/ && \
 		npm install && \
     npm run deploy && \
     cd - && \
-    mix do compile, phx.digest, release
+    mix do compile, phx.digest, release --env docker
 
 FROM bitwalker/alpine-erlang:latest
 

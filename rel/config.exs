@@ -21,8 +21,6 @@ use Mix.Releases.Config,
 # when building in that environment, this combination of release
 # and environment configuration is called a profile
 
-docker_build = Map.has_key?(System.get_env(), "DOCKER_BUILD")
-
 environment :dev do
   # If you are running Phoenix, you should make sure that
   # server: true is set and the code reloader is disabled,
@@ -36,10 +34,25 @@ environment :dev do
 end
 
 environment :prod do
-  set include_erts: !docker_build
+  set include_erts: true
+  set include_src: false
+  set cookie: :"Oi(2dxixqRC^mD@5^fG8KZ,3O*RZ6Q,/rUIq_PnUVK%n@F$U&yT1YoT!h~CjAh_4"
+end
+
+environment :docker do
+  set include_erts: false
   set include_src: false
   set cookie: :"Oi(2dxixqRC^mD@5^fG8KZ,3O*RZ6Q,/rUIq_PnUVK%n@F$U&yT1YoT!h~CjAh_4"
   set post_start_hooks: "rel/hooks/post_start"
+  set commands: [
+    migrate: "rel/commands/migrate.sh",
+  ]
+  set config_providers: [
+    {Mix.Releases.Config.Providers.Elixir, ["${RELEASE_ROOT_DIR}/etc/config.exs"]}
+  ]
+  set overlays: [
+    {:copy, "rel/config/config.exs", "etc/config.exs"}
+  ]
 end
 
 # You may define one or more releases in this file.
@@ -52,16 +65,4 @@ release :omega_bravera do
   set applications: [
     :runtime_tools
   ]
-  set commands: [
-    migrate: "rel/commands/migrate.sh",
-  ]
-  if docker_build do
-    set config_providers: [
-      {Mix.Releases.Config.Providers.Elixir, ["${RELEASE_ROOT_DIR}/etc/config.exs"]}
-    ]
-    set overlays: [
-      {:copy, "rel/config/config.exs", "etc/config.exs"}
-    ]
-  end
 end
-

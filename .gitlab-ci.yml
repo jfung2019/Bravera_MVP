@@ -31,7 +31,7 @@ build_staging:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --build-arg DOCKER_BUILD .
+    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA .
     - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
 
 staging:
