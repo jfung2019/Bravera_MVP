@@ -6,6 +6,10 @@ defmodule OmegaBravera.Repo do
   DATABASE_URL environment variable.
   """
   def init(_, opts) do
-    {:ok, Keyword.put(opts, :url, System.get_env("DATABASE_URL"))}
+    opts =
+      opts
+      |> Keyword.put(:url, System.get_env("DATABASE_URL"))
+      |> Keyword.put(:ssl, !is_nil(System.get_env("DATABASE_SSL")))
+    {:ok, opts}
   end
 end
