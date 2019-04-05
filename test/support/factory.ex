@@ -76,6 +76,7 @@ defmodule OmegaBravera.Factory do
   def donation_factory do
     %OmegaBravera.Money.Donation{
       amount: Decimal.new(150),
+      type: "milestone",
       currency: "hkd",
       str_src: "src_1D7qTcHjHTiyg867gAya4pe5",
       str_cus_id: "cus_DYyQTnYmbkDjBV",
@@ -94,6 +95,7 @@ defmodule OmegaBravera.Factory do
   def km_donation_factory do
     %OmegaBravera.Money.Donation{
       amount: Decimal.new(5),
+      type: "km",
       currency: "HKD",
       str_src: "src_1D7qTcHjHTiyg867gAya4pe4",
       str_cus_id: "cus_DYyQTnYmbkDjBZ",

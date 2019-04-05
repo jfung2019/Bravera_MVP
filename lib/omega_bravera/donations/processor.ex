@@ -60,13 +60,20 @@ defmodule OmegaBravera.Donations.Processor do
     {:ok, :no_kickstarter}
   end
 
-  def charge_params(%Donation{} = donation, %NGOChal{type: "PER_KM"} = challenge) do
+  def charge_params(%Donation{type: type} = donation, %NGOChal{type: "PER_KM"} = challenge) do
     distance_covered =
       Challenges.get_ngo_chal!(challenge.id)
       |> truncate_exceeding_distance()
 
     amount =
       cond do
+        donation.donor_pays_fees == true and type == "follow_on" ->
+          donation.amount
+          |> amount_with_fees()
+
+        donation.donor_pays_fees == false and type == "follow_on" ->
+          donation.amount
+
         donation.donor_pays_fees == true ->
           donation.amount
           |> Decimal.mult(distance_covered)

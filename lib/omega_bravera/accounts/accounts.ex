@@ -138,8 +138,8 @@ defmodule OmegaBravera.Accounts do
       challenge
       |> donors_for_challenge_query()
       |> order_by(desc: :inserted_at)
-      |> group_by([donor, donation], [donor.id, donation.donor_id, donation.currency])
-      |> select([donor, donation], {donor, sum(donation.amount), donation.currency})
+      |> group_by([donor, donation], [donor.id, donation.donor_id, donation.currency, donation.type])
+      |> select([donor, donation], {donor, donation.type, sum(donation.amount), donation.currency})
 
     query =
       if is_number(limit) and limit > 0 do
@@ -150,13 +150,32 @@ defmodule OmegaBravera.Accounts do
 
     query
     |> Repo.all()
-    |> Enum.map(fn {donor, amount, currency} ->
-      %{
-        "user" => donor,
-        "pledged" => Decimal.mult(amount, challenge.distance_target),
-        "currency" => currency
-      }
+    |> Enum.map(fn {donor, donation_type, amount, currency} ->
+      case donation_type do
+        "follow_on" ->
+          follow_on_donation_result(donor, amount, currency)
+
+        _ ->
+          km_donation_result(donor, amount, challenge, currency)
+
+      end
     end)
+  end
+
+  defp km_donation_result(donor, amount, challenge, currency) do
+    %{
+      "user" => donor,
+      "pledged" => Decimal.mult(amount, challenge.distance_target),
+      "currency" => currency
+    }
+  end
+
+  defp follow_on_donation_result(donor, amount, currency) do
+    %{
+      "user" => donor,
+      "pledged" => amount,
+      "currency" => currency
+    }
   end
 
   # TODO Optimize the preload below

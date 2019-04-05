@@ -161,7 +161,7 @@ defmodule OmegaBravera.Challenges do
       nc in NGOChal,
       where: nc.type == "PER_KM" and (nc.status == "complete" or ^now >= nc.end_date),
       join: donations in assoc(nc, :donations),
-      on: donations.ngo_chal_id == nc.id and donations.status == "pending",
+      on: donations.ngo_chal_id == nc.id and donations.status == "pending" and donations.type == "km",
       preload: [donations: donations]
     )
     |> Repo.all()
@@ -173,7 +173,7 @@ defmodule OmegaBravera.Challenges do
         nc in NGOChal,
         where: nc.type == "PER_KM" and nc.slug == ^slug,
         left_join: donations in assoc(nc, :donations),
-        on: donations.ngo_chal_id == nc.id,
+        on: donations.ngo_chal_id == nc.id and donations.type == "km",
         select: sum(donations.amount)
       )
       |> Repo.one()
