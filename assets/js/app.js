@@ -25,3 +25,4 @@ import "./user_profile";
 import "./challenge_show";
 import "./leaderboard";
 import "./modals";
+import "./follow_on_donation_form";

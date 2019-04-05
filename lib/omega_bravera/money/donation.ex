@@ -20,6 +20,7 @@ defmodule OmegaBravera.Money.Donation do
     field(:milestone_distance, :integer)
     field(:km_distance, :integer)
     field(:donor_pays_fees, :boolean, default: false)
+    field(:type, :string)
 
     # charge successful fields
     field(:charge_id, :string)
@@ -64,13 +65,15 @@ defmodule OmegaBravera.Money.Donation do
     :status,
     :ngo_chal_id,
     :ngo_id,
-    :donor_id
+    :donor_id,
+    :type
   ]
 
   @doc false
   def changeset(donation, attrs) do
     donation
     |> cast(attrs, @allowed_attributes)
+    |> add_type()
     |> validate_required(@required_attributes)
   end
 
@@ -103,4 +106,20 @@ defmodule OmegaBravera.Money.Donation do
   end
 
   defp moneyfied_stripe_amount(amount), do: Decimal.from_float(amount / 100)
+
+  defp add_type(%Ecto.Changeset{} = changeset) do
+    milestone = get_field(changeset, :milestone)
+    km_distance = get_field(changeset, :km_distance)
+
+    cond do
+    is_nil(km_distance) and is_nil(milestone) ->
+      change(changeset, %{type: "follow_on"})
+
+    not is_nil(milestone) ->
+      change(changeset, %{type: "milestone"})
+
+    not is_nil(km_distance) ->
+      change(changeset, %{type: "km"})
+    end
+  end
 end

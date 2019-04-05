@@ -215,6 +215,7 @@ defmodule OmegaBraveraWeb.Router do
 
       resources "/", NGOChalController, only: [:show, :new, :create], param: "slug" do
         resources("/donations", DonationController, only: [:create])
+        post("/follow_on_donation", DonationController, :create_and_charge_follow_on_donation)
         get("/donors", DonationController, :index)
         get("/activities", ActivityController, :index)
         post("/invite_buddies", NGOChalController, :invite_buddies)

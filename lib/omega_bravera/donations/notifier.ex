@@ -1,5 +1,5 @@
 defmodule OmegaBravera.Donations.Notifier do
-  alias OmegaBravera.{Challenges.NGOChal, Accounts.Donor, Repo, Money.Donation, Emails}
+  alias OmegaBravera.{Challenges.NGOChal, Accounts.Donor, Repo, Money.Donation, Emails, Money.Donation}
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mailer}
@@ -148,9 +148,11 @@ defmodule OmegaBravera.Donations.Notifier do
     Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
   end
 
-  defp pledged_amount(pledges),
+  defp pledged_amount(pledges) when is_list(pledges),
     do:
       Enum.reduce(pledges, Decimal.new(0), fn pledge, acc -> Decimal.add(acc, pledge.amount) end)
+
+  defp pledged_amount(%Donation{amount: amount}), do: Decimal.new(amount)
 
   defp user_subscribed_in_category?(user_subscribed_categories, email_category_id) do
     # if user_subscribed_categories is empty, it means that user is subscribed in all email_categories.

@@ -45,6 +45,45 @@ defmodule OmegaBravera.Donations.Pledges do
     Enum.find(pledges, fn pledge -> pledge.milestone == 1 and pledge.milestone_distance == 0 end)
   end
 
+  @doc """
+  Direct Donation for challenges that expired, finished, or completed.
+  """
+  def create_follow_on_donation(%NGOChal{} = challenge, donation_params, stripe_customer) do
+    attrs = follow_on_donation_attributes(challenge, donation_params, stripe_customer)
+
+    IO.inspect attrs, label: :attrs
+
+    %Donation{}
+    |> Donation.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  defp follow_on_donation_attributes(
+         %NGOChal{} = challenge,
+         %{
+           "currency" => currency,
+           "str_src" => stripe_source,
+           "donor_id" => donor_id,
+           "follow_on_donation_amount" => amount,
+           "donor_pays_fees" => donor_pays_fees
+         },
+         %{"id" => stripe_customer_id}
+       ) do
+    %{
+      amount: Decimal.new(amount),
+      currency: currency,
+      str_src: stripe_source,
+      str_cus_id: stripe_customer_id,
+      ngo_chal_id: challenge.id,
+      ngo_id: challenge.ngo_id,
+      donor_id: donor_id,
+      status: "pending",
+      donor_pays_fees: donor_pays_fees
+    }
+  end
+
+  defp follow_on_donation_attributes(_, _, _), do: %{}
+
   defp pledged_milestones_map(donation_params) do
     %{
       1 => donation_params["milestone_1"],
