@@ -9,7 +9,8 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
 
 config :omega_bravera, OmegaBravera.Repo,
        url: System.get_env("DATABASE_URL"),
-       pool_size: 20
+       pool_size: System.get_env("POOL_SIZE") || 5,
+       ssl: !is_nil(System.get_env("DATABASE_SSL"))
 
 config :strava,
        client_id: System.get_env("STRAVA_CLIENT_ID"),
