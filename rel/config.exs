@@ -57,12 +57,10 @@ release :omega_bravera do
   ]
   if docker_build do
     set config_providers: [
-      {Mix.Releases.Config.Providers.Elixir, ["${RELEASE_ROOT_DIR}/etc/runtime_config.exs"]},
-      {Mix.Releases.Config.Providers.Elixir, ["${RELEASE_ROOT_DIR}/etc/runtime_prod.exs"]}
+      {Mix.Releases.Config.Providers.Elixir, ["${RELEASE_ROOT_DIR}/etc/config.exs"]}
     ]
     set overlays: [
-      {:copy, "rel/config.exs", "etc/runtime_config.exs"},
-      {:copy, "config/prod.exs", "etc/runtime_prod.exs"}
+      {:copy, "rel/config/config.exs", "etc/config.exs"}
     ]
   end
 end

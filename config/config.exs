@@ -37,8 +37,6 @@ config :omega_bravera,
        :google_analytics_id,
        Map.get(System.get_env(), "GOOGLE_ANALYTICS_ID", "UA-123069307-1")
 
-config :omega_bravera, :app_base_url, System.get_env("APP_BASE_URL") || "https://www.bravera.co"
-
 # Manual activities
 config :omega_bravera, :enable_manual_activities, false
 
