@@ -3,10 +3,13 @@ defmodule OmegaBraveraWeb.StravaController do
   use OmegaBraveraWeb, :controller
   alias URI
 
-  alias OmegaBravera.{Guardian, Accounts, Challenges.ActivitiesIngestion}
+  alias OmegaBravera.{Guardian, Accounts, Challenges.ActivitiesIngestion, Offers.OfferActivitiesIngestion}
 
   def post_webhook_callback(conn, params) do
-    ActivitiesIngestion.process_strava_webhook(params)
+    # Start activity ingestion for NGO challenges.
+    Task.start(ActivitiesIngestion, :process_strava_webhook, [params])
+    # Start activity ingestion for offer challenges.
+    Task.start(OfferActivitiesIngestion, :start, [params])
     render(conn, "webhook_callback.json", status: 200)
   end
 

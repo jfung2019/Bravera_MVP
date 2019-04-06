@@ -8,17 +8,13 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
     Donations.Processor,
     Money,
     Money.Donation,
-    Repo,
-    Offers.OfferActivitiesIngestion
+    Repo
   }
 
   def process_strava_webhook(
         %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
       ) do
     Logger.info("ActivityIngestion: Strava POST webhook processing: #{inspect(params)}")
-
-    # Start activity ingestion for offer challenges.
-    Task.async(OfferActivitiesIngestion, :start, [params])
 
     # Start activity ingestion for ngo challenges.
     owner_id
