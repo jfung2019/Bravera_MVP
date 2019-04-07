@@ -56,7 +56,7 @@ production:
   image: bitwalker/alpine-elixir-phoenix:latest
   variables:
     MIX_ENV: "dev"
-    REFSPEC: $CI_COMMIT_SHA
+    REFSPEC: master
   only:
   - master
   before_script:
@@ -68,7 +68,7 @@ production:
     - chmod -R 700 /root/.ssh
     - mix do deps.get, deps.compile
     - git branch -f master HEAD
-    - mix edeliver build release --revision="$CI_COMMIT_REF_NAME" -P
+    - mix edeliver build release --revision="$CI_COMMIT_REF_NAME" -P -D
   script:
     - mix edeliver deploy release to production -P
     - mix edeliver start production -P
