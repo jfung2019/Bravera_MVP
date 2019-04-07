@@ -31,6 +31,7 @@ defmodule OmegaBravera.Offers.Offer do
     field(:num_of_challenges, :decimal, default: 0, virtual: true)
     field(:total_distance_covered, :decimal, default: 0, virtual: true)
     field(:total_calories, :decimal, default: 0, virtual: true)
+    field(:unique_participants, :integer, default: 0, virtual: true)
 
     field(:activities, {:array, :string})
     field(:distances, {:array, :integer})
