@@ -81,7 +81,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           offer_redeem: params
         )
 
-      assert html_response(conn, 200) =~ "Redeem sucessful!"
+      assert html_response(conn, 200) =~ "Redeem Confirmed!"
 
       offer = Offers.get_offer_by_slug(offer.slug, [:offer_redeems])
       assert length(offer.offer_redeems) == 1
