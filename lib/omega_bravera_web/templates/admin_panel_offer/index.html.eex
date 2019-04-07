@@ -8,7 +8,9 @@
         <tr>
           <th>Name</th>
           <th>Vendor ID</th>
-          <th>Redeems</th>
+          <th>Patricipants</th>
+          <th>Challenges</th>
+          <th>Redemptions</th>
           <th>Total Value</th>
 
         </tr>
@@ -18,6 +20,8 @@
         <tr>
           <td><%= offer.name %></td>
           <td><%= offer.vendor.vendor_id %></td>
+          <td><%= offer.unique_participants %></td>
+          <td><%= length(offer.offer_challenges) %></td>
           <td><%= length(offer.offer_redeems) %></td>
           <td><%= get_total_redeems_value(offer.offer_redeems) %></td>
           <td class="text-right">

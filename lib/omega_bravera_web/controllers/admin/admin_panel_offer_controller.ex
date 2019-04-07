@@ -8,7 +8,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
   plug(:assign_available_options when action in [:edit, :new])
 
   def index(conn, _params) do
-    offers = Offers.list_offers_preload([:vendor, offer_redeems: [:offer_reward]])
+    offers = Offers.list_offers_preload([:vendor, :offer_challenges, offer_redeems: [:offer_reward]])
     render(conn, "index.html", offers: offers)
   end
 

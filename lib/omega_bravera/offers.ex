@@ -307,8 +307,12 @@ defmodule OmegaBravera.Offers do
   def list_offers_preload(preloads \\ [:vendor]) do
     from(
       o in Offer,
+      join: challenge in assoc(o, :offer_challenges),
+      join: user in assoc(challenge, :user),
       preload: ^preloads,
-      order_by: o.inserted_at
+      order_by: o.inserted_at,
+      group_by: [o.id],
+      select: %{o | unique_participants: count(user.id, :distinct)}
     )
     |> Repo.all()
   end
