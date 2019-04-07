@@ -6,11 +6,7 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
 
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
        secret_key_base: System.get_env("SECRET_KEY_BASE")
-
-config :omega_bravera, OmegaBravera.Repo,
-       url: System.get_env("DATABASE_URL"),
-       pool_size: 20
-
+       
 config :strava,
        client_id: System.get_env("STRAVA_CLIENT_ID"),
        client_secret: System.get_env("STRAVA_CLIENT_SECRET"),
