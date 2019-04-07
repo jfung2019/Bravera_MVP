@@ -9,7 +9,7 @@ defmodule OmegaBravera.Repo do
     opts =
       opts
       |> Keyword.put(:url, System.get_env("DATABASE_URL"))
-      |> Keyword.put(:prepare, String.to_existing_atom(System.get_env("git st") || "named"))
+      |> Keyword.put(:prepare, String.to_existing_atom(System.get_env("DATABASE_PREPARE") || "named"))
       |> Keyword.put(:ssl, !is_nil(System.get_env("DATABASE_SSL")))
       |> Keyword.put(:pool_size, String.to_integer(System.get_env("POOL_SIZE") || "20"))
     {:ok, opts}
