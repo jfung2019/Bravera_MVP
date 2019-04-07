@@ -11,6 +11,32 @@ defmodule OmegaBravera.Offers.Notifier do
 
   alias SendGrid.{Email, Mailer}
 
+  def send_user_reward_redemption_successful(%OfferChallenge{} = challenge) do
+    template_id = "ea31089b-9507-4b79-a10e-3e763a1b0757"
+    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
+
+    if user_subscribed_in_category?(
+        challenge.user.subscribed_email_categories,
+        sendgrid_email.category.id
+      ) do
+      challenge
+      |> Repo.preload(:offer)
+      |> reward_completion_email(template_id)
+      |> Mailer.send()
+    end
+  end
+
+  def user_reward_redemption_successful(%OfferChallenge{} = challenge, template_id) do
+    Email.build()
+    |> Email.put_template(template_id)
+    |> Email.add_substitution("-firstName-", challenge.user.firstname)
+    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(challenge.user.email)
+  end
+
   def send_reward_completion_email(%OfferChallenge{} = challenge) do
     template_id = "42873800-965d-4e0d-bcea-4c59a1934d80"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)

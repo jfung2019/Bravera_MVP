@@ -10,6 +10,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Offers.OfferChallenge,
     Offers.OfferVendor,
     Fundraisers.NgoOptions,
+    Offers.Notifier,
     Repo
   }
 
@@ -155,6 +156,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           }) do
 
           {:ok, _offer_redeem} ->
+            Notifier.send_user_reward_redemption_successful(offer_challenge)
+
             conn
             |> render("redeem_sucessful.html", layout: {OmegaBraveraWeb.LayoutView, "app.html"}, offer_challenge: offer_challenge)
 
