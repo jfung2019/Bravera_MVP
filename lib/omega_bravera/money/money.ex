@@ -8,9 +8,19 @@ defmodule OmegaBravera.Money do
   alias OmegaBravera.{Repo, Money.Donation, Money.Tip, Challenges.NGOChal, Accounts.Donor}
 
   def milestones_donations(%NGOChal{id: challenge_id}) do
+    follow_on_donations_total =
+      Repo.aggregate(
+        from(
+          donation in Donation,
+          where: donation.ngo_chal_id == 173 and donation.type == "follow_on"
+        ),
+        :sum,
+        :charged_amount
+      )
+
     query =
       from(donation in Donation,
-        where: donation.ngo_chal_id == ^challenge_id,
+        where: donation.ngo_chal_id == ^challenge_id and donation.type == "milestone",
         group_by: [donation.status, donation.milestone],
         select: {donation.status, donation.milestone, sum(donation.amount)}
       )
@@ -27,6 +37,12 @@ defmodule OmegaBravera.Money do
     |> Enum.map(fn {k, v} -> {k, Map.put(v, "total", Decimal.add(v["pending"], v["charged"]))} end)
     # hash at the end
     |> Enum.into(%{})
+    # add follow_on donations
+    |> Map.put("follow_on_total", %{
+      "total" => follow_on_donations_total,
+      "charged" => follow_on_donations_total,
+      "pending" => Decimal.new(0)
+    })
   end
 
   defp default_milestone_stats, do: %{"charged" => Decimal.new(0), "pending" => Decimal.new(0)}

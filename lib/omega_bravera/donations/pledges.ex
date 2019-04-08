@@ -51,8 +51,6 @@ defmodule OmegaBravera.Donations.Pledges do
   def create_follow_on_donation(%NGOChal{} = challenge, donation_params, stripe_customer) do
     attrs = follow_on_donation_attributes(challenge, donation_params, stripe_customer)
 
-    IO.inspect attrs, label: :attrs
-
     %Donation{}
     |> Donation.changeset(attrs)
     |> Repo.insert()

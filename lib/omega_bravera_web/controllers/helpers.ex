@@ -60,7 +60,7 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
   def get_stats(%NGOChal{type: "PER_KM"} = ngo_chal) do
     ngo_chal = OmegaBravera.Challenges.get_ngo_chal!(ngo_chal.id)
     total_secured = Challenges.get_per_km_challenge_total_secured(ngo_chal.slug)
-    total_pledged = Challenges.get_per_km_challenge_total_pledges(ngo_chal.slug)
+    {total_km_pledges, _follow_on_donations} = Challenges.get_per_km_challenge_total_pledges(ngo_chal.slug)
     total = %{"total" => %{"charged" => 0, "pending" => 0}}
 
     total =
@@ -75,11 +75,11 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
       end
 
     total =
-      if Decimal.decimal?(total_pledged) do
+      if Decimal.decimal?(total_km_pledges) do
         put_in(
           total,
           ["total", "pending"],
-          Decimal.mult(total_pledged, ngo_chal.distance_target)
+          Decimal.mult(total_km_pledges, ngo_chal.distance_target)
           |> Decimal.to_float()
           |> trunc()
         )

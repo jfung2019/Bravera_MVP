@@ -199,9 +199,9 @@ defmodule OmegaBraveraWeb.NGOChalView do
     end
   end
 
-  def render_pledge_per_km(nil), do: 0
+  def render_pledge_per_km({nil, nil}), do: 0
 
-  def render_pledge_per_km(%Decimal{} = total_km_pledges),
+  def render_pledge_per_km({%Decimal{} = total_km_pledges, _}),
     do: Decimal.to_string(total_km_pledges)
 
   def render_current_pledge_value(_, nil), do: 0
@@ -210,9 +210,9 @@ defmodule OmegaBraveraWeb.NGOChalView do
     Decimal.mult(total_km_pledges, distance_covered)
   end
 
-  def render_km_current_distance_value(nil, _), do: 0
+  def render_km_current_distance_value({nil, nil}, _), do: 0
 
-  def render_km_current_distance_value(%Decimal{} = total_km_pledges, %NGOChal{} = challenge) do
+  def render_km_current_distance_value({%Decimal{} = total_km_pledges, _}, %NGOChal{} = challenge) do
     current_distance_value =
       Decimal.mult(total_km_pledges, challenge.distance_covered)
       |> Decimal.round(1)
@@ -241,15 +241,15 @@ defmodule OmegaBraveraWeb.NGOChalView do
     |> Decimal.to_string()
   end
 
-  def render_current_pledges(nil, _), do: 0
+  def render_current_pledges({nil, nil}, _), do: 0
 
-  def render_current_pledges(%Decimal{} = total_pledges, distance),
-    do: Decimal.mult(total_pledges, distance) |> Decimal.to_string()
+  def render_current_pledges({%Decimal{} = total_pledges, %Decimal{} = follow_on_donations_total}, distance),
+    do: Decimal.mult(total_pledges, distance) |> Decimal.add(follow_on_donations_total) |> Decimal.to_string()
 
-  def total_pledges(nil, _), do: 0
+  def total_pledges({nil, nil}, _), do: 0
 
-  def total_pledges(%Decimal{} = total_pledges, distance),
-    do: Decimal.mult(total_pledges, distance) |> Decimal.to_integer()
+  def total_pledges({%Decimal{} = total_pledges, %Decimal{} = follow_on_donations_total}, distance),
+    do: Decimal.mult(total_pledges, distance) |> Decimal.add(follow_on_donations_total) |> Decimal.to_integer()
 
   def hide_donor_pays_fees?(%NGO{} = ngo), do: ngo.hide_donor_pays_fees
 

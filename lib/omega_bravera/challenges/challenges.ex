@@ -173,13 +173,15 @@ defmodule OmegaBravera.Challenges do
         nc in NGOChal,
         where: nc.type == "PER_KM" and nc.slug == ^slug,
         left_join: donations in assoc(nc, :donations),
-        on: donations.ngo_chal_id == nc.id and donations.type == "km",
-        select: sum(donations.amount)
+        on: donations.ngo_chal_id == nc.id,
+        select: {fragment("SUM(CASE ? WHEN 'km' THEN ? ELSE 0 END)", donations.type, donations.amount), fragment("SUM(CASE ? WHEN 'follow_on' THEN ? ELSE 0 END)", donations.type, donations.charged_amount)}
       )
       |> Repo.one()
 
     case km_pledges do
-      nil -> Decimal.new(0)
+      {nil, _} -> {Decimal.new(0), elem(km_pledges, 1)}
+      {_, nil} -> {elem(km_pledges, 0), Decimal.new(0)}
+      {nil, nil} -> {Decimal.new(0), Decimal.new(0)}
       _ -> km_pledges
     end
   end
