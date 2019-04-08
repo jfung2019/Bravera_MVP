@@ -53,7 +53,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
   end
 
   def fixture(:offer) do
-    {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "123456"})
+    {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "123456", email: "foo@bar.com"})
     {:ok, offer} = Offers.create_offer(Map.put(@offer_create_attrs, :vendor_id, vendor.id))
     offer
   end
@@ -76,7 +76,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
 
   describe "create offer" do
     test "redirects to show when data is valid", %{conn: conn} do
-      {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "331678"})
+      {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "331678", email: "foo@bar.com"})
 
       conn =
         post(conn, admin_panel_offer_path(conn, :create),
@@ -106,7 +106,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     setup [:create_offer]
 
     test "update when data is valid", %{conn: conn, offer: offer} do
-      {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "312322"})
+      {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "312322", email: "foo@bar.com"})
 
       put(conn, admin_panel_offer_path(conn, :update, offer.slug),
         offer: Map.put(@update_attrs, :vendor_id, vendor.id)

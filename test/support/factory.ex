@@ -184,7 +184,8 @@ defmodule OmegaBravera.Factory do
 
   def vendor_factory do
     %OmegaBravera.Offers.OfferVendor{
-      vendor_id: Enum.random(10_000_000..20_000_000) |> Integer.to_string()
+      vendor_id: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
+      email: sequence(:email, &"john.wick.#{&1}@example.com")
     }
   end
 end

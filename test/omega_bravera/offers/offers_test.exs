@@ -394,9 +394,9 @@ defmodule OmegaBravera.OffersTest do
   describe "offer_vendors" do
     alias OmegaBravera.Offers.OfferVendor
 
-    @valid_attrs %{vendor_id: "some vendor_id"}
-    @update_attrs %{vendor_id: "some updated vendor_id"}
-    @invalid_attrs %{vendor_id: nil}
+    @valid_attrs %{vendor_id: "some vendor_id", email: "some@email.com"}
+    @update_attrs %{vendor_id: "some updated vendor_id", email: "some2@email.com"}
+    @invalid_attrs %{vendor_id: nil, email: nil}
 
     def offer_vendor_fixture(attrs \\ %{}) do
       {:ok, offer_vendor} =
