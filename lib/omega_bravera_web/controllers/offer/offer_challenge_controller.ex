@@ -157,8 +157,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         case Offers.create_offer_redeems(offer_challenge, vendor, %{
                "offer_reward_id" => offer_redeem_params["offer_reward_id"]
              }) do
-          {:ok, _offer_redeem} ->
+          {:ok, offer_redeem} ->
             Notifier.send_user_reward_redemption_successful(offer_challenge)
+            Notifier.send_reward_vendor_redemption_successful_confirmation(offer_challenge, offer_redeem)
 
             conn
             |> render("redeem_sucessful.html",

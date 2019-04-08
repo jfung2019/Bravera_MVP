@@ -3,13 +3,45 @@ defmodule OmegaBravera.Offers.Notifier do
     Offers.OfferChallenge,
     Offers.OfferChallengeActivity,
     Repo,
-    Emails
+    Emails,
+    Offers.OfferRedeem
   }
 
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
 
   alias SendGrid.{Email, Mailer}
+
+  def send_reward_vendor_redemption_successful_confirmation(%OfferChallenge{} = challenge, %OfferRedeem{} = redeem) do
+    template_id = "0fd2f256-354f-480a-9b3e-502300da6366"
+    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
+    redeem = Repo.preload(redeem, [:offer_reward])
+
+    if not is_nil(sendgrid_email) and
+         user_subscribed_in_category?(
+           challenge.user.subscribed_email_categories,
+           sendgrid_email.category.id
+         ) do
+      challenge
+      |> Repo.preload(:offer)
+      |> reward_vendor_redemption_successful_confirmation_email(redeem, template_id)
+      |> Mailer.send()
+    end
+  end
+
+  def reward_vendor_redemption_successful_confirmation_email(%OfferChallenge{} = challenge, %OfferRedeem{} = redeem, template_id) do
+    Email.build()
+    |> Email.put_template(template_id)
+    |> Email.add_substitution("-redeemDateTime-", Timex.format!(redeem.inserted_at, "%Y-%m-%d", :strftime))
+    |> Email.add_substitution("-challengeName-", challenge.name)
+    |> Email.add_substitution("-participantFirstName-", challenge.user.firstname)
+    |> Email.add_substitution("-productName-", redeem.offer_reward.name)
+    |> Email.add_substitution("-redeemID-", Integer.to_string(redeem.id))
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(challenge.user.email)
+  end
 
   def send_user_reward_redemption_successful(%OfferChallenge{} = challenge) do
     template_id = "ea31089b-9507-4b79-a10e-3e763a1b0757"
@@ -23,12 +55,12 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> Repo.preload(:offer)
-      |> reward_completion_email(template_id)
+      |> user_reward_redemption_successful_email(template_id)
       |> Mailer.send()
     end
   end
 
-  def user_reward_redemption_successful(%OfferChallenge{} = challenge, template_id) do
+  def user_reward_redemption_successful_email(%OfferChallenge{} = challenge, template_id) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
