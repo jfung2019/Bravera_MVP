@@ -7,6 +7,7 @@
       <thead>
         <tr>
           <th>Vendor ID</th>
+          <th>Email</th>
           <th></th>
         </tr>
       </thead>
@@ -14,6 +15,7 @@
     <%= for offer_vendor <- @offer_vendors do %>
         <tr>
           <td><%= offer_vendor.vendor_id %></td>
+          <td><%= offer_vendor.email %></td>
           <td class="text-right">
             <span><%= link "Edit", to: admin_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-default btn-xs"%> </span>
           </td>

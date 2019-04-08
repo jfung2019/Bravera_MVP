@@ -15,7 +15,7 @@ defmodule OmegaBravera.Offers.Notifier do
   def send_reward_vendor_redemption_successful_confirmation(%OfferChallenge{} = challenge, %OfferRedeem{} = redeem) do
     template_id = "0fd2f256-354f-480a-9b3e-502300da6366"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
-    challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
+    challenge = Repo.preload(challenge, [:offer, :vendor, user: [:subscribed_email_categories]])
     redeem = Repo.preload(redeem, [:offer_reward])
 
     if not is_nil(sendgrid_email) and
@@ -40,7 +40,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_substitution("-redeemID-", Integer.to_string(redeem.id))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
-    |> Email.add_to(challenge.user.email)
+    |> Email.add_to(redeem.vendor.email)
   end
 
   def send_user_reward_redemption_successful(%OfferChallenge{} = challenge) do

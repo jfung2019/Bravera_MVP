@@ -6,6 +6,7 @@ defmodule OmegaBravera.Offers.OfferVendor do
 
   schema "offer_vendors" do
     field(:vendor_id, :string)
+    field(:email, :string)
 
     has_many(:offers, Offer, foreign_key: :vendor_id)
 
@@ -15,8 +16,8 @@ defmodule OmegaBravera.Offers.OfferVendor do
   @doc false
   def changeset(offer_vendor, attrs) do
     offer_vendor
-    |> cast(attrs, [:vendor_id])
-    |> validate_required([:vendor_id])
+    |> cast(attrs, [:vendor_id, :email])
+    |> validate_required([:vendor_id, :email])
     |> unique_constraint(:vendor_id)
   end
 end
