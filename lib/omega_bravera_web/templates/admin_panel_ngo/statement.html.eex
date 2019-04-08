@@ -59,8 +59,8 @@
           <td data-title="Payment Date"><%= render_datetime(donation.charged_at) %></td>
           <td data-title="Participant"><%= donation.ngo_chal.user.firstname <> " " <> donation.ngo_chal.user.lastname %></td>
           <td data-title="Challenge URL"><%= link("URL", to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, donation.ngo_chal.slug ), target: "_blank") %></td>
-          <td data-title="Supporter Name"><%= donation.user.firstname <> " " <> donation.user.lastname %></td>
-          <td data-title="Supporter Email"><%= donation.user.email %></td>
+          <td data-title="Supporter Name"><%= donation.donor.firstname <> " " <> donation.donor.lastname %></td>
+          <td data-title="Supporter Email"><%= donation.donor.email %></td>
           <td data-title="Milestone"><%= render_kickstarter(donation.milestone) %></td>
           <td data-title="Challenge currency"><%= donation.ngo_chal.default_currency %></td>
           <td data-title="Donation Total"><%= Decimal.round(Decimal.mult(donation.charged_amount, donation.exchange_rate), 1) %></td>

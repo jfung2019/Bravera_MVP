@@ -24,10 +24,10 @@ defmodule OmegaBravera.Fundraisers do
       where: n.slug == ^slug,
       join: donations in assoc(n, :donations),
       on: donations.status == "charged",
-      join: user in assoc(donations, :user),
+      join: donor in assoc(donations, :donor),
       join: ngo_chal in assoc(donations, :ngo_chal),
       join: participant in assoc(ngo_chal, :user),
-      preload: [donations: {donations, user: user, ngo_chal: {ngo_chal, user: participant}}]
+      preload: [donations: {donations, donor: donor, ngo_chal: {ngo_chal, user: participant}}]
     )
     |> Repo.one()
   end
@@ -40,7 +40,7 @@ defmodule OmegaBravera.Fundraisers do
       on:
         donations.status == "charged" and donations.charged_at >= ^start_date and
           donations.charged_at <= ^end_date,
-      join: donor in assoc(donations, :user),
+      join: donor in assoc(donations, :donor),
       join: ngo_chal in assoc(donations, :ngo_chal),
       join: participant in assoc(ngo_chal, :user),
       select: [
@@ -54,17 +54,20 @@ defmodule OmegaBravera.Fundraisers do
         ngo_chal.default_currency,
         fragment("ROUND((? * ?), 1)", donations.charged_amount, donations.exchange_rate),
         fragment(
-          "ROUND(((CASE WHEN type = 'PER_KM' THEN charged_amount * exchange_rate ELSE amount * exchange_rate END) * 0.034) + 2.35, 1)"
+          "ROUND(((CASE WHEN ? = 'PER_KM' THEN charged_amount * exchange_rate ELSE amount * exchange_rate END) * 0.034) + 2.35, 1)",
+          ngo_chal.type
         ),
         fragment(
-          "ROUND((CASE WHEN type = 'PER_KM' THEN charged_amount * exchange_rate ELSE amount * exchange_rate END) * 0.06, 1)"
+          "ROUND((CASE WHEN ? = 'PER_KM' THEN charged_amount * exchange_rate ELSE amount * exchange_rate END) * 0.06, 1)",
+          ngo_chal.type
         ),
         fragment("CASE
-              WHEN type = 'PER_KM' THEN
+              WHEN ? = 'PER_KM' THEN
                 ROUND(((charged_amount * exchange_rate) - (((charged_amount * exchange_rate) * 0.034) + 2.35)) - ((charged_amount * exchange_rate) * 0.06), 1)
               ELSE
                 ROUND(((charged_amount * exchange_rate) - (((amount * exchange_rate) * 0.034) + 2.35)) - ((amount * exchange_rate) * 0.06), 1)
-            END")
+            END",
+            ngo_chal.type)
       ]
     )
     |> Repo.all()
