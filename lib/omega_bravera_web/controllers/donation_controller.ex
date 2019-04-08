@@ -116,7 +116,11 @@ defmodule OmegaBraveraWeb.DonationController do
     end
   end
 
-  def create_and_charge_follow_on_donation(conn, %{"donation" => donation_params, "ngo_chal_slug" => ngo_chal_slug, "ngo_slug" => ngo_slug}) do
+  def create_and_charge_follow_on_donation(conn, %{
+        "donation" => donation_params,
+        "ngo_chal_slug" => ngo_chal_slug,
+        "ngo_slug" => ngo_slug
+      }) do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, ngo_chal_slug, [:ngo, :user])
     stripe_customer = StripeHelpers.create_stripe_customer(donation_params)
     donor = Accounts.insert_or_return_email_donor(donation_params)
@@ -135,9 +139,11 @@ defmodule OmegaBraveraWeb.DonationController do
           Notifier.email_parties(challenge, donor, pledge)
           {:ok, pledge}
 
-
         {:error, reason} ->
-          Logger.error("DonationProcessor: Error creating follow-on-donation, reason: #{inspect(reason)}")
+          Logger.error(
+            "DonationProcessor: Error creating follow-on-donation, reason: #{inspect(reason)}"
+          )
+
           {:error, reason}
       end
 
@@ -154,7 +160,10 @@ defmodule OmegaBraveraWeb.DonationController do
             )
 
             conn
-            |> put_flash(:info, "Thanks you, we've received your donation! Please check your email for more information.")
+            |> put_flash(
+              :info,
+              "Thanks you, we've received your donation! Please check your email for more information."
+            )
             |> redirect(to: challenge_path)
 
           {:error, reason} ->

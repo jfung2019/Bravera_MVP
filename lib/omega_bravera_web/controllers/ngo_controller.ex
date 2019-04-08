@@ -51,7 +51,8 @@ defmodule OmegaBraveraWeb.NGOController do
 
   defp add_stats(challenges) do
     Enum.map(challenges, fn challenge ->
-      {total_per_km_pledges, follow_on_donations} = Challenges.get_per_km_challenge_total_pledges(challenge.slug)
+      {total_per_km_pledges, follow_on_donations} =
+        Challenges.get_per_km_challenge_total_pledges(challenge.slug)
 
       case challenge.type do
         "PER_KM" ->
@@ -87,8 +88,9 @@ defmodule OmegaBraveraWeb.NGOController do
 
   defp get_total_secured(%NGOChal{type: "PER_KM"} = challenge) do
     challenge = Challenges.get_ngo_chal!(challenge.id)
-    {total_per_km_pledges, follow_on_donations} = Challenges.get_per_km_challenge_total_pledges(challenge.slug)
 
+    {total_per_km_pledges, follow_on_donations} =
+      Challenges.get_per_km_challenge_total_pledges(challenge.slug)
 
     Decimal.mult(
       total_per_km_pledges,

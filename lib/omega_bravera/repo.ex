@@ -12,6 +12,7 @@ defmodule OmegaBravera.Repo do
       |> Keyword.put(:prepare, database_prepare(System.get_env("DATABASE_PREPARE") || "unnamed"))
       |> Keyword.put(:ssl, !is_nil(System.get_env("DATABASE_SSL")))
       |> Keyword.put_new(:pool_size, String.to_integer(System.get_env("POOL_SIZE") || "20"))
+
     {:ok, opts}
   end
 

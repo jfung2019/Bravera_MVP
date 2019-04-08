@@ -243,13 +243,26 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def render_current_pledges({nil, nil}, _), do: 0
 
-  def render_current_pledges({%Decimal{} = total_pledges, %Decimal{} = follow_on_donations_total}, distance),
-    do: Decimal.mult(total_pledges, distance) |> Decimal.add(follow_on_donations_total) |> Decimal.to_string()
+  def render_current_pledges(
+        {%Decimal{} = total_pledges, %Decimal{} = follow_on_donations_total},
+        distance
+      ),
+      do:
+        Decimal.mult(total_pledges, distance)
+        |> Decimal.add(follow_on_donations_total)
+        |> Decimal.to_string()
 
   def total_pledges({nil, nil}, _), do: 0
 
-  def total_pledges({%Decimal{} = total_pledges, %Decimal{} = follow_on_donations_total}, distance),
-    do: Decimal.mult(total_pledges, distance) |> Decimal.add(follow_on_donations_total) |> Decimal.to_integer()
+  def total_pledges(
+        {%Decimal{} = total_pledges, %Decimal{} = follow_on_donations_total},
+        distance
+      ),
+      do:
+        Decimal.mult(total_pledges, distance)
+        |> Decimal.add(follow_on_donations_total)
+        |> Decimal.round()
+        |> Decimal.to_integer()
 
   def hide_donor_pays_fees?(%NGO{} = ngo), do: ngo.hide_donor_pays_fees
 

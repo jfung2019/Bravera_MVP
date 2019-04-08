@@ -138,8 +138,16 @@ defmodule OmegaBravera.Accounts do
       challenge
       |> donors_for_challenge_query()
       |> order_by(desc: :inserted_at)
-      |> group_by([donor, donation], [donor.id, donation.donor_id, donation.currency, donation.type])
-      |> select([donor, donation], {donor, donation.type, sum(donation.amount), donation.currency})
+      |> group_by([donor, donation], [
+        donor.id,
+        donation.donor_id,
+        donation.currency,
+        donation.type
+      ])
+      |> select(
+        [donor, donation],
+        {donor, donation.type, sum(donation.amount), donation.currency}
+      )
 
     query =
       if is_number(limit) and limit > 0 do
@@ -157,7 +165,6 @@ defmodule OmegaBravera.Accounts do
 
         _ ->
           km_donation_result(donor, amount, challenge, currency)
-
       end
     end)
   end

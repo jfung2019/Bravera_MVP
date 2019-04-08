@@ -1,5 +1,13 @@
 defmodule OmegaBravera.Donations.Notifier do
-  alias OmegaBravera.{Challenges.NGOChal, Accounts.Donor, Repo, Money.Donation, Emails, Money.Donation}
+  alias OmegaBravera.{
+    Challenges.NGOChal,
+    Accounts.Donor,
+    Repo,
+    Money.Donation,
+    Emails,
+    Money.Donation
+  }
+
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mailer}

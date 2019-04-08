@@ -112,14 +112,14 @@ defmodule OmegaBravera.Money.Donation do
     km_distance = get_field(changeset, :km_distance)
 
     cond do
-    is_nil(km_distance) and is_nil(milestone) ->
-      change(changeset, %{type: "follow_on"})
+      is_nil(km_distance) and is_nil(milestone) ->
+        change(changeset, %{type: "follow_on"})
 
-    not is_nil(milestone) ->
-      change(changeset, %{type: "milestone"})
+      not is_nil(milestone) ->
+        change(changeset, %{type: "milestone"})
 
-    not is_nil(km_distance) ->
-      change(changeset, %{type: "km"})
+      not is_nil(km_distance) ->
+        change(changeset, %{type: "km"})
     end
   end
 end

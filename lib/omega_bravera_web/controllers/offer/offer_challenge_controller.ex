@@ -35,11 +35,14 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   TODO: remove redeem_form_page() and let new_redeem() handle rendering redeem forms. -Sherief
   """
-  def qr_code(conn, %{
-        "offer_challenge_slug" => slug,
-        "offer_slug" => offer_slug,
-        "redeem_token" => redeem_token
-      } = params) do
+  def qr_code(
+        conn,
+        %{
+          "offer_challenge_slug" => slug,
+          "offer_slug" => offer_slug,
+          "redeem_token" => redeem_token
+        } = params
+      ) do
     if Map.has_key?(params, "redeem") do
       redeem_form_page(conn, offer_slug, slug, redeem_token)
     else
@@ -131,9 +134,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     cond do
       !Enum.empty?(offer_challenge.offer_redeems) ->
         render(conn, "previously_redeemed.html",
-        offer_challenge: offer_challenge,
-        layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-      )
+          offer_challenge: offer_challenge,
+          layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+        )
 
       # Make sure the vendor_id is in our database.
       is_nil(vendor) ->
@@ -152,14 +155,16 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
       true ->
         case Offers.create_offer_redeems(offer_challenge, vendor, %{
-             "offer_reward_id" => offer_redeem_params["offer_reward_id"]
-          }) do
-
+               "offer_reward_id" => offer_redeem_params["offer_reward_id"]
+             }) do
           {:ok, _offer_redeem} ->
             Notifier.send_user_reward_redemption_successful(offer_challenge)
 
             conn
-            |> render("redeem_sucessful.html", layout: {OmegaBraveraWeb.LayoutView, "app.html"}, offer_challenge: offer_challenge)
+            |> render("redeem_sucessful.html",
+              layout: {OmegaBraveraWeb.LayoutView, "app.html"},
+              offer_challenge: offer_challenge
+            )
 
           {:error, %Ecto.Changeset{} = changeset} ->
             conn

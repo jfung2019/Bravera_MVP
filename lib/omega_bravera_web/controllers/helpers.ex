@@ -60,7 +60,10 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
   def get_stats(%NGOChal{type: "PER_KM"} = ngo_chal) do
     ngo_chal = OmegaBravera.Challenges.get_ngo_chal!(ngo_chal.id)
     total_secured = Challenges.get_per_km_challenge_total_secured(ngo_chal.slug)
-    {total_km_pledges, _follow_on_donations} = Challenges.get_per_km_challenge_total_pledges(ngo_chal.slug)
+
+    {total_km_pledges, _follow_on_donations} =
+      Challenges.get_per_km_challenge_total_pledges(ngo_chal.slug)
+
     total = %{"total" => %{"charged" => 0, "pending" => 0}}
 
     total =

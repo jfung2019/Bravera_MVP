@@ -161,7 +161,9 @@ defmodule OmegaBravera.Challenges do
       nc in NGOChal,
       where: nc.type == "PER_KM" and (nc.status == "complete" or ^now >= nc.end_date),
       join: donations in assoc(nc, :donations),
-      on: donations.ngo_chal_id == nc.id and donations.status == "pending" and donations.type == "km",
+      on:
+        donations.ngo_chal_id == nc.id and donations.status == "pending" and
+          donations.type == "km",
       preload: [donations: donations]
     )
     |> Repo.all()
@@ -174,7 +176,13 @@ defmodule OmegaBravera.Challenges do
         where: nc.type == "PER_KM" and nc.slug == ^slug,
         left_join: donations in assoc(nc, :donations),
         on: donations.ngo_chal_id == nc.id,
-        select: {fragment("SUM(CASE ? WHEN 'km' THEN ? ELSE 0 END)", donations.type, donations.amount), fragment("SUM(CASE ? WHEN 'follow_on' THEN ? ELSE 0 END)", donations.type, donations.charged_amount)}
+        select:
+          {fragment("SUM(CASE ? WHEN 'km' THEN ? ELSE 0 END)", donations.type, donations.amount),
+           fragment(
+             "SUM(CASE ? WHEN 'follow_on' THEN ? ELSE 0 END)",
+             donations.type,
+             donations.charged_amount
+           )}
       )
       |> Repo.one()
 
