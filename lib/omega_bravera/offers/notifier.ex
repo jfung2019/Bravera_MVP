@@ -21,7 +21,7 @@ defmodule OmegaBravera.Offers.Notifier do
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
     redeem = Repo.preload(redeem, [:offer_reward, :vendor])
 
-    if not is_nil(sendgrid_email) and
+    if not is_nil(sendgrid_email) and not is_nil(redeem.vendor.email) and
          user_subscribed_in_category?(
            challenge.user.subscribed_email_categories,
            sendgrid_email.category.id

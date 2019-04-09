@@ -160,10 +160,13 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           {:ok, offer_redeem} ->
             Notifier.send_user_reward_redemption_successful(offer_challenge)
 
-            Notifier.send_reward_vendor_redemption_successful_confirmation(
-              offer_challenge,
-              offer_redeem
-            )
+            #1091 #note-5
+            if offer_redeem_params["send_vendor_confirmation_email"] == "true" do
+              Notifier.send_reward_vendor_redemption_successful_confirmation(
+                offer_challenge,
+                offer_redeem
+              )
+            end
 
             conn
             |> render("redeem_sucessful.html",
