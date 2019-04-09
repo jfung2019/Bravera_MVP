@@ -39,16 +39,16 @@ staging:
   environment: staging
   only:
     - staging
-  mage: dtzar/helm-kubectl
-    variables:
-      CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH/prod:$CI_COMMIT_SHORT_SHA
-    script:
-      - kubectl config set-cluster k8s --server="${SERVER}"
-      - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-      - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-      - kubectl config set-context default --cluster=k8s --user=gitlab
-      - kubectl config use-context default
-      - kubectl set image deployments/bravera-staging bravera-staging=$CONTAINER_IMAGE
+  image: dtzar/helm-kubectl
+  variables:
+    CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH/prod:$CI_COMMIT_SHORT_SHA
+  script:
+    - kubectl config set-cluster k8s --server="${SERVER}"
+    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
+    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
+    - kubectl config set-context default --cluster=k8s --user=gitlab
+    - kubectl config use-context default
+    - kubectl set image deployments/bravera-staging bravera-staging=$CONTAINER_IMAGE
 
 
 production:
