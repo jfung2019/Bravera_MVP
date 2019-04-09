@@ -23,7 +23,8 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     |> process_challenges(params)
   end
 
-  def start(params), do: Logger.info("Offers:ActivityIngestion: not processed: #{inspect(params)}")
+  def start(params),
+    do: Logger.info("Offers:ActivityIngestion: not processed: #{inspect(params)}")
 
   def process_strava_webhook(_), do: {:error, :webhook_not_processed}
 

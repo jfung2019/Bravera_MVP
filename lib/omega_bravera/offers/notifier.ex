@@ -12,7 +12,10 @@ defmodule OmegaBravera.Offers.Notifier do
 
   alias SendGrid.{Email, Mailer}
 
-  def send_reward_vendor_redemption_successful_confirmation(%OfferChallenge{} = challenge, %OfferRedeem{} = redeem) do
+  def send_reward_vendor_redemption_successful_confirmation(
+        %OfferChallenge{} = challenge,
+        %OfferRedeem{} = redeem
+      ) do
     template_id = "0fd2f256-354f-480a-9b3e-502300da6366"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
@@ -30,10 +33,17 @@ defmodule OmegaBravera.Offers.Notifier do
     end
   end
 
-  def reward_vendor_redemption_successful_confirmation_email(%OfferChallenge{} = challenge, %OfferRedeem{} = redeem, template_id) do
+  def reward_vendor_redemption_successful_confirmation_email(
+        %OfferChallenge{} = challenge,
+        %OfferRedeem{} = redeem,
+        template_id
+      ) do
     Email.build()
     |> Email.put_template(template_id)
-    |> Email.add_substitution("-redeemDateTime-", Timex.format!(redeem.inserted_at, "%Y-%m-%d", :strftime))
+    |> Email.add_substitution(
+      "-redeemDateTime-",
+      Timex.format!(redeem.inserted_at, "%Y-%m-%d", :strftime)
+    )
     |> Email.add_substitution("-challengeName-", challenge.offer.name)
     |> Email.add_substitution("-participantFirstName-", challenge.user.firstname)
     |> Email.add_substitution("-productName-", redeem.offer_reward.name)

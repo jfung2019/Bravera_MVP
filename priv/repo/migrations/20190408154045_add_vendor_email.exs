@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddVendorEmail do
 
   def change do
     alter table("offer_vendors") do
-      add :email, :string
+      add(:email, :string)
     end
   end
 end

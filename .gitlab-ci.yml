@@ -24,15 +24,14 @@ build_staging:
   variables:
     DOCKER_HOST: tcp://localhost:2375
     CONTAINER_IMAGE: registry.gitlab.com/braveratech/bravera_mvp_sept2018/staging
-    DOCKER_BUILD: "true"
   services:
     - docker:dind
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
     - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA .
-    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
+    - docker build --tag $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA
 
 staging:
   cache: {} # no need for cache
@@ -49,8 +48,8 @@ staging:
   before_script:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   script:
-    - docker pull $CONTAINER_IMAGE:$CI_COMMIT_SHA
-    - docker tag $CONTAINER_IMAGE:$CI_COMMIT_SHA $CONTAINER_IMAGE:latest
+    - docker pull $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker tag $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA $CONTAINER_IMAGE:latest
     - docker push $CONTAINER_IMAGE:latest
 
 

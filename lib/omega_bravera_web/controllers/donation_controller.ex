@@ -151,7 +151,6 @@ defmodule OmegaBraveraWeb.DonationController do
       {:ok, pledge} ->
         case Processor.charge_donation(pledge) do
           {:ok, %Donation{status: "charged"} = charged_donation} ->
-
             Logger.info(
               "DonationProcessor: Successfully charged follow-on-donation. Amount: #{
                 inspect(charged_donation.charged_amount)

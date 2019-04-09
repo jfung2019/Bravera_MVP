@@ -1,4 +1,4 @@
 <div class="container">
-    <h2 class="mt-2 mb-2">New Redeem</h2>
+    <h2 class="mt-2 mb-2">New Redemption</h2>
     <%= render "redeem_form.html", Map.put(assigns, :action, offer_offer_challenge_offer_challenge_path(@conn, :save_redeem, @offer_challenge.offer.slug, @offer_challenge.slug, @offer_challenge.redeem_token)) %>
 </div>

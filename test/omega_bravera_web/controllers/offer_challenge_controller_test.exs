@@ -57,7 +57,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           )
         )
 
-      assert html_response(conn, 200) =~ "New Redeem"
+      assert html_response(conn, 200) =~ "New Redemption"
     end
 
     test "save_redeem/2 creates a redeem when valid data is given", %{conn: conn} do

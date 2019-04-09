@@ -61,13 +61,15 @@ defmodule OmegaBravera.Fundraisers do
           "ROUND((CASE WHEN ? = 'PER_KM' THEN charged_amount * exchange_rate ELSE amount * exchange_rate END) * 0.06, 1)",
           ngo_chal.type
         ),
-        fragment("CASE
+        fragment(
+          "CASE
               WHEN ? = 'PER_KM' THEN
                 ROUND(((charged_amount * exchange_rate) - (((charged_amount * exchange_rate) * 0.034) + 2.35)) - ((charged_amount * exchange_rate) * 0.06), 1)
               ELSE
                 ROUND(((charged_amount * exchange_rate) - (((amount * exchange_rate) * 0.034) + 2.35)) - ((amount * exchange_rate) * 0.06), 1)
             END",
-            ngo_chal.type)
+          ngo_chal.type
+        )
       ]
     )
     |> Repo.all()
