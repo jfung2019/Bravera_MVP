@@ -10,7 +10,7 @@ defmodule OmegaBravera.Money do
   def milestones_donations(%NGOChal{id: challenge_id}) do
     query =
       from(donation in Donation,
-        where: donation.ngo_chal_id == ^challenge_id and donation.type == "milestone",
+        where: donation.ngo_chal_id == ^challenge_id,
         group_by: [donation.status, donation.milestone],
         select: {donation.status, donation.milestone, sum(donation.amount)}
       )
