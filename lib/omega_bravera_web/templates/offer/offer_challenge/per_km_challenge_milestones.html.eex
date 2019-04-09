@@ -3,9 +3,6 @@
     <div class="m-3 text-justify challenge-desc">
       <%= raw @challenge.offer.offer_challenge_desc %>
     </div>
-    <div class="m-3 text-justify challenge-desc">
-      <span class="small"><%= raw @challenge.offer.toc %></span>
-    </div>
     <div id="challenge-status-container" class="<%= @challenge.status %>">
       <%= cond do %>
         <% active_challenge?(@challenge) -> %>
@@ -44,6 +41,9 @@
   <div class="card-footer border-top text-center mb-0 pb-0">
     <div class=" img-fluid margin-auto mb-3">
       <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "Fitness Data Powered by Strava") %>
+    </div>
+    <div class="m-3 text-justify challenge-desc">
+      <span class="small"><%= raw @challenge.offer.toc %></span>
     </div>
   </div>
 </div>  <!-- End of top card -->
