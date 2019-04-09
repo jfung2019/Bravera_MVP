@@ -1,5 +1,5 @@
 <div class="container">
-    <h2 class="d-flex justify-content-center mt-5 text-success">Redeem Confirmed!</h2>
+    <h2 class="d-flex justify-content-center mt-5 text-success">Confirmed!</h2>
     <div class="d-flex justify-content-center mt-5 text-danger">
         <span>Total Redemptions to date:</span>
         <span><b><%= length(@offer_challenge.offer.offer_redeems) %></b></span>
