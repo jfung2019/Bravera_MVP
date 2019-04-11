@@ -17,8 +17,6 @@ defmodule OmegaBravera.OffersTest do
       full_desc: "some full_desc",
       ga_id: "some ga_id",
       hidden: false,
-      image: "some image",
-      logo: "some logo",
       name: "some name",
       offer_challenge_desc: "some offer_challenge_desc",
       offer_challenge_types: [],
@@ -40,8 +38,6 @@ defmodule OmegaBravera.OffersTest do
       full_desc: "some updated full_desc",
       ga_id: "some updated ga_id",
       hidden: true,
-      image: "some updated image",
-      logo: "some updated logo",
       name: "some updated name",
       offer_challenge_desc: "some updated offer_challenge_desc",
       offer_challenge_types: [],
@@ -62,9 +58,7 @@ defmodule OmegaBravera.OffersTest do
       full_desc: nil,
       ga_id: nil,
       hidden: nil,
-      image: nil,
       launch_date: nil,
-      logo: nil,
       name: nil,
       offer_challenge_desc: nil,
       offer_challenge_types: nil,
@@ -114,8 +108,6 @@ defmodule OmegaBravera.OffersTest do
       assert offer.full_desc == "some full_desc"
       assert offer.ga_id == "some ga_id"
       assert offer.hidden == false
-      assert offer.image == "some image"
-      assert offer.logo == "some logo"
       assert offer.name == "some name"
       assert offer.offer_challenge_desc == "some offer_challenge_desc"
       assert offer.offer_challenge_types == []
@@ -142,8 +134,6 @@ defmodule OmegaBravera.OffersTest do
       assert offer.full_desc == "some updated full_desc"
       assert offer.ga_id == "some updated ga_id"
       assert offer.hidden == true
-      assert offer.image == "some updated image"
-      assert offer.logo == "some updated logo"
       assert offer.name == "some updated name"
       assert offer.offer_challenge_desc == "some updated offer_challenge_desc"
       assert offer.offer_challenge_types == []

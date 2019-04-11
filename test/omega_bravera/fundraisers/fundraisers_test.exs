@@ -49,7 +49,6 @@ defmodule OmegaBravera.FundraisersTest do
     test "create_ngo/1 with valid data creates a ngo" do
       ngo = ngo_fixture()
       assert ngo.desc == "some desc"
-      assert ngo.logo == "some logo"
       assert ngo.name == "some name"
       assert ngo.slug == "some slug"
     end
@@ -63,7 +62,6 @@ defmodule OmegaBravera.FundraisersTest do
       assert {:ok, ngo} = Fundraisers.update_ngo(ngo, @update_attrs)
       assert %NGO{} = ngo
       assert ngo.desc == "some updated desc"
-      assert ngo.logo == "some updated logo"
       assert ngo.name == "some updated name"
       assert ngo.slug == "some updated slug"
     end

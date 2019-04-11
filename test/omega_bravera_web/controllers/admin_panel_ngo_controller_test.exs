@@ -5,8 +5,6 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
   @ngo_create_attrs %{
     desc: "some desc",
-    logo: "some logo",
-    image: "/test.png",
     url: "http://test.com",
     name: "some name",
     slug: nil,
@@ -19,7 +17,6 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
   @update_attrs %{
     desc: "some updated desc",
-    logo: "some updated logo",
     name: "some updated name",
     slug: "some-updated-slug",
     open_registration: false,
@@ -28,7 +25,6 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
   @invalid_attrs %{
     desc: nil,
-    logo: nil,
     name: nil,
     slug: nil,
     open_registration: nil,

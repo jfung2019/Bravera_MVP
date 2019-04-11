@@ -76,8 +76,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :name,
     :minimum_donation,
     :url,
-    :logo,
-    :image,
     :fundraising_goal,
     :hide_donor_pays_fees,
     :user_id
