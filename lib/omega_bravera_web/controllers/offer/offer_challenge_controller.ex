@@ -202,21 +202,26 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
     offer = Offers.get_offer_by_slug(offer_slug)
 
-    case Offers.create_offer_challenge(offer, current_user) do
-      {:ok, offer_challenge} ->
-        send_emails(offer_challenge)
+    case offer do
+      nil ->
+        render_404(conn)
 
-        conn
-        |> put_flash(:info, "Success! You have registered for this offer!")
-        |> redirect(to: offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug))
+      offer ->
+        case Offers.create_offer_challenge(offer, current_user) do
+          {:ok, offer_challenge} ->
+            send_emails(offer_challenge)
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        Logger.info("Could not sign up user for offer. Reason: #{inspect(changeset)}")
+            conn
+            |> put_flash(:info, "Success! You have registered for this offer!")
+            |> redirect(to: offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug))
 
-        conn
-        |> put_flash(:error, "You cannot signup for an offer twice.")
-        |> redirect(to: offer_path(conn, :index))
-    end
+          {:error, %Ecto.Changeset{} = changeset} ->
+            Logger.error("Could not sign up user for offer. Reason: #{inspect(changeset)}")
+
+            conn
+            |> put_flash(:error, "You cannot signup for an offer twice.")
+            |> redirect(to: offer_path(conn, :index))
+        end
   end
 
   def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do
