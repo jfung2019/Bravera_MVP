@@ -52,8 +52,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
   @allowed_attributes [
     :name,
     :desc,
-    :logo,
-    :image,
     :slug,
     :ga_id,
     :url,
@@ -104,6 +102,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_launch_date()
     |> validate_required(:slug)
     |> unique_constraint(:slug)
+    |> upload_image(attrs)
+    |> upload_logo(attrs)
   end
 
   def update_changeset(ngo, attrs) do
@@ -112,6 +112,63 @@ defmodule OmegaBravera.Fundraisers.NGO do
     |> validate_pre_registration_start_date_modification(ngo)
     |> validate_no_active_challenges(ngo)
   end
+
+  defp upload_image(%Ecto.Changeset{} = changeset, %{"image" => image_params}) do
+    image_path = get_field(changeset, :image)
+
+    file_uuid = UUID.uuid4(:hex)
+    image_filename = image_params.filename
+    unique_filename = "#{file_uuid}-#{image_filename}"
+    bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
+
+    if not is_nil(image_path) and image_path =~ "amazonaws" do
+      filepath = URI.parse(image_path).path
+
+      bucket_name
+      |> ExAws.S3.delete_object(filepath)
+      |> ExAws.request()
+    end
+
+    image_params.path
+    |> ExAws.S3.Upload.stream_file()
+    |> ExAws.S3.upload(bucket_name, "ngo_images/#{unique_filename}", acl: :public_read)
+    |> ExAws.request()
+
+    changeset
+    |> change(image: "https://#{bucket_name}.s3.amazonaws.com/ngo_images/#{unique_filename}")
+  end
+
+  defp upload_image(%Ecto.Changeset{} = changeset, _), do: changeset
+
+  defp upload_logo(%Ecto.Changeset{} = changeset, %{"logo" => logo_params}) do
+    logo_path = get_field(changeset, :logo)
+
+    file_uuid = UUID.uuid4(:hex)
+    logo_filename = logo_params.filename
+    unique_filename = "#{file_uuid}-#{logo_filename}"
+    bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
+
+
+    if not is_nil(logo_path) and logo_path =~ "amazonaws" do
+      filepath = URI.parse(logo_path).path
+
+      IO.inspect "oh shit, deleting.."
+
+      bucket_name
+      |> ExAws.S3.delete_object(filepath)
+      |> ExAws.request()
+    end
+
+    logo_params.path
+    |> ExAws.S3.Upload.stream_file()
+    |> ExAws.S3.upload(bucket_name, "ngo_logos/#{unique_filename}", acl: :public_read)
+    |> ExAws.request()
+
+    changeset
+    |> change(logo: "https://#{bucket_name}.s3.amazonaws.com/ngo_logos/#{unique_filename}")
+  end
+
+  defp upload_logo(%Ecto.Changeset{} = changeset, _), do: changeset
 
   def generate_slug(%Ecto.Changeset{} = changeset) do
     slug = get_field(changeset, :slug)

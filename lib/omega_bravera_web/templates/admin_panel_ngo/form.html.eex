@@ -1,4 +1,4 @@
-<%= form_for @changeset, @action, fn f -> %>
+<%= form_for @changeset, @action, [multipart: true], fn f -> %>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
@@ -71,17 +71,28 @@
     <%= error_tag f, :challenge_desc %>
   </div>
 
-  <div class="form-group">
-    <%= label f, "Hero Image", class: "control-label" %>
-    <%= text_input f, :image, class: "form-control" %>
-    <%= error_tag f, :image %>
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Add/Change</span>
+    </div>
+    <div class="custom-file">
+      <%= file_input f, :image, class: "custom-file-input image_upload_label", id: "image_upload_label" %>    
+      <%= label f, :image, "NGO Image", class: "custom-file-label", for: "image_upload_label" %>    
+    </div>
+    <%= error_tag f, :image %>  
   </div>
 
-  <div class="form-group">
-    <%= label f, :logo, class: "control-label" %>
-    <%= text_input f, :logo, class: "form-control" %>
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Add/Change</span>
+    </div>
+    <div class="custom-file">
+      <%= file_input f, :logo, class: "custom-file-input image_upload_label", id: "ngo_logo_label" %>    
+      <%= label f, :logo, "NGO Logo", class: "custom-file-label", for: "image_upload_label" %>    
+    </div>
     <%= error_tag f, :logo %>
   </div>
+
 
   <div class="form-group">
     <%= label f, :url, class: "control-label" %>

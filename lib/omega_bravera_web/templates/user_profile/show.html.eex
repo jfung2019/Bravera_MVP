@@ -13,8 +13,8 @@
             <span class="input-group-text">Update</span>
           </div>
           <div class="custom-file">
-            <%= file_input f, :profile_picture, class: "custom-file-input", id: "profile_picture_label" %>    
-            <%= label f, "Profile picture", class: "custom-file-label", for: "profile_picture_label" %>    
+            <%= file_input f, :profile_picture, class: "custom-file-input image_upload_label", id: "image_upload_label" %>    
+            <%= label f, "Profile picture", class: "custom-file-label", for: "image_upload_label" %>    
             <%= error_tag f, :profile_picture %>  
           </div>
         </div>
