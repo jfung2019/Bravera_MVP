@@ -83,16 +83,24 @@
     <%= error_tag f, :offer_challenge_desc %>
   </div>
 
+  <%= if !is_nil(assigns[:offer]) and @offer.image do %>
+    <%= img_tag(@offer.image) %>
+  <% end %>
+
   <div class="form-group input-group">
     <div class="input-group-prepend">
       <span class="input-group-text">Add/Change</span>
     </div>
     <div class="custom-file">
       <%= file_input f, :image, class: "custom-file-input image_upload", id: "image_upload_label" %>    
-      <%= label f, :image, "Offer Image", class: "custom-file-label", for: "image_upload_label" %>    
+      <%= label f, :image, "Offer Image (745 x 230)", class: "custom-file-label", for: "image_upload_label" %>    
     </div>
     <%= error_tag f, :image %>  
   </div>
+
+  <%= if !is_nil(assigns[:offer]) and @offer.logo do %>
+    <%= img_tag(@offer.logo, class: "img-thumbnail img-fluid cause-thumb") %>
+  <% end %>
 
   <div class="form-group input-group">
     <div class="input-group-prepend">
@@ -100,7 +108,7 @@
     </div>
     <div class="custom-file">
       <%= file_input f, :logo, class: "custom-file-input image_upload", id: "logo_upload_label" %>    
-      <%= label f, :logo, "Offer Logo", class: "custom-file-label", for: "logo_upload_label" %>    
+      <%= label f, :logo, "Offer Logo  (150 x 150)", class: "custom-file-label", for: "logo_upload_label" %>    
     </div>
     <%= error_tag f, :logo %>
   </div>

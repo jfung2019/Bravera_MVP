@@ -71,24 +71,32 @@
     <%= error_tag f, :challenge_desc %>
   </div>
 
-  <div class="form-group input-group">
+  <%= if !is_nil(assigns[:ngo]) and @ngo.image do %>
+    <%= img_tag(@ngo.image) %>
+  <% end %>
+
+  <div class="form-group input-group mt-2">
     <div class="input-group-prepend">
       <span class="input-group-text">Add/Change</span>
     </div>
     <div class="custom-file">
       <%= file_input f, :image, class: "custom-file-input image_upload", id: "image_upload_label" %>    
-      <%= label f, :image, "NGO Image", class: "custom-file-label", for: "image_upload_label" %>    
+      <%= label f, :image, "NGO Image  (745 x 230)", class: "custom-file-label", for: "image_upload_label" %>    
     </div>
     <%= error_tag f, :image %>  
   </div>
 
-  <div class="form-group input-group">
+  <%= if !is_nil(assigns[:ngo]) and @ngo.logo do %>
+    <%= img_tag(@ngo.logo, class: "img-thumbnail img-fluid cause-thumb") %>
+  <% end %>
+
+  <div class="form-group input-group mt-2">
     <div class="input-group-prepend">
       <span class="input-group-text">Add/Change</span>
     </div>
     <div class="custom-file">
       <%= file_input f, :logo, class: "custom-file-input image_upload", id: "ngo_logo_label" %>    
-      <%= label f, :logo, "NGO Logo", class: "custom-file-label", for: "ngo_logo_label" %>    
+      <%= label f, :logo, "NGO Logo  (150 x 150)", class: "custom-file-label", for: "ngo_logo_label" %>    
     </div>
     <%= error_tag f, :logo %>
   </div>
