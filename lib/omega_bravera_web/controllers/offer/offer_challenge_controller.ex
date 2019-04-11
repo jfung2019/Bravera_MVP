@@ -222,6 +222,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             |> put_flash(:error, "You cannot signup for an offer twice.")
             |> redirect(to: offer_path(conn, :index))
         end
+    end
   end
 
   def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do
