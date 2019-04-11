@@ -127,7 +127,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
           Challenges.Notifier.send_team_members_invite_email(challenge, created_team_member)
 
         {:error, reason} ->
-          Logger.error("Could not invite team member, reason: #{inspect(reason)}")
+          Logger.info("Could not invite team member, reason: #{inspect(reason)}")
       end
     end)
 
