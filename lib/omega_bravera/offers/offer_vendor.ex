@@ -17,7 +17,7 @@ defmodule OmegaBravera.Offers.OfferVendor do
   def changeset(offer_vendor, attrs) do
     offer_vendor
     |> cast(attrs, [:vendor_id, :email])
-    |> validate_required([:vendor_id, :email])
+    |> validate_required([:vendor_id])
     |> unique_constraint(:vendor_id)
   end
 end
