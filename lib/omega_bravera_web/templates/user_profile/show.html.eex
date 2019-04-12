@@ -184,5 +184,75 @@
 <% end %>
 
 
+<br />
+<div class="row">
+  <div class="col-5"><h5>Offer Challenges:</h5></div>
+</div>
+<div class="row">
+  <div class="col-5 ml-1"><%= link("Take another offer challenge", to: offer_path(@conn, :index)) %></div>
+</div>
+<br />
+
+<%= unless Enum.empty?(@offer_challenges) do %>
+  <div class="row">
+
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <!-- <b>Charity</b> Be-->
+            </div>
+            <div class="col-sm-2">
+              <b> Start Date</b>
+            </div>
+            <div class="col-sm-2">
+              <b>End Date</b>
+            </div>
+            <div class="col-sm-3">
+              <b> Distance Covered</b>
+            </div>
+            <div class="col-sm-2">
+              <b>Link</b>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <br />
+    <%= for offer_challenge <- @offer_challenges do %>
+      <div class="card bg-light text-dark">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <%= offer_challenge.offer.name %>
+            </div>
+            <div class="col-sm-2">
+              <%= render_datetime(offer_challenge.start_date) %>
+            </div>
+            <div class="col-sm-2">
+              <%= render_datetime(offer_challenge.end_date) %>
+            </div>
+            <div class="col-sm-3">
+              <%= offer_challenge.distance_covered %> KM
+            </div>
+            <div class="col-sm-2">
+              <%= link("View", to: offer_offer_challenge_path(@conn, :show, offer_challenge.offer.slug, offer_challenge.slug)) %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+    <% end %>
+
+    </div>
+  </div>
+<% else %>
+
+  <p>You did not join any teams yet!
+    <%= link("here!", to: offer_path(@conn, :index)) %>
+  </p>
+<% end %>
+
 </div>
 <br />

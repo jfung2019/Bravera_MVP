@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
   import Mogrify
 
-  alias OmegaBravera.{Money, Challenges, Accounts.User, Repo}
+  alias OmegaBravera.{Money, Challenges, Accounts.User, Repo, Offers}
 
   def show(conn, _) do
     case Guardian.Plug.current_resource(conn) do
@@ -20,6 +20,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
           num_of_activities: Challenges.get_number_of_activities_by_user(user.id),
           total_distance: Challenges.get_total_distance_by_user(user.id),
           challenges: Challenges.get_user_ngo_chals(user.id),
+          offer_challenges: Offers.get_user_offer_challenges(user.id),
           teams_memberships: Challenges.get_user_teams(user.id),
           num_of_supporters: get_supporters_num(user.id),
           changeset: User.changeset(user, %{})

@@ -342,6 +342,26 @@ defmodule OmegaBravera.Offers do
     |> Repo.one!()
   end
 
+
+  def get_user_offer_challenges(user_id, preloads \\ [:offer]) do
+    from(
+      oc in OfferChallenge,
+      where: oc.user_id == ^user_id,
+      left_join: a in OfferChallengeActivity,
+      on: oc.id == a.offer_challenge_id,
+      preload: ^preloads,
+      order_by: [desc: :start_date],
+      group_by: oc.id,
+      select: %{
+        oc
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+          start_date: fragment("? at time zone 'utc'", oc.start_date),
+          end_date: fragment("? at time zone 'utc'", oc.end_date)
+      }
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Creates a offer_challenge.
 
