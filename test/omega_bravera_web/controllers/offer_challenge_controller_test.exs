@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.Offers
+  alias OmegaBravera.{Offers, Accounts}
 
   @tracker_create_attrs %{
     email: "user@example.com",
@@ -28,6 +28,39 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
            {:ok,
             conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token),
             current_user: user}
+  end
+
+
+  describe "create" do
+    test "create/2 refuses to create challenge if offer end date was reached", %{conn: conn, current_user: user} do
+      {:ok, _user} = Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+
+      offer = insert(:offer, %{start_date: Timex.now(), end_date: Timex.shift(Timex.now(), days: -5)})
+
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_path(conn, :create, offer.slug)
+        )
+
+      assert get_flash(conn, :error) == "Could not create offer challenge."
+      assert Offers.list_offer_challenges() == []
+    end
+
+    test "create/2 redirects to challenge data is valid", %{conn: conn, current_user: user} do
+      {:ok, _user} = Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+
+      offer = insert(:offer, %{start_date: Timex.now(), end_date: Timex.shift(Timex.now(), days: 10)})
+
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_path(conn, :create, offer.slug)
+        )
+
+      assert get_flash(conn, :info) == "Success! You have registered for this offer!"
+      assert length(Offers.list_offer_challenges()) == 1
+    end
   end
 
   test "unverified user should get their session saved with where to go when they verify email",

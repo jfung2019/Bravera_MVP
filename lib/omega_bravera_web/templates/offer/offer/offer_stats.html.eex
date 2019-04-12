@@ -15,6 +15,9 @@
                   End Date:
                   <strong class="text-500 float-right"><%= render_date(@offer.end_date) %></strong>
                </div>
+               <%= if offer_expired?(@offer) do %>
+                  <div class="text-500 text-center mt-2 mb-0 stats-font text-danger">Offer Expired</div>
+               <% end %>
             <% else %>
                <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
                   Pre-registration Start Date:

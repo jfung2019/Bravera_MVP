@@ -25,6 +25,9 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
     |> offer_challenge_slug()
   end
 
+  def offer_expired?(%Offer{end_date: end_date}), do: Timex.after?(Timex.now(), end_date)
+  def offer_expired?(_), do: true
+
   defp offer_challenge_slug(%OfferChallenge{slug: slug}), do: slug
   defp offer_challenge_slug(_), do: ""
 end
