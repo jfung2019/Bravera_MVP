@@ -100,7 +100,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeLink-", new_challenge_url(challenge))
     |> Email.add_substitution("-qrCode-", challenge_qr_code_url(challenge))
     |> Email.add_substitution("-terms-", challenge.offer.toc)
     |> Email.put_from("admin@bravera.co", "Bravera")
@@ -283,6 +283,10 @@ defmodule OmegaBravera.Offers.Notifier do
 
   defp challenge_url(challenge) do
     Routes.offer_offer_challenge_url(Endpoint, :show, challenge.offer.slug, challenge.slug)
+  end
+
+  defp new_challenge_url(challenge) do
+    Routes.offer_offer_challenge_url(Endpoint, :new, challenge.offer.slug)
   end
 
   defp challenge_qr_code_url(challenge) do
