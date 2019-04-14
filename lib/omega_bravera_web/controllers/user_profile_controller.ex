@@ -30,8 +30,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
   def update_profile_picture(conn, %{"user" => %{"profile_picture" => image_params}}) do
     file_uuid = UUID.uuid4(:hex)
-    image_filename = image_params.filename
-    unique_filename = "#{file_uuid}-#{image_filename}"
+    unique_filename = "#{file_uuid}-#{Path.extname(image_params.filename)}"
     user = Guardian.Plug.current_resource(conn)
 
     bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
