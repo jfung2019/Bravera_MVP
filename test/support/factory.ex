@@ -119,6 +119,16 @@ defmodule OmegaBravera.Factory do
     }
   end
 
+  def offer_challenge_team_factory do
+    %OmegaBravera.Offers.OfferChallengeTeam{
+      name: "Team Save Stuff",
+      slug: sequence(:slug, &"team-#{&1}"),
+      count: 3,
+      user: build(:user),
+      offer_challenge: build(:offer_challenge, %{has_team: true})
+    }
+  end
+
   def team_member_factory do
     %OmegaBravera.Challenges.TeamMembers{
       team_id: nil,
@@ -170,7 +180,7 @@ defmodule OmegaBravera.Factory do
       status: "active",
       type: "PER_KM",
       redeem_token: Integer.to_string(Enum.random(10_000_000..20_000_000)),
-      offer: build(:offer),
+      offer: build(:offer, %{additional_members: 3}),
       user: build(:user)
     }
   end
