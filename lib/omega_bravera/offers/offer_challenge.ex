@@ -8,6 +8,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     Accounts.User,
     Offers.OfferChallengeActivity,
     Offers.OfferRedeem,
+    Offers.OfferChallengeTeam,
     Repo
   }
 
@@ -33,6 +34,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     belongs_to(:user, User)
     belongs_to(:offer, Offer)
     has_many(:offer_redeems, OfferRedeem)
+    has_one(:offer_challenge_team, OfferChallengeTeam, foreign_key: :offer_challenge_id)
 
     has_many(:offer_challenge_activities, OfferChallengeActivity, foreign_key: :offer_challenge_id)
 
