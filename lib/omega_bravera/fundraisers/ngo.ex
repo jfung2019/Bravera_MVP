@@ -141,7 +141,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     logo_path = get_field(changeset, :logo)
 
     file_uuid = UUID.uuid4(:hex)
-    logo_filename = logo_params.filename
     unique_filename = "#{file_uuid}-#{Path.extname(logo_params.filename)}"
     bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
 
