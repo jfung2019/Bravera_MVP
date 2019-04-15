@@ -26,3 +26,4 @@ import "./challenge_show";
 import "./leaderboard";
 import "./modals";
 import "./follow_on_donation_form";
+import "./button_disappear";

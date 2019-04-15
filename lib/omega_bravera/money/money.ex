@@ -75,18 +75,6 @@ defmodule OmegaBravera.Money do
     |> Repo.all()
   end
 
-  # get all da donations
-
-  def get_number_of_ngo_chal_sponsors(ngo_chal_id) do
-    from(
-      d in Donation,
-      where: d.ngo_chal_id == ^ngo_chal_id,
-      select: count(d.donor_id, :distinct)
-    )
-    |> Repo.all()
-    |> List.first()
-  end
-
   def list_donations, do: Repo.all(Donation)
 
   def get_donation!(id), do: Repo.get!(Donation, id)

@@ -128,8 +128,7 @@ defmodule OmegaBravera.Offers.Offer do
     image_path = get_field(changeset, :image)
 
     file_uuid = UUID.uuid4(:hex)
-    image_filename = image_params.filename
-    unique_filename = "#{file_uuid}-#{image_filename}"
+    unique_filename = "#{file_uuid}-#{Path.extname(image_params.filename)}"
     bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
 
     if not is_nil(image_path) and image_path =~ "amazonaws" do
@@ -155,15 +154,12 @@ defmodule OmegaBravera.Offers.Offer do
     logo_path = get_field(changeset, :logo)
 
     file_uuid = UUID.uuid4(:hex)
-    logo_filename = logo_params.filename
-    unique_filename = "#{file_uuid}-#{logo_filename}"
+    unique_filename = "#{file_uuid}-#{Path.extname(logo_params.filename)}"
     bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
 
 
     if not is_nil(logo_path) and logo_path =~ "amazonaws" do
       filepath = URI.parse(logo_path).path
-
-      IO.inspect "oh shit, deleting.."
 
       bucket_name
       |> ExAws.S3.delete_object(filepath)
