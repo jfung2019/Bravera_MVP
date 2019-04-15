@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
   import Mogrify
 
-  alias OmegaBravera.{Money, Challenges, Accounts.User, Repo, Offers}
+  alias OmegaBravera.{Challenges, Accounts.User, Repo, Offers}
 
   def show(conn, _) do
     case Guardian.Plug.current_resource(conn) do
@@ -11,18 +11,20 @@ defmodule OmegaBraveraWeb.UserProfileController do
         redirect(conn, to: "/404")
 
       user ->
+        totals = Challenges.get_user_challenges_totals(user.id)
+
         render(
           conn,
           "show.html",
           user: user,
-          total_pledged: total_for_user_challenges(user.ngo_chals, "pending"),
-          total_secured: total_for_user_challenges(user.ngo_chals, "charged"),
+          total_pledged: totals[:total_pledged],
+          total_secured: totals[:total_secured],
           num_of_activities: Challenges.get_number_of_activities_by_user(user.id),
           total_distance: Challenges.get_total_distance_by_user(user.id),
           challenges: Challenges.get_user_ngo_chals(user.id),
           offer_challenges: Offers.get_user_offer_challenges(user.id),
           teams_memberships: Challenges.get_user_teams(user.id),
-          num_of_supporters: get_supporters_num(user.id),
+          num_of_supporters: Challenges.get_supporters_num(user.id),
           changeset: User.changeset(user, %{})
         )
     end
@@ -68,20 +70,6 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
       {:error, changeset} ->
         render(conn, "show.html", changeset: changeset)
-    end
-  end
-
-  defp get_supporters_num(user_id) do
-    ids = Challenges.get_user_ngo_chals_ids(user_id)
-
-    cond do
-      Enum.empty?(ids) ->
-        0
-
-      true ->
-        ids
-        |> Enum.map(fn id -> Money.get_number_of_ngo_chal_sponsors(id) end)
-        |> Enum.reduce(fn id, acc -> id + acc end)
     end
   end
 end

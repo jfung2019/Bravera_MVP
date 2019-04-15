@@ -9,6 +9,7 @@ defmodule OmegaBravera.Challenges do
   alias OmegaBravera.Challenges.{NGOChal, Activity, Team, TeamMembers, TeamInvitations}
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Money.Donation
 
   use Timex
 
@@ -71,6 +72,102 @@ defmodule OmegaBravera.Challenges do
     |> Repo.all()
   end
 
+  def get_supporters_num(user_id) do
+    from(nc in NGOChal,
+      where: nc.user_id == ^user_id,
+      left_join: d in Donation,
+      on: d.ngo_chal_id == nc.id,
+      select: count(d.donor_id, :distinct)
+    )
+    |> Repo.one
+  end
+
+  def get_user_challenges_totals(user_id) do
+    challenges_distance_covered =
+      from(
+        nc in NGOChal,
+        where: nc.user_id == ^user_id,
+        left_join: a in assoc(nc, :activities),
+        group_by: [nc.id],
+        select: %{challenge_id: nc.id, distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance)}
+      )
+
+    from(nc in NGOChal,
+      where: nc.user_id == ^user_id,
+      left_join: d in assoc(nc, :donations),
+      join: activity in subquery(challenges_distance_covered),
+      on: activity.challenge_id == nc.id,
+      select: %{
+        total_pledged: fragment("
+          CASE
+            WHEN (? = 'pending' AND ? = 'PER_KM') THEN ? * ?
+            WHEN (? = 'charged' AND ? = 'PER_KM') THEN ?
+            WHEN (? = 'pending' AND ? = 'PER_MILESTONE') THEN ?
+            WHEN (? = 'charged' AND ? = 'PER_MILESTONE') THEN ?
+            ELSE 0
+          END",
+          d.status, nc.type, d.amount, activity.distance_covered,
+          d.status, nc.type, d.charged_amount,
+          d.status, nc.type, d.amount,
+          d.status, nc.type, d.charged_amount
+        ),
+        total_secured: fragment("
+          CASE
+            WHEN (? = 'charged' AND ? = 'PER_KM') THEN ?
+            WHEN (? = 'charged' AND ? = 'PER_MILESTONE') THEN ?
+            ELSE 0
+          END",
+          d.status, nc.type, d.charged_amount,
+          d.status, nc.type, d.charged_amount
+        ),
+        currency: fragment("LOWER(?)", nc.default_currency)
+      }
+    )
+    |> Repo.all()
+    |> user_challenges_donations_totals_strings()
+  end
+
+  defp user_challenges_donations_totals_strings(totals) do
+    currencies = %{"hkd" => Decimal.new(0), "krw" => Decimal.new(0), "sgd" => Decimal.new(0), "myr" => Decimal.new(0), "usd" => Decimal.new(0), "gbp" => Decimal.new(0)}
+
+    total_pledged_map =
+      Enum.reduce(totals, currencies, fn d, acc ->
+        total_pledged = d[:total_pledged]
+
+        case total_pledged do
+          nil ->
+            acc
+          _ ->
+            Map.update(acc, d[:currency], total_pledged, fn sum -> Decimal.add(sum, total_pledged) end)
+        end
+      end)
+      |> Enum.filter(fn {_currency, total} -> Decimal.cmp(total, Decimal.new(0)) == :gt end)
+      |> Enum.into(%{})
+
+    total_secured_map =
+      Enum.reduce(totals, currencies, fn d, acc ->
+        total_secured = d[:total_secured]
+
+        case total_secured do
+          nil ->
+            acc
+          _ ->
+            Map.update(acc, d[:currency], total_secured, fn sum -> Decimal.add(sum, total_secured) end)
+        end
+      end)
+      |> Enum.filter(fn {_currency, total} -> Decimal.cmp(total, Decimal.new(0)) == :gt end)
+      |> Enum.into(%{})
+
+    %{total_pledged: total_to_string(total_pledged_map), total_secured: total_to_string(total_secured_map)}
+  end
+
+  defp total_to_string(total_map) do
+    Enum.reduce(total_map, "", fn
+      el, acc ->
+        "#{String.upcase(elem(el, 0))}: #{elem(el, 1)} " <> acc
+    end)
+  end
+
   def get_user_teams(user_id) do
     from(
       tm in TeamMembers,
@@ -82,15 +179,6 @@ defmodule OmegaBravera.Challenges do
       left_join: activity in Activity,
       on: challenge.id == activity.challenge_id,
       preload: [team: {team, challenge: {challenge, :ngo}}]
-    )
-    |> Repo.all()
-  end
-
-  def get_user_ngo_chals_ids(user_id) do
-    from(
-      c in NGOChal,
-      where: c.user_id == ^user_id,
-      select: c.id
     )
     |> Repo.all()
   end
