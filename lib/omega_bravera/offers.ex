@@ -801,9 +801,9 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_offer_challenge_team(%OfferChallenge{} = offer_challenge, %User{} = user, attrs \\ %{}) do
+  def create_offer_challenge_team(%User{} = user, attrs \\ %{}) do
     %OfferChallengeTeam{}
-    |> OfferChallengeTeam.changeset(offer_challenge, user, attrs)
+    |> OfferChallengeTeam.changeset(user, attrs)
     |> Repo.insert()
   end
 
@@ -819,9 +819,9 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_offer_challenge_team(%OfferChallengeTeam{} = offer_challenge_team, %OfferChallenge{} = offer_challenge, %User{} = user, attrs) do
+  def update_offer_challenge_team(%OfferChallengeTeam{} = offer_challenge_team, %User{} = user, attrs) do
     offer_challenge_team
-    |> OfferChallengeTeam.changeset(offer_challenge, user, attrs)
+    |> OfferChallengeTeam.changeset(user, attrs)
     |> Repo.update()
   end
 
@@ -851,6 +851,6 @@ defmodule OmegaBravera.Offers do
 
   """
   def change_offer_challenge_team(%OfferChallengeTeam{} = offer_challenge_team) do
-    OfferChallengeTeam.changeset(offer_challenge_team, %OfferChallenge{}, %User{}, %{})
+    OfferChallengeTeam.changeset(offer_challenge_team, %User{}, %{})
   end
 end

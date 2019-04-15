@@ -34,7 +34,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     belongs_to(:user, User)
     belongs_to(:offer, Offer)
     has_many(:offer_redeems, OfferRedeem)
-    has_one(:offer_challenge_team, OfferChallengeTeam, foreign_key: :offer_challenge_id)
+    has_one(:team, OfferChallengeTeam, foreign_key: :offer_challenge_id)
 
     has_many(:offer_challenge_activities, OfferChallengeActivity, foreign_key: :offer_challenge_id)
 
@@ -91,7 +91,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   def create_with_team_changeset(offer_challenge, offer, user, attrs) do
     offer_challenge
     |> create_changeset(offer, user, attrs)
-    |> cast_assoc(:offer_challenge_team, with: &OfferChallengeTeam.changeset/4, required: true)
+    |> cast_assoc(:team, with: &(OfferChallengeTeam.changeset(&1, user, &2)), required: true)
   end
 
   defp generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do

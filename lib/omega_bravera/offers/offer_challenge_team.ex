@@ -20,13 +20,12 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
   end
 
   @doc false
-  def changeset(offer_challenge_team, offer_challenge, user, attrs) do
+  def changeset(%__MODULE__{} = offer_challenge_team, %User{} = user, attrs \\ %{}) do
     offer_challenge_team
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
     |> add_slug()
     |> put_change(:user_id, user.id)
-    |> put_change(:offer_challenge_id, offer_challenge.id)
     |> validate_required([:user_id, :offer_challenge_id])
     |> unique_constraint(:slug, name: :offer_challenge_teams_slug_index)
   end
