@@ -26,7 +26,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
     |> validate_required(@required_attributes)
     |> add_slug()
     |> put_change(:user_id, user.id)
-    |> validate_required([:user_id, :offer_challenge_id])
+    |> validate_required([:user_id])
     |> unique_constraint(:slug, name: :offer_challenge_teams_slug_index)
   end
 
