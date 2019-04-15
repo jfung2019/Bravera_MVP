@@ -144,7 +144,6 @@ defmodule OmegaBravera.Fundraisers.NGO do
     unique_filename = "#{file_uuid}-#{Path.extname(logo_params.filename)}"
     bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
 
-
     if not is_nil(logo_path) and logo_path =~ "amazonaws" do
       filepath = URI.parse(logo_path).path
 

@@ -213,7 +213,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
             conn
             |> put_flash(:info, "Success! You have registered for this offer!")
-            |> redirect(to: offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug))
+            |> redirect(
+              to: offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug)
+            )
 
           {:error, %Ecto.Changeset{} = changeset} ->
             Logger.info("Could not sign up user for offer. Reason: #{inspect(changeset)}")

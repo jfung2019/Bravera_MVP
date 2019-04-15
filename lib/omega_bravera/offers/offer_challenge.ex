@@ -155,7 +155,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       changeset
       |> add_error(:end_date, "Cannot create challenge because Offer experied.")
     end
-
   end
 
   defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do

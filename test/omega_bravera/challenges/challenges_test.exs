@@ -177,11 +177,11 @@ defmodule OmegaBravera.ChallengesTest do
 
       _km_activity = insert(:activity, %{challenge: nil, challenge_id: km_challenge.id})
 
-
       # 150 pending
       _per_goal_donation = insert(:donation, %{ngo_chal: nil, ngo_chal_id: per_goal_challenge.id})
       # 150 charged
-      _per_goal_donation = insert(:donation, %{ngo_chal: nil, ngo_chal_id: per_goal_challenge.id, status: "charged"})
+      _per_goal_donation =
+        insert(:donation, %{ngo_chal: nil, ngo_chal_id: per_goal_challenge.id, status: "charged"})
 
       # 5 (amount) * 1.74 (distance) = 8.7 HKD
       _km_donation = insert(:km_donation, %{ngo_chal: nil, ngo_chal_id: km_challenge.id})

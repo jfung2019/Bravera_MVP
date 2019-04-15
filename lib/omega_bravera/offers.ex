@@ -342,7 +342,6 @@ defmodule OmegaBravera.Offers do
     |> Repo.one!()
   end
 
-
   def get_user_offer_challenges(user_id, preloads \\ [:offer]) do
     from(
       oc in OfferChallenge,
