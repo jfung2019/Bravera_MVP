@@ -380,6 +380,12 @@ defmodule OmegaBravera.Offers do
     |> Repo.insert()
   end
 
+  def create_offer_challenge_with_team(%OfferChallenge{} = offer_challenge, %Offer{} = offer, %User{} = user, attrs \\ %{}) do
+    offer_challenge
+    |> OfferChallenge.create_with_team_changeset(offer, user, attrs)
+    |> Repo.insert()
+  end
+
   @doc """
   Updates a offer_challenge.
 

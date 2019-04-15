@@ -88,6 +88,12 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> unique_constraint(:slug)
   end
 
+  def create_with_team_changeset(offer_challenge, offer, user, attrs) do
+    offer_challenge
+    |> create_changeset(offer, user, attrs)
+    |> cast_assoc(:offer_challenge_team, with: &OfferChallengeTeam.changeset/4, required: true)
+  end
+
   defp generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do
     slug = get_field(changeset, :slug)
 
