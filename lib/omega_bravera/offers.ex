@@ -5,7 +5,7 @@ defmodule OmegaBravera.Offers do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
-  alias OmegaBravera.Offers.{Offer, OfferChallenge, OfferChallengeActivity, OfferVendor}
+  alias OmegaBravera.Offers.{Offer, OfferChallenge, OfferChallengeActivity, OfferVendor, OfferChallengeTeamMembers}
   alias OmegaBravera.Accounts.User
 
   @doc """
@@ -758,5 +758,9 @@ defmodule OmegaBravera.Offers do
     OfferVendor.changeset(offer_vendor, %{})
   end
 
-  alias OmegaBravera.Offers.OfferChallengeTeam
+  def add_user_to_team(attrs \\ %{}) do
+    %OfferChallengeTeamMembers{}
+    |> OfferChallengeTeamMembers.changeset(attrs)
+    |> Repo.insert(on_conflict: :nothing)
+  end
 end

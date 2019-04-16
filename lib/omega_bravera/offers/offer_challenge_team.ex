@@ -14,6 +14,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
 
     belongs_to(:user, User)
     belongs_to(:offer_challenge, OfferChallenge)
+    many_to_many(:users, User, join_through: "offer_team_members")
 
     timestamps(type: :utc_datetime)
   end
