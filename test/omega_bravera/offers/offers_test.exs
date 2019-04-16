@@ -457,6 +457,13 @@ defmodule OmegaBravera.OffersTest do
       assert {:ok, record2} = Offers.create_offer_challenge_with_team(%OfferChallenge{}, insert(:offer, %{additional_members: 7}), insert(:user), %{team: team2_params})
 
       assert record2.team.count == 7
+
+      assert {:ok, record3} = Offers.create_offer_challenge_with_team(%OfferChallenge{}, insert(:offer, %{additional_members: 3}), insert(:user), %{team: %{}})
+
+      refute is_nil(record3.team.name)
+      refute is_nil(record3.team.count)
+      refute is_nil(record3.team.slug)
+
     end
   end
 end

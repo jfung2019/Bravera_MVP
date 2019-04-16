@@ -5,7 +5,6 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
   alias OmegaBravera.{Accounts.User, Offers.OfferChallenge, Offers.Offer}
 
   @allowed_attributes [:name, :count]
-  @required_attributes [:name]
 
   @derive {Phoenix.Param, key: :slug}
   schema "offer_challenge_teams" do
@@ -23,9 +22,9 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
   def changeset(%__MODULE__{} = offer_challenge_team, %Offer{} = offer, %User{} = user, attrs \\ %{}) do
     offer_challenge_team
     |> cast(attrs, @allowed_attributes)
-    |> validate_required(@required_attributes)
     |> add_slug()
     |> add_count(offer)
+    |> add_name(user)
     |> put_change(:user_id, user.id)
     |> validate_required([:user_id])
     |> unique_constraint(:slug, name: :offer_challenge_teams_slug_index)
@@ -33,18 +32,8 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
 
   def add_slug(%Ecto.Changeset{} = changeset) do
     name = get_field(changeset, :name)
-    slug = get_field(changeset, :slug)
 
-    case slug do
-      nil ->
-        changeset
-        |> Ecto.Changeset.change(%{
-          slug: gen_slug(name)
-        })
-
-      _ ->
-        changeset
-    end
+    change(changeset, %{slug: gen_slug(name)})
   end
 
   def add_count(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
@@ -55,6 +44,17 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
         change(changeset, %{count: offer.additional_members})
       _ ->
         change(changeset, %{count: count})
+    end
+  end
+
+  def add_name(%Ecto.Changeset{} = changeset, %User{} = user) do
+    name = get_field(changeset, :name)
+
+    case name do
+      nil ->
+        change(changeset, %{name: gen_slug(user.firstname)})
+      _ ->
+        change(changeset, %{name: name})
     end
   end
 
