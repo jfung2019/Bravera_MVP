@@ -30,12 +30,16 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
             current_user: user}
   end
 
-
   describe "create" do
-    test "create/2 refuses to create challenge if offer end date was reached", %{conn: conn, current_user: user} do
-      {:ok, _user} = Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+    test "create/2 refuses to create challenge if offer end date was reached", %{
+      conn: conn,
+      current_user: user
+    } do
+      {:ok, _user} =
+        Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
 
-      offer = insert(:offer, %{start_date: Timex.now(), end_date: Timex.shift(Timex.now(), days: -5)})
+      offer =
+        insert(:offer, %{start_date: Timex.now(), end_date: Timex.shift(Timex.now(), days: -5)})
 
       conn =
         post(
@@ -48,9 +52,11 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
     end
 
     test "create/2 redirects to challenge data is valid", %{conn: conn, current_user: user} do
-      {:ok, _user} = Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+      {:ok, _user} =
+        Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
 
-      offer = insert(:offer, %{start_date: Timex.now(), end_date: Timex.shift(Timex.now(), days: 10)})
+      offer =
+        insert(:offer, %{start_date: Timex.now(), end_date: Timex.shift(Timex.now(), days: 10)})
 
       conn =
         post(

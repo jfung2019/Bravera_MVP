@@ -92,13 +92,22 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   def create_with_team_changeset(offer_challenge, offer, user, attrs) do
     offer_challenge
     |> create_changeset(offer, user, attrs)
-    |> cast_assoc(:team, with: &(OfferChallengeTeam.changeset(&1, offer, user, &2)), required: true)
+    |> cast_assoc(:team, with: &OfferChallengeTeam.changeset(&1, offer, user, &2), required: true)
   end
 
-  defp solo_or_team_challenge(%Ecto.Changeset{} = changeset, %Offer{additional_members: additional_members} = offer, %User{} = user) do
+  defp solo_or_team_challenge(
+         %Ecto.Changeset{} = changeset,
+         %Offer{additional_members: additional_members} = offer,
+         %User{} = user
+       ) do
     cond do
       additional_members > 0 ->
-        cast_assoc(changeset, :team, with: &(OfferChallengeTeam.changeset(&1, offer, user, &2)), required: true)
+        changeset
+        |> put_change(:has_team, true)
+        |> cast_assoc(:team,
+          with: &OfferChallengeTeam.changeset(&1, offer, user, &2),
+          required: true
+        )
 
       is_nil(additional_members) or additional_members == 0 ->
         changeset
@@ -174,7 +183,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       changeset
       |> add_error(:end_date, "Cannot create challenge because Offer experied.")
     end
-
   end
 
   defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do

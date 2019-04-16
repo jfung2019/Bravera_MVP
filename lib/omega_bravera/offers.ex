@@ -5,7 +5,16 @@ defmodule OmegaBravera.Offers do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
-  alias OmegaBravera.Offers.{Offer, OfferChallenge, OfferChallengeActivity, OfferVendor, OfferChallengeTeamMembers}
+
+  alias OmegaBravera.Offers.{
+    Offer,
+    OfferChallenge,
+    OfferChallengeActivity,
+    OfferVendor,
+    OfferChallengeTeamMembers,
+    OfferChallengeTeamInvitation
+  }
+
   alias OmegaBravera.Accounts.User
 
   @doc """
@@ -342,7 +351,6 @@ defmodule OmegaBravera.Offers do
     |> Repo.one!()
   end
 
-
   def get_user_offer_challenges(user_id, preloads \\ [:offer]) do
     from(
       oc in OfferChallenge,
@@ -380,7 +388,12 @@ defmodule OmegaBravera.Offers do
     |> Repo.insert()
   end
 
-  def create_offer_challenge_with_team(%OfferChallenge{} = offer_challenge, %Offer{} = offer, %User{} = user, attrs \\ %{}) do
+  def create_offer_challenge_with_team(
+        %OfferChallenge{} = offer_challenge,
+        %Offer{} = offer,
+        %User{} = user,
+        attrs \\ %{}
+      ) do
     offer_challenge
     |> OfferChallenge.create_with_team_changeset(offer, user, attrs)
     |> Repo.insert()
@@ -762,5 +775,37 @@ defmodule OmegaBravera.Offers do
     %OfferChallengeTeamMembers{}
     |> OfferChallengeTeamMembers.changeset(attrs)
     |> Repo.insert(on_conflict: :nothing)
+  end
+
+  def get_team_member_invitation_by_token(token) do
+    from(
+      invitation in OfferChallengeTeamInvitation,
+      where: invitation.token == ^token
+    )
+    |> Repo.one()
+  end
+
+  def resend_team_member_invitation(%OfferChallengeTeamInvitation{} = team_invitation) do
+    team_invitation
+    |> OfferChallengeTeamInvitation.invitation_resent_changeset()
+    |> Repo.update()
+  end
+
+  def create_team_member_invitation(team, attrs \\ %{}) do
+    %OfferChallengeTeamInvitation{}
+    |> OfferChallengeTeamInvitation.changeset(team, attrs)
+    |> Repo.insert()
+  end
+
+  def cancel_team_member_invitation(%OfferChallengeTeamInvitation{} = team_invitation) do
+    team_invitation
+    |> OfferChallengeTeamInvitation.invitation_cancelled_changeset()
+    |> Repo.update()
+  end
+
+  def accepted_team_member_invitation(%OfferChallengeTeamInvitation{} = team_invitation) do
+    team_invitation
+    |> OfferChallengeTeamInvitation.invitation_accepted_changeset()
+    |> Repo.update()
   end
 end

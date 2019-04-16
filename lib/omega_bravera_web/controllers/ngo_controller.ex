@@ -51,7 +51,6 @@ defmodule OmegaBraveraWeb.NGOController do
 
   defp add_stats(challenges) do
     Enum.map(challenges, fn challenge ->
-
       case challenge.type do
         "PER_KM" ->
           {total_per_km_pledges, follow_on_donations} =

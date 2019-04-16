@@ -1,19 +1,19 @@
-defmodule OmegaBravera.Challenges.TeamInvitations do
+defmodule OmegaBravera.Offers.OfferChallengeTeamInvitation do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.Challenges.{Team}
+  alias OmegaBravera.Offers.OfferChallengeTeam
 
   @allowed_attributes [:team_id, :email, :invitee_name]
 
-  schema "team_invitations" do
+  schema "offer_challenge_team_invitations" do
     field(:token, :string)
     field(:email, :string)
     field(:invitee_name, :string)
     # Can be: accepted or cancelled or pending_acceptance
     field(:status, :string, default: "pending_acceptance")
 
-    belongs_to(:team, Team)
+    belongs_to(:team, OfferChallengeTeam, foreign_key: :offer_challenge_team_id)
 
     timestamps(type: :utc_datetime)
   end

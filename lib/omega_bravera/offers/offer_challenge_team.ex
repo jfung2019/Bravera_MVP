@@ -2,25 +2,32 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.{Accounts.User, Offers.OfferChallenge, Offers.Offer}
+  alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Offers.{OfferChallenge, Offer, OfferChallengeTeamInvitation}
 
   @allowed_attributes [:name, :count]
 
   @derive {Phoenix.Param, key: :slug}
   schema "offer_challenge_teams" do
-    field :count, :integer
-    field :name, :string
-    field :slug, :string
+    field(:count, :integer)
+    field(:name, :string)
+    field(:slug, :string)
 
     belongs_to(:user, User)
     belongs_to(:offer_challenge, OfferChallenge)
+    has_many(:invitations, OfferChallengeTeamInvitation)
     many_to_many(:users, User, join_through: "offer_team_members")
 
     timestamps(type: :utc_datetime)
   end
 
   @doc false
-  def changeset(%__MODULE__{} = offer_challenge_team, %Offer{} = offer, %User{} = user, attrs \\ %{}) do
+  def changeset(
+        %__MODULE__{} = offer_challenge_team,
+        %Offer{} = offer,
+        %User{} = user,
+        attrs \\ %{}
+      ) do
     offer_challenge_team
     |> cast(attrs, @allowed_attributes)
     |> add_slug()
@@ -43,6 +50,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
     case count do
       nil ->
         change(changeset, %{count: offer.additional_members})
+
       _ ->
         change(changeset, %{count: count})
     end
@@ -54,6 +62,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
     case name do
       nil ->
         change(changeset, %{name: gen_slug(user.firstname)})
+
       _ ->
         change(changeset, %{name: name})
     end

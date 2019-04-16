@@ -3,11 +3,11 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferChallengeTeams do
 
   def change do
     create table(:offer_challenge_teams) do
-      add :name, :string
-      add :slug, :string, null: false
-      add :count, :integer, default: 0, null: false
-      add :user_id, references(:users, on_delete: :nothing)
-      add :offer_challenge_id, references(:offer_challenges, on_delete: :nothing)
+      add(:name, :string)
+      add(:slug, :string, null: false)
+      add(:count, :integer, default: 0, null: false)
+      add(:user_id, references(:users, on_delete: :nothing))
+      add(:offer_challenge_id, references(:offer_challenges, on_delete: :nothing))
 
       timestamps(type: :timestamptz)
     end

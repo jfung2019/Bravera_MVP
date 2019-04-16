@@ -79,7 +79,7 @@ defmodule OmegaBravera.Challenges do
       on: d.ngo_chal_id == nc.id,
       select: count(d.donor_id, :distinct)
     )
-    |> Repo.one
+    |> Repo.one()
   end
 
   def get_user_challenges_totals(user_id) do
@@ -89,7 +89,10 @@ defmodule OmegaBravera.Challenges do
         where: nc.user_id == ^user_id,
         left_join: a in assoc(nc, :activities),
         group_by: [nc.id],
-        select: %{challenge_id: nc.id, distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance)}
+        select: %{
+          challenge_id: nc.id,
+          distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance)
+        }
       )
 
     from(nc in NGOChal,
@@ -98,7 +101,9 @@ defmodule OmegaBravera.Challenges do
       join: activity in subquery(challenges_distance_covered),
       on: activity.challenge_id == nc.id,
       select: %{
-        total_pledged: fragment("
+        total_pledged:
+          fragment(
+            "
           CASE
             WHEN (? = 'pending' AND ? = 'PER_KM') THEN ? * ?
             WHEN (? = 'charged' AND ? = 'PER_KM') THEN ?
@@ -106,20 +111,26 @@ defmodule OmegaBravera.Challenges do
             WHEN (? = 'charged' AND ? = 'PER_MILESTONE') THEN ?
             ELSE 0
           END",
-          d.status, nc.type, d.amount, activity.distance_covered,
-          d.status, nc.type, d.charged_amount,
-          d.status, nc.type, d.amount,
-          d.status, nc.type, d.charged_amount
-        ),
+            d.status,
+            nc.type,
+            d.amount,
+            activity.distance_covered,
+            d.status,
+            nc.type,
+            d.charged_amount,
+            d.status,
+            nc.type,
+            d.amount,
+            d.status,
+            nc.type,
+            d.charged_amount
+          ),
         total_secured: fragment("
           CASE
             WHEN (? = 'charged' AND ? = 'PER_KM') THEN ?
             WHEN (? = 'charged' AND ? = 'PER_MILESTONE') THEN ?
             ELSE 0
-          END",
-          d.status, nc.type, d.charged_amount,
-          d.status, nc.type, d.charged_amount
-        ),
+          END", d.status, nc.type, d.charged_amount, d.status, nc.type, d.charged_amount),
         currency: fragment("LOWER(?)", nc.default_currency)
       }
     )
@@ -128,7 +139,14 @@ defmodule OmegaBravera.Challenges do
   end
 
   defp user_challenges_donations_totals_strings(totals) do
-    currencies = %{"hkd" => Decimal.new(0), "krw" => Decimal.new(0), "sgd" => Decimal.new(0), "myr" => Decimal.new(0), "usd" => Decimal.new(0), "gbp" => Decimal.new(0)}
+    currencies = %{
+      "hkd" => Decimal.new(0),
+      "krw" => Decimal.new(0),
+      "sgd" => Decimal.new(0),
+      "myr" => Decimal.new(0),
+      "usd" => Decimal.new(0),
+      "gbp" => Decimal.new(0)
+    }
 
     total_pledged_map =
       Enum.reduce(totals, currencies, fn d, acc ->
@@ -137,8 +155,11 @@ defmodule OmegaBravera.Challenges do
         case total_pledged do
           nil ->
             acc
+
           _ ->
-            Map.update(acc, d[:currency], total_pledged, fn sum -> Decimal.add(sum, total_pledged) end)
+            Map.update(acc, d[:currency], total_pledged, fn sum ->
+              Decimal.add(sum, total_pledged)
+            end)
         end
       end)
       |> Enum.filter(fn {_currency, total} -> Decimal.cmp(total, Decimal.new(0)) == :gt end)
@@ -151,14 +172,20 @@ defmodule OmegaBravera.Challenges do
         case total_secured do
           nil ->
             acc
+
           _ ->
-            Map.update(acc, d[:currency], total_secured, fn sum -> Decimal.add(sum, total_secured) end)
+            Map.update(acc, d[:currency], total_secured, fn sum ->
+              Decimal.add(sum, total_secured)
+            end)
         end
       end)
       |> Enum.filter(fn {_currency, total} -> Decimal.cmp(total, Decimal.new(0)) == :gt end)
       |> Enum.into(%{})
 
-    %{total_pledged: total_to_string(total_pledged_map), total_secured: total_to_string(total_secured_map)}
+    %{
+      total_pledged: total_to_string(total_pledged_map),
+      total_secured: total_to_string(total_secured_map)
+    }
   end
 
   defp total_to_string(total_map) do

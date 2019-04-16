@@ -221,7 +221,8 @@ defmodule OmegaBravera.OffersTest do
       user = insert(:user)
       offer = insert(:offer, %{additional_members: 5})
 
-      assert {:ok, %OfferChallenge{} = offer_challenge} = Offers.create_offer_challenge(offer, user)
+      assert {:ok, %OfferChallenge{} = offer_challenge} =
+               Offers.create_offer_challenge(offer, user)
 
       assert offer_challenge.team.count == offer.additional_members
       assert offer_challenge.team.user_id == user.id
@@ -463,15 +464,35 @@ defmodule OmegaBravera.OffersTest do
     test "create_offer_challenge_with_team/4 creates offer challenge with team" do
       team1_params = %{name: "team 7", count: "4"}
 
-      assert {:ok, record} = Offers.create_offer_challenge_with_team(%OfferChallenge{}, insert(:offer), insert(:user), %{team: team1_params})
+      assert {:ok, record} =
+               Offers.create_offer_challenge_with_team(
+                 %OfferChallenge{},
+                 insert(:offer),
+                 insert(:user),
+                 %{team: team1_params}
+               )
+
       assert record.team.count == 4
 
       team2_params = %{name: "team 5"}
-      assert {:ok, record2} = Offers.create_offer_challenge_with_team(%OfferChallenge{}, insert(:offer, %{additional_members: 7}), insert(:user), %{team: team2_params})
+
+      assert {:ok, record2} =
+               Offers.create_offer_challenge_with_team(
+                 %OfferChallenge{},
+                 insert(:offer, %{additional_members: 7}),
+                 insert(:user),
+                 %{team: team2_params}
+               )
 
       assert record2.team.count == 7
 
-      assert {:ok, record3} = Offers.create_offer_challenge_with_team(%OfferChallenge{}, insert(:offer, %{additional_members: 3}), insert(:user), %{team: %{}})
+      assert {:ok, record3} =
+               Offers.create_offer_challenge_with_team(
+                 %OfferChallenge{},
+                 insert(:offer, %{additional_members: 3}),
+                 insert(:user),
+                 %{team: %{}}
+               )
 
       refute is_nil(record3.team.name)
       refute is_nil(record3.team.count)
@@ -480,7 +501,6 @@ defmodule OmegaBravera.OffersTest do
   end
 
   describe "offer team members" do
-
     alias OmegaBravera.{Offers.OfferChallengeTeamMembers}
 
     test "adds an existing user to an existing team" do
@@ -497,7 +517,7 @@ defmodule OmegaBravera.OffersTest do
         )
 
       assert {:ok, %OfferChallengeTeamMembers{} = team_with_member} =
-                Offers.add_user_to_team(%{user_id: new_team_member.id, team_id: team.id})
+               Offers.add_user_to_team(%{user_id: new_team_member.id, team_id: team.id})
 
       assert team_with_member.team_id == team.id
       assert team_with_member.user_id == new_team_member.id
