@@ -8,7 +8,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Challenges.{NGOChal, Team}
   alias OmegaBravera.Money.Donation
   alias OmegaBravera.Stripe.StrCustomer
-  alias OmegaBravera.Offers.OfferChallenge
+  alias OmegaBravera.Offers.{OfferChallenge, OfferChallengeTeam}
 
   @required_attributes [:firstname, :lastname]
   @allowed_attributes [
@@ -38,9 +38,11 @@ defmodule OmegaBravera.Accounts.User do
     has_many(:donations, Donation)
     has_many(:str_customers, StrCustomer)
     has_many(:subscribed_email_categories, OmegaBravera.Emails.UserEmailCategories)
-    many_to_many(:teams, Team, join_through: "team_members")
-
     has_many(:offer_challenges, OfferChallenge)
+
+    # many_to_many(:teams, Team, join_through: "team_members")
+    # many_to_many(:offer_teams, OfferChallengeTeam, join_through: "offer_team_members")
+
 
     timestamps(type: :utc_datetime)
   end

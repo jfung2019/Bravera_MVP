@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferChallengeTeamInvitations do
 
   def up do
     create table(:offer_challenge_team_invitations) do
-      add(:offer_challenge_team_id, references(:offer_challenge_teams, on_delete: :delete_all),
+      add(:team_id, references(:offer_challenge_teams, on_delete: :delete_all),
         null: false
       )
 

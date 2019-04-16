@@ -13,7 +13,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeamInvitation do
     # Can be: accepted or cancelled or pending_acceptance
     field(:status, :string, default: "pending_acceptance")
 
-    belongs_to(:team, OfferChallengeTeam, foreign_key: :offer_challenge_team_id)
+    belongs_to(:team, OfferChallengeTeam)
 
     timestamps(type: :utc_datetime)
   end

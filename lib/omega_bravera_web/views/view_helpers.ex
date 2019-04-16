@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   alias OmegaBravera.Accounts.AdminUser
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Fundraisers.NGO
-  alias OmegaBravera.Offers.Offer
+  alias OmegaBravera.Offers.{Offer, OfferChallenge}
 
   def logged_in?(conn) do
     user = Guardian.Plug.current_resource(conn)
@@ -30,6 +30,9 @@ defmodule OmegaBraveraWeb.ViewHelpers do
         false
     end
   end
+
+  def is_own_offer_challenge?(%OfferChallenge{} = challenge, %User{} = user), do: challenge.user.id == user.id
+  def is_own_offer_challenge?(_, _), do: false
 
   def is_own_challenge?(%NGOChal{} = challenge, %User{} = user), do: challenge.user.id == user.id
   def is_own_challenge?(_, _), do: false

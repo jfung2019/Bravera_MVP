@@ -228,7 +228,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   end
 
   def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do
-    offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, user: [:strava], offer: [])
+    offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [user: [:strava], team: [users: [:strava], invitations: []], offer: []])
 
     case offer_challenge do
       nil ->
@@ -238,6 +238,30 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         render_attrs = get_render_attrs(conn, offer_challenge, offer_slug)
         render(conn, "show.html", render_attrs)
     end
+  end
+
+  def invite_team_members(conn, %{
+        "offer_challenge_slug" => slug,
+        "offer_slug" => offer_slug,
+        "team_members" => team_members
+      }) do
+    challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, :offer, :team])
+
+    Enum.map(Map.values(team_members), fn team_member ->
+      case Offers.create_team_member_invitation(challenge.team, team_member) do
+        {:ok, _created_team_member} ->
+          # Send invitation
+          IO.inspect "Created team member"
+          # Challenges.Notifier.send_team_members_invite_email(challenge, created_team_member)
+
+        {:error, reason} ->
+          Logger.info("Could not invite team member, reason: #{inspect(reason)}")
+      end
+    end)
+
+    conn
+    |> put_flash(:info, "Sucessfully invited your team member(s)!")
+    |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
   end
 
   defp get_render_attrs(conn, %OfferChallenge{type: "PER_MILESTONE"} = challenge, offer_slug) do

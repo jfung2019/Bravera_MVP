@@ -4,7 +4,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
   alias OmegaBravera.{
     Offers.OfferChallenge,
     Accounts.User,
-    Offers.Offer
+    Offers.Offer,
+    Offers.OfferChallengeTeamInvitation
   }
 
   def user_full_name(%User{} = user), do: User.full_name(user)
@@ -244,7 +245,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
   def total_pledges(%Decimal{} = total_pledges, distance),
     do: Decimal.mult(total_pledges, distance) |> Decimal.to_integer()
 
-  def hide_donor_pays_fees?(%Offer{} = ngo), do: ngo.hide_donor_pays_fees
+  def hide_donor_pays_fees?(%Offer{} = offer), do: offer.hide_donor_pays_fees
 
   def render_status("expired"), do: "Finished"
 
@@ -253,52 +254,52 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
   def user_firstname_or_team_name(%OfferChallenge{has_team: false, user: %{firstname: firstname}}),
     do: firstname
 
-  # def user_firstname_or_team_name(%OfferChallenge{has_team: true, team: %{name: name}}), do: name
+  def user_firstname_or_team_name(%OfferChallenge{has_team: true, team: %{name: name}}), do: name
 
-  # def challenge_with_team_has_members(%OfferChallenge{
-  #       has_team: has_team,
-  #       team: %{invitations_accepted: invitations_accepted}
-  #     }),
-  #     do: has_team and invitations_accepted > 0
+  def challenge_with_team_has_members(%OfferChallenge{
+        has_team: has_team,
+        team: %{invitations_accepted: invitations_accepted}
+      }),
+      do: has_team and invitations_accepted > 0
 
-  # def challenge_with_team_has_members(_), do: false
+  def challenge_with_team_has_members(_), do: false
 
-  #   defp number_of_sent_and_accepted_invites(%OfferChallenge{
-  #          has_team: true,
-  #          team: %{invitations: invitations}
-  #        }) do
-  #     Enum.count(invitations, fn invitation ->
-  #       invitation.status == "pending_acceptance" or invitation.status == "accepted"
-  #     end)
-  #   end
+    defp number_of_sent_and_accepted_invites(%OfferChallenge{
+           has_team: true,
+           team: %{invitations: invitations}
+         }) do
+      Enum.count(invitations, fn invitation ->
+        invitation.status == "pending_acceptance" or invitation.status == "accepted"
+      end)
+    end
 
-  #   def invitations_exhaused?(%OfferChallenge{has_team: true, team: %{count: count}} = challenge),
-  #     do: count == number_of_sent_and_accepted_invites(challenge)
+    def invitations_exhaused?(%OfferChallenge{has_team: true, team: %{count: count}} = challenge),
+      do: count == number_of_sent_and_accepted_invites(challenge)
 
-  #   def left_invitations(%OfferChallenge{has_team: true, team: %{count: count}} = challenge) do
-  #     sent_and_accepted = number_of_sent_and_accepted_invites(challenge)
+    def left_invitations(%OfferChallenge{has_team: true, team: %{count: count}} = challenge) do
+      sent_and_accepted = number_of_sent_and_accepted_invites(challenge)
 
-  #     cond do
-  #       sent_and_accepted == count -> []
-  #       sent_and_accepted < count -> Range.new(1, count - sent_and_accepted)
-  #     end
-  #   end
+      cond do
+        sent_and_accepted == count -> []
+        sent_and_accepted < count -> Range.new(1, count - sent_and_accepted)
+      end
+    end
 
-  #   def accepted_invitations(%OfferChallenge{has_team: true, team: %{invitations: invitations}}),
-  #     do: Enum.count(invitations, fn invitation -> invitation.status == "accepted" end)
+    def accepted_invitations(%OfferChallenge{has_team: true, team: %{invitations: invitations}}),
+      do: Enum.count(invitations, fn invitation -> invitation.status == "accepted" end)
 
-  #   def team_full?(%OfferChallenge{has_team: true, team: %{count: count}} = challenge),
-  #     do: count == accepted_invitations(challenge)
+    def team_full?(%OfferChallenge{has_team: true, team: %{count: count}} = challenge),
+      do: count == accepted_invitations(challenge)
 
-  #   def pending_invitations(%OfferChallenge{has_team: true, team: %{invitations: invitations}}) do
-  #     Enum.map(invitations, fn invitation ->
-  #       if invitation.status == "pending_acceptance" do
-  #         invitation
-  #       end
-  #     end)
-  #     |> Enum.reject(&is_nil/1)
-  #   end
+    def pending_invitations(%OfferChallenge{has_team: true, team: %{invitations: invitations}}) do
+      Enum.map(invitations, fn invitation ->
+        if invitation.status == "pending_acceptance" do
+          invitation
+        end
+      end)
+      |> Enum.reject(&is_nil/1)
+    end
 
-  #   def can_resend?(%TeamInvitations{updated_at: updated_at}),
-  #     do: Timex.before?(Timex.now(), Timex.shift(updated_at, days: 1))
+    def can_resend?(%OfferChallengeTeamInvitation{updated_at: updated_at}),
+      do: Timex.before?(Timex.now(), Timex.shift(updated_at, days: 1))
 end

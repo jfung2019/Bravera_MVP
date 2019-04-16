@@ -185,6 +185,7 @@ defmodule OmegaBraveraWeb.Router do
         get("/redeem/:redeem_token", Offer.OfferChallengeController, :new_redeem)
         post("/:redeem_token", Offer.OfferChallengeController, :save_redeem)
         get("/activities", Offer.OfferChallengeActivityController, :index)
+        post("/invite/team_members", Offer.OfferChallengeController, :invite_team_members)
       end
     end
   end
