@@ -447,74 +447,16 @@ defmodule OmegaBravera.OffersTest do
   end
 
   describe "offer_challenge_teams" do
-     alias OmegaBravera.Offers.OfferChallengeTeam
-
-     @valid_attrs %{count: 2, name: "some name"}
-     @update_attrs %{count: 3, name: "some updated name"}
-     @invalid_attrs %{count: nil, name: nil}
-
-     def offer_challenge_team_fixture(attrs \\ %{}) do
-       offer_challenge = insert(:offer_challenge)
-
-       {:ok, offer_challenge_team} =
-         offer_challenge
-         |> Offers.create_offer_challenge_team(offer_challenge.user, Enum.into(attrs, @valid_attrs))
-
-       {offer_challenge_team, offer_challenge}
-     end
-
-    # test "list_offer_challenge_teams/0 returns all offer_challenge_teams" do
-    #   {offer_challenge_team, _} = offer_challenge_team_fixture()
-    #   assert Offers.list_offer_challenge_teams() == [offer_challenge_team]
-    # end
-
-    # test "get_offer_challenge_team!/1 returns the offer_challenge_team with given id" do
-    #   {offer_challenge_team, _} = offer_challenge_team_fixture()
-    #   assert Offers.get_offer_challenge_team!(offer_challenge_team.id) == offer_challenge_team
-    # end
-
-     test "create_offer_challenge_team/1 with valid data creates a offer_challenge_team" do
-       offer_challenge = insert(:offer_challenge)
-
-       assert {:ok, %OfferChallengeTeam{} = offer_challenge_team} = Offers.create_offer_challenge_team(offer_challenge, offer_challenge.user, @valid_attrs)
-       assert offer_challenge_team.count == 2
-       assert offer_challenge_team.name == "some name"
-     end
-
-    # test "create_offer_challenge_team/1 with invalid data returns error changeset" do
-    #   assert {:error, %Ecto.Changeset{}} = Offers.create_offer_challenge_team(%OfferChallenge{}, %User{}, @invalid_attrs)
-    # end
-
     test "create_offer_challenge_with_team/4 creates offer challenge with team" do
-      user = insert(:user)
-      offer = insert(:offer)
+      team1_params = %{name: "team 7", count: "4"}
 
-      assert {:ok, record} = Offers.create_offer_challenge_with_team(%OfferChallenge{}, offer, user, %{team: %{name: "team 7"}})
+      assert {:ok, record} = Offers.create_offer_challenge_with_team(%OfferChallenge{}, insert(:offer), insert(:user), %{team: team1_params})
+      assert record.team.count == 4
 
+      team2_params = %{name: "team 5"}
+      assert {:ok, record2} = Offers.create_offer_challenge_with_team(%OfferChallenge{}, insert(:offer, %{additional_members: 7}), insert(:user), %{team: team2_params})
+
+      assert record2.team.count == 7
     end
-
-     test "update_offer_challenge_team/2 with valid data updates the offer_challenge_team" do
-       {offer_challenge_team, offer_challenge} = offer_challenge_team_fixture()
-       assert {:ok, %OfferChallengeTeam{} = offer_challenge_team} = Offers.update_offer_challenge_team(offer_challenge_team, offer_challenge, offer_challenge.user, @update_attrs)
-       assert offer_challenge_team.count == 3
-       assert offer_challenge_team.name == "some updated name"
-     end
-
-     test "update_offer_challenge_team/2 with invalid data returns error changeset" do
-       {offer_challenge_team, offer_challenge} = offer_challenge_team_fixture()
-       assert {:error, %Ecto.Changeset{}} = Offers.update_offer_challenge_team(offer_challenge_team, offer_challenge, offer_challenge.user, @invalid_attrs)
-       assert offer_challenge_team == Offers.get_offer_challenge_team!(offer_challenge_team.id)
-     end
-
-     test "delete_offer_challenge_team/1 deletes the offer_challenge_team" do
-       {offer_challenge_team, _} = offer_challenge_team_fixture()
-       assert {:ok, %OfferChallengeTeam{}} = Offers.delete_offer_challenge_team(offer_challenge_team)
-       assert_raise Ecto.NoResultsError, fn -> Offers.get_offer_challenge_team!(offer_challenge_team.id) end
-     end
-
-     test "change_offer_challenge_team/1 returns a offer_challenge_team changeset" do
-       {offer_challenge_team, _} = offer_challenge_team_fixture()
-       assert %Ecto.Changeset{} = Offers.change_offer_challenge_team(offer_challenge_team)
-     end
   end
 end

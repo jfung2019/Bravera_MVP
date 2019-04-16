@@ -2,7 +2,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.{Accounts.User, Offers.OfferChallenge}
+  alias OmegaBravera.{Accounts.User, Offers.OfferChallenge, Offers.Offer}
 
   @allowed_attributes [:name, :count]
   @required_attributes [:name]
@@ -20,11 +20,12 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
   end
 
   @doc false
-  def changeset(%__MODULE__{} = offer_challenge_team, %User{} = user, attrs \\ %{}) do
+  def changeset(%__MODULE__{} = offer_challenge_team, %Offer{} = offer, %User{} = user, attrs \\ %{}) do
     offer_challenge_team
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
     |> add_slug()
+    |> add_count(offer)
     |> put_change(:user_id, user.id)
     |> validate_required([:user_id])
     |> unique_constraint(:slug, name: :offer_challenge_teams_slug_index)
@@ -43,6 +44,17 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
 
       _ ->
         changeset
+    end
+  end
+
+  def add_count(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
+    count = get_field(changeset, :count)
+
+    case count do
+      nil ->
+        change(changeset, %{count: offer.additional_members})
+      _ ->
+        change(changeset, %{count: count})
     end
   end
 

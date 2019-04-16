@@ -91,7 +91,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   def create_with_team_changeset(offer_challenge, offer, user, attrs) do
     offer_challenge
     |> create_changeset(offer, user, attrs)
-    |> cast_assoc(:team, with: &(OfferChallengeTeam.changeset(&1, user, &2)), required: true)
+    |> cast_assoc(:team, with: &(OfferChallengeTeam.changeset(&1, offer, user, &2)), required: true)
   end
 
   defp generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do
