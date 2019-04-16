@@ -3,7 +3,7 @@ defmodule OmegaBravera.OffersTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Offers, Accounts.User, Offers.OfferChallenge}
+  alias OmegaBravera.{Offers, Accounts.User, Offers.OfferChallenge, Repo}
 
   describe "offers" do
     alias OmegaBravera.Offers.Offer
@@ -217,10 +217,20 @@ defmodule OmegaBravera.OffersTest do
       assert Offers.get_offer_challenge!(offer_challenge.id) == offer_challenge
     end
 
-    test "create_offer_challenge/1 with valid data creates a offer_challenge" do
+    test "create_offer_challenge/2 creates offer challenge with a team when offer additional members are greater than 0" do
+      user = insert(:user)
+      offer = insert(:offer, %{additional_members: 5})
+
+      assert {:ok, %OfferChallenge{} = offer_challenge} = Offers.create_offer_challenge(offer, user)
+
+      assert offer_challenge.team.count == offer.additional_members
+      assert offer_challenge.team.user_id == user.id
+    end
+
+    test "create_offer_challenge/2 with valid data creates a offer_challenge" do
       assert {:ok, %OfferChallenge{} = offer_challenge} =
                Offers.create_offer_challenge(
-                 insert(:offer),
+                 insert(:offer, %{additional_members: 0}),
                  insert(:user),
                  @valid_attrs
                )
@@ -231,9 +241,12 @@ defmodule OmegaBravera.OffersTest do
       assert offer_challenge.participant_notified_of_inactivity == false
       assert offer_challenge.status == "active"
       assert offer_challenge.type == "PER_KM"
+
+      offer_challenge = Repo.preload(offer_challenge, :team)
+      assert is_nil(offer_challenge.team)
     end
 
-    test "create_offer_challenge/1 with invalid data returns error changeset" do
+    test "create_offer_challenge/2 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
                Offers.create_offer_challenge(insert(:offer), %User{}, @invalid_attrs)
     end
@@ -463,7 +476,6 @@ defmodule OmegaBravera.OffersTest do
       refute is_nil(record3.team.name)
       refute is_nil(record3.team.count)
       refute is_nil(record3.team.slug)
-
     end
   end
 

@@ -374,7 +374,7 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_offer_challenge(%Offer{} = offer, %User{} = user, attrs \\ %{}) do
+  def create_offer_challenge(%Offer{} = offer, %User{} = user, attrs \\ %{team: %{}}) do
     %OfferChallenge{}
     |> OfferChallenge.create_changeset(offer, user, attrs)
     |> Repo.insert()
