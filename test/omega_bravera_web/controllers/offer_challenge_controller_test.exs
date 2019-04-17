@@ -65,7 +65,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         )
 
       assert get_flash(conn, :info) == "Success! You have registered for this offer!"
-      assert length(Offers.list_offer_challenges()) == 1
+      assert [challenge] = Offers.list_offer_challenges()
+      assert redirected_to(conn) == offer_offer_challenge_path(conn, :show, offer, challenge)
     end
   end
 
