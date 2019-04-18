@@ -504,7 +504,14 @@ defmodule OmegaBravera.OffersTest do
     alias OmegaBravera.{Offers.OfferChallengeTeamMembers}
 
     test "adds an existing user to an existing team" do
-      team = insert(:offer_challenge_team)
+      invitation =
+        insert(
+          :offer_team_invitation,
+          %{
+            invitee_name: "Sherief Alaa",
+            email: "sheriefalaa.w@gmail.com"
+          }
+        )
 
       new_team_member =
         insert(
@@ -517,9 +524,14 @@ defmodule OmegaBravera.OffersTest do
         )
 
       assert {:ok, %OfferChallengeTeamMembers{} = team_with_member} =
-               Offers.add_user_to_team(%{user_id: new_team_member.id, team_id: team.id})
+               Offers.add_user_to_team(
+                 invitation,
+                 invitation.team,
+                 new_team_member,
+                 invitation.team.offer_challenge.user
+               )
 
-      assert team_with_member.team_id == team.id
+      assert team_with_member.team_id == invitation.team.id
       assert team_with_member.user_id == new_team_member.id
     end
   end

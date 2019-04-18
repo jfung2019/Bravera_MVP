@@ -65,7 +65,12 @@ defmodule OmegaBravera.Challenges.NotifierTest do
   test "team_member_invite_email" do
     invitation = insert(:team_invitation)
 
-    email = Notifier.team_member_invite_email(invitation.team.challenge, invitation)
+    email =
+      Notifier.team_member_invite_email(
+        invitation.team.challenge,
+        invitation,
+        "e1869afd-8cd1-4789-b444-dabff9b7f3f1"
+      )
 
     assert email == %SendGrid.Email{
              __phoenix_layout__: nil,

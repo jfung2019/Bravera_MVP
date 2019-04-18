@@ -261,17 +261,32 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_team_members_invite_email(%NGOChal{} = challenge, team_member) do
     # TODO: allow a team invitee to stop team owners from emailing him. -Sherief
-    team_member_invite_email(challenge, team_member)
-    |> Mailer.send()
+    template_id = "e1869afd-8cd1-4789-b444-dabff9b7f3f1"
+    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    challenge = Repo.preload(challenge, [:team, :ngo, user: [:subscribed_email_categories]])
+
+    if not is_nil(sendgrid_email) and
+         user_subscribed_in_category?(
+           challenge.user.subscribed_email_categories,
+           sendgrid_email.category.id
+         ) do
+      challenge
+      |> team_member_invite_email(team_member, template_id)
+      |> Mailer.send()
+    end
   end
 
-  def team_member_invite_email(%NGOChal{} = challenge, %{
-        invitee_name: invitee_name,
-        token: token,
-        email: email
-      }) do
+  def team_member_invite_email(
+        %NGOChal{} = challenge,
+        %{
+          invitee_name: invitee_name,
+          token: token,
+          email: email
+        },
+        template_id
+      ) do
     Email.build()
-    |> Email.put_template("e1869afd-8cd1-4789-b444-dabff9b7f3f1")
+    |> Email.put_template(template_id)
     |> Email.add_substitution("-inviteeName-", invitee_name)
     |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
     |> Email.add_substitution("-ngoName-", challenge.ngo.name)

@@ -40,9 +40,8 @@ defmodule OmegaBravera.Accounts.User do
     has_many(:subscribed_email_categories, OmegaBravera.Emails.UserEmailCategories)
     has_many(:offer_challenges, OfferChallenge)
 
-    # many_to_many(:teams, Team, join_through: "team_members")
-    # many_to_many(:offer_teams, OfferChallengeTeam, join_through: "offer_team_members")
-
+    many_to_many(:teams, Team, join_through: "team_members")
+    many_to_many(:offer_teams, OfferChallengeTeam, join_through: "offer_team_members")
 
     timestamps(type: :utc_datetime)
   end

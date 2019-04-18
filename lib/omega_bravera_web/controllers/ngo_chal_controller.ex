@@ -235,7 +235,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
                 |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
 
               {:error, reason} ->
-                Logger.error("Could not add user to team, reason: #{inspect(reason)}")
+                Logger.info(
+                  "NGOChalController: Could not add user to team, reason: #{inspect(reason)}"
+                )
 
                 conn
                 |> put_flash(:error, "Could not add you to team. Please contact admin@bravera.co")

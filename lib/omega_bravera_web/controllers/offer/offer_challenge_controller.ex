@@ -11,7 +11,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Offers.OfferVendor,
     Fundraisers.NgoOptions,
     Offers.Notifier,
-    Repo
+    Repo,
+    Accounts.User
   }
 
   plug :put_layout, false when action in [:qr_code]
@@ -228,7 +229,12 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   end
 
   def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do
-    offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [user: [:strava], team: [users: [:strava], invitations: []], offer: []])
+    offer_challenge =
+      Offers.get_offer_chal_by_slugs(offer_slug, slug,
+        user: [:strava],
+        team: [users: [:strava], invitations: []],
+        offer: []
+      )
 
     case offer_challenge do
       nil ->
@@ -240,6 +246,56 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     end
   end
 
+  def add_team_member(conn, %{
+        "offer_slug" => offer_slug,
+        "offer_challenge_slug" => slug,
+        "invitation_token" => invitation_token
+      }) do
+    current_user = Guardian.Plug.current_resource(conn)
+
+    # Is the user logged in?
+    case current_user do
+      nil ->
+        conn
+        |> put_flash(
+          :info,
+          "Please login using Strava first then click the invitation link again from your email."
+        )
+        |> redirect(to: page_path(conn, :login))
+
+      user ->
+        challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:team, :user, :offer])
+        invitation = Offers.get_team_member_invitation_by_token(invitation_token)
+
+        case Offers.add_user_to_team(invitation, challenge.team, user, challenge.user) do
+          {:ok, _} ->
+            Offers.accepted_team_member_invitation(invitation)
+            Offers.Notifier.send_team_owner_member_added_notification(challenge, user)
+
+            conn
+            |> put_flash(
+              :info,
+              "You are now part of #{inspect(User.full_name(challenge.user))} team."
+            )
+            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+
+          {:error, reason} ->
+            Logger.info(
+              "OfferChallengeController: add team member to team, reason: #{
+                inspect(reason.errors)
+              }"
+            )
+
+            conn
+            |> put_flash(
+              :error,
+              "Something went wrong, please make sure you are logged in and clicked your link in your invitation email."
+            )
+            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+        end
+    end
+  end
+
   def invite_team_members(conn, %{
         "offer_challenge_slug" => slug,
         "offer_slug" => offer_slug,
@@ -247,21 +303,77 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       }) do
     challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, :offer, :team])
 
+    # Maybe we should verify if the request is coming from the owner of the challenge. -Sherief
     Enum.map(Map.values(team_members), fn team_member ->
       case Offers.create_team_member_invitation(challenge.team, team_member) do
-        {:ok, _created_team_member} ->
-          # Send invitation
-          IO.inspect "Created team member"
-          # Challenges.Notifier.send_team_members_invite_email(challenge, created_team_member)
+        {:ok, created_team_member} ->
+          Offers.Notifier.send_team_members_invite_email(challenge, created_team_member)
 
         {:error, reason} ->
-          Logger.info("Could not invite team member, reason: #{inspect(reason)}")
+          Logger.info(
+            "OfferChallengeController: Could not invite team member, reason: #{inspect(reason)}"
+          )
       end
     end)
 
+    # Maybe show errors to users instead of logging them only. -Sherief
     conn
     |> put_flash(:info, "Sucessfully invited your team member(s)!")
     |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+  end
+
+  def resend_invitation(conn, %{
+        "offer_slug" => offer_slug,
+        "offer_challenge_slug" => slug,
+        "invitation_token" => invitation_token
+      }) do
+    current_user = Guardian.Plug.current_resource(conn)
+    challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:team, :user, :offer])
+    invitation = Offers.get_team_member_invitation_by_token(invitation_token)
+
+    case Offers.resend_team_member_invitation(invitation, current_user, challenge.user) do
+      {:ok, updated_invitation} ->
+        Offers.Notifier.send_team_members_invite_email(challenge, updated_invitation)
+
+        conn
+        |> put_flash(:info, "Resent invite to #{updated_invitation.invitee_name}!")
+        |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+
+      {:error, reason} ->
+        Logger.info(
+          "OfferChallengeController: could not resend invite, reason: #{inspect(reason.errors)}"
+        )
+
+        conn
+        |> put_flash(:error, "Action not allowed.")
+        |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+    end
+  end
+
+  def cancel_invitation(conn, %{
+        "offer_slug" => offer_slug,
+        "offer_challenge_slug" => slug,
+        "invitation_token" => invitation_token
+      }) do
+    current_user = Guardian.Plug.current_resource(conn)
+    challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:team, :user, :offer])
+    invitation = Offers.get_team_member_invitation_by_token(invitation_token)
+
+    case Offers.cancel_team_member_invitation(invitation, current_user, challenge.user) do
+      {:ok, _updated_invitation} ->
+        conn
+        |> put_flash(:info, "Invitation canceled.")
+        |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+
+      {:error, reason} ->
+        Logger.info(
+          "OfferChallengeController: could not cancel invite, reason: #{inspect(reason.errors)}"
+        )
+
+        conn
+        |> put_flash(:error, "Action not allowed.")
+        |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+    end
   end
 
   defp get_render_attrs(conn, %OfferChallenge{type: "PER_MILESTONE"} = challenge, offer_slug) do

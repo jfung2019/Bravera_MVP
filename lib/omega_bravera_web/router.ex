@@ -145,7 +145,10 @@ defmodule OmegaBraveraWeb.Router do
       get("/challenges", AdminPanelChallengesController, :index)
 
       resources("/ngos", AdminPanelNGOController, only: [:index, :new, :create]) do
-        resources("/challenges", AdminPanelChallengesController, only: [:show, :edit, :update])
+        resources("/challenges", AdminPanelChallengesController,
+          only: [:show, :edit, :update],
+          param: "slug"
+        )
       end
 
       get("/ngos/:slug", AdminPanelNGOController, :show)
@@ -157,7 +160,8 @@ defmodule OmegaBraveraWeb.Router do
 
       resources("/offers", AdminPanelOfferController, only: [:index, :new, :create]) do
         resources("/offer_challenges", AdminPanelOfferChallengeController,
-          only: [:show, :edit, :update]
+          only: [:show, :edit, :update],
+          param: "slug"
         )
       end
 
@@ -181,11 +185,29 @@ defmodule OmegaBraveraWeb.Router do
 
     resources "/", Offer.OfferController, only: [:show], param: "slug" do
       resources "/", Offer.OfferChallengeController, only: [:show, :new, :create], param: "slug" do
+        get("/activities", Offer.OfferChallengeActivityController, :index)
         get("/:redeem_token", Offer.OfferChallengeController, :qr_code)
         get("/redeem/:redeem_token", Offer.OfferChallengeController, :new_redeem)
         post("/:redeem_token", Offer.OfferChallengeController, :save_redeem)
-        get("/activities", Offer.OfferChallengeActivityController, :index)
         post("/invite/team_members", Offer.OfferChallengeController, :invite_team_members)
+
+        get(
+          "/add_team_member/:invitation_token",
+          Offer.OfferChallengeController,
+          :add_team_member
+        )
+
+        get(
+          "/resend_invitation/:invitation_token",
+          Offer.OfferChallengeController,
+          :resend_invitation
+        )
+
+        get(
+          "/cancel_invitation/:invitation_token",
+          Offer.OfferChallengeController,
+          :cancel_invitation
+        )
       end
     end
   end

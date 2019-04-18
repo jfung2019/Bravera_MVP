@@ -31,7 +31,9 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     end
   end
 
-  def is_own_offer_challenge?(%OfferChallenge{} = challenge, %User{} = user), do: challenge.user.id == user.id
+  def is_own_offer_challenge?(%OfferChallenge{} = challenge, %User{} = user),
+    do: challenge.user.id == user.id
+
   def is_own_offer_challenge?(_, _), do: false
 
   def is_own_challenge?(%NGOChal{} = challenge, %User{} = user), do: challenge.user.id == user.id

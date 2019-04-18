@@ -146,6 +146,16 @@ defmodule OmegaBravera.Factory do
     }
   end
 
+  def offer_team_invitation_factory do
+    %OmegaBravera.Offers.OfferChallengeTeamInvitation{
+      email: sequence(:email, &"john.doe.#{&1}@example.com"),
+      invitee_name: "Sherief Alaa",
+      status: "pending_acceptance",
+      token: "abcd#{Enum.random(10_000_000..20_000_000)}",
+      team: build(:offer_challenge_team)
+    }
+  end
+
   def offer_factory do
     %OmegaBravera.Offers.Offer{
       name: "Save the children worldwide",

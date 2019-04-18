@@ -3,6 +3,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeamInvitation do
   import Ecto.Changeset
 
   alias OmegaBravera.Offers.OfferChallengeTeam
+  alias OmegaBravera.Accounts.User
 
   @allowed_attributes [:team_id, :email, :invitee_name]
 
@@ -33,14 +34,50 @@ defmodule OmegaBravera.Offers.OfferChallengeTeamInvitation do
     |> cast(%{status: "accepted"}, [:status])
   end
 
-  def invitation_cancelled_changeset(team_invitation) do
+  def invitation_cancelled_changeset(team_invitation, current_user, challenge_owner) do
     team_invitation
     |> cast(%{status: "cancelled"}, [:status])
+    |> verify_owner(current_user, challenge_owner)
   end
 
-  def invitation_resent_changeset(team_invitation) do
+  def invitation_resent_changeset(team_invitation, current_user, challenge_owner) do
     team_invitation
     |> change(%{updated_at: Timex.now()})
+    |> verify_owner(current_user, challenge_owner)
+    |> is_resend_recent?()
+  end
+
+  defp verify_owner(%Ecto.Changeset{} = changeset, nil, _),
+    do: add_error(changeset, :email, "Owner not found, please login.")
+
+  defp verify_owner(
+         %Ecto.Changeset{} = changeset,
+         %User{} = current_user,
+         %User{} = challenge_owner
+       ) do
+    if current_user.id == challenge_owner.id do
+      changeset
+    else
+      add_error(
+        changeset,
+        :email,
+        "Incorrect Owner. Please login using the challenge owner account."
+      )
+    end
+  end
+
+  defp is_resend_recent?(%Ecto.Changeset{} = changeset) do
+    last_updated = get_field(changeset, :updated_at)
+
+    if not is_nil(last_updated) and Timex.before?(Timex.now(), Timex.shift(last_updated, days: 1)) do
+      change(changeset, %{updated_at: DateTime.truncate(Timex.now(), :second)})
+    else
+      add_error(
+        changeset,
+        :updated_at,
+        "Action not allowed. Please wait until invidation is resendable again."
+      )
+    end
   end
 
   defp gen_unique_string(length \\ 8),

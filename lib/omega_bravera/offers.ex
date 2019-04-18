@@ -12,7 +12,8 @@ defmodule OmegaBravera.Offers do
     OfferChallengeActivity,
     OfferVendor,
     OfferChallengeTeamMembers,
-    OfferChallengeTeamInvitation
+    OfferChallengeTeamInvitation,
+    OfferChallengeTeam
   }
 
   alias OmegaBravera.Accounts.User
@@ -771,9 +772,15 @@ defmodule OmegaBravera.Offers do
     OfferVendor.changeset(offer_vendor, %{})
   end
 
-  def add_user_to_team(attrs \\ %{}) do
+  def add_user_to_team(
+        %OfferChallengeTeamInvitation{} = invitation,
+        %OfferChallengeTeam{} = team,
+        %User{} = current_user,
+        %User{} = challenge_owner,
+        attrs \\ %{}
+      ) do
     %OfferChallengeTeamMembers{}
-    |> OfferChallengeTeamMembers.changeset(attrs)
+    |> OfferChallengeTeamMembers.changeset(invitation, team, current_user, challenge_owner, attrs)
     |> Repo.insert(on_conflict: :nothing)
   end
 
@@ -785,9 +792,13 @@ defmodule OmegaBravera.Offers do
     |> Repo.one()
   end
 
-  def resend_team_member_invitation(%OfferChallengeTeamInvitation{} = team_invitation) do
+  def resend_team_member_invitation(
+        %OfferChallengeTeamInvitation{} = team_invitation,
+        %User{} = current_user,
+        %User{} = challenge_owner
+      ) do
     team_invitation
-    |> OfferChallengeTeamInvitation.invitation_resent_changeset()
+    |> OfferChallengeTeamInvitation.invitation_resent_changeset(current_user, challenge_owner)
     |> Repo.update()
   end
 
@@ -797,9 +808,13 @@ defmodule OmegaBravera.Offers do
     |> Repo.insert()
   end
 
-  def cancel_team_member_invitation(%OfferChallengeTeamInvitation{} = team_invitation) do
+  def cancel_team_member_invitation(
+        %OfferChallengeTeamInvitation{} = team_invitation,
+        %User{} = current_user,
+        %User{} = challenge_owner
+      ) do
     team_invitation
-    |> OfferChallengeTeamInvitation.invitation_cancelled_changeset()
+    |> OfferChallengeTeamInvitation.invitation_cancelled_changeset(current_user, challenge_owner)
     |> Repo.update()
   end
 

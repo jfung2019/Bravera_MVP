@@ -4,13 +4,95 @@ defmodule OmegaBravera.Offers.Notifier do
     Offers.OfferChallengeActivity,
     Repo,
     Emails,
-    Offers.OfferRedeem
+    Offers.OfferRedeem,
+    Accounts.User
   }
 
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
 
   alias SendGrid.{Email, Mailer}
+
+  def send_team_owner_member_added_notification(%OfferChallenge{} = challenge, %User{} = user) do
+    template_id = "4726b363-9a6a-4953-bfac-942cae457053"
+    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    challenge = Repo.preload(challenge, user: [:subscribed_email_categories])
+
+    if not is_nil(sendgrid_email) and
+         user_subscribed_in_category?(
+           challenge.user.subscribed_email_categories,
+           sendgrid_email.category.id
+         ) do
+      challenge
+      |> team_owner_member_added_notification_email(user, template_id)
+      |> Mailer.send()
+    end
+  end
+
+  def team_owner_member_added_notification_email(
+        %OfferChallenge{} = challenge,
+        %User{} = user,
+        template_id
+      ) do
+    challenge = %{
+      challenge
+      | start_date: Timex.to_datetime(challenge.start_date, "Asia/Hong_Kong")
+    }
+
+    Email.build()
+    |> Email.put_template(template_id)
+    |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
+    |> Email.add_substitution("-inviteeName-", User.full_name(user))
+    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution(
+      "-startDate-",
+      Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
+    )
+    |> Email.add_substitution("-daysDuration-", challenge_duration(challenge))
+    |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(challenge.user.email)
+  end
+
+  def send_team_members_invite_email(%OfferChallenge{} = challenge, team_member) do
+    # TODO: allow a team invitee to stop team owners from emailing him. -Sherief
+    template_id = "e1869afd-8cd1-4789-b444-dabff9b7f3f1"
+    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    challenge = Repo.preload(challenge, [:team, :offer, user: [:subscribed_email_categories]])
+
+    if not is_nil(sendgrid_email) and
+         user_subscribed_in_category?(
+           challenge.user.subscribed_email_categories,
+           sendgrid_email.category.id
+         ) do
+      challenge
+      |> team_member_invite_email(team_member, template_id)
+      |> Mailer.send()
+    end
+  end
+
+  def team_member_invite_email(
+        %OfferChallenge{} = challenge,
+        %{
+          invitee_name: invitee_name,
+          token: token,
+          email: email
+        },
+        template_id
+      ) do
+    Email.build()
+    |> Email.put_template(template_id)
+    |> Email.add_substitution("-inviteeName-", invitee_name)
+    |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
+    |> Email.add_substitution("-teamInvitationLink-", team_member_invite_link(challenge, token))
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(email)
+  end
+
+  def team_member_invite_email(_, _, _) do
+  end
 
   def send_reward_vendor_redemption_successful_confirmation(
         %OfferChallenge{} = challenge,
@@ -260,6 +342,19 @@ defmodule OmegaBravera.Offers.Notifier do
     end
   end
 
+  defp team_member_invite_link(challenge, token) do
+    Routes.page_url(Endpoint, :login, %{
+      team_invitation:
+        Routes.offer_offer_challenge_offer_challenge_path(
+          Endpoint,
+          :add_team_member,
+          challenge.offer.slug,
+          challenge.slug,
+          token
+        )
+    })
+  end
+
   defp remaining_time(%OfferChallenge{end_date: end_date}) do
     now = Timex.now("Asia/Hong_Kong")
     end_date = end_date |> Timex.to_datetime("Asia/Hong_Kong")
@@ -278,6 +373,11 @@ defmodule OmegaBravera.Offers.Notifier do
         "0 minutes"
     end
   end
+
+  defp challenge_duration(%OfferChallenge{start_date: start_date, end_date: end_date}),
+    do: "#{Timex.diff(end_date, start_date, :days)} days"
+
+  defp challenge_duration(_), do: ""
 
   defp get_offer_duration(%OfferChallenge{start_date: start_date, end_date: end_date}),
     do: Timex.diff(end_date, start_date, :days)

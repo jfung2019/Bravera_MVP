@@ -36,19 +36,19 @@
                 <%= if can_resend?(invitation) do %>
                   <%= link(
                     "Resend",
-                    to: ngo_ngo_chal_ngo_chal_path(@conn, :resend_invitation, @challenge.offer.slug, @challenge.slug, invitation.token),
+                    to: offer_offer_challenge_offer_challenge_path(@conn, :resend_invitation, @challenge.offer.slug, @challenge.slug, invitation.token),
                     class: "btn btn-primary btn-sm mb-1 resend-invitation disabled"
                   ) %>
                 <% else %>
                   <%= link(
                     "Resend",
-                    to: ngo_ngo_chal_ngo_chal_path(@conn, :resend_invitation, @challenge.offer.slug, @challenge.slug, invitation.token),
+                    to: offer_offer_challenge_offer_challenge_path(@conn, :resend_invitation, @challenge.offer.slug, @challenge.slug, invitation.token),
                     class: "btn btn-primary btn-sm mb-1 resend-invitation"
                   ) %>
                 <% end %>
                 <%= link(
                   "Cancel",
-                  to: ngo_ngo_chal_ngo_chal_path(@conn, :cancel_invitation, @challenge.offer.slug, @challenge.slug, invitation.token),
+                  to: offer_offer_challenge_offer_challenge_path(@conn, :cancel_invitation, @challenge.offer.slug, @challenge.slug, invitation.token),
                   class: "btn btn-danger btn-sm mb-1"
                 ) %>
               </div>
