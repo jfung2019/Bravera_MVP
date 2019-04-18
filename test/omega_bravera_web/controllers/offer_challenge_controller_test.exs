@@ -65,7 +65,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         )
 
       assert get_flash(conn, :info) == "Success! You have registered for this offer!"
-      assert length(Offers.list_offer_challenges()) == 1
+      assert [challenge] = Offers.list_offer_challenges()
+      assert redirected_to(conn) == offer_offer_challenge_path(conn, :show, offer, challenge)
     end
   end
 
@@ -119,8 +120,9 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           ),
           offer_redeem: params
         )
-
-      assert html_response(conn, 200) =~ "Confirmed!"
+      assert html = html_response(conn, 200)
+      assert html =~ "Confirmed!"
+      assert html =~ "Total Redemptions to date:</span>\n        <span><b>1"
 
       offer = Offers.get_offer_by_slug(offer.slug, [:offer_redeems])
       assert length(offer.offer_redeems) == 1

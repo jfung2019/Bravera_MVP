@@ -7,9 +7,8 @@
           <%= img_tag(profile_picture_or_default(@challenge.user, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid  rounded-circle border border-bravera", alt: user_full_name(@challenge.user)) %>
         </div>
       </div>
-      <div class="col-8 col-sm-9">
-        <h3 class="mb-0 mt-1 mt-sm-4 mt-md-5"><%= @challenge.user.firstname %>'s <%= @challenge.distance_target %>km <%= @challenge.activity_type %> Challenge</h5>
-        <h5 class="card-text text-420">for <strong class="text-500"><%= @challenge.offer.name %></strong></h5>
+      <div class="col-8 col-sm-9 d-flex justify-content-center flex-column">
+        <h5 class="card-text text-420"><strong class="text-500"><%= @challenge.offer.name %></strong></h5>
       </div>
     </div>
   </div>
