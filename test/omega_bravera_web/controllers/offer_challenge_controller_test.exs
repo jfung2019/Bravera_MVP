@@ -149,7 +149,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           offer_redeem: params
         )
 
-      assert get_flash(conn, :error) == "Your Vendor ID seems to be incorrect."
+      assert html_response(conn, 200) =~ "Your Vendor ID seems to be incorrect."
 
       offer = Offers.get_offer_by_slug(offer.slug, [:offer_redeems])
       assert length(offer.offer_redeems) == 0

@@ -33,7 +33,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   def create_changeset(_, _, vendor, attrs) when is_nil(vendor) == true do
     %__MODULE__{}
     |> changeset(attrs)
-    |> add_error(:vendor_id, "Vendor not found in DB.")
+    |> add_error(:vendor_id, "Your Vendor ID seems to be incorrect.")
   end
 
   def create_changeset(
