@@ -21,7 +21,9 @@ defmodule OmegaBravera.Accounts do
     Challenges.TeamMembers,
     Money.Donation,
     Challenges.Activity,
-    Offers.OfferChallenge
+    Offers.OfferChallenge,
+    Offers.OfferChallengeTeam,
+    Offers.OfferChallengeTeamMembers
   }
 
   def get_all_athlete_ids() do
@@ -79,19 +81,42 @@ defmodule OmegaBravera.Accounts do
   end
 
   def get_strava_challengers_for_offers(athlete_id) do
-    from(s in Strava,
-      where: s.athlete_id == ^athlete_id,
-      join: oc in OfferChallenge,
-      join: u in User,
-      on: s.user_id == u.id,
-      where: s.user_id == oc.user_id and oc.status == "active",
-      select: {
-        oc.id,
-        u,
-        s.token
-      }
-    )
-    |> Repo.all()
+    team_challengers =
+      from(s in Strava,
+        where: s.athlete_id == ^athlete_id,
+        join: oc in OfferChallenge,
+        where: oc.status == "active",
+        join: t in OfferChallengeTeam,
+        on: oc.id == t.offer_challenge_id,
+        join: tm in OfferChallengeTeamMembers,
+        on: t.id == tm.team_id,
+        where: tm.user_id == s.user_id,
+        join: u in User,
+        on: s.user_id == u.id,
+        select: {
+          oc.id,
+          u,
+          s.token
+        }
+      )
+      |> Repo.all()
+
+    single_challengers =
+      from(s in Strava,
+        where: s.athlete_id == ^athlete_id,
+        join: oc in OfferChallenge,
+        where: s.user_id == oc.user_id and oc.status == "active",
+        join: u in User,
+        on: s.user_id == u.id,
+        select: {
+          oc.id,
+          u,
+          s.token
+        }
+      )
+      |> Repo.all()
+
+    team_challengers ++ single_challengers
   end
 
   defp donors_for_challenge_query(challenge) do

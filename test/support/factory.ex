@@ -136,6 +136,13 @@ defmodule OmegaBravera.Factory do
     }
   end
 
+  def offer_challenge_team_member_factory do
+    %OmegaBravera.Offers.OfferChallengeTeamMembers{
+      team_id: nil,
+      user_id: nil
+    }
+  end
+
   def team_invitation_factory do
     %OmegaBravera.Challenges.TeamInvitations{
       email: sequence(:email, &"john.doe.#{&1}@example.com"),
