@@ -623,7 +623,7 @@ defmodule OmegaBravera.Offers do
   """
   def create_offer_redeems(
         %OfferChallenge{} = offer_challenge,
-        %OfferVendor{} = vendor,
+        vendor,
         attrs \\ %{}
       ) do
     %OfferRedeem{}

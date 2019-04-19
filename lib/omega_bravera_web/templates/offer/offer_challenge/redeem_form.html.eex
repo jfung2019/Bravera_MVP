@@ -2,6 +2,7 @@
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
+      <%= error_tag f, :offer_challenge_id %>
     </div>
   <% end %>
 
@@ -9,6 +10,7 @@
     <%= label f, :vendor_id, "Enter your Vendor ID", class: "control-label" %>
     <%= if @changeset.action do %>
       <%= text_input f, :vendor_id, class: "form-control", required: "required", value: @vendor_id %>
+      <%= error_tag f, :vendor_id %>
     <% else %>
       <%= text_input f, :vendor_id, class: "form-control", required: "required" %>
       <%= error_tag f, :vendor_id %>

@@ -56,7 +56,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       Offers.get_offer_chal_by_slugs(offer_slug, slug, [
         :offer_redeems,
         :user,
-        offer: [:offer_rewards, :offer_redeems]
+        [:team, :offer_redeems, offer: [:offer_rewards, :offer_redeems]]
       ])
 
     case offer_challenge do
@@ -64,25 +64,15 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         render_404(conn)
 
       _ ->
-        changeset = Offers.change_offer_redeems(%Offers.OfferRedeem{})
 
-        cond do
-          !Enum.empty?(offer_challenge.offer_redeems) ->
-            render(conn, "previously_redeemed.html",
-              offer_challenge: offer_challenge,
-              layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-            )
-
-          redeem_token == offer_challenge.redeem_token ->
+        if redeem_token == offer_challenge.redeem_token do
+          changeset = Offers.change_offer_redeems(%Offers.OfferRedeem{})
             render(conn, "new_redeem.html",
               offer_challenge: offer_challenge,
               changeset: changeset,
               layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-            )
-
-          true ->
-            render_404(conn)
-        end
+          )
+      end
     end
   end
 
@@ -120,67 +110,43 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   def save_redeem(conn, %{
         "offer_challenge_slug" => slug,
         "offer_slug" => offer_slug,
-        "redeem_token" => redeem_token,
+        "redeem_token" => _redeem_token,
         "offer_redeem" => offer_redeem_params
       }) do
     offer_challenge =
       Offers.get_offer_chal_by_slugs(offer_slug, slug, [
         :offer_redeems,
         :user,
-        offer: [:offer_rewards, :offer_redeems]
+        [:team, :offer_redeems, offer: [:offer_rewards, :offer_redeems]]
       ])
 
     vendor = Repo.get_by(OfferVendor, vendor_id: offer_redeem_params["vendor_id"])
 
-    cond do
-      !Enum.empty?(offer_challenge.offer_redeems) ->
-        render(conn, "previously_redeemed.html",
+    case Offers.create_offer_redeems(offer_challenge, vendor, %{
+            "offer_reward_id" => offer_redeem_params["offer_reward_id"]
+          }) do
+      {:ok, offer_redeem} ->
+        Notifier.send_user_reward_redemption_successful(offer_challenge)
+
+        Notifier.send_reward_vendor_redemption_successful_confirmation(
+          offer_challenge,
+          offer_redeem
+        )
+
+        conn
+        |> render("redeem_sucessful.html",
+          layout: {OmegaBraveraWeb.LayoutView, "app.html"},
+          offer_challenge: offer_challenge
+        )
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> render("new_redeem.html",
           offer_challenge: offer_challenge,
+          changeset: changeset,
+          vendor_id: offer_redeem_params["vendor_id"],
           layout: {OmegaBraveraWeb.LayoutView, "app.html"}
         )
-
-      # Make sure the vendor_id is in our database.
-      is_nil(vendor) ->
-        conn
-        |> put_flash(:error, "Your Vendor ID seems to be incorrect.")
-        |> redirect(
-          to:
-            offer_offer_challenge_offer_challenge_path(
-              conn,
-              :new_redeem,
-              offer_slug,
-              slug,
-              redeem_token
-            )
-        )
-
-      true ->
-        case Offers.create_offer_redeems(offer_challenge, vendor, %{
-               "offer_reward_id" => offer_redeem_params["offer_reward_id"]
-             }) do
-          {:ok, offer_redeem} ->
-            Notifier.send_user_reward_redemption_successful(offer_challenge)
-
-            Notifier.send_reward_vendor_redemption_successful_confirmation(
-              offer_challenge,
-              offer_redeem
-            )
-
-            conn
-            |> render("redeem_sucessful.html",
-              layout: {OmegaBraveraWeb.LayoutView, "app.html"},
-              offer_challenge: offer_challenge
-            )
-
-          {:error, %Ecto.Changeset{} = changeset} ->
-            conn
-            |> render("new_redeem.html",
-              offer_challenge: offer_challenge,
-              changeset: changeset,
-              vendor_id: offer_redeem_params["vendor_id"],
-              layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-            )
-        end
     end
   end
 
