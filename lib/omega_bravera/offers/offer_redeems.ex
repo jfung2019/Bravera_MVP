@@ -38,15 +38,15 @@ defmodule OmegaBravera.Offers.OfferRedeem do
 
   def create_changeset(
         %__MODULE__{} = offer_redeems,
-        %OfferChallenge{offer: offer, user: user} = offer_challenge,
+        %OfferChallenge{offer_id: offer_id, user_id: user_id} = offer_challenge,
         %OfferVendor{} = vendor,
         attrs
       ) do
     changeset(offer_redeems, attrs)
-    |> put_change(:user_id, user.id)
+    |> put_change(:user_id, user_id)
     |> put_change(:vendor_id, vendor.id)
     |> put_change(:offer_challenge_id, offer_challenge.id)
-    |> put_change(:offer_id, offer.id)
+    |> put_change(:offer_id, offer_id)
     |> validate_required([:vendor_id])
     |> add_team_id(offer_challenge)
     |> is_previously_redeemed(offer_challenge)

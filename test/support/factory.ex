@@ -216,4 +216,22 @@ defmodule OmegaBravera.Factory do
       email: sequence(:email, &"john.wick.#{&1}@example.com")
     }
   end
+
+  def offer_redeem_factory do
+    user = build(:user)
+    vendor = build(:vendor)
+    offer = build(:offer, %{additional_members: 5, vendor: nil, vendor_id: vendor.id})
+    offer_reward = build(:offer_reward, %{offer: nil, offer_id: offer.id})
+    offer_challenge = build(:offer_challenge, %{offer: nil, offer_id: offer.id, user: nil, user_id: user.id, has_team: true})
+    team = build(:offer_challenge_team, %{user: nil, user_id: user.id, offer_challenge: nil, offer_challenge_id: offer_challenge.id})
+
+    %OmegaBravera.Offers.OfferRedeem{
+      vendor: vendor,
+      offer: offer,
+      user: user,
+      offer_challenge: offer_challenge,
+      offer_reward: offer_reward,
+      team_id: team.id
+    }
+  end
 end

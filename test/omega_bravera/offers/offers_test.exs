@@ -338,62 +338,30 @@ defmodule OmegaBravera.OffersTest do
     end
   end
 
-  # describe "offer_redeems" do
-  #   alias OmegaBravera.Offers.OfferRedeem
+  describe "offer_redeems" do
+    alias OmegaBravera.Offers.OfferRedeem
 
-  #   @valid_attrs %{}
-  #   @update_attrs %{}
-  #   @invalid_attrs %{}
+    test "list_offer_redeems/0 returns all offer_redeems" do
+      _offer_redeem = insert(:offer_redeem)
+      assert length(Offers.list_offer_redeems()) == 1
+    end
 
-  #   def offer_redeems_fixture(attrs \\ %{}) do
-  #     {:ok, offer_redeems} =
-  #       attrs
-  #       |> Enum.into(@valid_attrs)
-  #       |> Offers.create_offer_redeems()
+    test "create_offer_redeems/4 with valid data creates a offer_redeems" do
+      vendor = insert(:vendor)
+      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
+      offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer.id})
+      user = build(:user)
+      offer_challenge = insert(:offer_challenge, %{offer: nil, offer_id: offer.id, user: nil, user_id: user.id, has_team: true})
+      insert(:offer_challenge_team, %{user: nil, user_id: user.id, offer_challenge: nil, offer_challenge_id: offer_challenge.id})
 
-  #     offer_redeems
-  #   end
+      assert {:ok, %OfferRedeem{} = offer_redeems} = Offers.create_offer_redeems(offer_challenge, vendor, %{offer_reward_id: offer_reward.id})
+    end
 
-  #   test "list_offer_redeems/0 returns all offer_redeems" do
-  #     offer_redeems = offer_redeems_fixture()
-  #     assert Offers.list_offer_redeems() == [offer_redeems]
-  #   end
-
-  #   test "get_offer_redeems!/1 returns the offer_redeems with given id" do
-  #     offer_redeems = offer_redeems_fixture()
-  #     assert Offers.get_offer_redeems!(offer_redeems.id) == offer_redeems
-  #   end
-
-  #   test "create_offer_redeems/1 with valid data creates a offer_redeems" do
-  #     assert {:ok, %OfferRedeem{} = offer_redeems} = Offers.create_offer_redeems(@valid_attrs)
-  #   end
-
-  #   test "create_offer_redeems/1 with invalid data returns error changeset" do
-  #     assert {:error, %Ecto.Changeset{}} = Offers.create_offer_redeems(@invalid_attrs)
-  #   end
-
-  #   test "update_offer_redeems/2 with valid data updates the offer_redeems" do
-  #     offer_redeems = offer_redeems_fixture()
-  #     assert {:ok, %OfferRedeem{} = offer_redeems} = Offers.update_offer_redeems(offer_redeems, @update_attrs)
-  #   end
-
-  #   test "update_offer_redeems/2 with invalid data returns error changeset" do
-  #     offer_redeems = offer_redeems_fixture()
-  #     assert {:error, %Ecto.Changeset{}} = Offers.update_offer_redeems(offer_redeems, @invalid_attrs)
-  #     assert offer_redeems == Offers.get_offer_redeems!(offer_redeems.id)
-  #   end
-
-  #   test "delete_offer_redeems/1 deletes the offer_redeems" do
-  #     offer_redeems = offer_redeems_fixture()
-  #     assert {:ok, %OfferRedeem{}} = Offers.delete_offer_redeems(offer_redeems)
-  #     assert_raise Ecto.NoResultsError, fn -> Offers.get_offer_redeems!(offer_redeems.id) end
-  #   end
-
-  #   test "change_offer_redeems/1 returns a offer_redeems changeset" do
-  #     offer_redeems = offer_redeems_fixture()
-  #     assert %Ecto.Changeset{} = Offers.change_offer_redeems(offer_redeems)
-  #   end
-  # end
+    test "create_offer_redeems/4 with nil vendor returns error changeset" do
+      assert {:error, %Ecto.Changeset{errors: errors}} = Offers.create_offer_redeems(%OfferChallenge{}, nil, %{})
+      assert [{:vendor_id, {"Your Vendor ID seems to be incorrect.", _}}, _] = errors
+    end
+  end
 
   describe "offer_vendors" do
     alias OmegaBravera.Offers.OfferVendor
