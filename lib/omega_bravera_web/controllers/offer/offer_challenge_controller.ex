@@ -64,15 +64,15 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         render_404(conn)
 
       _ ->
-
         if redeem_token == offer_challenge.redeem_token do
           changeset = Offers.change_offer_redeems(%Offers.OfferRedeem{})
-            render(conn, "new_redeem.html",
-              offer_challenge: offer_challenge,
-              changeset: changeset,
-              layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+
+          render(conn, "new_redeem.html",
+            offer_challenge: offer_challenge,
+            changeset: changeset,
+            layout: {OmegaBraveraWeb.LayoutView, "app.html"}
           )
-      end
+        end
     end
   end
 
@@ -123,8 +123,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     vendor = Repo.get_by(OfferVendor, vendor_id: offer_redeem_params["vendor_id"])
 
     case Offers.create_offer_redeems(offer_challenge, vendor, %{
-            "offer_reward_id" => offer_redeem_params["offer_reward_id"]
-          }) do
+           "offer_reward_id" => offer_redeem_params["offer_reward_id"]
+         }) do
       {:ok, offer_redeem} ->
         Notifier.send_user_reward_redemption_successful(offer_challenge)
 

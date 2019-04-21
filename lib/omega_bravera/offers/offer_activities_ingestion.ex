@@ -195,15 +195,15 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
   end
 
   defp notify_participant_of_activity(
-        {status, %OfferChallenge{status: "complete", has_team: true} = challenge, _activity} = params,
-        send_emails
-      ) do
-
-    challenge = Repo.preload(challenge, [team: [:users]])
+         {status, %OfferChallenge{status: "complete", has_team: true} = challenge, _activity} =
+           params,
+         send_emails
+       ) do
+    challenge = Repo.preload(challenge, team: [:users])
     team_members = [challenge.user] ++ challenge.team.users
 
     if status == :ok and send_emails do
-      Enum.map(team_members, &(Notifier.send_reward_completion_email(challenge, &1)))
+      Enum.map(team_members, &Notifier.send_reward_completion_email(challenge, &1))
     end
 
     params
@@ -213,7 +213,6 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
          {status, %OfferChallenge{status: "complete"} = challenge, _activity} = params,
          send_emails
        ) do
-
     if status == :ok and send_emails do
       Notifier.send_reward_completion_email(challenge, challenge.user)
     end

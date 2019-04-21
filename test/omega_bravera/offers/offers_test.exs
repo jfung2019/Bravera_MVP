@@ -351,14 +351,33 @@ defmodule OmegaBravera.OffersTest do
       offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
       offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = build(:user)
-      offer_challenge = insert(:offer_challenge, %{offer: nil, offer_id: offer.id, user: nil, user_id: user.id, has_team: true})
-      insert(:offer_challenge_team, %{user: nil, user_id: user.id, offer_challenge: nil, offer_challenge_id: offer_challenge.id})
 
-      assert {:ok, %OfferRedeem{} = offer_redeems} = Offers.create_offer_redeems(offer_challenge, vendor, %{offer_reward_id: offer_reward.id})
+      offer_challenge =
+        insert(:offer_challenge, %{
+          offer: nil,
+          offer_id: offer.id,
+          user: nil,
+          user_id: user.id,
+          has_team: true
+        })
+
+      insert(:offer_challenge_team, %{
+        user: nil,
+        user_id: user.id,
+        offer_challenge: nil,
+        offer_challenge_id: offer_challenge.id
+      })
+
+      assert {:ok, %OfferRedeem{} = offer_redeems} =
+               Offers.create_offer_redeems(offer_challenge, vendor, %{
+                 offer_reward_id: offer_reward.id
+               })
     end
 
     test "create_offer_redeems/4 with nil vendor returns error changeset" do
-      assert {:error, %Ecto.Changeset{errors: errors}} = Offers.create_offer_redeems(%OfferChallenge{}, nil, %{})
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               Offers.create_offer_redeems(%OfferChallenge{}, nil, %{})
+
       assert [{:vendor_id, {"Your Vendor ID seems to be incorrect.", _}}, _] = errors
     end
   end

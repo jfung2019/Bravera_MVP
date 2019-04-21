@@ -8,7 +8,6 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
     OfferChallenge,
     OfferActivitiesIngestion,
     OfferChallengeActivity
-
   }
 
   alias OmegaBravera.{
@@ -121,7 +120,6 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       with_mocks([{Strava.Activity, [], [retrieve: fn _, _, _ -> strava_activity end]}]) do
-
         assert OfferActivitiesIngestion.process_challenges(challengers, %{"object_id" => 123_456}) ==
                  [ok: :challenge_updated]
 
@@ -140,7 +138,6 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
             pre_registration_start_date: Timex.shift(Timex.now(), days: 3)
           }
         )
-
 
       insert(
         :offer_challenge,
@@ -272,7 +269,12 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       {:ok, :challenge_updated} =
-        OfferActivitiesIngestion.process_challenge(challenge, strava_activity, challenge.user, true)
+        OfferActivitiesIngestion.process_challenge(
+          challenge,
+          strava_activity,
+          challenge.user,
+          true
+        )
 
       updated_challenge = Offers.get_offer_chal_by_slugs(challenge.offer.slug, challenge.slug)
 
@@ -286,7 +288,12 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       {:ok, :challenge_updated} =
-        OfferActivitiesIngestion.process_challenge(challenge, strava_activity, challenge.user, true)
+        OfferActivitiesIngestion.process_challenge(
+          challenge,
+          strava_activity,
+          challenge.user,
+          true
+        )
 
       updated_challenge = Offers.get_offer_chal_by_slugs(challenge.offer.slug, challenge.slug)
 

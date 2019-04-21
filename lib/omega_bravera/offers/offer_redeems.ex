@@ -7,7 +7,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   alias OmegaBravera.Repo
 
   schema "offer_redeems" do
-    field :team_id, :integer
+    field(:team_id, :integer)
 
     belongs_to(:offer_reward, OfferReward)
     belongs_to(:offer_challenge, OfferChallenge)
@@ -54,13 +54,19 @@ defmodule OmegaBravera.Offers.OfferRedeem do
 
   defp add_team_id(%Ecto.Changeset{} = changeset, %OfferChallenge{has_team: false}), do: changeset
 
-  defp add_team_id(%Ecto.Changeset{} = changeset, %OfferChallenge{has_team: true} = offer_challenge) do
+  defp add_team_id(
+         %Ecto.Changeset{} = changeset,
+         %OfferChallenge{has_team: true} = offer_challenge
+       ) do
     offer_challenge = Repo.preload(offer_challenge, [:team])
 
     put_change(changeset, :team_id, offer_challenge.team.id)
   end
 
-  defp is_previously_redeemed(%Ecto.Changeset{} = changeset, %OfferChallenge{has_team: false} = offer_challenge) do
+  defp is_previously_redeemed(
+         %Ecto.Changeset{} = changeset,
+         %OfferChallenge{has_team: false} = offer_challenge
+       ) do
     offer_challenge = Repo.preload(offer_challenge, [:offer_redeems])
 
     if !Enum.empty?(offer_challenge.offer_redeems) do
@@ -70,17 +76,25 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     end
   end
 
-  defp is_previously_redeemed(%Ecto.Changeset{} = changeset, %OfferChallenge{has_team: true} = offer_challenge) do
+  defp is_previously_redeemed(
+         %Ecto.Changeset{} = changeset,
+         %OfferChallenge{has_team: true} = offer_challenge
+       ) do
     offer_challenge = Repo.preload(offer_challenge, [:offer_redeems, team: [:users]])
 
     # Team members + Challenge Owner
     team_count = length(offer_challenge.team.users) + 1
 
     cond do
-      team_count == length(offer_challenge.offer_redeems) or length(offer_challenge.offer_redeems) > team_count ->
-        add_error(changeset, :offer_challenge_id, "Could not redeem reward. All challenge members received an award previously.")
+      team_count == length(offer_challenge.offer_redeems) or
+          length(offer_challenge.offer_redeems) > team_count ->
+        add_error(
+          changeset,
+          :offer_challenge_id,
+          "Could not redeem reward. All challenge members received an award previously."
+        )
 
-        team_count > length(offer_challenge.offer_redeems) ->
+      team_count > length(offer_challenge.offer_redeems) ->
         changeset
 
       true ->
