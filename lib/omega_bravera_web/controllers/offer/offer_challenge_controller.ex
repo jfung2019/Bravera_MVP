@@ -28,30 +28,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         "offer_slug" => offer_slug,
         "redeem_token" => redeem_token
       }) do
-    redeem_form_page(conn, offer_slug, slug, redeem_token)
-  end
-
-  @doc """
-  Form for vendor that allows them to create redeems.
-
-  TODO: remove redeem_form_page() and let new_redeem() handle rendering redeem forms. -Sherief
-  """
-  def qr_code(
-        conn,
-        %{
-          "offer_challenge_slug" => slug,
-          "offer_slug" => offer_slug,
-          "redeem_token" => redeem_token
-        } = params
-      ) do
-    if Map.has_key?(params, "redeem") do
-      redeem_form_page(conn, offer_slug, slug, redeem_token)
-    else
-      send_qr_code(conn, params)
-    end
-  end
-
-  defp redeem_form_page(conn, offer_slug, slug, redeem_token) do
     offer_challenge =
       Offers.get_offer_chal_by_slugs(offer_slug, slug, [
         :offer_redeems,
