@@ -27,6 +27,7 @@ defmodule OmegaBravera.Challenges.Team do
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
     |> add_slug()
+    |> add_count()
     |> unique_constraint(:slug, name: :teams_slug_index)
   end
 
@@ -43,6 +44,18 @@ defmodule OmegaBravera.Challenges.Team do
 
       _ ->
         changeset
+    end
+  end
+
+  def add_count(%Ecto.Changeset{} = changeset) do
+    count = get_field(changeset, :count)
+
+    case count do
+      nil ->
+        add_error(changeset, :count, "Invalid team size/count.")
+
+      _ ->
+        change(changeset, %{count: count - 1})
     end
   end
 

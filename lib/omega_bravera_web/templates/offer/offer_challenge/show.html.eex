@@ -14,12 +14,23 @@
       <div class="col-lg-4 max-w-775 margin-auto">
         <div class="card mt-4">
           <div class="card-body text-center mx-3 pb-2">
-            <h4> <%=@challenge.user.firstname%>'s Latest Activities</h4>
+
+            <%= if @challenge.has_team do %>
+              <h4> Latest Activities</h4>
+            <% else %>
+              <h4> <%=@challenge.user.firstname%>'s Latest Activities</h4>
+            <% end %>
+            
             <%= if length(@activities) > 0 do %>
               <%= render(OmegaBraveraWeb.Offer.OfferChallengeActivityView, "_activities.html", assigns) %>
               <%= link("View all", to: offer_offer_challenge_offer_challenge_activity_path(@conn, :index, @challenge.offer.slug, @challenge.slug)) %>
             <% else %>
-              <%= @challenge.user.firstname %> hasn't logged any activites yet.
+
+              <%= if @challenge.has_team == true do %>
+                  No activites yet.
+              <% else %>
+                <%= @challenge.user.firstname %> hasn't logged any activites yet.
+              <% end %>
             <% end %>
           </div>
         </div>

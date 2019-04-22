@@ -53,7 +53,13 @@
               <%= render(OmegaBraveraWeb.ActivityView, "_activity.html", assigns) %>
               <%= link("View all", to: ngo_ngo_chal_activity_path(@conn, :index, @challenge.ngo.slug, @challenge.slug)) %>
             <% else %>
-              <%= @challenge.user.firstname %> hasn't logged any activites yet.
+
+              <%= if @challenge.has_team == true do %>
+                  No activites yet.
+              <% else %>
+                <%= @challenge.user.firstname %> hasn't logged any activites yet.
+              <% end %>
+
             <% end %>
           </div>
           <div class="card-body text-center mx-3 pb-2">

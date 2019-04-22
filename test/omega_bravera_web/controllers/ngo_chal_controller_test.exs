@@ -96,7 +96,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
 
       ngo_chal_with_team = Challenges.get_ngo_chal_by_slugs(ngo.slug, slug, [:team])
       assert ngo_chal_with_team.team.name == create_attrs_with_team["team"]["name"]
-      assert ngo_chal_with_team.team.count == ngo.additional_members
+      assert ngo_chal_with_team.team.count == ngo.additional_members - 1
     end
 
     test "renders errors when tea, data is invalid", %{conn: conn} do

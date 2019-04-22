@@ -224,7 +224,7 @@ defmodule OmegaBravera.OffersTest do
       assert {:ok, %OfferChallenge{} = offer_challenge} =
                Offers.create_offer_challenge(offer, user)
 
-      assert offer_challenge.team.count == offer.additional_members
+      assert offer_challenge.team.count == offer.additional_members - 1
       assert offer_challenge.team.user_id == user.id
     end
 
@@ -452,7 +452,7 @@ defmodule OmegaBravera.OffersTest do
                  %{team: team2_params}
                )
 
-      assert record2.team.count == 7
+      assert record2.team.count == 6
 
       assert {:ok, record3} =
                Offers.create_offer_challenge_with_team(

@@ -53,7 +53,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeam do
 
     case count do
       nil ->
-        change(changeset, %{count: offer.additional_members})
+        change(changeset, %{count: offer.additional_members - 1})
 
       _ ->
         change(changeset, %{count: count})
