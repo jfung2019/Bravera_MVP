@@ -177,7 +177,9 @@ defmodule OmegaBravera.OffersTest do
       slug: "some slug",
       start_date: Timex.now(),
       status: "active",
-      type: "PER_KM"
+      type: "PER_KM",
+      offer_redeems: [%{}],
+      team: %{}
     }
     @invalid_attrs %{
       activity_type: nil,
@@ -204,17 +206,17 @@ defmodule OmegaBravera.OffersTest do
         offer
         |> Offers.create_offer_challenge(insert(:user), attrs)
 
-      offer_challenge
+      offer_challenge |> Repo.preload(:offer_redeems)
     end
 
     test "list_offer_challenges/0 returns all offer_challenges" do
-      offer_challenge = offer_challenge_fixture()
-      assert Offers.list_offer_challenges() == [offer_challenge]
+      offer_challenge_fixture()
+      assert length(Offers.list_offer_challenges()) == 1
     end
 
     test "get_offer_challenge!/1 returns the offer_challenge with given id" do
       offer_challenge = offer_challenge_fixture()
-      assert Offers.get_offer_challenge!(offer_challenge.id) == offer_challenge
+      assert Offers.get_offer_challenge!(offer_challenge.id).id == offer_challenge.id
     end
 
     test "create_offer_challenge/2 creates offer challenge with a team when offer additional members are greater than 0" do
@@ -226,6 +228,28 @@ defmodule OmegaBravera.OffersTest do
 
       assert offer_challenge.team.count == offer.additional_members - 1
       assert offer_challenge.team.user_id == user.id
+    end
+
+
+    test "create_offer_challenge/2 can create offer_challenge with offer_redeem" do
+      vendor = insert(:vendor)
+      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
+      insert(:offer_reward, %{offer: nil, offer_id: offer.id})
+      user = insert(:user)
+
+      assert {:ok, %OfferChallenge{} = offer_challenge} = Offers.create_offer_challenge(offer, user)
+    end
+
+    test "create_offer_challenge/2 can create offer_challenge with offer_redeem and team" do
+      vendor = insert(:vendor)
+      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id, additional_members: 4})
+      insert(:offer_reward, %{offer: nil, offer_id: offer.id})
+      user = insert(:user)
+
+      assert {:ok, %OfferChallenge{} = offer_challenge} = Offers.create_offer_challenge(offer, user)
+      assert length(offer_challenge.offer_redeems) == 1
+      assert offer_challenge.team
+      assert offer_challenge.team.count == 3
     end
 
     test "create_offer_challenge/2 with valid data creates a offer_challenge" do
@@ -250,12 +274,6 @@ defmodule OmegaBravera.OffersTest do
     test "create_offer_challenge/2 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
                Offers.create_offer_challenge(insert(:offer), %User{}, @invalid_attrs)
-    end
-
-    test "delete_offer_challenge/1 deletes the offer_challenge" do
-      offer_challenge = offer_challenge_fixture()
-      assert {:ok, %OfferChallenge{}} = Offers.delete_offer_challenge(offer_challenge)
-      assert_raise Ecto.NoResultsError, fn -> Offers.get_offer_challenge!(offer_challenge.id) end
     end
 
     test "change_offer_challenge/1 returns a offer_challenge changeset" do
@@ -358,15 +376,8 @@ defmodule OmegaBravera.OffersTest do
           offer_id: offer.id,
           user: nil,
           user_id: user.id,
-          has_team: true
+          has_team: false
         })
-
-      insert(:offer_challenge_team, %{
-        user: nil,
-        user_id: user.id,
-        offer_challenge: nil,
-        offer_challenge_id: offer_challenge.id
-      })
 
       assert {:ok, %OfferRedeem{} = offer_redeems} =
                Offers.create_offer_redeems(offer_challenge, vendor, %{
@@ -378,7 +389,7 @@ defmodule OmegaBravera.OffersTest do
       assert {:error, %Ecto.Changeset{errors: errors}} =
                Offers.create_offer_redeems(%OfferChallenge{}, nil, %{})
 
-      assert [{:vendor_id, {"Your Vendor ID seems to be incorrect.", _}}, _] = errors
+      assert [{:vendor_id, {"Your Vendor ID seems to be incorrect.", _}}] = errors
     end
   end
 
@@ -456,7 +467,7 @@ defmodule OmegaBravera.OffersTest do
                  %OfferChallenge{},
                  insert(:offer),
                  insert(:user),
-                 %{team: team1_params}
+                 %{team: team1_params, offer_redeems: [%{}]}
                )
 
       assert record.team.count == 4
@@ -468,7 +479,7 @@ defmodule OmegaBravera.OffersTest do
                  %OfferChallenge{},
                  insert(:offer, %{additional_members: 7}),
                  insert(:user),
-                 %{team: team2_params}
+                 %{team: team2_params, offer_redeems: [%{}]}
                )
 
       assert record2.team.count == 6
@@ -478,7 +489,7 @@ defmodule OmegaBravera.OffersTest do
                  %OfferChallenge{},
                  insert(:offer, %{additional_members: 3}),
                  insert(:user),
-                 %{team: %{}}
+                 %{team: %{}, offer_redeems: [%{}]}
                )
 
       refute is_nil(record3.team.name)

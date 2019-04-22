@@ -7,7 +7,6 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   alias OmegaBravera.Repo
 
   schema "offer_redeems" do
-    field(:team_id, :integer)
     field(:token, :string)
     # Can be pending or redeemed
     field(:status, :string, default: "pending")
@@ -27,6 +26,16 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   def changeset(%__MODULE__{} = offer_redeems, attrs \\ %{}) do
     offer_redeems
     |> cast(attrs, @allowed_atributes)
+  end
+
+  def offer_challenge_assoc_changeset(%__MODULE__{} = offer_redeems, %Offer{id: offer_id, vendor_id: vendor_id}, %User{id: user_id}, attrs \\ %{}) do
+    offer_redeems
+    |> cast(attrs, @allowed_atributes)
+    |> put_change(:offer_id, offer_id)
+    |> put_change(:user_id, user_id)
+    |> put_change(:vendor_id, vendor_id)
+    |> put_change(:token, gen_token())
+    |> validate_required([:offer_id, :user_id, :vendor_id, :token])
   end
 
   def create_changeset(offer_redeems, offer_challenge, vendor, attrs \\ %{})

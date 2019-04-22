@@ -232,21 +232,12 @@ defmodule OmegaBravera.Factory do
         has_team: true
       })
 
-    team =
-      build(:offer_challenge_team, %{
-        user: nil,
-        user_id: user.id,
-        offer_challenge: nil,
-        offer_challenge_id: offer_challenge.id
-      })
-
     %OmegaBravera.Offers.OfferRedeem{
       vendor: vendor,
       offer: offer,
       user: user,
       offer_challenge: offer_challenge,
-      offer_reward: offer_reward,
-      team_id: team.id
+      offer_reward: offer_reward
     }
   end
 end

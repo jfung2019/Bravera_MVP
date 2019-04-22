@@ -33,7 +33,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
     belongs_to(:user, User)
     belongs_to(:offer, Offer)
-    has_many(:offer_redeems, OfferRedeem)
+    has_many(:offer_redeems, OfferRedeem, foreign_key: :offer_challenge_id)
     has_one(:team, OfferChallengeTeam, foreign_key: :offer_challenge_id)
 
     has_many(:offer_challenge_activities, OfferChallengeActivity, foreign_key: :offer_challenge_id)
@@ -57,7 +57,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> cast(attrs, @allowed_attributes)
   end
 
-  def create_changeset(offer_challenge, offer, user, attrs \\ %{team: %{}}) do
+  def create_changeset(offer_challenge, offer, user, attrs \\ %{team: %{}, offer_redeems: [%{}]}) do
     offer_challenge
     |> changeset(attrs)
     |> change(%{
@@ -75,7 +75,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> add_start_and_end_dates(offer)
     |> add_status(offer)
     |> generate_slug(user)
-    |> put_change(:redeem_token, gen_token())
     |> put_change(:user_id, user.id)
     |> add_last_activity_received(offer)
     |> validate_required([:start_date, :end_date])
@@ -87,6 +86,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     )
     |> unique_constraint(:slug)
     |> solo_or_team_challenge(offer, user)
+    |> add_one_offer_redeem_assoc(offer, user)
   end
 
   def create_with_team_changeset(offer_challenge, offer, user, attrs) do
@@ -112,6 +112,18 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       is_nil(additional_members) or additional_members == 0 ->
         changeset
     end
+  end
+
+  defp add_one_offer_redeem_assoc(
+         %Ecto.Changeset{} = changeset,
+         %Offer{} = offer,
+         %User{} = user
+       ) do
+    changeset
+    |> cast_assoc(:offer_redeems,
+      with: &OfferRedeem.offer_challenge_assoc_changeset(&1, offer, user, &2),
+      required: true
+    )
   end
 
   defp generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do
@@ -215,7 +227,4 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
   def milestones_distances(%__MODULE__{distance_target: target}),
     do: milestone_distances(target)
-
-  defp gen_token(length \\ 10),
-    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 end
