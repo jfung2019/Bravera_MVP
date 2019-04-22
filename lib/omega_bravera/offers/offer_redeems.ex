@@ -8,6 +8,9 @@ defmodule OmegaBravera.Offers.OfferRedeem do
 
   schema "offer_redeems" do
     field(:team_id, :integer)
+    field(:token, :string)
+    # Can be pending or redeemed
+    field(:status, :string, default: "pending")
 
     belongs_to(:offer_reward, OfferReward)
     belongs_to(:offer_challenge, OfferChallenge)
@@ -18,14 +21,12 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     timestamps(type: :utc_datetime)
   end
 
-  @allowed_atributes [:offer_reward_id, :vendor_id]
-  @required_attributes [:offer_reward_id]
+  @allowed_atributes [:offer_reward_id, :vendor_id, :token, :status]
 
   @doc false
   def changeset(%__MODULE__{} = offer_redeems, attrs \\ %{}) do
     offer_redeems
     |> cast(attrs, @allowed_atributes)
-    |> validate_required(@required_attributes)
   end
 
   def create_changeset(offer_redeems, offer_challenge, vendor, attrs \\ %{})
@@ -47,9 +48,15 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> put_change(:vendor_id, vendor.id)
     |> put_change(:offer_challenge_id, offer_challenge.id)
     |> put_change(:offer_id, offer_id)
-    |> validate_required([:vendor_id])
+    |> put_change(:token, gen_token())
+    |> validate_required([:vendor_id, :token])
     |> add_team_id(offer_challenge)
     |> is_previously_redeemed(offer_challenge)
+  end
+
+  def update_changeset(%__MODULE__{} = offer_redeem, attrs \\ %{}) do
+    offer_redeem
+    |> cast(attrs, @allowed_atributes)
   end
 
   defp add_team_id(%Ecto.Changeset{} = changeset, %OfferChallenge{has_team: false}), do: changeset
@@ -101,4 +108,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
         changeset
     end
   end
+
+  defp gen_token(length \\ 10),
+    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 end
