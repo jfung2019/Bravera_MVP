@@ -11,7 +11,7 @@ RUN mix deps.get && cd assets/ && \
     cd - && \
     mix do compile, phx.digest, release --env docker
 
-FROM bitwalker/alpine-erlang:21.3.5
+FROM bitwalker/alpine-erlang:21.3.6
 
 EXPOSE 4000
 ENV PORT=4000 MIX_ENV=prod
