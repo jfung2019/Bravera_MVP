@@ -13,7 +13,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
 
   def new(conn, _params) do
     changeset = Offers.change_offer_reward(%Offers.OfferReward{})
-    offers = Offers.list_offers()
+    offers = Offers.list_offers_all_offers()
     render(conn, "new.html", offers: offers, changeset: changeset)
   end
 
@@ -25,14 +25,14 @@ defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
         |> redirect(to: admin_panel_offer_reward_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        offers = Offers.list_offers()
+        offers = Offers.list_offers_all_offers()
         render(conn, "new.html", offers: offers, changeset: changeset)
     end
   end
 
   def edit(conn, %{"id" => id}) do
     offer_reward = Offers.get_offer_reward!(id)
-    offers = Offers.list_offers()
+    offers = Offers.list_offers_all_offers()
     changeset = Offers.change_offer_reward(offer_reward)
 
     render(conn, "edit.html",
@@ -52,7 +52,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
         |> redirect(to: admin_panel_offer_reward_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        offers = Offers.list_offers()
+        offers = Offers.list_offers_all_offers()
         render(conn, "edit.html", offers: offers, changeset: changeset)
     end
   end

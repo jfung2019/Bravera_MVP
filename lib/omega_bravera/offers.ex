@@ -28,6 +28,14 @@ defmodule OmegaBravera.Offers do
 
   """
 
+  def list_offers_all_offers() do
+    from(
+      offer in Offer,
+      order_by: [desc: offer.id]
+    )
+    |> Repo.all()
+  end
+
   def list_offers(hidden \\ false, preloads \\ [:offer_challenges]) do
     from(
       offer in Offer,
@@ -37,6 +45,8 @@ defmodule OmegaBravera.Offers do
     )
     |> Repo.all()
   end
+
+
 
   @doc """
   Gets a single offer.
