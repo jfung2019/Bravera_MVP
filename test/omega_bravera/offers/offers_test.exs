@@ -230,14 +230,14 @@ defmodule OmegaBravera.OffersTest do
       assert offer_challenge.team.user_id == user.id
     end
 
-
     test "create_offer_challenge/2 can create offer_challenge with offer_redeem" do
       vendor = insert(:vendor)
       offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
       insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = insert(:user)
 
-      assert {:ok, %OfferChallenge{} = offer_challenge} = Offers.create_offer_challenge(offer, user)
+      assert {:ok, %OfferChallenge{} = offer_challenge} =
+               Offers.create_offer_challenge(offer, user)
     end
 
     test "create_offer_challenge/2 can create offer_challenge with offer_redeem and team" do
@@ -246,7 +246,9 @@ defmodule OmegaBravera.OffersTest do
       insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = insert(:user)
 
-      assert {:ok, %OfferChallenge{} = offer_challenge} = Offers.create_offer_challenge(offer, user)
+      assert {:ok, %OfferChallenge{} = offer_challenge} =
+               Offers.create_offer_challenge(offer, user)
+
       assert length(offer_challenge.offer_redeems) == 1
       assert offer_challenge.team
       assert offer_challenge.team.count == 3

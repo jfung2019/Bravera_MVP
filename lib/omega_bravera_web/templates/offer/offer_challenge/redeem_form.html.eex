@@ -3,6 +3,8 @@
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
       <%= error_tag f, :offer_challenge_id %>
+      <%= error_tag f, :id %>
+      <%= error_tag f, :status %>
     </div>
   <% end %>
 
@@ -19,7 +21,7 @@
 
   <div class="form-group">
     <%= label f, :offer_reward_id, "Select Reward", class: "control-label" %>
-    <%= select(f, :offer_reward_id, Enum.map(@offer_challenge.offer.offer_rewards, &{"#{&1.name}", &1.id}), class: "form-control") %>
+    <%= select(f, :offer_reward_id, Enum.map(@offer_challenge.offer.offer_rewards, &{"#{&1.name}", &1.id}), class: "form-control", prompt: "Choose a reward..") %>
     <%= error_tag f, :offer_reward_id %>
   </div>
 

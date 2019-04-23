@@ -8,7 +8,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   alias OmegaBravera.{
     Offers,
     Offers.OfferChallenge,
-    Offers.OfferVendor,
+    Offers.OfferRedeem,
     Fundraisers.NgoOptions,
     Offers.Notifier,
     Repo,
@@ -35,20 +35,31 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         [:team, :offer_redeems, offer: [:offer_rewards, :offer_redeems]]
       ])
 
-    case offer_challenge do
-      nil ->
+    offer_redeem = Repo.get_by(OfferRedeem, token: redeem_token)
+
+    cond do
+      is_nil(offer_redeem) or is_nil(offer_challenge) ->
+        Logger.info(
+          "OfferChallengeController.new_redeem: Redeem or OfferChallenge not found, will render 404."
+        )
+
         render_404(conn)
 
-      _ ->
-        if redeem_token == offer_challenge.redeem_token do
-          changeset = Offers.change_offer_redeems(%Offers.OfferRedeem{})
+      offer_redeem.status == "redeemed" ->
+        render(conn, "previously_redeemed.html", layout: {OmegaBraveraWeb.LayoutView, "app.html"})
 
-          render(conn, "new_redeem.html",
-            offer_challenge: offer_challenge,
-            changeset: changeset,
-            layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-          )
-        end
+      offer_redeem.offer_challenge_id == offer_challenge.id ->
+        changeset = Offers.change_offer_redeems(%OfferRedeem{})
+
+        render(conn, "new_redeem.html",
+          offer_challenge: offer_challenge,
+          offer_redeem: offer_redeem,
+          changeset: changeset,
+          layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+        )
+
+      true ->
+        render_404(conn)
     end
   end
 
@@ -61,32 +72,42 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         "redeem_token" => redeem_token
       }) do
     offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug)
+    offer_redeem = Repo.get_by(OfferRedeem, token: redeem_token)
 
-    if redeem_token == offer_challenge.redeem_token do
-      qr_code_png =
-        offer_offer_challenge_offer_challenge_url(
-          conn,
-          :new_redeem,
-          offer_slug,
-          slug,
-          offer_challenge.redeem_token
+    cond do
+      is_nil(offer_redeem) or is_nil(offer_challenge) ->
+        Logger.info(
+          "OfferChallengeController.send_qr_code: Redeem or OfferChallenge not found, will render 404."
         )
-        |> EQRCode.encode()
-        |> EQRCode.png()
 
-      conn
-      |> put_resp_content_type("image/png")
-      |> put_resp_header("content-disposition", "attachment; filename=qr.png")
-      |> send_resp(200, qr_code_png)
-    else
-      render_404(conn)
+        render_404(conn)
+
+      offer_redeem.offer_challenge_id == offer_challenge.id ->
+        qr_code_png =
+          offer_offer_challenge_offer_challenge_url(
+            conn,
+            :new_redeem,
+            offer_slug,
+            slug,
+            offer_redeem.token
+          )
+          |> EQRCode.encode()
+          |> EQRCode.png()
+
+        conn
+        |> put_resp_content_type("image/png")
+        |> put_resp_header("content-disposition", "attachment; filename=qr.png")
+        |> send_resp(200, qr_code_png)
+
+      true ->
+        render_404(conn)
     end
   end
 
   def save_redeem(conn, %{
         "offer_challenge_slug" => slug,
         "offer_slug" => offer_slug,
-        "redeem_token" => _redeem_token,
+        "redeem_token" => redeem_token,
         "offer_redeem" => offer_redeem_params
       }) do
     offer_challenge =
@@ -96,11 +117,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         [:team, :offer_redeems, offer: [:offer_rewards, :offer_redeems]]
       ])
 
-    vendor = Repo.get_by(OfferVendor, vendor_id: offer_redeem_params["vendor_id"])
+    offer_redeem = Repo.get_by(OfferRedeem, token: redeem_token)
 
-    case Offers.create_offer_redeems(offer_challenge, vendor, %{
-           "offer_reward_id" => offer_redeem_params["offer_reward_id"]
-         }) do
+    case Offers.update_offer_redeems(offer_redeem, offer_challenge, offer_redeem_params) do
       {:ok, offer_redeem} ->
         Notifier.send_user_reward_redemption_successful(offer_challenge)
 
@@ -116,13 +135,18 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         )
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        conn
-        |> render("new_redeem.html",
-          offer_challenge: offer_challenge,
-          changeset: changeset,
-          vendor_id: offer_redeem_params["vendor_id"],
-          layout: {OmegaBraveraWeb.LayoutView, "app.html"}
-        )
+        if not is_nil(offer_challenge) do
+          conn
+          |> render("new_redeem.html",
+            offer_challenge: offer_challenge,
+            offer_redeem: offer_redeem,
+            changeset: changeset,
+            vendor_id: offer_redeem_params["vendor_id"],
+            layout: {OmegaBraveraWeb.LayoutView, "app.html"}
+          )
+        else
+          render_404(conn)
+        end
     end
   end
 
@@ -193,10 +217,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         "offer_challenge_slug" => slug,
         "invitation_token" => invitation_token
       }) do
-    current_user = Guardian.Plug.current_resource(conn)
-
-    # Is the user logged in?
-    case current_user do
+    case Guardian.Plug.current_resource(conn) do
       nil ->
         conn
         |> put_flash(
@@ -206,12 +227,19 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         |> redirect(to: page_path(conn, :login))
 
       user ->
-        challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:team, :user, :offer])
+        challenge =
+          Offers.get_offer_chal_by_slugs(offer_slug, slug, [:team, :user, offer: [:vendor]])
+
         invitation = Offers.get_team_member_invitation_by_token(invitation_token)
 
         case Offers.add_user_to_team(invitation, challenge.team, user, challenge.user) do
           {:ok, _} ->
+            # TODO cast_assoc this add_user_to_team? -Sherief
             Offers.accepted_team_member_invitation(invitation)
+
+            # TODO: cast_assoc with add_user_to_team. -Sherief
+            Offers.create_offer_redeems(challenge, challenge.offer.vendor, %{}, user)
+
             Offers.Notifier.send_team_owner_member_added_notification(challenge, user)
 
             conn

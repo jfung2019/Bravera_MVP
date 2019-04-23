@@ -46,8 +46,6 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
-
-
   @doc """
   Gets a single offer.
 
@@ -393,7 +391,11 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_offer_challenge(%Offer{} = offer, %User{} = user, attrs \\ %{team: %{}, offer_redeems: [%{}]}) do
+  def create_offer_challenge(
+        %Offer{} = offer,
+        %User{} = user,
+        attrs \\ %{team: %{}, offer_redeems: [%{}]}
+      ) do
     %OfferChallenge{}
     |> OfferChallenge.create_changeset(offer, user, attrs)
     |> Repo.insert()
@@ -634,10 +636,11 @@ defmodule OmegaBravera.Offers do
   def create_offer_redeems(
         %OfferChallenge{} = offer_challenge,
         vendor,
-        attrs \\ %{}
+        attrs \\ %{},
+        team_user \\ %User{}
       ) do
     %OfferRedeem{}
-    |> OfferRedeem.create_changeset(offer_challenge, vendor, attrs)
+    |> OfferRedeem.create_changeset(offer_challenge, vendor, attrs, team_user)
     |> Repo.insert()
   end
 
@@ -653,9 +656,9 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_offer_redeems(%OfferRedeem{} = offer_redeems, attrs) do
+  def update_offer_redeems(offer_redeems, offer_challenge, attrs) do
     offer_redeems
-    |> OfferRedeem.changeset(attrs)
+    |> OfferRedeem.redeem_reward_changeset(offer_challenge, attrs)
     |> Repo.update()
   end
 

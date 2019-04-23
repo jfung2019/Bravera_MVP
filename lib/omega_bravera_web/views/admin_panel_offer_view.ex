@@ -13,6 +13,21 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
   end
 
   def get_total_redeems_value(offer_redeems) do
-    Enum.reduce(offer_redeems, 0, &(&1.offer_reward.value + &2))
+    Enum.filter(offer_redeems, fn offer_redeem ->
+      not is_nil(offer_redeem.offer_reward_id)
+    end)
+    |> Enum.reduce(0, &(&1.offer_reward.value + &2))
   end
+
+  def redeems_total(redeems) when is_list(redeems) and length(redeems) > 0 do
+    Enum.reduce(redeems, 0, fn redeem, acc ->
+      if redeem.status == "redeemed" do
+        acc + 1
+      else
+        acc
+      end
+    end)
+  end
+
+  def redeems_total(_), do: 0
 end

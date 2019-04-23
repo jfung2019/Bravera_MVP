@@ -83,7 +83,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
   describe "redeem" do
     test "new_redeem/2 renders redeem form for vendor", %{conn: conn} do
-      offer_challenge = insert(:offer_challenge)
+      offer_redeem = insert(:offer_redeem)
 
       conn =
         get(
@@ -91,22 +91,19 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           offer_offer_challenge_offer_challenge_path(
             conn,
             :new_redeem,
-            offer_challenge.offer.slug,
-            offer_challenge.slug,
-            offer_challenge.redeem_token
+            offer_redeem.offer.slug,
+            offer_redeem.offer_challenge.slug,
+            offer_redeem.token
           )
         )
 
       assert html_response(conn, 200) =~ "New Redemption"
     end
 
-    test "save_redeem/2 creates a redeem when valid data is given", %{conn: conn} do
-      vendor = insert(:vendor)
-      offer = insert(:offer, vendor: nil, vendor_id: vendor.vendor_id)
-      offer_challenge = insert(:offer_challenge, offer: nil, offer_id: offer.id)
-      offer_reward = insert(:offer_reward, offer: nil, offer_id: offer.id)
+    test "save_redeem/2 updates a redeem when valid data is given", %{conn: conn} do
+      offer_redeem = insert(:offer_redeem)
 
-      params = %{vendor_id: vendor.vendor_id, offer_reward_id: offer_reward.id}
+      params = %{vendor_id: offer_redeem.vendor.vendor_id, offer_reward_id: offer_redeem.offer_reward.id}
 
       conn =
         post(
@@ -114,28 +111,25 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           offer_offer_challenge_offer_challenge_path(
             conn,
             :save_redeem,
-            offer.slug,
-            offer_challenge.slug,
-            offer_challenge.redeem_token
+            offer_redeem.offer.slug,
+            offer_redeem.offer_challenge.slug,
+            offer_redeem.token
           ),
           offer_redeem: params
         )
 
       assert html = html_response(conn, 200)
       assert html =~ "Confirmed!"
-      assert html =~ "Total Redemptions to date:</span>\n        <span><b>1"
+      assert html =~ "Total Redemptions to date:</span>\n        <span><b>2"
 
-      offer = Offers.get_offer_by_slug(offer.slug, [:offer_redeems])
-      assert length(offer.offer_redeems) == 1
+      offer_redeemed_ = Offers.get_offer_redeems!(offer_redeem.id)
+      assert offer_redeemed_.status == "redeemed"
     end
 
     test "save_redeem/2 renders errors when invalid data is given", %{conn: conn} do
-      vendor = insert(:vendor)
-      offer = insert(:offer, vendor: nil, vendor_id: vendor.vendor_id)
-      offer_challenge = insert(:offer_challenge, offer: nil, offer_id: offer.id)
-      offer_reward = insert(:offer_reward, offer: nil, offer_id: offer.id)
+      offer_redeem = insert(:offer_redeem)
 
-      params = %{vendor_id: "", offer_reward_id: offer_reward.id}
+      params = %{vendor_id: "", offer_reward_id: offer_redeem.offer_reward.id}
 
       conn =
         post(
@@ -143,17 +137,19 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           offer_offer_challenge_offer_challenge_path(
             conn,
             :save_redeem,
-            offer.slug,
-            offer_challenge.slug,
-            offer_challenge.redeem_token
+            offer_redeem.offer.slug,
+            offer_redeem.offer_challenge.slug,
+            offer_redeem.token
           ),
           offer_redeem: params
         )
 
       assert html_response(conn, 200) =~ "Your Vendor ID seems to be incorrect."
 
-      offer = Offers.get_offer_by_slug(offer.slug, [:offer_redeems])
-      assert length(offer.offer_redeems) == 0
+      offer = Offers.get_offer_by_slug(offer_redeem.offer.slug, [:offer_redeems])
+      assert length(offer.offer_redeems) == 1
+      offer_redeemed_ = Offers.get_offer_redeems!(offer_redeem.id)
+      assert offer_redeemed_.status == "pending"
     end
   end
 end

@@ -7,6 +7,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     Offers.OfferChallenge,
     Offers.OfferChallengeActivity,
     Offers.Notifier,
+    Offers.OfferRedeem,
     Repo
   }
 
@@ -184,7 +185,8 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
   defp update_challenge({:error, _, _} = params), do: params
 
   defp notify_participant_of_activity(
-         {status, %OfferChallenge{status: "active", has_team: false} = challenge, activity} = params,
+         {status, %OfferChallenge{status: "active", has_team: false} = challenge, activity} =
+           params,
          send_emails
        ) do
     if status == :ok and send_emails do
@@ -195,15 +197,18 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
   end
 
   defp notify_participant_of_activity(
-         {status, %OfferChallenge{status: "active", has_team: true} = challenge, activity} = params,
+         {status, %OfferChallenge{status: "active", has_team: true} = challenge, activity} =
+           params,
          send_emails
        ) do
-
     challenge = Repo.preload(challenge, [:user, team: [:users]])
     team_members = [challenge.user] ++ challenge.team.users
 
     if status == :ok and send_emails do
-      Enum.map(team_members, &Notifier.send_team_activity_completed_email(challenge, activity, &1))
+      Enum.map(
+        team_members,
+        &Notifier.send_team_activity_completed_email(challenge, activity, &1)
+      )
     end
 
     params
@@ -214,22 +219,42 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
            params,
          send_emails
        ) do
-    challenge = Repo.preload(challenge,[:user, team: [:users]])
+    challenge = Repo.preload(challenge, [:user, team: [:users]])
     team_members = [challenge.user] ++ challenge.team.users
 
     if status == :ok and send_emails do
-      Enum.map(team_members, &Notifier.send_reward_completion_email(challenge, &1))
+      Enum.map(team_members, fn tm ->
+        offer_redeem = Repo.get_by(OfferRedeem, offer_challenge_id: challenge.id, user_id: tm.id)
+
+        if Notifier.send_reward_completion_email(challenge, tm, offer_redeem) != :ok do
+          Logger.error(
+            "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem for team member: #{
+              inspect(tm)
+            }"
+          )
+        end
+      end)
     end
 
     params
   end
 
   defp notify_participant_of_activity(
-         {status, %OfferChallenge{status: "complete", has_team: false} = challenge, _activity} = params,
+         {status, %OfferChallenge{status: "complete", has_team: false} = challenge, _activity} =
+           params,
          send_emails
        ) do
     if status == :ok and send_emails do
-      Notifier.send_reward_completion_email(challenge, challenge.user)
+      offer_redeem =
+        Repo.get_by(OfferRedeem, offer_challenge_id: challenge.id, user_id: challenge.user_id)
+
+      if Notifier.send_reward_completion_email(challenge, challenge.user, offer_redeem) != :ok do
+        Logger.error(
+          "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem. for team member: #{
+            inspect(challenge.user)
+          }"
+        )
+      end
     end
 
     params

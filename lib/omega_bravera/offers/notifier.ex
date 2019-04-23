@@ -162,7 +162,11 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_reward_completion_email(%OfferChallenge{} = challenge, %User{} = user) do
+  def send_reward_completion_email(
+        %OfferChallenge{} = challenge,
+        %User{} = user,
+        %OfferRedeem{} = offer_redeem
+      ) do
     template_id = "42873800-965d-4e0d-bcea-4c59a1934d80"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
@@ -174,17 +178,24 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> Repo.preload(:offer)
-      |> reward_completion_email(user, template_id)
+      |> reward_completion_email(user, offer_redeem, template_id)
       |> Mailer.send()
     end
   end
 
-  def reward_completion_email(%OfferChallenge{} = challenge, %User{} = user, template_id) do
+  def send_reward_completion_email(_, _, _), do: :error
+
+  def reward_completion_email(
+        %OfferChallenge{} = challenge,
+        %User{} = user,
+        %OfferRedeem{} = offer_redeem,
+        template_id
+      ) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
     |> Email.add_substitution("-challengeLink-", new_challenge_url(challenge))
-    |> Email.add_substitution("-qrCode-", challenge_qr_code_url(challenge))
+    |> Email.add_substitution("-qrCode-", challenge_qr_code_url(challenge, offer_redeem))
     |> Email.add_substitution("-terms-", challenge.offer.toc)
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
@@ -430,13 +441,13 @@ defmodule OmegaBravera.Offers.Notifier do
     Routes.offer_offer_challenge_url(Endpoint, :new, challenge.offer.slug)
   end
 
-  defp challenge_qr_code_url(challenge) do
+  defp challenge_qr_code_url(challenge, offer_redeem) do
     Routes.offer_offer_challenge_offer_challenge_url(
       Endpoint,
-      :qr_code,
+      :send_qr_code,
       challenge.offer.slug,
       challenge.slug,
-      challenge.redeem_token
+      offer_redeem.token
     )
   end
 end

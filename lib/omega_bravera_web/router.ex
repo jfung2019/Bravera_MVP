@@ -189,6 +189,7 @@ defmodule OmegaBraveraWeb.Router do
         get("/:redeem_token", Offer.OfferChallengeController, :send_qr_code)
         get("/redeem/:redeem_token", Offer.OfferChallengeController, :new_redeem)
         post("/:redeem_token", Offer.OfferChallengeController, :save_redeem)
+        put("/:redeem_token", Offer.OfferChallengeController, :save_redeem)
         post("/invite/team_members", Offer.OfferChallengeController, :invite_team_members)
 
         get(

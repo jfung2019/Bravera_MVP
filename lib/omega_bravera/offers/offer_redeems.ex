@@ -20,6 +20,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     timestamps(type: :utc_datetime)
   end
 
+  # Should remove vendor_id?, token, and status.
   @allowed_atributes [:offer_reward_id, :vendor_id, :token, :status]
 
   @doc false
@@ -28,7 +29,12 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> cast(attrs, @allowed_atributes)
   end
 
-  def offer_challenge_assoc_changeset(%__MODULE__{} = offer_redeems, %Offer{id: offer_id, vendor_id: vendor_id}, %User{id: user_id}, attrs \\ %{}) do
+  def offer_challenge_assoc_changeset(
+        %__MODULE__{} = offer_redeems,
+        %Offer{id: offer_id, vendor_id: vendor_id},
+        %User{id: user_id},
+        attrs \\ %{}
+      ) do
     offer_redeems
     |> cast(attrs, @allowed_atributes)
     |> put_change(:offer_id, offer_id)
@@ -38,9 +44,9 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> validate_required([:offer_id, :user_id, :vendor_id, :token])
   end
 
-  def create_changeset(offer_redeems, offer_challenge, vendor, attrs \\ %{})
+  def create_changeset(offer_redeems, offer_challenge, vendor, attrs \\ %{}, team_user \\ %User{})
 
-  def create_changeset(_, _, vendor, attrs) when is_nil(vendor) == true do
+  def create_changeset(_, _, vendor, attrs, _) when is_nil(vendor) == true do
     %__MODULE__{}
     |> changeset(attrs)
     |> add_error(:vendor_id, "Your Vendor ID seems to be incorrect.")
@@ -50,7 +56,8 @@ defmodule OmegaBravera.Offers.OfferRedeem do
         %__MODULE__{} = offer_redeems,
         %OfferChallenge{offer_id: offer_id, user_id: user_id} = offer_challenge,
         %OfferVendor{} = vendor,
-        attrs
+        attrs,
+        _
       ) do
     changeset(offer_redeems, attrs)
     |> put_change(:user_id, user_id)
@@ -60,13 +67,56 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> put_change(:token, gen_token())
     |> validate_required([:vendor_id, :token])
     |> add_team_id(offer_challenge)
-    |> is_previously_redeemed(offer_challenge)
   end
 
+  # Used only in the migration. Should be disgraded after we migrate prod db.
   def update_changeset(%__MODULE__{} = offer_redeem, attrs \\ %{}) do
     offer_redeem
     |> cast(attrs, @allowed_atributes)
   end
+
+  def redeem_reward_changeset(nil, _, _) do
+    %__MODULE__{}
+    |> cast(%{}, [])
+    |> add_error(:id, "Invalid redeem link/token.")
+  end
+
+  def redeem_reward_changeset(_, nil, _) do
+    %__MODULE__{}
+    |> cast(%{}, [])
+    |> add_error(:id, "Offer Challenge not found in database.")
+  end
+
+  def redeem_reward_changeset(
+        %__MODULE__{} = offer_redeem,
+        %OfferChallenge{id: challenge_id},
+        attrs
+      ) do
+    offer_redeem
+    |> cast(attrs, [:offer_reward_id])
+    |> validate_required([:offer_reward_id])
+    |> validate_number(:offer_challenge_id,
+      equal_to: challenge_id,
+      message: "Offer Challenge has no such redeem token."
+    )
+    |> put_change(:status, "redeemed")
+    |> validate_vendor(attrs)
+    |> validate_previously_redeemed(offer_redeem)
+  end
+
+  defp validate_vendor(%Ecto.Changeset{} = changeset, %{"vendor_id" => vendor_id}) do
+    vendor_struct = Repo.get_by(OfferVendor, vendor_id: vendor_id)
+
+    if is_nil(vendor_struct) do
+      changeset
+      |> add_error(:vendor_id, "Your Vendor ID seems to be incorrect.")
+    else
+      changeset
+    end
+  end
+
+  defp validate_vendor(%Ecto.Changeset{} = changeset, _),
+    do: add_error(changeset, :vendor_id, "Your Vendor ID seems to be incorrect.")
 
   defp add_team_id(%Ecto.Changeset{} = changeset, %OfferChallenge{has_team: false}), do: changeset
 
@@ -79,44 +129,15 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     put_change(changeset, :team_id, offer_challenge.team.id)
   end
 
-  defp is_previously_redeemed(
+  defp validate_previously_redeemed(
          %Ecto.Changeset{} = changeset,
-         %OfferChallenge{has_team: false} = offer_challenge
-       ) do
-    offer_challenge = Repo.preload(offer_challenge, [:offer_redeems])
-
-    if !Enum.empty?(offer_challenge.offer_redeems) do
-      add_error(changeset, :offer_challenge_id, "Challenge previously redeemed award.")
-    else
-      changeset
-    end
+         %__MODULE__{status: status}
+       )
+       when status == "redeemed" do
+    add_error(changeset, :status, "Reward previously redeemed.")
   end
 
-  defp is_previously_redeemed(
-         %Ecto.Changeset{} = changeset,
-         %OfferChallenge{has_team: true} = offer_challenge
-       ) do
-    offer_challenge = Repo.preload(offer_challenge, [:offer_redeems, team: [:users]])
-
-    # Team members + Challenge Owner
-    team_count = length(offer_challenge.team.users) + 1
-
-    cond do
-      team_count == length(offer_challenge.offer_redeems) or
-          length(offer_challenge.offer_redeems) > team_count ->
-        add_error(
-          changeset,
-          :offer_challenge_id,
-          "Could not redeem reward. All challenge members received an award previously."
-        )
-
-      team_count > length(offer_challenge.offer_redeems) ->
-        changeset
-
-      true ->
-        changeset
-    end
-  end
+  defp validate_previously_redeemed(%Ecto.Changeset{} = changeset, _), do: changeset
 
   defp gen_token(length \\ 10),
     do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)

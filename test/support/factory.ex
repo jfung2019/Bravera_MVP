@@ -196,8 +196,7 @@ defmodule OmegaBravera.Factory do
       end_date: Timex.shift(Timex.now(), days: 5),
       status: "active",
       type: "PER_KM",
-      redeem_token: Integer.to_string(Enum.random(10_000_000..20_000_000)),
-      offer: build(:offer, %{additional_members: 3}),
+      offer: build(:offer, %{additional_members: 0}),
       user: build(:user)
     }
   end
@@ -218,13 +217,13 @@ defmodule OmegaBravera.Factory do
   end
 
   def offer_redeem_factory do
-    user = build(:user)
-    vendor = build(:vendor)
-    offer = build(:offer, %{additional_members: 5, vendor: nil, vendor_id: vendor.id})
-    offer_reward = build(:offer_reward, %{offer: nil, offer_id: offer.id})
+    user = insert(:user)
+    vendor = insert(:vendor)
+    offer = insert(:offer, %{additional_members: 5, vendor: nil, vendor_id: vendor.id})
+    offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer.id})
 
     offer_challenge =
-      build(:offer_challenge, %{
+      insert(:offer_challenge, %{
         offer: nil,
         offer_id: offer.id,
         user: nil,
@@ -237,7 +236,8 @@ defmodule OmegaBravera.Factory do
       offer: offer,
       user: user,
       offer_challenge: offer_challenge,
-      offer_reward: offer_reward
+      offer_reward: offer_reward,
+      token: Enum.random(10_000_000..20_000_000) |> Integer.to_string()
     }
   end
 end
