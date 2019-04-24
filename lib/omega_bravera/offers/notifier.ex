@@ -135,7 +135,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_to(redeem.vendor.email)
   end
 
-  def send_user_reward_redemption_successful(%OfferChallenge{} = challenge) do
+  def send_user_reward_redemption_successful(%OfferChallenge{} = challenge, %User{} = user) do
     template_id = "ea31089b-9507-4b79-a10e-3e763a1b0757"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
@@ -147,19 +147,19 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> Repo.preload(:offer)
-      |> user_reward_redemption_successful_email(template_id)
+      |> user_reward_redemption_successful_email(user, template_id)
       |> Mailer.send()
     end
   end
 
-  def user_reward_redemption_successful_email(%OfferChallenge{} = challenge, template_id) do
+  def user_reward_redemption_successful_email(%OfferChallenge{} = challenge, %User{} = user, template_id) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
     |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
-    |> Email.add_to(challenge.user.email)
+    |> Email.add_to(user.email)
   end
 
   def send_reward_completion_email(
