@@ -148,7 +148,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
   defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
     changeset
-    |> change(start_date: DateTime.truncate(offer.start_date, :second))
+    |> change(start_date: DateTime.truncate(Timex.now(), :second))
     |> change(end_date: DateTime.truncate(offer.end_date, :second))
   end
 
