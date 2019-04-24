@@ -3,7 +3,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Offers, Accounts}
+  alias OmegaBravera.{Offers, Accounts, Repo}
+  alias OmegaBravera.Offers.{OfferRedeem}
 
   @tracker_create_attrs %{
     email: "user@example.com",
@@ -151,5 +152,80 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       offer_redeemed_ = Offers.get_offer_redeems!(offer_redeem.id)
       assert offer_redeemed_.status == "pending"
     end
+  end
+
+  describe "accept team invites" do
+    test "add_team_member/2 adds user to a team", %{conn: conn, current_user: current_user} do
+      {:ok, updated_user} =
+        Accounts.update_user(current_user, %{email: "sherief@plangora.com", email_verified: true})
+
+      team = insert(:offer_challenge_team)
+
+      invitation =
+        insert(:offer_team_invitation, %{email: updated_user.email, team_id: team.id, team: nil})
+
+      conn =
+        get(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :add_team_member,
+            team.offer_challenge.offer.slug,
+            team.offer_challenge.slug,
+            invitation.token
+          )
+        )
+
+      assert get_flash(conn, :info) =~
+               "You are now part of #{inspect(Accounts.User.full_name(team.user))} team."
+
+      updated_team =
+        Offers.get_team!(team.id)
+        |> Repo.preload(:invitations)
+        |> Repo.preload(:users)
+
+      assert length(updated_team.invitations) == 1
+      assert %{status: "accepted"} = hd(updated_team.invitations)
+      assert invitation.email == hd(updated_team.users).email
+
+      team_user_redeem = Repo.get_by(OfferRedeem, offer_challenge_id: team.offer_challenge_id, user_id: hd(updated_team.users).id)
+
+      assert team_user_redeem.user_id != team.user_id
+      assert updated_user.email == hd(updated_team.users).email
+    end
+
+    # TODO: Fix lib/omega_bravera_web/controllers/offer/offer_challenge_controller.ex:233
+
+    # test "add_team_member/2 does not invite user if token is invalid", %{conn: conn, current_user: current_user} do
+    #   {:ok, updated_user} =
+    #     Accounts.update_user(current_user, %{email: "sherief@plangora.com", email_verified: true})
+
+    #   team = insert(:offer_challenge_team)
+    #   insert(:offer_team_invitation, %{email: updated_user.email, team_id: team.id, team: nil})
+
+    #   bad_token = "non-existent-token"
+
+    #   conn =
+    #     get(
+    #       conn,
+    #       offer_offer_challenge_offer_challenge_path(
+    #         conn,
+    #         :add_team_member,
+    #         team.offer_challenge.offer.slug,
+    #         team.offer_challenge.slug,
+    #         bad_token
+    #       )
+    #     )
+
+    #   assert get_flash(conn, :error) =~
+    #            "Could not add you to team. Something is wrong with your invitation link!"
+
+    #   updated_team =
+    #     Offers.get_team!(team.id)
+    #     |> Repo.preload(:invitations)
+
+    #   assert length(updated_team.invitations) == 1
+    #   assert %{status: "pending_acceptance"} = hd(updated_team.invitations)
+    # end
   end
 end

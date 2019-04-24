@@ -230,6 +230,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         challenge =
           Offers.get_offer_chal_by_slugs(offer_slug, slug, [:team, :user, offer: [:vendor]])
 
+        # TODO: allow to fail gracefully when not found and passed to changeset. -Sherief
         invitation = Offers.get_team_member_invitation_by_token(invitation_token)
 
         case Offers.add_user_to_team(invitation, challenge.team, user, challenge.user) do

@@ -836,4 +836,6 @@ defmodule OmegaBravera.Offers do
     |> OfferChallengeTeamInvitation.invitation_accepted_changeset()
     |> Repo.update()
   end
+
+  def get_team!(id), do: Repo.get!(OfferChallengeTeam, id)
 end
