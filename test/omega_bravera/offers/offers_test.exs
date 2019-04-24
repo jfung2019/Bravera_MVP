@@ -226,7 +226,7 @@ defmodule OmegaBravera.OffersTest do
       assert {:ok, %OfferChallenge{} = offer_challenge} =
                Offers.create_offer_challenge(offer, user)
 
-      assert offer_challenge.team.count == offer.additional_members - 1
+      assert offer_challenge.team.count == offer.additional_members
       assert offer_challenge.team.user_id == user.id
     end
 
@@ -251,7 +251,7 @@ defmodule OmegaBravera.OffersTest do
 
       assert length(offer_challenge.offer_redeems) == 1
       assert offer_challenge.team
-      assert offer_challenge.team.count == 3
+      assert offer_challenge.team.count == 4
     end
 
     test "create_offer_challenge/2 with valid data creates a offer_challenge" do
@@ -484,7 +484,7 @@ defmodule OmegaBravera.OffersTest do
                  %{team: team2_params, offer_redeems: [%{}]}
                )
 
-      assert record2.team.count == 6
+      assert record2.team.count == 7
 
       assert {:ok, record3} =
                Offers.create_offer_challenge_with_team(
