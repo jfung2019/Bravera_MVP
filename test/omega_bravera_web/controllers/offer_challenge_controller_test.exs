@@ -121,7 +121,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
       assert html = html_response(conn, 200)
       assert html =~ "Confirmed!"
-      assert html =~ "Total Redemptions to date:</span>\n        <span><b>2"
+      assert html =~ "Total Redemptions to date:</span>\n        <span><b>1"
 
       offer_redeemed_ = Offers.get_offer_redeems!(offer_redeem.id)
       assert offer_redeemed_.status == "redeemed"

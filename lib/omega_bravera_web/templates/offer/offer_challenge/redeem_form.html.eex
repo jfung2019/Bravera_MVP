@@ -27,7 +27,7 @@
 
   <div class="form-group">
     <%= label class: "control-label" do "Total Redemptions to date:" end%>
-    <span><%= length(@offer_challenge.offer.offer_redeems) %></span>
+    <span><%= redeems_total(@offer_challenge.offer.offer_redeems) %></span>
   </div>
 
   <div class="form-group">
