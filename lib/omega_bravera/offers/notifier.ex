@@ -286,11 +286,11 @@ defmodule OmegaBravera.Offers.Notifier do
         %OfferChallengeActivity{} = activity,
         %User{} = user
       ) do
-    template_id = "3364ef25-3318-4958-a3c3-4cb97f85dc7d"
+    template_id = "d19178ae-5d36-4405-a5d7-d5862478356d"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
-    if sendgrid_email != nil &&
+    if not is_nil(sendgrid_email) and sendgrid_email != nil &&
          user_subscribed_in_category?(
            challenge.user.subscribed_email_categories,
            sendgrid_email.category.id
