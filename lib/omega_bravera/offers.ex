@@ -201,53 +201,37 @@ defmodule OmegaBravera.Offers do
     %Offer{}
     |> Offer.changeset(attrs)
     |> switch_pre_registration_date_to_utc()
-    |> switch_launch_date_to_utc()
-    |> switch_start_and_end_dates_to_utc()
+    |> switch_start_date_to_utc()
+    |> switch_end_date_to_utc()
     |> Repo.insert()
   end
 
-  defp switch_start_and_end_dates_to_utc(
-         %Ecto.Changeset{
-           valid?: true,
-           changes: %{
-             start_date: start_date,
-             end_date: end_date
-           }
-         } = changeset
-       ) do
-    changeset
-    |> Ecto.Changeset.change(%{
-      start_date: to_utc(start_date),
-      end_date: to_utc(end_date)
-    })
-  end
+  defp switch_start_date_to_utc(
+         %Ecto.Changeset{valid?: true, changes: %{start_date: start_date}} = changeset
+       ),
+       do: Ecto.Changeset.change(changeset, %{start_date: to_utc(start_date)})
 
-  defp switch_start_and_end_dates_to_utc(%Ecto.Changeset{} = changeset), do: changeset
+  defp switch_start_date_to_utc(%Ecto.Changeset{} = changeset), do: changeset
+
+  defp switch_end_date_to_utc(
+         %Ecto.Changeset{valid?: true, changes: %{end_date: end_date}} = changeset
+       ),
+       do: Ecto.Changeset.change(changeset, %{end_date: to_utc(end_date)})
+
+  defp switch_end_date_to_utc(%Ecto.Changeset{} = changeset), do: changeset
 
   defp switch_pre_registration_date_to_utc(
          %Ecto.Changeset{
            valid?: true,
            changes: %{pre_registration_start_date: pre_registration_start_date}
          } = changeset
-       ) do
-    changeset
-    |> Ecto.Changeset.change(%{
-      pre_registration_start_date: to_utc(pre_registration_start_date)
-    })
-  end
+       ),
+       do:
+         Ecto.Changeset.change(changeset, %{
+           pre_registration_start_date: to_utc(pre_registration_start_date)
+         })
 
   defp switch_pre_registration_date_to_utc(%Ecto.Changeset{} = changeset), do: changeset
-
-  defp switch_launch_date_to_utc(
-         %Ecto.Changeset{valid?: true, changes: %{launch_date: launch_date}} = changeset
-       ) do
-    changeset
-    |> Ecto.Changeset.change(%{
-      launch_date: to_utc(launch_date)
-    })
-  end
-
-  defp switch_launch_date_to_utc(%Ecto.Changeset{} = changeset), do: changeset
 
   defp to_utc(%DateTime{} = datetime) do
     datetime
@@ -273,8 +257,8 @@ defmodule OmegaBravera.Offers do
     offer
     |> Offer.changeset(attrs)
     |> switch_pre_registration_date_to_utc()
-    |> switch_launch_date_to_utc()
-    |> switch_start_and_end_dates_to_utc()
+    |> switch_start_date_to_utc()
+    |> switch_end_date_to_utc()
     |> Repo.update()
   end
 
