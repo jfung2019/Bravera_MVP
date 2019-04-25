@@ -37,9 +37,11 @@ defmodule OmegaBravera.Offers do
   end
 
   def list_offers(hidden \\ false, preloads \\ [:offer_challenges]) do
+    now = Timex.now("Asia/Hong_Kong")
+
     from(
       offer in Offer,
-      where: offer.hidden == ^hidden,
+      where: offer.hidden == ^hidden and offer.end_date > ^now,
       order_by: [desc: offer.id],
       preload: ^preloads
     )
