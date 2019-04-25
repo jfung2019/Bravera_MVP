@@ -1,12 +1,15 @@
 defmodule OmegaBraveraWeb.NGOController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Fundraisers, Challenges, Challenges.NGOChal}
+  alias OmegaBravera.{Fundraisers, Challenges, Challenges.NGOChal, Accounts.AdminUser}
 
   def index(conn, _params) do
-    ngos = Fundraisers.list_ngos()
-
-    render(conn, "index.html", ngos: ngos)
+    case Guardian.Plug.current_resource(conn) do
+      %AdminUser{} ->
+        redirect(conn, to: admin_user_page_path(conn, :index))
+      _ ->
+        render(conn, "index.html", ngos: Fundraisers.list_ngos())
+    end
   end
 
   def show(conn, %{"slug" => slug}) do

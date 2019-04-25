@@ -5,19 +5,16 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-4 col-12 offset-md-1">
-              <h2>Get fit and fundraise</h2>
+              <h2>Fitness with Impact</h2>
               <p>
-                We make fundraising and fitness easy
-                through achievable milestones. When
-                you reach your goals, money gets
-                donated to your charity or cause.
+                Using Bravera, users convert fitness activity data into immediate rewards or social impact. Take solo or team challenges, reach goals, and create impact, automatically.
               </p>
               <p>
-                Choose a challenge, invite sponsors,
-                and raise money.
+                What would you like to do?
               </p>
               <div class="text-center text-md-left">
-                <%= link("Get Started", class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index)) %>
+                <%= link("GET REWARDS", class: "btn btn-bravera mt-lg-3", to: offer_path(@conn, :index)) %>
+                <%= link("CREATE IMPACT", class: "btn btn-bravera mt-3 mt-lg-3", to: ngo_path(@conn, :index)) %>
               </div>
             </div>
             <div class="col-md-6 col-12 offset-md-1">
@@ -68,13 +65,14 @@
       </p>
       <h2>Why Bravera?</h2>
       <p>
-        Sometimes we need that extra motivation to achieve our fitness goals.<br class="d-none d-md-block">
-        We do this by bringing people together to be healthy and create social<br class="d-none d-md-block">
-        impact. Together, with friends and fellow fundraisers, Bravera is with<br class="d-none d-md-block">
-        you every step of the way.
+        A healthy lifestyle is a transformative journey, data becomes your <br class="d-none d-md-block">
+        ‘story’ with high emotional value. Each goal met & personal record<br class="d-none d-md-block">
+        is a celebration. We take this a step further and add something<br class="d-none d-md-block">
+        extra!
       </p>
       <div class="text-center text-md-left">
-        <%= link("Take a Challenge", class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index)) %>
+        <%= link("GET REWARDS", class: "btn btn-bravera mt-lg-3", to: offer_path(@conn, :index)) %>
+        <%= link("CREATE IMPACT", class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index)) %>
       </div>
     </div>
   </div>
@@ -170,7 +168,12 @@
   <div class="row buttons">
     <div class="col">
       <div class="text-center text-md-right">
-        <%= link("Take a Challenge", class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index)) %>
+        <%= link("GET REWARDS", class: "btn btn-bravera mt-lg-3", to: offer_path(@conn, :index)) %>
+      </div>
+    </div>
+    <div class="col">
+      <div class="text-center text-md-left">
+        <%= link("CREATE IMPACT", class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index)) %>
       </div>
     </div>
     <div class="col">

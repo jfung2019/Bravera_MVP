@@ -1,13 +1,19 @@
 defmodule OmegaBraveraWeb.Offer.OfferController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Repo, Offers, Offers.OfferChallenge}
+  alias OmegaBravera.{Repo, Offers, Offers.OfferChallenge, Accounts.AdminUser}
 
   def index(conn, _params) do
     current_user =
       case Guardian.Plug.current_resource(conn) do
-        nil -> nil
-        user -> Repo.preload(user, :offer_challenges)
+        nil ->
+          nil
+
+        %AdminUser{} ->
+          redirect(conn, to: admin_user_page_path(conn, :index))
+
+        user ->
+          Repo.preload(user, :offer_challenges)
       end
 
     offers = Offers.list_offers()
