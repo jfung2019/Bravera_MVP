@@ -248,6 +248,8 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       offer_redeem =
         Repo.get_by(OfferRedeem, offer_challenge_id: challenge.id, user_id: challenge.user_id)
 
+      challenge = Repo.preload(challenge, :user)
+
       if Notifier.send_reward_completion_email(challenge, challenge.user, offer_redeem) != :ok do
         Logger.error(
           "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem. for team member: #{
