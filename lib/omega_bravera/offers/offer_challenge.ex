@@ -187,13 +187,13 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   end
 
   defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
-    if Timex.before?(Timex.now(), offer.end_date) do
+    if Timex.before?(Timex.now(), offer.end_date) and Timex.after?(Timex.now(), offer.start_date) do
       changeset
       |> change(start_date: DateTime.truncate(Timex.now(), :second))
       |> change(end_date: DateTime.truncate(offer.end_date, :second))
     else
       changeset
-      |> add_error(:end_date, "Cannot create challenge because Offer expired.")
+      |> add_error(:end_date, "Cannot create challenge. Either offer did not start yet or it is expired.")
     end
   end
 

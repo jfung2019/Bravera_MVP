@@ -52,6 +52,26 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       assert Offers.list_offer_challenges() == []
     end
 
+    test "create/2 refuses to create challenge if offer start date was not reached", %{
+      conn: conn,
+      current_user: user
+    } do
+      {:ok, _user} =
+        Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+
+      offer =
+        insert(:offer, %{start_date: Timex.shift(Timex.now(), days: 2), end_date: Timex.shift(Timex.now(), days: 5)})
+
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_path(conn, :create, offer.slug)
+        )
+
+      assert get_flash(conn, :error) == "Could not create offer challenge."
+      assert Offers.list_offer_challenges() == []
+    end
+
     test "create/2 redirects to challenge data is valid", %{conn: conn, current_user: user} do
       {:ok, _user} =
         Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
