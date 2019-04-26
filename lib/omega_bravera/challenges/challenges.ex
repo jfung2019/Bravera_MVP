@@ -53,10 +53,29 @@ defmodule OmegaBravera.Challenges do
     Repo.all(query)
   end
 
-  def get_user_ngo_chals(user_id, preloads \\ [:ngo]) do
+  def get_user_solo_ngo_chals(user_id, preloads \\ [:ngo]) do
     from(
       nc in NGOChal,
-      where: nc.user_id == ^user_id,
+      where: nc.user_id == ^user_id and nc.has_team == false,
+      left_join: a in Activity,
+      on: nc.id == a.challenge_id,
+      preload: ^preloads,
+      order_by: [desc: :start_date],
+      group_by: nc.id,
+      select: %{
+        nc
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+          start_date: fragment("? at time zone 'utc'", nc.start_date),
+          end_date: fragment("? at time zone 'utc'", nc.end_date)
+      }
+    )
+    |> Repo.all()
+  end
+
+  def get_user_team_ngo_chals(user_id, preloads \\ [:ngo]) do
+    from(
+      nc in NGOChal,
+      where: nc.user_id == ^user_id and nc.has_team == true,
       left_join: a in Activity,
       on: nc.id == a.challenge_id,
       preload: ^preloads,
@@ -195,7 +214,7 @@ defmodule OmegaBravera.Challenges do
     end)
   end
 
-  def get_user_teams(user_id) do
+  def get_user_team_membership(user_id) do
     from(
       tm in TeamMembers,
       where: tm.user_id == ^user_id,

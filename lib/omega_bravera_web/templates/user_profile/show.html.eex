@@ -53,7 +53,7 @@
   </div>
   <br />
 
-<%= unless Enum.empty?(@challenges) do %>
+<%= unless Enum.empty?(@solo_challenges) do %>
   <div class="row">
 
     <div class="col-md-8 offset-md-2">
@@ -80,7 +80,7 @@
 
       </div>
       <br />
-    <%= for challenge <- @challenges do %>
+    <%= for challenge <- @solo_challenges do %>
       <div class="card bg-light text-dark">
         <div class="card-body">
           <div class="row">
@@ -115,10 +115,77 @@
 
 <% end %>
 
+<br />
+<div class="row">
+  <div class="col-5"><h5>Your Team Challenges:</h5></div>
+</div>
+<br />
+
+<%= unless Enum.empty?(@team_challenges) do %>
+  <div class="row">
+
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <!-- <b>Charity</b> Be-->
+            </div>
+            <div class="col-sm-2">
+              <b> Start Date</b>
+            </div>
+            <div class="col-sm-2">
+              <b>End Date</b>
+            </div>
+            <div class="col-sm-3">
+              <b> Distance Covered</b>
+            </div>
+            <div class="col-sm-2">
+              <b>Link</b>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <br />
+    <%= for challenge <- @team_challenges do %>
+      <div class="card bg-light text-dark">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-3">
+              <%= challenge.ngo.name %>
+            </div>
+            <div class="col-sm-2">
+              <%= render_datetime(challenge.start_date) %>
+            </div>
+            <div class="col-sm-2">
+              <%= render_datetime(challenge.end_date) %>
+            </div>
+            <div class="col-sm-3">
+              <%= challenge.distance_covered %> KM
+            </div>
+            <div class="col-sm-2">
+              <%= link("View", to: ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+    <% end %>
+
+    </div>
+  </div>
+<% else %>
+
+  <p>You have no challenges yet. You can go and create you own
+  <%= link("here!", to: ngo_path(@conn, :index)) %>
+  </p>
+
+<% end %>
 
 <br />
 <div class="row">
-  <div class="col-5"><h5>Team Challenges:</h5></div>
+  <div class="col-5"><h5>Team Challenges Memberships:</h5></div>
 </div>
 <br />
 
