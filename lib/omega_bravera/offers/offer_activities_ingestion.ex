@@ -252,7 +252,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
       if Notifier.send_reward_completion_email(challenge, challenge.user, offer_redeem) != :ok do
         Logger.error(
-          "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem. for team member: #{
+          "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem. for challenge owner: #{
             inspect(challenge.user)
           }"
         )

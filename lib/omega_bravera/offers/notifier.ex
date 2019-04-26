@@ -5,7 +5,8 @@ defmodule OmegaBravera.Offers.Notifier do
     Repo,
     Emails,
     Offers.OfferRedeem,
-    Accounts.User
+    Accounts.User,
+    Offers
   }
 
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
@@ -102,6 +103,7 @@ defmodule OmegaBravera.Offers.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
     redeem = Repo.preload(redeem, [:offer_reward, :vendor])
+    redeems_count = Offers.get_offer_completed_redeems_count_by_offer_id(challenge.offer_id)
 
     if not is_nil(sendgrid_email) and not is_nil(redeem.vendor.email) and
          user_subscribed_in_category?(
@@ -110,7 +112,7 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> Repo.preload(:offer)
-      |> reward_vendor_redemption_successful_confirmation_email(redeem, template_id)
+      |> reward_vendor_redemption_successful_confirmation_email(redeem, redeems_count, template_id)
       |> Mailer.send()
     end
   end
@@ -118,6 +120,7 @@ defmodule OmegaBravera.Offers.Notifier do
   def reward_vendor_redemption_successful_confirmation_email(
         %OfferChallenge{} = challenge,
         %OfferRedeem{} = redeem,
+        redeems_count,
         template_id
       ) do
     Email.build()
@@ -130,6 +133,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_substitution("-participantFirstName-", challenge.user.firstname)
     |> Email.add_substitution("-productName-", redeem.offer_reward.name)
     |> Email.add_substitution("-redeemID-", Integer.to_string(redeem.id))
+    |> Email.add_substitution("-redeemCount-", "#{redeems_count}")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(redeem.vendor.email)

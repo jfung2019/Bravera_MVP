@@ -630,6 +630,15 @@ defmodule OmegaBravera.Offers do
     |> Repo.insert()
   end
 
+  def get_offer_completed_redeems_count_by_offer_id(offer_id) do
+    from(
+      redeem in OfferRedeem,
+      where: redeem.offer_id == ^offer_id and redeem.status == ^"redeemed",
+      select: count(redeem.id, :distinct)
+    )
+    |> Repo.one()
+  end
+
   @doc """
   Updates a offer_redeems.
 

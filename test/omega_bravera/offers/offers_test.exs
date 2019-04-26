@@ -27,7 +27,7 @@ defmodule OmegaBravera.OffersTest do
       url: "https://bravera.co",
       vendor_id: nil,
       start_date: Timex.now(),
-      end_date: Timex.now()
+      end_date: Timex.shift(Timex.now(), days: 5)
     }
     @update_attrs %{
       activities: [],
@@ -47,7 +47,7 @@ defmodule OmegaBravera.OffersTest do
       toc: "some updated toc",
       url: "https://staging.bravera.co",
       start_date: Timex.shift(Timex.now(), days: 1),
-      end_date: Timex.shift(Timex.now(), days: 1)
+      end_date: Timex.shift(Timex.now(), days: 10)
     }
     @invalid_attrs %{
       activities: nil,

@@ -54,6 +54,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         render(conn, "new_redeem.html",
           offer_challenge: offer_challenge,
           offer_redeem: offer_redeem,
+          redeems_count: Offers.get_offer_completed_redeems_count_by_offer_id(offer_challenge.offer_id),
           changeset: changeset,
           layout: {OmegaBraveraWeb.LayoutView, "app.html"}
         )
@@ -135,7 +136,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         conn
         |> render("redeem_sucessful.html",
           layout: {OmegaBraveraWeb.LayoutView, "app.html"},
-          offer_challenge: offer_challenge
+          offer_challenge: offer_challenge,
+          redeems_count: Offers.get_offer_completed_redeems_count_by_offer_id(offer_challenge.offer_id)
         )
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -144,6 +146,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           |> render("new_redeem.html",
             offer_challenge: offer_challenge,
             offer_redeem: offer_redeem,
+            redeems_count: Offers.get_offer_completed_redeems_count_by_offer_id(offer_challenge.offer_id),
             changeset: changeset,
             vendor_id: offer_redeem_params["vendor_id"],
             layout: {OmegaBraveraWeb.LayoutView, "app.html"}

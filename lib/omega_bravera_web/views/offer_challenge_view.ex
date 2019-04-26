@@ -302,16 +302,4 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
 
   def can_resend?(%OfferChallengeTeamInvitation{updated_at: updated_at}),
     do: Timex.before?(Timex.now(), Timex.shift(updated_at, days: 1))
-
-  def redeems_total(redeems) when is_list(redeems) and length(redeems) > 0 do
-    Enum.reduce(redeems, 0, fn redeem, acc ->
-      if redeem.status == "redeemed" do
-        acc + 1
-      else
-        acc
-      end
-    end)
-  end
-
-  def redeems_total(_), do: 0
 end

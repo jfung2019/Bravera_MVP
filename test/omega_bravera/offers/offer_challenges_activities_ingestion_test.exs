@@ -139,15 +139,18 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
           }
         )
 
-      insert(
-        :offer_challenge,
-        %{
-          offer: offer,
-          user: user,
-          status: "pre_registration",
-          start_date: offer.launch_date
-        }
-      )
+      offer_challenge =
+        insert(
+          :offer_challenge,
+          %{
+            offer: offer,
+            user: user,
+            status: "pre_registration",
+            start_date: offer.launch_date
+          }
+        )
+
+      Offers.create_offer_redeems(offer_challenge, offer.vendor)
 
       challengers = Accounts.get_strava_challengers_for_offers(user.strava.athlete_id)
 
@@ -168,6 +171,9 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
         team_user = insert(:user, strava: build(:strava, user: nil, athlete_id: 2))
 
       insert(:offer_challenge_team_member, %{user_id: team_user.id, team_id: team.id})
+
+      Offers.create_offer_redeems(team.offer_challenge, team.offer_challenge.offer.vendor)
+      Offers.create_offer_redeems(team.offer_challenge, team.offer_challenge.offer.vendor, %{}, team_user)
 
       strava_activity = Map.replace!(strava_activity, :type, team.offer_challenge.activity_type)
 
@@ -266,6 +272,9 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       strava_activity: strava_activity
     } do
       challenge = insert(:offer_challenge)
+
+      Offers.create_offer_redeems(challenge, challenge.offer.vendor)
+
       strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       {:ok, :challenge_updated} =
@@ -285,6 +294,9 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       strava_activity: strava_activity
     } do
       challenge = insert(:offer_challenge, %{type: "PER_KM"})
+
+      Offers.create_offer_redeems(challenge, challenge.offer.vendor)
+
       strava_activity = Map.replace!(strava_activity, :type, challenge.activity_type)
 
       {:ok, :challenge_updated} =
@@ -304,6 +316,9 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
          %{strava_activity: strava_activity} do
       challenge = insert(:offer_challenge, %{distance_target: 50})
 
+      Offers.create_offer_redeems(challenge, challenge.offer.vendor)
+
+
       activity =
         strava_activity
         |> Map.put(:type, challenge.activity_type)
@@ -321,6 +336,8 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
     test "updates a km challenge status if the covered distance is greater than the target distance",
          %{strava_activity: strava_activity} do
       challenge = insert(:offer_challenge, %{distance_target: 50, type: "PER_KM"})
+
+      Offers.create_offer_redeems(challenge, challenge.offer.vendor)
 
       activity =
         strava_activity
