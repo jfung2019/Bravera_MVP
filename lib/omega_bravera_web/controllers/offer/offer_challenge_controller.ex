@@ -69,15 +69,18 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   def send_qr_code(conn, %{
         "offer_challenge_slug" => slug,
         "offer_slug" => offer_slug,
-        "redeem_token" => redeem_token
+        "redeem_token" => _redeem_token
       }) do
     offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug)
-    offer_redeem = Repo.get_by(OfferRedeem, token: redeem_token)
+    offer_redeem = Repo.get_by(OfferRedeem, user_id: offer_challenge.user_id, offer_challenge_id: offer_challenge.id)
 
     cond do
-      is_nil(offer_redeem) or is_nil(offer_challenge) ->
-        Logger.info(
-          "OfferChallengeController.send_qr_code: Redeem or OfferChallenge not found, will render 404."
+      is_nil(offer_challenge) ->
+        render_404(conn)
+
+      is_nil(offer_redeem) ->
+        Logger.error(
+          "OfferChallengeController.send_qr_code: Redeem for challenge #{inspect(offer_challenge.id)} not found, will render 404."
         )
 
         render_404(conn)
