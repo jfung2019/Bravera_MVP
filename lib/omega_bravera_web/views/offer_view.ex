@@ -21,7 +21,7 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
   def has_active_offer_challenge?(_, nil), do: false
 
   def user_challenge_slug(%Offer{id: id}, %User{offer_challenges: offer_challenges}) do
-    Enum.find(offer_challenges, &(&1.offer_id == id))
+    Enum.find(offer_challenges, &(&1.offer_id == id and &1.status == "active"))
     |> offer_challenge_slug()
   end
 
