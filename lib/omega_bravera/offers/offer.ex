@@ -26,6 +26,7 @@ defmodule OmegaBravera.Offers.Offer do
     field(:slug, :string)
     field(:toc, :string)
     field(:url, :string)
+    field(:time_limit, :integer, default: 0)
 
     field(:active_offer_challenges, :integer, default: 0, virtual: true)
     field(:num_of_challenges, :decimal, default: 0, virtual: true)
@@ -66,7 +67,8 @@ defmodule OmegaBravera.Offers.Offer do
     :offer_challenge_types,
     :distances,
     :activities,
-    :vendor_id
+    :vendor_id,
+    :time_limit
   ]
   @required_attributes [
     :name,
@@ -104,6 +106,7 @@ defmodule OmegaBravera.Offers.Offer do
   def update_changeset(offer, attrs) do
     offer
     |> changeset(attrs)
+    |> IO.inspect
     |> validate_pre_registration_start_date_modification(offer)
     |> validate_no_active_challenges(offer)
   end

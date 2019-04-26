@@ -273,6 +273,30 @@ defmodule OmegaBravera.OffersTest do
       assert is_nil(offer_challenge.team)
     end
 
+    test "create_offer_challenge/2 can create offer_challenge with restricted end_date in respect to offer.time_limit" do
+      vendor = insert(:vendor)
+      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id, time_limit: 10, end_date: Timex.shift(Timex.now, days: 30)})
+      insert(:offer_reward, %{offer: nil, offer_id: offer.id})
+      user = insert(:user)
+
+      assert {:ok, %OfferChallenge{} = offer_challenge} =
+               Offers.create_offer_challenge(offer, user)
+
+      assert Timex.diff(offer_challenge.end_date, offer.end_date, :days) == -20
+    end
+
+    test "create_offer_challenge/2 can create offer_challenge with restricted end_date in respect to offer.time_limit and cannot bypass offer.end_date" do
+      vendor = insert(:vendor)
+      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id, time_limit: 10, end_date: Timex.shift(Timex.now, days: 5)})
+      insert(:offer_reward, %{offer: nil, offer_id: offer.id})
+      user = insert(:user)
+
+      assert {:ok, %OfferChallenge{} = offer_challenge} =
+               Offers.create_offer_challenge(offer, user)
+
+      assert Timex.diff(offer_challenge.end_date, offer.end_date, :days) == 0
+    end
+
     test "create_offer_challenge/2 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
                Offers.create_offer_challenge(insert(:offer), %User{}, @invalid_attrs)

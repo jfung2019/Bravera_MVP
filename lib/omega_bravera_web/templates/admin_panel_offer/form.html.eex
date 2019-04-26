@@ -36,6 +36,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :open_registration, class: "control-label" %>
+    <%= checkbox f, :open_registration %>
+    <%= error_tag f, :open_registration %>
+  </div>
+
+  <div class="form-group">
     <%= label f, "Start date: ", class: "control-label" %>
     <%= registration_date_builder(f, :start_date, class: "form-control") %>
     <%= error_tag f, :start_date %>
@@ -48,9 +54,9 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :open_registration, class: "control-label" %>
-    <%= checkbox f, :open_registration %>
-    <%= error_tag f, :open_registration %>
+    <%= label f, :time_limit, "Time Limit (leave blank to make offer challenge end date match offer's)", class: "control-label" %>
+    <%= number_input f, :time_limit, class: "form-control" %>
+    <%= error_tag f, :time_limit %>
   </div>
 
   <div class="form-group">

@@ -179,6 +179,7 @@ defmodule OmegaBravera.Factory do
       offer_challenge_types: ["PER_KM"],
       distances: ["50"],
       activities: ["Run"],
+      time_limit: 0,
       vendor: build(:vendor)
     }
   end

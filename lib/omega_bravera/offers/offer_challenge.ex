@@ -26,6 +26,8 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     field(:start_date, :utc_datetime)
     field(:status, :string, default: "active")
     field(:type, :string)
+
+    # Should be removed but kept them in case we had a problem in the migration. -Sherief
     field(:redeemed, :integer, default: 0)
     field(:redeem_token, :string)
 
@@ -72,7 +74,8 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> validate_inclusion(:activity_type, activity_options())
     |> validate_inclusion(:default_currency, currency_options())
     |> validate_inclusion(:type, challenge_type_options())
-    |> add_start_and_end_dates(offer)
+    |> add_start_date(offer)
+    |> add_end_date(offer)
     |> add_status(offer)
     |> generate_slug(user)
     |> put_change(:user_id, user.id)
@@ -186,14 +189,39 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> change(last_activity_received: DateTime.truncate(last_activity_received, :second))
   end
 
-  defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
-    if Timex.before?(Timex.now(), offer.end_date) and Timex.after?(Timex.now(), offer.start_date) do
+  defp add_start_date(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
+    if Timex.after?(Timex.now(), offer.start_date) do
       changeset
       |> change(start_date: DateTime.truncate(Timex.now(), :second))
-      |> change(end_date: DateTime.truncate(offer.end_date, :second))
     else
       changeset
-      |> add_error(:end_date, "Cannot create challenge. Either offer did not start yet or it is expired.")
+      |> add_error(:start_date, "Cannot create challenge. Offer did not start yet.")
+    end
+  end
+
+  defp add_end_date(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
+    end_date =
+      cond do
+        offer.time_limit > 0 ->
+          limited_end_date = Timex.shift(Timex.now(), days: offer.time_limit)
+
+          # Make sure the end_date is not after the offer's end_date.
+          if Timex.after?(limited_end_date, offer.end_date) do
+            offer.end_date
+          else
+            limited_end_date
+          end
+
+        true ->
+          offer.end_date
+      end
+
+    if Timex.before?(Timex.now(), end_date) do
+      changeset
+      |> change(end_date: DateTime.truncate(end_date, :second))
+    else
+      changeset
+      |> add_error(:end_date, "Cannot create challenge. Offer expired.")
     end
   end
 
