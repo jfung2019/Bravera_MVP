@@ -12,17 +12,28 @@ defmodule OmegaBravera.Offers.Offer do
     field(:full_desc, :string)
     field(:ga_id, :string)
     field(:image, :string)
-    field(:launch_date, :utc_datetime)
     field(:logo, :string)
     field(:name, :string)
     field(:offer_challenge_desc, :string)
     field(:offer_percent, :float)
     field(:hidden, :boolean, default: false)
-    field(:open_registration, :boolean, default: true)
+
     field(:pre_registration_start_date, :utc_datetime)
+    # When true, pre_registration_start_date, will be ignored.
+    # When false, challenges will be in pre_registration mode
+    field(:open_registration, :boolean, default: true)
+
+    # Does not affect anything... as requested by Alyn in 1119.
     field(:start_date, :utc_datetime)
     field(:end_date, :utc_datetime)
+
+    # NO LOGIC IMPLEMENTED YET.
+    # When true, all challenges will ignore the end_date.
+    field(:always, :boolean, default: false)
+
+    # When more than 0, all challenges will have a single team.
     field(:additional_members, :integer, default: 0)
+
     field(:slug, :string)
     field(:toc, :string)
     field(:url, :string)
@@ -51,10 +62,10 @@ defmodule OmegaBravera.Offers.Offer do
     :slug,
     :ga_id,
     :pre_registration_start_date,
-    :launch_date,
+    :open_registration,
     :start_date,
     :end_date,
-    :open_registration,
+    :always,
     :hidden,
     :desc,
     :full_desc,
@@ -96,7 +107,6 @@ defmodule OmegaBravera.Offers.Offer do
     |> validate_format(:url, ~r/^(https|http):\/\/\w+/)
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
-    |> validate_launch_date()
     |> validate_required(:slug)
     |> unique_constraint(:slug)
     |> upload_image(attrs)
@@ -106,7 +116,6 @@ defmodule OmegaBravera.Offers.Offer do
   def update_changeset(offer, attrs) do
     offer
     |> changeset(attrs)
-    |> IO.inspect
     |> validate_pre_registration_start_date_modification(offer)
     |> validate_no_active_challenges(offer)
   end
@@ -184,15 +193,15 @@ defmodule OmegaBravera.Offers.Offer do
            valid?: true,
            changes: %{
              pre_registration_start_date: pre_registration_start_date,
-             launch_date: launch_date
+             start_date: start_date
            }
          } = changeset
        ) do
     open_registration = get_field(changeset, :open_registration)
 
     case open_registration == false and
-           (Timex.after?(pre_registration_start_date, launch_date) or
-              Timex.equal?(pre_registration_start_date, launch_date)) do
+           (Timex.after?(pre_registration_start_date, start_date) or
+              Timex.equal?(pre_registration_start_date, start_date)) do
       true ->
         add_error(
           changeset,
@@ -210,10 +219,10 @@ defmodule OmegaBravera.Offers.Offer do
   defp validate_open_registration(%Ecto.Changeset{valid?: true} = changeset) do
     open_registration = get_field(changeset, :open_registration)
     pre_registration_start_date = get_field(changeset, :pre_registration_start_date)
-    launch_date = get_field(changeset, :launch_date)
+    start_date = get_field(changeset, :start_date)
 
     case open_registration == false and
-           (is_nil(pre_registration_start_date) or is_nil(launch_date)) do
+           (is_nil(pre_registration_start_date) or is_nil(start_date)) do
       true ->
         add_error(
           changeset,
@@ -228,25 +237,25 @@ defmodule OmegaBravera.Offers.Offer do
 
   defp validate_open_registration(%Ecto.Changeset{} = changeset), do: changeset
 
-  defp validate_launch_date(
-         %Ecto.Changeset{valid?: true, changes: %{launch_date: launch_date}} = changeset
-       ) do
-    open_registration = get_field(changeset, :open_registration)
+  # defp validate_launch_date(
+  #        %Ecto.Changeset{valid?: true, changes: %{launch_date: launch_date}} = changeset
+  #      ) do
+  #   open_registration = get_field(changeset, :open_registration)
 
-    case open_registration == false and Timex.before?(launch_date, Timex.now()) do
-      true ->
-        add_error(
-          changeset,
-          :launch_date,
-          "Launch date cannot be less than today's date."
-        )
+  #   case open_registration == false and Timex.before?(launch_date, Timex.now()) do
+  #     true ->
+  #       add_error(
+  #         changeset,
+  #         :launch_date,
+  #         "Launch date cannot be less than today's date."
+  #       )
 
-      _ ->
-        changeset
-    end
-  end
+  #     _ ->
+  #       changeset
+  #   end
+  # end
 
-  defp validate_launch_date(%Ecto.Changeset{} = changeset), do: changeset
+  # defp validate_launch_date(%Ecto.Changeset{} = changeset), do: changeset
 
   defp validate_pre_registration_start_date_modification(
          %Ecto.Changeset{
@@ -290,18 +299,12 @@ defmodule OmegaBravera.Offers.Offer do
   defp changeset_to_hk_date(
          %Ecto.Changeset{
            changes: %{
-             launch_date: launch_date,
              pre_registration_start_date: pre_registration_start_date,
              start_date: start_date,
              end_date: end_date
            }
          } = changeset
        ) do
-    launch_date =
-      launch_date
-      |> Timex.to_datetime("Asia/Hong_Kong")
-      |> DateTime.to_naive()
-
     pre_registration_start_date =
       pre_registration_start_date
       |> Timex.to_datetime("Asia/Hong_Kong")
@@ -320,7 +323,6 @@ defmodule OmegaBravera.Offers.Offer do
     changeset
     |> change(%{
       pre_registration_start_date: pre_registration_start_date,
-      launch_date: launch_date,
       start_date: start_date,
       end_date: end_date
     })

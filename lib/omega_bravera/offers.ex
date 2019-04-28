@@ -75,7 +75,6 @@ defmodule OmegaBravera.Offers do
         select: %{
           o
           | active_offer_challenges: count(offer_challenges.id),
-            launch_date: o.launch_date,
             pre_registration_start_date:
               fragment("? at time zone 'utc'", o.pre_registration_start_date)
         }
@@ -86,13 +85,12 @@ defmodule OmegaBravera.Offers do
       offer == nil ->
         nil
 
-      Timex.is_valid?(offer.pre_registration_start_date) and Timex.is_valid?(offer.launch_date) ->
+      Timex.is_valid?(offer.pre_registration_start_date) ->
         offer
         |> Map.put(
           :pre_registration_start_date,
           Timex.to_datetime(offer.pre_registration_start_date)
         )
-        |> Map.put(:launch_date, Timex.to_datetime(offer.launch_date))
 
       true ->
         offer
@@ -131,9 +129,8 @@ defmodule OmegaBravera.Offers do
         select: %{
           o
           | active_offer_challenges: count(offer_challenges.id),
-            launch_date: o.launch_date,
-            launch_date:
-              fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.launch_date),
+            end_date:
+              fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.end_date),
             pre_registration_start_date:
               fragment(
                 "? at time zone 'utc' at time zone 'asia/hong_kong'",
@@ -151,14 +148,13 @@ defmodule OmegaBravera.Offers do
       |> Map.put(:start_date, Timex.to_datetime(offer.start_date))
       |> Map.put(:end_date, Timex.to_datetime(offer.end_date))
 
-    case Timex.is_valid?(offer.pre_registration_start_date) and Timex.is_valid?(offer.launch_date) do
+    case Timex.is_valid?(offer.pre_registration_start_date) do
       true ->
         offer
         |> Map.put(
           :pre_registration_start_date,
           Timex.to_datetime(offer.pre_registration_start_date)
         )
-        |> Map.put(:launch_date, Timex.to_datetime(offer.launch_date))
 
       _ ->
         offer

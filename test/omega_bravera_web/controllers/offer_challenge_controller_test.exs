@@ -52,7 +52,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       assert Offers.list_offer_challenges() == []
     end
 
-    test "create/2 refuses to create challenge if offer start date was not reached", %{
+    test "create/2 creates a pre_registration challenge within time limit of an offer", %{
       conn: conn,
       current_user: user
     } do
@@ -60,7 +60,14 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
 
       offer =
-        insert(:offer, %{start_date: Timex.shift(Timex.now(), days: 2), end_date: Timex.shift(Timex.now(), days: 5)})
+        insert(:offer, %{
+          open_registration: false,
+          pre_registration_start_date: Timex.now(),
+          start_date: Timex.shift(Timex.now(), days: 5),
+          end_date: Timex.shift(Timex.now(), days: 10),
+          time_limit: 5
+        }
+      )
 
       conn =
         post(
@@ -68,8 +75,44 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           offer_offer_challenge_path(conn, :create, offer.slug)
         )
 
-      assert get_flash(conn, :error) == "Could not create offer challenge."
-      assert Offers.list_offer_challenges() == []
+      assert %{slug: slug} = redirected_params(conn)
+
+      created_challenge = Offers.get_offer_chal_by_slugs(offer.slug, slug)
+
+      assert Timex.equal?(created_challenge.start_date, offer.start_date)
+      assert Timex.equal?(created_challenge.end_date, offer.end_date)
+    end
+
+    test "create/2 creates a pre_registration challenge", %{
+      conn: conn,
+      current_user: user
+    } do
+      {:ok, _user} =
+        Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+
+      offer =
+        insert(:offer, %{
+          open_registration: false,
+          pre_registration_start_date: Timex.now(),
+          start_date: Timex.shift(Timex.now(), days: 5),
+          end_date: Timex.shift(Timex.now(), days: 10),
+          time_limit: 0
+        }
+      )
+
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_path(conn, :create, offer.slug)
+        )
+
+      assert %{slug: slug} = redirected_params(conn)
+
+      created_challenge = Offers.get_offer_chal_by_slugs(offer.slug, slug)
+
+      assert created_challenge.status == "pre_registration"
+      assert Timex.equal?(created_challenge.start_date, offer.start_date)
+      assert Timex.equal?(created_challenge.end_date, offer.end_date)
     end
 
     test "create/2 redirects to challenge data is valid", %{conn: conn, current_user: user} do

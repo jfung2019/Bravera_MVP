@@ -135,7 +135,9 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
           :offer,
           %{
             open_registration: false,
-            pre_registration_start_date: Timex.shift(Timex.now(), days: 3)
+            pre_registration_start_date: Timex.shift(Timex.now(), days: 3),
+            start_date: Timex.shift(Timex.now(), days: 10),
+            end_date: Timex.shift(Timex.now(), days: 20),
           }
         )
 
@@ -146,7 +148,8 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
             offer: offer,
             user: user,
             status: "pre_registration",
-            start_date: offer.launch_date
+            start_date: offer.start_date,
+            end_date: offer.end_date
           }
         )
 

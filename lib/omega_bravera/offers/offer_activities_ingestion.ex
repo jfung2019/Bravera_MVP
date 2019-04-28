@@ -262,6 +262,8 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     params
   end
 
+  defp notify_participant_of_activity({_status, %OfferChallenge{status: "pre_registration"}, _activity} = params, _), do: params
+
   defp strava_client(token), do: Strava.Client.new(token)
 
   defp valid_activity?(activity, challenge, _send_emails) do

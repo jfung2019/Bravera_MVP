@@ -149,10 +149,10 @@ defmodule OmegaBravera.Offers.OfferChallenge do
 
   defp add_status(%Ecto.Changeset{} = changeset, %Offer{
          open_registration: open_registration,
-         launch_date: launch_date
+         start_date: start_date
        }) do
     status =
-      case open_registration == false and Timex.after?(launch_date, Timex.now()) do
+      case open_registration == false and Timex.after?(start_date, Timex.now()) do
         true -> "pre_registration"
         _ -> "active"
       end
@@ -176,12 +176,12 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     change(challenge, %{participant_notified_of_inactivity: true})
   end
 
-  defp add_last_activity_received(%Ecto.Changeset{} = changeset, %Offer{launch_date: launch_date}) do
+  defp add_last_activity_received(%Ecto.Changeset{} = changeset, %Offer{start_date: start_date}) do
     status = get_field(changeset, :status)
 
     last_activity_received =
       case status do
-        "pre_registration" -> launch_date
+        "pre_registration" -> start_date
         _ -> Timex.now()
       end
 
@@ -189,21 +189,28 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> change(last_activity_received: DateTime.truncate(last_activity_received, :second))
   end
 
-  defp add_start_date(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
-    if Timex.after?(Timex.now(), offer.start_date) do
-      changeset
-      |> change(start_date: DateTime.truncate(Timex.now(), :second))
+  # If no pre_registration, the start_date is now.
+  defp add_start_date(%Ecto.Changeset{} = changeset, %Offer{open_registration: true}),
+    do: change(changeset, start_date: DateTime.truncate(Timex.now(), :second))
+
+  # If there's pre_registration, the start_date is offer.start_date unless, offer.start_date is in the past.
+  defp add_start_date(%Ecto.Changeset{} = changeset, %Offer{open_registration: false, start_date: offer_start_date}) do
+    if Timex.before?(Timex.now(), offer_start_date) do
+      change(changeset, start_date: DateTime.truncate(offer_start_date, :second))
     else
-      changeset
-      |> add_error(:start_date, "Cannot create challenge. Offer did not start yet.")
+      change(changeset, start_date: DateTime.truncate(Timex.now(), :second))
     end
   end
 
+  #  When offer.time_limit (in days) is set, the offer challenge end_date
+  #  will be now + time_limit. Otherwise, offer.end_date is offer_challenge.end_date.
   defp add_end_date(%Ecto.Changeset{} = changeset, %Offer{} = offer) do
+    challenge_start_date = get_field(changeset, :start_date)
+
     end_date =
       cond do
         offer.time_limit > 0 ->
-          limited_end_date = Timex.shift(Timex.now(), days: offer.time_limit)
+          limited_end_date = Timex.shift(challenge_start_date, days: offer.time_limit)
 
           # Make sure the end_date is not after the offer's end_date.
           if Timex.after?(limited_end_date, offer.end_date) do
@@ -216,6 +223,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
           offer.end_date
       end
 
+    # Make sure no challenge can be after offer.end_date no matter what.
     if Timex.before?(Timex.now(), end_date) do
       changeset
       |> change(end_date: DateTime.truncate(end_date, :second))
@@ -236,7 +244,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     offer_id = get_field(changeset, :offer_id)
     user = Repo.preload(user, :offer_challenges)
 
-    if Enum.find(user.offer_challenges, &(&1.offer_id == offer_id && &1.status == "active")) do
+    if Enum.find(user.offer_challenges, &(&1.offer_id == offer_id && (&1.status == "active" or &1.status == "pre_registration") )) do
       changeset
       |> add_error(:offer_id, "Already participating in the challenge.")
     else

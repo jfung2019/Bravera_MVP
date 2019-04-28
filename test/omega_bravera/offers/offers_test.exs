@@ -230,6 +230,26 @@ defmodule OmegaBravera.OffersTest do
       assert offer_challenge.team.user_id == user.id
     end
 
+    test "create_offer_challenge/2 creates pre_registration challenge and uses today's date as a start_date instead of offer for it being in the past" do
+      now = Timex.now()
+      user = insert(:user)
+      offer = insert(:offer, %{
+        open_registration: false,
+        pre_registration_start_date: Timex.shift(Timex.now(), days: -5),
+        start_date: Timex.now(),
+        end_date: Timex.shift(Timex.now(), days: 10),
+        time_limit: 0
+      }
+    )
+
+      assert {:ok, %OfferChallenge{} = offer_challenge} =
+               Offers.create_offer_challenge(offer, user)
+
+      assert Timex.equal?(offer_challenge.start_date, now)
+      assert Timex.equal?(offer_challenge.end_date, offer.end_date)
+
+    end
+
     test "create_offer_challenge/2 can create offer_challenge with offer_redeem" do
       vendor = insert(:vendor)
       offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
