@@ -126,7 +126,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     case Offers.update_offer_redeems(offer_redeem, offer_challenge, offer_redeem_params) do
       {:ok, offer_redeem} ->
         offer_redeem = Repo.preload(offer_redeem, :user)
-        Notifier.send_user_reward_redemption_successful(offer_challenge, offer_redeem.user)
+        #Notifier.send_user_reward_redemption_successful(offer_challenge, offer_redeem.user)
 
         Notifier.send_reward_vendor_redemption_successful_confirmation(
           offer_challenge,

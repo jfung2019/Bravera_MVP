@@ -5,6 +5,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Repo,
     Emails,
     Offers.OfferRedeem,
+    Offers.OfferVendor,
     Accounts.User,
     Offers
   }
@@ -133,10 +134,11 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_substitution("-participantFirstName-", challenge.user.firstname)
     |> Email.add_substitution("-productName-", redeem.offer_reward.name)
     |> Email.add_substitution("-redeemID-", Integer.to_string(redeem.id))
-    |> Email.add_substitution("-redeemCount-", "#{redeems_count}")
+    |> Email.add_substitution("-redeemCount-", Integer.to_string(redeems_count))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(redeem.vendor.email)
+    |> add_cc(redeem.vendor)
   end
 
   def send_user_reward_redemption_successful(%OfferChallenge{} = challenge, %User{} = user) do
@@ -454,4 +456,16 @@ defmodule OmegaBravera.Offers.Notifier do
       offer_redeem.token
     )
   end
+
+  defp add_cc(email, %OfferVendor{cc: cc_list}) when not is_nil(cc_list) do
+    cleaned_cc_list =
+      String.split(cc_list, ",", trim: true)
+      |> Enum.map(&(String.trim/1))
+      |> Enum.reject(&(String.length(&1) == 0))
+      |> Enum.map(&(%{email: &1}))
+
+      %{email | cc: cleaned_cc_list}
+  end
+
+  defp add_cc(email, _), do: email
 end

@@ -12,9 +12,15 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :email, "Email (Leave blank if not necessary)", class: "control-label" %>
+    <%= label f, :email, "Email To: (Can be left blank but no email will be sent)", class: "control-label" %>
     <%= email_input f, :email, class: "form-control" %>
     <%= error_tag f, :email %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :cc, "CC: can be empty. Should separate emails using a comma. No limit.", class: "control-label" %>
+    <%= textarea f, :cc, class: "form-control", rows: 3 %>
+    <%= error_tag f, :cc %>
   </div>
 
   <div class="form-group">
