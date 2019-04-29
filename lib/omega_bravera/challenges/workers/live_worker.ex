@@ -2,6 +2,7 @@ defmodule OmegaBravera.Challenges.LiveWorker do
   require Logger
 
   alias OmegaBravera.{Repo, Challenges, Challenges.Notifier}
+  alias OmegaBravera.{Offers, Offers.Notifier}
 
   def start() do
     Challenges.get_live_ngo_chals()
@@ -17,6 +18,23 @@ defmodule OmegaBravera.Challenges.LiveWorker do
         {:error, reason} ->
           Logger.error(
             "LiveChallenges worker: failed to activate challenge. Reason: #{inspect(reason)}"
+          )
+      end
+    end)
+
+    Offers.get_live_offer_challenges()
+    |> Enum.map(fn challenge ->
+      challenge = Repo.preload(challenge, [:offer, :user])
+
+      case Offers.update_offer_challenge(challenge, %{status: "active"}) do
+        {:ok, _} ->
+          Logger.info("LiveChallenges worker: activated offer challenge: #{inspect(challenge.slug)}")
+
+          Notifier.send_challenge_activated_email(challenge)
+
+        {:error, reason} ->
+          Logger.error(
+            "LiveChallenges worker: failed to activate offer challenge. Reason: #{inspect(reason)}"
           )
       end
     end)

@@ -15,6 +15,32 @@ defmodule OmegaBravera.Offers.Notifier do
 
   alias SendGrid.{Email, Mailer}
 
+
+  def send_challenge_activated_email(%OfferChallenge{} = challenge) do
+    template_id = "75516ad9-3ce8-4742-bd70-1227ce3cba1d"
+    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
+
+    if not is_nil(sendgrid_email) and user_subscribed_in_category?(
+         challenge.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
+      challenge
+      |> challenge_activated_email(template_id)
+      |> Mailer.send()
+    end
+  end
+
+  def challenge_activated_email(%OfferChallenge{} = challenge, template_id) do
+    Email.build()
+    |> Email.put_template(template_id)
+    |> Email.add_substitution("-firstName-", challenge.user.firstname)
+    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(challenge.user.email)
+  end
+
   def send_team_owner_member_added_notification(%OfferChallenge{} = challenge, %User{} = user) do
     template_id = "4726b363-9a6a-4953-bfac-942cae457053"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)

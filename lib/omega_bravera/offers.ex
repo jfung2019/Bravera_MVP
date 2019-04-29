@@ -331,6 +331,15 @@ defmodule OmegaBravera.Offers do
       ** (Ecto.NoResultsError)
 
   """
+
+  def get_live_offer_challenges() do
+    from(
+      oc in OfferChallenge,
+      where: oc.status == "pre_registration" and oc.start_date < ^Timex.now()
+    )
+    |> Repo.all()
+  end
+
   def get_offer_challenge!(id) do
     from(oc in OfferChallenge,
       left_join: a in OfferChallengeActivity,

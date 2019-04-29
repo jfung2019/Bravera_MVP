@@ -38,7 +38,7 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :start_date, "Start Date (has no effect on anything)", class: "control-label" %>
+    <%= label f, :start_date, "Start Date (when in pre_registration, it is used as the end of the countdown date)", class: "control-label" %>
     <br/>
     <%= registration_date_builder(f, :start_date, class: "form-control") %>
     <%= error_tag f, :start_date %>
