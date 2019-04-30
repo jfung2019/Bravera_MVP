@@ -183,7 +183,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       offer ->
         case Offers.create_offer_challenge(offer, current_user) do
           {:ok, offer_challenge} ->
-            send_emails(offer_challenge)
+
+            send_emails(Repo.preload(offer_challenge, :user))
 
             conn
             |> put_flash(:info, "Success! You have registered for this offer!")
@@ -248,7 +249,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             # TODO: cast_assoc with add_user_to_team. -Sherief
             Offers.create_offer_redeems(challenge, challenge.offer.vendor, %{}, user)
 
+            # Notifications
             Offers.Notifier.send_team_owner_member_added_notification(challenge, user)
+            Offers.Notifier.send_challenge_signup_email(challenge, user)
 
             conn
             |> put_flash(
@@ -379,7 +382,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         Offers.Notifier.send_pre_registration_challenge_sign_up_email(challenge)
 
       _ ->
-        Offers.Notifier.send_challenge_signup_email(challenge)
+        Offers.Notifier.send_challenge_signup_email(challenge, challenge.user)
     end
   end
 

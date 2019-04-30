@@ -273,7 +273,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_challenge_signup_email(%OfferChallenge{} = challenge) do
+  def send_challenge_signup_email(%OfferChallenge{} = challenge, %User{} = user) do
     template_id = "34c53203-5dd3-4de3-8ae9-4a6abd52be9d"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
@@ -284,12 +284,12 @@ defmodule OmegaBravera.Offers.Notifier do
            sendgrid_email.category.id
          ) do
       challenge
-      |> challenge_signup_email(template_id)
+      |> challenge_signup_email(user, template_id)
       |> Mailer.send()
     end
   end
 
-  def challenge_signup_email(%OfferChallenge{} = challenge, template_id) do
+  def challenge_signup_email(%OfferChallenge{} = challenge, %User{} = user, template_id) do
     start_date = Timex.to_datetime(challenge.offer.start_date, "Asia/Hong_Kong")
     end_date = Timex.to_datetime(challenge.offer.end_date, "Asia/Hong_Kong")
 
@@ -310,7 +310,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_substitution("-Distance-", "#{challenge.distance_target} Km")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
-    |> Email.add_to(challenge.user.email)
+    |> Email.add_to(user.email)
   end
 
   def send_team_activity_completed_email(
