@@ -581,6 +581,7 @@ div.page-index {
       }
       p {
         color: grey;
+        font-size: 18px;
       }
 
       @include media-breakpoint-down(sm) {
