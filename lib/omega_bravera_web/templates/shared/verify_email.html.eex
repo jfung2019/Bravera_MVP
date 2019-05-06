@@ -14,7 +14,11 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-success">Resend</button>
+        <%= if is_nil(@email) do %>
+          <button type="submit" class="btn btn-success">Send Activation Email</button>
+        <% else %>
+          <button type="submit" class="btn btn-success">Resend Activation Email</button>
+        <% end %>
       </div>
     <% end %>
     </div>
