@@ -20,7 +20,7 @@ config :logger, level: :warn
 #   level: :debug
 
 # Configure your database
-host = System.get_env("BRAVERA_DB_HOST") || "localhost"
+host = System.get_env("DB_HOST") || "localhost"
 
 config :omega_bravera, OmegaBravera.Repo,
   username: "postgres",
