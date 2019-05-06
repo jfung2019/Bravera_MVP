@@ -57,6 +57,31 @@ defmodule OmegaBravera.Accounts.User do
     |> add_email_activation_token()
   end
 
+  def update_changeset(user, attrs) do
+    user
+    |> cast(attrs, @allowed_attributes)
+    |> validate_required(@required_attributes)
+    |> validate_format(:email, ~r/@/)
+    |> validate_length(:email, max: 254)
+    |> unique_constraint(:email)
+    |> email_changed(user)
+  end
+
+  def email_changed(%Ecto.Changeset{} = changeset, %__MODULE__{} = user) do
+    new_email = get_field(changeset, :email)
+
+    case new_email != user.email do
+      false ->
+        changeset
+
+      true ->
+        changeset
+        |> put_change(:email_verified, false)
+        |> put_change(:email_activation_token, gen_token())
+    end
+  end
+
+
   def update_profile_picture_changeset(user, attrs) do
     user
     |> cast(attrs, [:profile_picture])

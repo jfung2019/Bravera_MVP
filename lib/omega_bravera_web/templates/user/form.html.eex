@@ -5,7 +5,7 @@
     </div>
   <% end %>
 
-  <p><b>To take a challenge, we must activate your account by adding an email address.</b></p>
+  <p><b>If you add/change your email, we will send you a verification link that you have to click to be able to take challenges.</b></p>
   <div class="form-group">
     <%= label f, :email, class: "control-label" %>
     <%= email_input f, :email, class: "form-control", required: "" %>

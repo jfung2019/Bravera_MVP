@@ -62,15 +62,21 @@ defmodule OmegaBraveraWeb.UserController do
     user = Guardian.Plug.current_resource(conn)
 
     case Accounts.update_user(user, user_params) do
-      {:ok, user} ->
-        if not is_nil(user.email) do
-          Accounts.Notifier.send_user_signup_email(user)
-        end
+      {:ok, updated_user} ->
+        if not is_nil(updated_user.email) and
+             updated_user.email_activation_token != user.email_activation_token and
+             updated_user.email_verified == false do
 
-        # TODO: if email exists, send another email and deactivate previous email.
-        conn
-        |> put_flash(:info, "Email updated. Please check your inbox now!")
-        |> redirect(to: user_path(conn, :show, %{}))
+          Accounts.Notifier.send_user_signup_email(updated_user)
+
+          conn
+          |> put_flash(:info, "Email updated. Please check your inbox now!")
+          |> redirect(to: user_path(conn, :show, %{}))
+        else
+          conn
+          |> put_flash(:info, "Updated account settings sucessfully.")
+          |> redirect(to: user_path(conn, :show, %{}))
+        end
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)

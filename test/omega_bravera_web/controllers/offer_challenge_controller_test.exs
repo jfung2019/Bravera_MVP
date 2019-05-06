@@ -18,7 +18,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
     attrs = %{
       firstname: "sherief",
       lastname: "alaa ",
-      email: nil,
+      email: "sherief@plangora.com",
       email_verified: false
     }
 
@@ -140,6 +140,28 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
     conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
     assert html_response(conn, 200) =~ "verify your email address"
+
+    assert Plug.Conn.get_session(conn, :after_email_verify) ==
+             offer_offer_challenge_path(conn, :new, offer)
+  end
+
+  test "when a user changes their email, email_verified will be set to false and email_activation_token will change too",
+       %{conn: conn, current_user: user} do
+    offer = insert(:offer, %{slug: "sherief-1"})
+
+    {:ok, updated_user} = Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+
+    conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
+    assert html_response(conn, 302)
+
+    post(conn, user_path(conn, :update, %{"user" => %{email: "sherief@gmail.com"}}))
+    updated_user2 = Accounts.get_user!(updated_user.id)
+
+    assert updated_user2.email == "sherief@gmail.com"
+    assert updated_user2.email_activation_token != updated_user.email_activation_token
+    refute updated_user2.email_verified
+
+    conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
 
     assert Plug.Conn.get_session(conn, :after_email_verify) ==
              offer_offer_challenge_path(conn, :new, offer)
