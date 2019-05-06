@@ -137,7 +137,7 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
             open_registration: false,
             pre_registration_start_date: Timex.shift(Timex.now(), days: 3),
             start_date: Timex.shift(Timex.now(), days: 10),
-            end_date: Timex.shift(Timex.now(), days: 20),
+            end_date: Timex.shift(Timex.now(), days: 20)
           }
         )
 
@@ -176,7 +176,13 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       insert(:offer_challenge_team_member, %{user_id: team_user.id, team_id: team.id})
 
       Offers.create_offer_redeems(team.offer_challenge, team.offer_challenge.offer.vendor)
-      Offers.create_offer_redeems(team.offer_challenge, team.offer_challenge.offer.vendor, %{}, team_user)
+
+      Offers.create_offer_redeems(
+        team.offer_challenge,
+        team.offer_challenge.offer.vendor,
+        %{},
+        team_user
+      )
 
       strava_activity = Map.replace!(strava_activity, :type, team.offer_challenge.activity_type)
 
@@ -320,7 +326,6 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       challenge = insert(:offer_challenge, %{distance_target: 50})
 
       Offers.create_offer_redeems(challenge, challenge.offer.vendor)
-
 
       activity =
         strava_activity

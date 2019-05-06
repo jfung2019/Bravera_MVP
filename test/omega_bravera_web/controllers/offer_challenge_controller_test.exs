@@ -66,8 +66,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           start_date: Timex.shift(Timex.now(), days: 5),
           end_date: Timex.shift(Timex.now(), days: 10),
           time_limit: 5
-        }
-      )
+        })
 
       conn =
         post(
@@ -97,8 +96,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           start_date: Timex.shift(Timex.now(), days: 5),
           end_date: Timex.shift(Timex.now(), days: 10),
           time_limit: 0
-        }
-      )
+        })
 
       conn =
         post(
@@ -140,6 +138,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
     conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
     assert html_response(conn, 200) =~ "verify your email address"
+
     after_email_verify =
       Plug.Conn.fetch_cookies(conn)
       |> Map.get(:cookies)
@@ -152,7 +151,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
        %{conn: conn, current_user: user} do
     offer = insert(:offer, %{slug: "sherief-1"})
 
-    {:ok, updated_user} = Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+    {:ok, updated_user} =
+      Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
 
     conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
     assert html_response(conn, 302)
@@ -196,7 +196,10 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
     test "save_redeem/2 updates a redeem when valid data is given", %{conn: conn} do
       offer_redeem = insert(:offer_redeem)
 
-      params = %{vendor_id: offer_redeem.vendor.vendor_id, offer_reward_id: offer_redeem.offer_reward.id}
+      params = %{
+        vendor_id: offer_redeem.vendor.vendor_id,
+        offer_reward_id: offer_redeem.offer_reward.id
+      }
 
       conn =
         post(
@@ -280,7 +283,11 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       assert %{status: "accepted"} = hd(updated_team.invitations)
       assert invitation.email == hd(updated_team.users).email
 
-      team_user_redeem = Repo.get_by(OfferRedeem, offer_challenge_id: team.offer_challenge_id, user_id: hd(updated_team.users).id)
+      team_user_redeem =
+        Repo.get_by(OfferRedeem,
+          offer_challenge_id: team.offer_challenge_id,
+          user_id: hd(updated_team.users).id
+        )
 
       assert team_user_redeem.user_id != team.user_id
       assert updated_user.email == hd(updated_team.users).email

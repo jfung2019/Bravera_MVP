@@ -129,8 +129,7 @@ defmodule OmegaBravera.Offers do
         select: %{
           o
           | active_offer_challenges: count(offer_challenges.id),
-            end_date:
-              fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.end_date),
+            end_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.end_date),
             pre_registration_start_date:
               fragment(
                 "? at time zone 'utc' at time zone 'asia/hong_kong'",

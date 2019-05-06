@@ -104,9 +104,16 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> validate_previously_redeemed(offer_redeem)
   end
 
-  defp add_user_id(%Ecto.Changeset{} = changeset, _, %User{id: team_user_id}) when not is_nil(team_user_id), do: put_change(changeset, :user_id, team_user_id)
-  defp add_user_id(%Ecto.Changeset{} = changeset, challenge_owner_id, %User{id: team_user_id}) when is_nil(team_user_id), do: put_change(changeset, :user_id, challenge_owner_id)
-  defp add_user_id(%Ecto.Changeset{} = changeset, challenge_owner_id, nil), do: put_change(changeset, :user_id, challenge_owner_id)
+  defp add_user_id(%Ecto.Changeset{} = changeset, _, %User{id: team_user_id})
+       when not is_nil(team_user_id),
+       do: put_change(changeset, :user_id, team_user_id)
+
+  defp add_user_id(%Ecto.Changeset{} = changeset, challenge_owner_id, %User{id: team_user_id})
+       when is_nil(team_user_id),
+       do: put_change(changeset, :user_id, challenge_owner_id)
+
+  defp add_user_id(%Ecto.Changeset{} = changeset, challenge_owner_id, nil),
+    do: put_change(changeset, :user_id, challenge_owner_id)
 
   defp validate_vendor(%Ecto.Changeset{} = changeset, %{"vendor_id" => vendor_id}) do
     vendor_struct = Repo.get_by(OfferVendor, vendor_id: vendor_id)

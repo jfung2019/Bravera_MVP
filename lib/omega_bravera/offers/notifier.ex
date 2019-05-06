@@ -15,16 +15,16 @@ defmodule OmegaBravera.Offers.Notifier do
 
   alias SendGrid.{Email, Mailer}
 
-
   def send_challenge_activated_email(%OfferChallenge{} = challenge) do
     template_id = "75516ad9-3ce8-4742-bd70-1227ce3cba1d"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
-    if not is_nil(sendgrid_email) and user_subscribed_in_category?(
-         challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
-       ) do
+    if not is_nil(sendgrid_email) and
+         user_subscribed_in_category?(
+           challenge.user.subscribed_email_categories,
+           sendgrid_email.category.id
+         ) do
       challenge
       |> challenge_activated_email(template_id)
       |> Mailer.send()
@@ -139,7 +139,11 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> Repo.preload(:offer)
-      |> reward_vendor_redemption_successful_confirmation_email(redeem, redeems_count, template_id)
+      |> reward_vendor_redemption_successful_confirmation_email(
+        redeem,
+        redeems_count,
+        template_id
+      )
       |> Mailer.send()
     end
   end
@@ -184,7 +188,11 @@ defmodule OmegaBravera.Offers.Notifier do
     end
   end
 
-  def user_reward_redemption_successful_email(%OfferChallenge{} = challenge, %User{} = user, template_id) do
+  def user_reward_redemption_successful_email(
+        %OfferChallenge{} = challenge,
+        %User{} = user,
+        template_id
+      ) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
@@ -239,10 +247,11 @@ defmodule OmegaBravera.Offers.Notifier do
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
-    if not is_nil(sendgrid_email) and user_subscribed_in_category?(
-         challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
-       ) do
+    if not is_nil(sendgrid_email) and
+         user_subscribed_in_category?(
+           challenge.user.subscribed_email_categories,
+           sendgrid_email.category.id
+         ) do
       challenge
       |> pre_registration_challenge_signup_email(template_id)
       |> Mailer.send()
@@ -486,11 +495,11 @@ defmodule OmegaBravera.Offers.Notifier do
   defp add_cc(email, %OfferVendor{cc: cc_list}) when not is_nil(cc_list) do
     cleaned_cc_list =
       String.split(cc_list, ",", trim: true)
-      |> Enum.map(&(String.trim/1))
+      |> Enum.map(&String.trim/1)
       |> Enum.reject(&(String.length(&1) == 0))
-      |> Enum.map(&(%{email: &1}))
+      |> Enum.map(&%{email: &1})
 
-      %{email | cc: cleaned_cc_list}
+    %{email | cc: cleaned_cc_list}
   end
 
   defp add_cc(email, _), do: email

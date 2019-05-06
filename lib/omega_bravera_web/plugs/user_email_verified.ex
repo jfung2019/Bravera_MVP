@@ -10,7 +10,9 @@ defmodule OmegaBraveraWeb.UserEmailVerified do
 
       %User{email: email} ->
         conn
-        |> Plug.Conn.put_resp_cookie("after_email_verify", conn.request_path, max_age: 2 * 7 * 24 * 60 * 60)
+        |> Plug.Conn.put_resp_cookie("after_email_verify", conn.request_path,
+          max_age: 2 * 7 * 24 * 60 * 60
+        )
         |> Phoenix.Controller.put_view(OmegaBraveraWeb.SharedView)
         |> Phoenix.Controller.render("verify_email.html", email: email)
         |> Plug.Conn.halt()

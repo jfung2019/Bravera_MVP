@@ -54,7 +54,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         render(conn, "new_redeem.html",
           offer_challenge: offer_challenge,
           offer_redeem: offer_redeem,
-          redeems_count: Offers.get_offer_completed_redeems_count_by_offer_id(offer_challenge.offer_id),
+          redeems_count:
+            Offers.get_offer_completed_redeems_count_by_offer_id(offer_challenge.offer_id),
           changeset: changeset,
           layout: {OmegaBraveraWeb.LayoutView, "app.html"}
         )
@@ -73,7 +74,12 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         "redeem_token" => _redeem_token
       }) do
     offer_challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug)
-    offer_redeem = Repo.get_by(OfferRedeem, user_id: offer_challenge.user_id, offer_challenge_id: offer_challenge.id)
+
+    offer_redeem =
+      Repo.get_by(OfferRedeem,
+        user_id: offer_challenge.user_id,
+        offer_challenge_id: offer_challenge.id
+      )
 
     cond do
       is_nil(offer_challenge) ->
@@ -81,7 +87,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
       is_nil(offer_redeem) ->
         Logger.error(
-          "OfferChallengeController.send_qr_code: Redeem for challenge #{inspect(offer_challenge.id)} not found, will render 404."
+          "OfferChallengeController.send_qr_code: Redeem for challenge #{
+            inspect(offer_challenge.id)
+          } not found, will render 404."
         )
 
         render_404(conn)
@@ -137,7 +145,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         |> render("redeem_sucessful.html",
           layout: {OmegaBraveraWeb.LayoutView, "app.html"},
           offer_challenge: offer_challenge,
-          redeems_count: Offers.get_offer_completed_redeems_count_by_offer_id(offer_challenge.offer_id)
+          redeems_count:
+            Offers.get_offer_completed_redeems_count_by_offer_id(offer_challenge.offer_id)
         )
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -146,7 +155,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           |> render("new_redeem.html",
             offer_challenge: offer_challenge,
             offer_redeem: offer_redeem,
-            redeems_count: Offers.get_offer_completed_redeems_count_by_offer_id(offer_challenge.offer_id),
+            redeems_count:
+              Offers.get_offer_completed_redeems_count_by_offer_id(offer_challenge.offer_id),
             changeset: changeset,
             vendor_id: offer_redeem_params["vendor_id"],
             layout: {OmegaBraveraWeb.LayoutView, "app.html"}
@@ -183,7 +193,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       offer ->
         case Offers.create_offer_challenge(offer, current_user) do
           {:ok, offer_challenge} ->
-
             send_emails(Repo.preload(offer_challenge, :user))
 
             conn

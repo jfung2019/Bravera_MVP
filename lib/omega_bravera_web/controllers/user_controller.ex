@@ -66,7 +66,6 @@ defmodule OmegaBraveraWeb.UserController do
         if not is_nil(updated_user.email) and
              updated_user.email_activation_token != user.email_activation_token and
              updated_user.email_verified == false do
-
           Accounts.Notifier.send_user_signup_email(updated_user)
 
           conn

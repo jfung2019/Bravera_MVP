@@ -28,7 +28,9 @@ defmodule OmegaBravera.Challenges.LiveWorker do
 
       case Offers.update_offer_challenge(challenge, %{status: "active"}) do
         {:ok, _} ->
-          Logger.info("LiveChallenges worker: activated offer challenge: #{inspect(challenge.slug)}")
+          Logger.info(
+            "LiveChallenges worker: activated offer challenge: #{inspect(challenge.slug)}"
+          )
 
           Notifier.send_challenge_activated_email(challenge)
 

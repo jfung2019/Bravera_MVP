@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.AddOfferTimeLimit do
 
   def change do
     alter table("offers") do
-      add :time_limit, :integer, default: 0
+      add(:time_limit, :integer, default: 0)
     end
   end
 end

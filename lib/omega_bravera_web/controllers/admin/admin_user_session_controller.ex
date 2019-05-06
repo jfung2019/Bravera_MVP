@@ -16,7 +16,6 @@ defmodule OmegaBraveraWeb.AdminUserSessionController do
       _ ->
         render(conn, "new.html")
     end
-
   end
 
   def create(conn, %{"session" => %{"email" => email, "password" => pass}}) do

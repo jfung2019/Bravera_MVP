@@ -7,6 +7,7 @@ defmodule OmegaBraveraWeb.NGOController do
     case Guardian.Plug.current_resource(conn) do
       %AdminUser{} ->
         redirect(conn, to: admin_user_page_path(conn, :index))
+
       _ ->
         render(conn, "index.html", ngos: Fundraisers.list_ngos())
     end

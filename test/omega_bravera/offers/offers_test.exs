@@ -233,21 +233,21 @@ defmodule OmegaBravera.OffersTest do
     test "create_offer_challenge/2 creates pre_registration challenge and uses today's date as a start_date instead of offer for it being in the past" do
       now = Timex.now()
       user = insert(:user)
-      offer = insert(:offer, %{
-        open_registration: false,
-        pre_registration_start_date: Timex.shift(Timex.now(), days: -5),
-        start_date: Timex.now(),
-        end_date: Timex.shift(Timex.now(), days: 10),
-        time_limit: 0
-      }
-    )
+
+      offer =
+        insert(:offer, %{
+          open_registration: false,
+          pre_registration_start_date: Timex.shift(Timex.now(), days: -5),
+          start_date: Timex.now(),
+          end_date: Timex.shift(Timex.now(), days: 10),
+          time_limit: 0
+        })
 
       assert {:ok, %OfferChallenge{} = offer_challenge} =
                Offers.create_offer_challenge(offer, user)
 
       assert Timex.equal?(offer_challenge.start_date, now)
       assert Timex.equal?(offer_challenge.end_date, offer.end_date)
-
     end
 
     test "create_offer_challenge/2 can create offer_challenge with offer_redeem" do
@@ -295,7 +295,15 @@ defmodule OmegaBravera.OffersTest do
 
     test "create_offer_challenge/2 can create offer_challenge with restricted end_date in respect to offer.time_limit" do
       vendor = insert(:vendor)
-      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id, time_limit: 10, end_date: Timex.shift(Timex.now, days: 30)})
+
+      offer =
+        insert(:offer, %{
+          vendor: nil,
+          vendor_id: vendor.id,
+          time_limit: 10,
+          end_date: Timex.shift(Timex.now(), days: 30)
+        })
+
       insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = insert(:user)
 
@@ -307,7 +315,15 @@ defmodule OmegaBravera.OffersTest do
 
     test "create_offer_challenge/2 can create offer_challenge with restricted end_date in respect to offer.time_limit and cannot bypass offer.end_date" do
       vendor = insert(:vendor)
-      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id, time_limit: 10, end_date: Timex.shift(Timex.now, days: 5)})
+
+      offer =
+        insert(:offer, %{
+          vendor: nil,
+          vendor_id: vendor.id,
+          time_limit: 10,
+          end_date: Timex.shift(Timex.now(), days: 5)
+        })
+
       insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = insert(:user)
 

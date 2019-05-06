@@ -3,13 +3,13 @@ defmodule OmegaBravera.Repo.Migrations.AlterVendorEmailField do
 
   def up do
     alter table("offer_vendors") do
-      add :cc, :text
+      add(:cc, :text)
     end
   end
 
   def down do
     alter table("offer_vendors") do
-      remove :cc
+      remove(:cc)
     end
   end
 end

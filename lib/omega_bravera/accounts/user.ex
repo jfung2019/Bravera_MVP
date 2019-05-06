@@ -81,7 +81,6 @@ defmodule OmegaBravera.Accounts.User do
     end
   end
 
-
   def update_profile_picture_changeset(user, attrs) do
     user
     |> cast(attrs, [:profile_picture])

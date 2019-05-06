@@ -194,7 +194,10 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     do: change(changeset, start_date: DateTime.truncate(Timex.now(), :second))
 
   # If there's pre_registration, the start_date is offer.start_date unless, offer.start_date is in the past.
-  defp add_start_date(%Ecto.Changeset{} = changeset, %Offer{open_registration: false, start_date: offer_start_date}) do
+  defp add_start_date(%Ecto.Changeset{} = changeset, %Offer{
+         open_registration: false,
+         start_date: offer_start_date
+       }) do
     if Timex.before?(Timex.now(), offer_start_date) do
       change(changeset, start_date: DateTime.truncate(offer_start_date, :second))
     else
@@ -244,7 +247,10 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     offer_id = get_field(changeset, :offer_id)
     user = Repo.preload(user, :offer_challenges)
 
-    if Enum.find(user.offer_challenges, &(&1.offer_id == offer_id && (&1.status == "active" or &1.status == "pre_registration") )) do
+    if Enum.find(
+         user.offer_challenges,
+         &(&1.offer_id == offer_id && (&1.status == "active" or &1.status == "pre_registration"))
+       ) do
       changeset
       |> add_error(:offer_id, "Already participating in the challenge.")
     else
