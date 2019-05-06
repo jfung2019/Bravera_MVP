@@ -56,7 +56,7 @@ defmodule OmegaBraveraWeb.UserControllerTest do
         conn
         |> bypass_through(OmegaBraveraWeb.Router, :browser)
         |> get("/")
-        |> Plug.Conn.put_session(:after_email_verify, "/test")
+        |> Plug.Conn.put_resp_cookie("after_email_verify", "/test", max_age: 2 * 7 * 24 * 60 * 60)
         |> send_resp(:ok, "")
         |> get(user_path(conn, :activate_email, user.email_activation_token))
 

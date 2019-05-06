@@ -140,9 +140,12 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
     conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
     assert html_response(conn, 200) =~ "verify your email address"
+    after_email_verify =
+      Plug.Conn.fetch_cookies(conn)
+      |> Map.get(:cookies)
+      |> Map.get("after_email_verify")
 
-    assert Plug.Conn.get_session(conn, :after_email_verify) ==
-             offer_offer_challenge_path(conn, :new, offer)
+    assert after_email_verify == offer_offer_challenge_path(conn, :new, offer)
   end
 
   test "when a user changes their email, email_verified will be set to false and email_activation_token will change too",
@@ -163,8 +166,12 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
     conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
 
-    assert Plug.Conn.get_session(conn, :after_email_verify) ==
-             offer_offer_challenge_path(conn, :new, offer)
+    after_email_verify =
+      Plug.Conn.fetch_cookies(conn)
+      |> Map.get(:cookies)
+      |> Map.get("after_email_verify")
+
+    assert after_email_verify == offer_offer_challenge_path(conn, :new, offer)
   end
 
   describe "redeem" do

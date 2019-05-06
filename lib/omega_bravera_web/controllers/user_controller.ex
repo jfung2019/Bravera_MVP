@@ -114,7 +114,12 @@ defmodule OmegaBraveraWeb.UserController do
   end
 
   defp redirect_path(conn) do
-    case get_session(conn, :after_email_verify) do
+    after_email_verify =
+      Plug.Conn.fetch_cookies(conn)
+      |> Map.get(:cookies)
+      |> Map.get("after_email_verify")
+
+    case after_email_verify do
       nil ->
         page_path(conn, :index)
 
