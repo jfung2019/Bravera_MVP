@@ -4,25 +4,25 @@ defmodule OmegaBravera.Accounts.Notifier do
   alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Mailer, Email}
 
-  def send_user_signup_email(%User{} = user) do
+  def send_user_signup_email(%User{} = user, redirect_to \\ "/") do
     template_id = "b47d2224-792a-43d8-b4b2-f53b033d2f41"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     user = Repo.preload(user, [:subscribed_email_categories])
 
     if user_subscribed_in_category?(user.subscribed_email_categories, sendgrid_email.category.id) do
       user
-      |> user_signup_email(template_id)
+      |> user_signup_email(redirect_to, template_id)
       |> Mailer.send()
     end
   end
 
-  def user_signup_email(%User{} = user, template_id) do
+  def user_signup_email(%User{} = user, redirect_to, template_id) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-fullName-", User.full_name(user))
     |> Email.add_substitution(
       "-emailVerificationUrl-",
-      Routes.user_url(Endpoint, :activate_email, user.email_activation_token)
+      Routes.user_url(Endpoint, :activate_email, user.email_activation_token, %{redirect_to: redirect_to})
     )
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")

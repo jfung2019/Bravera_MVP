@@ -66,7 +66,7 @@ defmodule OmegaBraveraWeb.UserController do
         if not is_nil(updated_user.email) and
              updated_user.email_activation_token != user.email_activation_token and
              updated_user.email_verified == false do
-          Accounts.Notifier.send_user_signup_email(updated_user)
+          Accounts.Notifier.send_user_signup_email(updated_user, redirect_path(conn))
 
           conn
           |> put_flash(:info, "Email updated. Please check your inbox now!")
@@ -82,8 +82,16 @@ defmodule OmegaBraveraWeb.UserController do
     end
   end
 
-  def activate_email(conn, %{"email_activation_token" => email_activation_token}) do
+  def activate_email(conn, %{"email_activation_token" => email_activation_token} = params) do
     user = Accounts.get_user_by_token(email_activation_token)
+
+    redirect_path =
+      case not is_nil(Map.get(params, "redirect_to")) do
+        true ->
+          params["redirect_to"]
+        false ->
+          redirect_path(conn)
+      end
 
     case user do
       nil ->
@@ -95,6 +103,14 @@ defmodule OmegaBraveraWeb.UserController do
         |> redirect(to: "/")
 
       user ->
+
+        conn =
+          if is_nil(OmegaBravera.Guardian.Plug.current_resource(conn)) do
+            OmegaBravera.Guardian.Plug.sign_in(conn, user)
+          else
+            conn
+          end
+
         case Accounts.update_user(user, %{email_verified: true}) do
           {:ok, _user} ->
             conn
@@ -102,7 +118,7 @@ defmodule OmegaBraveraWeb.UserController do
               :info,
               "Thank you for activating your account. You can now join challenges!"
             )
-            |> redirect(to: redirect_path(conn))
+            |> redirect(to: redirect_path)
 
           {:error, _} ->
             conn
