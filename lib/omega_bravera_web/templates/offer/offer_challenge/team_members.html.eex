@@ -8,6 +8,8 @@
           <%= img_tag(profile_picture_or_default(user, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
         <% end %>
         <%= user.firstname%>
+        <br />
+        <span class="total-activity-distance"><%= @all_team_members_activities_totals[user.id] %>KM</span>
       </div>
       <% end %>
     </div>

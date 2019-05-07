@@ -289,6 +289,12 @@ input[type=number]::-webkit-outer-spin-button {
   .team-member{
     max-width: 100px !important;
   }
+
+  .total-activity-distance{
+    color: $bravera-red;
+    font-size: 14px;
+    font-weight: 700;
+  }
 }
 
 .challenge-details {
