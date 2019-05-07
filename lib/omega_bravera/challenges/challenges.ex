@@ -35,6 +35,29 @@ defmodule OmegaBravera.Challenges do
     Repo.all(query)
   end
 
+  def get_team_member_activity_totals(challenge_id, users_list \\ []) do
+    user_ids = Enum.map(users_list, &(&1.id))
+
+    team_activities =
+      from(
+        activity in Activity,
+        where: activity.challenge_id == ^challenge_id and activity.user_id in ^user_ids
+      )
+      |> Repo.all()
+
+    Enum.reduce(user_ids, %{}, fn uid, acc ->
+
+      total_distance_for_team_member_activity =
+        Enum.filter(team_activities, &(uid == &1.user_id))
+        |> Enum.reduce(Decimal.new(0), fn activity, total_distance ->
+          Decimal.add(activity.distance, total_distance)
+          |> Decimal.round(1)
+        end)
+
+      Map.put(acc, uid, total_distance_for_team_member_activity)
+    end)
+  end
+
   def latest_activities(%NGOChal{} = challenge, limit \\ nil, preloads \\ [user: [:strava]]) do
     query =
       from(activity in Activity,
