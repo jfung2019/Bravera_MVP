@@ -7,7 +7,8 @@ use Mix.Config
 
 # General application configuration
 config :omega_bravera,
-  ecto_repos: [OmegaBravera.Repo]
+  ecto_repos: [OmegaBravera.Repo],
+  cookie_age: 2 * 7 * 24 * 60 * 60
 
 # Configures the endpoint
 config :omega_bravera, OmegaBraveraWeb.Endpoint,

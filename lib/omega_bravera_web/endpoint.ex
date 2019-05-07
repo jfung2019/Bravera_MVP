@@ -39,7 +39,8 @@ defmodule OmegaBraveraWeb.Endpoint do
   plug(Plug.Session,
     store: :cookie,
     key: "_omega_bravera_key",
-    signing_salt: "U4QU74vj"
+    signing_salt: "U4QU74vj",
+    max_age: Application.get_env(:omega_bravera, :cookie_age)
   )
 
   plug(OmegaBraveraWeb.Router)
