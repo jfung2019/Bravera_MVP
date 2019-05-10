@@ -22,11 +22,11 @@ defmodule OmegaBravera.Fundraisers do
     from(
       n in NGO,
       where: n.slug == ^slug,
-      join: donations in assoc(n, :donations),
+      left_join: donations in assoc(n, :donations),
       on: donations.status == "charged",
-      join: donor in assoc(donations, :donor),
-      join: ngo_chal in assoc(donations, :ngo_chal),
-      join: participant in assoc(ngo_chal, :user),
+      left_join: donor in assoc(donations, :donor),
+      left_join: ngo_chal in assoc(donations, :ngo_chal),
+      left_join: participant in assoc(ngo_chal, :user),
       preload: [donations: {donations, donor: donor, ngo_chal: {ngo_chal, user: participant}}]
     )
     |> Repo.one()
