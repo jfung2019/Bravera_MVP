@@ -2,6 +2,7 @@ defmodule OmegaBravera.Fundraisers.NgoOptions do
   @available_activities ["Run", "Cycle", "Walk", "Hike"]
   @available_distances %{
     10 => %{"1" => 0, "2" => 3, "3" => 7, "4" => 10},
+    15 => %{"1" => 0, "2" => 5, "3" => 10, "4" => 15},
     20 => %{"1" => 0, "2" => 5, "3" => 15, "4" => 20},
     25 => %{"1" => 0, "2" => 8, "3" => 18, "4" => 25},
     30 => %{"1" => 0, "2" => 10, "3" => 20, "4" => 30},
