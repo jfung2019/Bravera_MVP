@@ -50,6 +50,21 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
                )
     end
 
+    test "returns ok when activity is Ride (called 'Cycle' in Bravera)", %{
+      strava_activity: strava_activity
+    } do
+      challenge = insert(:offer_challenge, activity_type: "Cycle")
+      strava_activity = Map.replace!(strava_activity, :type, "Ride")
+
+      assert {:ok, _, _} =
+               OfferActivitiesIngestion.create_activity(
+                 challenge,
+                 strava_activity,
+                 challenge.user,
+                 true
+               )
+    end
+
     test "returns error when activity is manual and the environment is set to accept only non-manual activities",
          %{
            strava_activity: strava_activity

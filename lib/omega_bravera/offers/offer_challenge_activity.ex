@@ -84,6 +84,7 @@ defmodule OmegaBravera.Offers.OfferChallengeActivity do
     |> unique_constraint(:strava_id)
     |> unique_constraint(:offer_challenge_id)
     |> unique_constraint(:strava_id_challenge_id)
+    |> switch_ride_to_cycle()
     |> validate_inclusion(:type, @activity_type)
   end
 
@@ -112,6 +113,18 @@ defmodule OmegaBravera.Offers.OfferChallengeActivity do
     |> foreign_key_constraint(:offer_challenge_id)
     |> unique_constraint(:offer_challenge_id)
     |> validate_inclusion(:type, @activity_type)
+  end
+
+  defp switch_ride_to_cycle(%Ecto.Changeset{} = changeset) do
+    activity_type = get_field(changeset, :type)
+
+    if not is_nil(activity_type) and activity_type == "Ride" do
+      changeset
+      |> delete_change(:type)
+      |> put_change(:type, "Cycle")
+    else
+      changeset
+    end
   end
 
   defp to_km(nil), do: nil

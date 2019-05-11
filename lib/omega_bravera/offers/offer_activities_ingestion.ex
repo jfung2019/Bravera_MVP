@@ -8,7 +8,8 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     Offers.OfferChallengeActivity,
     Offers.Notifier,
     Offers.OfferRedeem,
-    Repo
+    Repo,
+    ActivityIngestionUtils
   }
 
   # alias OmegaBraveraWeb.Router.Helpers, as: Routes
@@ -153,8 +154,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
           )
       end
 
-    if valid_activity?(activity, challenge, send_emails) and
-         activity_type_matches_challenge_activity_type?(activity, challenge) do
+    if valid_activity?(activity, challenge, send_emails) and ActivityIngestionUtils.activity_type_matches_challenge_activity_type?(activity, challenge) do
       case Repo.insert(changeset) do
         {:ok, activity} ->
           {:ok, challenge, activity}
@@ -295,21 +295,5 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       end
 
     challenge_started_first and activity_started_before_end and allow_manual_activity
-  end
-
-  defp activity_type_matches_challenge_activity_type?(%{type: activity_type}, %{
-         activity_type: challenge_activity_type
-       }) do
-    equal? = activity_type == challenge_activity_type
-
-    if !equal? do
-      Logger.info(
-        "Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{
-          activity_type
-        }"
-      )
-    end
-
-    equal?
   end
 end
