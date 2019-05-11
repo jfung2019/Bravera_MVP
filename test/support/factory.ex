@@ -33,6 +33,7 @@ defmodule OmegaBravera.Factory do
       open_registration: true,
       logo: "/logo.png",
       image: "/image.png",
+      activities: ["Run", "Cycle", "Walk", "Hike"],
       url: "http://test.com",
       user: build(:user)
     }
@@ -178,7 +179,7 @@ defmodule OmegaBravera.Factory do
       url: "http://test.com",
       offer_challenge_types: ["PER_KM"],
       distances: ["50"],
-      activities: ["Run"],
+      activities: ["Run", "Cycle"],
       time_limit: 0,
       vendor: build(:vendor)
     }
