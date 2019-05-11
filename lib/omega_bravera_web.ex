@@ -49,6 +49,23 @@ defmodule OmegaBraveraWeb do
     end
   end
 
+  def live_view do
+    quote do
+      use Phoenix.LiveView
+      import Phoenix.HTML.Link, only: [link: 2]
+
+      # Import convenience functions from controllers
+      import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
+
+      # Use all HTML functionality (forms, tags, etc)
+      use Phoenix.HTML
+
+      alias RoyalTeaWeb.Router.Helpers, as: Routes
+      import RoyalTeaWeb.ErrorHelpers
+      import RoyalTeaWeb.Gettext
+    end
+  end
+
   def router do
     quote do
       use Phoenix.Router
