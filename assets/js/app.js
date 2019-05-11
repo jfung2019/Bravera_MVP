@@ -10,6 +10,11 @@ import "bootstrap";
 
 import "moment";
 
+import LiveSocket from "phoenix_live_view"
+
+let liveSocket = new LiveSocket("/live")
+liveSocket.connect()
+
 
 // Import local files
 //
