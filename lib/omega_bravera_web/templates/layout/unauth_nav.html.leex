@@ -30,7 +30,7 @@
 </nav>
 
 <!-- Login Modal -->
-<%= form_for @changeset, user_session_path(OmegaBraveraWeb.Endpoint, :create), [phx_submit: :try_login, phx_change: :validate], fn f -> %>
+<%= form_for @changeset, user_session_path(OmegaBraveraWeb.Endpoint, :create), [phx_change: :validate], fn f -> %>
 <%= if @open_modal do %>
   <div class="modal fade show" data-backdrop="false" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" style="display: block;">
 <% else %>
