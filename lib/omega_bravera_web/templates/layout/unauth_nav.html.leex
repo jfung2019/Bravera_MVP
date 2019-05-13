@@ -1,0 +1,71 @@
+<nav class="navbar navbar-expand-md navbar-light pb-3 pt-3 border-bottom bg-white">
+<div class="container">
+      <a class="navbar-brand big-logo ml-4" href="/"></a>
+
+    <button
+      class="navbar-toggler mr-3"
+      type="button" data-toggle="collapse" data-target="#bravera-navbar" aria-controls="bravera-navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+    <div class="collapse navbar-collapse text-center" id="bravera-navbar">
+
+      <ul class="navbar-nav mx-auto">
+      </ul>
+      <div class="ml-md-4 mb-3 mt-3">
+        <%= link("Partners", to: "https://bravera.typeform.com/to/CWFDJm", target: "_blank", class: "btn btn-bravera") %>
+      </div>
+
+      <div class="ml-md-4 mb-3 mt-3">
+        <%= link("About us", to: "https://www.bravera.fit/how/", target: "_blank", class: "btn btn-bravera") %>
+      </div>
+
+      <div class="ml-md-4 mb-3 mt-3">
+        <button type="button" class="btn btn-bravera" data-toggle="modal" data-target="#loginModal">
+          Login
+        </button>
+      </div>
+    </div>
+</nav>
+
+<!-- Login Modal -->
+<%= form_for @changeset, user_session_path(OmegaBraveraWeb.Endpoint, :create), [phx_submit: :try_login, phx_change: :validate], fn f -> %>
+<%= if @open_modal do %>
+  <div class="modal fade show" data-backdrop="false" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" style="display: block;">
+<% else %>
+  <div class="modal fade" data-backdrop="false" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+<% end %>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Login</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" phx-click="close_modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group mt-2">
+            <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: "Email", required: "" %>
+            <%= error_tag f, :email %>
+          </div>
+
+          <div class="form-group">
+            <%= text_input f, :password, class: add_error_class(f, :password, "form-control"), type: "password", placeholder: "Password", required: ""%>
+            <%= error_tag f, :password %>
+          </div>
+
+          <%= if not is_nil(@error) do %>
+            <span class="help-block text-danger"><%= @error %><span>
+          <% end %>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" phx-click="close_modal">Cancel</button>
+          <button type="submit" class="btn btn-bravera" phx-disable-with="Trying to login..." <%= unless @login_button_disabled?, do: " disabled" %>>Login</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<% end %>

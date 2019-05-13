@@ -14,6 +14,14 @@ defmodule OmegaBraveraWeb.ErrorHelpers do
     end)
   end
 
+  def add_error_class(form, field, class) do
+    if Keyword.has_key?(form.errors, field) do
+      class <> " is-invalid"
+    else
+      class
+    end
+  end
+
   @doc """
   Translates an error message using gettext.
   """

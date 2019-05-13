@@ -350,7 +350,7 @@ defmodule OmegaBravera.Accounts do
     case Repo.get_by(User, email: email) do
       nil ->
         dummy_checkpw()
-        {:error, "Login error."}
+        {:error, :user_does_not_exist}
 
       user ->
         {:ok, user}
@@ -468,8 +468,8 @@ defmodule OmegaBravera.Accounts do
       %Ecto.Changeset{source: %User{}}
 
   """
-  def change_user(%User{} = user) do
-    User.changeset(user, %{})
+  def change_user(%User{} = user, attrs \\ %{}) do
+    User.changeset(user, attrs)
   end
 
   def amount_of_current_users() do

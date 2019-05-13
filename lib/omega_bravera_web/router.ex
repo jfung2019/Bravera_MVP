@@ -41,6 +41,8 @@ defmodule OmegaBraveraWeb.Router do
   scope "/user", OmegaBraveraWeb do
     pipe_through(:browser)
 
+    live("/login", LiveUserLogin)
+    # live("/signup", live_view, opts \\ [])
     resources("/sessions", UserSessionController, only: [:create])
     resources("/profile/settings", SettingController, only: [:new, :create])
     get("/profile/email_settings", EmailSettingsController, :edit)
@@ -159,12 +161,7 @@ defmodule OmegaBraveraWeb.Router do
       get("/ngo/:slug/statement/monthly/", AdminPanelNGOController, :export_statement)
       get("/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list)
 
-      resources("/offers", AdminPanelOfferController, only: [:index, :new, :create]) do
-        resources("/offer_challenges", AdminPanelOfferChallengeController,
-          only: [:show, :edit, :update],
-          param: "slug"
-        )
-      end
+      resources("/offers", AdminPanelOfferController, only: [:index, :new, :create])
 
       get("/offers/:slug", AdminPanelOfferController, :show)
       get("/offers/:slug/edit", AdminPanelOfferController, :edit)
