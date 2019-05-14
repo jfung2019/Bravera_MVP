@@ -25,7 +25,7 @@ defmodule OmegaBravera.Accounts.Credential do
   end
 
   @doc false
-  def changeset(%Credential{} = credential, attrs) do
+  def changeset(%Credential{} = credential, attrs \\ %{}) do
     credential
     |> cast(attrs, @create_attrs)
     |> validate_required([:password, :password_confirmation])

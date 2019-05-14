@@ -14,7 +14,7 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
      })}
   end
 
-  def render(assigns), do: OmegaBraveraWeb.LayoutView.render("unauth_nav.html", assigns)
+  def render(assigns), do: OmegaBraveraWeb.UserSessionView.render("login_modal.html", assigns)
 
   def handle_event(
         "validate",

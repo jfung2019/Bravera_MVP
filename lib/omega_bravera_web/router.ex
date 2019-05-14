@@ -42,7 +42,8 @@ defmodule OmegaBraveraWeb.Router do
     pipe_through(:browser)
 
     live("/login", LiveUserLogin)
-    # live("/signup", live_view, opts \\ [])
+    live("/signup", LiveUserSignup)
+
     resources("/sessions", UserSessionController, only: [:create])
     resources("/profile/settings", SettingController, only: [:new, :create])
     get("/profile/email_settings", EmailSettingsController, :edit)

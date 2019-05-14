@@ -1,0 +1,100 @@
+<%= form_for @changeset, "#", [phx_change: :validate, phx_submit: :signup, as: :user, csrf: @csrf], fn f -> %>
+<%= if @open_modal do %>
+  <div class="modal fade show" data-backdrop="true" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="signUpModalLabel" style="display: block;">
+<% else %>
+  <div class="modal fade" data-backdrop="true" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="signUpModalLabel" aria-hidden="true">
+<% end %>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <%= unless @signup_ok? do %>
+
+          <div class="modal-header">
+            <h5 class="modal-title mx-auto" id="signUpModalLabel">Signup</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class="row mx-auto align-items-center">
+              <span class="big-logo mx-auto"></span>
+            </div>          
+
+            <div class="row mx-auto align-items-center">
+              <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Get fit. Give back. Get back</strong></span>
+            </div>
+
+            <div class="row mx-auto align-items-center">
+              <%= link(to: strava_path(OmegaBraveraWeb.Endpoint, :authenticate), class: "mb-1 d-block mx-auto") do %>
+                <img src="/images/strava/btn_strava_connect-orange.png" alt="Connect with Strava"/>
+              <% end %>
+            </div>
+
+            <div class="row mx-auto align-items-center">
+              <span class="mx-auto">Email Signup</span>
+            </div>
+
+            <div class="container">
+
+              <div class="form-group mt-2">
+                <%= text_input f, :firstname, class: add_error_class(f, :firstname, "form-control"), placeholder: "Firstname", required: "" %>
+                <%= error_tag f, :firstname %>
+              </div>
+
+              <div class="form-group mt-2">
+                <%= text_input f, :lastname, class: add_error_class(f, :lastname, "form-control"), placeholder: "Lastname", required: "" %>
+                <%= error_tag f, :lastname %>
+              </div>
+
+              <div class="form-group mt-2">
+                <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: "Email", required: "" %>
+                <%= error_tag f, :email %>
+              </div>
+
+              <%= inputs_for f, :credential, fn fp -> %>
+                <div class="row mx-auto">
+                  <%= password_input fp, :password, value: input_value(fp, :password), class: add_error_class(fp, :password, "form-control"), placeholder: "Password", required: "" %>
+                  <%= error_tag fp, :password %>
+                </div>
+                <div class="row mx-auto mt-2">
+                  <%= password_input fp, :password_confirmation, value: input_value(fp, :password_confirmation), class: add_error_class(fp, :password_confirmation, "form-control"), placeholder: "Confirm you password", required: "" %>
+                  <%= error_tag fp, :password_confirmation %>
+                </div>
+              <% end %>
+
+              <p class="mt-4 mb-3 text-muted text-center small">By logging in to Bravera you agree to our <a href="https://www.bravera.tech/privacy" target="_blank" rel="noreferrer noopener">Cookies & Privacy Policy</a></p>
+
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="<%= @csrf %>" />
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" phx-click="close_modal">Cancel</button>
+            <button type="submit" class="btn btn-bravera" phx-disable-with="Signing up.." <%= unless @signup_button_disabled?, do: " disabled" %>>Join Now</button>
+          </div>
+        <% else %>
+          <div class="modal-header">
+            <h5 class="modal-title mx-auto" id="signUpModalLabel">Signup Sucessful</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class="row mx-auto align-items-center">
+              <span class="big-logo mx-auto"></span>
+            </div>
+
+            <div class="row mx-auto align-items-center">
+              <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Please check your email</strong></span>
+            </div>
+
+            <div class="row mx-auto align-items-center">
+              <span class="d-block mt-3 mb-3 mx-auto text-center">Click on the link that has been sent to your email address to complete your registration.</span>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-bravera mx-auto" data-dismiss="modal" phx-click="close_modal">Ok</button>
+          </div>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+<% end %>
