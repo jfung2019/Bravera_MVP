@@ -1,0 +1,12 @@
+Host *
+  Port 22
+  ForwardAgent yes
+  StrictHostKeyChecking no
+
+Host vpn.bravera.co
+  Hostname vpn.bravera.co
+  User plangora-bravera
+
+Host app.staging.corp.bravera.co
+  ProxyCommand ssh -W %h:%p plangora-bravera@vpn.bravera.co
+  User ubuntu

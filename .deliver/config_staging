@@ -1,0 +1,52 @@
+APP="omega_bravera"
+
+BUILD_HOST="app.staging.corp.bravera.co"
+BUILD_USER="ubuntu"
+BUILD_AT="/home/ubuntu/omega_bravera/builds"
+
+STAGING_HOSTS="app.staging.corp.bravera.co"
+STAGING_USER="ubuntu"
+TEST_AT="/home/ubuntu/staging"
+
+DELIVER_TO="/home/ubuntu"
+
+pre_erlang_get_and_update_deps() {
+  local _prod_secret_path="/home/ubuntu/app_config/prod.secret.exs"
+  local _prod_path="/home/ubuntu/app_config/prod.exs"
+  if [ "$TARGET_MIX_ENV" = "prod" ]; then
+    __sync_remote "
+      ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'; ln -sfn '$_prod_path' '$BUILD_AT/config/prod.exs';
+    "
+  fi
+}
+
+pre_erlang_clean_compile() {
+  status "Installing NPM dependencies"
+  __sync_remote "
+    [ -f ~/.profile ] && source ~/.profile
+    set -e
+
+    cd '$BUILD_AT/assets'
+    npm install $SILENCE
+  "
+
+  status "Building static files"
+    __sync_remote "
+      [ -f ~/.profile ] && source ~/.profile
+      set -e
+
+      cd '$BUILD_AT'
+      mkdir -p priv/static
+      cd '$BUILD_AT/assets'
+      npm run deploy $SILENCE
+   "
+
+   status "Running phx.digest"
+   __sync_remote "
+     [ -f ~/.profile ] && source ~/.profile
+     set -e
+
+     cd '$BUILD_AT'
+     APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phx.digest $SILENCE
+   "
+}
