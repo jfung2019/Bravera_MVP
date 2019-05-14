@@ -54,7 +54,7 @@
     <%= if logged_in?(@conn) && not is_admin?(@conn) do %>
       <%= render "auth_nav.html", conn: @conn %>
     <% else %>
-      <%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserLogin, session: %{}) %>
+      <%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserLogin, session: %{csrf: @csrf}) %>
     <% end %>
 
     <div class="text-center">
