@@ -16,41 +16,29 @@ test:
     - cd assets && npm install && cd .. # cache NPM modules for future
     - mix do deps.get, test --exclude skip
 
-build_staging:
-  stage: build
-  environment: staging
-  only:
-    - staging
-  image: docker:stable
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    CONTAINER_IMAGE: registry.gitlab.com/braveratech/bravera_mvp_sept2018/staging
-  services:
-    - docker:dind
-  before_script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
-  script:
-    - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --pull --no-cache --tag $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHORT_SHA
-
 staging:
-  cache: {} # no need for cache
   stage: deploy
   environment: staging
-  only:
-    - staging
-  image: dtzar/helm-kubectl
+  image: bitwalker/alpine-elixir-phoenix:latest
   variables:
-    CONTAINER_IMAGE: registry.gitlab.com/braveratech/bravera_mvp_sept2018/staging:$CI_COMMIT_SHORT_SHA
+    MIX_ENV: "dev"
+    REFSPEC: switch-staging
+  only:
+    - switch-staging
+  before_script:
+    - apk add --no-cache openssh-client procps
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p /root/.ssh
+    - cp .deliver/ssh_config_staging /root/.ssh/config
+    - mv -f .deliver/config_staging .deliver/config
+    - chmod -R 700 /root/.ssh
+    - mix do deps.get, deps.compile
+    - git branch -f switch-staging HEAD
   script:
-    - kubectl config set-cluster k8s --server="${SERVER}"
-    - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-    - kubectl config set-context default --cluster=k8s --user=gitlab
-    - kubectl config use-context default
-    - kubectl set image deployments/bravera-staging bravera-staging=$CONTAINER_IMAGE
-
+    - mix edeliver update staging -P --start-deploy
+    - mix edeliver migrate staging -P
+    - mix edeliver ping staging -P
 
 production:
   stage: deploy
