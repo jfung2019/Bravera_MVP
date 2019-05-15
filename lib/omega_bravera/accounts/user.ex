@@ -57,6 +57,13 @@ defmodule OmegaBravera.Accounts.User do
     |> add_email_activation_token()
   end
 
+  def create_credential_user_changeset(user, attrs \\ %{credential: %{}}) do
+    user
+    |> changeset(attrs)
+    |> validate_required(:email)
+    |> cast_assoc(:credential, with: &Credential.changeset/2, required: true)
+  end
+
   def update_changeset(user, attrs) do
     user
     |> cast(attrs, @allowed_attributes)
@@ -101,7 +108,7 @@ defmodule OmegaBravera.Accounts.User do
     end
   end
 
-  defp gen_token(length \\ 32),
+  defp gen_token(length \\ 16),
     do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 
   def full_name(%__MODULE__{firstname: first, lastname: last}), do: "#{first} #{last}"

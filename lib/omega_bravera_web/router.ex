@@ -10,6 +10,7 @@ defmodule OmegaBraveraWeb.Router do
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
+    plug(Phoenix.LiveView.Flash)
     plug(Guardian.MaybeAuthPipeline)
     plug(OmegaBraveraWeb.GoogleAnalytics)
   end
@@ -39,6 +40,9 @@ defmodule OmegaBraveraWeb.Router do
   # Bravera user auth
   scope "/user", OmegaBraveraWeb do
     pipe_through(:browser)
+
+    live("/login", LiveUserLogin)
+    live("/signup", LiveUserSignup)
 
     resources("/sessions", UserSessionController, only: [:create])
     resources("/profile/settings", SettingController, only: [:new, :create])
@@ -158,12 +162,7 @@ defmodule OmegaBraveraWeb.Router do
       get("/ngo/:slug/statement/monthly/", AdminPanelNGOController, :export_statement)
       get("/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list)
 
-      resources("/offers", AdminPanelOfferController, only: [:index, :new, :create]) do
-        resources("/offer_challenges", AdminPanelOfferChallengeController,
-          only: [:show, :edit, :update],
-          param: "slug"
-        )
-      end
+      resources("/offers", AdminPanelOfferController, only: [:index, :new, :create])
 
       get("/offers/:slug", AdminPanelOfferController, :show)
       get("/offers/:slug/edit", AdminPanelOfferController, :edit)

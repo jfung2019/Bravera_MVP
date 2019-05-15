@@ -36,6 +36,8 @@ defmodule OmegaBraveraWeb do
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
 
+      import Phoenix.LiveView.Controller, only: [live_render: 3]
+
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
@@ -43,6 +45,24 @@ defmodule OmegaBraveraWeb do
       import OmegaBraveraWeb.ErrorHelpers
       import OmegaBraveraWeb.Gettext
       import OmegaBraveraWeb.ViewHelpers
+      import Phoenix.LiveView, only: [live_render: 2, live_render: 3]
+    end
+  end
+
+  def live_view do
+    quote do
+      use Phoenix.LiveView
+      import Phoenix.HTML.Link, only: [link: 2]
+
+      # Import convenience functions from controllers
+      import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
+
+      # Use all HTML functionality (forms, tags, etc)
+      use Phoenix.HTML
+
+      alias OmegaBraveraWeb.Router.Helpers, as: Routes
+      import OmegaBraveraWeb.ErrorHelpers
+      import OmegaBraveraWeb.Gettext
     end
   end
 
@@ -51,6 +71,7 @@ defmodule OmegaBraveraWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+      import Phoenix.LiveView.Router
     end
   end
 
