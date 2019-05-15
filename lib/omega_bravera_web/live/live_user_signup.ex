@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.LiveUserSignup do
-  use Phoenix.LiveView
+  use OmegaBraveraWeb, :live_view
 
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint

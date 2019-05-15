@@ -60,9 +60,9 @@ defmodule OmegaBraveraWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      alias RoyalTeaWeb.Router.Helpers, as: Routes
-      import RoyalTeaWeb.ErrorHelpers
-      import RoyalTeaWeb.Gettext
+      alias OmegaBraveraWeb.Router.Helpers, as: Routes
+      import OmegaBraveraWeb.ErrorHelpers
+      import OmegaBraveraWeb.Gettext
     end
   end
 

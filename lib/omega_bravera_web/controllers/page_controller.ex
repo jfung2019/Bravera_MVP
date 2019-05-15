@@ -19,7 +19,7 @@ defmodule OmegaBraveraWeb.PageController do
       _ ->
         # TODO: find a better solution to pass csrf into lib/omega_bravera_web/live/live_user_login.ex -Sherief
         # bug: https://github.com/phoenixframework/phoenix_live_view/issues/111
-        render(conn, "index.html", csrf: Plug.CSRFProtection.get_csrf_token)
+        render(conn, "index.html")
     end
   end
 

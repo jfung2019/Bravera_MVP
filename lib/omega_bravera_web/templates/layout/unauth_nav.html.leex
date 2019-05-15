@@ -35,5 +35,5 @@
     </div>
 </nav>
 
-<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserLogin, session: %{csrf: @csrf}) %>
-<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserSignup, session: %{csrf: @csrf}) %>
+<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserLogin, session: %{csrf: Plug.CSRFProtection.get_csrf_token}) %>
+<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserSignup, session: %{csrf: Plug.CSRFProtection.get_csrf_token}) %>

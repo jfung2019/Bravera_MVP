@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.LiveUserLogin do
-  use Phoenix.LiveView
+  use OmegaBraveraWeb, :live_view
 
   alias OmegaBravera.Accounts
 
