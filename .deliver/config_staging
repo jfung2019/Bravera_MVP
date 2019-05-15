@@ -6,7 +6,6 @@ BUILD_AT="/home/ubuntu/omega_bravera/builds"
 
 STAGING_HOSTS="app.staging.corp.bravera.co"
 STAGING_USER="ubuntu"
-TEST_AT="/home/ubuntu/staging"
 
 DELIVER_TO="/home/ubuntu"
 
