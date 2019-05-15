@@ -1,6 +1,9 @@
 defmodule OmegaBraveraWeb.LiveUserSignup do
   use Phoenix.LiveView
 
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  alias OmegaBraveraWeb.Endpoint
+
   alias OmegaBravera.Accounts
 
   def mount(session, socket) do
@@ -27,7 +30,7 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
   def handle_event("signup", %{"user" => params}, socket) do
     case Accounts.create_credential_user(params) do
       {:ok, user} ->
-        Accounts.Notifier.send_user_signup_email(user)
+        Accounts.Notifier.send_user_signup_email(user, Routes.user_path(Endpoint, :show, %{}))
 
         {:noreply, assign(socket, signup_ok?: true, open_modal: true, signup_button_disabled?: true)}
 
