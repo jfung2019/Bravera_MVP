@@ -22,7 +22,18 @@
       </div>
 
       <div class="ml-md-4 mb-3 mt-3">
-        <%= link("Login", to: page_path(@conn, :login), class: "btn btn-bravera") %>
+        <button type="button" class="btn btn-bravera" data-toggle="modal" data-target="#loginModal">
+          Login
+        </button>
+      </div>
+
+      <div class="ml-md-4 mb-3 mt-3">
+        <button type="button" class="btn btn-bravera" data-toggle="modal" data-target="#signUpModal">
+          Signup
+        </button>
       </div>
     </div>
 </nav>
+
+<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserLogin, session: %{csrf: Plug.CSRFProtection.get_csrf_token}) %>
+<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserSignup, session: %{csrf: Plug.CSRFProtection.get_csrf_token}) %>

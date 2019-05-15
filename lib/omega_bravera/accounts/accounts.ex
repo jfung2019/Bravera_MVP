@@ -255,6 +255,7 @@ defmodule OmegaBravera.Accounts do
     Creates User with a credential
   """
 
+  # TODO: work on replacing this with a cast_assoc one -Sherief
   def create_credentialed_user(%{
         "user" => %{
           "email" => email,
@@ -350,7 +351,7 @@ defmodule OmegaBravera.Accounts do
     case Repo.get_by(User, email: email) do
       nil ->
         dummy_checkpw()
-        {:error, "Login error."}
+        {:error, :user_does_not_exist}
 
       user ->
         {:ok, user}
@@ -425,6 +426,12 @@ defmodule OmegaBravera.Accounts do
     |> Repo.insert()
   end
 
+  def create_credential_user(attrs \\ %{credential: %{}}) do
+    %User{}
+    |> User.create_credential_user_changeset(attrs)
+    |> Repo.insert()
+  end
+
   @doc """
   Updates a user.
 
@@ -468,8 +475,12 @@ defmodule OmegaBravera.Accounts do
       %Ecto.Changeset{source: %User{}}
 
   """
-  def change_user(%User{} = user) do
-    User.changeset(user, %{})
+  def change_user(%User{} = user, attrs \\ %{}) do
+    User.changeset(user, attrs)
+  end
+
+  def change_credential_user(%User{} = user, attrs \\ %{credential: %{}}) do
+    User.create_credential_user_changeset(user, attrs)
   end
 
   def amount_of_current_users() do

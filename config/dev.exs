@@ -68,6 +68,9 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
+  live_view: [
+    signing_salt: "blablabla"
+  ],
   watchers: [
     node: [
       "node_modules/webpack/bin/webpack.js",
@@ -101,7 +104,8 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
       ~r{lib/omega_bravera_web/views/.*(ex)$},
-      ~r{lib/omega_bravera_web/templates/.*(eex)$}
+      ~r{lib/omega_bravera_web/templates/.*(eex)$},
+      ~r{lib/omega_bravera_web/live/.*(ex)$}
     ]
   ]
 

@@ -17,6 +17,8 @@ defmodule OmegaBraveraWeb.PageController do
         redirect(conn, to: admin_user_page_path(conn, :index))
 
       _ ->
+        # TODO: find a better solution to pass csrf into lib/omega_bravera_web/live/live_user_login.ex -Sherief
+        # bug: https://github.com/phoenixframework/phoenix_live_view/issues/111
         render(conn, "index.html")
     end
   end

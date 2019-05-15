@@ -4,6 +4,9 @@ use Mix.Config
 # you can enable the server option below.
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
   http: [port: 4001],
+  live_view: [
+    signing_salt: "921u3oalskdn+asdmaid2123133mm@As"
+  ],
   server: false
 
 config :omega_bravera, OmegaBravera.Guardian,
