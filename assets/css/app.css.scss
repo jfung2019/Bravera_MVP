@@ -652,6 +652,13 @@ div.page-index {
 }
 
 
+/* live modals */
+.live-modal {
+  input[readOnly] {
+    background: white !important;
+  }
+}
+
 /* New challenge form */
 div.team-form {
   .form-control {

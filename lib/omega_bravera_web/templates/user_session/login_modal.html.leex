@@ -1,9 +1,9 @@
 <!-- Login Modal -->
 <%= form_for @changeset, user_session_path(OmegaBraveraWeb.Endpoint, :create), [phx_change: :validate, as: :session, csrf: @csrf], fn f -> %>
 <%= if @open_modal do %>
-  <div class="modal fade show" data-backdrop="false" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" style="display: block;">
+  <div class="live-modal modal fade show" data-backdrop="false" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" style="display: block;">
 <% else %>
-  <div class="modal fade" data-backdrop="true" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="live-modal modal fade" data-backdrop="true" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
 <% end %>
     <div class="modal-dialog" role="document">
       <div class="modal-content modal-dialog-centered">
@@ -27,12 +27,12 @@
 
           <div class="container">
             <div class="form-group mt-2">
-              <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: "Email", required: "" %>
+              <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: "Email", required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')" %>
               <%= error_tag f, :email %>
             </div>
 
             <div class="form-group">
-              <%= text_input f, :password, class: add_error_class(f, :password, "form-control"), type: "password", placeholder: "Password", required: ""%>
+              <%= text_input f, :password, class: add_error_class(f, :password, "form-control"), type: "password", placeholder: "Password", required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')" %>
               <%= error_tag f, :password %>
             </div>
 
