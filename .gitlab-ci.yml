@@ -22,9 +22,9 @@ staging:
   image: bitwalker/alpine-elixir-phoenix:latest
   variables:
     MIX_ENV: "dev"
-    REFSPEC: switch-staging
+    REFSPEC: staging
   only:
-    - switch-staging
+    - staging
   before_script:
     - apk add --no-cache openssh-client procps
     - eval $(ssh-agent -s)
@@ -34,7 +34,7 @@ staging:
     - mv -f .deliver/config_staging .deliver/config
     - chmod -R 700 /root/.ssh
     - mix do deps.get, deps.compile
-    - git branch -f switch-staging HEAD
+    - git branch -f staging HEAD
   script:
     - mix edeliver update staging -P --start-deploy
     - mix edeliver migrate staging -P
