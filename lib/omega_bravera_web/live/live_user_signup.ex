@@ -30,7 +30,7 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
   def handle_event("signup", %{"user" => params}, socket) do
     case Accounts.create_credential_user(params) do
       {:ok, user} ->
-        Accounts.Notifier.send_user_signup_email(user, Routes.user_path(Endpoint, :show, %{}))
+        Accounts.Notifier.send_user_signup_email(user, "/")
 
         {:noreply, assign(socket, signup_ok?: true, open_modal: true, signup_button_disabled?: true)}
 
