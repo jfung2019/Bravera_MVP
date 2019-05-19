@@ -10,7 +10,7 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
        changeset: Accounts.Login.changeset(%Accounts.Login{}),
        open_modal: false,
        error: nil,
-       login_button_disabled?: true
+       login_button_disabled?: false
      })}
   end
 
