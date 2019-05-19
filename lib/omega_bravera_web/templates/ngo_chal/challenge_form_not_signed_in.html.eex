@@ -25,7 +25,9 @@
         <%= img_tag(static_path(@conn, "/images/continue-icon.png"))%>
         <p>Bravera currently works with STRAVA  activity data to convert activities into fundraising.</p>
         <div class="form-button">
-          <%= link("I use Strava", to: strava_path(@conn, :authenticate), class: "btn btn-bravera btn-lg btn-block form-button") %>
+          <button type="button" class="btn btn-bravera btn-lg btn-block form-button" data-toggle="modal" data-target="#signUpModal">
+            I use Strava
+          </button>
           <%= button("I don't use Strava",
             to: "https://www.strava.com/",
             id: "no-strava",

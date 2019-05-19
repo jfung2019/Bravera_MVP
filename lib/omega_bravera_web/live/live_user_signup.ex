@@ -1,9 +1,6 @@
 defmodule OmegaBraveraWeb.LiveUserSignup do
   use OmegaBraveraWeb, :live_view
 
-  alias OmegaBraveraWeb.Router.Helpers, as: Routes
-  alias OmegaBraveraWeb.Endpoint
-
   alias OmegaBravera.Accounts
 
   def mount(session, socket) do

@@ -46,6 +46,8 @@
           <input type="hidden" name="_csrf_token" value="<%= @csrf %>" />
         </div>
         <div class="modal-footer">
+          <button type="button" class="btn btn-bravera mr-auto" data-dismiss="modal" data-toggle="modal" data-target="#signUpModal">Signup</button>
+
           <button type="button" class="btn btn-secondary" data-dismiss="modal" phx-click="close_modal">Cancel</button>
           <button type="submit" class="btn btn-bravera" phx-disable-with="Trying to signin..." <%= unless @login_button_disabled?, do: " disabled" %>>Sign in</button>
         </div>
