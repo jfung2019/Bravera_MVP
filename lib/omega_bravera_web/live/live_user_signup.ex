@@ -5,13 +5,14 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
 
   def mount(session, socket) do
     {:ok,
-     assign(socket, %{
-       csrf: session[:csrf],
-       changeset: Accounts.change_credential_user(%Accounts.User{}),
-       open_modal: false,
-       signup_ok?: false,
-       signup_button_disabled?: false
-     })}
+    assign(socket, %{
+      csrf: session[:csrf],
+      redirect_uri: session[:redirect_uri],
+      changeset: Accounts.change_credential_user(%Accounts.User{}),
+      open_modal: false,
+      signup_ok?: false,
+      signup_button_disabled?: false
+    })}
   end
 
   def render(assigns), do: OmegaBraveraWeb.UserSessionView.render("signup_modal.html", assigns)
@@ -27,7 +28,7 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
   def handle_event("signup", %{"user" => params}, socket) do
     case Accounts.create_credential_user(params) do
       {:ok, user} ->
-        Accounts.Notifier.send_user_signup_email(user, "/")
+        Accounts.Notifier.send_user_signup_email(user, socket.assigns[:redirect_uri])
 
         {:noreply, assign(socket, signup_ok?: true, open_modal: true, signup_button_disabled?: true)}
 

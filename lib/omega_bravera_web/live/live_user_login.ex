@@ -5,13 +5,13 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
 
   def mount(session, socket) do
     {:ok,
-     assign(socket, %{
-       csrf: session[:csrf],
-       changeset: Accounts.Login.changeset(%Accounts.Login{}),
-       open_modal: false,
-       error: nil,
-       login_button_disabled?: false
-     })}
+    assign(socket, %{
+      csrf: session[:csrf],
+      changeset: Accounts.Login.changeset(%Accounts.Login{}),
+      open_modal: false,
+      error: nil,
+      login_button_disabled?: false
+    })}
   end
 
   def render(assigns), do: OmegaBraveraWeb.UserSessionView.render("login_modal.html", assigns)
