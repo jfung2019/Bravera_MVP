@@ -41,6 +41,8 @@
             <%= if not is_nil(@error) do %>
               <span class="help-block text-danger"><%= @error %><span>
             <% end %>
+
+            <input type="hidden" name="_csrf_token" value="<%= @csrf %>" />
           </div>
 
         </div>
