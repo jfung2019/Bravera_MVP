@@ -5,7 +5,7 @@
       Sign up
     </h1>
 
-    <p class="mt-5 mb-3 text-muted">By signing up for Bravera you agree to our <a href="https://www.bravera.tech/privacy" target="_blank" rel="noreferrer noopener">Cookies & Privacy Policy</a></p>
+    <p class="mt-5 mb-3 text-muted">By signing up for Bravera you agree to our <a href="https://www.bravera.fit/terms" target="_blank" rel="noreferrer noopener">Cookies & Privacy Policy</a></p>
     <div class="mb-3">
       <a href="/strava/login" class="mb-1">
         <img src="/images/strava/btn_strava_connect-orange.png" alt="Connect with Strava" />
