@@ -69,3 +69,5 @@
     </div>
   </div>
 </nav>
+
+<%= render OmegaBraveraWeb.SharedView, "one_time_modals.html", conn: @conn %>

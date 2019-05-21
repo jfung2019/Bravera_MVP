@@ -6,7 +6,6 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
   def mount(session, socket) do
     {:ok,
     assign(socket, %{
-      csrf: session[:csrf],
       redirect_uri: session[:redirect_uri],
       changeset: Accounts.change_credential_user(%Accounts.User{}),
       open_modal: false,

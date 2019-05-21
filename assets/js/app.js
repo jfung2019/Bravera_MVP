@@ -32,3 +32,4 @@ import "./leaderboard";
 import "./modals";
 import "./follow_on_donation_form";
 import "./button_disappear";
+import "./one_time_modals";

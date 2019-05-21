@@ -114,10 +114,7 @@ defmodule OmegaBraveraWeb.UserController do
         case Accounts.update_user(user, %{email_verified: true}) do
           {:ok, _user} ->
             conn
-            |> put_flash(
-              :info,
-              "Thank you for activating your account. You can now join challenges!"
-            )
+            |> assign(:welcome_modal, true)
             |> redirect(to: redirect_path)
 
           {:error, _} ->
