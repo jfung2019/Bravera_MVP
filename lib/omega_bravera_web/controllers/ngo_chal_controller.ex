@@ -19,6 +19,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
   plug(:assign_available_options when action in [:new, :edit, :create])
   plug OmegaBraveraWeb.UserEmailVerified when action in [:create, :new]
+  plug OmegaBraveraWeb.ConnectTracker when action in [:create, :new]
 
   def index(conn, _params) do
     ngo_chals = Challenges.list_ngo_chals()

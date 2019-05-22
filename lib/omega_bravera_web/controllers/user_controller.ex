@@ -52,7 +52,7 @@ defmodule OmegaBraveraWeb.UserController do
     render(conn, "show.html", user: user)
   end
 
-  def show_trackers(conn, _), do: render(conn, "trackers.html", user: Guardian.Plug.current_resource(conn))
+  def show_trackers(conn, _), do: render(conn, "trackers.html", user: Guardian.Plug.current_resource(conn), redirect_to: user_path(conn, :show_trackers))
 
   def edit(conn, _) do
     user = Guardian.Plug.current_resource(conn)

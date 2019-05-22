@@ -40,8 +40,8 @@ defmodule OmegaBraveraWeb.StravaController do
     )
   end
 
-  def connect_strava_account(conn, _params) do
-    redirect_url = strava_url(conn, :connect_strava_callback, %{redirect_to: get_redirect_url(conn)})
+  def connect_strava_account(conn, params) do
+    redirect_url = strava_url(conn, :connect_strava_callback, %{redirect_to: Map.get(params, "redirect_to", "/")})
 
     redirect(conn,
       external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url)
@@ -54,7 +54,7 @@ defmodule OmegaBraveraWeb.StravaController do
   def connect_strava_callback(conn, params) do
     conn
     |> attach_strava_to_user(Accounts.Strava.login_changeset(params))
-    |> redirect(to: params["redirect_to"])
+    |> redirect(to: Map.get(params, "redirect_to", "/"))
 
   end
 
@@ -101,14 +101,12 @@ defmodule OmegaBraveraWeb.StravaController do
           {:ok, _} ->
             conn
             |> put_flash(:info, "Sucess! You have connected your Strava account and can now take Challenges.")
-            |> redirect(to: page_path(conn, :index))
 
           {:error, changeset} ->
             Logger.error("Could not connect strava account, reason: #{inspect(changeset)}")
 
             conn
             |> put_flash(:error, "Error connecting your Strava account.")
-            |> redirect(to: page_path(conn, :index))
         end
     end
   end

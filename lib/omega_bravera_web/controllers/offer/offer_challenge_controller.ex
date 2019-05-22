@@ -19,6 +19,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   plug(:assign_available_options when action in [:create])
   plug OmegaBraveraWeb.UserEmailVerified when action in [:create, :new]
+  plug OmegaBraveraWeb.ConnectTracker when action in [:create, :new]
 
   @doc """
   Form for vendor that allows them to create redeems.
