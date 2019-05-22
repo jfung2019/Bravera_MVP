@@ -114,7 +114,7 @@ defmodule OmegaBraveraWeb.UserController do
         case Accounts.update_user(user, %{email_verified: true}) do
           {:ok, _user} ->
             conn
-            |> assign(:welcome_modal, true)
+            |> Plug.Conn.put_session("welcome_modal", true)
             |> redirect(to: redirect_path)
 
           {:error, _} ->

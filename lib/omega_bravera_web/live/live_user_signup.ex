@@ -3,16 +3,18 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
 
   alias OmegaBravera.Accounts
 
-  def mount(session, socket) do
+  def mount(%{redirect_uri: redirect_uri}, socket) do
     {:ok,
     assign(socket, %{
-      redirect_uri: session[:redirect_uri],
+      redirect_uri: redirect_uri,
       changeset: Accounts.change_credential_user(%Accounts.User{}),
       open_modal: false,
       signup_ok?: false,
       signup_button_disabled?: false
     })}
   end
+
+  def mount(_session, socket), do: {:stop, redirect(socket, to: "/")}
 
   def render(assigns), do: OmegaBraveraWeb.UserSessionView.render("signup_modal.html", assigns)
 

@@ -99,7 +99,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
         changeset = Money.change_donation(%Donation{currency: challenge.default_currency})
 
         render_attrs = get_render_attrs(conn, challenge, changeset, ngo_slug)
-        render(conn, "show.html", Map.merge(render_attrs, get_stats(challenge)))
+
+        conn
+        |> open_welcome_modal()
+        |> render("show.html", Map.merge(render_attrs, get_stats(challenge)))
     end
   end
 

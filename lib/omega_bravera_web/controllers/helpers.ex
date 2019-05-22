@@ -8,6 +8,17 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
     |> Phoenix.Controller.render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
   end
 
+
+  def open_welcome_modal(conn) do
+    if is_nil(Plug.Conn.get_session(conn, "welcome_modal")) do
+      conn
+    else
+      conn
+      |> Plug.Conn.delete_session("welcome_modal")
+      |> Plug.Conn.assign(:welcome_modal, true)
+    end
+  end
+
   def total_for_user_challenges(ngo_chals, type) do
     cond do
       Enum.empty?(ngo_chals) ->

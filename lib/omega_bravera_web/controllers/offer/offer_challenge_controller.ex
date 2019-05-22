@@ -228,7 +228,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
       offer_challenge ->
         render_attrs = get_render_attrs(conn, offer_challenge, offer_slug)
-        render(conn, "show.html", render_attrs)
+
+        conn
+        |> open_welcome_modal()
+        |> render("show.html", render_attrs)
     end
   end
 

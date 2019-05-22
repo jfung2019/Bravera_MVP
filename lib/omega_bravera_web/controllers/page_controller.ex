@@ -17,7 +17,9 @@ defmodule OmegaBraveraWeb.PageController do
         redirect(conn, to: admin_user_page_path(conn, :index))
 
       _ ->
-        render(conn, "index.html")
+        conn
+        |> open_welcome_modal()
+        |> render("index.html")
     end
   end
 
