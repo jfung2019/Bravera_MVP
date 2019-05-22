@@ -4,6 +4,7 @@ defmodule OmegaBraveraWeb.StravaController do
   alias URI
 
   alias OmegaBravera.{
+    Trackers,
     Guardian,
     Accounts,
     Challenges.ActivitiesIngestion,
@@ -32,12 +33,29 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   def authenticate(conn, _params) do
-    redirect_url =
-      OmegaBraveraWeb.Endpoint.url() <> "/strava/callback?redirect_to=" <> get_redirect_url(conn)
+    redirect_url = strava_url(conn, :strava_callback, %{redirect_to: get_redirect_url(conn)})
 
     redirect(conn,
       external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url)
     )
+  end
+
+  def connect_strava_account(conn, _params) do
+    redirect_url = strava_url(conn, :connect_strava_callback, %{redirect_to: get_redirect_url(conn)})
+
+    redirect(conn,
+      external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url)
+    )
+  end
+
+  @doc """
+  Adds a Strava Tracker to a Bravera User Account.
+  """
+  def connect_strava_callback(conn, params) do
+    conn
+    |> attach_strava_to_user(Accounts.Strava.login_changeset(params))
+    |> redirect(to: params["redirect_to"])
+
   end
 
   @doc """
@@ -69,6 +87,29 @@ defmodule OmegaBraveraWeb.StravaController do
       {:error, _reason} ->
         conn
         |> put_flash(:error, "Error signing in")
+    end
+  end
+
+  defp attach_strava_to_user(conn, attrs) do
+    case Guardian.Plug.current_resource(conn) do
+      nil ->
+        conn
+        |> put_flash(:error, "You should be logged in using your Bravera account before trying to connect a Strava Tracker")
+
+      user ->
+        case Trackers.create_strava(user.id, attrs) do
+          {:ok, _} ->
+            conn
+            |> put_flash(:info, "Sucess! You have connected your Strava account and can now take Challenges.")
+            |> redirect(to: page_path(conn, :index))
+
+          {:error, changeset} ->
+            Logger.error("Could not connect strava account, reason: #{inspect(changeset)}")
+
+            conn
+            |> put_flash(:error, "Error connecting your Strava account.")
+            |> redirect(to: page_path(conn, :index))
+        end
     end
   end
 

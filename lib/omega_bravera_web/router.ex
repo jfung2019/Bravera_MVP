@@ -62,6 +62,7 @@ defmodule OmegaBraveraWeb.Router do
     scope "/" do
       pipe_through :user_authenticated
       get("/account", UserController, :show)
+      get("/account/trackers", UserController, :show_trackers)
       get("/account/edit", UserController, :edit)
       put("/account", UserController, :update)
       post("/account", UserController, :update)
@@ -77,6 +78,8 @@ defmodule OmegaBraveraWeb.Router do
     get("/login/", StravaController, :authenticate)
     get("/login/:team_invitation", StravaController, :authenticate)
     get("/callback", StravaController, :strava_callback)
+    get("/connect_strava_account/", StravaController, :connect_strava_account)
+    get("/connect_callback", StravaController, :connect_strava_callback)
     get("/logout", StravaController, :logout)
   end
 

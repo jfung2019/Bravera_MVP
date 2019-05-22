@@ -105,11 +105,11 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse5.png"), alt: "Connect your Strava account to get started!", class: "mx-auto") %>
+            <%= img_tag(static_path(@conn, "/images/modals/ellipse5.png"), alt: "Connect your Strava account to get started!", class: "mx-auto") %>
           </div>
 
           <div class="row mx-auto align-items-center mt-3 mb-3">
-            <button type="button" class="btn btn-bravera mx-auto" data-dismiss="modal">Connect Strava Account</button>
+            <%= link("Connect Strava Account", to: strava_path(@conn, :connect_strava_account), class: "btn btn-bravera mx-auto", role: "button") %>
           </div>
 
           <div class="row mx-auto align-items-center">
