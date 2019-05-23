@@ -1,12 +1,21 @@
 defmodule OmegaBravera.Factory do
   use ExMachina.Ecto, repo: OmegaBravera.Repo
 
+  import Comeonin.Bcrypt, only: [hashpwsalt: 1]
+
   def user_factory do
     %OmegaBravera.Accounts.User{
       firstname: "John",
       lastname: "Doe",
       email: sequence(:email, &"john.doe.#{&1}@example.com"),
       email_verified: true
+    }
+  end
+
+  def credential_factory do
+    %OmegaBravera.Accounts.Credential{
+      password_hash: hashpwsalt("password"),
+      user: build(:user)
     }
   end
 

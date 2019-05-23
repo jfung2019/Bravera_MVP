@@ -16,10 +16,13 @@ defmodule OmegaBravera.Accounts.Credential do
   @derive {Phoenix.Param, key: :reset_token}
   schema "credentials" do
     field(:password_hash, :string)
-    field(:password, :string, virtual: true)
-    field(:password_confirmation, :string, virtual: true)
+
     field(:reset_token, :string, allow_nil: true)
     field(:reset_token_created, :utc_datetime, allow_nil: true)
+
+    field(:password, :string, virtual: true)
+    field(:password_confirmation, :string, virtual: true)
+
     belongs_to(:user, User)
 
     timestamps(type: :utc_datetime)

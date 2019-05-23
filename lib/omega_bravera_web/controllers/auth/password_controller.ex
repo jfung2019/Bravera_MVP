@@ -44,7 +44,7 @@ defmodule OmegaBraveraWeb.PasswordController do
     end
   end
 
-  def edit(conn, %{"token" => token}) do
+  def edit(conn, %{"reset_token" => token}) do
     credential = Accounts.get_credential_by_token(token)
 
     case credential do
@@ -71,8 +71,11 @@ defmodule OmegaBraveraWeb.PasswordController do
     end
   end
 
-  def update(conn, %{"token" => token, "credential" => pw_params}) do
-    credential = Accounts.get_credential_by_token(token)
+  def update(conn, params) do
+    credential =
+      params
+      |> Map.get("reset_token")
+      |> Accounts.get_credential_by_token()
 
     case credential do
       nil ->
@@ -90,7 +93,7 @@ defmodule OmegaBraveraWeb.PasswordController do
           |> put_flash(:error, "Password reset token expired")
           |> redirect(to: password_path(conn, :new))
         else
-          case Accounts.update_credential(credential, pw_params) do
+          case Accounts.update_credential(credential, params["credential"]) do
             {:ok, _response} ->
               nullify_token(credential)
 
@@ -100,7 +103,7 @@ defmodule OmegaBraveraWeb.PasswordController do
 
             {:error, changeset} ->
               conn
-              |> render("edit.html", changeset: changeset, token: token)
+              |> render("edit.html", changeset: changeset, credential: credential, token: params["reset_token"])
           end
         end
     end
