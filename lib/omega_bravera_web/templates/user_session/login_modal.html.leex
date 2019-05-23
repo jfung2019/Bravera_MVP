@@ -38,6 +38,8 @@
               <%= error_tag f, :password %>
             </div>
 
+            <%= link("Forgot your password?", to: password_path(OmegaBraveraWeb.Endpoint, :new)) %>
+
             <%= if not is_nil(@error) do %>
               <span class="help-block text-danger"><%= @error %><span>
             <% end %>

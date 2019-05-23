@@ -59,6 +59,13 @@ defmodule OmegaBraveraWeb.Router do
     post("/password/update", ChangePasswordController, :update)
     put("/password/update", ChangePasswordController, :update)
 
+    scope "/password_reset" do
+      resources("/", PasswordController, only: [:new, :create])
+
+      get("/:reset_token/edit", PasswordController, :edit)
+      put("/:reset_token", PasswordController, :update)
+    end
+
     scope "/" do
       pipe_through :user_authenticated
       get("/account", UserController, :show)
@@ -254,14 +261,4 @@ defmodule OmegaBraveraWeb.Router do
 
     get("/*path", PageController, :not_found)
   end
-
-  # TODO: refactor PasswordController -Sherief
-  # scope "/pass-reset", OmegaBraveraWeb do
-  #   pipe_through(:browser)
-
-  #   resources("/", PasswordController, only: [:new, :create])
-
-  #   get("/:token/edit", PasswordController, :edit)
-  #   put("/:token", PasswordController, :update)
-  # end
 end

@@ -13,6 +13,7 @@ defmodule OmegaBravera.Accounts.Credential do
     :user_id
   ]
 
+  @derive {Phoenix.Param, key: :reset_token}
   schema "credentials" do
     field(:password_hash, :string)
     field(:password, :string, virtual: true)

@@ -300,13 +300,12 @@ defmodule OmegaBravera.Accounts do
     Looks for credential based on reset token
   """
 
-  def get_credential_by_token(token) do
-    query =
-      from(c in Credential,
-        where: c.reset_token == ^token
-      )
-
-    query |> Repo.one()
+  def get_credential_by_token(token, preloads \\ [:user]) do
+    from(c in Credential,
+      where: c.reset_token == ^token,
+      preload: ^preloads
+    )
+    |> Repo.one()
   end
 
   @doc """
