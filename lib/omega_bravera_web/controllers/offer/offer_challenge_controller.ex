@@ -172,7 +172,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     case Guardian.Plug.current_resource(conn) do
       nil ->
         render(conn, "login_onboarding.html",
-          offer: Offers.get_offer_by_slug(params["offer_slug"])
+          offer: Offers.get_offer_by_slug(params["offer_slug"], [offer_challenges: [user: [:strava], team: [users: [:strava]]]])
         )
 
       _user ->

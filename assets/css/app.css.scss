@@ -651,6 +651,17 @@ div.page-index {
   }
 }
 
+.offer-stats-card {
+  .participant-container {
+    max-width: 60px !important;
+    max-height: 60px !important;
+  }
+}
+
+.offer-participant-modal{
+  z-index: 1119800;
+}
+
 
 /* live modals */
 .live-modal {

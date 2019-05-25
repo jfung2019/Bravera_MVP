@@ -124,6 +124,8 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     end
   end
 
+  def profile_picture_or_default(%Ecto.Association.NotLoaded{}, default), do: default
+
   defp valid_uri?(nil), do: false
 
   defp valid_uri?(str) do

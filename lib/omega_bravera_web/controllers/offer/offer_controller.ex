@@ -16,7 +16,7 @@ defmodule OmegaBraveraWeb.Offer.OfferController do
           Repo.preload(user, :offer_challenges)
       end
 
-    offers = Offers.list_offers()
+    offers = Offers.list_offers(false, [offer_challenges: [user: [:strava], team: [users: [:strava]]]])
     offer_challenge_changeset = Offers.change_offer_challenge(%OfferChallenge{})
 
     render(conn, "index.html",
