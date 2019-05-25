@@ -54,7 +54,17 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     offer = Offers.get_offer_by_slug_with_hk_time(slug)
 
     case Offers.update_offer(offer, offer_params) do
-      {:ok, _updated_offer} ->
+      {:ok, updated_offer} ->
+        # Update all pre_registration challenges' start date
+        offer.offer_challenges
+        |> Enum.map(fn challenge ->
+          if challenge.status == "pre_registration" do
+            Offers.update_offer_challenge(challenge, %{
+              start_date: updated_offer.start_date
+            })
+          end
+        end)
+
         conn
         |> put_flash(:info, "Offer updated successfully.")
         |> redirect(to: admin_panel_offer_path(conn, :index))

@@ -1,6 +1,8 @@
 defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
+  import OmegaBravera.Factory
+
   alias OmegaBravera.{Accounts, Offers}
 
   @offer_create_attrs %{
@@ -117,6 +119,33 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     test "renders errors in update when data is invalid", %{conn: conn, offer: offer} do
       conn = put(conn, admin_panel_offer_path(conn, :update, offer.slug), offer: @invalid_attrs)
       assert html_response(conn, 200)
+    end
+
+    test "when updating closed registration start date, all its pre_registration challenges' start_date is also updated",
+         %{conn: conn} do
+
+      offer =
+        insert(:offer, %{
+          open_registration: false,
+          pre_registration_start_date: Timex.now(),
+          start_date: Timex.shift(Timex.now(), days: 5),
+          end_date: Timex.shift(Timex.now(), days: 10),
+          time_limit: 0
+        })
+
+      Offers.create_offer_challenge(offer, insert(:user))
+
+      conn =
+        put(conn, admin_panel_offer_path(conn, :update, offer),
+          offer: %{start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 15)}
+        )
+
+      assert html_response(conn, 302)
+
+      updated_offer = Offers.get_offer_by_slug(offer.slug)
+      offer_challenge = updated_offer.offer_challenges |> List.first()
+
+      assert Timex.equal?(updated_offer.start_date, offer_challenge.start_date)
     end
   end
 

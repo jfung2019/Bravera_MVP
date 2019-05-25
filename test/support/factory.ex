@@ -190,6 +190,7 @@ defmodule OmegaBravera.Factory do
       distances: ["50"],
       activities: ["Run", "Cycle"],
       time_limit: 0,
+      toc: "foo",
       vendor: build(:vendor)
     }
   end
