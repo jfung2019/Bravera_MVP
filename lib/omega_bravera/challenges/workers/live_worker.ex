@@ -1,8 +1,8 @@
 defmodule OmegaBravera.Challenges.LiveWorker do
   require Logger
 
-  alias OmegaBravera.{Repo, Challenges, Challenges.Notifier}
-  alias OmegaBravera.{Offers, Offers.Notifier}
+  alias OmegaBravera.{Repo, Challenges}
+  alias OmegaBravera.{Offers}
 
   def start() do
     Challenges.get_live_ngo_chals()
@@ -13,7 +13,7 @@ defmodule OmegaBravera.Challenges.LiveWorker do
         {:ok, _} ->
           Logger.info("LiveChallenges worker: activated challenge: #{inspect(challenge.slug)}")
 
-          Notifier.send_challenge_activated_email(challenge)
+          Challenges.Notifier.send_challenge_activated_email(challenge)
 
         {:error, reason} ->
           Logger.error(
@@ -32,7 +32,7 @@ defmodule OmegaBravera.Challenges.LiveWorker do
             "LiveChallenges worker: activated offer challenge: #{inspect(challenge.slug)}"
           )
 
-          Notifier.send_challenge_activated_email(challenge)
+          Offers.Notifier.send_challenge_activated_email(challenge)
 
         {:error, reason} ->
           Logger.error(
