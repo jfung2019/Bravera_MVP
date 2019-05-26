@@ -56,12 +56,17 @@ module.exports = (env, options) => ({
                 use: [{
                     loader: 'expose-loader',
                     options: '$'
-                }]
+                },
+                {
+                    loader: 'expose-loader',
+                    options: 'jQuery'
+                },]
             }
         ]
     },
     plugins: [
         new MiniCssExtractPlugin({ filename: '../css/app.css' }),
         new CopyWebpackPlugin([{ from: 'static/', to: '../' }])
-    ]
+    ],
+    
 });
