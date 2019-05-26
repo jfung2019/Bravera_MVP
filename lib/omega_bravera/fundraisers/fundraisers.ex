@@ -124,7 +124,7 @@ defmodule OmegaBravera.Fundraisers do
     end
   end
 
-  def list_ngos(hidden \\ false) do
+  def list_ngos(hidden \\ false, preloads \\ []) do
     # The problem: total_pledged_secured_query + total_distance_calories_challenges_query + ngos_with_stats query for ngos
     # with stats and do that correctly. However, any new NGO or an existing NGO without challenges, activities, and donations
     # are not included.
@@ -169,6 +169,7 @@ defmodule OmegaBravera.Fundraisers do
         join:
           ngo_distance_calories_challenges in subquery(total_distance_calories_challenges_query),
         on: ngo.id == ngo_distance_calories_challenges.ngo_id,
+        preload: ^preloads,
         order_by: [desc: ngo.id],
         select: %{
           ngo
@@ -188,6 +189,7 @@ defmodule OmegaBravera.Fundraisers do
       from(
         ngo in NGO,
         where: ngo.hidden == ^hidden and ngo.id not in ^ngos_with_stats_ids,
+        preload: ^preloads,
         order_by: [desc: ngo.id]
       )
       |> Repo.all()

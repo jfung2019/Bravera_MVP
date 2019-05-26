@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.NGOController do
         redirect(conn, to: admin_user_page_path(conn, :index))
 
       _ ->
-        render(conn, "index.html", ngos: Fundraisers.list_ngos())
+        render(conn, "index.html", ngos: Fundraisers.list_ngos(false, [ngo_chals: [user: [:strava], team: [users: [:strava]]]]))
     end
   end
 

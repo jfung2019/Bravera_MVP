@@ -1,6 +1,14 @@
 <div class="card ngo-stats-card">
    <div class="card-body">
       <div class="container">
+          <div class="row">
+            <%= for challenge <- Enum.take(@ngo.ngo_chals, 5) do %>
+               <div class="col-4 mx-auto text-center participant-container">
+                  <%= img_tag(profile_picture_or_default(challenge.user, static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
+               </div>
+            <% end %>
+         </div>
+
          <div class="mb-3 mx-lg-3">
             <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
                Fundraising Goal:
@@ -27,7 +35,7 @@
               </div>
             <% end %>
             <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-               Participants:
+               <a href="#" class="text-success" data-toggle="modal" data-target="#ngoParticipantsModal-<%=@ngo.id%>">Participants:</a>
                <strong class="text-500 float-right"><%= @ngo.num_of_challenges || 0 %></strong>
             </div>
             <%= if !pre_registration_ngo?(@ngo) do %>
@@ -49,3 +57,36 @@
       </div>
    </div>
 </div>
+
+<!-- NGO Participants Modal START -->
+
+<div class="offer-participant-modal modal fade" id="ngoParticipantsModal-<%=@ngo.id%>" tabindex="-1" role="dialog" aria-labelledby="ngoParticipantsModalLabel">
+         
+   <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+
+      <div class="modal-header">
+         <h5 class="modal-title mx-auto text-success" id="ngoParticipantsModalLabel">Patricipants</h5>
+      </div>
+
+      <div class="modal-body">
+            <%= for challenge <- @ngo.ngo_chals do %>
+         <div class="row">
+               <div class="col-4 mx-auto text-center participant-container">
+               <%= link to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug) do %>
+                  <%= img_tag(profile_picture_or_default(challenge.user, static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
+               <% end %>
+               </div>
+         </div>
+            <% end %>
+      </div>
+
+      <div class="modal-footer">
+         <button type="button" class="btn btn-bravera mx-auto" data-dismiss="modal">Close</button>
+      </div>
+
+      </div>
+   </div>
+</div>
+
+<!-- NGO Participants Modal END -->

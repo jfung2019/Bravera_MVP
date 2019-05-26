@@ -27,7 +27,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, %{"ngo_slug" => ngo_slug}) do
-    case Fundraisers.get_ngo_with_stats(ngo_slug) do
+    case Fundraisers.get_ngo_with_stats(ngo_slug, [ngo_chals: [user: [:strava], team: [users: [:strava]]]]) do
       nil ->
         conn
         |> put_view(OmegaBraveraWeb.PageView)
