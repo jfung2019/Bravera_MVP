@@ -130,7 +130,7 @@ defmodule OmegaBravera.StripeHelpers do
   end
 
   def create_stripe_customer(%{"email" => email, "str_src" => src_id} = params) do
-    donor = Accounts.insert_or_return_email_user(params)
+    donor = Accounts.insert_or_return_email_donor(params)
 
     case Stripy.req(:post, "customers", %{
            "email" => email,
