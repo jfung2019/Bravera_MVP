@@ -3,13 +3,14 @@
     <h2>Listing Offers</h2>
 
     <span><%= link "Create New offer", to: admin_panel_offer_path(@conn, :new) %></span>
-    <table class="table">
+    <table class="table table-bordered table-hover">
       <thead>
         <tr>
           <th>Name</th>
           <th>Vendor ID</th>
           <th>Patricipants</th>
           <th>Challenges</th>
+          <th>Status</th>
           <th>Redemptions</th>
           <th>Total Value</th>
 
@@ -22,6 +23,7 @@
           <td><%= offer.vendor.vendor_id %></td>
           <td><%= offer.unique_participants %></td>
           <td><%= length(offer.offer_challenges) %></td>
+          <td class="small"><%= raw completed_challenges(offer.offer_challenges) %></td>
           <td><%= redeems_total(offer.offer_redeems) %></td>
           <td><%= get_total_redeems_value(offer.offer_redeems) %></td>
           <td class="text-right">
