@@ -285,14 +285,14 @@ defmodule OmegaBravera.Accounts do
         nil
 
       email ->
-        %{id: user_id} = User |> Repo.get_by(email: email)
+        case Repo.get_by(User, email: email) do
+          %{id: user_id} ->
+            from(c in Credential,
+              where: c.user_id == ^user_id
+            ) |> Repo.one()
 
-        query =
-          from(c in Credential,
-            where: c.user_id == ^user_id
-          )
-
-        query |> Repo.one()
+          nil -> nil
+        end
     end
   end
 

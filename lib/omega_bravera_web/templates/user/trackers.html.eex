@@ -1,12 +1,12 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-8">
-      <h2>Your Trackers</h2>
+      <h2>Connected Apps</h2>
     </div>
 
     <div class="col-sm-8">
         <%= if is_nil(@user.strava) do %>
-            You did not connect a Strava Tracker, please <%= link("Connect Strava Account", to: strava_path(@conn, :connect_strava_account, %{"redirect_to" => @redirect_to}), class: "btn btn-bravera mx-auto", role: "button") %>
+            We currently support Strava. <%= link("Connect Strava Account", to: strava_path(@conn, :connect_strava_account, %{"redirect_to" => @redirect_to}), class: "btn btn-bravera mx-auto", role: "button") %>
         <% else %>
             Your Strava Account is connected!
         <% end %>

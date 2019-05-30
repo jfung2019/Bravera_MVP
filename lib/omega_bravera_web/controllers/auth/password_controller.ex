@@ -24,7 +24,7 @@ defmodule OmegaBraveraWeb.PasswordController do
     case credential do
       nil ->
         conn
-        |> put_flash(:error, "Could not send reset email.")
+        |> put_flash(:error, "There's no account associated with that email")
         |> redirect(to: password_path(conn, :new))
 
       credential ->

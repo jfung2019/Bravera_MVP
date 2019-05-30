@@ -52,7 +52,7 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
           {:noreply,
            assign(socket,
              changeset: changeset,
-             error: "User does not exist in our database.",
+             error: "Seems you don't have an account, please sign up.",
              open_modal: true,
              login_button_disabled?: false
            )}
