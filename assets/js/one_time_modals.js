@@ -2,6 +2,11 @@ import $ from "jquery";
 
 
 $(() => {
+    $('#challengeCreateErrorModal').modal({
+      keyboard: false,
+      backdrop: 'static'
+    })
+
     $('#welcomeModal').modal({
         keyboard: false,
         backdrop: 'static'

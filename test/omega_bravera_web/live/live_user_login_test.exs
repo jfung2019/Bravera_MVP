@@ -41,7 +41,7 @@ defmodule OmegaBraveraWeb.LiveUserLoginTest do
       params = %{"email" => "fakesherief@example.com", "password" => "testing"}
       html = render_change(view, "validate", %{"session" => params})
 
-      assert html =~ "User does not exist in our database."
+      assert html =~ "Seems you don&#39;t have an account, please sign up."
     end
   end
 end

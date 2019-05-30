@@ -206,7 +206,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             Logger.info("Could not sign up user for offer. Reason: #{inspect(changeset)}")
 
             conn
-            |> put_flash(:error, "Could not create offer challenge.")
+            |> put_session("could_not_create_offer_challenge", true)
             |> redirect(to: offer_path(conn, :index))
         end
     end

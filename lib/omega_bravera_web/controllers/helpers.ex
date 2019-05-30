@@ -19,6 +19,16 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
     end
   end
 
+  def open_modal(conn, atom_key_word) do
+    if is_nil(Plug.Conn.get_session(conn, Atom.to_string(atom_key_word))) do
+      conn
+    else
+      conn
+      |> Plug.Conn.delete_session(Atom.to_string(atom_key_word))
+      |> Plug.Conn.assign(atom_key_word, true)
+    end
+  end
+
   def total_for_user_challenges(ngo_chals, type) do
     cond do
       Enum.empty?(ngo_chals) ->

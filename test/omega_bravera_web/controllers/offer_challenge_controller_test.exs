@@ -48,7 +48,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           offer_offer_challenge_path(conn, :create, offer.slug)
         )
 
-      assert get_flash(conn, :error) == "Could not create offer challenge."
+      assert get_session(conn, :could_not_create_offer_challenge) == true
       assert Offers.list_offer_challenges() == []
     end
 
