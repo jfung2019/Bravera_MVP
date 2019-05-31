@@ -14,8 +14,7 @@ defmodule OmegaBraveraWeb.LiveUserLoginTest do
       credential: %{"password" => "testing", "password_confirmation" => "testing"}
     }
 
-    with {:ok, user} <- Accounts.create_credential_user(attrs), do:
-      {:ok, user: user}
+    with {:ok, user} <- Accounts.create_credential_user(attrs), do: {:ok, user: user}
   end
 
   describe "login" do

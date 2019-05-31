@@ -154,7 +154,11 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
           )
       end
 
-    if valid_activity?(activity, challenge, send_emails) and ActivityIngestionUtils.activity_type_matches_challenge_activity_type?(activity, challenge) do
+    if valid_activity?(activity, challenge, send_emails) and
+         ActivityIngestionUtils.activity_type_matches_challenge_activity_type?(
+           activity,
+           challenge
+         ) do
       case Repo.insert(changeset) do
         {:ok, activity} ->
           {:ok, challenge, activity}

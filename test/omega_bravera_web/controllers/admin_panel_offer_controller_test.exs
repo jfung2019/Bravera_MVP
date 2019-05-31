@@ -123,7 +123,6 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
 
     test "when updating closed registration start date, all its pre_registration challenges' start_date is also updated",
          %{conn: conn} do
-
       offer =
         insert(:offer, %{
           open_registration: false,

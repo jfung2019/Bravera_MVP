@@ -60,7 +60,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       strava_activity = Map.replace!(strava_activity, :type, "Ride")
 
       assert {:ok, _, _} =
-                ActivitiesIngestion.create_activity(
+               ActivitiesIngestion.create_activity(
                  challenge,
                  strava_activity,
                  challenge.user,

@@ -16,7 +16,8 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
 
   def completed_challenges(offer_challenges) do
     stats =
-      Enum.reduce(offer_challenges, %{active: 0, complete: 0, expired: 0}, fn offer_challenge, acc ->
+      Enum.reduce(offer_challenges, %{active: 0, complete: 0, expired: 0}, fn offer_challenge,
+                                                                              acc ->
         cond do
           offer_challenge.status == "active" -> Map.update(acc, :active, 0, &(&1 + 1))
           offer_challenge.status == "expired" -> Map.update(acc, :expired, 0, &(&1 + 1))
@@ -51,7 +52,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
   def render_redeemed_date(%OfferChallenge{has_team: false, offer_redeems: offer_redeems}) do
     case Enum.find(offer_redeems, nil, &(&1.status == "redeemed")) do
       %{updated_at: updated_at} -> OmegaBraveraWeb.ViewHelpers.render_datetime(updated_at)
-
       nil -> ""
     end
   end
@@ -61,7 +61,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
   def render_redeemed_date(%OfferChallenge{has_team: false, offer_redeems: offer_redeems}) do
     case Enum.find(offer_redeems, nil, &(&1.status == "redeemed")) do
       %{updated_at: updated_at} -> OmegaBraveraWeb.ViewHelpers.render_datetime(updated_at)
-
       nil -> ""
     end
   end
@@ -71,7 +70,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
   def render_redeemed_reward_name(%OfferChallenge{has_team: false, offer_redeems: offer_redeems}) do
     case Enum.find(offer_redeems, nil, &(&1.status == "redeemed")) do
       %{offer_reward: offer_reward} -> offer_reward.name
-
       nil -> ""
     end
   end

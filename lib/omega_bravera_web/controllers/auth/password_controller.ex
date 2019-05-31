@@ -103,7 +103,11 @@ defmodule OmegaBraveraWeb.PasswordController do
 
             {:error, changeset} ->
               conn
-              |> render("edit.html", changeset: changeset, credential: credential, token: params["reset_token"])
+              |> render("edit.html",
+                changeset: changeset,
+                credential: credential,
+                token: params["reset_token"]
+              )
           end
         end
     end

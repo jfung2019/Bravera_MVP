@@ -79,7 +79,11 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
   end
 
   def statement(conn, %{"slug" => slug}) do
-    render(conn, "statement.html", offer: Offers.get_offer_by_slug(slug, [offer_challenges: [:user, offer_redeems: [:offer_reward]]]), layout: {OmegaBraveraWeb.LayoutView, "print.html"})
+    render(conn, "statement.html",
+      offer:
+        Offers.get_offer_by_slug(slug, offer_challenges: [:user, offer_redeems: [:offer_reward]]),
+      layout: {OmegaBraveraWeb.LayoutView, "print.html"}
+    )
   end
 
   # def export_statement(conn, %{"slug" => slug, "month" => month, "year" => year}) do

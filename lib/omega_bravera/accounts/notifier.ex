@@ -23,7 +23,9 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.add_substitution("-fullName-", User.full_name(user))
     |> Email.add_substitution(
       "-emailVerificationUrl-",
-      Routes.user_url(Endpoint, :activate_email, user.email_activation_token, %{redirect_to: redirect_to})
+      Routes.user_url(Endpoint, :activate_email, user.email_activation_token, %{
+        redirect_to: redirect_to
+      })
     )
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
@@ -33,9 +35,12 @@ defmodule OmegaBravera.Accounts.Notifier do
   def send_password_reset_email(%Credential{} = credential) do
     template_id = "1bfb8b3b-e5fd-4052-baad-55fd4a5f7c2b"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
-    credential = Repo.preload(credential, [user: [:subscribed_email_categories]])
+    credential = Repo.preload(credential, user: [:subscribed_email_categories])
 
-    if user_subscribed_in_category?(credential.user.subscribed_email_categories, sendgrid_email.category.id) do
+    if user_subscribed_in_category?(
+         credential.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
       credential
       |> password_reset_email(template_id)
       |> Mailer.send()
@@ -45,11 +50,14 @@ defmodule OmegaBravera.Accounts.Notifier do
   def password_reset_email(%Credential{} = credential, template_id) do
     Email.build()
     |> Email.put_template(template_id)
-    |> Email.add_substitution("-passwordResetUrl-", Routes.password_url(Endpoint, :edit, credential))
+    |> Email.add_substitution(
+      "-passwordResetUrl-",
+      Routes.password_url(Endpoint, :edit, credential)
+    )
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(credential.user.email)
-    |> IO.inspect
+    |> IO.inspect()
   end
 
   defp user_subscribed_in_category?(user_subscribed_categories, email_category_id) do

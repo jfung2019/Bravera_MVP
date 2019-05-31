@@ -5,13 +5,13 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
 
   def mount(%{redirect_uri: redirect_uri}, socket) do
     {:ok,
-    assign(socket, %{
-      redirect_uri: redirect_uri,
-      changeset: Accounts.change_credential_user(%Accounts.User{}),
-      open_modal: false,
-      signup_ok?: false,
-      signup_button_disabled?: false
-    })}
+     assign(socket, %{
+       redirect_uri: redirect_uri,
+       changeset: Accounts.change_credential_user(%Accounts.User{}),
+       open_modal: false,
+       signup_ok?: false,
+       signup_button_disabled?: false
+     })}
   end
 
   def mount(_session, socket), do: {:stop, redirect(socket, to: "/")}
@@ -23,7 +23,12 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
       Accounts.change_credential_user(%Accounts.User{}, params)
       |> Map.put(:action, :insert)
 
-    {:noreply, assign(socket, changeset: changeset, open_modal: true, signup_button_disabled?: changeset.valid?)}
+    {:noreply,
+     assign(socket,
+       changeset: changeset,
+       open_modal: true,
+       signup_button_disabled?: changeset.valid?
+     )}
   end
 
   def handle_event("signup", %{"user" => params}, socket) do
@@ -31,10 +36,16 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
       {:ok, user} ->
         Accounts.Notifier.send_user_signup_email(user, socket.assigns[:redirect_uri])
 
-        {:noreply, assign(socket, signup_ok?: true, open_modal: true, signup_button_disabled?: true)}
+        {:noreply,
+         assign(socket, signup_ok?: true, open_modal: true, signup_button_disabled?: true)}
 
       {:error, changeset} ->
-        {:noreply, assign(socket, changeset: changeset, open_modal: true, signup_button_disabled?: changeset.valid?)}
+        {:noreply,
+         assign(socket,
+           changeset: changeset,
+           open_modal: true,
+           signup_button_disabled?: changeset.valid?
+         )}
     end
   end
 

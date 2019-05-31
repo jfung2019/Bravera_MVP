@@ -125,7 +125,6 @@ defmodule OmegaBravera.Challenges.Activity do
     end
   end
 
-
   defp to_km(nil), do: nil
 
   defp to_km(meters) when is_float(meters),

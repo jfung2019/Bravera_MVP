@@ -27,7 +27,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def new(conn, %{"ngo_slug" => ngo_slug}) do
-    case Fundraisers.get_ngo_with_stats(ngo_slug, [ngo_chals: [user: [:strava], team: [users: [:strava]]]]) do
+    case Fundraisers.get_ngo_with_stats(ngo_slug,
+           ngo_chals: [user: [:strava], team: [users: [:strava]]]
+         ) do
       nil ->
         conn
         |> put_view(OmegaBraveraWeb.PageView)
@@ -82,11 +84,9 @@ defmodule OmegaBraveraWeb.NGOChalController do
   def show(conn, %{"ngo_slug" => ngo_slug, "slug" => slug}) do
     challenge =
       Challenges.get_ngo_chal_by_slugs(ngo_slug, slug,
-        [
-          user: [:strava],
-          ngo: [],
-          team: [users: [:strava], invitations: []]
-        ]
+        user: [:strava],
+        ngo: [],
+        team: [users: [:strava], invitations: []]
       )
 
     case challenge do
@@ -261,7 +261,12 @@ defmodule OmegaBraveraWeb.NGOChalController do
     end
   end
 
-  defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE", has_team: false} = challenge, changeset, ngo_slug) do
+  defp get_render_attrs(
+         conn,
+         %NGOChal{type: "PER_MILESTONE", has_team: false} = challenge,
+         changeset,
+         ngo_slug
+       ) do
     %{
       challenge: challenge,
       m_targets: NGOChal.milestones_distances(challenge),
@@ -274,7 +279,12 @@ defmodule OmegaBraveraWeb.NGOChalController do
     }
   end
 
-  defp get_render_attrs(conn, %NGOChal{type: "PER_KM", has_team: false} = challenge, changeset, ngo_slug) do
+  defp get_render_attrs(
+         conn,
+         %NGOChal{type: "PER_KM", has_team: false} = challenge,
+         changeset,
+         ngo_slug
+       ) do
     %{
       challenge: challenge,
       changeset: changeset,
@@ -286,7 +296,12 @@ defmodule OmegaBraveraWeb.NGOChalController do
     }
   end
 
-  defp get_render_attrs(conn, %NGOChal{type: "PER_MILESTONE", has_team: true} = challenge, changeset, ngo_slug) do
+  defp get_render_attrs(
+         conn,
+         %NGOChal{type: "PER_MILESTONE", has_team: true} = challenge,
+         changeset,
+         ngo_slug
+       ) do
     %{
       challenge: challenge,
       m_targets: NGOChal.milestones_distances(challenge),
@@ -296,11 +311,20 @@ defmodule OmegaBraveraWeb.NGOChalController do
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
       ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug),
-      all_team_members_activities_totals: Challenges.get_team_member_activity_totals(challenge.id, [challenge.user] ++ challenge.team.users)
+      all_team_members_activities_totals:
+        Challenges.get_team_member_activity_totals(
+          challenge.id,
+          [challenge.user] ++ challenge.team.users
+        )
     }
   end
 
-  defp get_render_attrs(conn, %NGOChal{type: "PER_KM", has_team: true} = challenge, changeset, ngo_slug) do
+  defp get_render_attrs(
+         conn,
+         %NGOChal{type: "PER_KM", has_team: true} = challenge,
+         changeset,
+         ngo_slug
+       ) do
     %{
       challenge: challenge,
       changeset: changeset,
@@ -309,7 +333,11 @@ defmodule OmegaBraveraWeb.NGOChalController do
       current_user: Guardian.Plug.current_resource(conn),
       total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
       ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug),
-      all_team_members_activities_totals: Challenges.get_team_member_activity_totals(challenge.id, [challenge.user] ++ challenge.team.users)
+      all_team_members_activities_totals:
+        Challenges.get_team_member_activity_totals(
+          challenge.id,
+          [challenge.user] ++ challenge.team.users
+        )
     }
   end
 

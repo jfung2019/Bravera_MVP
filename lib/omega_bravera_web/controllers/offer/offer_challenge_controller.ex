@@ -172,7 +172,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     case Guardian.Plug.current_resource(conn) do
       nil ->
         render(conn, "login_onboarding.html",
-          offer: Offers.get_offer_by_slug(params["offer_slug"], [offer_challenges: [user: [:strava], team: [users: [:strava]]]])
+          offer:
+            Offers.get_offer_by_slug(params["offer_slug"],
+              offer_challenges: [user: [:strava], team: [users: [:strava]]]
+            )
         )
 
       _user ->
@@ -214,14 +217,12 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do
     offer_challenge =
-      Offers.get_offer_chal_by_slugs(offer_slug, slug,
-        [
-          :offer_challenge_activities,
-          user: [:strava],
-          team: [users: [:strava], invitations: []],
-          offer: []
-        ]
-      )
+      Offers.get_offer_chal_by_slugs(offer_slug, slug, [
+        :offer_challenge_activities,
+        user: [:strava],
+        team: [users: [:strava], invitations: []],
+        offer: []
+      ])
 
     case offer_challenge do
       nil ->
@@ -383,17 +384,29 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     }
   end
 
-  defp get_render_attrs(conn, %OfferChallenge{type: "PER_KM", has_team: true} = challenge, offer_slug) do
+  defp get_render_attrs(
+         conn,
+         %OfferChallenge{type: "PER_KM", has_team: true} = challenge,
+         offer_slug
+       ) do
     %{
       challenge: challenge,
       activities: Offers.latest_activities(challenge, 5),
-      all_team_members_activities_totals: Offers.get_team_member_activity_totals(challenge.id, [challenge.user] ++ challenge.team.users),
+      all_team_members_activities_totals:
+        Offers.get_team_member_activity_totals(
+          challenge.id,
+          [challenge.user] ++ challenge.team.users
+        ),
       current_user: Guardian.Plug.current_resource(conn),
       offer_with_stats: Offers.get_offer_with_stats(offer_slug)
     }
   end
 
-  defp get_render_attrs(conn, %OfferChallenge{type: "PER_KM", has_team: false} = challenge, offer_slug) do
+  defp get_render_attrs(
+         conn,
+         %OfferChallenge{type: "PER_KM", has_team: false} = challenge,
+         offer_slug
+       ) do
     %{
       challenge: challenge,
       activities: Offers.latest_activities(challenge, 5),

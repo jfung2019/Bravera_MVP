@@ -8,7 +8,6 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
     |> Phoenix.Controller.render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
   end
 
-
   def open_welcome_modal(conn) do
     if is_nil(Plug.Conn.get_session(conn, "welcome_modal")) do
       conn

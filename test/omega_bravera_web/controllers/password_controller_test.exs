@@ -19,7 +19,10 @@ defmodule OmegaBraveraWeb.PasswordControllerTest do
   describe "edit/2" do
     test "renders form for editing password", %{conn: conn, credential: credential} do
       {:ok, updated_credential} =
-        Accounts.update_credential_token(credential, %{reset_token: "foo_token", reset_token_created: Timex.now()})
+        Accounts.update_credential_token(credential, %{
+          reset_token: "foo_token",
+          reset_token_created: Timex.now()
+        })
 
       conn = get(conn, password_path(conn, :edit, updated_credential))
       assert html_response(conn, 200) =~ "Password reset"
@@ -32,7 +35,10 @@ defmodule OmegaBraveraWeb.PasswordControllerTest do
 
     test "redirects and shows error if token expired", %{conn: conn, credential: credential} do
       {:ok, updated_credential} =
-        Accounts.update_credential_token(credential, %{reset_token: "foo_token", reset_token_created: Timex.shift(Timex.now(), days: -3)})
+        Accounts.update_credential_token(credential, %{
+          reset_token: "foo_token",
+          reset_token_created: Timex.shift(Timex.now(), days: -3)
+        })
 
       conn = get(conn, password_path(conn, :edit, updated_credential))
       assert get_flash(conn, :error) =~ "Password reset token expired"
@@ -42,19 +48,27 @@ defmodule OmegaBraveraWeb.PasswordControllerTest do
   describe "update" do
     test "redirects and shows error if token expired", %{conn: conn, credential: credential} do
       {:ok, updated_credential} =
-        Accounts.update_credential_token(credential, %{reset_token: "foo_token", reset_token_created: Timex.shift(Timex.now(), days: -3)})
+        Accounts.update_credential_token(credential, %{
+          reset_token: "foo_token",
+          reset_token_created: Timex.shift(Timex.now(), days: -3)
+        })
 
       attrs = %{
         "password" => "testing",
         "password_confirmation" => "testing"
       }
+
       conn = put(conn, password_path(conn, :update, updated_credential, credential: attrs))
       assert get_flash(conn, :error) =~ "Password reset token expired"
     end
 
     test "saves new password", %{conn: conn, credential: credential} do
       {:ok, updated_credential} =
-        Accounts.update_credential_token(credential, %{reset_token: "foo_token", reset_token_created: Timex.now()})
+        Accounts.update_credential_token(credential, %{
+          reset_token: "foo_token",
+          reset_token_created: Timex.now()
+        })
+
       attrs = %{
         "password" => "testing",
         "password_confirmation" => "testing"

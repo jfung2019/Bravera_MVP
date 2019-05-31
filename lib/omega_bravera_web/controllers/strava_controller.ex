@@ -41,7 +41,10 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   def connect_strava_account(conn, params) do
-    redirect_url = strava_url(conn, :connect_strava_callback, %{redirect_to: Map.get(params, "redirect_to", "/")})
+    redirect_url =
+      strava_url(conn, :connect_strava_callback, %{
+        redirect_to: Map.get(params, "redirect_to", "/")
+      })
 
     redirect(conn,
       external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url)
@@ -55,7 +58,6 @@ defmodule OmegaBraveraWeb.StravaController do
     conn
     |> attach_strava_to_user(Accounts.Strava.login_changeset(params))
     |> redirect(to: Map.get(params, "redirect_to", "/"))
-
   end
 
   @doc """
@@ -94,13 +96,19 @@ defmodule OmegaBraveraWeb.StravaController do
     case Guardian.Plug.current_resource(conn) do
       nil ->
         conn
-        |> put_flash(:error, "You should be logged in using your Bravera account before trying to connect a Strava Tracker")
+        |> put_flash(
+          :error,
+          "You should be logged in using your Bravera account before trying to connect a Strava Tracker"
+        )
 
       user ->
         case Trackers.create_strava(user.id, attrs) do
           {:ok, _} ->
             conn
-            |> put_flash(:info, "Sucess! You have connected your Strava account and can now take Challenges.")
+            |> put_flash(
+              :info,
+              "Sucess! You have connected your Strava account and can now take Challenges."
+            )
 
           {:error, changeset} ->
             Logger.error("Could not connect strava account, reason: #{inspect(changeset)}")

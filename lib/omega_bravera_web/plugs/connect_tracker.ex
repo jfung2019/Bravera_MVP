@@ -10,8 +10,14 @@ defmodule OmegaBraveraWeb.ConnectTracker do
 
       %User{strava: nil} ->
         conn
-        |> Phoenix.Controller.put_flash(:info, "Please connect with a partner app before taking a challenge")
-        |> Phoenix.Controller.render(OmegaBraveraWeb.UserView, "trackers.html", user: OmegaBravera.Guardian.Plug.current_resource(conn), redirect_to: conn.request_path)
+        |> Phoenix.Controller.put_flash(
+          :info,
+          "Please connect with a partner app before taking a challenge"
+        )
+        |> Phoenix.Controller.render(OmegaBraveraWeb.UserView, "trackers.html",
+          user: OmegaBravera.Guardian.Plug.current_resource(conn),
+          redirect_to: conn.request_path
+        )
         |> Plug.Conn.halt()
 
       _ ->

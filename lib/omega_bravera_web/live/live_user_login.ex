@@ -5,13 +5,13 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
 
   def mount(%{csrf: csrf}, socket) do
     {:ok,
-    assign(socket, %{
-      csrf: csrf,
-      changeset: Accounts.Login.changeset(%Accounts.Login{}),
-      open_modal: false,
-      error: nil,
-      login_button_disabled?: false
-    })}
+     assign(socket, %{
+       csrf: csrf,
+       changeset: Accounts.Login.changeset(%Accounts.Login{}),
+       open_modal: false,
+       error: nil,
+       login_button_disabled?: false
+     })}
   end
 
   def mount(_session, socket), do: {:stop, redirect(socket, to: "/")}

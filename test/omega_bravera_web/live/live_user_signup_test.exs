@@ -14,8 +14,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
       credential: %{"password" => "testing", "password_confirmation" => "testing"}
     }
 
-    with {:ok, user} <- Accounts.create_credential_user(attrs), do:
-      {:ok, user: user}
+    with {:ok, user} <- Accounts.create_credential_user(attrs), do: {:ok, user: user}
   end
 
   describe "live signup" do
@@ -31,6 +30,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
           "password_confirmation" => "leet_bond!"
         }
       }
+
       html = render_change(view, "validate", %{"user" => params})
 
       refute html =~ "is-invalid"
@@ -48,11 +48,12 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
           "password_confirmation" => "leet_bond!"
         }
       }
+
       html = render_change(view, "validate", %{"user" => params})
 
       refute html =~ "is-invalid"
 
-      render_click(view, "signup",  %{"user" => params})
+      render_click(view, "signup", %{"user" => params})
 
       assert %Accounts.User{} = Repo.get_by(Accounts.User, email: "allen_bond@plangora.com")
     end
@@ -68,7 +69,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
       }
 
       render_change(view, "signup", %{"user" => params})
-      html = render_click(view, "signup",  %{"user" => params})
+      html = render_click(view, "signup", %{"user" => params})
 
       assert html =~ "has already been taken"
     end

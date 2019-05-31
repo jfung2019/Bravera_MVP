@@ -289,9 +289,11 @@ defmodule OmegaBravera.Accounts do
           %{id: user_id} ->
             from(c in Credential,
               where: c.user_id == ^user_id
-            ) |> Repo.one()
+            )
+            |> Repo.one()
 
-          nil -> nil
+          nil ->
+            nil
         end
     end
   end
