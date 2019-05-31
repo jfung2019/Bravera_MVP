@@ -182,6 +182,15 @@ defmodule OmegaBravera.Offers do
     }
   end
 
+  # [offer_challenges: [:user, offer_redeems: [:offer_reward]]]
+  # def get_monthly_statement_for_offer(slug, start_date, end_date) do
+  #   from(
+  #     o in Offer,
+  #     where o.slug == ^slug,
+
+  #   )
+  # end
+
   @doc """
   Creates a offer.
 

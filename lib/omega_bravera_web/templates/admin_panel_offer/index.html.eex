@@ -30,6 +30,9 @@
             <span><%= link "Show", to: admin_panel_offer_path(@conn, :show, offer), class: "btn btn-default btn-xs"%> </span>
           </td>
           <td class="text-right">
+            <span><%= link "Statement", to: admin_panel_offer_path(@conn, :statement, offer), class: "btn btn-default btn-xs"%> </span>
+          </td>
+          <td class="text-right">
             <span><%= link "Edit", to: admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-default btn-xs"%> </span>
           </td>
 

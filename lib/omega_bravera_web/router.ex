@@ -177,6 +177,8 @@ defmodule OmegaBraveraWeb.Router do
       get("/offers/:slug", AdminPanelOfferController, :show)
       get("/offers/:slug/edit", AdminPanelOfferController, :edit)
       put("/offers/:slug", AdminPanelOfferController, :update)
+      get("/offers/:slug/statement", AdminPanelOfferController, :statement)
+      get("/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement)
     end
 
     scope "/api" do

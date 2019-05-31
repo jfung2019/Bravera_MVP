@@ -78,6 +78,45 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     end
   end
 
+  def statement(conn, %{"slug" => slug}) do
+    render(conn, "statement.html", offer: Offers.get_offer_by_slug(slug, [offer_challenges: [:user, offer_redeems: [:offer_reward]]]), layout: {OmegaBraveraWeb.LayoutView, "print.html"})
+  end
+
+  # def export_statement(conn, %{"slug" => slug, "month" => month, "year" => year}) do
+  #   {:ok, start_date} = Date.new(String.to_integer(year), String.to_integer(month), 1)
+  #   start_datetime = Timex.to_datetime(start_date)
+  #   end_datetime = Timex.shift(start_datetime, months: 1)
+  #   csv_rows = Offers.get_monthly_statement_for_offer(slug, start_datetime, end_datetime)
+
+  #   conn
+  #   |> put_resp_content_type("text/csv")
+  #   |> put_resp_header("content-disposition", "attachment; filename=\"offer_statement.csv\"")
+  #   |> send_resp(200, to_csv(csv_statement_headers(), csv_rows))
+  # end
+
+  def to_csv(cols, rows) do
+    (cols ++ rows)
+    |> CSV.encode()
+    |> Enum.to_list()
+    |> to_string
+  end
+
+  defp csv_statement_headers() do
+    [
+      [
+        "Slug",
+        "Firstname",
+        "Lastname",
+        "Email",
+        "Challenge Creation",
+        "Challenge Completed Date",
+        "Team",
+        "Redeemed Date",
+        "Name"
+      ]
+    ]
+  end
+
   defp assign_available_options(conn, _opts) do
     conn
     |> assign(:available_currencies, NgoOptions.currency_options_human())

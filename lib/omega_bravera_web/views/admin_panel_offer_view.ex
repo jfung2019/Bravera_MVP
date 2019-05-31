@@ -1,6 +1,8 @@
 defmodule OmegaBraveraWeb.AdminPanelOfferView do
   use OmegaBraveraWeb, :view
 
+  alias OmegaBravera.Offers.OfferChallenge
+
   def registration_date_builder(form, field, opts \\ []) do
     builder = fn b ->
       ~e"""
@@ -44,4 +46,35 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
   end
 
   def redeems_total(_), do: 0
+
+  # For statement
+  def render_redeemed_date(%OfferChallenge{has_team: false, offer_redeems: offer_redeems}) do
+    case Enum.find(offer_redeems, nil, &(&1.status == "redeemed")) do
+      %{updated_at: updated_at} -> OmegaBraveraWeb.ViewHelpers.render_datetime(updated_at)
+
+      nil -> ""
+    end
+  end
+
+  def render_redeemed_date(%OfferChallenge{has_team: true}), do: ""
+
+  def render_redeemed_date(%OfferChallenge{has_team: false, offer_redeems: offer_redeems}) do
+    case Enum.find(offer_redeems, nil, &(&1.status == "redeemed")) do
+      %{updated_at: updated_at} -> OmegaBraveraWeb.ViewHelpers.render_datetime(updated_at)
+
+      nil -> ""
+    end
+  end
+
+  def render_redeemed_date(%OfferChallenge{has_team: true}), do: ""
+
+  def render_redeemed_reward_name(%OfferChallenge{has_team: false, offer_redeems: offer_redeems}) do
+    case Enum.find(offer_redeems, nil, &(&1.status == "redeemed")) do
+      %{offer_reward: offer_reward} -> offer_reward.name
+
+      nil -> ""
+    end
+  end
+
+  def render_redeemed_reward_name(%OfferChallenge{has_team: true}), do: ""
 end
