@@ -1,5 +1,6 @@
 defmodule OmegaBravera.Challenges.ExpirerWorker do
   import Ecto.Query, only: [from: 2]
+
   alias OmegaBravera.{Offers, Challenges.NGOChal, Repo, Challenges.KmChallengesWorker}
 
   def process_expired_challenges() do
