@@ -264,11 +264,18 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             Offers.accepted_team_member_invitation(invitation)
 
             # TODO: cast_assoc with add_user_to_team. -Sherief
-            Offers.create_offer_redeems(challenge, challenge.offer.vendor, %{}, user)
-
-            # Notifications
-            Offers.Notifier.send_team_owner_member_added_notification(challenge, user)
-            Offers.Notifier.send_challenge_signup_email(challenge, user)
+            case Offers.create_offer_redeems(challenge, challenge.offer.vendor, %{}, user) do
+              {:ok, _} ->
+                # Notifications
+                Offers.Notifier.send_team_owner_member_added_notification(challenge, user)
+                Offers.Notifier.send_challenge_signup_email(challenge, user)
+              {:error, reason} ->
+                Logger.info(
+                  "OfferChallengeController: could not create redeem, reason: #{
+                    inspect(reason.errors)
+                  }"
+                )
+              end
 
             conn
             |> put_flash(
