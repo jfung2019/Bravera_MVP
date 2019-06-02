@@ -67,7 +67,10 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> validate_required([:vendor_id, :token])
     |> add_team_id(offer_challenge)
     |> add_user_id(challenge_owner_id, team_user)
-    |> unique_constraint(:id, name: :offer_redeems_offer_challenge_id_user_id_index, message: "Already created a redeem")
+    |> unique_constraint(:id,
+      name: :offer_redeems_offer_challenge_id_user_id_index,
+      message: "Already created a redeem"
+    )
   end
 
   # Used only in the migration. Should be disgraded after we migrate prod db.

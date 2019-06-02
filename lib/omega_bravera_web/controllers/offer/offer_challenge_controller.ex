@@ -269,13 +269,14 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
                 # Notifications
                 Offers.Notifier.send_team_owner_member_added_notification(challenge, user)
                 Offers.Notifier.send_challenge_signup_email(challenge, user)
+
               {:error, reason} ->
                 Logger.info(
                   "OfferChallengeController: could not create redeem, reason: #{
                     inspect(reason.errors)
                   }"
                 )
-              end
+            end
 
             conn
             |> put_flash(
