@@ -275,7 +275,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
       donors: Accounts.latest_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug, [ngo_chals: [user: [:strava], team: [users: [:strava]]]])
+      ngo_with_stats:
+        Fundraisers.get_ngo_with_stats(ngo_slug,
+          ngo_chals: [user: [:strava], team: [users: [:strava]]]
+        )
     }
   end
 
@@ -292,7 +295,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
       total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
-      ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug, [ngo_chals: [user: [:strava], team: [users: [:strava]]]])
+      ngo_with_stats:
+        Fundraisers.get_ngo_with_stats(ngo_slug,
+          ngo_chals: [user: [:strava], team: [users: [:strava]]]
+        )
     }
   end
 
@@ -310,7 +316,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
       donors: Accounts.latest_donors(challenge, 5),
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug, [ngo_chals: [user: [:strava], team: [users: [:strava]]]]),
+      ngo_with_stats:
+        Fundraisers.get_ngo_with_stats(ngo_slug,
+          ngo_chals: [user: [:strava], team: [users: [:strava]]]
+        ),
       all_team_members_activities_totals:
         Challenges.get_team_member_activity_totals(
           challenge.id,
@@ -332,7 +341,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
       total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
-      ngo_with_stats: Fundraisers.get_ngo_with_stats(ngo_slug, [ngo_chals: [user: [:strava], team: [users: [:strava]]]]),
+      ngo_with_stats:
+        Fundraisers.get_ngo_with_stats(ngo_slug,
+          ngo_chals: [user: [:strava], team: [users: [:strava]]]
+        ),
       all_team_members_activities_totals:
         Challenges.get_team_member_activity_totals(
           challenge.id,

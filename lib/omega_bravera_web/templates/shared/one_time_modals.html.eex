@@ -43,7 +43,7 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Run to raise money for your chosen charity or NGO</strong></span>
+            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong><%= gettext("Create Social Impact") %></strong></span>
           </div>
 
           <div class="row mx-auto align-items-center">
@@ -72,7 +72,7 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Run for rewards and discounts from our partners</strong></span>
+            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong><%= gettext("Earn Rewards") %></strong></span>
           </div>
 
           <div class="row mx-auto align-items-center">

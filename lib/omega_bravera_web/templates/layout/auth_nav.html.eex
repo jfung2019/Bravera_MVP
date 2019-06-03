@@ -20,7 +20,7 @@
             <i class="fa fa-nav fa-user black" ></i>
           </a>
           <ul class="dropdown-menu">
-            <li><%= link("Trackers", to: user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
+            <li><%= link(gettext("Connected Apps"), to: user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
             <li><%= link("Account", to: user_path(@conn, :show), class: "dropdown-item") %></li>
             <li><%= link("Profile", to: user_profile_path(@conn, :show), class: "dropdown-item") %></li>
             <li><%= link("Settings", to: setting_path(@conn, :show), class: "dropdown-item") %></li>
@@ -53,7 +53,7 @@
             <i class="fa fa-nav fa-user black" ></i>
           </a>
           <ul class="dropdown-menu">
-            <li><%= link("Trackers", to: user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
+            <li><%= link(gettext("Connected Apps"), to: user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
             <li><%= link("Account", to: user_path(@conn, :show), class: "dropdown-item") %></li>
             <li><%= link("Profile", to: user_profile_path(@conn, :show), class: "dropdown-item") %></li>
             <li><%= link("Settings", to: setting_path(@conn, :show), class: "dropdown-item") %></li>
