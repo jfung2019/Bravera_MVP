@@ -107,14 +107,14 @@ defmodule OmegaBraveraWeb.StravaController do
             conn
             |> put_flash(
               :info,
-              "Sucess! You have connected your Strava account and can now take Challenges."
+              gettext("Success! You have connected your Strava account and can now take Challenges.")
             )
 
           {:error, changeset} ->
             Logger.error("Could not connect strava account, reason: #{inspect(changeset)}")
-
+            # TODO: deal with other possible cases, bust just consider account is already being used
             conn
-            |> put_flash(:error, "Error connecting your Strava account.")
+            |> put_flash(:error, gettext("Sorry, this Strava account is already connected to an exiting Bravera account"))
         end
     end
   end
