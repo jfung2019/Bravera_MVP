@@ -47,12 +47,14 @@
 
 <div class="offer-participant-modal modal fade" id="offerParticipantsModal-<%=@offer.id%>" tabindex="-1" role="dialog" aria-labelledby="offerParticipantsModalLabel">
          
-   <div class="modal-dialog modal-dialog-centered" role="document">
+   <div class="modal-dialog modal-dialog-centered modal-xs-bravera" role="document">
       <div class="modal-content">
 
       <div class="modal-header">
          <h5 class="modal-title mx-auto text-success" id="offerParticipantsModalLabel">Patricipants</h5>
       </div>
+
+      <h6 class="mx-auto mt-2">Click to see details</h6>
 
       <div class="modal-body">
             <%= for challenge <- @offer.offer_challenges do %>

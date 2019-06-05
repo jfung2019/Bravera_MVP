@@ -321,15 +321,15 @@ input[type=number]::-webkit-outer-spin-button {
   //   }
   // }
   .participant-container {
-    max-width: 60px !important;
-    max-height: 60px !important;
+    max-width: 58px !important;
+    max-height: 58px !important;
   }
 }
 
 .offer-stats-card {
   .participant-container {
-    max-width: 60px !important;
-    max-height: 60px !important;
+    max-width: 58px !important;
+    max-height: 58px !important;
   }
 }
 
@@ -665,6 +665,13 @@ div.page-index {
 
 .offer-participant-modal{
   z-index: 1119800;
+
+  @include media-breakpoint-down(sm) {
+    .modal-xs-bravera {
+      max-width: 300px;
+      margin: 2.5rem !important;
+    }
+  }
 }
 
 
