@@ -1,4 +1,4 @@
-<%= if !@conn.assigns[:welcome_modal] do %>
+<%= if @conn.assigns[:welcome_modal] do %>
   <div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel">
           
     <div class="modal-dialog modal-dialog-centered" role="document">
