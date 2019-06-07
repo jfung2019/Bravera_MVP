@@ -1,4 +1,4 @@
-<%= if @conn.assigns[:welcome_modal] do %>
+<%= if !@conn.assigns[:welcome_modal] do %>
   <div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel">
           
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -89,42 +89,42 @@
     </div>
   </div>
 
+  <%= if is_nil(Guardian.Plug.current_resource(@conn).strava) do %>
+    <div class="modal fade" id="connectStravaModal" tabindex="-1" role="dialog" aria-labelledby="connectStravaModalLabel">
+            
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
 
-  <div class="modal fade" id="connectStravaModal" tabindex="-1" role="dialog" aria-labelledby="connectStravaModalLabel">
-          
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
+          <div class="modal-body mt-4">
+            <div class="row mx-auto align-items-center">
+              <span class="big-logo mx-auto"></span>
+            </div>
 
-        <div class="modal-body mt-4">
-          <div class="row mx-auto align-items-center">
-            <span class="big-logo mx-auto"></span>
+            <div class="row mx-auto align-items-center">
+              <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Connect your Strava account and get started!</strong></span>
+            </div>
+
+            <div class="row mx-auto align-items-center">
+              <%= img_tag(static_path(@conn, "/images/modals/ellipse5.png"), alt: "Connect your Strava account to get started!", class: "mx-auto") %>
+            </div>
+
+            <div class="row mx-auto align-items-center mt-3 mb-3">
+              <%= link("Connect Strava Account", to: strava_path(@conn, :connect_strava_account), class: "btn btn-bravera mx-auto", role: "button") %>
+            </div>
+
+            <div class="row mx-auto align-items-center">
+              <span class="mx-auto">Don't have an account?</span>
+            </div>
+
+            <div class="row mx-auto align-items-center">
+              <a href="https://www.strava.com/" class="mx-auto mb-4">Create a Strava Account</a>
+            </div>
           </div>
 
-          <div class="row mx-auto align-items-center">
-            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Connect your Strava account and get started!</strong></span>
-          </div>
-
-          <div class="row mx-auto align-items-center">
-            <%= img_tag(static_path(@conn, "/images/modals/ellipse5.png"), alt: "Connect your Strava account to get started!", class: "mx-auto") %>
-          </div>
-
-          <div class="row mx-auto align-items-center mt-3 mb-3">
-            <%= link("Connect Strava Account", to: strava_path(@conn, :connect_strava_account), class: "btn btn-bravera mx-auto", role: "button") %>
-          </div>
-
-          <div class="row mx-auto align-items-center">
-            <span class="mx-auto">Don't have an account?</span>
-          </div>
-
-          <div class="row mx-auto align-items-center">
-            <a href="https://www.strava.com/" class="mx-auto mb-4">Create a Strava Account</a>
-          </div>
         </div>
-
       </div>
     </div>
-  </div>
-
+  <% end %>
 <% end %>
 
 <%= if @conn.assigns[:could_not_create_offer_challenge] do %>
