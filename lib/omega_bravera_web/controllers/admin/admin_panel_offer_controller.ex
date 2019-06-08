@@ -80,23 +80,24 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
   def statement(conn, %{"slug" => slug}) do
     render(conn, "statement.html",
-      offer:
-        Offers.get_offer_by_slug(slug, offer_challenges: [:user, offer_redeems: [:offer_reward]]),
+      offer_slug: slug,
+      offer_redeems:
+        Offers.list_offer_redeems_for_offer_statement(slug, [:offer_challenge, :user, :offer_reward]),
       layout: {OmegaBraveraWeb.LayoutView, "print.html"}
     )
   end
 
-  # def export_statement(conn, %{"slug" => slug, "month" => month, "year" => year}) do
-  #   {:ok, start_date} = Date.new(String.to_integer(year), String.to_integer(month), 1)
-  #   start_datetime = Timex.to_datetime(start_date)
-  #   end_datetime = Timex.shift(start_datetime, months: 1)
-  #   csv_rows = Offers.get_monthly_statement_for_offer(slug, start_datetime, end_datetime)
+  def export_statement(conn, %{"slug" => slug, "month" => month, "year" => year}) do
+    {:ok, start_date} = Date.new(String.to_integer(year), String.to_integer(month), 1)
+    start_datetime = Timex.to_datetime(start_date)
+    end_datetime = Timex.shift(start_datetime, months: 1)
+    csv_rows = Offers.get_monthly_statement_for_offer(slug, start_datetime, end_datetime)
 
-  #   conn
-  #   |> put_resp_content_type("text/csv")
-  #   |> put_resp_header("content-disposition", "attachment; filename=\"offer_statement.csv\"")
-  #   |> send_resp(200, to_csv(csv_statement_headers(), csv_rows))
-  # end
+    conn
+    |> put_resp_content_type("text/csv")
+    |> put_resp_header("content-disposition", "attachment; filename=\"#{slug}'s_statement_for_#{month}.csv\"")
+    |> send_resp(200, to_csv(csv_statement_headers(), csv_rows))
+  end
 
   def to_csv(cols, rows) do
     (cols ++ rows)

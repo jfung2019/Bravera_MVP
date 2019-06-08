@@ -1,7 +1,6 @@
 <div class="row mt-2 mb-2 mx-auto">
       <div class="col-4">
-      <%# admin_panel_offer_path(@conn, :export_statement, @offer.slug) %>
-    <%= form_for @conn,"#", [as: :start_date, method: :get], fn _f -> %>
+    <%= form_for @conn, admin_panel_offer_path(@conn, :export_statement, @offer_slug), [as: :start_date, method: :get], fn _f -> %>
       <select class="custom-select mb-2" name="month" required>
         <option value="">Month</option>
         <option value='1'>January</option>
@@ -49,17 +48,17 @@
       </tr>
     </thead>
     <tbody>
-      <%= for offer_challenge <- @offer.offer_challenges do %>
+      <%= for redeem <- @offer_redeems do %>
         <tr>
-          <td data-title="Slug"><%= offer_challenge.slug %></td>
-          <td data-title="Firstname"><%= offer_challenge.user.firstname %></td>
-          <td data-title="Lastname"><%= offer_challenge.user.lastname %></td>
-          <td data-title="Email"><%= offer_challenge.user.email %></td>
-          <td data-title="Challenge Creation"><%= render_datetime(offer_challenge.start_date) %></td>
-          <td data-title="Challenge Completed Date"><%= render_datetime(offer_challenge.updated_at) %></td>
-          <td data-title="Redeemed Date"><%= offer_challenge.has_team %></td>
-          <td data-title="Redeemed Date"><%= render_redeemed_date(offer_challenge) %></td>
-          <td data-title="Name"><%= render_redeemed_reward_name(offer_challenge) %></td>
+          <td data-title="Slug"><%= redeem.offer_challenge.slug %></td>
+          <td data-title="Firstname"><%= redeem.user.firstname %></td>
+          <td data-title="Lastname"><%= redeem.user.lastname %></td>
+          <td data-title="Email"><%= redeem.user.email %></td>
+          <td data-title="Challenge Creation"><%= render_datetime(redeem.offer_challenge.start_date) %></td>
+          <td data-title="Challenge Completed Date"><%= render_datetime(redeem.offer_challenge.updated_at) %></td>
+          <td data-title="Redeemed Date"><%= redeem.offer_challenge.has_team %></td>
+          <td data-title="Redeemed Date"><%= render_datetime(redeem.updated_at) %></td>
+          <td data-title="Name"><%= redeem.offer_reward.name %></td>
         </tr>
       <% end %>
     </tbody>

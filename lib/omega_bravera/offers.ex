@@ -13,7 +13,8 @@ defmodule OmegaBravera.Offers do
     OfferVendor,
     OfferChallengeTeamMembers,
     OfferChallengeTeamInvitation,
-    OfferChallengeTeam
+    OfferChallengeTeam,
+    OfferRedeem
   }
 
   alias OmegaBravera.Accounts.User
@@ -182,14 +183,32 @@ defmodule OmegaBravera.Offers do
     }
   end
 
-  # [offer_challenges: [:user, offer_redeems: [:offer_reward]]]
-  # def get_monthly_statement_for_offer(slug, start_date, end_date) do
-  #   from(
-  #     o in Offer,
-  #     where o.slug == ^slug,
+  def get_monthly_statement_for_offer(slug, start_date, end_date) do
+    offer = get_offer_by_slug(slug, [])
 
-  #   )
-  # end
+    from(
+      redeem in OfferRedeem,
+      where:
+        redeem.offer_id == ^offer.id and redeem.status == "redeemed" and
+          redeem.updated_at >= ^start_date and redeem.updated_at <= ^end_date,
+      join: user in assoc(redeem, :user),
+      join: oc in assoc(redeem, :offer_challenge),
+      join: reward in assoc(redeem, :offer_reward),
+      order_by: [desc: redeem.updated_at],
+      select: [
+        oc.slug,
+        user.firstname,
+        user.lastname,
+        user.email,
+        fragment("to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')", oc.inserted_at),
+        fragment("to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')", oc.updated_at),
+        oc.has_team,
+        fragment("to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')", redeem.updated_at),
+        reward.name
+      ]
+    )
+    |> Repo.all()
+  end
 
   @doc """
   Creates a offer.
@@ -622,8 +641,24 @@ defmodule OmegaBravera.Offers do
       [%OfferRedeem{}, ...]
 
   """
-  def list_offer_redeems do
-    Repo.all(OfferRedeem)
+
+  def list_offer_redeems_for_offer_statement(slug, preloads \\ []) do
+    offer = get_offer_by_slug(slug)
+
+    from(
+      redeem in OfferRedeem,
+      where: redeem.status == ^"redeemed",
+      where: redeem.offer_id == ^offer.id,
+      preload: ^preloads,
+      order_by: [desc: redeem.updated_at]
+    ) |> Repo.all()
+  end
+
+  def list_offer_redeems(preloads \\ []) do
+    from(
+      redeem in OfferRedeem,
+      preload: ^preloads
+    ) |> Repo.all()
   end
 
   @doc """
