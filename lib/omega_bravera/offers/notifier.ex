@@ -158,7 +158,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.put_template(template_id)
     |> Email.add_substitution(
       "-redeemDateTime-",
-      Timex.format!(redeem.inserted_at, "%Y-%m-%d", :strftime)
+      Timex.format!(redeem.updated_at, "%Y-%m-%d", :strftime)
     )
     |> Email.add_substitution("-challengeName-", challenge.offer.name)
     |> Email.add_substitution("-participantFirstName-", challenge.user.firstname)
