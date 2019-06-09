@@ -68,6 +68,9 @@
     <div class=" img-fluid margin-auto mb-3">
       <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "Fitness Data Powered by Strava") %>
     </div>
+
+    <%= render "qr_code.html", assigns %>
+
     <div class="m-3 text-justify challenge-desc">
       <span class="small"><%= raw @challenge.offer.toc %></span>
     </div>

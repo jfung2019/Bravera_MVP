@@ -305,7 +305,7 @@
               <%= offer_challenge.distance_covered %> KM
             </div>
             <div class="col-sm-2">
-              <%= link("View", to: offer_offer_challenge_path(@conn, :show, offer_challenge.offer.slug, offer_challenge.slug)) %>
+              <%= get_offer_challenge_link(@conn, @user.id, offer_challenge) %>
             </div>
           </div>
         </div>

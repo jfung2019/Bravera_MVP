@@ -1,0 +1,6 @@
+
+<%= if @challenge.status == "complete" do %>
+    <div class=" img-fluid margin-auto mb-3">
+        <%= raw get_qr_code(@conn, @current_user, @challenge) %>
+    </div>
+<% end %>

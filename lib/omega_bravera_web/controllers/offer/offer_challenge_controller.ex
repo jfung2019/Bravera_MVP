@@ -219,6 +219,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     offer_challenge =
       Offers.get_offer_chal_by_slugs(offer_slug, slug, [
         :offer_challenge_activities,
+        :offer_redeems,
         user: [:strava],
         team: [users: [:strava], invitations: []],
         offer: []
@@ -387,7 +388,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       challenge: challenge,
       activities: Offers.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      offer_with_stats: Offers.get_offer_with_stats(offer_slug),
+      offer_with_stats: Offers.get_offer_with_stats(offer_slug, [offer_challenges: [user: [:strava], team: [users: [:strava]]]]),
       m_targets: OfferChallenge.milestones_distances(challenge)
     }
   end
@@ -406,7 +407,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           [challenge.user] ++ challenge.team.users
         ),
       current_user: Guardian.Plug.current_resource(conn),
-      offer_with_stats: Offers.get_offer_with_stats(offer_slug)
+      offer_with_stats: Offers.get_offer_with_stats(offer_slug, [offer_challenges: [user: [:strava], team: [users: [:strava]]]])
     }
   end
 
@@ -419,7 +420,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       challenge: challenge,
       activities: Offers.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      offer_with_stats: Offers.get_offer_with_stats(offer_slug)
+      offer_with_stats: Offers.get_offer_with_stats(offer_slug, [offer_challenges: [user: [:strava], team: [users: [:strava]]]])
     }
   end
 

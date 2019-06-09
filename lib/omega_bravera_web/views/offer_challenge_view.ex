@@ -8,6 +8,35 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
     Offers.OfferChallengeTeamInvitation
   }
 
+  def get_qr_code(_conn, nil, _), do: ""
+
+  def get_qr_code(conn, %User{id: user_id}, %OfferChallenge{
+        status: "complete",
+        offer: %{slug: offer_slug},
+        slug: slug,
+        offer_redeems: offer_redeems
+      }) do
+    redeem = Enum.find(offer_redeems, nil, &(&1.user_id == user_id))
+
+    cond do
+      is_nil(redeem) -> ""
+
+      redeem.status == "redeemed" ->
+        "Reward Redeemed on #{render_datetime(redeem.updated_at)}."
+
+      redeem.status == "pending" ->
+        offer_offer_challenge_offer_challenge_url(
+          conn,
+          :new_redeem,
+          offer_slug,
+          slug,
+          redeem.token
+        )
+        |> EQRCode.encode()
+        |> EQRCode.svg(width: 250)
+    end
+  end
+
   def user_full_name(%User{} = user), do: User.full_name(user)
 
   def user_profile_pic(nil), do: ""
