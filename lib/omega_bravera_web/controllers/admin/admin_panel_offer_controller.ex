@@ -60,7 +60,8 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
         |> Enum.map(fn challenge ->
           if challenge.status == "pre_registration" do
             Offers.update_offer_challenge(challenge, %{
-              start_date: updated_offer.start_date
+              start_date: updated_offer.start_date,
+              end_date: updated_offer.end_date
             })
           end
         end)
