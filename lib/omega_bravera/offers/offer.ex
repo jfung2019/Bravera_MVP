@@ -31,6 +31,8 @@ defmodule OmegaBravera.Offers.Offer do
     # When true, all challenges will ignore the end_date.
     field(:always, :boolean, default: false)
 
+    field(:payment_enabled, :boolean, default: false)
+
     # When more than 0, all challenges will have a single team.
     field(:additional_members, :integer, default: 0)
 

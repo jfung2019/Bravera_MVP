@@ -180,5 +180,5 @@
     </div>
   </div>
 
-  <%= render "stripe_script.html" %>
+  <%= render OmegaBraveraWeb.SharedView, "stripe_script.html" %>
 <% end %> 

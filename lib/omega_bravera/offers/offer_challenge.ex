@@ -4,12 +4,14 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   import OmegaBravera.Fundraisers.NgoOptions
 
   alias OmegaBravera.{
+    Money.Payment,
     Offers.Offer,
     Accounts.User,
     Offers.OfferChallengeActivity,
     Offers.OfferRedeem,
     Offers.OfferChallengeTeam,
-    Repo
+    Repo,
+    Money.Payment
   }
 
   @derive {Phoenix.Param, key: :slug}
@@ -37,6 +39,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     belongs_to(:offer, Offer)
     has_many(:offer_redeems, OfferRedeem, foreign_key: :offer_challenge_id)
     has_one(:team, OfferChallengeTeam, foreign_key: :offer_challenge_id)
+    has_one(:payment, Payment, foreign_key: :offer_challenge_id)
 
     has_many(:offer_challenge_activities, OfferChallengeActivity, foreign_key: :offer_challenge_id)
 
@@ -59,7 +62,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> cast(attrs, @allowed_attributes)
   end
 
-  def create_changeset(offer_challenge, offer, user, attrs \\ %{team: %{}, offer_redeems: [%{}]}) do
+  def create_changeset(offer_challenge, offer, user, attrs \\ %{team: %{}, offer_redeems: [%{}], payment: %{}}) do
     offer_challenge
     |> changeset(attrs)
     |> change(%{
@@ -90,6 +93,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> unique_constraint(:slug)
     |> solo_or_team_challenge(offer, user)
     |> add_one_offer_redeem_assoc(offer, user)
+    |> add_payment(offer, user)
   end
 
   def create_with_team_changeset(offer_challenge, offer, user, attrs) do
@@ -128,6 +132,12 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       required: true
     )
   end
+
+  defp add_payment(%Ecto.Changeset{} = changeset, %Offer{payment_enabled: true} = offer, %User{} = user),
+   do: cast_assoc(changeset, :payment, with: &Payment.changeset(&1, offer, user, &2), required: true)
+
+  defp add_payment(%Ecto.Changeset{} = changeset, _, _),
+   do: changeset
 
   defp generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do
     slug = get_field(changeset, :slug)

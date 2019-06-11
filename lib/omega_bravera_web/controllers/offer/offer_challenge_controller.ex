@@ -215,6 +215,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     end
   end
 
+  def create_payment_offer_challenge(conn, %{"offer_slug" => offer_slug} = params) do
+
+  end
+
   def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do
     offer_challenge =
       Offers.get_offer_chal_by_slugs(offer_slug, slug, [
