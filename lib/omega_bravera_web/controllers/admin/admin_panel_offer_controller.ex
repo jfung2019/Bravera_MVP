@@ -1,7 +1,16 @@
 defmodule OmegaBraveraWeb.AdminPanelOfferController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Accounts, Offers, Offers.Offer, Fundraisers.NgoOptions}
+  import Ecto.Query
+
+  alias OmegaBravera.{
+    Repo,
+    Accounts,
+    Offers,
+    Offers.Offer,
+    Fundraisers.NgoOptions,
+    Offers.OfferChallenge
+  }
 
   use Timex
 
@@ -56,15 +65,17 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     case Offers.update_offer(offer, offer_params) do
       {:ok, updated_offer} ->
         # Update all pre_registration challenges' start date
-        offer.offer_challenges
-        |> Enum.map(fn challenge ->
-          if challenge.status == "pre_registration" do
-            Offers.update_offer_challenge(challenge, %{
-              start_date: updated_offer.start_date,
-              end_date: updated_offer.end_date
-            })
-          end
-        end)
+        updated_offer = Offers.get_offer_by_slug(updated_offer.slug)
+
+        Repo.update_all(
+          from(
+            offer_challenge in OfferChallenge,
+            where:
+              offer_challenge.offer_id == ^updated_offer.id and
+                offer_challenge.status == "pre_registration"
+          ),
+          set: [start_date: updated_offer.start_date, end_date: updated_offer.end_date]
+        )
 
         conn
         |> put_flash(:info, "Offer updated successfully.")
@@ -83,7 +94,11 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     render(conn, "statement.html",
       offer_slug: slug,
       offer_redeems:
-        Offers.list_offer_redeems_for_offer_statement(slug, [:offer_challenge, :user, :offer_reward]),
+        Offers.list_offer_redeems_for_offer_statement(slug, [
+          :offer_challenge,
+          :user,
+          :offer_reward
+        ]),
       layout: {OmegaBraveraWeb.LayoutView, "print.html"}
     )
   end
@@ -96,7 +111,10 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
     conn
     |> put_resp_content_type("text/csv")
-    |> put_resp_header("content-disposition", "attachment; filename=\"#{slug}'s_statement_for_#{month}.csv\"")
+    |> put_resp_header(
+      "content-disposition",
+      "attachment; filename=\"#{slug}'s_statement_for_#{month}.csv\""
+    )
     |> send_resp(200, to_csv(csv_statement_headers(), csv_rows))
   end
 
