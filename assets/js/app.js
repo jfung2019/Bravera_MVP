@@ -10,10 +10,10 @@ import "bootstrap";
 
 import "moment";
 
-import LiveSocket from "phoenix_live_view"
+import LiveSocket from "phoenix_live_view";
 
-let liveSocket = new LiveSocket("/live")
-liveSocket.connect()
+const liveSocket = new LiveSocket("/live");
+liveSocket.connect();
 
 
 // Import local files
@@ -34,3 +34,10 @@ import "./follow_on_donation_form";
 import "./button_disappear";
 import "./one_time_modals";
 import "./init_html_editor";
+
+import $ from "jquery";
+import "chosen-js";
+
+$(() => {
+  $('select.chosen').chosen();
+});

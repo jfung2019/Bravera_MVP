@@ -11,7 +11,7 @@
     <%= select(f, :challenge_id, Enum.map(@challenges,
           &{"Challenge: #{&1.slug} Participant: #{&1.user.firstname} #{&1.user.lastname} (#{&1.user.email}) | Type: #{&1.activity_type} | Start date: #{render_datetime(&1.start_date)}", &1.id}
         ),
-          class: "form-control", prompt: "Who is the activity for?", name: "challenge_id")
+          class: "form-control chosen", prompt: "Who is the activity for?", name: "challenge_id")
     %>
 
     <%= error_tag f, :challenge_id %>
