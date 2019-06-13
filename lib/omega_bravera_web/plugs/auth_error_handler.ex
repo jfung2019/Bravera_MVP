@@ -1,9 +1,16 @@
 defmodule OmegaBravera.AuthErrorHandler do
-  import Plug.Conn
+  alias OmegaBravera.Guardian
+  require Logger
 
-  # TODO This is a JSON 401, we need an HTML 401...
-  def auth_error(conn, {type, _reason}, _opts) do
-    body = Poison.encode!(%{message: to_string(type)})
-    send_resp(conn, 401, body)
+  # TODO handle this properly
+  def auth_error(conn, {:invalid_token, _reason} = error_tuple, _opts) do
+    Logger.warn("AUTH_ERROR CALLBACK: #{inspect(error_tuple)}")
+    conn
+    |> Guardian.Plug.sign_out()
+  end
+
+  def auth_error(conn, {_type, _reason} = error_tuple, _opts) do
+    Logger.warn("AUTH_ERROR CALLBACK: #{inspect(error_tuple)}")
+    conn
   end
 end
