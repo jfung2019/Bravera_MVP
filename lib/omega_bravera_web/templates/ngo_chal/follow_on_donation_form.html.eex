@@ -137,6 +137,4 @@
       </div>
     </div>
   </div>
-
- <%= render OmegaBraveraWeb.SharedView, "stripe_script.html" %>
 <% end %>

@@ -196,8 +196,6 @@ defmodule OmegaBraveraWeb.Router do
 
     resources "/", Offer.OfferController, only: [:show], param: "slug" do
 
-      post("/create_payment_offer_challenge/", Offer.OfferChallengeController, :create_payment_offer_challenge)
-
       resources "/", Offer.OfferChallengeController, only: [:show, :new, :create], param: "slug" do
         get("/activities", Offer.OfferChallengeActivityController, :index)
         get("/:redeem_token", Offer.OfferChallengeController, :send_qr_code)

@@ -183,7 +183,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     end
   end
 
-  def create(conn, %{"offer_slug" => offer_slug}) do
+  def create(conn, %{"offer_slug" => offer_slug} = attrs) do
+    offer_challenge_attrs = Map.merge(%{"team" => %{}, "offer_redeems" => [%{}]}, attrs["offer_challenge"])
     current_user =
       Guardian.Plug.current_resource(conn)
       |> Repo.preload(:offer_challenges)
@@ -195,7 +196,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         render_404(conn)
 
       offer ->
-        case Offers.create_offer_challenge(offer, current_user) do
+        case Offers.create_offer_challenge(offer, current_user, offer_challenge_attrs) do
           {:ok, offer_challenge} ->
             send_emails(Repo.preload(offer_challenge, :user))
 
@@ -213,10 +214,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             |> redirect(to: offer_path(conn, :index))
         end
     end
-  end
-
-  def create_payment_offer_challenge(conn, %{"offer_slug" => offer_slug} = params) do
-
   end
 
   def show(conn, %{"offer_slug" => offer_slug, "slug" => slug}) do

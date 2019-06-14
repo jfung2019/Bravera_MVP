@@ -189,6 +189,4 @@
       }
     })();
   </script>
-
- <%= render OmegaBraveraWeb.SharedView, "stripe_script.html" %>
 <% end %>

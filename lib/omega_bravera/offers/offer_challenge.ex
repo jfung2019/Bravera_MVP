@@ -57,7 +57,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   ]
 
   @doc false
-  def changeset(offer_challenge, attrs \\ %{}) do
+  def changeset(offer_challenge, attrs \\ %{team: %{}, offer_redeems: [%{}], payment: %{}}) do
     offer_challenge
     |> cast(attrs, @allowed_attributes)
   end
@@ -136,7 +136,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   defp add_payment(%Ecto.Changeset{} = changeset, %Offer{payment_enabled: true} = offer, %User{} = user),
    do: cast_assoc(changeset, :payment, with: &Payment.changeset(&1, offer, user, &2), required: true)
 
-  defp add_payment(%Ecto.Changeset{} = changeset, _, _),
+  defp add_payment(%Ecto.Changeset{} = changeset, %Offer{payment_enabled: false}, _),
    do: changeset
 
   defp generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do

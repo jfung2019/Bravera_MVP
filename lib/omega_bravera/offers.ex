@@ -412,7 +412,7 @@ defmodule OmegaBravera.Offers do
   def create_offer_challenge(
         %Offer{} = offer,
         %User{} = user,
-        attrs \\ %{team: %{}, offer_redeems: [%{}]}
+        attrs \\ %{team: %{}, offer_redeems: [%{}], payment: %{}}
       ) do
     %OfferChallenge{}
     |> OfferChallenge.create_changeset(offer, user, attrs)

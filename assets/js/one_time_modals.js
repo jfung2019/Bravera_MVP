@@ -2,11 +2,6 @@ import $ from "jquery";
 
 
 $(() => {
-  $('#offerChallengePaymentModal').modal({
-    keyboard: false,
-    backdrop: 'static'
-  })
-
   $('#challengeCreateErrorModal').modal({
     keyboard: false,
     backdrop: 'static'
