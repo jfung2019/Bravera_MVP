@@ -36,7 +36,6 @@ defmodule OmegaBravera.Money.Payment do
   ]
   @required_attributes [
     :stripe_token,
-    :offer_challenge_id,
     :offer_id,
     :user_id
   ]

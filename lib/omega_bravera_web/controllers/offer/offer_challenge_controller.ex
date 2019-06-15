@@ -184,7 +184,14 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   end
 
   def create(conn, %{"offer_slug" => offer_slug} = attrs) do
-    offer_challenge_attrs = Map.merge(%{"team" => %{}, "offer_redeems" => [%{}]}, attrs["offer_challenge"])
+
+    offer_challenge_attrs =
+      if Map.has_key?(attrs, "offer_challenge") do
+        Map.merge(%{"team" => %{}, "offer_redeems" => [%{}]}, attrs["offer_challenge"])
+      else
+        %{"team" => %{}, "offer_redeems" => [%{}]}
+      end
+
     current_user =
       Guardian.Plug.current_resource(conn)
       |> Repo.preload(:offer_challenges)

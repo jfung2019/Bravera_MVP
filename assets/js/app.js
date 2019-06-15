@@ -34,4 +34,5 @@ import "./follow_on_donation_form";
 import "./button_disappear";
 import "./one_time_modals";
 import "./init_html_editor";
-import "./stripe";
+import "./donations";
+import "./payments";
