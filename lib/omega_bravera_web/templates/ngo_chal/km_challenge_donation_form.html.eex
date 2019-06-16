@@ -189,6 +189,4 @@
       }
     })();
   </script>
-
- <%= render "stripe_script.html" %>
 <% end %>

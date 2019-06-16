@@ -139,7 +139,7 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>You’re already taking this challenge so cannot take it twice.</strong></span>
+            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Could not join the challenge. Can you please try again?</strong></span>
           </div>
         </div>
 

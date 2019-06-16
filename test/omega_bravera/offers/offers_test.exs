@@ -27,7 +27,9 @@ defmodule OmegaBravera.OffersTest do
       url: "https://bravera.co",
       vendor_id: nil,
       start_date: Timex.now(),
-      end_date: Timex.shift(Timex.now(), days: 5)
+      end_date: Timex.shift(Timex.now(), days: 5),
+      payment_enabled: false,
+      payment_amount: Decimal.new(0)
     }
     @update_attrs %{
       activities: [],
@@ -47,7 +49,9 @@ defmodule OmegaBravera.OffersTest do
       toc: "some updated toc",
       url: "https://staging.bravera.co",
       start_date: Timex.shift(Timex.now(), days: 1),
-      end_date: Timex.shift(Timex.now(), days: 10)
+      end_date: Timex.shift(Timex.now(), days: 10),
+      payment_enabled: false,
+      payment_amount: Decimal.new(0)
     }
     @invalid_attrs %{
       activities: nil,
@@ -69,7 +73,9 @@ defmodule OmegaBravera.OffersTest do
       toc: nil,
       url: nil,
       start_date: nil,
-      end_date: nil
+      end_date: nil,
+      payment_enabled: false,
+      payment_amount: Decimal.new(0)
     }
 
     def offer_fixture(attrs \\ %{}) do
@@ -179,7 +185,8 @@ defmodule OmegaBravera.OffersTest do
       status: "active",
       type: "PER_KM",
       offer_redeems: [%{}],
-      team: %{}
+      team: %{},
+      payment: %{}
     }
     @invalid_attrs %{
       activity_type: nil,
@@ -258,6 +265,15 @@ defmodule OmegaBravera.OffersTest do
 
       assert {:ok, %OfferChallenge{} = offer_challenge} =
                Offers.create_offer_challenge(offer, user)
+    end
+
+    test "create_offer_challenge/2 can create offer_challenge with payment but only using a valid stripe token" do
+      vendor = insert(:vendor)
+      offer = insert(:offer, %{payment_enabled: true, payment_amount: Decimal.new(30), vendor: nil, vendor_id: vendor.id})
+      insert(:offer_reward, %{offer: nil, offer_id: offer.id})
+      user = insert(:user)
+
+      assert {:error, reason} = Offers.create_offer_challenge(offer, user, %{team: %{}, offer_redeems: [%{}], payment: %{"stripe_token" => "tok_bad_token"}})
     end
 
     test "create_offer_challenge/2 can create offer_challenge with offer_redeem and team" do

@@ -2,34 +2,34 @@ import $ from "jquery";
 
 
 $(() => {
-    $('#challengeCreateErrorModal').modal({
+  $('#challengeCreateErrorModal').modal({
+    keyboard: false,
+    backdrop: 'static'
+  })
+
+  $('#welcomeModal').modal({
       keyboard: false,
       backdrop: 'static'
     })
 
-    $('#welcomeModal').modal({
-        keyboard: false,
-        backdrop: 'static'
-      })
+  $('#next_raise_money_modal').click(function() {
+      $('#raiseMoneyModal').modal({
+          keyboard: false,
+          backdrop: 'static'
+        })
+  })
 
-    $('#next_raise_money_modal').click(function() {
-        $('#raiseMoneyModal').modal({
-            keyboard: false,
-            backdrop: 'static'
-          })
-    })
+  $('#next_get_rewards_modal').click(function() {
+      $('#getRewardsModal').modal({
+          keyboard: false,
+          backdrop: 'static'
+        })
+  })
 
-    $('#next_get_rewards_modal').click(function() {
-        $('#getRewardsModal').modal({
-            keyboard: false,
-            backdrop: 'static'
-          })
-    })
-
-    $('#next_connect_strava_modal').click(function() {
-        $('#connectStravaModal').modal({
-            keyboard: false,
-            backdrop: 'static'
-          })
-    })
+  $('#next_connect_strava_modal').click(function() {
+      $('#connectStravaModal').modal({
+          keyboard: false,
+          backdrop: 'static'
+        })
+  })
 });

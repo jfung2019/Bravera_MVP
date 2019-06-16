@@ -179,6 +179,4 @@
       </div>
     </div>
   </div>
-
-  <%= render "stripe_script.html" %>
 <% end %> 

@@ -191,6 +191,8 @@ defmodule OmegaBravera.Factory do
       activities: ["Run", "Cycle"],
       time_limit: 0,
       toc: "foo",
+      payment_enabled: false,
+      payment_amount: Decimal.new(0),
       vendor: build(:vendor)
     }
   end
