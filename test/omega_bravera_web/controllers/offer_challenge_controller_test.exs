@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
   use OmegaBraveraWeb.ConnCase, async: true
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
   import OmegaBravera.Factory
 
@@ -15,6 +16,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
   }
 
   setup %{conn: conn} do
+    ExVCR.Config.cassette_library_dir("test/fixtures/cassettes")
+
     attrs = %{
       firstname: "sherief",
       lastname: "alaa ",
@@ -113,7 +116,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       assert Timex.equal?(created_challenge.end_date, offer.end_date)
     end
 
-    test "create/2 redirects to challenge data is valid", %{conn: conn, current_user: user} do
+    test "create/2 redirects to challenge when data is valid", %{conn: conn, current_user: user} do
       {:ok, _user} =
         Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
 
@@ -129,6 +132,43 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       assert get_flash(conn, :info) == "Success! You have registered for this offer!"
       assert [challenge] = Offers.list_offer_challenges()
       assert redirected_to(conn) == offer_offer_challenge_path(conn, :show, offer, challenge)
+    end
+
+    test "create/2 redirects to paid offer challenge when data is valid", %{
+      conn: conn,
+      current_user: user
+    } do
+      {:ok, _user} =
+        Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+
+      offer =
+        insert(:offer, %{
+          start_date: Timex.now(),
+          end_date: Timex.shift(Timex.now(), days: 10),
+          payment_enabled: true,
+          payment_amount: Decimal.new(57)
+        })
+
+      use_cassette "signup_for_paid_offer" do
+        conn =
+          post(
+            conn,
+            offer_offer_challenge_path(conn, :create, offer.slug),
+            offer_challenge: %{
+              "team" => %{},
+              "offer_redeems" => [%{}],
+              "payment" => %{"stripe_token" => "tok_1ElwBZEXtHU8QBy8ZPONLVaF"}
+            }
+          )
+
+        assert get_flash(conn, :info) == "Success! You have registered for this offer!"
+        assert [challenge] = Offers.list_offer_challenges()
+        assert redirected_to(conn) == offer_offer_challenge_path(conn, :show, offer, challenge)
+
+        challenge = Repo.preload(challenge, :payment)
+        assert Decimal.round(challenge.payment.charged_amount) == offer.payment_amount
+        assert challenge.payment.status == "charged"
+      end
     end
   end
 
