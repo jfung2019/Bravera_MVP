@@ -99,7 +99,7 @@ defmodule OmegaBravera.Money.Payment do
   end
 
   def do_stripe_charge(%Ecto.Changeset{} = changeset, _, _, _),
-    do: add_error(changeset, :id, "missing required attributes")
+    do: add_error(changeset, :id, "do_stripe_charge: bad params, ensure map has strings not atoms.")
 
   defp charged_attributes_changeset(
          %Ecto.Changeset{} = changeset,
@@ -120,13 +120,10 @@ defmodule OmegaBravera.Money.Payment do
   defp get_stripe_exchange_rate(%{"balance_transaction" => balance_transaction}) do
     %{"exchange_rate" => exchange_rate} = balance_transaction
 
-    exchange_rate =
-      case exchange_rate do
-        nil -> Decimal.new(1)
-        _ -> Decimal.new(exchange_rate)
-      end
-
-    exchange_rate
+    case exchange_rate do
+      nil -> Decimal.new(1)
+      _ -> Decimal.new(exchange_rate)
+    end
   end
 
   defp centify(amount) do

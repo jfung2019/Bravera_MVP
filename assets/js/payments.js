@@ -1,32 +1,14 @@
-// window.addEventListener('load', function() {
-//     var forms = document.getElementsByClassName('payment-cards-modal');
-
-//     var validation = Array.prototype.filter.call(forms, function(form) {
-//       form.addEventListener('submit', function(event) {
-//         if (form.checkValidity() === false) {
-//           event.preventDefault();
-//           event.stopPropagation();
-//         }
-//         form.classList.add('was-validated');
-//       }, false);
-//     });
-//   },
-//   false
-// );
-
 document.addEventListener("DOMContentLoaded", function(event) {
     var forms = document.getElementsByClassName('offer-payment-form');
 
     if(forms.length != 0) {
 
-    
         var style = {
           base: {
             fontSize: '16px',
             color: "#32325d",
           }
         };
-
 
         Array.from(forms).forEach(function(form) {
             var stripe = Stripe(stripe_public_key);

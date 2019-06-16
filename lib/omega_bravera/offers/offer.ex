@@ -32,7 +32,7 @@ defmodule OmegaBravera.Offers.Offer do
     field(:always, :boolean, default: false)
 
     field(:payment_enabled, :boolean, default: false)
-    field(:payment_amount, :decimal, default: 0)
+    field(:payment_amount, :decimal, default: Decimal.new(0))
 
     # When more than 0, all challenges will have a single team.
     field(:additional_members, :integer, default: 0)
