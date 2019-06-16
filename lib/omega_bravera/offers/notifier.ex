@@ -234,6 +234,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
+    |> Email.add_substitution("-offerName-", challenge.offer.name)
     |> Email.add_substitution("-challengeLink-", new_challenge_url(challenge))
     |> Email.add_substitution("-qrCode-", challenge_qr_code_url(challenge, offer_redeem))
     |> Email.add_substitution("-terms-", challenge.offer.toc)
