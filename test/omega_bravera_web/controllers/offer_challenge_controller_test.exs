@@ -145,7 +145,6 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         insert(:offer, %{
           start_date: Timex.now(),
           end_date: Timex.shift(Timex.now(), days: 10),
-          payment_enabled: true,
           payment_amount: Decimal.new(57)
         })
 

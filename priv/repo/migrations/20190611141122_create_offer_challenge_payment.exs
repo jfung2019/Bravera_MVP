@@ -27,7 +27,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferChallengePayment do
 
     alter table(:offers) do
       add :payment_enabled, :boolean, default: false
-      add :payment_amount, :decimal, default: 0
+      add :payment_amount, :decimal, default: nil
     end
 
     create(unique_index(:payments, [:offer_challenge_id]))

@@ -31,8 +31,7 @@ defmodule OmegaBravera.Offers.Offer do
     # When true, all challenges will ignore the end_date.
     field(:always, :boolean, default: false)
 
-    field(:payment_enabled, :boolean, default: false)
-    field(:payment_amount, :decimal, default: Decimal.new(0))
+    field(:payment_amount, :decimal, default: nil)
 
     # When more than 0, all challenges will have a single team.
     field(:additional_members, :integer, default: 0)
@@ -83,7 +82,6 @@ defmodule OmegaBravera.Offers.Offer do
     :activities,
     :vendor_id,
     :time_limit,
-    :payment_enabled,
     :payment_amount
   ]
   @required_attributes [
@@ -113,7 +111,6 @@ defmodule OmegaBravera.Offers.Offer do
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
     |> validate_required(:slug)
-    |> validate_payment()
     |> unique_constraint(:slug)
     |> upload_image(attrs)
     |> upload_logo(attrs)
@@ -193,23 +190,6 @@ defmodule OmegaBravera.Offers.Offer do
   end
 
   defp upload_logo(%Ecto.Changeset{} = changeset, _), do: changeset
-
-  defp validate_payment(%Ecto.Changeset{} = changeset) do
-    payment_enabled = get_field(changeset, :payment_enabled, false)
-    payment_amount = get_field(changeset, :payment_amount, Decimal.new(0))
-
-    if payment_enabled do
-
-      if Decimal.cmp(payment_amount, Decimal.new(0)) != :gt do
-        add_error(changeset, :payment_amount, "Payment amount should be greater than 0")
-      else
-        changeset
-      end
-
-    else
-      changeset
-    end
-  end
 
   defp validate_pre_registration_start_date(
          %Ecto.Changeset{

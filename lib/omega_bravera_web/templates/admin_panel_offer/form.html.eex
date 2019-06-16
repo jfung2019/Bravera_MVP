@@ -64,16 +64,8 @@
     <%= error_tag f, :hidden %>
   </div>
 
-
   <div class="form-group">
-    <%= label f, :payment_enabled, "Enable Payment (Virtual Races):", class: "control-label" %>
-    <br/>
-    <%= checkbox f, :payment_enabled %>
-    <%= error_tag f, :payment_enabled %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :payment_amount, "Payment Amount: Used as a fee of joining the race. (only works if Payment Enabled is checked.)", class: "control-label" %>
+    <%= label f, :payment_amount, "Payment Amount: Used as a fee of joining the race. (Leave Blank to not enable)", class: "control-label" %>
     <br/>
     <%= number_input f, :payment_amount, class: "form-control" %>
     <%= error_tag f, :payment_amount %>

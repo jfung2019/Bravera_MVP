@@ -36,7 +36,7 @@
           <div class="text-center">
             <%= if logged_in?(@conn) do %>
 
-              <%= if offer.payment_enabled do %>
+              <%= if payment_offer?(offer.payment_amount) do %>
                 <%= render "payment_offer.html", Map.put_new(assigns, :offer, offer) %>
               <% else %>
                 <%= render "free_offer.html", Map.put_new(assigns, :offer, offer) %>

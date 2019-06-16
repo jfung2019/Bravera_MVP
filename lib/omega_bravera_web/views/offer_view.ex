@@ -36,4 +36,7 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
 
   defp offer_challenge_slug(%OfferChallenge{slug: slug}), do: slug
   defp offer_challenge_slug(_), do: ""
+
+  def payment_offer?(nil), do: false
+  def payment_offer?(payment_amount), do: Decimal.cmp(payment_amount, Decimal.new(0)) == :gt
 end
