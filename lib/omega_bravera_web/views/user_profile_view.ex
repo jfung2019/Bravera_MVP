@@ -32,23 +32,32 @@ defmodule OmegaBraveraWeb.UserProfileView do
         offer: %{slug: offer_slug},
         slug: slug,
         status: "active"
-      }), do:
-    link("LIVE",
-      to: offer_offer_challenge_path(conn, :show, offer_slug, slug),
-      class: "text-success"
-    )
+      }),
+      do:
+        link("LIVE",
+          to: offer_offer_challenge_path(conn, :show, offer_slug, slug),
+          class: "text-success"
+        )
 
   def get_offer_challenge_link(conn, _user_id, %OfferChallenge{
         offer: %{slug: offer_slug},
         slug: slug,
         status: "expired"
-      }), do: link("EXPIRED", to: offer_offer_challenge_path(conn, :show, offer_slug, slug), class: "text-secondary")
+      }),
+      do:
+        link("EXPIRED",
+          to: offer_offer_challenge_path(conn, :show, offer_slug, slug),
+          class: "text-secondary"
+        )
 
   def get_offer_challenge_link(conn, _user_id, %OfferChallenge{
-    offer: %{slug: offer_slug},
-    slug: slug,
-    status: "pre_registration"
-  }), do: link("Pre Registration", to: offer_offer_challenge_path(conn, :show, offer_slug, slug), class: "text-info")
-
-
+        offer: %{slug: offer_slug},
+        slug: slug,
+        status: "pre_registration"
+      }),
+      do:
+        link("Pre Registration",
+          to: offer_offer_challenge_path(conn, :show, offer_slug, slug),
+          class: "text-info"
+        )
 end

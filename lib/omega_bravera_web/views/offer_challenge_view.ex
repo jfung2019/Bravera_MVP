@@ -19,7 +19,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
     redeem = Enum.find(offer_redeems, nil, &(&1.user_id == user_id))
 
     cond do
-      is_nil(redeem) -> ""
+      is_nil(redeem) ->
+        ""
 
       redeem.status == "redeemed" ->
         "Reward Redeemed on #{render_datetime(redeem.updated_at)}."

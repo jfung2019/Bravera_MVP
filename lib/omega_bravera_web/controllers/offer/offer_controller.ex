@@ -19,7 +19,8 @@ defmodule OmegaBraveraWeb.Offer.OfferController do
     conn
     |> open_modal(:could_not_create_offer_challenge)
     |> render("index.html",
-      offers: Offers.list_offers(false, offer_challenges: [user: [:strava], team: [users: [:strava]]]),
+      offers:
+        Offers.list_offers(false, offer_challenges: [user: [:strava], team: [users: [:strava]]]),
       offer_challenge_changeset: Offers.change_offer_challenge(%OfferChallenge{}),
       current_user: current_user
     )

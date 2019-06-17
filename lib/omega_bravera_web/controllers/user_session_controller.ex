@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.UserSessionController do
         conn
         |> put_flash(:info, "Welcome back!")
         |> Guardian.Plug.sign_in(user)
-        |> redirect(to: user_profile_path(conn, :show))
+        |> redirect(to: redirect_path(conn))
 
       {:error, _} ->
         conn
@@ -23,5 +23,12 @@ defmodule OmegaBraveraWeb.UserSessionController do
     |> Guardian.Plug.sign_out()
     |> put_flash(:info, "Successfully signed out")
     |> redirect(to: "/")
+  end
+
+  defp redirect_path(conn) do
+    case get_session(conn, "after_login_redirect") do
+      nil -> user_profile_path(conn, :show)
+      path -> path
+    end
   end
 end

@@ -184,7 +184,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   end
 
   def create(conn, %{"offer_slug" => offer_slug} = attrs) do
-
     offer_challenge_attrs =
       if Map.has_key?(attrs, "offer_challenge") do
         Map.merge(%{"team" => %{}, "offer_redeems" => [%{}]}, attrs["offer_challenge"])
@@ -396,7 +395,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       challenge: challenge,
       activities: Offers.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      offer_with_stats: Offers.get_offer_with_stats(offer_slug, [offer_challenges: [user: [:strava], team: [users: [:strava]]]]),
+      offer_with_stats:
+        Offers.get_offer_with_stats(offer_slug,
+          offer_challenges: [user: [:strava], team: [users: [:strava]]]
+        ),
       m_targets: OfferChallenge.milestones_distances(challenge)
     }
   end
@@ -415,7 +417,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           [challenge.user] ++ challenge.team.users
         ),
       current_user: Guardian.Plug.current_resource(conn),
-      offer_with_stats: Offers.get_offer_with_stats(offer_slug, [offer_challenges: [user: [:strava], team: [users: [:strava]]]])
+      offer_with_stats:
+        Offers.get_offer_with_stats(offer_slug,
+          offer_challenges: [user: [:strava], team: [users: [:strava]]]
+        )
     }
   end
 
@@ -428,7 +433,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       challenge: challenge,
       activities: Offers.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      offer_with_stats: Offers.get_offer_with_stats(offer_slug, [offer_challenges: [user: [:strava], team: [users: [:strava]]]])
+      offer_with_stats:
+        Offers.get_offer_with_stats(offer_slug,
+          offer_challenges: [user: [:strava], team: [users: [:strava]]]
+        )
     }
   end
 

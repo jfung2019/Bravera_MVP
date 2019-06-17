@@ -62,7 +62,12 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> cast(attrs, @allowed_attributes)
   end
 
-  def create_changeset(offer_challenge, offer, user, attrs \\ %{team: %{}, offer_redeems: [%{}], payment: %{}}) do
+  def create_changeset(
+        offer_challenge,
+        offer,
+        user,
+        attrs \\ %{team: %{}, offer_redeems: [%{}], payment: %{}}
+      ) do
     offer_challenge
     |> changeset(attrs)
     |> change(%{
@@ -133,16 +138,24 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     )
   end
 
-  defp add_payment(%Ecto.Changeset{} = changeset, %Offer{payment_amount: payment_amount} = offer, %User{} = user) when not is_nil(payment_amount) do
+  defp add_payment(
+         %Ecto.Changeset{} = changeset,
+         %Offer{payment_amount: payment_amount} = offer,
+         %User{} = user
+       )
+       when not is_nil(payment_amount) do
     if Decimal.cmp(payment_amount, Decimal.new(0)) == :gt do
-      cast_assoc(changeset, :payment, with: &Payment.changeset(&1, offer, user, &2), required: true)
+      cast_assoc(changeset, :payment,
+        with: &Payment.changeset(&1, offer, user, &2),
+        required: true
+      )
     else
       changeset
     end
   end
 
   defp add_payment(%Ecto.Changeset{} = changeset, _, _),
-   do: changeset
+    do: changeset
 
   defp generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do
     slug = get_field(changeset, :slug)

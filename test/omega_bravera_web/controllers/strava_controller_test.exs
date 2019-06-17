@@ -45,6 +45,18 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
     end
   end
 
+  test "strava redirect will use session path for after login redirect", %{conn: conn} do
+    offer_path = offer_path(conn, :index)
+    conn =
+      conn
+      |> bypass_through(OmegaBraveraWeb.Router, :browser)
+      |> get("/")
+      |> put_session("after_login_redirect", offer_path)
+      |> send_resp(:ok, "")
+      |> get(strava_path(conn, :authenticate))
+    assert "https://www.strava.com/oauth/authorize?client_id=23267&redirect_uri=http%3A%2F%2Flocalhost%3A4001%2Fstrava%2Fcallback%3Fredirect_to%3D%252Foffers&response_type=code&scope=view_private" = redirected_to(conn)
+  end
+
   describe "strava login" do
     setup [:create_user]
 
