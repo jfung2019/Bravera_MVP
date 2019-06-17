@@ -44,8 +44,12 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
       assert redirected_to(conn) == user_profile_path(conn, :show)
     end
 
-    test "user with a session to after_login_redirect will be redirected", %{conn: conn, credential: credential} do
+    test "user with a session to after_login_redirect will be redirected", %{
+      conn: conn,
+      credential: credential
+    } do
       offer_path = offer_path(conn, :index)
+
       attrs = %{
         email: credential.user.email,
         password: @password

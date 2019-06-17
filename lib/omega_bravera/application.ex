@@ -9,11 +9,11 @@ defmodule OmegaBravera.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
-      supervisor(OmegaBravera.Repo, []),
+      OmegaBravera.Repo,
       # Start the endpoint when the application starts
-      supervisor(OmegaBraveraWeb.Endpoint, [])
-      # Start your own worker by calling: OmegaBravera.Worker.start_link(arg1, arg2, arg3)
-      # worker(OmegaBravera.Worker, [arg1, arg2, arg3]),
+      OmegaBraveraWeb.Endpoint,
+      OmegaBravera.IngestionSupervisor,
+      {Task.Supervisor, name: OmegaBravera.TaskSupervisor}
     ]
 
     children =

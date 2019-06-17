@@ -7,15 +7,12 @@ defmodule OmegaBraveraWeb.StravaController do
     Trackers,
     Guardian,
     Accounts,
-    Challenges.ActivitiesIngestion,
-    Offers.OfferActivitiesIngestion
+    IngestionSupervisor
   }
 
   def post_webhook_callback(conn, params) do
-    # Start activity ingestion for NGO challenges.
-    Task.start(ActivitiesIngestion, :process_strava_webhook, [params])
-    # Start activity ingestion for offer challenges.
-    Task.start(OfferActivitiesIngestion, :start, [params])
+    # Start activity ingestion supervisor for challenges.
+    IngestionSupervisor.start_processing(params)
     render(conn, "webhook_callback.json", status: 200)
   end
 
@@ -159,7 +156,9 @@ defmodule OmegaBraveraWeb.StravaController do
           _ ->
             "/"
         end
-      path -> path |> IO.inspect()
+
+      path ->
+        path |> IO.inspect()
     end
   end
 end
