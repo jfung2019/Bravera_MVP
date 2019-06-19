@@ -193,9 +193,6 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
     {:ok, updated_user} =
       Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
 
-    conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
-    assert html_response(conn, 302)
-
     post(conn, user_path(conn, :update, %{"user" => %{email: "sherief@gmail.com"}}))
     updated_user2 = Accounts.get_user!(updated_user.id)
 
