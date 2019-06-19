@@ -47,36 +47,22 @@
           </h3>
         <% end %>
 
-        <p>Using Bravera is easy! Just follow the steps below.</p>
-        <p>1. Connect with a fitness Tracker</p>
-        <%= img_tag(static_path(@conn, "/images/connect-icon.png"))%>
+        <%= if logged_in?(@conn) do %>
 
-        <p>2. Turn activity data into rewards.</p>
-        <%= img_tag(static_path(@conn, "/images/continue-icon.png"))%>
-        <p>Bravera currently works with STRAVA  activity data to convert activities into fundraising.</p>
-        <div class="form-button">
-          <button type="button" class="btn btn-bravera btn-lg btn-block form-button" data-toggle="modal" data-target="#signUpModal">
-            I use Strava
+          <%= if OmegaBraveraWeb.Offer.OfferView.payment_offer?(@offer.payment_amount) do %>
+              <%= render OmegaBraveraWeb.Offer.OfferView, "payment_offer.html", Map.put_new(assigns, :offer, @offer) %>
+          <% else %>
+              <%= render OmegaBraveraWeb.Offer.OfferView, "free_offer.html", Map.put_new(assigns, :offer, @offer) %>
+          <% end %>
+
+        <% else %>
+          <button type="button" class="btn btn-bravera" data-toggle="modal" data-target="#signUpModal">
+            Sign in/up to join the challenge
           </button>
-          <%= button("I don't use Strava",
-            to: "https://www.strava.com/",
-            id: "no-strava",
-            class: "btn btn-bravera btn-lg btn-block form-button",
-            method: "get",
-            type: "button",
-            data: [toggle: "tooltip", placement: "top"], title: "You’ll be redirected to Strava to create an account,
-            when you’ve created anaccount and downloaded the Strava App on your smartphone,
-            come back to Bravera and finish your registration.",
-            target: "_blank")
-          %>
-          <div class="no-strava-btn-text">
-            <span>*</span>
-            You’ll be redirected to Strava to create an account,
-            when you’ve created anaccount and downloaded the Strava App on your smartphone,
-            come back to Bravera and finish your registration.
-          </div>
-        </div>
+        <% end %>
+
       </div>
     </div>
   </div>
 </div>
+

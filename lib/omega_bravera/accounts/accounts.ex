@@ -225,7 +225,7 @@ defmodule OmegaBravera.Accounts do
     |> join(:left, [user, ngo_chals], donations in assoc(ngo_chals, :donations))
     |> preload([user, ngo_chals, donations], ngo_chals: {ngo_chals, donations: donations})
     |> Repo.one()
-    |> Repo.preload([:strava, :setting, :credential])
+    |> Repo.preload([:strava, :setting, :credential, :offer_challenges])
   end
 
   def get_user_by_token(token) do

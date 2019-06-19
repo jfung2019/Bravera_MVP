@@ -34,17 +34,7 @@
         </div>
         <div class="card-footer">
           <div class="text-center">
-            <%= if logged_in?(@conn) do %>
-
-              <%= if payment_offer?(offer.payment_amount) do %>
-                <%= render "payment_offer.html", Map.put_new(assigns, :offer, offer) %>
-              <% else %>
-                <%= render "free_offer.html", Map.put_new(assigns, :offer, offer) %>
-              <% end %>
-
-            <% else %>
-                <%= link("Join the Challenge", to: offer_offer_challenge_path(@conn, :new, offer.slug), class: "btn btn-green sign-up") %>
-            <% end %>
+            <%= link("Join the Challenge", to: offer_offer_challenge_path(@conn, :new, offer.slug), class: "btn btn-green sign-up") %>
           </div>
         </div> <!-- end of foot -->
       </div>  <!-- end of card -->
