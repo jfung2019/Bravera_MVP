@@ -266,11 +266,19 @@ defmodule OmegaBravera.OffersTest do
 
     test "create_offer_challenge/2 can create offer_challenge with payment but only using a valid stripe token" do
       vendor = insert(:vendor)
-      offer = insert(:offer, %{payment_amount: Decimal.new(30), vendor: nil, vendor_id: vendor.id})
+
+      offer =
+        insert(:offer, %{payment_amount: Decimal.new(30), vendor: nil, vendor_id: vendor.id})
+
       insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = insert(:user)
 
-      assert {:error, reason} = Offers.create_offer_challenge(offer, user, %{team: %{}, offer_redeems: [%{}], payment: %{"stripe_token" => "tok_bad_token"}})
+      assert {:error, reason} =
+               Offers.create_offer_challenge(offer, user, %{
+                 team: %{},
+                 offer_redeems: [%{}],
+                 payment: %{"stripe_token" => "tok_bad_token"}
+               })
     end
 
     test "create_offer_challenge/2 can create offer_challenge with offer_redeem and team" do

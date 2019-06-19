@@ -26,8 +26,8 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferChallengePayment do
     end
 
     alter table(:offers) do
-      add :payment_enabled, :boolean, default: false
-      add :payment_amount, :decimal, default: nil
+      add(:payment_enabled, :boolean, default: false)
+      add(:payment_amount, :decimal, default: nil)
     end
 
     create(unique_index(:payments, [:offer_challenge_id]))
@@ -37,8 +37,8 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferChallengePayment do
     drop(table(:payments))
 
     alter table(:offers) do
-      remove :payment_enabled
-      remove :payment_amount
+      remove(:payment_enabled)
+      remove(:payment_amount)
     end
   end
 end

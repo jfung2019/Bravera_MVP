@@ -7,15 +7,12 @@ defmodule OmegaBraveraWeb.StravaController do
     Trackers,
     Guardian,
     Accounts,
-    Challenges.ActivitiesIngestion,
-    Offers.OfferActivitiesIngestion
+    IngestionSupervisor
   }
 
   def post_webhook_callback(conn, params) do
-    # Start activity ingestion for NGO challenges.
-    Task.start(ActivitiesIngestion, :process_strava_webhook, [params])
-    # Start activity ingestion for offer challenges.
-    Task.start(OfferActivitiesIngestion, :start, [params])
+    # Start activity ingestion supervisor for challenges.
+    IngestionSupervisor.start_processing(params)
     render(conn, "webhook_callback.json", status: 200)
   end
 
@@ -136,26 +133,32 @@ defmodule OmegaBraveraWeb.StravaController do
 
   defp get_redirect_url(conn) do
     # Return the user back the very last page he was on (used only for logins in the :ngo/:ngo_chal/new page)
-    try do
-      uri =
-        conn
-        |> Plug.Conn.get_req_header("referer")
-        |> List.first()
-        |> URI.parse()
+    case get_session(conn, "after_login_redirect") do
+      nil ->
+        try do
+          uri =
+            conn
+            |> Plug.Conn.get_req_header("referer")
+            |> List.first()
+            |> URI.parse()
 
-      path =
-        case uri.path do
-          "/oauth/authorize" ->
-            "/"
+          path =
+            case uri.path do
+              "/oauth/authorize" ->
+                "/"
 
+              _ ->
+                uri.path
+            end
+
+          path
+        rescue
           _ ->
-            uri.path
+            "/"
         end
 
-      path
-    rescue
-      _ ->
-        "/"
+      path ->
+        path |> IO.inspect()
     end
   end
 end

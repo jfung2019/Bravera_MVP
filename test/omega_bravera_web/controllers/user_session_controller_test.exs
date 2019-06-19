@@ -31,9 +31,9 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
   end
 
   describe "user logging in" do
-    test "user can login", %{conn: conn} do
-      credential = credential_fixture()
+    setup do: {:ok, credential: credential_fixture()}
 
+    test "user can login", %{conn: conn, credential: credential} do
       attrs = %{
         email: credential.user.email,
         password: @password
@@ -44,9 +44,29 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
       assert redirected_to(conn) == user_profile_path(conn, :show)
     end
 
-    test "bad password will send them back to login page", %{conn: conn} do
-      credential = credential_fixture()
+    test "user with a session to after_login_redirect will be redirected", %{
+      conn: conn,
+      credential: credential
+    } do
+      offer_path = offer_path(conn, :index)
 
+      attrs = %{
+        email: credential.user.email,
+        password: @password
+      }
+
+      conn =
+        conn
+        |> bypass_through(OmegaBraveraWeb.Router, :browser)
+        |> get("/")
+        |> put_session("after_login_redirect", offer_path)
+        |> send_resp(:ok, "")
+        |> post(user_session_path(conn, :create), %{"session" => attrs})
+
+      assert ^offer_path = redirected_to(conn)
+    end
+
+    test "bad password will send them back to login page", %{conn: conn, credential: credential} do
       attrs = %{
         email: credential.user.email,
         password: @password
@@ -60,9 +80,7 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
       assert redirected_to(conn, 302) == page_path(conn, :login)
     end
 
-    test "bad email will send them back to login page", %{conn: conn} do
-      credential = credential_fixture()
-
+    test "bad email will send them back to login page", %{conn: conn, credential: credential} do
       attrs = %{
         email: credential.user.email,
         password: @password

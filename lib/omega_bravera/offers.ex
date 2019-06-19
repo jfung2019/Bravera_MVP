@@ -200,10 +200,19 @@ defmodule OmegaBravera.Offers do
         user.firstname,
         user.lastname,
         user.email,
-        fragment("to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')", oc.inserted_at),
-        fragment("to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')", oc.updated_at),
+        fragment(
+          "to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')",
+          oc.inserted_at
+        ),
+        fragment(
+          "to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')",
+          oc.updated_at
+        ),
         oc.has_team,
-        fragment("to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')", redeem.updated_at),
+        fragment(
+          "to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')",
+          redeem.updated_at
+        ),
         reward.name
       ]
     )
@@ -651,14 +660,16 @@ defmodule OmegaBravera.Offers do
       where: redeem.offer_id == ^offer.id,
       preload: ^preloads,
       order_by: [desc: redeem.updated_at]
-    ) |> Repo.all()
+    )
+    |> Repo.all()
   end
 
   def list_offer_redeems(preloads \\ []) do
     from(
       redeem in OfferRedeem,
       preload: ^preloads
-    ) |> Repo.all()
+    )
+    |> Repo.all()
   end
 
   @doc """
