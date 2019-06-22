@@ -52,10 +52,12 @@
                         </div>
 
                     </div>
-
                     <button type="button" class="btn btn-secondary mx-auto mb-4"  data-dismiss="modal">Cancel</button>
-
                   </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <%= img_tag static_path(@conn, "/images/powered_by_stripe.svg"), class: "mx-auto" %>
+                    </div>
                 </div>
               </div>
             <% end %>

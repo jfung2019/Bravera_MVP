@@ -41,7 +41,7 @@
       <div class="form-group">
 
         <%= if pre_registration_offer?(@offer) do %>
-          <p>Challenge starts in:</p>
+          <p class="sign-up">Challenge starts in:</p>
           <h3 id="countdown" class="font-weight-bold mb-3 text-danger">
             <%= render_countdown_date(@offer.start_date) %>
           </h3>
