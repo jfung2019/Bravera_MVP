@@ -46,8 +46,20 @@
                                 <%= text_input p, :stripe_token, class: "stripe-token d-none invisible" %>
                             <% end %>
 
-                            <div class="text-center mt-5">
-                                <button data-disable-button class="btn btn-bravera mx-auto" style="width:200px;">Submit payment</button>
+                            <%= if not is_nil(@offer.external_terms_url) do %>
+                              <div class="text-center mt-5">
+                                <input type="checkbox" id="accept_paid_offer_terms" required="required" class="form-group" />
+                                <%= link "I accept terms and conditions", to: @offer.external_terms_url %>
+                              </div>
+                            <% else %>
+                              <div class="text-center mt-5">
+                                <input type="checkbox" id="accept_paid_offer_terms" required="required" name="terms" />
+                                I accept terms and conditions
+                              </div>
+                            <% end %>
+
+                            <div class="text-center mt-2">
+                              <button id="submit-payment" class="btn btn-bravera mx-auto" disabled style="width:200px;">Submit payment</button>
                             </div>
                         </div>
 
