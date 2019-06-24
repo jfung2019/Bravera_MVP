@@ -83,6 +83,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
       assert Timex.equal?(created_challenge.start_date, offer.start_date)
       assert Timex.equal?(created_challenge.end_date, offer.end_date)
+
+      assert get_session(conn, "created_offer_challenge") == true
     end
 
     test "create/2 creates a pre_registration challenge", %{
@@ -208,6 +210,21 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       |> Map.get("after_email_verify")
 
     assert after_email_verify == offer_offer_challenge_path(conn, :new, offer)
+  end
+
+  test "created challenge should first show a success modal", %{conn: conn, current_user: user} do
+    offer = insert(:offer, %{slug: "sherief-1"})
+    challenge = insert(:offer_challenge, %{offer: offer, user: user})
+    conn =
+      conn
+      |> bypass_through(OmegaBraveraWeb.Router, :browser)
+      |> get("/")
+      |> put_session("created_offer_challenge", true)
+      |> send_resp(:ok, "")
+      |> get(offer_offer_challenge_path(conn, :show, offer, challenge))
+
+    assert %{assigns: %{created_offer_challenge: true}} = conn
+    assert get_session(conn, "created_offer_challenge") == nil
   end
 
   describe "redeem" do

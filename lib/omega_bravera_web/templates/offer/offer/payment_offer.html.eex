@@ -49,12 +49,12 @@
                             <%= if not is_nil(@offer.external_terms_url) do %>
                               <div class="text-center mt-5">
                                 <input type="checkbox" id="accept_paid_offer_terms" required="required" class="form-group" />
-                                <%= link "I accept terms and conditions", to: @offer.external_terms_url %>
+                                <%= link @offer.accept_terms_text, to: @offer.external_terms_url, target: "_blank" %>
                               </div>
                             <% else %>
                               <div class="text-center mt-5">
                                 <input type="checkbox" id="accept_paid_offer_terms" required="required" name="terms" />
-                                I accept terms and conditions
+                                <%= @offer.accept_terms_text %>
                               </div>
                             <% end %>
 

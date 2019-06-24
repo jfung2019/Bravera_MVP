@@ -16,6 +16,7 @@ defmodule OmegaBravera.Offers.Offer do
     field(:name, :string)
     field(:offer_challenge_desc, :string)
     field(:external_terms_url, :string)
+    field(:accept_terms_text, :string, default: "I accept the waiver & release of liability")
     field(:offer_percent, :float)
     field(:hidden, :boolean, default: false)
 
@@ -84,7 +85,8 @@ defmodule OmegaBravera.Offers.Offer do
     :vendor_id,
     :time_limit,
     :payment_amount,
-    :external_terms_url
+    :external_terms_url,
+    :accept_terms_text
   ]
   @required_attributes [
     :name,

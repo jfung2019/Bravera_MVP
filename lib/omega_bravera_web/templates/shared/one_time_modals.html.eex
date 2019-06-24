@@ -151,3 +151,34 @@
     </div>
   </div>
 <% end %>
+
+<%= if @conn.assigns[:created_offer_challenge] do %>
+  <div class="modal fade" id="challengeCreateSuccessModal" tabindex="-1" role="dialog" aria-labelledby="challengeCreateSuccessModal">
+
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+
+        <div class="modal-body mt-4">
+          <div class="row mx-auto align-items-center">
+            <span class="big-logo mx-auto"></span>
+          </div>
+
+          <div class="row mx-auto align-items-center">
+            <span class="d-block mt-3 mb-3 mx-auto text-center">
+              <strong>
+                <span class="text-uppercase text-success"><%= gettext("Success!") %></span><br>
+                <%= gettext("You’ve activated the challenge!") %><br>
+                <span class="text-uppercase text-success"><%= gettext("Good Luck") %></span>
+              </strong>
+            </span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-bravera mx-auto mb-4"  data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<% end %>
