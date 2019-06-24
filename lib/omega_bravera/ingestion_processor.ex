@@ -1,6 +1,12 @@
 defmodule OmegaBravera.IngestionProcessor do
   use GenServer
-  alias OmegaBravera.{TaskSupervisor, Challenges.ActivitiesIngestion, Offers.OfferActivitiesIngestion}
+
+  alias OmegaBravera.{
+    TaskSupervisor,
+    Challenges.ActivitiesIngestion,
+    Offers.OfferActivitiesIngestion
+  }
+
   require Logger
 
   def start_link(params), do: GenServer.start_link(__MODULE__, params)
@@ -9,6 +15,7 @@ defmodule OmegaBravera.IngestionProcessor do
   def init(params) do
     send(self(), :restart_offers)
     send(self(), :restart_ngos)
+
     {:ok,
      %{
        params: params,

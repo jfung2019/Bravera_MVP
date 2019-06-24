@@ -215,6 +215,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
   test "created challenge should first show a success modal", %{conn: conn, current_user: user} do
     offer = insert(:offer, %{slug: "sherief-1"})
     challenge = insert(:offer_challenge, %{offer: offer, user: user})
+
     conn =
       conn
       |> bypass_through(OmegaBraveraWeb.Router, :browser)

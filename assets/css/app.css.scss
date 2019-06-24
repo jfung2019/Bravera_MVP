@@ -677,6 +677,7 @@ div.page-index {
 
 /* live modals */
 .live-modal {
+  z-index: 9999999;
   input[readOnly] {
     background: white !important;
   }
