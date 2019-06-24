@@ -4,7 +4,7 @@
 		<%= link("Download Opt-in mailing list", to: admin_panel_ngo_path(@conn, :export_ngo_opt_in_mailing_list, @ngo.slug)) %>
 		<ul>
       <%= for ngo_chal <- @ngo.ngo_chals do %>
-		    <li><%= link ngo_chal.slug, to: admin_panel_ngo_admin_panel_challenges_path(@conn, :show, @ngo, ngo_chal) %></li>
+		    <li><%= link ngo_chal.slug, to: ngo_ngo_chal_path(@conn, :show, @ngo, ngo_chal) %></li>
       <% end %>
       <% %>
 		</ul>
