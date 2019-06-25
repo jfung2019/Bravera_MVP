@@ -70,7 +70,7 @@ defmodule OmegaBravera.IngestionProcessor do
   def handle_info(:restart_offers, %{params: params, offers: %{timer: timer}} = state),
     do: {:noreply, %{state | offers: %{ref: process_offers(params), timer: timer}}}
 
-  def handle_info(:restart_ngos, %{params: params, offers: %{timer: timer}} = state),
+  def handle_info(:restart_ngos, %{params: params, ngos: %{timer: timer}} = state),
     do: {:noreply, %{state | ngos: %{ref: process_ngos(params), timer: timer}}}
 
   def handle_info(:check_tasks, %{offers: nil, ngos: nil} = state), do: {:stop, :normal, state}
