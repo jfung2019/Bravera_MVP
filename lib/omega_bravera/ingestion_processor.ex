@@ -5,6 +5,9 @@ defmodule OmegaBravera.IngestionProcessor do
 
   def start_link(params), do: GenServer.start_link(__MODULE__, params)
 
+  # 1- When a new activity comes in, we should keep retrying if the request fails.
+  # 2- After recieving the activity, send it to activity ingestion (activity accumulator)
+
   @impl true
   def init(params) do
     send(self(), :restart_offers)
