@@ -61,7 +61,7 @@ defmodule OmegaBravera.IngestionProcessor do
         %{ngos: %{ref: ref, timer: timer}} = state
       ) do
     timer = timer + 10_000
-    Process.send_after(self(), timer, :restart_ngos)
+    Process.send_after(self(), :restart_ngos, timer)
     Process.demonitor(ref, [:flush])
     Logger.warn("NGO checking has failed, retrying after #{timer}")
     {:noreply, %{state | ngos: %{ref: nil, timer: timer}}}
@@ -70,7 +70,7 @@ defmodule OmegaBravera.IngestionProcessor do
   def handle_info(:restart_offers, %{params: params, offers: %{timer: timer}} = state),
     do: {:noreply, %{state | offers: %{ref: process_offers(params), timer: timer}}}
 
-  def handle_info(:restart_ngos, %{params: params, offers: %{timer: timer}} = state),
+  def handle_info(:restart_ngos, %{params: params, ngos: %{timer: timer}} = state),
     do: {:noreply, %{state | ngos: %{ref: process_ngos(params), timer: timer}}}
 
   def handle_info(:check_tasks, %{offers: nil, ngos: nil} = state), do: {:stop, :normal, state}
