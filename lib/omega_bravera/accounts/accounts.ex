@@ -41,6 +41,10 @@ defmodule OmegaBravera.Accounts do
     query |> Repo.delete_all()
   end
 
+  def get_strava_by_athlete_id(athlete_id) do
+    from(s in Strava, where: s.athlete_id == ^athlete_id) |> Repo.one
+  end
+
   def get_strava_challengers(athlete_id) do
     team_challengers =
       from(s in Strava,

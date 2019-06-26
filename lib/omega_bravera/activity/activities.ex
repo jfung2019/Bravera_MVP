@@ -1,4 +1,4 @@
-defmodule OmegaBravera.Activities do
+defmodule OmegaBravera.Activity.Activities do
   @moduledoc """
   The Activities context.
   """

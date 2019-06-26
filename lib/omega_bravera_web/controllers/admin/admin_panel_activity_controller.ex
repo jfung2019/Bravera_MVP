@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   use OmegaBraveraWeb, :controller
 
   alias OmegaBravera.Challenges.{Activity, NGOChal, ActivitiesIngestion}
-  alias OmegaBravera.{Challenges, Activities, Fundraisers.NgoOptions, Repo}
+  alias OmegaBravera.{Challenges, Activity.Activities, Fundraisers.NgoOptions, Repo}
 
   plug(:assign_available_options when action in [:create, :new])
 

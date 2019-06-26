@@ -1,4 +1,4 @@
-defmodule OmegaBravera.Trackers.ActivityAccumulator do
+defmodule OmegaBravera.Activity.ActivityAccumulator do
   use Ecto.Schema
   import Ecto.Changeset
 
