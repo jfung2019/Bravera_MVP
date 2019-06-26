@@ -40,7 +40,7 @@ defmodule OmegaBravera.IngestionProcessor do
         %{offers: %{ref: ref, timer: timer}} = state
       ) do
     timer = timer + 10_000
-    Process.send_after(self(), timer, :restart_offers)
+    Process.send_after(self(), :restart_offers, timer)
     Process.demonitor(ref, [:flush])
     Logger.warn("offer checking has failed, retrying after: #{timer} ms")
     {:noreply, %{state | offers: %{ref: nil, timer: timer}}}
