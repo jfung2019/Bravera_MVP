@@ -10,6 +10,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateActivityAccumulator do
       add(:start_date, :utc_datetime)
       add(:manual, :boolean, default: false, null: false)
       add(:type, :string)
+      add(:source, :string)
       add(:average_speed, :decimal)
       add(:moving_time, :integer)
       add(:elapsed_time, :integer)

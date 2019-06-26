@@ -3,9 +3,9 @@ defmodule OmegaBravera.IngestionProcessor do
 
   alias OmegaBravera.{
     TaskSupervisor,
-    Challenges.ActivitiesIngestion,
-    Offers.OfferActivitiesIngestion,
+    Repo,
     Accounts,
+    Activity.Activities,
     Trackers.StravaApiHelpers
   }
 
@@ -29,15 +29,24 @@ defmodule OmegaBravera.IngestionProcessor do
   # The task completed successfully
   @impl true
   def handle_info(
-        {ref, {:ok, %Strava.Activity{} = _activity}},
+        {ref, {:ok, %Strava.Activity{} = strava_activity}},
         %{activity_retrieve: %{ref: ref}} = state
       ) do
     # We don't care about the DOWN message now, so let's demonitor and flush it
     Process.demonitor(ref, [:flush])
     send(self(), :check_tasks)
-    # TODO:
-    # 1- Save activity in activity_accumulator
-    # 2- Spawn two tasks: a- ActivitiesIngestion b- OfferActivitiesIngestion
+    user = Accounts.get_strava_by_athlete_id(state.params["owner_id"]) |> Repo.preload(:user)
+
+    case Activities.create_activity(strava_activity, user) do
+      {:ok, _activity} ->
+        Logger.info("IngestionProcessor: Saved a new activity for user #{user.id}")
+
+        # TODO: Spawn two tasks: a- ActivitiesIngestion b- OfferActivitiesIngestion -Sherief
+
+      {:error, reason} ->
+        Logger.info("IngestionProcessor: I received a new activity from Strava but could not save it. Reason: #{inspect(reason)}")
+    end
+
     Logger.info("IngestionProcessor: activity checking has completed")
     {:noreply, %{state | activity_retrieve: nil}}
   end

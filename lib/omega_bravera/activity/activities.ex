@@ -7,6 +7,7 @@ defmodule OmegaBravera.Activity.Activities do
   alias OmegaBravera.Repo
 
   alias OmegaBravera.Challenges.{Activity}
+  alias OmegaBravera.Activity.ActivityAccumulator
 
   def list_activities_added_by_admin() do
     from(
@@ -19,5 +20,16 @@ defmodule OmegaBravera.Activity.Activities do
       order_by: [desc: :id]
     )
     |> Repo.all()
+  end
+
+  def create_activity(activity, user) do
+    changeset =
+      if Map.has_key?(activity, :admin_id) do
+        ActivityAccumulator.create_activity_by_admin_changeset(activity, user, activity.admin_id)
+      else
+        ActivityAccumulator.create_changeset(activity, user)
+      end
+
+    Repo.insert(changeset)
   end
 end
