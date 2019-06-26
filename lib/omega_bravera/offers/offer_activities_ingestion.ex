@@ -12,40 +12,30 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     ActivityIngestionUtils
   }
 
-  # alias OmegaBraveraWeb.Router.Helpers, as: Routes
-  # alias OmegaBraveraWeb.Endpoint
-
-  def start(
-        %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
-      ) do
+  def start(%Strava.Activity{} = strava_activity, %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params) do
     Logger.info("Offers:ActivityIngestion: Strava POST webhook processing: #{inspect(params)}")
 
     owner_id
     |> Accounts.get_strava_challengers_for_offers()
-    |> process_challenges(params)
+    |> process_challenges(strava_activity)
   end
 
-  def start(params),
+  def start(_strava_activity, params),
     do: Logger.info("Offers:ActivityIngestion: not processed: #{inspect(params)}")
 
-  def process_strava_webhook(_), do: {:error, :webhook_not_processed}
-
-  def process_challenges([{_challenge_id, _user, token} | _] = challenges, %{
-        "object_id" => object_id
-      }) do
+  def process_challenges([{_challenge_id, _user, _token} | _] = challenges, strava_activity) do
     Logger.info("Offers:ActivityIngestion: Processing challenges")
-    activity = Strava.Activity.retrieve(object_id, %{}, strava_client(token))
-    Logger.info("Offers:ActivityIngestion: Processing activity: #{inspect(activity)}")
+    Logger.info("Offers:ActivityIngestion: Processing activity: #{inspect(strava_activity)}")
 
     Enum.map(challenges, fn {challenge_id, user, _token} ->
       challenge_id
       |> Offers.get_offer_challenge!()
       |> Repo.preload([:offer])
-      |> process_challenge(activity, user, true)
+      |> process_challenge(strava_activity, user, true)
     end)
   end
 
-  def process_challenges([], _) do
+  def process_challenges([]) do
     Logger.info("Offers:ActivityIngestion: No challengers found")
     {:error, :no_challengers_found}
   end
@@ -271,8 +261,6 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
          _
        ),
        do: params
-
-  defp strava_client(token), do: Strava.Client.new(token)
 
   defp valid_activity?(activity, challenge, _send_emails) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
