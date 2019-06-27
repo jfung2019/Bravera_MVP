@@ -5,33 +5,33 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     Accounts,
     Offers,
     Offers.OfferChallenge,
-    Offers.OfferChallengeActivity,
     Offers.Notifier,
     Offers.OfferRedeem,
+    Activity.ActivityAccumulator,
     Repo,
     ActivityIngestionUtils
   }
 
-  def start(%Strava.Activity{} = strava_activity, %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params) do
+  def start(%ActivityAccumulator{} = activity, %{"owner_id" => owner_id} = params) do
     Logger.info("Offers:ActivityIngestion: Strava POST webhook processing: #{inspect(params)}")
 
     owner_id
     |> Accounts.get_strava_challengers_for_offers()
-    |> process_challenges(strava_activity)
+    |> process_challenges(activity)
   end
 
   def start(_strava_activity, params),
     do: Logger.info("Offers:ActivityIngestion: not processed: #{inspect(params)}")
 
-  def process_challenges([{_challenge_id, _user, _token} | _] = challenges, strava_activity) do
+  def process_challenges([{_challenge_id, _user, _token} | _] = challenges, activity) do
     Logger.info("Offers:ActivityIngestion: Processing challenges")
-    Logger.info("Offers:ActivityIngestion: Processing activity: #{inspect(strava_activity)}")
+    Logger.info("Offers:ActivityIngestion: Processing activity: #{inspect(activity)}")
 
     Enum.map(challenges, fn {challenge_id, user, _token} ->
       challenge_id
       |> Offers.get_offer_challenge!()
       |> Repo.preload([:offer])
-      |> process_challenge(strava_activity, user, true)
+      |> process_challenge(activity, user, true)
     end)
   end
 
@@ -46,7 +46,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
   def process_challenge(
         %OfferChallenge{type: "PER_KM"} = challenge,
-        %Strava.Activity{distance: distance} = strava_activity,
+        %ActivityAccumulator{distance: distance} = activity,
         user,
         send_emails
       )
@@ -55,7 +55,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
     {status, _challenge, _activity} =
       challenge
-      |> create_activity(strava_activity, user, send_emails)
+      |> create_activity(activity, user, send_emails)
       |> update_challenge
       |> notify_participant_of_activity(send_emails)
 
@@ -86,7 +86,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
   def process_challenge(
         %OfferChallenge{type: "PER_MILESTONE"} = challenge,
-        %Strava.Activity{distance: distance} = strava_activity,
+        %ActivityAccumulator{distance: distance} = activity,
         user,
         send_emails
       )
@@ -97,7 +97,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
     {status, _challenge, _activity} =
       challenge
-      |> create_activity(strava_activity, user, send_emails)
+      |> create_activity(activity, user, send_emails)
       |> update_challenge()
       |> notify_participant_of_activity(send_emails)
 
@@ -128,29 +128,14 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
   def process_challenge(_, _, _, _), do: {:error, :activity_not_processed}
 
-  def create_activity(challenge, activity, user, send_emails) do
-    # Check if the strava activity is an admin created one.
-    changeset =
-      case Map.has_key?(activity, :admin_id) do
-        false ->
-          OfferChallengeActivity.create_changeset(activity, challenge, user)
-
-        true ->
-          OfferChallengeActivity.create_activity_by_admin_changeset(
-            activity,
-            challenge,
-            user,
-            activity.admin_id
-          )
-      end
-
+  def create_activity(challenge, activity, _user, send_emails) do
     if valid_activity?(activity, challenge, send_emails) and
          ActivityIngestionUtils.activity_type_matches_challenge_activity_type?(
            activity,
            challenge
          ) do
-      case Repo.insert(changeset) do
-        {:ok, activity} ->
+      case Offers.create_offer_challenge_activity_m2m(activity, challenge) do
+        {:ok, _activity} ->
           {:ok, challenge, activity}
 
         {:error, changeset} ->

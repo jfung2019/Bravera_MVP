@@ -4,8 +4,7 @@ defmodule OmegaBravera.IngestionProcessor do
   alias OmegaBravera.{
     TaskSupervisor,
     Trackers.StravaApiHelpers,
-    Activity.Processor,
-    Offers.OfferActivitiesIngestion
+    Activity.Processor
   }
 
   require Logger
@@ -34,9 +33,8 @@ defmodule OmegaBravera.IngestionProcessor do
     # We don't care about the DOWN message now, so let's demonitor and flush it
     Process.demonitor(ref, [:flush])
     send(self(), :check_tasks)
-    Processor.process_activity(strava_activity, state.params["owner_id"])
-    OfferActivitiesIngestion.start(strava_activity, state.params)
-
+    # Attempt to save strava activity.
+    Processor.process_activity(strava_activity, state.params)
     Logger.info("IngestionProcessor: activity checking has completed")
     {:noreply, %{state | activity_retrieve: nil}}
   end

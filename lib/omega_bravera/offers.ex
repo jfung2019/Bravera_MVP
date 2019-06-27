@@ -14,9 +14,11 @@ defmodule OmegaBravera.Offers do
     OfferChallengeTeamMembers,
     OfferChallengeTeamInvitation,
     OfferChallengeTeam,
-    OfferRedeem
+    OfferRedeem,
+    OfferChallengeActivitiesM2m
   }
 
+  alias OmegaBravera.Activity.ActivityAccumulator
   alias OmegaBravera.Accounts.User
 
   @doc """
@@ -914,4 +916,10 @@ defmodule OmegaBravera.Offers do
   end
 
   def get_team!(id), do: Repo.get!(OfferChallengeTeam, id)
+
+  def create_offer_challenge_activity_m2m(
+        %ActivityAccumulator{} = activity,
+        %OfferChallenge{} = challenge
+      ),
+      do: OfferChallengeActivitiesM2m.changeset(activity, challenge) |> Repo.insert()
 end

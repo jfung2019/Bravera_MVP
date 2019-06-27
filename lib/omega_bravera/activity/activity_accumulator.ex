@@ -3,6 +3,8 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   import Ecto.Changeset
 
   alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Offers.OfferChallengeActivitiesM2m
+  alias OmegaBravera.Challenges.NgoChallengeActivitiesM2m
 
   schema "activities_accumulator" do
     field(:strava_id, :integer)
@@ -22,6 +24,16 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
 
     # associations
     belongs_to(:user, User)
+
+    many_to_many(:offer_activities, OfferChallengeActivitiesM2m,
+      join_through: "offer_challenge_activities_m2m",
+      join_keys: [activity_id: :id, offer_challenge_id: :id]
+    )
+
+    many_to_many(:ngo_activities, NgoChallengeActivitiesM2m,
+      join_through: "ngo_challenge_activities_m2m",
+      join_keys: [activity_id: :id, ngo_challenge_id: :id]
+    )
 
     timestamps(type: :utc_datetime)
   end

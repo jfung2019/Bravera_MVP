@@ -32,4 +32,8 @@ defmodule OmegaBravera.Activity.Activities do
 
     Repo.insert(changeset)
   end
+
+  def get_activity!(id) do
+    from(a in ActivityAccumulator, where: a.id == ^id) |> Repo.one()
+  end
 end

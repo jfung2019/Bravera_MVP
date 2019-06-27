@@ -6,10 +6,20 @@ defmodule OmegaBravera.Challenges do
   import Ecto.Query, warn: false
 
   alias OmegaBravera.Repo
-  alias OmegaBravera.Challenges.{NGOChal, Activity, Team, TeamMembers, TeamInvitations}
+
+  alias OmegaBravera.Challenges.{
+    NGOChal,
+    Activity,
+    Team,
+    TeamMembers,
+    TeamInvitations,
+    NgoChallengeActivitiesM2m
+  }
+
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Money.Donation
+  alias OmegaBravera.Activity.ActivityAccumulator
 
   use Timex
 
@@ -518,4 +528,10 @@ defmodule OmegaBravera.Challenges do
     |> TeamInvitations.invitation_accepted_changeset()
     |> Repo.update()
   end
+
+  def create_ngo_challenge_activity_m2m(
+        %ActivityAccumulator{} = activity,
+        %NGOChal{} = challenge
+      ),
+      do: NgoChallengeActivitiesM2m.changeset(activity, challenge) |> Repo.insert()
 end
