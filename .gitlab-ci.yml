@@ -6,7 +6,7 @@ cache:
     - assets/node_modules/
 
 test:
-  image: bitwalker/alpine-elixir-phoenix:latest
+  image: plangora/alpine-elixir-phoenix:otp-22.0.4-elixir-1.8.2
   services:
   - postgres:latest
   variables:
@@ -19,7 +19,7 @@ test:
 staging:
   stage: deploy
   environment: staging
-  image: bitwalker/alpine-elixir-phoenix:latest
+  image: plangora/alpine-elixir-phoenix:otp-22.0.4-elixir-1.8.2
   variables:
     MIX_ENV: "dev"
     REFSPEC: staging
@@ -43,7 +43,7 @@ staging:
 production:
   stage: deploy
   environment: production
-  image: bitwalker/alpine-elixir-phoenix:latest
+  image: plangora/alpine-elixir-phoenix:otp-22.0.4-elixir-1.8.2
   variables:
     MIX_ENV: "dev"
     REFSPEC: master
