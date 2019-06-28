@@ -12,16 +12,16 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     ActivityIngestionUtils
   }
 
-  def start(%ActivityAccumulator{} = activity, %{"owner_id" => owner_id} = params) do
-    Logger.info("Offers:ActivityIngestion: Strava POST webhook processing: #{inspect(params)}")
+  def start(%ActivityAccumulator{} = activity, %{"owner_id" => athlete_id}) do
+    Logger.info("Offers:ActivityIngestion: Strava POST webhook processing: #{inspect(activity)}")
 
-    owner_id
+    athlete_id
     |> Accounts.get_strava_challengers_for_offers()
     |> process_challenges(activity)
   end
 
-  def start(_strava_activity, params),
-    do: Logger.info("Offers:ActivityIngestion: not processed: #{inspect(params)}")
+  def start(activity, _params),
+    do: Logger.info("Offers:ActivityIngestion: not processed: #{inspect(activity)}")
 
   def process_challenges([{_challenge_id, _user, _token} | _] = challenges, activity) do
     Logger.info("Offers:ActivityIngestion: Processing challenges")
@@ -35,7 +35,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     end)
   end
 
-  def process_challenges([]) do
+  def process_challenges([], _activity) do
     Logger.info("Offers:ActivityIngestion: No challengers found")
     {:error, :no_challengers_found}
   end
