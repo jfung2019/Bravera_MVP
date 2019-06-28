@@ -28,9 +28,8 @@ defmodule OmegaBravera.IngestionProcessor do
         {ref, {:ok, %Strava.Activity{} = strava_activity}},
         %{activity_retrieve: %{ref: ref}} = state
       ) do
-    # We don't care about the DOWN message now, so let's demonitor and flush it
+    # No need to continue to monitor
     Process.demonitor(ref, [:flush])
-    # send(self(), :check_tasks)
     # Attempt to save strava activity.
     Processor.process_activity(strava_activity, state.params)
     Logger.info("IngestionProcessor: activity checking has completed")
@@ -62,9 +61,6 @@ defmodule OmegaBravera.IngestionProcessor do
            state
            | activity_retrieve: %{ref: retrieve_activity(params), timer: timer}
          }}
-
-  # def handle_info(:check_tasks, %{activity_retrieve: nil} = state), do: {:stop, :normal, state}
-  # def handle_info(:check_tasks, state), do: {:noreply, state}
 
   @impl true
   def terminate(:normal, state) do
