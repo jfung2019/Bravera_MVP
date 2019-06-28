@@ -9,8 +9,6 @@ defmodule OmegaBravera.IngestionProcessor do
 
   require Logger
 
-  @max_retries 5
-
   def start_link(params), do: GenServer.start_link(__MODULE__, params)
 
   @impl true
@@ -20,7 +18,7 @@ defmodule OmegaBravera.IngestionProcessor do
     {:ok,
      %{
        params: params,
-       activity_retrieve: %{ref: nil, timer: 0, retry: 0}
+       activity_retrieve: %{ref: nil, timer: 0}
      }}
   end
 
@@ -32,7 +30,7 @@ defmodule OmegaBravera.IngestionProcessor do
       ) do
     # We don't care about the DOWN message now, so let's demonitor and flush it
     Process.demonitor(ref, [:flush])
-    send(self(), :check_tasks)
+    # send(self(), :check_tasks)
     # Attempt to save strava activity.
     Processor.process_activity(strava_activity, state.params)
     Logger.info("IngestionProcessor: activity checking has completed")
@@ -42,40 +40,31 @@ defmodule OmegaBravera.IngestionProcessor do
   @impl true
   def handle_info(
         {ref, {:error}},
-        %{activity_retrieve: %{ref: ref, timer: timer, retry: retry}} = state
+        %{activity_retrieve: %{ref: ref, timer: timer}} = state
       ) do
     timer = timer + 10_000
-    retry = retry + 1
 
-    if retry < @max_retries do
-      Process.send_after(self(), :restart_retrieve_activity, timer)
-      Process.demonitor(ref, [:flush])
+    Process.send_after(self(), :restart_retrieve_activity, timer)
+    Process.demonitor(ref, [:flush])
 
-      Logger.warn(
-        "IngestionProcessor: activity checking has failed, retrying after: #{timer} ms. Retry #{
-          retry
-        } out of #{@max_retries}"
-      )
+    Logger.warn("IngestionProcessor: activity checking has failed, retrying after: #{timer} ms.")
 
-      {:noreply, %{state | activity_retrieve: %{ref: nil, timer: timer, retry: retry}}}
-    else
-      {:stop, :unexpected_error, state}
-    end
+    {:noreply, %{state | activity_retrieve: %{ref: nil, timer: timer}}}
   end
 
   def handle_info(
         :restart_retrieve_activity,
-        %{params: params, activity_retrieve: %{timer: timer, retry: retry}} = state
+        %{params: params, activity_retrieve: %{timer: timer}} = state
       ),
       do:
         {:noreply,
          %{
            state
-           | activity_retrieve: %{ref: retrieve_activity(params), timer: timer, retry: retry}
+           | activity_retrieve: %{ref: retrieve_activity(params), timer: timer}
          }}
 
-  def handle_info(:check_tasks, %{activity_retrieve: nil} = state), do: {:stop, :normal, state}
-  def handle_info(:check_tasks, state), do: {:noreply, state}
+  # def handle_info(:check_tasks, %{activity_retrieve: nil} = state), do: {:stop, :normal, state}
+  # def handle_info(:check_tasks, state), do: {:noreply, state}
 
   @impl true
   def terminate(:normal, state) do
