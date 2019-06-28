@@ -18,6 +18,8 @@ defmodule OmegaBravera.Offers.OfferChallengeActivitiesM2m do
     |> put_change(:activity_id, activity.id)
     |> put_change(:offer_challenge_id, offer_challenge.id)
     |> validate_required([:activity_id, :offer_challenge_id])
-    |> unique_constraint(:offer_challenge_id_activity_id, name: :one_activity_instance_per_offer_challenge)
+    |> unique_constraint(:offer_challenge_id_activity_id,
+      name: :one_activity_instance_per_offer_challenge
+    )
   end
 end

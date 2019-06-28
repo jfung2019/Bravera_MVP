@@ -42,7 +42,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   def get_strava_by_athlete_id(athlete_id) do
-    from(s in Strava, where: s.athlete_id == ^athlete_id) |> Repo.one
+    from(s in Strava, where: s.athlete_id == ^athlete_id) |> Repo.one()
   end
 
   def get_strava_challengers(athlete_id) do

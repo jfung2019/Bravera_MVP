@@ -157,7 +157,11 @@ defmodule OmegaBravera.Challenges.Notifier do
     end
   end
 
-  def activity_completed_email(%NGOChal{} = challenge, %ActivityAccumulator{} = activity, template_id) do
+  def activity_completed_email(
+        %NGOChal{} = challenge,
+        %ActivityAccumulator{} = activity,
+        template_id
+      ) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)

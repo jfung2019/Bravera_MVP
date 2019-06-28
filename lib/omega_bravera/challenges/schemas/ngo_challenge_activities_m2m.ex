@@ -18,6 +18,8 @@ defmodule OmegaBravera.Challenges.NgoChallengeActivitiesM2m do
     |> put_change(:activity_id, activity.id)
     |> put_change(:ngo_challenge_id, ngo_challenge.id)
     |> validate_required([:activity_id, :ngo_challenge_id])
-    |> unique_constraint(:ngo_challenge_id_activity_id, name: :one_activity_instance_per_ngo_challenge)
+    |> unique_constraint(:ngo_challenge_id_activity_id,
+      name: :one_activity_instance_per_ngo_challenge
+    )
   end
 end

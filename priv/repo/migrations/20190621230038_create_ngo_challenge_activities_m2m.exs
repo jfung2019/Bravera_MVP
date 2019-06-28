@@ -9,11 +9,15 @@ defmodule OmegaBravera.Repo.Migrations.CreateNgoChallengeActivitiesM2m do
     end
 
     create(index(:ngo_challenge_activities_m2m, :id))
-    create(unique_index(:ngo_challenge_activities_m2m, [:challenge_id, :activity_id], [name: :one_activity_instance_per_ngo_challenge]))
+
+    create(
+      unique_index(:ngo_challenge_activities_m2m, [:challenge_id, :activity_id],
+        name: :one_activity_instance_per_ngo_challenge
+      )
+    )
   end
 
   def down do
     drop(table(:ngo_challenge_activities_m2m))
   end
 end
-

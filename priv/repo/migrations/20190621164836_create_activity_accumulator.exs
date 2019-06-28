@@ -21,15 +21,17 @@ defmodule OmegaBravera.Repo.Migrations.CreateActivityAccumulator do
     end
 
     create(index(:activities_accumulator, [:user_id]))
+
     create(
       constraint("activities_accumulator", :strava_id_or_admin_id_required,
         check: "(admin_id IS NOT NULL) OR (strava_id IS NOT NULL)"
       )
     )
+
     create(unique_index(:activities_accumulator, [:strava_id]))
   end
 
   def down do
-    drop table(:activities_accumulator)
+    drop(table(:activities_accumulator))
   end
 end
