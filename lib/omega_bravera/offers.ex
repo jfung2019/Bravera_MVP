@@ -9,7 +9,6 @@ defmodule OmegaBravera.Offers do
   alias OmegaBravera.Offers.{
     Offer,
     OfferChallenge,
-    OfferChallengeActivity,
     OfferVendor,
     OfferChallengeTeamMembers,
     OfferChallengeTeamInvitation,
@@ -105,14 +104,16 @@ defmodule OmegaBravera.Offers do
       from(oc in OfferChallenge,
         join: offer in Offer,
         on: oc.offer_id == offer.id,
-        left_join: a in OfferChallengeActivity,
+        left_join: a in OfferChallengeActivitiesM2m,
         on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
         where: oc.slug == ^slug and offer.slug == ^offer_slug,
         preload: ^preloads,
         group_by: oc.id,
         select: %{
           oc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
             start_date: fragment("? at time zone 'utc'", oc.start_date),
             end_date: fragment("? at time zone 'utc'", oc.end_date)
         }
@@ -161,28 +162,6 @@ defmodule OmegaBravera.Offers do
       _ ->
         offer
     end
-  end
-
-  def get_offer_with_stats(slug, preloads \\ [:offer_challenges]) do
-    offer = get_offer_by_slug(slug, preloads)
-
-    calories_and_activities_query =
-      from(
-        activity in OfferChallengeActivity,
-        join: challenge in OfferChallenge,
-        on: challenge.id == activity.offer_challenge_id,
-        where: challenge.offer_id == ^offer.id and activity.offer_challenge_id == challenge.id
-      )
-
-    total_distance_covered = Repo.aggregate(calories_and_activities_query, :sum, :distance)
-    total_calories = Repo.aggregate(calories_and_activities_query, :sum, :calories)
-
-    %{
-      offer
-      | num_of_challenges: Enum.count(offer.offer_challenges),
-        total_distance_covered: Decimal.round(total_distance_covered || Decimal.new(0)),
-        total_calories: total_calories || 0
-    }
   end
 
   def get_monthly_statement_for_offer(slug, start_date, end_date) do
@@ -380,10 +359,11 @@ defmodule OmegaBravera.Offers do
 
   def get_offer_challenge!(id) do
     from(oc in OfferChallenge,
-      left_join: a in OfferChallengeActivity,
+      left_join: a in OfferChallengeActivitiesM2m,
       on: oc.id == a.offer_challenge_id,
+      left_join: ac in ActivityAccumulator,
       group_by: oc.id,
-      select: %{oc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)},
+      select: %{oc | distance_covered: fragment("sum(coalesce(?,0))", ac.distance)},
       where: oc.id == ^id
     )
     |> Repo.one!()
@@ -393,14 +373,15 @@ defmodule OmegaBravera.Offers do
     from(
       oc in OfferChallenge,
       where: oc.user_id == ^user_id,
-      left_join: a in OfferChallengeActivity,
+      left_join: a in OfferChallengeActivitiesM2m,
       on: oc.id == a.offer_challenge_id,
+      left_join: ac in ActivityAccumulator,
       preload: ^preloads,
       order_by: [desc: :start_date],
       group_by: oc.id,
       select: %{
         oc
-        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
           start_date: fragment("? at time zone 'utc'", oc.start_date),
           end_date: fragment("? at time zone 'utc'", oc.end_date)
       }
@@ -493,22 +474,27 @@ defmodule OmegaBravera.Offers do
 
     team_activities =
       from(
-        activity in OfferChallengeActivity,
-        where: activity.offer_challenge_id == ^challenge_id and activity.user_id in ^user_ids
+        activity_relation in OfferChallengeActivitiesM2m,
+        where: activity_relation.offer_challenge_id == ^challenge_id,
+        join: activity in ActivityAccumulator,
+        on: activity_relation.activity_id == activity.id and activity.user_id in ^user_ids,
+        preload: [:activity]
       )
       |> Repo.all()
 
     Enum.reduce(user_ids, %{}, fn uid, acc ->
       total_distance_for_team_member_activity =
-        Enum.filter(team_activities, &(uid == &1.user_id))
-        |> Enum.reduce(Decimal.new(0), fn activity, total_distance ->
-          Decimal.add(activity.distance, total_distance)
+        Enum.filter(team_activities, &(uid == &1.activity.user_id))
+        |> Enum.reduce(Decimal.new(0), fn activity_relation, total_distance ->
+          Decimal.add(activity_relation.activity.distance, total_distance)
           |> Decimal.round(1)
         end)
 
       Map.put(acc, uid, total_distance_for_team_member_activity)
     end)
   end
+
+  # TODO: order by activity.inserted at desc. -Sherief
 
   def latest_activities(
         %OfferChallenge{} = challenge,
@@ -529,19 +515,6 @@ defmodule OmegaBravera.Offers do
       end
 
     Repo.all(query)
-  end
-
-  def list_activities_added_by_admin() do
-    from(
-      activity in OfferChallengeActivity,
-      where: not is_nil(activity.admin_id),
-      left_join: challenge in assoc(activity, :offer_challenge),
-      left_join: offer in assoc(challenge, :offer),
-      left_join: user in assoc(activity, :user),
-      preload: [offer_challenge: {challenge, offer: offer}, user: user],
-      order_by: [desc: :id]
-    )
-    |> Repo.all()
   end
 
   alias OmegaBravera.Offers.OfferReward

@@ -6,11 +6,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
 
   plug(:assign_available_options when action in [:create, :new])
 
-  def index(conn, _) do
-    activities = Offers.list_activities_added_by_admin()
-    render(conn, "index.html", activities: activities)
-  end
-
   #  def get_challenge_dates(conn, %{"challenge_id" => challenge_id}) do
   #    # Returns JSON start and end dates
   #    challenge = Challenges.get_ngo_chal!(challenge_id) |> Repo.preload(:user)
