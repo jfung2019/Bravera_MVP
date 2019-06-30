@@ -22,7 +22,7 @@ defmodule OmegaBravera.Trackers.StravaApiHelpers do
       {:ok, Strava.Activity.retrieve(object_id, %{}, Strava.Client.new(token))}
     rescue
       reason ->
-        Logger.info("failed to retrieve activity, reason: #{inspect(reason)}")
+        Logger.warn("failed to retrieve activity, reason: #{inspect(reason)}")
         {:error}
     end
   end
