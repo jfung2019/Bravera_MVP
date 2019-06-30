@@ -1,7 +1,6 @@
 defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
   use OmegaBravera.DataCase
 
-  import Mock
   import OmegaBravera.Factory
 
   alias OmegaBravera.Offers.{
