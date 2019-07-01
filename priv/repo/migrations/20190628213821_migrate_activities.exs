@@ -80,7 +80,7 @@ defmodule OmegaBravera.Repo.Migrations.MigrateActivities do
       SELECT uuid_generate_v4(), ac.id, a.challenge_id
       FROM activities_accumulator AS ac
       JOIN activities AS a
-      ON a.inserted_at = ac.inserted_at and a.strava_id is null;"
+      ON a.inserted_at = ac.inserted_at and a.updated_at = ac.updated_at and a.strava_id is null;"
     )
 
     # Create many to many relation ship between activities_accumulator and offer_challenge_activities_m2m - Manual activities - Admin created
@@ -89,7 +89,7 @@ defmodule OmegaBravera.Repo.Migrations.MigrateActivities do
       SELECT uuid_generate_v4(), ac.id, a.offer_challenge_id
       FROM activities_accumulator AS ac
       JOIN offer_challenge_activities AS a
-      ON a.inserted_at = ac.inserted_at and a.strava_id is null;"
+      ON a.inserted_at = ac.inserted_at and a.updated_at = ac.updated_at and a.strava_id is null;"
     )
   end
 
