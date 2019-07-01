@@ -500,12 +500,16 @@ defmodule OmegaBravera.Offers do
   def latest_activities(
         %OfferChallenge{} = challenge,
         limit \\ nil,
-        preloads \\ [activity: [user: [:strava]]]
+        preloads \\ [user: [:strava]]
       ) do
     query =
-      from(activity in OfferChallengeActivitiesM2m,
-        where: activity.offer_challenge_id == ^challenge.id,
-        preload: ^preloads
+      from(
+        activity in ActivityAccumulator,
+        join: activity_relation in OfferChallengeActivitiesM2m,
+        on: activity.id == activity_relation.activity_id,
+        where: activity_relation.offer_challenge_id == ^challenge.id,
+        preload: ^preloads,
+        order_by: [desc: :start_date]
       )
 
     query =
