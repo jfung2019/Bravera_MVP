@@ -8,7 +8,6 @@ defmodule OmegaBravera.Challenges.NGOChal do
     Fundraisers.NGO,
     Money.Donation,
     Challenges.Team,
-    Challenges.Activity,
     Challenges.NgoChallengeActivitiesM2m
   }
 
@@ -38,8 +37,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     belongs_to(:ngo, NGO)
     has_one(:team, Team, foreign_key: :challenge_id)
     has_many(:donations, Donation)
-    has_many(:activities, Activity, foreign_key: :challenge_id)
-    has_many(:activities_m2m, NgoChallengeActivitiesM2m, foreign_key: :challenge_id)
+    has_many(:activities, NgoChallengeActivitiesM2m, foreign_key: :challenge_id)
 
     timestamps(type: :utc_datetime)
   end
