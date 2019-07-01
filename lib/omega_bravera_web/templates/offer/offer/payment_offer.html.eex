@@ -46,16 +46,30 @@
                                 <%= text_input p, :stripe_token, class: "stripe-token d-none invisible" %>
                             <% end %>
 
-                            <div class="text-center mt-5">
-                                <button data-disable-button class="btn btn-bravera mx-auto" style="width:200px;">Submit payment</button>
+                            <%= if not is_nil(@offer.external_terms_url) do %>
+                              <div class="text-center mt-5">
+                                <input type="checkbox" id="accept_paid_offer_terms" required="required" class="form-group" />
+                                <%= link @offer.accept_terms_text, to: @offer.external_terms_url, target: "_blank" %>
+                              </div>
+                            <% else %>
+                              <div class="text-center mt-5">
+                                <input type="checkbox" id="accept_paid_offer_terms" required="required" name="terms" />
+                                <%= @offer.accept_terms_text %>
+                              </div>
+                            <% end %>
+
+                            <div class="text-center mt-2">
+                              <button id="submit-payment" class="btn btn-bravera mx-auto" disabled style="width:200px;">Submit payment</button>
                             </div>
                         </div>
 
                     </div>
-
                     <button type="button" class="btn btn-secondary mx-auto mb-4"  data-dismiss="modal">Cancel</button>
-
                   </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <%= img_tag static_path(@conn, "/images/powered_by_stripe.svg"), class: "mx-auto" %>
+                    </div>
                 </div>
               </div>
             <% end %>

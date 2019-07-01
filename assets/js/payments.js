@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(event) {
+    var submitPaymentBtn = document.getElementById('submit-payment');
     var forms = document.getElementsByClassName('offer-payment-form');
 
     if(forms.length != 0) {
@@ -25,18 +26,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
                   displayError.textContent = event.error.message;
                 } else {
                   displayError.textContent = '';
+                  submitPaymentBtn.disabled = false;
                 }
             });
 
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
-                form.querySelectorAll('[data-disable-button]').forEach((el) => {
-                  el.parentElement.removeChild(el);
-                });
+                submitPaymentBtn.disabled = true;
         
                 stripe.createToken(card).then(function(result) {
                   if (result.error) {
-                    var errorElement = document.getElementById('card-errors' + offer_id);
+                    var errorElement = document.getElementById('card-errors-' + offer_id);
                     errorElement.textContent = result.error.message;
                   } else {
                     stripeTokenHandler(form, result.token)

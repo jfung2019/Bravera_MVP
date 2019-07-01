@@ -72,6 +72,18 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :external_terms_url, class: "control-label" %>
+    <%= text_input f, :external_terms_url, class: "form-control" %>
+    <%= error_tag f, :external_terms_url %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :accept_terms_text, class: "control-label" %>
+    <%= text_input f, :accept_terms_text, class: "form-control" %>
+    <%= error_tag f, :accept_terms_text %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :toc, "Terms and Conditions", class: "control-label" %>
     <%= textarea f, :toc, class: "form-control", rows: 3 %>
     <%= error_tag f, :toc %>

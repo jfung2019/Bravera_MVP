@@ -203,7 +203,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             send_emails(Repo.preload(offer_challenge, :user))
 
             conn
-            |> put_flash(:info, "Success! You have registered for this offer!")
+            |> put_flash(:info, gettext("Success! You have registered for this offer!"))
+            |> put_session("created_offer_challenge", true)
             |> redirect(
               to: offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug)
             )
@@ -237,6 +238,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
         conn
         |> open_welcome_modal()
+        |> open_success_modal()
         |> render("show.html", render_attrs)
     end
   end
@@ -459,5 +461,15 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
   defp assign_available_options(conn, _opts) do
     conn
     |> assign(:available_challenge_types, NgoOptions.challenge_type_options_human())
+  end
+
+  defp open_success_modal(conn) do
+    if is_nil(Plug.Conn.get_session(conn, "created_offer_challenge")) do
+      conn
+    else
+      conn
+      |> Plug.Conn.delete_session("created_offer_challenge")
+      |> Plug.Conn.assign(:created_offer_challenge, true)
+    end
   end
 end
