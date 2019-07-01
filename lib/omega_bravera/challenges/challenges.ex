@@ -75,7 +75,7 @@ defmodule OmegaBravera.Challenges do
         activity in ActivityAccumulator,
         join: activity_relation in NgoChallengeActivitiesM2m,
         on: activity.id == activity_relation.activity_id,
-        where: activity_relation.offer_challenge_id == ^challenge.id,
+        where: activity_relation.challenge_id == ^challenge.id,
         preload: ^preloads,
         order_by: [desc: :start_date]
       )
