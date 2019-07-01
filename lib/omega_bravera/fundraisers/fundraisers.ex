@@ -9,7 +9,9 @@ defmodule OmegaBravera.Fundraisers do
   alias OmegaBravera.{
     Fundraisers.NGO,
     Money.Donation,
-    Challenges.Activity
+    Challenges.NGOChal,
+    Activity.ActivityAccumulator,
+    Challenges.NgoChallengeActivitiesM2m,
   }
 
   # Get a user's causes by user_id
@@ -105,9 +107,12 @@ defmodule OmegaBravera.Fundraisers do
 
         calories_and_activities_query =
           from(
-            activity in Activity,
-            join: challenge in assoc(activity, :challenge),
-            where: challenge.ngo_id == ^ngo.id and activity.challenge_id == challenge.id
+            activity in ActivityAccumulator,
+            join: activity_relation in NgoChallengeActivitiesM2m,
+            on: activity.id == activity_relation.activity_id,
+            join: challenge in NGOChal,
+            on: activity_relation.challenge_id == challenge.id,
+            where: ^ngo.id == challenge.ngo_id
           )
 
         total_distance_covered = Repo.aggregate(calories_and_activities_query, :sum, :distance)
@@ -149,8 +154,12 @@ defmodule OmegaBravera.Fundraisers do
       from(
         ngo in NGO,
         where: ngo.hidden == ^hidden,
-        join: challenge in assoc(ngo, :ngo_chals),
-        left_join: activity in assoc(challenge, :activities),
+        left_join: challenge in NGOChal,
+        on: ngo.id == challenge.ngo_id,
+        left_join: activity_relation in NgoChallengeActivitiesM2m,
+        on: activity_relation.challenge_id == challenge.id,
+        left_join: activity in ActivityAccumulator,
+        on: activity.id == activity_relation.activity_id,
         group_by: ngo.id,
         select: %{
           ngo_id: ngo.id,

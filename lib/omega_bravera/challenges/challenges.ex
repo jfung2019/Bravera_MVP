@@ -9,7 +9,6 @@ defmodule OmegaBravera.Challenges do
 
   alias OmegaBravera.Challenges.{
     NGOChal,
-    Activity,
     Team,
     TeamMembers,
     TeamInvitations,
@@ -52,7 +51,7 @@ defmodule OmegaBravera.Challenges do
       from(
         activity_relation in NgoChallengeActivitiesM2m,
         where: activity_relation.challenge_id == ^challenge_id,
-        join: activity in ActivityAccumulator,
+        left_join: activity in ActivityAccumulator,
         on: activity_relation.activity_id == activity.id and activity.user_id in ^user_ids,
         preload: [:activity]
       )
@@ -91,9 +90,9 @@ defmodule OmegaBravera.Challenges do
     from(
       nc in NGOChal,
       where: nc.user_id == ^user_id and nc.has_team == false,
-      join: a in NgoChallengeActivitiesM2m,
+      left_join: a in NgoChallengeActivitiesM2m,
       on: nc.id == a.challenge_id,
-      join: ac in ActivityAccumulator,
+      left_join: ac in ActivityAccumulator,
       on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id,
       preload: ^preloads,
@@ -113,9 +112,9 @@ defmodule OmegaBravera.Challenges do
     from(
       nc in NGOChal,
       where: nc.user_id == ^user_id and nc.has_team == true,
-      join: a in NgoChallengeActivitiesM2m,
+      left_join: a in NgoChallengeActivitiesM2m,
       on: nc.id == a.challenge_id,
-      join: ac in ActivityAccumulator,
+      left_join: ac in ActivityAccumulator,
       on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id,
       preload: ^preloads,
@@ -262,9 +261,9 @@ defmodule OmegaBravera.Challenges do
       on: tm.team_id == team.id,
       join: challenge in NGOChal,
       on: team.challenge_id == challenge.id,
-      join: activity in NgoChallengeActivitiesM2m,
+      left_join: activity in NgoChallengeActivitiesM2m,
       on: challenge.id == activity.challenge_id,
-      join: ac in ActivityAccumulator,
+      left_join: ac in ActivityAccumulator,
       on: activity.activity_id == ac.id,
       preload: [team: {team, challenge: {challenge, :ngo}}]
     )
@@ -298,9 +297,9 @@ defmodule OmegaBravera.Challenges do
       from(nc in NGOChal,
         join: n in NGO,
         on: nc.ngo_id == n.id,
-        join: a in NgoChallengeActivitiesM2m,
+        left_join: a in NgoChallengeActivitiesM2m,
         on: nc.id == a.challenge_id,
-        join: ac in ActivityAccumulator,
+        left_join: ac in ActivityAccumulator,
         on: a.activity_id == ac.id,
         on: nc.id == a.challenge_id,
         where: nc.slug == ^slug and n.slug == ^ngo_slug,
@@ -423,9 +422,9 @@ defmodule OmegaBravera.Challenges do
 
   def list_ngo_chals(preloads \\ [:user, :ngo, :donations]) do
     from(nc in NGOChal,
-      join: a in NgoChallengeActivitiesM2m,
+      left_join: a in NgoChallengeActivitiesM2m,
       on: nc.id == a.challenge_id,
-      join: ac in ActivityAccumulator,
+      left_join: ac in ActivityAccumulator,
       on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id,
       preload: ^preloads,
@@ -438,9 +437,9 @@ defmodule OmegaBravera.Challenges do
 
   def list_active_ngo_chals(preloads \\ [:user, :ngo, :donations]) do
     from(nc in NGOChal,
-      join: a in NgoChallengeActivitiesM2m,
+      left_join: a in NgoChallengeActivitiesM2m,
       on: nc.id == a.challenge_id,
-      join: ac in ActivityAccumulator,
+      left_join: ac in ActivityAccumulator,
       on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id and nc.status == "active",
       preload: ^preloads,
@@ -461,9 +460,9 @@ defmodule OmegaBravera.Challenges do
 
   def get_ngo_chal!(id) do
     from(nc in NGOChal,
-      join: a in NgoChallengeActivitiesM2m,
+      left_join: a in NgoChallengeActivitiesM2m,
       on: nc.id == a.challenge_id,
-      join: ac in ActivityAccumulator,
+      left_join: ac in ActivityAccumulator,
       on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id,
       preload: [:donations],
