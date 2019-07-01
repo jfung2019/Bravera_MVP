@@ -8,7 +8,8 @@ defmodule OmegaBravera.Challenges.NGOChal do
     Fundraisers.NGO,
     Money.Donation,
     Challenges.Team,
-    Challenges.Activity
+    Challenges.Activity,
+    Challenges.NgoChallengeActivitiesM2m
   }
 
   @derive {Phoenix.Param, key: :slug}
@@ -38,6 +39,7 @@ defmodule OmegaBravera.Challenges.NGOChal do
     has_one(:team, Team, foreign_key: :challenge_id)
     has_many(:donations, Donation)
     has_many(:activities, Activity, foreign_key: :challenge_id)
+    has_many(:activities_m2m, NgoChallengeActivitiesM2m, foreign_key: :challenge_id)
 
     timestamps(type: :utc_datetime)
   end

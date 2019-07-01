@@ -32,7 +32,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
 
     many_to_many(:ngo_activities, NgoChallengeActivitiesM2m,
       join_through: "ngo_challenge_activities_m2m",
-      join_keys: [activity_id: :id, ngo_challenge_id: :id]
+      join_keys: [activity_id: :id, challenge_id: :id]
     )
 
     timestamps(type: :utc_datetime)

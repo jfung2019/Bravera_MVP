@@ -24,31 +24,31 @@
     </div>
   </div>
   <br />
-    <%= for activity <- @activities do %>
+    <%= for activity_relation <- @activities do %>
       <div class="card bg-light text-dark" style="width: 100%">
         <div class="card-body" style="width: 100%">
           <div class="row">
             <div class="p-1 col">
               <div class="mx-auto profile-picture">
-                <%= link to: "https://www.strava.com/athletes/#{activity.user.strava.athlete_id}", target: "_blank" do %>
-                  <%= img_tag(profile_picture_or_default(activity.user, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
+                <%= link to: "https://www.strava.com/athletes/#{activity_relation.activity.user.strava.athlete_id}", target: "_blank" do %>
+                  <%= img_tag(profile_picture_or_default(activity_relation.activity.user, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
                 <% end %>
               </div>
             </div>
             <div class="p-1 pt-2 activity-text-size col">
-              <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%b %d", :strftime) %>
+              <%= Timex.Timezone.convert(activity_relation.activity.start_date, "Hongkong") |> Timex.format!("%b %d", :strftime) %>
             </div>
             <div class="p-1 pt-2 activity-text-size col">
-              <%= render_time(activity.moving_time) %>
+              <%= render_time(activity_relation.activity.moving_time) %>
             </div>
             <div class="p-1 pt-2 activity-text-size col">
-              <%= render_activity(activity.distance) %> km
+              <%= render_activity(activity_relation.activity.distance) %> km
             </div>
             <div class="p-1 pt-2 activity-text-size col">
-              <%= activity.calories %>
+              <%= activity_relation.activity.calories %>
             </div>
             <div class="p-1 pt-2 activity-text-size col">
-              <%= render_activity(activity.average_speed) %> km/h
+              <%= render_activity(activity_relation.activity.average_speed) %> km/h
             </div>
           </div>
         </div>

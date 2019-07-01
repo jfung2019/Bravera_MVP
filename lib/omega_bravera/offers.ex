@@ -373,9 +373,10 @@ defmodule OmegaBravera.Offers do
     from(
       oc in OfferChallenge,
       where: oc.user_id == ^user_id,
-      left_join: a in OfferChallengeActivitiesM2m,
+      join: a in OfferChallengeActivitiesM2m,
       on: oc.id == a.offer_challenge_id,
-      left_join: ac in ActivityAccumulator,
+      join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
       preload: ^preloads,
       order_by: [desc: :start_date],
       group_by: oc.id,

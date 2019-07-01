@@ -50,16 +50,19 @@ defmodule OmegaBravera.Challenges do
 
     team_activities =
       from(
-        activity in Activity,
-        where: activity.challenge_id == ^challenge_id and activity.user_id in ^user_ids
+        activity_relation in NgoChallengeActivitiesM2m,
+        where: activity_relation.challenge_id == ^challenge_id,
+        join: activity in ActivityAccumulator,
+        on: activity_relation.activity_id == activity.id and activity.user_id in ^user_ids,
+        preload: [:activity]
       )
       |> Repo.all()
 
     Enum.reduce(user_ids, %{}, fn uid, acc ->
       total_distance_for_team_member_activity =
-        Enum.filter(team_activities, &(uid == &1.user_id))
-        |> Enum.reduce(Decimal.new(0), fn activity, total_distance ->
-          Decimal.add(activity.distance, total_distance)
+        Enum.filter(team_activities, &(uid == &1.activity.user_id))
+        |> Enum.reduce(Decimal.new(0), fn activity_relation, total_distance ->
+          Decimal.add(activity_relation.activity.distance, total_distance)
           |> Decimal.round(1)
         end)
 
@@ -67,12 +70,11 @@ defmodule OmegaBravera.Challenges do
     end)
   end
 
-  def latest_activities(%NGOChal{} = challenge, limit \\ nil, preloads \\ [user: [:strava]]) do
+  def latest_activities(%NGOChal{} = challenge, limit \\ nil, preloads \\ [activity: [user: [:strava]]] ) do
     query =
-      from(activity in Activity,
+      from(activity in NgoChallengeActivitiesM2m,
         where: activity.challenge_id == ^challenge.id,
-        preload: ^preloads,
-        order_by: [desc: :start_date]
+        preload: ^preloads
       )
 
     query =
@@ -89,14 +91,17 @@ defmodule OmegaBravera.Challenges do
     from(
       nc in NGOChal,
       where: nc.user_id == ^user_id and nc.has_team == false,
-      left_join: a in Activity,
+      join: a in NgoChallengeActivitiesM2m,
+      on: nc.id == a.challenge_id,
+      join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id,
       preload: ^preloads,
       order_by: [desc: :start_date],
       group_by: nc.id,
       select: %{
         nc
-        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
           start_date: fragment("? at time zone 'utc'", nc.start_date),
           end_date: fragment("? at time zone 'utc'", nc.end_date)
       }
@@ -108,14 +113,17 @@ defmodule OmegaBravera.Challenges do
     from(
       nc in NGOChal,
       where: nc.user_id == ^user_id and nc.has_team == true,
-      left_join: a in Activity,
+      join: a in NgoChallengeActivitiesM2m,
+      on: nc.id == a.challenge_id,
+      join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id,
       preload: ^preloads,
       order_by: [desc: :start_date],
       group_by: nc.id,
       select: %{
         nc
-        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
           start_date: fragment("? at time zone 'utc'", nc.start_date),
           end_date: fragment("? at time zone 'utc'", nc.end_date)
       }
@@ -254,8 +262,10 @@ defmodule OmegaBravera.Challenges do
       on: tm.team_id == team.id,
       join: challenge in NGOChal,
       on: team.challenge_id == challenge.id,
-      left_join: activity in Activity,
+      join: activity in NgoChallengeActivitiesM2m,
       on: challenge.id == activity.challenge_id,
+      join: ac in ActivityAccumulator,
+      on: activity.activity_id == ac.id,
       preload: [team: {team, challenge: {challenge, :ngo}}]
     )
     |> Repo.all()
@@ -288,14 +298,17 @@ defmodule OmegaBravera.Challenges do
       from(nc in NGOChal,
         join: n in NGO,
         on: nc.ngo_id == n.id,
-        left_join: a in Activity,
+        join: a in NgoChallengeActivitiesM2m,
+        on: nc.id == a.challenge_id,
+        join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
         on: nc.id == a.challenge_id,
         where: nc.slug == ^slug and n.slug == ^ngo_slug,
         preload: ^preloads,
         group_by: nc.id,
         select: %{
           nc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance),
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
             start_date: fragment("? at time zone 'utc'", nc.start_date),
             end_date: fragment("? at time zone 'utc'", nc.end_date)
         }
@@ -372,22 +385,22 @@ defmodule OmegaBravera.Challenges do
   end
 
   def get_number_of_activities_by_user(user_id) do
-    from(a in Activity, where: a.user_id == ^user_id, select: count(a.id))
+    from(a in ActivityAccumulator, where: a.user_id == ^user_id, select: count(a.id))
     |> Repo.one()
   end
 
   def get_total_distance_by_user(user_id) do
-    from(a in Activity, where: a.user_id == ^user_id, select: sum(a.distance))
+    from(a in ActivityAccumulator, where: a.user_id == ^user_id, select: sum(a.distance))
     |> Repo.one()
   end
 
   def amount_of_activities() do
-    from(a in Activity, select: count(a.id))
+    from(a in ActivityAccumulator, select: count(a.id))
     |> Repo.one()
   end
 
   def total_actual_distance do
-    from(a in Activity, select: sum(a.distance))
+    from(a in ActivityAccumulator, select: sum(a.distance))
     |> Repo.one()
   end
 
@@ -410,24 +423,30 @@ defmodule OmegaBravera.Challenges do
 
   def list_ngo_chals(preloads \\ [:user, :ngo, :donations]) do
     from(nc in NGOChal,
-      left_join: a in Activity,
+      join: a in NgoChallengeActivitiesM2m,
+      on: nc.id == a.challenge_id,
+      join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id,
       preload: ^preloads,
       group_by: nc.id,
       order_by: [desc: nc.id],
-      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)}
+      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", ac.distance)}
     )
     |> Repo.all()
   end
 
   def list_active_ngo_chals(preloads \\ [:user, :ngo, :donations]) do
     from(nc in NGOChal,
-      left_join: a in Activity,
+      join: a in NgoChallengeActivitiesM2m,
+      on: nc.id == a.challenge_id,
+      join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id and nc.status == "active",
       preload: ^preloads,
       group_by: nc.id,
       order_by: [desc: nc.id],
-      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)}
+      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", ac.distance)}
     )
     |> Repo.all()
   end
@@ -442,11 +461,14 @@ defmodule OmegaBravera.Challenges do
 
   def get_ngo_chal!(id) do
     from(nc in NGOChal,
-      left_join: a in Activity,
+      join: a in NgoChallengeActivitiesM2m,
+      on: nc.id == a.challenge_id,
+      join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
       on: nc.id == a.challenge_id,
       preload: [:donations],
       group_by: nc.id,
-      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", a.distance)},
+      select: %{nc | distance_covered: fragment("sum(coalesce(?,0))", ac.distance)},
       where: nc.id == ^id
     )
     |> Repo.one!()
