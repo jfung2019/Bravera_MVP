@@ -85,13 +85,16 @@
           <div class="collapse navbar-collapse flex-grow-1 text-right" id="navbarCollapse">
             <ul class="navbar-nav ml-auto flex-nowrap">
               <li class="nav-item pr-0">
-                <%= link("Privacy", to: "https://www.bravera.fit/privacy/", target: "_blank") %>
+                <%= link("FAQ", to: "https://www.bravera.fit/faq/", target: "_blank") %>
               </li>
               <li class="nav-item">
-                <%= link("Terms of Use", to: "https://www.bravera.fit/terms", target: "_blank") %>
+                <%= link(gettext("Privacy"), to: "https://www.bravera.fit/privacy/", target: "_blank") %>
               </li>
               <li class="nav-item">
-                <a href="mailto:admin@bravera.co">Contact Us</a>
+                <%= link(gettext("Terms of Use"), to: "https://www.bravera.fit/terms", target: "_blank") %>
+              </li>
+              <li class="nav-item">
+                <a href="mailto:admin@bravera.co"><%= gettext("Contact Us") %></a>
               </li>
             </ul>
           </div>
