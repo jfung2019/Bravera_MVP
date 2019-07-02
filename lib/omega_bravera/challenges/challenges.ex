@@ -120,7 +120,6 @@ defmodule OmegaBravera.Challenges do
       on: nc.id == a.challenge_id,
       left_join: ac in ActivityAccumulator,
       on: a.activity_id == ac.id,
-      on: nc.id == a.challenge_id,
       preload: ^preloads,
       order_by: [desc: :start_date],
       group_by: nc.id,
@@ -149,11 +148,14 @@ defmodule OmegaBravera.Challenges do
       from(
         nc in NGOChal,
         where: nc.user_id == ^user_id,
-        left_join: a in assoc(nc, :activities),
+        left_join: a in NgoChallengeActivitiesM2m,
+        on: nc.id == a.challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
         group_by: [nc.id],
         select: %{
           challenge_id: nc.id,
-          distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", a.distance)
+          distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
         }
       )
 
@@ -305,7 +307,6 @@ defmodule OmegaBravera.Challenges do
         on: nc.id == a.challenge_id,
         left_join: ac in ActivityAccumulator,
         on: a.activity_id == ac.id,
-        on: nc.id == a.challenge_id,
         where: nc.slug == ^slug and n.slug == ^ngo_slug,
         preload: ^preloads,
         group_by: nc.id,

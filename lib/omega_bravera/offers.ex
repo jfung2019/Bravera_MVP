@@ -360,8 +360,9 @@ defmodule OmegaBravera.Offers do
   def get_offer_challenge!(id) do
     from(oc in OfferChallenge,
       left_join: a in OfferChallengeActivitiesM2m,
-      on: oc.id == a.offer_challenge_id,
+      on: ^id == a.offer_challenge_id,
       left_join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
       group_by: oc.id,
       select: %{oc | distance_covered: fragment("sum(coalesce(?,0))", ac.distance)},
       where: oc.id == ^id

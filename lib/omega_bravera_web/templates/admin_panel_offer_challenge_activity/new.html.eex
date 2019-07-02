@@ -48,9 +48,9 @@
     <%= label f, "Duration (moving time) - Number of Hours:Minutes:Seconds", class: "control-label" %>
 
     <div class="form-group row ml-1">
-      <%= number_input f, :moving_time, class: "form-control col-1", required: "", name: "offer_challenge_activity[moving_time][hour]", value: "00"%>
-      <%= number_input f, :moving_time, class: "form-control col-1", required: "", name: "offer_challenge_activity[moving_time][minute]", value: "00"%>
-      <%= number_input f, :moving_time, class: "form-control col-1", required: "", name: "offer_challenge_activity[moving_time][second]", value: "00"%>
+      <%= number_input f, :moving_time, class: "form-control col-1", required: "", name: "activity_accumulator[moving_time][hour]", value: "00"%>
+      <%= number_input f, :moving_time, class: "form-control col-1", required: "", name: "activity_accumulator[moving_time][minute]", value: "00"%>
+      <%= number_input f, :moving_time, class: "form-control col-1", required: "", name: "activity_accumulator[moving_time][second]", value: "00"%>
       <%= error_tag f, :moving_time %>
     </div>
 
