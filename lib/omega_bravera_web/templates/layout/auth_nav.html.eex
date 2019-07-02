@@ -30,41 +30,26 @@
         </li>
 
         <li class="nav-item">
-          <%= link("How it Works", to: "https://www.bravera.fit/how/", target: "_blank") %>
-        </li>
-        <li class="nav-item">
-          <%= link("FAQ", to: "https://www.bravera.fit/faq/", target: "_blank") %>
-        </li>
-
-        <li class="nav-item btn">
-          <%= link(to: "https://www.bravera.fit", class: "nav-logo", target: "_blank", rel: "noreferrer noopener") do %>
-            <i class="fa fa-nav fa-question-circle black"></i>
-          <% end %>
-        </li>
-
-        <li class="nav-item btn">
-          <a href="mailto:support@bravera.co" class="nav-logo">
-            <i class="fa fa-nav fa-envelope black"></i>
-          </a>
+          <%= link(gettext("How it Works"), to: "https://www.bravera.fit/how/", target: "_blank") %>
         </li>
 
         <li class="nav-item btn dropdown d-none d-md-block">
-          <a href="#" class="nav-logo" data-toggle="dropdown">
-            <i class="fa fa-nav fa-user black" ></i>
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+            <%= gettext("My Account") %>
           </a>
           <ul class="dropdown-menu">
             <li><%= link(gettext("Connected Apps"), to: user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
-            <li><%= link("Account", to: user_path(@conn, :show), class: "dropdown-item") %></li>
-            <li><%= link("Profile", to: user_profile_path(@conn, :show), class: "dropdown-item") %></li>
-            <li><%= link("Settings", to: setting_path(@conn, :show), class: "dropdown-item") %></li>
+            <li><%= link(gettext("Account"), to: user_path(@conn, :show), class: "dropdown-item") %></li>
+            <li><%= link(gettext("Profile and Rewards"), to: user_profile_path(@conn, :show), class: "dropdown-item") %></li>
+            <li><%= link(gettext("Settings"), to: setting_path(@conn, :show), class: "dropdown-item") %></li>
             <li><%= link("Email Preferences", to: email_settings_path(@conn, :edit), class: "dropdown-item") %></li>
-            <li><%= link("Change Password", to: change_password_path(@conn, :new), class: "dropdown-item") %></li>
+            <li><%= link(gettext("Change Password"), to: change_password_path(@conn, :new), class: "dropdown-item") %></li>
           </ul>
         </li>
 
         <div class="ml-md-4 pt-1">
           <a href="/strava/logout" class="btn btn-background">
-            Log Out
+            <%= gettext("Log Out") %>
           </a>
         </div>
       </ul>
