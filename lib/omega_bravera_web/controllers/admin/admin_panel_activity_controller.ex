@@ -3,7 +3,15 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   require Logger
 
   alias OmegaBravera.Challenges.{ActivitiesIngestion}
-  alias OmegaBravera.{Challenges, Activity.Activities, Fundraisers.NgoOptions, Repo, Accounts.User}
+
+  alias OmegaBravera.{
+    Challenges,
+    Activity.Activities,
+    Fundraisers.NgoOptions,
+    Repo,
+    Accounts.User
+  }
+
   alias OmegaBravera.Activity.ActivityAccumulator
 
   plug(:assign_available_options when action in [:create, :new])
@@ -90,13 +98,19 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     changeset =
       ActivityAccumulator.create_activity_by_admin_changeset(
         activity,
-        challenge.user, # TODO get a user struct here to allow team member activity addition by admin. -Sherief
+        # TODO get a user struct here to allow team member activity addition by admin. -Sherief
+        challenge.user,
         current_admin_user.id
       )
 
     case Repo.insert(changeset) do
       {:ok, saved_activity} ->
-        case ActivitiesIngestion.process_challenge(challenge, saved_activity, challenge.user, true) do
+        case ActivitiesIngestion.process_challenge(
+               challenge,
+               saved_activity,
+               challenge.user,
+               true
+             ) do
           {:ok, :challenge_updated} ->
             conn
             |> put_flash(:info, "Activity created successfully.")
@@ -111,7 +125,9 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
         end
 
       {:error, reason} ->
-        Logger.error("Could not create offer challenge admin activity, reason: #{inspect(reason)}")
+        Logger.error(
+          "Could not create offer challenge admin activity, reason: #{inspect(reason)}"
+        )
 
         changeset =
           changeset

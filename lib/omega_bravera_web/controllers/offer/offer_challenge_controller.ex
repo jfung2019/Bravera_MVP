@@ -416,7 +416,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         ),
       current_user: Guardian.Plug.current_resource(conn),
       offer:
-      Offers.get_offer_by_slug(offer_slug,
+        Offers.get_offer_by_slug(offer_slug,
           offer_challenges: [user: [:strava], team: [users: [:strava]]]
         )
     }

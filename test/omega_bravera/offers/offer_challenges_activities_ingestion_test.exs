@@ -58,7 +58,12 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
 
     test "returns error when activity dates are invalid" do
       challenge = insert(:offer_challenge)
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, start_date: Timex.shift(Timex.now(), days: -10)})
+
+      activity =
+        insert(:activity_accumulator, %{
+          type: challenge.activity_type,
+          start_date: Timex.shift(Timex.now(), days: -10)
+        })
 
       assert {:error, _, _} =
                OfferActivitiesIngestion.create_activity(
@@ -100,8 +105,9 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       challengers = Accounts.get_strava_challengers_for_offers(user.strava.athlete_id)
       activity = insert(:activity_accumulator, %{type: challenge.activity_type})
 
-      assert OfferActivitiesIngestion.process_challenges(challengers, activity) == [ok: :challenge_updated]
-
+      assert OfferActivitiesIngestion.process_challenges(challengers, activity) == [
+               ok: :challenge_updated
+             ]
     end
 
     test "stops processing if challange is not live" do
@@ -160,14 +166,23 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
         %{},
         team_user
       )
-      activity = insert(:activity_accumulator, %{type: team.offer_challenge.activity_type, user: nil, user_id: team_user.id})
+
+      activity =
+        insert(:activity_accumulator, %{
+          type: team.offer_challenge.activity_type,
+          user: nil,
+          user_id: team_user.id
+        })
 
       [{challenge_id, _user, _token} | _tail] =
         challengers = Accounts.get_strava_challengers_for_offers(team_user.strava.athlete_id)
 
+      assert OfferActivitiesIngestion.process_challenges(challengers, activity) == [
+               ok: :challenge_updated
+             ]
 
-      assert OfferActivitiesIngestion.process_challenges(challengers, activity) == [ok: :challenge_updated]
-      assert [%ActivityAccumulator{user_id: ^team_member_user_id}] = Offers.latest_activities(%OfferChallenge{id: challenge_id}, 1)
+      assert [%ActivityAccumulator{user_id: ^team_member_user_id}] =
+               Offers.latest_activities(%OfferChallenge{id: challenge_id}, 1)
     end
   end
 
@@ -203,7 +218,11 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
     test "does nothing if the Strava activity start date is before the challenge start date" do
       challenge = insert(:offer_challenge)
 
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, start_date: Timex.shift(Timex.now(), days: -10)})
+      activity =
+        insert(:activity_accumulator, %{
+          type: challenge.activity_type,
+          start_date: Timex.shift(Timex.now(), days: -10)
+        })
 
       assert OfferActivitiesIngestion.process_challenge(
                challenge.id,
@@ -216,7 +235,12 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
 
     test "does nothing if the Strava activity start date is after the challenge end date" do
       challenge = insert(:offer_challenge)
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, start_date: Timex.shift(Timex.now(), days: 6)})
+
+      activity =
+        insert(:activity_accumulator, %{
+          type: challenge.activity_type,
+          start_date: Timex.shift(Timex.now(), days: 6)
+        })
 
       assert OfferActivitiesIngestion.process_challenge(
                challenge,
@@ -280,7 +304,9 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       challenge = insert(:offer_challenge, %{distance_target: 50})
 
       Offers.create_offer_redeems(challenge, challenge.offer.vendor)
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
+
+      activity =
+        insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
 
       {:ok, :challenge_updated} =
         OfferActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)
@@ -294,7 +320,9 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       challenge = insert(:offer_challenge, %{distance_target: 50, type: "PER_KM"})
 
       Offers.create_offer_redeems(challenge, challenge.offer.vendor)
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
+
+      activity =
+        insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
 
       {:ok, :challenge_updated} =
         OfferActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)

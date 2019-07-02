@@ -62,7 +62,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
     test "returns error when activity dates are invalid" do
       challenge = insert(:ngo_challenge)
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, start_date: Timex.shift(Timex.now(), days: -10)})
+
+      activity =
+        insert(:activity_accumulator, %{
+          type: challenge.activity_type,
+          start_date: Timex.shift(Timex.now(), days: -10)
+        })
 
       assert {:error, _, _} =
                ActivitiesIngestion.create_activity(
@@ -104,7 +109,9 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       challengers = Accounts.get_strava_challengers(user.strava.athlete_id)
       activity = insert(:activity_accumulator, %{type: challenge.activity_type})
 
-      assert ActivitiesIngestion.process_challenges(challengers, activity) == [ok: :challenge_updated]
+      assert ActivitiesIngestion.process_challenges(challengers, activity) == [
+               ok: :challenge_updated
+             ]
     end
 
     test "stops processing if challange is not live" do
@@ -135,7 +142,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
       challengers = Accounts.get_strava_challengers(user.strava.athlete_id)
 
-      assert ActivitiesIngestion.process_challenges(challengers, %{}) == {:error, :no_challengers_found}
+      assert ActivitiesIngestion.process_challenges(challengers, %{}) ==
+               {:error, :no_challengers_found}
     end
 
     test "processes team member activity" do
@@ -152,16 +160,21 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
       insert(:team_member, %{user_id: team_user.id, team_id: team.id})
 
-      activity = insert(:activity_accumulator, %{type: team.challenge.activity_type, user: nil, user_id: team_user.id})
+      activity =
+        insert(:activity_accumulator, %{
+          type: team.challenge.activity_type,
+          user: nil,
+          user_id: team_user.id
+        })
 
       [{challenge_id, _user, _token} | _tail] =
         challengers = Accounts.get_strava_challengers(team_user.strava.athlete_id)
 
       assert ActivitiesIngestion.process_challenges(challengers, activity) ==
-                [ok: :challenge_updated]
+               [ok: :challenge_updated]
 
       assert [%ActivityAccumulator{user_id: ^team_member_user_id}] =
-                Challenges.latest_activities(%NGOChal{id: challenge_id}, 1)
+               Challenges.latest_activities(%NGOChal{id: challenge_id}, 1)
     end
   end
 
@@ -196,7 +209,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
     test "does nothing if the Strava activity start date is before the challenge start date" do
       challenge = insert(:ngo_challenge)
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, start_date: Timex.shift(Timex.now(), days: -10)})
+
+      activity =
+        insert(:activity_accumulator, %{
+          type: challenge.activity_type,
+          start_date: Timex.shift(Timex.now(), days: -10)
+        })
 
       assert ActivitiesIngestion.process_challenge(
                challenge.id,
@@ -209,7 +227,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
     test "does nothing if the Strava activity start date is after the challenge end date" do
       challenge = insert(:ngo_challenge)
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, start_date: Timex.shift(Timex.now(), days: 6)})
+
+      activity =
+        insert(:activity_accumulator, %{
+          type: challenge.activity_type,
+          start_date: Timex.shift(Timex.now(), days: 6)
+        })
 
       assert ActivitiesIngestion.process_challenge(
                challenge,
@@ -258,7 +281,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     test "updates the challenge status if the covered distance is greater than the target distance" do
       challenge = insert(:ngo_challenge, %{distance_target: 50})
 
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
+      activity =
+        insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
 
       {:ok, :challenge_updated} =
         ActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)
@@ -271,7 +295,8 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
     test "updates a km challenge status if the covered distance is greater than the target distance" do
       challenge = insert(:ngo_challenge, %{distance_target: 50, type: "PER_KM"})
 
-      activity = insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
+      activity =
+        insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
 
       {:ok, :challenge_updated} =
         ActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)
@@ -341,7 +366,12 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         }
 
         donation = insert(:km_donation, donation_params)
-        activity = insert(:activity_accumulator, %{type: challenge.activity_type, distance: Decimal.new(100)})
+
+        activity =
+          insert(:activity_accumulator, %{
+            type: challenge.activity_type,
+            distance: Decimal.new(100)
+          })
 
         {:ok, :challenge_updated} =
           ActivitiesIngestion.process_challenge(challenge, activity, user, true)

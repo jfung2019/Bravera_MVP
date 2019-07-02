@@ -69,7 +69,7 @@ defmodule OmegaBravera.Challenges do
     end)
   end
 
-  def latest_activities(%NGOChal{} = challenge, limit \\ nil, preloads \\ [user: [:strava]] ) do
+  def latest_activities(%NGOChal{} = challenge, limit \\ nil, preloads \\ [user: [:strava]]) do
     query =
       from(
         activity in ActivityAccumulator,

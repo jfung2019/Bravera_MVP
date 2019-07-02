@@ -36,13 +36,19 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
     changeset =
       ActivityAccumulator.create_activity_by_admin_changeset(
         activity,
-        challenge.user, # TODO get a user struct here to allow team member activity addition by admin. -Sherief
+        # TODO get a user struct here to allow team member activity addition by admin. -Sherief
+        challenge.user,
         current_admin_user.id
       )
 
     case Repo.insert(changeset) do
       {:ok, saved_activity} ->
-        case OfferActivitiesIngestion.process_challenge(challenge, saved_activity, challenge.user, true) do
+        case OfferActivitiesIngestion.process_challenge(
+               challenge,
+               saved_activity,
+               challenge.user,
+               true
+             ) do
           {:ok, :challenge_updated} ->
             conn
             |> put_flash(:info, "Activity created successfully.")
@@ -57,7 +63,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
         end
 
       {:error, reason} ->
-        Logger.error("Could not create offer challenge admin activity, reason: #{inspect(reason)}")
+        Logger.error(
+          "Could not create offer challenge admin activity, reason: #{inspect(reason)}"
+        )
 
         changeset =
           changeset

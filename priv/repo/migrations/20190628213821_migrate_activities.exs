@@ -5,7 +5,6 @@ defmodule OmegaBravera.Repo.Migrations.MigrateActivities do
   alias OmegaBravera.{Repo, Challenges.Activity, Offers.OfferChallengeActivity}
 
   def up do
-
     Repo.query!("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 
     # Get all ngo challenge activities and save them into activities_accumulator.
@@ -18,7 +17,6 @@ defmodule OmegaBravera.Repo.Migrations.MigrateActivities do
       from(a in OfferChallengeActivity, where: is_nil(a.strava_id) and not is_nil(a.admin_id)),
       set: [manual: true]
     )
-
 
     # ------ Fill activity accumulator START ------ #
     # NGO Strava activities
@@ -55,24 +53,19 @@ defmodule OmegaBravera.Repo.Migrations.MigrateActivities do
 
     # ------ Fill activity accumulator END ------ #
 
-
     # Create many to many relation ship between activities_accumulator and ngo_challenge_activities_m2m - Strava activities
-    Repo.query!(
-      "INSERT INTO ngo_challenge_activities_m2m (id, activity_id, challenge_id)
+    Repo.query!("INSERT INTO ngo_challenge_activities_m2m (id, activity_id, challenge_id)
       SELECT uuid_generate_v4(), ac.id, a.challenge_id
       FROM activities_accumulator AS ac
       JOIN activities AS a
-      ON a.strava_id = ac.strava_id;"
-    )
+      ON a.strava_id = ac.strava_id;")
 
     # Create many to many relation ship between activities_accumulator and offer_challenge_activities_m2m - Strava activities
-    Repo.query!(
-      "INSERT INTO offer_challenge_activities_m2m (id, activity_id, offer_challenge_id)
+    Repo.query!("INSERT INTO offer_challenge_activities_m2m (id, activity_id, offer_challenge_id)
       SELECT uuid_generate_v4(), ac.id, a.offer_challenge_id
       FROM activities_accumulator AS ac
       JOIN offer_challenge_activities AS a
-      ON a.strava_id = ac.strava_id;"
-    )
+      ON a.strava_id = ac.strava_id;")
 
     # Create many to many relation ship between activities_accumulator and ngo_challenge_activities_m2m - Manual activities - Admin created
     Repo.query!(

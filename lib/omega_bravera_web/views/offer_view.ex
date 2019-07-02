@@ -40,13 +40,23 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
   def payment_offer?(nil), do: false
   def payment_offer?(payment_amount), do: Decimal.cmp(payment_amount, Decimal.new(0)) == :gt
 
-  def generate_offer_challenge_link(conn, nil, offer), do: link(gettext("Join the challenge"), to: offer_offer_challenge_path(conn, :new, offer), class: "btn btn-green sign-up text-capitalize")
+  def generate_offer_challenge_link(conn, nil, offer),
+    do:
+      link(gettext("Join the challenge"),
+        to: offer_offer_challenge_path(conn, :new, offer),
+        class: "btn btn-green sign-up text-capitalize"
+      )
+
   def generate_offer_challenge_link(conn, %{offer_challenges: chals}, %{id: id} = offer) do
     case Enum.find(chals, fn %{offer_id: offer_id} -> offer_id == id end) do
       nil ->
         generate_offer_challenge_link(conn, nil, offer)
+
       challenge ->
-        link(gettext("View your progress"), to: offer_offer_challenge_path(conn, :show, offer, challenge), class: "btn btn-bravera sign-up text-capitalize")
+        link(gettext("View your progress"),
+          to: offer_offer_challenge_path(conn, :show, offer, challenge),
+          class: "btn btn-bravera sign-up text-capitalize"
+        )
     end
   end
 end

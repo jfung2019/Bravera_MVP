@@ -11,7 +11,7 @@ defmodule OmegaBravera.Fundraisers do
     Money.Donation,
     Challenges.NGOChal,
     Activity.ActivityAccumulator,
-    Challenges.NgoChallengeActivitiesM2m,
+    Challenges.NgoChallengeActivitiesM2m
   }
 
   # Get a user's causes by user_id

@@ -234,7 +234,10 @@ defmodule OmegaBravera.Accounts do
 
   def preload_active_offer_challenges(user) do
     user
-    |> Repo.preload([offer_challenges: from(oc in OfferChallenge, where: oc.status in ["active", "pre_registration"])])
+    |> Repo.preload(
+      offer_challenges:
+        from(oc in OfferChallenge, where: oc.status in ["active", "pre_registration"])
+    )
   end
 
   def get_user_by_token(token) do
