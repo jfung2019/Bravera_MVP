@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.Offer.OfferController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Repo, Offers, Offers.OfferChallenge, Accounts.AdminUser}
+  alias OmegaBravera.{Offers, Offers.OfferChallenge, Accounts, Accounts.AdminUser}
 
   def index(conn, _params) do
     current_user =
@@ -13,7 +13,7 @@ defmodule OmegaBraveraWeb.Offer.OfferController do
           redirect(conn, to: admin_user_page_path(conn, :index))
 
         user ->
-          Repo.preload(user, :offer_challenges)
+          Accounts.preload_active_offer_challenges(user)
       end
 
     conn

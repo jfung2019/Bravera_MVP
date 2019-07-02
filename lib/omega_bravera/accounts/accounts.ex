@@ -212,8 +212,8 @@ defmodule OmegaBravera.Accounts do
 
   # TODO Optimize the preload below
   def get_user_strava(user_id) do
-    query = from(s in Strava, where: s.user_id == ^user_id)
-    Repo.one(query)
+    from(s in Strava, where: s.user_id == ^user_id)
+    |> Repo.one()
   end
 
   def get_user_with_everything!(user_id) do
@@ -226,6 +226,11 @@ defmodule OmegaBravera.Accounts do
     |> preload([user, ngo_chals, donations], ngo_chals: {ngo_chals, donations: donations})
     |> Repo.one()
     |> Repo.preload([:strava, :setting, :credential, :offer_challenges])
+  end
+
+  def preload_active_offer_challenges(user) do
+    user
+    |> Repo.preload([offer_challenges: from(oc in OfferChallenge, where: oc.status in ["active", "pre_registration"])])
   end
 
   def get_user_by_token(token) do
