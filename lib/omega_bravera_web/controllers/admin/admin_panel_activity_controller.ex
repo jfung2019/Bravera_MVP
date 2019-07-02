@@ -1,8 +1,10 @@
 defmodule OmegaBraveraWeb.AdminPanelActivityController do
   use OmegaBraveraWeb, :controller
+  require Logger
 
-  alias OmegaBravera.Challenges.{Activity, NGOChal, ActivitiesIngestion}
-  alias OmegaBravera.{Challenges, Activity.Activities, Fundraisers.NgoOptions, Repo}
+  alias OmegaBravera.Challenges.{ActivitiesIngestion}
+  alias OmegaBravera.{Challenges, Activity.Activities, Fundraisers.NgoOptions, Repo, Accounts.User}
+  alias OmegaBravera.Activity.ActivityAccumulator
 
   plug(:assign_available_options when action in [:create, :new])
 
@@ -15,10 +17,9 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     current_admin_user = Guardian.Plug.current_resource(conn)
 
     changeset =
-      Activity.create_activity_by_admin_changeset(
+      ActivityAccumulator.create_activity_by_admin_changeset(
         %Strava.Activity{},
-        %NGOChal{},
-        %{id: nil},
+        %User{},
         current_admin_user.id
       )
 
@@ -51,6 +52,8 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     activity =
       Strava.Activity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
 
+    # TODO: Save to Activity Accumulator first then pass it.
+
     case ActivitiesIngestion.process_challenge(challenge, activity, user, true) do
       {:ok, :challenge_updated} ->
         conn
@@ -68,10 +71,9 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     current_admin_user = Guardian.Plug.current_resource(conn)
 
     changeset =
-      Activity.create_activity_by_admin_changeset(
+      ActivityAccumulator.create_activity_by_admin_changeset(
         %Strava.Activity{},
-        %NGOChal{},
-        %{id: nil},
+        %User{},
         current_admin_user.id
       )
 
@@ -86,28 +88,31 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     activity = create_strava_activity(activity_params, current_admin_user, challenge.user)
 
     changeset =
-      Activity.create_activity_by_admin_changeset(
+      ActivityAccumulator.create_activity_by_admin_changeset(
         activity,
-        challenge,
-        challenge.user,
+        challenge.user, # TODO get a user struct here to allow team member activity addition by admin. -Sherief
         current_admin_user.id
       )
 
-    case changeset.valid? do
-      true ->
-        case ActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true) do
+    case Repo.insert(changeset) do
+      {:ok, saved_activity} ->
+        case ActivitiesIngestion.process_challenge(challenge, saved_activity, challenge.user, true) do
           {:ok, :challenge_updated} ->
             conn
             |> put_flash(:info, "Activity created successfully.")
             |> redirect(to: admin_panel_activity_path(conn, :index))
 
           {:error, :activity_not_processed} ->
+            Repo.delete(saved_activity)
+
             conn
             |> put_flash(:error, "Activity not processed. Please check the logs.")
             |> redirect(to: admin_panel_activity_path(conn, :index))
         end
 
-      false ->
+      {:error, reason} ->
+        Logger.error("Could not create offer challenge admin activity, reason: #{inspect(reason)}")
+
         changeset =
           changeset
           |> Ecto.Changeset.change(%{
@@ -116,9 +121,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
           })
 
         challenges = Challenges.list_active_ngo_chals([:user])
-
-        conn
-        |> render("new_activity.html", changeset: changeset, challenges: challenges)
+        render(conn, "new_activity.html", changeset: changeset, challenges: challenges)
     end
   end
 

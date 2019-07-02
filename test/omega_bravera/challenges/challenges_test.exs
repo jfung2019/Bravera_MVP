@@ -175,7 +175,8 @@ defmodule OmegaBravera.ChallengesTest do
       per_goal_challenge = insert(:ngo_challenge, %{user: nil, user_id: user.id})
       km_challenge = insert(:ngo_challenge, %{type: "PER_KM", user: nil, user_id: user.id})
 
-      _km_activity = insert(:activity, %{challenge: nil, challenge_id: km_challenge.id})
+      activity = insert(:activity_accumulator, %{user: nil, user_id: user.id})
+      Challenges.create_ngo_challenge_activity_m2m(activity, km_challenge)
 
       # 150 pending
       _per_goal_donation = insert(:donation, %{ngo_chal: nil, ngo_chal_id: per_goal_challenge.id})

@@ -158,7 +158,7 @@ defmodule OmegaBraveraWeb.StravaController do
         end
 
       path ->
-        path |> IO.inspect()
+        path
     end
   end
 end
