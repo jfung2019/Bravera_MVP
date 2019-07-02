@@ -5,8 +5,7 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
 
   alias OmegaBravera.Offers.{
     OfferChallenge,
-    OfferActivitiesIngestion,
-    OfferChallengeActivitiesM2m
+    OfferActivitiesIngestion
   }
 
   alias OmegaBravera.Activity.ActivityAccumulator
@@ -168,7 +167,7 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
 
 
       assert OfferActivitiesIngestion.process_challenges(challengers, activity) == [ok: :challenge_updated]
-      assert [%OfferChallengeActivitiesM2m{activity: %{user_id: ^team_member_user_id}}] = Offers.latest_activities(%OfferChallenge{id: challenge_id}, 1)
+      assert [%ActivityAccumulator{user_id: ^team_member_user_id}] = Offers.latest_activities(%OfferChallenge{id: challenge_id}, 1)
     end
   end
 

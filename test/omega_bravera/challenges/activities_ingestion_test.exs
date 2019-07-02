@@ -7,13 +7,14 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
   alias OmegaBravera.{
     Challenges.NGOChal,
     Challenges.ActivitiesIngestion,
-    Challenges.Activity,
     Repo,
     Accounts,
     Challenges,
     Challenges.KmChallengesWorker,
     Money.Donation
   }
+
+  alias OmegaBravera.Activity.ActivityAccumulator
 
   setup do
     ExVCR.Config.cassette_library_dir("test/fixtures/cassettes")
@@ -159,7 +160,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
       assert ActivitiesIngestion.process_challenges(challengers, activity) ==
                 [ok: :challenge_updated]
 
-      assert [%Activity{user_id: ^team_member_user_id}] =
+      assert [%ActivityAccumulator{user_id: ^team_member_user_id}] =
                 Challenges.latest_activities(%NGOChal{id: challenge_id}, 1)
     end
   end
@@ -343,7 +344,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
         activity = insert(:activity_accumulator, %{type: challenge.activity_type, distance: Decimal.new(100)})
 
         {:ok, :challenge_updated} =
-          ActivitiesIngestion.process_challenge(challenge, activity1, user, true)
+          ActivitiesIngestion.process_challenge(challenge, activity, user, true)
 
         challenge = Challenges.get_ngo_chal!(challenge.id) |> Repo.preload(:activities)
 
