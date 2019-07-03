@@ -137,6 +137,48 @@ defmodule OmegaBravera.AccountsTest do
       user = user_fixture()
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
+
+    test "can get preloaded offer challenges that are active or haven't been redeemed" do
+      user = user_fixture()
+      offer = insert(:offer)
+      %{id: completed_id} = completed_challenge = insert(:offer_challenge, %{
+        offer: offer,
+        user: user,
+        has_team: false,
+        status: "complete",
+        slug: "complete"
+      })
+
+      insert(:offer_redeem, %{offer: offer, offer_challenge: completed_challenge, status: "redeemed"})
+      %{id: completed_not_redeemed_id} = completed_not_redeemed_challenge = insert(:offer_challenge, %{
+        offer: offer,
+        user: user,
+        has_team: false,
+        status: "complete",
+        slug: "complete_no_redeem"
+      })
+      insert(:offer_redeem, %{offer: offer, offer_challenge: completed_not_redeemed_challenge, status: "pending"})
+      %{id: pre_reg_id} = insert(:offer_challenge, %{
+        offer: offer,
+        user: user,
+        has_team: false,
+        status: "pre_registration",
+        slug: "pre"
+      })
+      %{id: active_id} = insert(:offer_challenge, %{
+        offer: offer,
+        user: user,
+        has_team: false,
+        status: "active",
+        slug: "active"
+      })
+      %{offer_challenges: chals} = Accounts.preload_active_offer_challenges(user)
+      chal_ids = Enum.map(chals, fn %{id: id} -> id end)
+      assert active_id in chal_ids
+      assert pre_reg_id in chal_ids
+      assert completed_not_redeemed_id in chal_ids
+      refute completed_id in chal_ids
+    end
   end
 
   describe "settings" do

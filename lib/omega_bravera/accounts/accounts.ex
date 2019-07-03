@@ -419,8 +419,8 @@ defmodule OmegaBravera.Accounts do
 
   def get_user_with_account_settings!(id) do
     Repo.get!(User, id)
-    |> Repo.preload(
-      [:credential,
+    |> Repo.preload([
+      :credential,
       setting:
         from(s in Accounts.Setting,
           select: %{
@@ -439,8 +439,7 @@ defmodule OmegaBravera.Accounts do
                 )
           }
         )
-        ]
-    )
+    ])
   end
 
   @doc """
