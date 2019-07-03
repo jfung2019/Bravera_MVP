@@ -297,8 +297,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
                "-firstName-" => "John",
-               "-activityDistance-" => "4 Km",
-               "-completedChallengeDistance-" => "#{Decimal.from_float(4.215)} Km",
+               "-activityDistance-" => "4.22 Km",
+               "-completedChallengeDistance-" => "4.22 Km",
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-timeRemaining-" => "4 days",
                "-challengeURL-" => challenge_url(challenge)
