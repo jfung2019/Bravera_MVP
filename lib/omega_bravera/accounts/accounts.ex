@@ -20,7 +20,6 @@ defmodule OmegaBravera.Accounts do
     Challenges.Team,
     Challenges.TeamMembers,
     Money.Donation,
-    Challenges.Activity,
     Offers.OfferChallenge,
     Offers.OfferChallengeTeam,
     Offers.OfferChallengeTeamMembers
@@ -29,16 +28,6 @@ defmodule OmegaBravera.Accounts do
   def get_all_athlete_ids() do
     query = from(s in Strava, select: s.athlete_id)
     query |> Repo.all()
-  end
-
-  def drop_active_challenges_activities() do
-    query =
-      from(a in Activity,
-        join: c in assoc(a, :challenge),
-        where: c.status == "active"
-      )
-
-    query |> Repo.delete_all()
   end
 
   def get_strava_by_athlete_id(athlete_id) do

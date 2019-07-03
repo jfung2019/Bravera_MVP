@@ -55,7 +55,7 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
 
     test "renders create activity form", %{conn: conn} do
       conn = get(conn, admin_panel_offer_challenge_activity_path(conn, :new))
-      assert html_response(conn, 200) =~ "New Activity"
+      assert html_response(conn, 200) =~ "New Offer Activity"
     end
   end
 

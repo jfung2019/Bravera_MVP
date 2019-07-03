@@ -124,10 +124,10 @@ defmodule OmegaBraveraWeb.Router do
       get("/", AdminUserPageController, :index)
       resources("/admin-users", AdminUserController)
       resources("/users", AdminPanelUserController, only: [:index, :show])
-      resources("/activities", AdminPanelActivityController, only: [:index, :new, :create])
+      resources("/activities", AdminPanelActivityController, only: [:new, :create])
 
       resources("/offer-activities", AdminPanelOfferChallengeActivityController,
-        only: [:index, :new, :create]
+        only: [:new, :create]
       )
 
       resources("/offer-rewards", AdminPanelOfferRewardController,
@@ -138,11 +138,11 @@ defmodule OmegaBraveraWeb.Router do
         only: [:index, :new, :create, :edit, :update]
       )
 
-      get(
-        "/activities/import_activity_from_strava",
-        AdminPanelActivityController,
-        :new_import_activity_from_strava
-      )
+      # get(
+      #   "/activities/import_activity_from_strava",
+      #   AdminPanelActivityController,
+      #   :new_import_activity_from_strava
+      # )
 
       post(
         "/activities/create_imported_strava_activity",

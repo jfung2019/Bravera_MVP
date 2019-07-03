@@ -1,6 +1,6 @@
 <div class="container">
-  <h2>New Activity</h2>
-  <h6 class="text-danger">Warning: creating an activity will trigger emails and donations</h6>
+  <h2>New Offer Activity</h2>
+  <h6 class="text-danger">Warning: creating an activity will trigger emails and rewards!</h6>
 
   <%= form_for @changeset, admin_panel_offer_challenge_activity_path(@conn, :create), fn f -> %>
     <%= if @changeset.action do %>
@@ -66,5 +66,5 @@
   <% end %>
 
 
-  <span><%= link "Back", to: admin_panel_activity_path(@conn, :index) %></span>
+  <span><%= link "Back", to: admin_user_page_path(@conn, :index) %></span>
 </div>
