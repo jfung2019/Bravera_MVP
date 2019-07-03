@@ -11,6 +11,7 @@ defmodule OmegaBraveraWeb.LiveUserLoginTest do
       lastname: "alaa",
       email: "sheriefalaa.w@gmail.com",
       email_verified: true,
+      accept_terms: true,
       credential: %{"password" => "testing", "password_confirmation" => "testing"}
     }
 

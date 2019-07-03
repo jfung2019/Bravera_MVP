@@ -408,7 +408,33 @@ defmodule OmegaBravera.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id, preloads \\ []), do: Repo.get!(User, id) |> Repo.preload(preloads)
+
+  def get_user_with_account_settings!(id) do
+    Repo.get!(User, id)
+    |> Repo.preload(
+      [:credential,
+      setting:
+        from(s in Accounts.Setting,
+          select: %{
+            s
+            | weight_fraction:
+                fragment(
+                  "case when ? is not null then mod(?, 1) else 0.0 end",
+                  s.weight,
+                  s.weight
+                ),
+              weight_whole:
+                fragment(
+                  "case when ? is not null then trunc(?)::integer else null end",
+                  s.weight,
+                  s.weight
+                )
+          }
+        )
+        ]
+    )
+  end
 
   @doc """
   Creates a user.

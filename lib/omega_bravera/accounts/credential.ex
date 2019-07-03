@@ -7,10 +7,7 @@ defmodule OmegaBravera.Accounts.Credential do
 
   @create_attrs [
     :password,
-    :password_confirmation,
-    :reset_token,
-    :reset_token_created,
-    :user_id
+    :password_confirmation
   ]
 
   @derive {Phoenix.Param, key: :reset_token}
@@ -32,10 +29,10 @@ defmodule OmegaBravera.Accounts.Credential do
   def changeset(%Credential{} = credential, attrs \\ %{}) do
     credential
     |> cast(attrs, @create_attrs)
-    |> validate_required([:password, :password_confirmation])
+    |> validate_required([:password])
     |> validate_confirmation(:password)
     |> validate_length(:password, min: 6)
-    |> put_password_hash
+    |> put_password_hash()
   end
 
   def token_changeset(%Credential{} = credential, attrs) do

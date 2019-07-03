@@ -19,6 +19,7 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
   def render(assigns), do: OmegaBraveraWeb.UserSessionView.render("signup_modal.html", assigns)
 
   def handle_event("validate", %{"user" => params}, socket) do
+    IO.inspect(params)
     changeset =
       Accounts.change_credential_user(%Accounts.User{}, params)
       |> Map.put(:action, :insert)

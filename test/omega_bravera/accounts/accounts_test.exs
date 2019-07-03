@@ -144,7 +144,8 @@ defmodule OmegaBravera.AccountsTest do
 
     @valid_attrs %{
       location: "UK",
-      weight: 35.5,
+      weight_whole: 35,
+      weight_fraction: 0.5,
       date_of_birth: "1940-07-14",
       gender: "Female"
     }
@@ -172,6 +173,8 @@ defmodule OmegaBravera.AccountsTest do
         |> Accounts.create_setting()
 
       setting
+      |> Map.put(:weight_whole, 0)
+      |> Map.put(:weight_fraction, 0.0)
     end
 
     test "list_settings/0 returns all settings" do
@@ -195,10 +198,6 @@ defmodule OmegaBravera.AccountsTest do
       assert setting.user_id == user.id
     end
 
-    test "create_setting/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_setting(@invalid_attrs)
-    end
-
     test "update_setting/2 with valid data updates the setting" do
       setting = setting_fixture()
       update_attrs = Map.put(@update_attrs, :user_id, setting.user_id)
@@ -206,12 +205,6 @@ defmodule OmegaBravera.AccountsTest do
       assert %Setting{} = setting
       assert setting.gender == "Male"
       assert setting.date_of_birth == ~D[1980-07-14]
-    end
-
-    test "update_setting/2 with invalid data returns error changeset" do
-      setting = setting_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_setting(setting, @invalid_attrs)
-      assert setting == Accounts.get_setting!(setting.id)
     end
 
     test "delete_setting/1 deletes the setting" do
@@ -328,12 +321,11 @@ defmodule OmegaBravera.AccountsTest do
 
       credential_attrs = %{
         password: @password,
-        password_confirmation: @password,
-        user_id: user.id
+        password_confirmation: @password
       }
 
       {:ok, credential} =
-        Credential.changeset(%Credential{}, credential_attrs)
+        Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
         |> Repo.insert()
 
       credential |> Repo.preload(:user)
