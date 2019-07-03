@@ -3,8 +3,23 @@ defmodule OmegaBraveraWeb.UserControllerTest do
 
   alias OmegaBravera.Accounts
 
-  @update_attrs %{firstname: "sherief", lastname: "Alaa"}
+  @update_attrs %{
+    firstname: "sherief",
+    lastname: "Alaa",
+    setting: %{
+      location: "US",
+      weight_whole: "45",
+      weight_fraction: "0.5",
+      date_of_birth: "1980-07-14",
+      gender: "Male",
+      weight_fraction: "0.5"
+    }
+  }
   @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
+  #  field(:location, :string)
+  #  field(:weight, :decimal, default: nil)
+  #  field(:date_of_birth, :date)
+  #  field(:gender, :string, default: nil)
 
   setup %{conn: conn} do
     attrs = %{
@@ -36,9 +51,23 @@ defmodule OmegaBraveraWeb.UserControllerTest do
   end
 
   describe "update user" do
-    test "redirects when data is valid", %{conn: conn} do
+    test "redirects when data is valid", %{conn: conn, user: %{id: user_id}} do
       conn = put(conn, user_path(conn, :update), user: @update_attrs)
-      assert redirected_to(conn) == user_path(conn, :show)
+      assert get_flash(conn, :info) =~ "Updated account settings successfully."
+      assert redirected_to(conn) == user_path(conn, :edit)
+
+      weight = Decimal.from_float(45.5)
+
+      assert %{
+               firstname: "sherief",
+               lastname: "Alaa",
+               setting: %{
+                 location: "US",
+                 weight: ^weight,
+                 date_of_birth: ~D[1980-07-14],
+                 gender: "Male"
+               }
+             } = Accounts.get_user!(user_id, [:setting])
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

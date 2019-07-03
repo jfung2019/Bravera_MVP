@@ -20,12 +20,7 @@
             <i class="fa fa-nav fa-user black" ></i>
           </a>
           <ul class="dropdown-menu">
-            <li><%= link(gettext("Connected Apps"), to: user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
-            <li><%= link("Account", to: user_path(@conn, :show), class: "dropdown-item") %></li>
-            <li><%= link("Profile", to: user_profile_path(@conn, :show), class: "dropdown-item") %></li>
-            <li><%= link("Settings", to: setting_path(@conn, :show), class: "dropdown-item") %></li>
-            <li><%= link("Email Preferences", to: email_settings_path(@conn, :edit), class: "dropdown-item") %></li>
-            <li><%= link("Change Password", to: change_password_path(@conn, :new), class: "dropdown-item") %></li>
+            <%= render "_menu_nav.html", conn: @conn %>
           </ul>
         </li>
 
@@ -38,12 +33,7 @@
             <%= gettext("My Account") %>
           </a>
           <ul class="dropdown-menu">
-            <li><%= link(gettext("Connected Apps"), to: user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
-            <li><%= link(gettext("Account"), to: user_path(@conn, :show), class: "dropdown-item") %></li>
-            <li><%= link(gettext("Profile and Rewards"), to: user_profile_path(@conn, :show), class: "dropdown-item") %></li>
-            <li><%= link(gettext("Settings"), to: setting_path(@conn, :show), class: "dropdown-item") %></li>
-            <li><%= link("Email Preferences", to: email_settings_path(@conn, :edit), class: "dropdown-item") %></li>
-            <li><%= link(gettext("Change Password"), to: change_password_path(@conn, :new), class: "dropdown-item") %></li>
+            <%= render "_menu_nav.html", conn: @conn %>
           </ul>
         </li>
 

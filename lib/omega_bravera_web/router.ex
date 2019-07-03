@@ -45,12 +45,9 @@ defmodule OmegaBraveraWeb.Router do
     live("/signup", LiveUserSignup)
 
     resources("/sessions", UserSessionController, only: [:create])
-    resources("/profile/settings", SettingController, only: [:new, :create])
     get("/profile/email_settings", EmailSettingsController, :edit)
     post("/profile/email_settings", EmailSettingsController, :update)
 
-    get("/profile/settings", SettingController, :show)
-    put("/profile/settings", SettingController, :update)
     get("/profile", UserProfileController, :show)
     put("/profile/upload_profile_picture", UserProfileController, :update_profile_picture)
     get("/profile/settings/edit", SettingController, :edit)
@@ -68,7 +65,6 @@ defmodule OmegaBraveraWeb.Router do
 
     scope "/" do
       pipe_through :user_authenticated
-      get("/account", UserController, :show)
       get("/account/trackers", UserController, :show_trackers)
       get("/account/edit", UserController, :edit)
       put("/account", UserController, :update)

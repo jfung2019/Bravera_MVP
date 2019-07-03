@@ -6,12 +6,12 @@ defmodule OmegaBraveraWeb.ChangePasswordController do
   def new(conn, _) do
     user = Guardian.Plug.current_resource(conn)
 
-    cond do
-      user.credential == nil ->
+    case user.credential do
+      nil ->
         changeset = Accounts.change_credential(%Accounts.Credential{})
         render(conn, "new.html", changeset: changeset, user: user)
 
-      user.credential != nil ->
+      _credential ->
         redirect(conn, to: change_password_path(conn, :edit, %{}))
     end
   end

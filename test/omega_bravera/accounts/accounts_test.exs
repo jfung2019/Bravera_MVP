@@ -195,10 +195,6 @@ defmodule OmegaBravera.AccountsTest do
       assert setting.user_id == user.id
     end
 
-    test "create_setting/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_setting(@invalid_attrs)
-    end
-
     test "update_setting/2 with valid data updates the setting" do
       setting = setting_fixture()
       update_attrs = Map.put(@update_attrs, :user_id, setting.user_id)
@@ -206,12 +202,6 @@ defmodule OmegaBravera.AccountsTest do
       assert %Setting{} = setting
       assert setting.gender == "Male"
       assert setting.date_of_birth == ~D[1980-07-14]
-    end
-
-    test "update_setting/2 with invalid data returns error changeset" do
-      setting = setting_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_setting(setting, @invalid_attrs)
-      assert setting == Accounts.get_setting!(setting.id)
     end
 
     test "delete_setting/1 deletes the setting" do

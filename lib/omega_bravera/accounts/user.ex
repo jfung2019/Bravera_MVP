@@ -55,6 +55,7 @@ defmodule OmegaBravera.Accounts.User do
     |> validate_length(:email, max: 254)
     |> unique_constraint(:email)
     |> add_email_activation_token()
+    |> cast_assoc(:setting, with: &Setting.changeset/2)
   end
 
   def create_credential_user_changeset(user, attrs \\ %{credential: %{}}) do
@@ -66,25 +67,21 @@ defmodule OmegaBravera.Accounts.User do
 
   def update_changeset(user, attrs) do
     user
-    |> cast(attrs, @allowed_attributes)
-    |> validate_required(@required_attributes)
-    |> validate_format(:email, ~r/@/)
-    |> validate_length(:email, max: 254)
-    |> unique_constraint(:email)
+    |> changeset(attrs)
     |> email_changed(user)
   end
 
   def email_changed(%Ecto.Changeset{} = changeset, %__MODULE__{} = user) do
     new_email = get_field(changeset, :email)
 
-    case new_email != user.email do
-      false ->
-        changeset
-
-      true ->
+    cond do
+      new_email != user.email ->
         changeset
         |> put_change(:email_verified, false)
         |> put_change(:email_activation_token, gen_token())
+
+      true ->
+        changeset
     end
   end
 
@@ -94,9 +91,7 @@ defmodule OmegaBravera.Accounts.User do
   end
 
   def add_email_activation_token(%Ecto.Changeset{} = changeset) do
-    email_activation_token = get_field(changeset, :email_activation_token)
-
-    case email_activation_token do
+    case get_field(changeset, :email_activation_token) do
       nil ->
         changeset
         |> Ecto.Changeset.change(%{
