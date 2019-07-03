@@ -2,7 +2,9 @@ defmodule OmegaBravera.Offers.OfferChallengeActivitiesM2m do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.Activity.{ActivityAccumulator}
+  require Logger
+
+  alias OmegaBravera.Activity.{ActivityAccumulator, ActivityOptions}
   alias OmegaBravera.Offers.{OfferChallenge}
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -21,5 +23,27 @@ defmodule OmegaBravera.Offers.OfferChallengeActivitiesM2m do
     |> unique_constraint(:offer_challenge_id_activity_id,
       name: :one_activity_instance_per_offer_challenge
     )
+    |> activity_type_matches_challenge_activity_type(activity, offer_challenge)
+  end
+
+  def activity_type_matches_challenge_activity_type(changeset, %{type: activity_type}, %{activity_type: challenge_activity_type}) do
+    accepted_types = ActivityOptions.accepted_activity_types()
+    sub_types = accepted_types[challenge_activity_type]
+
+    case sub_types do
+      nil -> add_error(changeset, :activity_id, "Activity type not supported.")
+
+      types ->
+        if not Enum.member?(types, activity_type) do
+          Logger.info(
+            "Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{
+              activity_type
+            }"
+          )
+          add_error(changeset, :activity_id, "Activity type not allowed")
+        else
+          changeset
+        end
+    end
   end
 end

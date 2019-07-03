@@ -8,8 +8,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     Offers.Notifier,
     Offers.OfferRedeem,
     Activity.ActivityAccumulator,
-    Repo,
-    ActivityIngestionUtils
+    Repo
   }
 
   def start(%ActivityAccumulator{} = activity, %{"owner_id" => athlete_id}) do
@@ -129,11 +128,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
   def process_challenge(_, _, _, _), do: {:error, :activity_not_processed}
 
   def create_activity(challenge, activity, _user, send_emails) do
-    if valid_activity?(activity, challenge, send_emails) and
-         ActivityIngestionUtils.activity_type_matches_challenge_activity_type?(
-           activity,
-           challenge
-         ) do
+    if valid_activity?(activity, challenge, send_emails) do
       case Offers.create_offer_challenge_activity_m2m(activity, challenge) do
         {:ok, _activity} ->
           {:ok, challenge, activity}
