@@ -144,7 +144,8 @@ defmodule OmegaBravera.AccountsTest do
 
     @valid_attrs %{
       location: "UK",
-      weight: 35.5,
+      weight_whole: 35,
+      weight_fraction: 0.5,
       date_of_birth: "1940-07-14",
       gender: "Female"
     }
@@ -172,6 +173,8 @@ defmodule OmegaBravera.AccountsTest do
         |> Accounts.create_setting()
 
       setting
+      |> Map.put(:weight_whole, 0)
+      |> Map.put(:weight_fraction, 0.0)
     end
 
     test "list_settings/0 returns all settings" do
@@ -318,12 +321,11 @@ defmodule OmegaBravera.AccountsTest do
 
       credential_attrs = %{
         password: @password,
-        password_confirmation: @password,
-        user_id: user.id
+        password_confirmation: @password
       }
 
       {:ok, credential} =
-        Credential.changeset(%Credential{}, credential_attrs)
+        Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
         |> Repo.insert()
 
       credential |> Repo.preload(:user)

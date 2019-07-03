@@ -56,6 +56,7 @@ defmodule OmegaBravera.Accounts.User do
     |> unique_constraint(:email)
     |> add_email_activation_token()
     |> cast_assoc(:setting, with: &Setting.changeset/2)
+    |> cast_assoc(:credential, with: &Credential.changeset/2)
   end
 
   def create_credential_user_changeset(user, attrs \\ %{credential: %{}}) do

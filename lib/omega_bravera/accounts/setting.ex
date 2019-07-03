@@ -10,8 +10,8 @@ defmodule OmegaBravera.Accounts.Setting do
   schema "settings" do
     field(:location, :string)
     field(:weight, :decimal, default: nil)
-    field :weight_fraction, :decimal, virtual: true, default: 0
-    field :weight_whole, :integer, virtual: true, default: 0.0
+    field(:weight_fraction, :decimal, virtual: true, default: 0)
+    field(:weight_whole, :integer, virtual: true, default: 0.0)
     field(:date_of_birth, :date)
     field(:gender, :string, default: nil)
     belongs_to(:user, User)
@@ -44,6 +44,7 @@ defmodule OmegaBravera.Accounts.Setting do
         whole = get_field(changeset, :weight_whole)
         fraction = get_field(changeset, :weight_fraction)
         put_change(changeset, :weight, Decimal.add(whole, fraction))
+
       true ->
         changeset
     end

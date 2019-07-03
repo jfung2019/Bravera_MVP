@@ -2,5 +2,3 @@
 <li><%= link(gettext("Profile and Rewards"), to: user_profile_path(@conn, :show), class: "dropdown-item") %></li>
 <li><%= link(gettext("Connected Apps"), to: user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
 <li><%= link("Email Preferences", to: email_settings_path(@conn, :edit), class: "dropdown-item") %></li>
-
-<li><%= link(gettext("Change Password"), to: change_password_path(@conn, :new), class: "dropdown-item") %></li>

@@ -13,6 +13,10 @@ defmodule OmegaBraveraWeb.UserControllerTest do
       date_of_birth: "1980-07-14",
       gender: "Male",
       weight_fraction: "0.5"
+    },
+    credential: %{
+      password: "testtest",
+      password_confirmation: "testtest"
     }
   }
   @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
@@ -66,8 +70,10 @@ defmodule OmegaBraveraWeb.UserControllerTest do
                  weight: ^weight,
                  date_of_birth: ~D[1980-07-14],
                  gender: "Male"
-               }
-             } = Accounts.get_user!(user_id, [:setting])
+               },
+              credential: %{password_hash: hash}
+             } = Accounts.get_user!(user_id, [:setting, :credential])
+      assert hash != nil
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

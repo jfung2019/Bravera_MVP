@@ -419,7 +419,28 @@ defmodule OmegaBravera.Accounts do
 
   def get_user_with_account_settings!(id) do
     Repo.get!(User, id)
-    |> Repo.preload([setting: from(s in Accounts.Setting, select: %{s | weight_fraction: fragment("case when ? is not null then mod(?, 1) else 0.0 end", s.weight, s.weight), weight_whole: fragment("case when ? is not null then trunc(?)::integer else null end", s.weight, s.weight)})])
+    |> Repo.preload(
+      [:credential,
+      setting:
+        from(s in Accounts.Setting,
+          select: %{
+            s
+            | weight_fraction:
+                fragment(
+                  "case when ? is not null then mod(?, 1) else 0.0 end",
+                  s.weight,
+                  s.weight
+                ),
+              weight_whole:
+                fragment(
+                  "case when ? is not null then trunc(?)::integer else null end",
+                  s.weight,
+                  s.weight
+                )
+          }
+        )
+        ]
+    )
   end
 
   @doc """

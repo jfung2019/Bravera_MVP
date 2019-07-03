@@ -50,11 +50,6 @@ defmodule OmegaBraveraWeb.Router do
 
     get("/profile", UserProfileController, :show)
     put("/profile/upload_profile_picture", UserProfileController, :update_profile_picture)
-    get("/profile/settings/edit", SettingController, :edit)
-    resources("/password", ChangePasswordController, only: [:new, :create])
-    get("/password/edit", ChangePasswordController, :edit)
-    post("/password/update", ChangePasswordController, :update)
-    put("/password/update", ChangePasswordController, :update)
 
     scope "/password_reset" do
       resources("/", PasswordController, only: [:new, :create])
