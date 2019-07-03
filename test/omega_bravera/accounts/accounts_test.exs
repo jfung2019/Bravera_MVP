@@ -140,26 +140,41 @@ defmodule OmegaBravera.AccountsTest do
 
     test "can get preloaded offer challenges that are active or haven't been redeemed" do
       user = user_fixture()
-      offer = insert(:offer)
+      vendor = insert(:vendor)
+      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
+      offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       %{id: completed_id} = completed_challenge = insert(:offer_challenge, %{
-        offer: offer,
+        offer_id: offer.id,
+        offer: nil,
         user: user,
         has_team: false,
         status: "complete",
         slug: "complete"
       })
 
-      insert(:offer_redeem, %{offer: offer, offer_challenge: completed_challenge, status: "redeemed"})
-      %{id: completed_not_redeemed_id} = completed_not_redeemed_challenge = insert(:offer_challenge, %{
+      redeem_params = %{
+        status: "redeemed",
         offer: offer,
+        vendor: vendor,
+        offer_challenge: nil,
+        user: user,
+        offer_reward: offer_reward
+      }
+
+      insert(:offer_redeem_with_args, %{redeem_params | offer_challenge: completed_challenge})
+      %{id: completed_not_redeemed_id} = completed_not_redeemed_challenge = insert(:offer_challenge, %{
+        offer_id: offer.id,
+        offer: nil,
         user: user,
         has_team: false,
         status: "complete",
         slug: "complete_no_redeem"
       })
-      insert(:offer_redeem, %{offer: offer, offer_challenge: completed_not_redeemed_challenge, status: "pending"})
+
+      insert(:offer_redeem_with_args, %{redeem_params | offer_challenge: completed_not_redeemed_challenge, status: "pending"})
       %{id: pre_reg_id} = insert(:offer_challenge, %{
-        offer: offer,
+        offer_id: offer.id,
+        offer: nil,
         user: user,
         has_team: false,
         status: "pre_registration",

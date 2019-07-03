@@ -253,4 +253,15 @@ defmodule OmegaBravera.Factory do
       token: Enum.random(10_000_000..20_000_000) |> Integer.to_string()
     }
   end
+
+  def offer_redeem_with_args_factory do
+    %OmegaBravera.Offers.OfferRedeem{
+      vendor: nil,
+      offer: nil,
+      user: nil,
+      offer_challenge: nil,
+      offer_reward: nil,
+      token: Enum.random(10_000_000..20_000_000) |> Integer.to_string()
+    }
+  end
 end
