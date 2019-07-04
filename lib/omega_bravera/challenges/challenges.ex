@@ -143,121 +143,122 @@ defmodule OmegaBravera.Challenges do
     |> Repo.one()
   end
 
-  def get_user_challenges_totals(user_id) do
-    challenges_distance_covered =
-      from(
-        nc in NGOChal,
-        where: nc.user_id == ^user_id,
-        left_join: a in NgoChallengeActivitiesM2m,
-        on: nc.id == a.challenge_id,
-        left_join: ac in ActivityAccumulator,
-        on: a.activity_id == ac.id,
-        group_by: [nc.id],
-        select: %{
-          challenge_id: nc.id,
-          distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
-        }
-      )
+  # No longer used.
+  # def get_user_challenges_totals(user_id) do
+  #   challenges_distance_covered =
+  #     from(
+  #       nc in NGOChal,
+  #       where: nc.user_id == ^user_id,
+  #       left_join: a in NgoChallengeActivitiesM2m,
+  #       on: nc.id == a.challenge_id,
+  #       left_join: ac in ActivityAccumulator,
+  #       on: a.activity_id == ac.id,
+  #       group_by: [nc.id],
+  #       select: %{
+  #         challenge_id: nc.id,
+  #         distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+  #       }
+  #     )
 
-    from(nc in NGOChal,
-      where: nc.user_id == ^user_id,
-      left_join: d in assoc(nc, :donations),
-      join: activity in subquery(challenges_distance_covered),
-      on: activity.challenge_id == nc.id,
-      select: %{
-        total_pledged:
-          fragment(
-            "
-          CASE
-            WHEN (? = 'pending' AND ? = 'PER_KM') THEN ? * ?
-            WHEN (? = 'charged' AND ? = 'PER_KM') THEN ?
-            WHEN (? = 'pending' AND ? = 'PER_MILESTONE') THEN ?
-            WHEN (? = 'charged' AND ? = 'PER_MILESTONE') THEN ?
-            ELSE 0
-          END",
-            d.status,
-            nc.type,
-            d.amount,
-            activity.distance_covered,
-            d.status,
-            nc.type,
-            d.charged_amount,
-            d.status,
-            nc.type,
-            d.amount,
-            d.status,
-            nc.type,
-            d.charged_amount
-          ),
-        total_secured: fragment("
-          CASE
-            WHEN (? = 'charged' AND ? = 'PER_KM') THEN ?
-            WHEN (? = 'charged' AND ? = 'PER_MILESTONE') THEN ?
-            ELSE 0
-          END", d.status, nc.type, d.charged_amount, d.status, nc.type, d.charged_amount),
-        currency: fragment("LOWER(?)", nc.default_currency)
-      }
-    )
-    |> Repo.all()
-    |> user_challenges_donations_totals_strings()
-  end
+  #   from(nc in NGOChal,
+  #     where: nc.user_id == ^user_id,
+  #     left_join: d in assoc(nc, :donations),
+  #     join: activity in subquery(challenges_distance_covered),
+  #     on: activity.challenge_id == nc.id,
+  #     select: %{
+  #       total_pledged:
+  #         fragment(
+  #           "
+  #         CASE
+  #           WHEN (? = 'pending' AND ? = 'PER_KM') THEN ? * ?
+  #           WHEN (? = 'charged' AND ? = 'PER_KM') THEN ?
+  #           WHEN (? = 'pending' AND ? = 'PER_MILESTONE') THEN ?
+  #           WHEN (? = 'charged' AND ? = 'PER_MILESTONE') THEN ?
+  #           ELSE 0
+  #         END",
+  #           d.status,
+  #           nc.type,
+  #           d.amount,
+  #           activity.distance_covered,
+  #           d.status,
+  #           nc.type,
+  #           d.charged_amount,
+  #           d.status,
+  #           nc.type,
+  #           d.amount,
+  #           d.status,
+  #           nc.type,
+  #           d.charged_amount
+  #         ),
+  #       total_secured: fragment("
+  #         CASE
+  #           WHEN (? = 'charged' AND ? = 'PER_KM') THEN ?
+  #           WHEN (? = 'charged' AND ? = 'PER_MILESTONE') THEN ?
+  #           ELSE 0
+  #         END", d.status, nc.type, d.charged_amount, d.status, nc.type, d.charged_amount),
+  #       currency: fragment("LOWER(?)", nc.default_currency)
+  #     }
+  #   )
+  #   |> Repo.all()
+  #   |> user_challenges_donations_totals_strings()
+  # end
 
-  defp user_challenges_donations_totals_strings(totals) do
-    currencies = %{
-      "hkd" => Decimal.new(0),
-      "krw" => Decimal.new(0),
-      "sgd" => Decimal.new(0),
-      "myr" => Decimal.new(0),
-      "usd" => Decimal.new(0),
-      "gbp" => Decimal.new(0)
-    }
+  # defp user_challenges_donations_totals_strings(totals) do
+  #   currencies = %{
+  #     "hkd" => Decimal.new(0),
+  #     "krw" => Decimal.new(0),
+  #     "sgd" => Decimal.new(0),
+  #     "myr" => Decimal.new(0),
+  #     "usd" => Decimal.new(0),
+  #     "gbp" => Decimal.new(0)
+  #   }
 
-    total_pledged_map =
-      Enum.reduce(totals, currencies, fn d, acc ->
-        total_pledged = d[:total_pledged]
+  #   total_pledged_map =
+  #     Enum.reduce(totals, currencies, fn d, acc ->
+  #       total_pledged = d[:total_pledged]
 
-        case total_pledged do
-          nil ->
-            acc
+  #       case total_pledged do
+  #         nil ->
+  #           acc
 
-          _ ->
-            Map.update(acc, d[:currency], total_pledged, fn sum ->
-              Decimal.add(sum, total_pledged)
-            end)
-        end
-      end)
-      |> Enum.filter(fn {_currency, total} -> Decimal.cmp(total, Decimal.new(0)) == :gt end)
-      |> Enum.into(%{})
+  #         _ ->
+  #           Map.update(acc, d[:currency], total_pledged, fn sum ->
+  #             Decimal.add(sum, total_pledged)
+  #           end)
+  #       end
+  #     end)
+  #     |> Enum.filter(fn {_currency, total} -> Decimal.cmp(total, Decimal.new(0)) == :gt end)
+  #     |> Enum.into(%{})
 
-    total_secured_map =
-      Enum.reduce(totals, currencies, fn d, acc ->
-        total_secured = d[:total_secured]
+  #   total_secured_map =
+  #     Enum.reduce(totals, currencies, fn d, acc ->
+  #       total_secured = d[:total_secured]
 
-        case total_secured do
-          nil ->
-            acc
+  #       case total_secured do
+  #         nil ->
+  #           acc
 
-          _ ->
-            Map.update(acc, d[:currency], total_secured, fn sum ->
-              Decimal.add(sum, total_secured)
-            end)
-        end
-      end)
-      |> Enum.filter(fn {_currency, total} -> Decimal.cmp(total, Decimal.new(0)) == :gt end)
-      |> Enum.into(%{})
+  #         _ ->
+  #           Map.update(acc, d[:currency], total_secured, fn sum ->
+  #             Decimal.add(sum, total_secured)
+  #           end)
+  #       end
+  #     end)
+  #     |> Enum.filter(fn {_currency, total} -> Decimal.cmp(total, Decimal.new(0)) == :gt end)
+  #     |> Enum.into(%{})
 
-    %{
-      total_pledged: total_to_string(total_pledged_map),
-      total_secured: total_to_string(total_secured_map)
-    }
-  end
+  #   %{
+  #     total_pledged: total_to_string(total_pledged_map),
+  #     total_secured: total_to_string(total_secured_map)
+  #   }
+  # end
 
-  defp total_to_string(total_map) do
-    Enum.reduce(total_map, "", fn
-      el, acc ->
-        "#{String.upcase(elem(el, 0))}: #{elem(el, 1)} " <> acc
-    end)
-  end
+  # defp total_to_string(total_map) do
+  #   Enum.reduce(total_map, "", fn
+  #     el, acc ->
+  #       "#{String.upcase(elem(el, 0))}: #{elem(el, 1)} " <> acc
+  #   end)
+  # end
 
   def get_user_team_membership(user_id) do
     from(
