@@ -11,8 +11,7 @@ defmodule OmegaBraveraWeb.UserControllerTest do
       weight_whole: "45",
       weight_fraction: "0.5",
       date_of_birth: "1980-07-14",
-      gender: "Male",
-      weight_fraction: "0.5"
+      gender: "Male"
     },
     credential: %{
       password: "testtest",
