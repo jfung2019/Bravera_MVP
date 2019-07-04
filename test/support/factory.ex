@@ -80,7 +80,7 @@ defmodule OmegaBravera.Factory do
       activity_id: nil,
       challenge_id: nil,
       activity: nil,
-      challenge: nil,
+      challenge: nil
     }
   end
 
