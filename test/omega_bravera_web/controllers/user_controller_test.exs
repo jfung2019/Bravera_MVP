@@ -71,8 +71,9 @@ defmodule OmegaBraveraWeb.UserControllerTest do
                  date_of_birth: ~D[1980-07-14],
                  gender: "Male"
                },
-              credential: %{password_hash: hash}
+               credential: %{password_hash: hash}
              } = Accounts.get_user!(user_id, [:setting, :credential])
+
       assert hash != nil
     end
 
