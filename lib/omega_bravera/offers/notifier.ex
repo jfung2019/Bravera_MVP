@@ -429,7 +429,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-completedChallengeDistance-", "#{challenge.distance_covered} Km")
+    |> Email.add_substitution("-completedChallengeDistance-", "#{Decimal.round(challenge.distance_covered, 2)} Km")
     |> Email.add_substitution("-activityDistance-", "#{Decimal.round(activity.distance, 2)} Km")
     |> Email.add_substitution("-challengeDistance-", "#{Decimal.round(challenge.distance_target, 2)} Km")
     |> Email.add_substitution("-timeRemaining-", "#{remaining_time(challenge)}")
