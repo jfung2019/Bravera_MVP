@@ -29,7 +29,7 @@ defmodule OmegaBravera.Accounts.User do
     field(:lastname, :string)
     field(:additional_info, :map, default: %{})
     field(:profile_picture, :string, default: nil)
-    field :accept_terms, :boolean, virtual: true
+    field(:accept_terms, :boolean, virtual: true)
 
     # associations
     has_one(:credential, Credential)
@@ -58,7 +58,7 @@ defmodule OmegaBravera.Accounts.User do
     |> unique_constraint(:email)
     |> add_email_activation_token()
     |> cast_assoc(:setting, with: &Setting.changeset/2)
-    |> cast_assoc(:credential, with: &Credential.changeset/2)
+    |> cast_assoc(:credential, with: &Credential.optional_changeset/2, required: false)
   end
 
   def create_credential_user_changeset(user, attrs \\ %{credential: %{}}) do

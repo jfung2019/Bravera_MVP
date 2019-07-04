@@ -5,14 +5,13 @@
     </div>
   <% end %>
 
-  <p><b>If you add/change your email, we will send you a verification link that you have to click to be able to take challenges.</b></p>
   <div class="form-group">
     <%= label f, :email, gettext("Email"), class: "control-label" %>
     <%= email_input f, :email, class: "form-control", required: "" %>
     <%= error_tag f, :email %>
   </div>
 
-  <p><%= gettext("Note: If email was changed (or added) an activation email will be sent out to verify your ownership.") %></p>
+  <p><%= gettext("If you add/change your email, we will send you a verification link that you have to click to be able to take challenges.") %></p>
 
   <div class="form-group">
     <%= label f, gettext("First name"), class: "control-label" %>
