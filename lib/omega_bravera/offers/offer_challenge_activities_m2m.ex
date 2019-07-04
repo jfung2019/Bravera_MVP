@@ -26,12 +26,15 @@ defmodule OmegaBravera.Offers.OfferChallengeActivitiesM2m do
     |> activity_type_matches_challenge_activity_type(activity, offer_challenge)
   end
 
-  def activity_type_matches_challenge_activity_type(changeset, %{type: activity_type}, %{activity_type: challenge_activity_type}) do
+  def activity_type_matches_challenge_activity_type(changeset, %{type: activity_type}, %{
+        activity_type: challenge_activity_type
+      }) do
     accepted_types = ActivityOptions.accepted_activity_types()
     sub_types = accepted_types[challenge_activity_type]
 
     case sub_types do
-      nil -> add_error(changeset, :activity_id, "Activity type not supported.")
+      nil ->
+        add_error(changeset, :activity_id, "Activity type not supported.")
 
       types ->
         if not Enum.member?(types, activity_type) do
@@ -40,6 +43,7 @@ defmodule OmegaBravera.Offers.OfferChallengeActivitiesM2m do
               activity_type
             }"
           )
+
           add_error(changeset, :activity_id, "Activity type not allowed")
         else
           changeset
