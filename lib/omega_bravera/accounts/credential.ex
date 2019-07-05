@@ -28,16 +28,21 @@ defmodule OmegaBravera.Accounts.Credential do
   @doc false
   def changeset(%Credential{} = credential, attrs \\ %{}) do
     credential
-    |> cast(attrs, @create_attrs)
+    |> optional_changeset(attrs)
     |> validate_required([:password])
-    |> validate_confirmation(:password)
-    |> validate_length(:password, min: 6)
-    |> put_password_hash()
   end
 
   def token_changeset(%Credential{} = credential, attrs) do
     credential
     |> cast(attrs, [:reset_token, :reset_token_created])
+  end
+
+  def optional_changeset(%Credential{} = credential, attrs \\ %{}) do
+    credential
+    |> cast(attrs, @create_attrs)
+    |> validate_confirmation(:password)
+    |> validate_length(:password, min: 6)
+    |> put_password_hash()
   end
 
   defp put_password_hash(changeset) do

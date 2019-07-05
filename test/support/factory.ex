@@ -63,16 +63,24 @@ defmodule OmegaBravera.Factory do
     }
   end
 
-  def activity_factory do
-    %OmegaBravera.Challenges.Activity{
-      strava_id: 1_836_709_368,
+  def activity_accumulator_factory do
+    %OmegaBravera.Activity.ActivityAccumulator{
+      strava_id: 1_981_709_368,
       distance: Decimal.from_float(1.74),
-      start_date: ~N[2018-09-11 07:58:01],
-      type: "Walk",
-      name: "Morning Walk",
+      start_date: Timex.shift(Timex.now(), days: 1),
+      type: "Run",
+      name: "Morning Run",
       manual: false,
-      user: build(:user),
-      challenge: build(:ngo_challenge)
+      user: build(:user)
+    }
+  end
+
+  def ngo_challenge_activity_relaton_factory do
+    %OmegaBravera.Challenges.NgoChallengeActivitiesM2m{
+      activity_id: nil,
+      challenge_id: nil,
+      activity: nil,
+      challenge: nil
     }
   end
 

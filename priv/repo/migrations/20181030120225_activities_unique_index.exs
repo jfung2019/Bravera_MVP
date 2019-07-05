@@ -2,11 +2,11 @@ defmodule OmegaBravera.Repo.Migrations.ActivitiesUniqueIndex do
   use Ecto.Migration
   import Ecto.Query
 
-  alias OmegaBravera.{Repo, Challenges.Activity}
+  alias OmegaBravera.Repo
 
   def up do
-    from(a in Activity,
-      join: a2 in Activity,
+    from(a in "activities",
+      join: a2 in "activities",
       on:
         a2.strava_id == a.strava_id and
           a2.challenge_id == a.challenge_id and

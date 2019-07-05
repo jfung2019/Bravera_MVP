@@ -168,27 +168,5 @@ defmodule OmegaBravera.ChallengesTest do
       ngo_chal = ngo_chal_fixture()
       assert %Ecto.Changeset{} = Challenges.change_ngo_chal(ngo_chal, insert(:user))
     end
-
-    test "get_user_challenges_totals/1 returns correct donation amounts for user challenges" do
-      user = insert(:user)
-
-      per_goal_challenge = insert(:ngo_challenge, %{user: nil, user_id: user.id})
-      km_challenge = insert(:ngo_challenge, %{type: "PER_KM", user: nil, user_id: user.id})
-
-      _km_activity = insert(:activity, %{challenge: nil, challenge_id: km_challenge.id})
-
-      # 150 pending
-      _per_goal_donation = insert(:donation, %{ngo_chal: nil, ngo_chal_id: per_goal_challenge.id})
-      # 150 charged
-      _per_goal_donation =
-        insert(:donation, %{ngo_chal: nil, ngo_chal_id: per_goal_challenge.id, status: "charged"})
-
-      # 5 (amount) * 1.74 (distance) = 8.7 HKD
-      _km_donation = insert(:km_donation, %{ngo_chal: nil, ngo_chal_id: km_challenge.id})
-
-      totals = Challenges.get_user_challenges_totals(user.id)
-      assert totals[:total_pledged] =~ "HKD: 308.5 "
-      assert totals[:total_secured] =~ "HKD: 150 "
-    end
   end
 end

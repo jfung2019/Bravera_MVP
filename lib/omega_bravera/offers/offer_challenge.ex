@@ -7,7 +7,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     Money.Payment,
     Offers.Offer,
     Accounts.User,
-    Offers.OfferChallengeActivity,
+    Offers.OfferChallengeActivitiesM2m,
     Offers.OfferRedeem,
     Offers.OfferChallengeTeam,
     Repo,
@@ -41,7 +41,9 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     has_one(:team, OfferChallengeTeam, foreign_key: :offer_challenge_id)
     has_one(:payment, Payment, foreign_key: :offer_challenge_id)
 
-    has_many(:offer_challenge_activities, OfferChallengeActivity, foreign_key: :offer_challenge_id)
+    has_many(:offer_challenge_activities, OfferChallengeActivitiesM2m,
+      foreign_key: :offer_challenge_id
+    )
 
     timestamps(type: :utc_datetime)
   end

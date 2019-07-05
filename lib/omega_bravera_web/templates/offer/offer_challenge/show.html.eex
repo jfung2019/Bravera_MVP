@@ -45,15 +45,15 @@
             <%= if is_own_challenge?(@challenge, @current_user) do %>
               <%= link("View Offers", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% else %>
-              <%= link("Join the Challenge", to: offer_offer_challenge_path(@conn, :new, @offer_with_stats.slug), class: "btn btn-bravera mb-2") %>
+              <%= link("Join the Challenge", to: offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
               <%= link("View All Challenges", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% end %>
           </div>
         </div>
 
         <div class="mt-4">
-          <%= render("offer_card.html", offer: @offer_with_stats, conn: @conn) %>
-          <%= render(OmegaBraveraWeb.Offer.OfferView, "offer_stats.html", offer: @offer_with_stats, conn: @conn) %>
+          <%= render("offer_card.html", offer: @offer, conn: @conn) %>
+          <%= render(OmegaBraveraWeb.Offer.OfferView, "offer_stats.html", offer: @offer, conn: @conn) %>
         </div>
 
       </div>

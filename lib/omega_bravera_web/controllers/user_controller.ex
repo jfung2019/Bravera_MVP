@@ -62,7 +62,7 @@ defmodule OmegaBraveraWeb.UserController do
 
   def edit(conn, _) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
-    user = Accounts.get_user_with_account_settings!(user_id) |> IO.inspect()
+    user = Accounts.get_user_with_account_settings!(user_id)
     changeset = Accounts.change_user(user)
     render(conn, "edit.html", user: user, changeset: changeset)
   end
