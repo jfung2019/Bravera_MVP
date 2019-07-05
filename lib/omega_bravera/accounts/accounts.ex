@@ -225,7 +225,12 @@ defmodule OmegaBravera.Accounts do
     user
     |> Repo.preload(
       offer_challenges:
-        from(oc in OfferChallenge, where: oc.status in ["active", "pre_registration"])
+        from(oc in OfferChallenge,
+          left_join: ofr in assoc(oc, :offer_redeems),
+          where:
+            oc.status in ["active", "pre_registration"] or
+              (oc.status == "complete" and ofr.status == "pending")
+        )
     )
   end
 

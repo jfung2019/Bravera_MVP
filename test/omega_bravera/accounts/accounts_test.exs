@@ -143,14 +143,17 @@ defmodule OmegaBravera.AccountsTest do
       vendor = insert(:vendor)
       offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
       offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer.id})
-      %{id: completed_id} = completed_challenge = insert(:offer_challenge, %{
-        offer_id: offer.id,
-        offer: nil,
-        user: user,
-        has_team: false,
-        status: "complete",
-        slug: "complete"
-      })
+
+      %{id: completed_id} =
+        completed_challenge =
+        insert(:offer_challenge, %{
+          offer_id: offer.id,
+          offer: nil,
+          user: user,
+          has_team: false,
+          status: "complete",
+          slug: "complete"
+        })
 
       redeem_params = %{
         status: "redeemed",
@@ -162,31 +165,43 @@ defmodule OmegaBravera.AccountsTest do
       }
 
       insert(:offer_redeem_with_args, %{redeem_params | offer_challenge: completed_challenge})
-      %{id: completed_not_redeemed_id} = completed_not_redeemed_challenge = insert(:offer_challenge, %{
-        offer_id: offer.id,
-        offer: nil,
-        user: user,
-        has_team: false,
-        status: "complete",
-        slug: "complete_no_redeem"
+
+      %{id: completed_not_redeemed_id} =
+        completed_not_redeemed_challenge =
+        insert(:offer_challenge, %{
+          offer_id: offer.id,
+          offer: nil,
+          user: user,
+          has_team: false,
+          status: "complete",
+          slug: "complete_no_redeem"
+        })
+
+      insert(:offer_redeem_with_args, %{
+        redeem_params
+        | offer_challenge: completed_not_redeemed_challenge,
+          status: "pending"
       })
 
-      insert(:offer_redeem_with_args, %{redeem_params | offer_challenge: completed_not_redeemed_challenge, status: "pending"})
-      %{id: pre_reg_id} = insert(:offer_challenge, %{
-        offer_id: offer.id,
-        offer: nil,
-        user: user,
-        has_team: false,
-        status: "pre_registration",
-        slug: "pre"
-      })
-      %{id: active_id} = insert(:offer_challenge, %{
-        offer: offer,
-        user: user,
-        has_team: false,
-        status: "active",
-        slug: "active"
-      })
+      %{id: pre_reg_id} =
+        insert(:offer_challenge, %{
+          offer_id: offer.id,
+          offer: nil,
+          user: user,
+          has_team: false,
+          status: "pre_registration",
+          slug: "pre"
+        })
+
+      %{id: active_id} =
+        insert(:offer_challenge, %{
+          offer: offer,
+          user: user,
+          has_team: false,
+          status: "active",
+          slug: "active"
+        })
+
       %{offer_challenges: chals} = Accounts.preload_active_offer_challenges(user)
       chal_ids = Enum.map(chals, fn %{id: id} -> id end)
       assert active_id in chal_ids
