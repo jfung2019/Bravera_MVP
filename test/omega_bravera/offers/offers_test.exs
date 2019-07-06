@@ -474,6 +474,33 @@ defmodule OmegaBravera.OffersTest do
 
       assert [{:vendor_id, {"Your Vendor ID seems to be incorrect.", _}}] = errors
     end
+
+    test "create_offer_redeems/4 vendor can only redeem their offer" do
+      vendor1 = insert(:vendor)
+      offer1 = insert(:offer, %{vendor: nil, vendor_id: vendor1.id})
+      offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer1.id})
+      user = build(:user)
+
+      offer_challenge1 =
+        insert(:offer_challenge, %{
+          offer: nil,
+          offer_id: offer1.id,
+          user: nil,
+          user_id: user.id,
+          has_team: false
+        })
+
+      offer_redeem1 = insert(:offer_redeem_with_args, %{vendor: vendor1, offer: offer1, user: user, offer_challenge: offer_challenge1, offer_reward: offer_reward})
+      vendor2 = insert(:vendor)
+
+      attrs = %{
+        "vendor_id" => vendor2.vendor_id,
+        "offer_reward_id" => offer_reward.id
+      }
+
+      assert %Ecto.Changeset{errors: errors} = OfferRedeem.redeem_reward_changeset(offer_redeem1, offer_challenge1, offer1, vendor2, attrs)
+      assert %Ecto.Changeset{valid?: true} = OfferRedeem.redeem_reward_changeset(offer_redeem1, offer_challenge1, offer1, vendor1, attrs)
+    end
   end
 
   describe "offer_vendors" do

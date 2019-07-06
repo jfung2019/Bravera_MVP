@@ -9,6 +9,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Offers,
     Offers.OfferChallenge,
     Offers.OfferRedeem,
+    Offers.OfferVendor,
     Fundraisers.NgoOptions,
     Offers.Notifier,
     Repo,
@@ -131,8 +132,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       ])
 
     offer_redeem = Repo.get_by(OfferRedeem, token: redeem_token)
+    vendor = Repo.get_by(OfferVendor, vendor_id: offer_redeem_params["vendor_id"])
 
-    case Offers.update_offer_redeems(offer_redeem, offer_challenge, offer_redeem_params) do
+    case Offers.update_offer_redeems(offer_redeem, offer_challenge, offer_challenge.offer, vendor, offer_redeem_params) do
       {:ok, offer_redeem} ->
         offer_redeem = Repo.preload(offer_redeem, :user)
         Notifier.send_user_reward_redemption_successful(offer_challenge, offer_redeem.user)
