@@ -893,6 +893,22 @@ defmodule OmegaBravera.Offers do
     |> Repo.update()
   end
 
+  def kick_team_member(
+        team_member,
+        challenge_with_team,
+        challenge_owner
+      ) do
+      OfferChallengeTeamMembers.kick_team_member_changeset(team_member, challenge_with_team, challenge_owner)
+      |> Repo.delete()
+  end
+
+  def get_team_member(user_id, team_id) do
+    from(
+      otm in OfferChallengeTeamMembers,
+      where: otm.user_id == ^user_id and otm.team_id == ^team_id
+    ) |> Repo.one()
+  end
+
   def get_team!(id), do: Repo.get!(OfferChallengeTeam, id)
 
   def create_offer_challenge_activity_m2m(

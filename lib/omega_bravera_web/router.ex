@@ -211,6 +211,12 @@ defmodule OmegaBraveraWeb.Router do
           Offer.OfferChallengeController,
           :cancel_invitation
         )
+
+        post(
+          "/kick_team_member/:user_id",
+          Offer.OfferChallengeController,
+          :kick_team_member
+        )
       end
     end
   end

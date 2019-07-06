@@ -12,7 +12,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Fundraisers.NgoOptions,
     Offers.Notifier,
     Repo,
-    Accounts.User
+    Accounts.User,
+    Accounts
   }
 
   plug :put_layout, false when action in [:qr_code]
@@ -240,6 +241,34 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         |> open_welcome_modal()
         |> open_success_modal()
         |> render("show.html", render_attrs)
+    end
+  end
+
+  def kick_team_member(conn, %{
+    "offer_slug" => offer_slug,
+    "offer_challenge_slug" => slug,
+    "user_id" => team_member_user_id
+  }) do
+    case Guardian.Plug.current_resource(conn) do
+      nil ->
+        conn
+        |> put_flash(
+          :error,
+          "Invalid operation. Please make sure you are using the correct account."
+        )
+        |> redirect(to: page_path(conn, :login))
+      logged_in_challenge_owner ->
+        challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, team: [:users]])
+        team_member = Offer.get_team_member(team_member_user_id, challenge.team.id)
+
+        case Offers.kick_team_member(team_member, challenge, logged_in_challenge_owner) do
+          {:ok, struct} ->
+            IO.inspect "Good!"
+            IO.inspect struct
+          {:error, reason} ->
+            IO.inspect "Bad!"
+            IO.inspect reason
+        end
     end
   end
 
