@@ -13,8 +13,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Fundraisers.NgoOptions,
     Offers.Notifier,
     Repo,
-    Accounts.User,
-    Accounts
+    Accounts.User
   }
 
   plug :put_layout, false when action in [:qr_code]

@@ -4,7 +4,6 @@ defmodule OmegaBravera.Offers.OfferChallengeTeamMembers do
 
   alias OmegaBravera.{
     Accounts.User,
-    Offers.OfferChallenge,
     Offers.OfferChallengeTeam,
     Offers.OfferChallengeTeamInvitation
   }
