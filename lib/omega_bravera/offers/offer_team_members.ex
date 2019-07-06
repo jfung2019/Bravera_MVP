@@ -21,52 +21,6 @@ defmodule OmegaBravera.Offers.OfferChallengeTeamMembers do
     |> cast(params, [:user_id, :team_id])
     |> verify_invitee_not_team_owner(current_user, challenge_owner)
     |> verify_team(invitation, team)
-    |> validate_required([:user_id, :team_id])
-  end
-
-  def kick_team_member_changeset(
-        team_member,
-        %OfferChallenge{
-          status: status,
-          team: %{id: team_id, users: team_members},
-          user_id: challenge_owner_user_id
-        },
-        %User{id: logged_in_challenge_owner_id}
-      ) do
-    team_member
-    |> validate_challenge_owner(challenge_owner_user_id, logged_in_challenge_owner_id)
-    |> validate_team_member(team_members, team_member_user_id, team_id)
-    |> validate_challenge_status(status)
-    |> validate_required([:user_id, :team_id])
-  end
-
-  def validate_challenge_owner(changeset, challenge_owner_user_id, logged_in_challenge_owner_id) do
-    if challenge_owner_user_id != logged_in_challenge_owner_id do
-      add_error(changeset, :team_id, "Challenge owner is not correct!")
-    else
-      changeset
-    end
-  end
-
-  def validate_team_member(changeset, team_members, team_member_user_id, team_id) do
-    result = Enum.find(team_members, &(&1.id == team_member_user_id))
-
-    if not is_nil(result) and result > 0 do
-      changeset
-      |> put_change(:user_id, team_member_user_id)
-      |> put_change(:team_id, team_id)
-    else
-      add_error(changeset, :user_id, "Team member not found in team!")
-    end
-  end
-
-  def validate_challenge_status(changeset, status) do
-    cond do
-      status == "active" -> changeset
-      status == "pre_registration" -> changeset
-      status == "complete" -> add_error(changeset, :team_id, "Cannot kick team member from complete challenge.")
-      status == "expired" -> add_error(changeset, :team_id, "Cannot kick team member from expired challenge.")
-    end
   end
 
   # Make sure challenge owner cannot invite himself.

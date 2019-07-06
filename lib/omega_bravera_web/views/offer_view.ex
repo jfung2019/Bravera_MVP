@@ -47,6 +47,7 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
         class: "btn btn-green sign-up text-capitalize"
       )
 
+  # TODO: support expired and pre_registration challenges. -Sherief
   def generate_offer_challenge_link(conn, %{offer_challenges: chals}, %{id: id} = offer) do
     case Enum.find(chals, fn %{offer_id: offer_id} -> offer_id == id end) do
       nil ->
