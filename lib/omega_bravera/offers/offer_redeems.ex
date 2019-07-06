@@ -91,9 +91,23 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> add_error(:id, "Offer Challenge not found in database.")
   end
 
+  def redeem_reward_changeset(_, _, nil, _, _) do
+    %__MODULE__{}
+    |> cast(%{}, [])
+    |> add_error(:id, "Offer not found in database.")
+  end
+
+  def redeem_reward_changeset(_, _, _, nil, _) do
+    %__MODULE__{}
+    |> cast(%{}, [])
+    |> add_error(:id, "Vendor not found in database.")
+  end
+
   def redeem_reward_changeset(
         %__MODULE__{} = offer_redeem,
         %OfferChallenge{id: challenge_id},
+        %Offer{vendor_id: offer_vendor_id},
+        %OfferVendor{id: input_vendor_id},
         attrs
       ) do
     offer_redeem
@@ -104,7 +118,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
       message: "Offer Challenge has no such redeem token."
     )
     |> put_change(:status, "redeemed")
-    |> validate_vendor(attrs)
+    |> validate_vendor(offer_vendor_id, input_vendor_id)
     |> validate_previously_redeemed(offer_redeem)
   end
 
@@ -119,19 +133,14 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   defp add_user_id(%Ecto.Changeset{} = changeset, challenge_owner_id, nil),
     do: put_change(changeset, :user_id, challenge_owner_id)
 
-  defp validate_vendor(%Ecto.Changeset{} = changeset, %{"vendor_id" => vendor_id}) do
-    vendor_struct = Repo.get_by(OfferVendor, vendor_id: vendor_id)
-
-    if is_nil(vendor_struct) do
+  defp validate_vendor(%Ecto.Changeset{} = changeset, offer_vendor_id, input_vendor_id) do
+    if offer_vendor_id == input_vendor_id do
       changeset
-      |> add_error(:vendor_id, "Your Vendor ID seems to be incorrect.")
     else
       changeset
+      |> add_error(:vendor_id, "Your Vendor ID seems to be incorrect.")
     end
   end
-
-  defp validate_vendor(%Ecto.Changeset{} = changeset, _),
-    do: add_error(changeset, :vendor_id, "Your Vendor ID seems to be incorrect.")
 
   defp add_team_id(%Ecto.Changeset{} = changeset, %OfferChallenge{has_team: false}), do: changeset
 

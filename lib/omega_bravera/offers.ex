@@ -712,9 +712,9 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_offer_redeems(offer_redeems, offer_challenge, attrs) do
+  def update_offer_redeems(offer_redeems, offer_challenge, offer, vendor, attrs) do
     offer_redeems
-    |> OfferRedeem.redeem_reward_changeset(offer_challenge, attrs)
+    |> OfferRedeem.redeem_reward_changeset(offer_challenge, offer, vendor, attrs)
     |> Repo.update()
   end
 

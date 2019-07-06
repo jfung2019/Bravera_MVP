@@ -242,6 +242,9 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
        ),
        do: params
 
+  defp notify_participant_of_activity({_status, %OfferChallenge{status: "expired"}, _activity} = params, _),
+    do: params
+
   defp valid_activity?(activity, challenge, _send_emails) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
     challenge_started_first = Timex.compare(challenge.start_date, activity.start_date) == -1
