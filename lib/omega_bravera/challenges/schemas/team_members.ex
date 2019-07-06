@@ -4,7 +4,7 @@ defmodule OmegaBravera.Challenges.TeamMembers do
 
   alias OmegaBravera.{Accounts.User, Challenges.Team}
 
-  @primary_key false
+  @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "team_members" do
     belongs_to(:user, User)
