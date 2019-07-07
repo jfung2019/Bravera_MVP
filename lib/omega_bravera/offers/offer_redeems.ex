@@ -49,7 +49,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   def create_changeset(_, _, vendor, attrs, _) when is_nil(vendor) == true do
     %__MODULE__{}
     |> changeset(attrs)
-    |> add_error(:vendor_id, "Your Vendor ID seems to be incorrect.")
+    |> add_error(:vendor_id, "Invalid Vendor ID.")
   end
 
   def create_changeset(
@@ -138,7 +138,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
       changeset
     else
       changeset
-      |> add_error(:vendor_id, "Your Vendor ID seems to be incorrect.")
+      |> add_error(:vendor_id, "This vendor ID is not applicable for this offer.")
     end
   end
 

@@ -472,7 +472,7 @@ defmodule OmegaBravera.OffersTest do
       assert {:error, %Ecto.Changeset{errors: errors}} =
                Offers.create_offer_redeems(%OfferChallenge{}, nil, %{})
 
-      assert [{:vendor_id, {"Your Vendor ID seems to be incorrect.", _}}] = errors
+      assert [{:vendor_id, {"Invalid Vendor ID.", _}}] = errors
     end
 
     test "create_offer_redeems/4 vendor can only redeem their offer" do
