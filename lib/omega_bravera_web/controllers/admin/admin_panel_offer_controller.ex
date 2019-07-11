@@ -145,7 +145,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     conn
     |> assign(:available_currencies, NgoOptions.currency_options_human())
     |> assign(:available_activities, NgoOptions.activity_options())
-    |> assign(:available_distances, NgoOptions.distance_options())
     |> assign(:available_challenge_type_options, NgoOptions.challenge_type_options_human())
   end
 end

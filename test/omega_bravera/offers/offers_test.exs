@@ -13,7 +13,7 @@ defmodule OmegaBravera.OffersTest do
       additional_members: 42,
       currency: "gbp",
       desc: "some desc",
-      distances: [],
+      target: 0,
       full_desc: "some full_desc",
       ga_id: "some ga_id",
       hidden: false,
@@ -35,7 +35,7 @@ defmodule OmegaBravera.OffersTest do
       additional_members: 43,
       currency: "hkd",
       desc: "some updated desc",
-      distances: [],
+      target: 0,
       full_desc: "some updated full_desc",
       ga_id: "some updated ga_id",
       hidden: true,
@@ -56,7 +56,7 @@ defmodule OmegaBravera.OffersTest do
       additional_members: nil,
       currency: nil,
       desc: nil,
-      distances: nil,
+      target: nil,
       full_desc: nil,
       ga_id: nil,
       hidden: nil,
@@ -107,7 +107,7 @@ defmodule OmegaBravera.OffersTest do
       assert offer.additional_members == 42
       assert offer.currency == "gbp"
       assert offer.desc == "some desc"
-      assert offer.distances == []
+      assert offer.target == 0
       assert offer.full_desc == "some full_desc"
       assert offer.ga_id == "some ga_id"
       assert offer.hidden == false
@@ -133,7 +133,7 @@ defmodule OmegaBravera.OffersTest do
       assert offer.additional_members == 43
       assert offer.currency == "hkd"
       assert offer.desc == "some updated desc"
-      assert offer.distances == []
+      assert offer.target == 0
       assert offer.full_desc == "some updated full_desc"
       assert offer.ga_id == "some updated ga_id"
       assert offer.hidden == true

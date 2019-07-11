@@ -195,7 +195,7 @@ defmodule OmegaBravera.Factory do
       image: "/image.png",
       url: "http://test.com",
       offer_challenge_types: ["PER_KM"],
-      distances: ["50"],
+      target: 50,
       activities: ["Run", "Cycle"],
       time_limit: 0,
       toc: "foo",

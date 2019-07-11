@@ -168,9 +168,9 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :distances, class: "control-label" %>
-    <%= multiple_select f, :distances, @available_distances, class: "form-control" %>
-    <%= error_tag f, :distances %>
+    <%= label f, :target, "Target (if km challenge: enter KMs. if Segment challenge: enter Segment ID", class: "control-label" %>
+    <%= number_input f, :target, class: "form-control", required: "", min: "1" %>
+    <%= error_tag f, :target %>
   </div>
 
   <div class="form-group">
