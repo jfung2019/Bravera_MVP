@@ -43,14 +43,9 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     process_challenge(challenge, activity, challenge.user, send_emails)
   end
 
-  def process_challenge(
-        %OfferChallenge{type: "PER_KM"} = challenge,
-        %ActivityAccumulator{distance: distance} = activity,
-        user,
-        send_emails
-      )
-      when distance > 0 do
-    Logger.info("Offers:ActivityIngestion: Processing km challenge: #{inspect(challenge.id)}")
+
+  def process_challenge(%OfferChallenge{} = challenge, %ActivityAccumulator{distance: distance} = activity, user, send_emails) when distance > 0 do
+    Logger.info("Offers:ActivityIngestion: Processing #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}")
 
     {status, _challenge, _activity} =
       challenge
@@ -59,14 +54,14 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       |> notify_participant_of_activity(send_emails)
 
     Logger.info(
-      "Offers:ActivityIngestion: Processing has finished for km challenge: #{
+      "Offers:ActivityIngestion: Processing has finished for #{inspect(challenge.type)} challenge: #{
         inspect(challenge.id)
       }"
     )
 
     if status == :ok do
       Logger.info(
-        "Offers:ActivityIngestion: Processing was successful for km challenge: #{
+        "Offers:ActivityIngestion: Processing was successful for #{inspect(challenge.type)} challenge: #{
           inspect(challenge.id)
         }"
       )
@@ -74,49 +69,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       {:ok, :challenge_updated}
     else
       Logger.info(
-        "Offers:ActivityIngestion: Processing was not successful for km challenge: #{
-          inspect(challenge.id)
-        }"
-      )
-
-      {:error, :activity_not_processed}
-    end
-  end
-
-  def process_challenge(
-        %OfferChallenge{type: "PER_MILESTONE"} = challenge,
-        %ActivityAccumulator{distance: distance} = activity,
-        user,
-        send_emails
-      )
-      when distance > 0 do
-    Logger.info(
-      "Offers:ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}"
-    )
-
-    {status, _challenge, _activity} =
-      challenge
-      |> create_activity(activity, user, send_emails)
-      |> update_challenge()
-      |> notify_participant_of_activity(send_emails)
-
-    Logger.info(
-      "Offers:ActivityIngestion: Processing has finished for milestone challenge: #{
-        inspect(challenge.id)
-      }"
-    )
-
-    if status == :ok do
-      Logger.info(
-        "Offers:ActivityIngestion: Processing was successful for milestone challenge: #{
-          inspect(challenge.id)
-        }"
-      )
-
-      {:ok, :challenge_updated}
-    else
-      Logger.info(
-        "Offers:ActivityIngestion: Processing was not successful for milestone challenge: #{
+        "Offers:ActivityIngestion: Processing was not successful for #{inspect(challenge.type)} challenge: #{
           inspect(challenge.id)
         }"
       )

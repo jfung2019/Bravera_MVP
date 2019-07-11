@@ -18,6 +18,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   schema "offer_challenges" do
     field(:activity_type, :string)
     field(:default_currency, :string, default: "hkd")
+    # Can be distance in KMs or a Strava Segment ID. Filled from Offer.target.
     field(:distance_target, :integer, default: 100)
     field(:milestones, :integer, default: 4)
     field(:end_date, :utc_datetime)
@@ -191,6 +192,21 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> change(status: status)
   end
 
+  def activity_completed_changeset(%__MODULE__{type: "BRAVERA_SEGMENT"} = challenge, activity) do
+    if has_relevant_segment(activity) do
+      challenge
+        |> change(distance_covered: challenge.distance_covered)
+        |> change(%{
+          last_activity_received: DateTime.truncate(Timex.now(), :second),
+          participant_notified_of_inactivity: false,
+          donor_notified_of_inactivity: false,
+          status: "complete"
+        })
+    else
+      challenge
+    end
+  end
+
   def activity_completed_changeset(%__MODULE__{} = challenge, %{distance: distance}) do
     challenge
     |> change(distance_covered: Decimal.add(challenge.distance_covered, distance))
@@ -200,6 +216,11 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       donor_notified_of_inactivity: false
     })
     |> update_challenge_status(challenge)
+  end
+
+  def has_relevant_segment(activity) do
+    # TODO: add logic
+    true
   end
 
   def participant_inactivity_notification_changeset(%__MODULE__{} = challenge) do

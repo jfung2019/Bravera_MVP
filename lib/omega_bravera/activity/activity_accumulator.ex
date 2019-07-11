@@ -17,6 +17,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     field(:moving_time, :integer, default: 0)
     field(:elapsed_time, :integer, default: 0)
     field(:calories, :decimal, default: 0)
+    field(:segment_efforts, :map)
     field(:source, :string, default: "strava")
 
     # Only used for to record which admin created the activity
@@ -77,7 +78,8 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       average_speed: to_km_per_hour(strava_activity.average_speed),
       moving_time: strava_activity.moving_time,
       elapsed_time: strava_activity.elapsed_time,
-      calories: strava_activity.calories
+      calories: strava_activity.calories,
+      segment_efforts: strava_activity.segment_efforts
     })
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)
