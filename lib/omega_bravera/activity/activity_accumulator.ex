@@ -17,7 +17,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     field(:moving_time, :integer, default: 0)
     field(:elapsed_time, :integer, default: 0)
     field(:calories, :decimal, default: 0)
-    field(:segment_efforts, :map)
+    field(:activity_json, :map)
     field(:source, :string, default: "strava")
 
     # Only used for to record which admin created the activity
@@ -79,7 +79,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       moving_time: strava_activity.moving_time,
       elapsed_time: strava_activity.elapsed_time,
       calories: strava_activity.calories,
-      segment_efforts: strava_activity.segment_efforts
+      activity_json: strava_activity_to_map(strava_activity)
     })
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)
@@ -130,4 +130,42 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
 
   defp strava_attributes(%Strava.Activity{} = strava_activity),
     do: Map.take(strava_activity, @allowed_attributes)
+
+  def strava_activity_to_map(strava_activity) do
+    strava_activity
+    |> to_map()
+    |> parse_athlete
+    |> parse_photos
+    |> parse_segment_efforts
+  end
+
+  defp to_map(%_{} = value), do: Map.from_struct(value)
+  defp to_map(%{} = value), do: value
+
+  defp parse_athlete(%{athlete: athlete} = activity),
+    do: %{activity | athlete: to_map(athlete)}
+
+  defp parse_photos(activity)
+  defp parse_photos(%{photos: nil} = activity), do: activity
+
+  defp parse_photos(%{photos: photos} = activity) do
+    %{activity | photos: to_map(photos)}
+  end
+
+  defp parse_segment_efforts(activity)
+  defp parse_segment_efforts(%{segment_efforts: nil} = activity), do: activity
+
+  defp parse_segment_efforts(%{segment_efforts: segment_efforts} = activity) do
+    %{
+      activity
+      | segment_efforts:
+          Enum.map(segment_efforts, fn segment_effort ->
+            to_map(segment_effort)
+            |> parse_segment()
+          end)
+    }
+  end
+
+  defp parse_segment(%{segment: segment} = segment_effort),
+    do: %{segment_effort | segment: to_map(segment)}
 end

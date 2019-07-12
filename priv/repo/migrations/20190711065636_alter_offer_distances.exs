@@ -7,7 +7,7 @@ defmodule OmegaBravera.Repo.Migrations.AlterOfferDistances do
     end
 
     alter table("activities_accumulator") do
-      add(:segment_efforts, :map)
+      add(:activity_json, :map)
     end
 
     execute("update offers set target = distances[array_upper(distances, 1)]")
@@ -16,10 +16,6 @@ defmodule OmegaBravera.Repo.Migrations.AlterOfferDistances do
 
     alter table("offers") do
       remove(:distances)
-    end
-
-    alter table("activities_accumulator") do
-      remove(:segment_efforts)
     end
   end
 end

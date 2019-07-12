@@ -10,6 +10,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     Offers.OfferChallengeActivitiesM2m,
     Offers.OfferRedeem,
     Offers.OfferChallengeTeam,
+    Activity.ActivityAccumulator,
     Repo,
     Money.Payment
   }
@@ -193,15 +194,15 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   end
 
   def activity_completed_changeset(%__MODULE__{type: "BRAVERA_SEGMENT"} = challenge, activity) do
-    if has_relevant_segment(activity) do
+    if has_relevant_segment(challenge, activity) do
       challenge
-        |> change(distance_covered: challenge.distance_covered)
-        |> change(%{
-          last_activity_received: DateTime.truncate(Timex.now(), :second),
-          participant_notified_of_inactivity: false,
-          donor_notified_of_inactivity: false,
-          status: "complete"
-        })
+      |> change(distance_covered: challenge.distance_covered)
+      |> change(%{
+        last_activity_received: DateTime.truncate(Timex.now(), :second),
+        participant_notified_of_inactivity: false,
+        donor_notified_of_inactivity: false,
+        status: "complete"
+      })
     else
       challenge
     end
@@ -218,10 +219,17 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> update_challenge_status(challenge)
   end
 
-  def has_relevant_segment(activity) do
-    # TODO: add logic
-    true
-  end
+  def has_relevant_segment(%__MODULE__{distance_target: target_segment}, %ActivityAccumulator{
+        activity_json: %{segment_efforts: segment_efforts}
+      })
+      when is_list(segment_efforts) and length(segment_efforts) > 0,
+      do: Enum.find(segment_efforts, &(&1.segment.id == target_segment))
+
+  def has_relevant_segment(_, %ActivityAccumulator{
+        activity_json: %{segment_efforts: segment_efforts}
+      })
+      when is_list(segment_efforts) and length(segment_efforts) == 0,
+      do: false
 
   def participant_inactivity_notification_changeset(%__MODULE__{} = challenge) do
     change(challenge, %{participant_notified_of_inactivity: true})

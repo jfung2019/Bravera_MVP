@@ -43,9 +43,18 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     process_challenge(challenge, activity, challenge.user, send_emails)
   end
 
-
-  def process_challenge(%OfferChallenge{} = challenge, %ActivityAccumulator{distance: distance} = activity, user, send_emails) when distance > 0 do
-    Logger.info("Offers:ActivityIngestion: Processing #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}")
+  def process_challenge(
+        %OfferChallenge{} = challenge,
+        %ActivityAccumulator{distance: distance} = activity,
+        user,
+        send_emails
+      )
+      when distance > 0 do
+    Logger.info(
+      "Offers:ActivityIngestion: Processing #{inspect(challenge.type)} challenge: #{
+        inspect(challenge.id)
+      }"
+    )
 
     {status, _challenge, _activity} =
       challenge
@@ -195,8 +204,11 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
        ),
        do: params
 
-  defp notify_participant_of_activity({_status, %OfferChallenge{status: "expired"}, _activity} = params, _),
-    do: params
+  defp notify_participant_of_activity(
+         {_status, %OfferChallenge{status: "expired"}, _activity} = params,
+         _
+       ),
+       do: params
 
   defp valid_activity?(activity, challenge, _send_emails) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date
