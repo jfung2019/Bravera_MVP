@@ -496,8 +496,6 @@ defmodule OmegaBravera.Offers do
     end)
   end
 
-  # TODO: order by activity.inserted at desc. -Sherief
-
   def latest_activities(
         %OfferChallenge{} = challenge,
         limit \\ nil,

@@ -53,11 +53,23 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
         generate_offer_challenge_link(conn, nil, offer)
 
       challenge ->
-        text = if challenge.status == "complete", do: gettext("Get Reward"), else: gettext("View your progress")
-        link(text,
-          to: offer_offer_challenge_path(conn, :show, offer, challenge),
-          class: "btn btn-bravera sign-up text-capitalize"
-        )
+        cond do
+          challenge.status == "complete" ->
+            link(gettext("Get Reward"),
+              to: offer_offer_challenge_path(conn, :show, offer, challenge),
+              class: "btn btn-bravera sign-up text-capitalize"
+            )
+
+          challenge.status == "pre_registration" or challenge.status == "active" ->
+            link(gettext("View your progress"),
+              to: offer_offer_challenge_path(conn, :show, offer, challenge),
+              class: "btn btn-bravera sign-up text-capitalize"
+            )
+
+          true ->
+            generate_offer_challenge_link(conn, nil, offer)
+
+        end
     end
   end
 end
