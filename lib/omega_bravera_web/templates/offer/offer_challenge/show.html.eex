@@ -9,6 +9,7 @@
         <% end %>
 
         <%= render "challenge_header.html", assigns %>
+        <%= render "qr_code.html", assigns %>
         <%= render "challenge_details.html", assigns %>
       </div>
       <div class="col-lg-4 max-w-775 margin-auto">
