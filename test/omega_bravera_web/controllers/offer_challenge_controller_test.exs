@@ -171,6 +171,44 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         assert challenge.payment.status == "charged"
       end
     end
+
+    test "create/2 redirects to paid offer challenge of type BRAVERA_SEGMENT when data is valid", %{
+      conn: conn,
+      current_user: user
+    } do
+      {:ok, _user} =
+        Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
+
+      offer =
+        insert(:offer, %{
+          start_date: Timex.now(),
+          end_date: Timex.shift(Timex.now(), days: 10),
+          payment_amount: Decimal.new(57),
+          offer_challenge_types: ["BRAVERA_SEGMENT"],
+        })
+
+      use_cassette "signup_for_paid_offer" do
+        conn =
+          post(
+            conn,
+            offer_offer_challenge_path(conn, :create, offer.slug),
+            offer_challenge: %{
+              "team" => %{},
+              "offer_redeems" => [%{}],
+              "payment" => %{"stripe_token" => "tok_1ElwBZEXtHU8QBy8ZPONLVaF"}
+            }
+          )
+
+        assert get_flash(conn, :info) == "Success! You have registered for this offer!"
+        assert [challenge] = Offers.list_offer_challenges()
+        assert redirected_to(conn) == offer_offer_challenge_path(conn, :show, offer, challenge)
+
+        challenge = Repo.preload(challenge, :payment)
+        assert Decimal.round(challenge.payment.charged_amount) == offer.payment_amount
+        assert challenge.payment.status == "charged"
+        assert challenge.type == hd(offer.offer_challenge_types)
+      end
+    end
   end
 
   test "unverified user should get their session saved with where to go when they verify email",

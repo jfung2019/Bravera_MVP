@@ -89,6 +89,26 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
   def process_challenge(_, _, _, _), do: {:error, :activity_not_processed}
 
+  def create_activity(%OfferChallenge{type: "BRAVERA_SEGMENT"} = challenge, activity, _user, send_emails) do
+    if valid_activity?(activity, challenge, send_emails) and OfferChallenge.has_relevant_segment(challenge, activity) do
+      case Offers.create_offer_challenge_activity_m2m(activity, challenge) do
+        {:ok, _activity} ->
+          {:ok, challenge, activity}
+
+        {:error, changeset} ->
+          Logger.error(
+            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{
+              inspect(changeset.errors)
+            }"
+          )
+
+          {:error, challenge, nil}
+      end
+    else
+      {:error, challenge, nil}
+    end
+  end
+
   def create_activity(challenge, activity, _user, send_emails) do
     if valid_activity?(activity, challenge, send_emails) do
       case Offers.create_offer_challenge_activity_m2m(activity, challenge) do
