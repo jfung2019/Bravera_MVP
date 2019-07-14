@@ -5,6 +5,6 @@
 <%= if @challenge.type == "PER_MILESTONE" do %>
   <%= render("per_goal_challenge_milestones.html", assigns) %>
 <% end %>
-<%= if @challenge.type == "PER_KM" do %>
+<%= if @challenge.type == "PER_KM" or @challenge.type == "BRAVERA_SEGMENT" do %>
   <%= render("per_km_challenge_milestones.html", assigns) %>
 <% end %>
