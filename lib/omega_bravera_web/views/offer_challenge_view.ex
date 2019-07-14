@@ -8,6 +8,14 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
     Offers.OfferChallengeTeamInvitation
   }
 
+  def render_segment_url(segment_id),
+    do:
+      link("View Segment",
+        to: "https://www.strava.com/segments/#{segment_id}",
+        class: "font-weight-bold",
+        target: "_blank"
+      )
+
   def get_qr_code(_conn, nil, _), do: ""
 
   def get_qr_code(conn, %User{id: user_id}, %OfferChallenge{
