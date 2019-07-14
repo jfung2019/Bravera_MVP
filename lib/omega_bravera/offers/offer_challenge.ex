@@ -82,7 +82,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       distance_target: offer.target
     })
     |> validate_number(:distance_target, greater_than: 0)
-    |> validate_inclusion(:distance_target, distance_options())
     |> validate_inclusion(:activity_type, activity_options())
     |> validate_inclusion(:default_currency, currency_options())
     |> validate_inclusion(:type, challenge_type_options())
