@@ -405,7 +405,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   defp get_render_attrs(
          conn,
-         %OfferChallenge{type: "PER_KM", has_team: true} = challenge,
+         %OfferChallenge{has_team: true} = challenge,
          offer_slug
        ) do
     %{
@@ -426,7 +426,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   defp get_render_attrs(
          conn,
-         %OfferChallenge{type: "PER_KM", has_team: false} = challenge,
+         %OfferChallenge{has_team: false} = challenge,
          offer_slug
        ) do
     %{
