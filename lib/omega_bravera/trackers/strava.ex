@@ -9,6 +9,8 @@ defmodule OmegaBravera.Trackers.Strava do
     field(:firstname, :string)
     field(:lastname, :string)
     field(:token, :string)
+    field(:refresh_token, :string)
+    field(:token_expires_at, :utc_datetime)
     field(:strava_profile_picture, :string, default: nil)
     belongs_to(:user, User)
 
