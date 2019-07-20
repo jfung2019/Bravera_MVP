@@ -36,6 +36,9 @@
           <div class="text-center">
             <%= generate_offer_challenge_link(@conn, @current_user, offer) %>
           </div>
+          <div class="text-center">
+            <%= generate_team_member_offer_challenge_link(@conn, @current_user, offer) %>
+          </div>
         </div> <!-- end of foot -->
       </div>  <!-- end of card -->
   </div> <!-- end col -->

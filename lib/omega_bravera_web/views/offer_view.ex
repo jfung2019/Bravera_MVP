@@ -68,8 +68,40 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
 
           true ->
             generate_offer_challenge_link(conn, nil, offer)
-
         end
+    end
+  end
+
+  def generate_team_member_offer_challenge_link(_conn, nil, _offer), do: ""
+
+  def generate_team_member_offer_challenge_link(conn, %User{offer_teams: offer_teams}, offer)
+      when length(offer_teams) > 0 do
+    team_challenges = Enum.filter(offer_teams, &(offer.id == &1.offer_challenge.offer_id))
+
+    if not Enum.empty?(team_challenges) do
+      oldest_team = Enum.min_by(team_challenges, & &1.offer_challenge.id)
+      generate_team_member_link(conn, oldest_team.offer_challenge, offer)
+    end
+  end
+
+  def generate_team_member_offer_challenge_link(_conn, _, _offer), do: ""
+
+  defp generate_team_member_link(conn, challenge, offer) do
+    cond do
+      challenge.status == "complete" ->
+        link(gettext("Get Team's Reward"),
+          to: offer_offer_challenge_path(conn, :show, offer, challenge),
+          class: "btn btn-bravera sign-up text-capitalize"
+        )
+
+      challenge.status == "pre_registration" or challenge.status == "active" ->
+        link(gettext("View your Team's progress"),
+          to: offer_offer_challenge_path(conn, :show, offer, challenge),
+          class: "btn btn-bravera sign-up text-capitalize"
+        )
+
+      true ->
+        ""
     end
   end
 end
