@@ -10,6 +10,19 @@
 
         <%= render "challenge_header.html", assigns %>
         <%= render "qr_code.html", assigns %>
+
+        <!-- only show below medium form factors -->
+        <div class="card mt-2 mb-2 d-block d-md-none">
+          <div class="card-footer text-center">
+            <%= if is_own_challenge?(@challenge, @current_user) do %>
+              <%= link("View Offers", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+            <% else %>
+              <%= link("Join the Challenge", to: offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
+              <%= link("View All Challenges", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+            <% end %>
+          </div>
+        </div>
+
         <%= render "challenge_details.html", assigns %>
       </div>
       <div class="col-lg-4 max-w-775 margin-auto">
@@ -36,7 +49,8 @@
           </div>
         </div>
 
-        <div class="card mt-4">
+        <!-- only show below above medium form factors -->
+        <div class="card mt-4 d-none d-md-block">
           <div class="card-body text-center mx-3 pb-2">
             <h4 style="font-weight: 350;">
               Join a challenge and get a reward!
