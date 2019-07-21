@@ -8,6 +8,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
     Offers.OfferChallengeTeamInvitation
   }
 
+  def challenge_is_active?(challenge),
+   do: challenge.status == "active" or challenge.status == "pre_registration"
+
   def render_segment_url(segment_id),
     do:
       link("View Segment",

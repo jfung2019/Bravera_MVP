@@ -43,7 +43,7 @@
       <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "Fitness Data Powered by Strava") %>
     </div>
 
-    <div class="m-3 text-justify challenge-desc">
+    <div class="m-3 text-justify challenge-desc d-none d-md-block">
       <span class="small"><%= raw @challenge.offer.toc %></span>
     </div>
   </div>

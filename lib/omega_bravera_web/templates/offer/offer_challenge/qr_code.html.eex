@@ -6,5 +6,7 @@
             <%= raw get_qr_code(@conn, @current_user, @challenge) %>
         </div>
     </div>
+
+    <span class="mr-3 ml-3 mb-3 small d-block d-md-none"><%= raw @challenge.offer.toc %></span>
 </div>
 <% end %>
