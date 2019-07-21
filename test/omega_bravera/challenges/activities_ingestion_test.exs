@@ -184,7 +184,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
       assert ActivitiesIngestion.process_challenge(
                challenge.id,
-               %Strava.Activity{
+               %Strava.DetailedActivity{
                  distance: 0,
                  type: challenge.activity_type
                },
@@ -198,7 +198,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
       assert ActivitiesIngestion.process_challenge(
                challenge.id,
-               %Strava.Activity{
+               %Strava.DetailedActivity{
                  distance: 0,
                  type: challenge.activity_type
                },
@@ -248,7 +248,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestionTest do
 
       assert ActivitiesIngestion.process_challenge(
                challenge,
-               %Strava.Activity{},
+               %Strava.DetailedActivity{},
                challenge.user,
                true
              ) == {:error, :activity_not_processed}

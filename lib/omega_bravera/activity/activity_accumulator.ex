@@ -3,6 +3,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   import Ecto.Changeset
 
   alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Activity.StravaParser
   alias OmegaBravera.Offers.OfferChallengeActivitiesM2m
   alias OmegaBravera.Challenges.NgoChallengeActivitiesM2m
 
@@ -68,7 +69,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     | @required_attributes
   ]
 
-  def create_changeset(%Strava.Activity{} = strava_activity, user) do
+  def create_changeset(%Strava.DetailedActivity{} = strava_activity, user) do
     %__MODULE__{}
     |> cast(strava_attributes(strava_activity), @allowed_attributes)
     |> change(%{
@@ -79,7 +80,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       moving_time: strava_activity.moving_time,
       elapsed_time: strava_activity.elapsed_time,
       calories: strava_activity.calories,
-      activity_json: strava_activity_to_map(strava_activity)
+      activity_json: StravaParser.strava_activity_to_map(strava_activity)
     })
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)
@@ -90,7 +91,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   end
 
   def create_activity_by_admin_changeset(
-        %Strava.Activity{} = strava_activity,
+        %Strava.DetailedActivity{} = strava_activity,
         user,
         admin_user_id
       ) do
@@ -128,44 +129,6 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   defp to_km_per_hour(meters_per_second),
     do: Decimal.mult(Decimal.new(meters_per_second), @km_per_hour)
 
-  defp strava_attributes(%Strava.Activity{} = strava_activity),
+  defp strava_attributes(%Strava.DetailedActivity{} = strava_activity),
     do: Map.take(strava_activity, @allowed_attributes)
-
-  def strava_activity_to_map(strava_activity) do
-    strava_activity
-    |> to_map()
-    |> parse_athlete
-    |> parse_photos
-    |> parse_segment_efforts
-  end
-
-  defp to_map(%_{} = value), do: Map.from_struct(value)
-  defp to_map(%{} = value), do: value
-
-  defp parse_athlete(%{athlete: athlete} = activity),
-    do: %{activity | athlete: to_map(athlete)}
-
-  defp parse_photos(activity)
-  defp parse_photos(%{photos: nil} = activity), do: activity
-
-  defp parse_photos(%{photos: photos} = activity) do
-    %{activity | photos: to_map(photos)}
-  end
-
-  defp parse_segment_efforts(activity)
-  defp parse_segment_efforts(%{segment_efforts: nil} = activity), do: activity
-
-  defp parse_segment_efforts(%{segment_efforts: segment_efforts} = activity) do
-    %{
-      activity
-      | segment_efforts:
-          Enum.map(segment_efforts, fn segment_effort ->
-            to_map(segment_effort)
-            |> parse_segment()
-          end)
-    }
-  end
-
-  defp parse_segment(%{segment: segment} = segment_effort),
-    do: %{segment_effort | segment: to_map(segment)}
 end

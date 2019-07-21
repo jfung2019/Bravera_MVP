@@ -117,11 +117,11 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
           user: nil,
           user_id: user.id,
           start_date: Timex.shift(start_date, days: -1),
-          distance_target: 21092855
+          distance_target: 21202706
         })
 
       use_cassette "segment_activity" do
-        strava_activity = Strava.Activity.retrieve(2513839746, %{}, Strava.Client.new("dc218197b9b910a0c4e7e58f2496dd864b63fbff"))
+        {:ok, strava_activity} = Strava.Activities.get_activity_by_id(Strava.Client.new("dc218197b9b910a0c4e7e58f2496dd864b63fbff"), 2513839746, include_all_efforts: true)
 
         {:ok, activity} = Activities.create_activity(strava_activity, user)
 

@@ -36,7 +36,7 @@ defmodule OmegaBravera.Accounts.Strava do
   defp do_create_user(attrs), do: Accounts.create_user(attrs)
   defp do_create_tracker(user, attrs), do: Trackers.create_strava(user.id, attrs)
 
-  defp build_additional_info(%Strava.Athlete.Summary{} = athlete) do
+  defp build_additional_info(%Strava.DetailedAthlete{} = athlete) do
     %{sex: athlete.sex, location: "#{athlete.country}/#{athlete.city}/#{athlete.city}"}
   end
 end

@@ -20,7 +20,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
   #   changeset =
   #     ActivityAccumulator.create_activity_by_admin_changeset(
-  #       %Strava.Activity{},
+  #       %Strava.DetailedActivity{},
   #       %User{},
   #       current_admin_user.id
   #     )
@@ -52,7 +52,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   #   user = challenge.user |> Repo.preload(:strava)
 
   #   activity =
-  #     Strava.Activity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
+  #     Strava.DetailedActivity.retrieve(strava_activity_id, %{}, Strava.Client.new(user.strava.token))
 
   #   # TODO: Save to Activity Accumulator first then pass it.
 
@@ -74,7 +74,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
     changeset =
       ActivityAccumulator.create_activity_by_admin_changeset(
-        %Strava.Activity{},
+        %Strava.DetailedActivity{},
         %User{},
         current_admin_user.id
       )
@@ -138,7 +138,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
   defp create_strava_activity(params, current_admin_user, participant) do
     activity_params = params |> map_keys_to_atoms()
 
-    Strava.Activity
+    Strava.DetailedActivity
     |> struct(activity_params)
     |> Map.put(:start_date, to_utc(activity_params.start_date))
     |> Map.put(:distance, from_string_to_float(activity_params.distance))
@@ -214,7 +214,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     |> assign(:available_activities, NgoOptions.activity_options())
   end
 
-  defp add_average_speed(%Strava.Activity{} = activity, activity_params) do
+  defp add_average_speed(%Strava.DetailedActivity{} = activity, activity_params) do
     activity =
       Map.put(activity, :average_speed, from_string_to_float(activity_params.average_speed))
 
@@ -238,7 +238,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
     end
   end
 
-  defp add_calories(%Strava.Activity{} = activity, activity_params, participant) do
+  defp add_calories(%Strava.DetailedActivity{} = activity, activity_params, participant) do
     participant = participant |> Repo.preload(:strava)
     activity = Map.put(activity, :calories, from_string_to_float(activity_params.calories))
 
@@ -252,11 +252,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
     # Calculate calories based on MET value and Weight and Duration.
     if activity.calories == nil do
-      athlete =
-        Strava.Athlete.retrieve(
-          participant.strava.athlete_id,
-          Strava.Client.new(participant.strava.token)
-        )
+      {:ok, athlete} = Strava.Athletes.get_logged_in_athlete(Strava.Client.new(participant.strava.token))
 
       # calories per hour = met_value * weight in kg
       calories_per_hour =
