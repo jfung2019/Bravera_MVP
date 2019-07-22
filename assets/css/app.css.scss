@@ -14,7 +14,7 @@ $fa-font-path : '../node_modules/font-awesome/fonts';
 @import "~trumbowyg/dist/ui/sass/trumbowyg.scss";
 
 // NavBar styling
-.navbar {
+.navbar.navbar-light, .navbar {
   li.nav-item {
     display: flex;
     justify-content: center;
@@ -63,6 +63,9 @@ footer.footer {
     li.nav-item {
       justify-content: center;
       flex-direction: column;
+      a {
+        color: white;
+      }
     }
     @include media-breakpoint-down(xs) {
       li.nav-item:first-child {

@@ -3,8 +3,11 @@
 <% end %>
 
 <%= if @challenge.type == "PER_MILESTONE" do %>
-  <%= render("per_goal_challenge_milestones.html", assigns) %>
+  <%= render("per_goal_challenge_details.html", assigns) %>
 <% end %>
 <%= if @challenge.type == "PER_KM" do %>
-  <%= render("per_km_challenge_milestones.html", assigns) %>
+  <%= render("per_km_challenge_details.html", assigns) %>
+<% end %>
+<%= if @challenge.type == "BRAVERA_SEGMENT" do %>
+  <%= render("bravera_segment_details.html", assigns) %>
 <% end %>

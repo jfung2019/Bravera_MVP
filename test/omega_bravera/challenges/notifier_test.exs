@@ -270,8 +270,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     challenge = insert(:ngo_challenge, %{distance_covered: Decimal.from_float(4.215)})
 
     activity =
-      insert(:activity, %{
-        challenge: challenge,
+      insert(:activity_accumulator, %{
         user: challenge.user,
         distance: Decimal.from_float(4.215)
       })
@@ -297,8 +296,8 @@ defmodule OmegaBravera.Challenges.NotifierTest do
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
                "-firstName-" => "John",
-               "-activityDistance-" => "4 Km",
-               "-completedChallengeDistance-" => "#{Decimal.from_float(4.215)} Km",
+               "-activityDistance-" => "4.22 Km",
+               "-completedChallengeDistance-" => "4.22 Km",
                "-challengeDistance-" => "#{challenge.distance_target} Km",
                "-timeRemaining-" => "4 days",
                "-challengeURL-" => challenge_url(challenge)
@@ -313,8 +312,7 @@ defmodule OmegaBravera.Challenges.NotifierTest do
     challenge = insert(:ngo_challenge)
 
     activity =
-      insert(:activity, %{
-        challenge: challenge,
+      insert(:activity_accumulator, %{
         user: challenge.user,
         distance: Decimal.from_float(4.215)
       })

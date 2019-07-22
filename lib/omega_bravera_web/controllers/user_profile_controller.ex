@@ -11,21 +11,16 @@ defmodule OmegaBraveraWeb.UserProfileController do
         redirect(conn, to: "/404")
 
       user ->
-        totals = Challenges.get_user_challenges_totals(user.id)
-
         render(
           conn,
           "show.html",
           user: user,
-          total_pledged: totals[:total_pledged],
-          total_secured: totals[:total_secured],
           num_of_activities: Challenges.get_number_of_activities_by_user(user.id),
           total_distance: Challenges.get_total_distance_by_user(user.id),
           solo_challenges: Challenges.get_user_solo_ngo_chals(user.id),
           team_challenges: Challenges.get_user_team_ngo_chals(user.id),
           offer_challenges: Offers.get_user_offer_challenges(user.id, [:offer, :offer_redeems]),
           teams_memberships: Challenges.get_user_team_membership(user.id),
-          num_of_supporters: Challenges.get_supporters_num(user.id),
           changeset: User.changeset(user, %{})
         )
     end

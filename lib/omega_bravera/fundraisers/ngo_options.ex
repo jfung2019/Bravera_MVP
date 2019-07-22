@@ -76,13 +76,15 @@ defmodule OmegaBravera.Fundraisers.NgoOptions do
   ]
   @per_km "PER_KM"
   @per_milestone "PER_MILESTONE"
+  @bravera_segment "BRAVERA_SEGMENT"
 
   @available_challenge_type_options [
     [key: "Per Goal", value: @per_milestone],
-    [key: "Per KM", value: @per_km]
+    [key: "Per KM", value: @per_km],
+    [key: "Bravera Segment", value: @bravera_segment]
   ]
 
-  @available_challenge_types [@per_milestone, @per_km]
+  @available_challenge_types [@per_milestone, @per_km, @bravera_segment]
 
   @available_currency_options %{
     "Hong Kong Dollar (HKD)" => "hkd",

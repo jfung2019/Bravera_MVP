@@ -13,7 +13,7 @@ defmodule OmegaBravera.OffersTest do
       additional_members: 42,
       currency: "gbp",
       desc: "some desc",
-      distances: [],
+      target: 0,
       full_desc: "some full_desc",
       ga_id: "some ga_id",
       hidden: false,
@@ -35,7 +35,7 @@ defmodule OmegaBravera.OffersTest do
       additional_members: 43,
       currency: "hkd",
       desc: "some updated desc",
-      distances: [],
+      target: 0,
       full_desc: "some updated full_desc",
       ga_id: "some updated ga_id",
       hidden: true,
@@ -56,7 +56,7 @@ defmodule OmegaBravera.OffersTest do
       additional_members: nil,
       currency: nil,
       desc: nil,
-      distances: nil,
+      target: nil,
       full_desc: nil,
       ga_id: nil,
       hidden: nil,
@@ -107,7 +107,7 @@ defmodule OmegaBravera.OffersTest do
       assert offer.additional_members == 42
       assert offer.currency == "gbp"
       assert offer.desc == "some desc"
-      assert offer.distances == []
+      assert offer.target == 0
       assert offer.full_desc == "some full_desc"
       assert offer.ga_id == "some ga_id"
       assert offer.hidden == false
@@ -133,7 +133,7 @@ defmodule OmegaBravera.OffersTest do
       assert offer.additional_members == 43
       assert offer.currency == "hkd"
       assert offer.desc == "some updated desc"
-      assert offer.distances == []
+      assert offer.target == 0
       assert offer.full_desc == "some updated full_desc"
       assert offer.ga_id == "some updated ga_id"
       assert offer.hidden == true
@@ -472,7 +472,34 @@ defmodule OmegaBravera.OffersTest do
       assert {:error, %Ecto.Changeset{errors: errors}} =
                Offers.create_offer_redeems(%OfferChallenge{}, nil, %{})
 
-      assert [{:vendor_id, {"Your Vendor ID seems to be incorrect.", _}}] = errors
+      assert [{:vendor_id, {"Invalid Vendor ID.", _}}] = errors
+    end
+
+    test "create_offer_redeems/4 vendor can only redeem their offer" do
+      vendor1 = insert(:vendor)
+      offer1 = insert(:offer, %{vendor: nil, vendor_id: vendor1.id})
+      offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer1.id})
+      user = build(:user)
+
+      offer_challenge1 =
+        insert(:offer_challenge, %{
+          offer: nil,
+          offer_id: offer1.id,
+          user: nil,
+          user_id: user.id,
+          has_team: false
+        })
+
+      offer_redeem1 = insert(:offer_redeem_with_args, %{vendor: vendor1, offer: offer1, user: user, offer_challenge: offer_challenge1, offer_reward: offer_reward})
+      vendor2 = insert(:vendor)
+
+      attrs = %{
+        "vendor_id" => vendor2.vendor_id,
+        "offer_reward_id" => offer_reward.id
+      }
+
+      assert %Ecto.Changeset{errors: errors} = OfferRedeem.redeem_reward_changeset(offer_redeem1, offer_challenge1, offer1, vendor2, attrs)
+      assert %Ecto.Changeset{valid?: true} = OfferRedeem.redeem_reward_changeset(offer_redeem1, offer_challenge1, offer1, vendor1, attrs)
     end
   end
 

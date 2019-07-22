@@ -4,5 +4,5 @@
   
   <%= render "import_strava_activity_form.html", Map.put(assigns, :action, admin_panel_activity_path(@conn, :create_imported_strava_activity)) %>
   
-  <span><%= link "Back", to: admin_panel_activity_path(@conn, :index) %></span>
+  <span><%= link "Back", to: admin_user_page_path(@conn, :index) %></span>
 </div>

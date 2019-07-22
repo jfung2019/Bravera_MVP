@@ -7,9 +7,10 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     Money.Payment,
     Offers.Offer,
     Accounts.User,
-    Offers.OfferChallengeActivity,
+    Offers.OfferChallengeActivitiesM2m,
     Offers.OfferRedeem,
     Offers.OfferChallengeTeam,
+    Activity.ActivityAccumulator,
     Repo,
     Money.Payment
   }
@@ -18,6 +19,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   schema "offer_challenges" do
     field(:activity_type, :string)
     field(:default_currency, :string, default: "hkd")
+    # Can be distance in KMs or a Strava Segment ID. Filled from Offer.target.
     field(:distance_target, :integer, default: 100)
     field(:milestones, :integer, default: 4)
     field(:end_date, :utc_datetime)
@@ -41,7 +43,9 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     has_one(:team, OfferChallengeTeam, foreign_key: :offer_challenge_id)
     has_one(:payment, Payment, foreign_key: :offer_challenge_id)
 
-    has_many(:offer_challenge_activities, OfferChallengeActivity, foreign_key: :offer_challenge_id)
+    has_many(:offer_challenge_activities, OfferChallengeActivitiesM2m,
+      foreign_key: :offer_challenge_id
+    )
 
     timestamps(type: :utc_datetime)
   end
@@ -75,10 +79,9 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       default_currency: offer.currency,
       type: hd(offer.offer_challenge_types),
       activity_type: hd(offer.activities),
-      distance_target: hd(offer.distances)
+      distance_target: offer.target
     })
     |> validate_number(:distance_target, greater_than: 0)
-    |> validate_inclusion(:distance_target, distance_options())
     |> validate_inclusion(:activity_type, activity_options())
     |> validate_inclusion(:default_currency, currency_options())
     |> validate_inclusion(:type, challenge_type_options())
@@ -189,6 +192,21 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> change(status: status)
   end
 
+  def activity_completed_changeset(%__MODULE__{type: "BRAVERA_SEGMENT"} = challenge, activity) do
+    if has_relevant_segment(challenge, activity) do
+      challenge
+      |> change(distance_covered: challenge.distance_covered)
+      |> change(%{
+        last_activity_received: DateTime.truncate(Timex.now(), :second),
+        participant_notified_of_inactivity: false,
+        donor_notified_of_inactivity: false,
+        status: "complete"
+      })
+    else
+      challenge
+    end
+  end
+
   def activity_completed_changeset(%__MODULE__{} = challenge, %{distance: distance}) do
     challenge
     |> change(distance_covered: Decimal.add(challenge.distance_covered, distance))
@@ -199,6 +217,18 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     })
     |> update_challenge_status(challenge)
   end
+
+  def has_relevant_segment(%__MODULE__{distance_target: target_segment}, %ActivityAccumulator{
+        activity_json: %{segment_efforts: segment_efforts}
+      })
+      when is_list(segment_efforts) and length(segment_efforts) > 0,
+      do: Enum.find(segment_efforts, &(&1.segment.id == target_segment))
+
+  def has_relevant_segment(_, %ActivityAccumulator{
+        activity_json: %{segment_efforts: segment_efforts}
+      })
+      when is_list(segment_efforts) and length(segment_efforts) == 0,
+      do: false
 
   def participant_inactivity_notification_changeset(%__MODULE__{} = challenge) do
     change(challenge, %{participant_notified_of_inactivity: true})

@@ -3,6 +3,7 @@ defmodule OmegaBraveraWeb.UserController do
 
   alias OmegaBravera.{Accounts, Money, Fundraisers}
   alias OmegaBravera.Accounts.User
+  plug(:assign_options when action in [:edit, :new, :update])
 
   def dashboard(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
@@ -60,7 +61,8 @@ defmodule OmegaBraveraWeb.UserController do
       )
 
   def edit(conn, _) do
-    user = Guardian.Plug.current_resource(conn)
+    %{id: user_id} = Guardian.Plug.current_resource(conn)
+    user = Accounts.get_user_with_account_settings!(user_id)
     changeset = Accounts.change_user(user)
     render(conn, "edit.html", user: user, changeset: changeset)
   end
@@ -76,12 +78,12 @@ defmodule OmegaBraveraWeb.UserController do
           Accounts.Notifier.send_user_signup_email(updated_user, redirect_path(conn))
 
           conn
-          |> put_flash(:info, "Email updated. Please check your inbox now!")
-          |> redirect(to: user_path(conn, :show, %{}))
+          |> put_flash(:info, gettext("Email updated. Please check your inbox now!"))
+          |> redirect(to: user_path(conn, :edit, %{}))
         else
           conn
-          |> put_flash(:info, "Updated account settings sucessfully.")
-          |> redirect(to: user_path(conn, :show, %{}))
+          |> put_flash(:info, gettext("Updated account settings successfully."))
+          |> redirect(to: user_path(conn, :edit, %{}))
         end
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -145,5 +147,12 @@ defmodule OmegaBraveraWeb.UserController do
       path ->
         path
     end
+  end
+
+  defp assign_options(conn, _opts) do
+    conn
+    |> assign(:gender_options, Accounts.Setting.gender_options())
+    |> assign(:weight_list, Accounts.Setting.weight_list())
+    |> assign(:weight_fraction_list, Accounts.Setting.weight_fraction_list())
   end
 end

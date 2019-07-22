@@ -17,64 +17,61 @@
               <span class="big-logo mx-auto"></span>
             </div>
 
-            <div class="row mx-auto  mt-3 align-items-center">
-              <%= link(to: strava_path(OmegaBraveraWeb.Endpoint, :authenticate), class: "mb-1 d-block mx-auto") do %>
-                <img src="/images/strava/btn_strava_connect-orange.png" alt="Connect with Strava"/>
-              <% end %>
-            </div>
-
             <div class="row mx-auto align-items-center">
-              <span class="mx-auto">Email Signup</span>
+              <span class="mx-auto"><%= gettext("Email Signup") %></span>
             </div>
 
             <div class="container">
 
               <div class="form-group mt-2">
-                <%= text_input f, :firstname, class: add_error_class(f, :firstname, "form-control"), placeholder: "Firstname", required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                <%= text_input f, :firstname, class: add_error_class(f, :firstname, "form-control"), placeholder: gettext("First name"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
                 <%= error_tag f, :firstname %>
               </div>
 
               <div class="form-group mt-2">
-                <%= text_input f, :lastname, class: add_error_class(f, :lastname, "form-control"), placeholder: "Lastname", required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                <%= text_input f, :lastname, class: add_error_class(f, :lastname, "form-control"), placeholder: gettext("Last name"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
                 <%= error_tag f, :lastname %>
               </div>
 
               <div class="form-group mt-2">
-                <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: "Email", required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: gettext("Email"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
                 <%= error_tag f, :email %>
               </div>
 
               <%= inputs_for f, :credential, fn fp -> %>
                 <div class="row mx-auto">
-                  <%= password_input fp, :password, value: input_value(fp, :password), class: add_error_class(fp, :password, "form-control"), placeholder: "Password", required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                  <%= password_input fp, :password, value: input_value(fp, :password), class: add_error_class(fp, :password, "form-control"), placeholder: gettext("Password"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
                   <%= error_tag fp, :password %>
                 </div>
                 <div class="row mx-auto mt-2">
-                  <%= password_input fp, :password_confirmation, value: input_value(fp, :password_confirmation), class: add_error_class(fp, :password_confirmation, "form-control"), placeholder: "Confirm you password", required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                  <%= password_input fp, :password_confirmation, value: input_value(fp, :password_confirmation), class: add_error_class(fp, :password_confirmation, "form-control"), placeholder: gettext("Confirm your password"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
                   <%= error_tag fp, :password_confirmation %>
                 </div>
               <% end %>
 
-              <p class="row mx-auto mt-4 mb-3 text-muted text-center small">
-                By logging in to Bravera you agree to our 
-                <a href="https://www.bravera.fit/terms" target="_blank" rel="noreferrer noopener">&nbsp;Terms </a>
-                <span>&nbsp;&&nbsp;</span>
-                <a href="https://www.bravera.fit/privacy" target="_blank" rel="noreferrer noopener"> Cookies/Privacy Policy</a>
-              </p>
+              <div class="row mx-auto mt-4 mb-3 text-muted text-center small form-check">
+                <%= checkbox f, :accept_terms, class: add_error_class(f, :accept_terms, "form-check-input") %>
+                <label class="form-check-label">
+                  <%= gettext("By signing-up you agree to our") %>
+                  <a href="https://www.bravera.fit/terms" target="_blank" rel="noreferrer noopener"><%= gettext("Terms") %></a>
+                  <span>&nbsp;&&nbsp;</span>
+                  <a href="https://www.bravera.fit/privacy" target="_blank" rel="noreferrer noopener"><%= gettext("Cookies/Privacy Policy") %></a>
+                </label>
+              </div>
 
             </div>
 
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-bravera mr-auto" data-dismiss="modal" data-toggle="modal" data-target="#loginModal">Switch to Sign in</button>
+            <button type="button" class="btn btn-bravera mr-auto" data-dismiss="modal" data-toggle="modal" data-target="#loginModal"><%= gettext("Switch to Sign in") %></button>
 
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" phx-click="close_modal">Cancel</button>
-            <button type="submit" class="btn btn-bravera" phx-disable-with="Signing up.." <%= unless @signup_button_disabled?, do: " disabled" %>>Join Now</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" phx-click="close_modal"><%= gettext("Cancel") %></button>
+            <button type="submit" class="btn btn-bravera" phx-disable-with="<%= gettext("Signing up..") %>" <%= unless @signup_button_disabled?, do: " disabled" %>><%= gettext("Join Now") %></button>
           </div>
         <% else %>
           <div class="modal-header">
-            <h5 class="modal-title mx-auto" id="signUpModalLabel">Signup Sucessful</h5>
+            <h5 class="modal-title mx-auto" id="signUpModalLabel"><%= gettext("Signup Sucessful") %></h5>
           </div>
 
           <div class="modal-body">
@@ -91,13 +88,13 @@
             </div>
 
             <div class="row mx-auto align-items-center">
-              <span class="d-block mt-3 mb-3 mx-auto text-center">Click on the link that has been sent to your email address to complete your registration.</span>
+              <span class="d-block mt-3 mb-3 mx-auto text-center"><%= gettext("Click on the link that has been sent to your email address to complete your registration.") %></span>
             </div>
 
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-bravera mx-auto" data-dismiss="modal" phx-click="close_modal">Ok</button>
+            <button type="button" class="btn btn-bravera mx-auto" data-dismiss="modal" phx-click="close_modal"><%= gettext("Ok") %></button>
           </div>
         <% end %>
 

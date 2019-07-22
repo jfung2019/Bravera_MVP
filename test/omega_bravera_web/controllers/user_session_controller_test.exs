@@ -12,12 +12,11 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
 
     credential_attrs = %{
       password: @password,
-      password_confirmation: @password,
-      user_id: user.id
+      password_confirmation: @password
     }
 
     {:ok, credential} =
-      Credential.changeset(%Credential{}, credential_attrs)
+      Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
       |> Repo.insert()
 
     credential |> Repo.preload(:user)

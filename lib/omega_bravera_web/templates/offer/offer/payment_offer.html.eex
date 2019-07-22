@@ -80,5 +80,5 @@
     </div>
 
 <% else %>
-    <%= link("Go To Your Challenge", to: offer_offer_challenge_path(@conn, :show, @offer.slug, user_challenge_slug(@offer, @current_user)), class: "btn btn-bravera sign-up") %>
+    <%= link("View Your Progress", to: offer_offer_challenge_path(@conn, :show, @offer.slug, user_challenge_slug(@offer, @current_user)), class: "btn btn-bravera sign-up") %>
 <% end %>

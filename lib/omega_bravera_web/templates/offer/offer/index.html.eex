@@ -1,7 +1,7 @@
 <div class="container-fluid mb-2">
   <div class="mt-3">
     <h5 class="text-center text-420">
-      Offers
+      <%= gettext("Offers") %>
     </h5>
   </div>
 
@@ -34,7 +34,10 @@
         </div>
         <div class="card-footer">
           <div class="text-center">
-            <%= link("Join the Challenge", to: offer_offer_challenge_path(@conn, :new, offer.slug), class: "btn btn-green sign-up") %>
+            <%= generate_offer_challenge_link(@conn, @current_user, offer) %>
+          </div>
+          <div class="text-center">
+            <%= generate_team_member_offer_challenge_link(@conn, @current_user, offer) %>
           </div>
         </div> <!-- end of foot -->
       </div>  <!-- end of card -->

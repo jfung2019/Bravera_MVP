@@ -63,16 +63,24 @@ defmodule OmegaBravera.Factory do
     }
   end
 
-  def activity_factory do
-    %OmegaBravera.Challenges.Activity{
-      strava_id: 1_836_709_368,
+  def activity_accumulator_factory do
+    %OmegaBravera.Activity.ActivityAccumulator{
+      strava_id: 1_981_709_368,
       distance: Decimal.from_float(1.74),
-      start_date: ~N[2018-09-11 07:58:01],
-      type: "Walk",
-      name: "Morning Walk",
+      start_date: Timex.shift(Timex.now(), days: 1),
+      type: "Run",
+      name: "Morning Run",
       manual: false,
-      user: build(:user),
-      challenge: build(:ngo_challenge)
+      user: build(:user)
+    }
+  end
+
+  def ngo_challenge_activity_relaton_factory do
+    %OmegaBravera.Challenges.NgoChallengeActivitiesM2m{
+      activity_id: nil,
+      challenge_id: nil,
+      activity: nil,
+      challenge: nil
     }
   end
 
@@ -187,7 +195,7 @@ defmodule OmegaBravera.Factory do
       image: "/image.png",
       url: "http://test.com",
       offer_challenge_types: ["PER_KM"],
-      distances: ["50"],
+      target: 50,
       activities: ["Run", "Cycle"],
       time_limit: 0,
       toc: "foo",
@@ -250,6 +258,17 @@ defmodule OmegaBravera.Factory do
       user: user,
       offer_challenge: offer_challenge,
       offer_reward: offer_reward,
+      token: Enum.random(10_000_000..20_000_000) |> Integer.to_string()
+    }
+  end
+
+  def offer_redeem_with_args_factory do
+    %OmegaBravera.Offers.OfferRedeem{
+      vendor: nil,
+      offer: nil,
+      user: nil,
+      offer_challenge: nil,
+      offer_reward: nil,
       token: Enum.random(10_000_000..20_000_000) |> Integer.to_string()
     }
   end

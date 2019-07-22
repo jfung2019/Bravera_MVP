@@ -9,6 +9,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Offers,
     Offers.OfferChallenge,
     Offers.OfferRedeem,
+    Offers.OfferVendor,
     Fundraisers.NgoOptions,
     Offers.Notifier,
     Repo,
@@ -131,8 +132,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       ])
 
     offer_redeem = Repo.get_by(OfferRedeem, token: redeem_token)
+    vendor = Repo.get_by(OfferVendor, vendor_id: offer_redeem_params["vendor_id"])
 
-    case Offers.update_offer_redeems(offer_redeem, offer_challenge, offer_redeem_params) do
+    case Offers.update_offer_redeems(offer_redeem, offer_challenge, offer_challenge.offer, vendor, offer_redeem_params) do
       {:ok, offer_redeem} ->
         offer_redeem = Repo.preload(offer_redeem, :user)
         Notifier.send_user_reward_redemption_successful(offer_challenge, offer_redeem.user)
@@ -393,8 +395,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       challenge: challenge,
       activities: Offers.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      offer_with_stats:
-        Offers.get_offer_with_stats(offer_slug,
+      offer:
+        Offers.get_offer_by_slug(offer_slug,
           offer_challenges: [user: [:strava], team: [users: [:strava]]]
         ),
       m_targets: OfferChallenge.milestones_distances(challenge)
@@ -403,7 +405,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   defp get_render_attrs(
          conn,
-         %OfferChallenge{type: "PER_KM", has_team: true} = challenge,
+         %OfferChallenge{has_team: true} = challenge,
          offer_slug
        ) do
     %{
@@ -415,8 +417,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           [challenge.user] ++ challenge.team.users
         ),
       current_user: Guardian.Plug.current_resource(conn),
-      offer_with_stats:
-        Offers.get_offer_with_stats(offer_slug,
+      offer:
+        Offers.get_offer_by_slug(offer_slug,
           offer_challenges: [user: [:strava], team: [users: [:strava]]]
         )
     }
@@ -424,15 +426,15 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   defp get_render_attrs(
          conn,
-         %OfferChallenge{type: "PER_KM", has_team: false} = challenge,
+         %OfferChallenge{has_team: false} = challenge,
          offer_slug
        ) do
     %{
       challenge: challenge,
       activities: Offers.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
-      offer_with_stats:
-        Offers.get_offer_with_stats(offer_slug,
+      offer:
+        Offers.get_offer_by_slug(offer_slug,
           offer_challenges: [user: [:strava], team: [users: [:strava]]]
         )
     }

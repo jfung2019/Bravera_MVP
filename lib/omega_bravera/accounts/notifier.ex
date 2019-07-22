@@ -57,7 +57,6 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(credential.user.email)
-    |> IO.inspect()
   end
 
   defp user_subscribed_in_category?(user_subscribed_categories, email_category_id) do

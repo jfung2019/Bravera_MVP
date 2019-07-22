@@ -5,36 +5,25 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     Accounts,
     Offers,
     Offers.OfferChallenge,
-    Offers.OfferChallengeActivity,
     Offers.Notifier,
     Offers.OfferRedeem,
-    Repo,
-    ActivityIngestionUtils
+    Activity.ActivityAccumulator,
+    Repo
   }
 
-  # alias OmegaBraveraWeb.Router.Helpers, as: Routes
-  # alias OmegaBraveraWeb.Endpoint
+  def start(%ActivityAccumulator{} = activity, %{"owner_id" => athlete_id}) do
+    Logger.info("Offers:ActivityIngestion: Strava POST webhook processing: #{inspect(activity)}")
 
-  def start(
-        %{"aspect_type" => "create", "object_type" => "activity", "owner_id" => owner_id} = params
-      ) do
-    Logger.info("Offers:ActivityIngestion: Strava POST webhook processing: #{inspect(params)}")
-
-    owner_id
+    athlete_id
     |> Accounts.get_strava_challengers_for_offers()
-    |> process_challenges(params)
+    |> process_challenges(activity)
   end
 
-  def start(params),
-    do: Logger.info("Offers:ActivityIngestion: not processed: #{inspect(params)}")
+  def start(activity, _params),
+    do: Logger.info("Offers:ActivityIngestion: not processed: #{inspect(activity)}")
 
-  def process_strava_webhook(_), do: {:error, :webhook_not_processed}
-
-  def process_challenges([{_challenge_id, _user, token} | _] = challenges, %{
-        "object_id" => object_id
-      }) do
+  def process_challenges([{_challenge_id, _user, _token} | _] = challenges, activity) do
     Logger.info("Offers:ActivityIngestion: Processing challenges")
-    activity = Strava.Activity.retrieve(object_id, %{}, strava_client(token))
     Logger.info("Offers:ActivityIngestion: Processing activity: #{inspect(activity)}")
 
     Enum.map(challenges, fn {challenge_id, user, _token} ->
@@ -45,7 +34,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
     end)
   end
 
-  def process_challenges([], _) do
+  def process_challenges([], _activity) do
     Logger.info("Offers:ActivityIngestion: No challengers found")
     {:error, :no_challengers_found}
   end
@@ -55,29 +44,33 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
   end
 
   def process_challenge(
-        %OfferChallenge{type: "PER_KM"} = challenge,
-        %Strava.Activity{distance: distance} = strava_activity,
+        %OfferChallenge{} = challenge,
+        %ActivityAccumulator{distance: distance} = activity,
         user,
         send_emails
       )
       when distance > 0 do
-    Logger.info("Offers:ActivityIngestion: Processing km challenge: #{inspect(challenge.id)}")
+    Logger.info(
+      "Offers:ActivityIngestion: Processing #{inspect(challenge.type)} challenge: #{
+        inspect(challenge.id)
+      }"
+    )
 
     {status, _challenge, _activity} =
       challenge
-      |> create_activity(strava_activity, user, send_emails)
+      |> create_activity(activity, user, send_emails)
       |> update_challenge
       |> notify_participant_of_activity(send_emails)
 
     Logger.info(
-      "Offers:ActivityIngestion: Processing has finished for km challenge: #{
+      "Offers:ActivityIngestion: Processing has finished for #{inspect(challenge.type)} challenge: #{
         inspect(challenge.id)
       }"
     )
 
     if status == :ok do
       Logger.info(
-        "Offers:ActivityIngestion: Processing was successful for km challenge: #{
+        "Offers:ActivityIngestion: Processing was successful for #{inspect(challenge.type)} challenge: #{
           inspect(challenge.id)
         }"
       )
@@ -85,49 +78,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       {:ok, :challenge_updated}
     else
       Logger.info(
-        "Offers:ActivityIngestion: Processing was not successful for km challenge: #{
-          inspect(challenge.id)
-        }"
-      )
-
-      {:error, :activity_not_processed}
-    end
-  end
-
-  def process_challenge(
-        %OfferChallenge{type: "PER_MILESTONE"} = challenge,
-        %Strava.Activity{distance: distance} = strava_activity,
-        user,
-        send_emails
-      )
-      when distance > 0 do
-    Logger.info(
-      "Offers:ActivityIngestion: Processing milestone challenge: #{inspect(challenge.id)}"
-    )
-
-    {status, _challenge, _activity} =
-      challenge
-      |> create_activity(strava_activity, user, send_emails)
-      |> update_challenge()
-      |> notify_participant_of_activity(send_emails)
-
-    Logger.info(
-      "Offers:ActivityIngestion: Processing has finished for milestone challenge: #{
-        inspect(challenge.id)
-      }"
-    )
-
-    if status == :ok do
-      Logger.info(
-        "Offers:ActivityIngestion: Processing was successful for milestone challenge: #{
-          inspect(challenge.id)
-        }"
-      )
-
-      {:ok, :challenge_updated}
-    else
-      Logger.info(
-        "Offers:ActivityIngestion: Processing was not successful for milestone challenge: #{
+        "Offers:ActivityIngestion: Processing was not successful for #{inspect(challenge.type)} challenge: #{
           inspect(challenge.id)
         }"
       )
@@ -138,29 +89,30 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
   def process_challenge(_, _, _, _), do: {:error, :activity_not_processed}
 
-  def create_activity(challenge, activity, user, send_emails) do
-    # Check if the strava activity is an admin created one.
-    changeset =
-      case Map.has_key?(activity, :admin_id) do
-        false ->
-          OfferChallengeActivity.create_changeset(activity, challenge, user)
+  def create_activity(%OfferChallenge{type: "BRAVERA_SEGMENT"} = challenge, activity, _user, send_emails) do
+    if valid_activity?(activity, challenge, send_emails) and OfferChallenge.has_relevant_segment(challenge, activity) do
+      case Offers.create_offer_challenge_activity_m2m(activity, challenge) do
+        {:ok, _activity} ->
+          {:ok, challenge, activity}
 
-        true ->
-          OfferChallengeActivity.create_activity_by_admin_changeset(
-            activity,
-            challenge,
-            user,
-            activity.admin_id
+        {:error, changeset} ->
+          Logger.error(
+            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{
+              inspect(changeset.errors)
+            }"
           )
-      end
 
-    if valid_activity?(activity, challenge, send_emails) and
-         ActivityIngestionUtils.activity_type_matches_challenge_activity_type?(
-           activity,
-           challenge
-         ) do
-      case Repo.insert(changeset) do
-        {:ok, activity} ->
+          {:error, challenge, nil}
+      end
+    else
+      {:error, challenge, nil}
+    end
+  end
+
+  def create_activity(challenge, activity, _user, send_emails) do
+    if valid_activity?(activity, challenge, send_emails) do
+      case Offers.create_offer_challenge_activity_m2m(activity, challenge) do
+        {:ok, _activity} ->
           {:ok, challenge, activity}
 
         {:error, changeset} ->
@@ -272,7 +224,11 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
        ),
        do: params
 
-  defp strava_client(token), do: Strava.Client.new(token)
+  defp notify_participant_of_activity(
+         {_status, %OfferChallenge{status: "expired"}, _activity} = params,
+         _
+       ),
+       do: params
 
   defp valid_activity?(activity, challenge, _send_emails) do
     # challenge start date is before the activity start date and the challenge end date is after or equal to the activity start date

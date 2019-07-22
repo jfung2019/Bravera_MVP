@@ -106,7 +106,8 @@ defmodule OmegaBravera.Donations.ProcessorTest do
     donor = insert(:donor, %{email: "sheriefalaa.w@gmail.com"})
     ngo = insert(:ngo, %{slug: "stc", name: "Save the children"})
     challenge = insert(:ngo_challenge, %{ngo: ngo, type: "PER_KM", activity_type: "Walk"})
-    insert(:activity, %{challenge: challenge, distance: Decimal.new(10)})
+    activity = insert(:activity_accumulator, %{distance: Decimal.new(10)})
+    insert(:ngo_challenge_activity_relaton, %{challenge: challenge, activity: activity})
 
     donation_attrs = %{
       str_cus_id: "cus_DaUL9L27e843XN",
@@ -159,7 +160,8 @@ defmodule OmegaBravera.Donations.ProcessorTest do
         distance_target: 50
       })
 
-    insert(:activity, %{challenge: challenge, distance: Decimal.new(60)})
+    activity = insert(:activity_accumulator, %{distance: Decimal.new(60)})
+    insert(:ngo_challenge_activity_relaton, %{challenge: challenge, activity: activity})
 
     donation_attrs = %{
       str_cus_id: "cus_DaUL9L27e843XN",

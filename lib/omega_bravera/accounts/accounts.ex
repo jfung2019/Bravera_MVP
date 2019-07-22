@@ -20,7 +20,6 @@ defmodule OmegaBravera.Accounts do
     Challenges.Team,
     Challenges.TeamMembers,
     Money.Donation,
-    Challenges.Activity,
     Offers.OfferChallenge,
     Offers.OfferChallengeTeam,
     Offers.OfferChallengeTeamMembers
@@ -31,14 +30,8 @@ defmodule OmegaBravera.Accounts do
     query |> Repo.all()
   end
 
-  def drop_active_challenges_activities() do
-    query =
-      from(a in Activity,
-        join: c in assoc(a, :challenge),
-        where: c.status == "active"
-      )
-
-    query |> Repo.delete_all()
+  def get_strava_by_athlete_id(athlete_id) do
+    from(s in Strava, where: s.athlete_id == ^athlete_id) |> Repo.one()
   end
 
   def get_strava_challengers(athlete_id) do
@@ -212,8 +205,8 @@ defmodule OmegaBravera.Accounts do
 
   # TODO Optimize the preload below
   def get_user_strava(user_id) do
-    query = from(s in Strava, where: s.user_id == ^user_id)
-    Repo.one(query)
+    from(s in Strava, where: s.user_id == ^user_id)
+    |> Repo.one()
   end
 
   def get_user_with_everything!(user_id) do
@@ -223,9 +216,22 @@ defmodule OmegaBravera.Accounts do
     |> where([user], user.id == ^user_id)
     |> join(:left, [user], ngo_chals in assoc(user, :ngo_chals))
     |> join(:left, [user, ngo_chals], donations in assoc(ngo_chals, :donations))
-    |> preload([user, ngo_chals, donations], ngo_chals: {ngo_chals, donations: donations})
+    |> preload([user, ngo_chals, donations, offer_teams, team_offer_challenge], ngo_chals: {ngo_chals, donations: donations})
     |> Repo.one()
-    |> Repo.preload([:strava, :setting, :credential, :offer_challenges])
+    |> Repo.preload([:strava, :setting, :credential, :offer_challenges, offer_teams: [:offer_challenge]])
+  end
+
+  def preload_active_offer_challenges(user) do
+    user
+    |> Repo.preload(
+      offer_challenges:
+        from(oc in OfferChallenge,
+          left_join: ofr in assoc(oc, :offer_redeems),
+          where:
+            oc.status in ["active", "pre_registration"] or
+              (oc.status == "complete" and ofr.status == "pending")
+        )
+    )
   end
 
   def get_user_by_token(token) do
@@ -407,7 +413,32 @@ defmodule OmegaBravera.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id, preloads \\ []), do: Repo.get!(User, id) |> Repo.preload(preloads)
+
+  def get_user_with_account_settings!(id) do
+    Repo.get!(User, id)
+    |> Repo.preload([
+      :credential,
+      setting:
+        from(s in Accounts.Setting,
+          select: %{
+            s
+            | weight_fraction:
+                fragment(
+                  "case when ? is not null then mod(?, 1) else 0.0 end",
+                  s.weight,
+                  s.weight
+                ),
+              weight_whole:
+                fragment(
+                  "case when ? is not null then trunc(?)::integer else null end",
+                  s.weight,
+                  s.weight
+                )
+          }
+        )
+    ])
+  end
 
   @doc """
   Creates a user.

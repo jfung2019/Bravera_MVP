@@ -1,6 +1,12 @@
 
 <%= if @challenge.status == "complete" do %>
-    <div class=" img-fluid margin-auto mb-3">
-        <%= raw get_qr_code(@conn, @current_user, @challenge) %>
+<div class="card challenge-details">
+    <div class="m-3 text-justify challenge-desc mx-auto">
+        <div class=" img-fluid margin-auto mb-3">
+            <%= raw get_qr_code(@conn, @current_user, @challenge) %>
+        </div>
     </div>
+
+    <span class="mr-3 ml-3 mb-3 small d-block d-md-none"><%= raw @challenge.offer.toc %></span>
+</div>
 <% end %>

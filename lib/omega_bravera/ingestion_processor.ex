@@ -3,8 +3,8 @@ defmodule OmegaBravera.IngestionProcessor do
 
   alias OmegaBravera.{
     TaskSupervisor,
-    Challenges.ActivitiesIngestion,
-    Offers.OfferActivitiesIngestion
+    Trackers.StravaApiHelpers,
+    Activity.Processor
   }
 
   require Logger
@@ -13,90 +13,69 @@ defmodule OmegaBravera.IngestionProcessor do
 
   @impl true
   def init(params) do
-    send(self(), :restart_offers)
-    send(self(), :restart_ngos)
+    send(self(), :restart_retrieve_activity)
 
     {:ok,
      %{
        params: params,
-       offers: %{ref: nil, timer: 0},
-       ngos: %{ref: nil, timer: 0}
+       activity_retrieve: %{ref: nil, timer: 0}
      }}
   end
 
   # The task completed successfully
   @impl true
-  def handle_info({ref, _answer}, %{offers: %{ref: ref}} = state) do
-    # We don't care about the DOWN message now, so let's demonitor and flush it
+  def handle_info(
+        {ref, {:ok, %Strava.Activity{} = strava_activity}},
+        %{activity_retrieve: %{ref: ref}} = state
+      ) do
+    # No need to continue to monitor
     Process.demonitor(ref, [:flush])
-    send(self(), :check_tasks)
-    Logger.info("offer checking has completed")
-    {:noreply, %{state | offers: nil}}
+    # Attempt to save strava activity.
+    Processor.process_activity(strava_activity, state.params)
+    Logger.info("IngestionProcessor: activity checking has completed")
+    {:noreply, %{state | activity_retrieve: nil}}
   end
 
-  # The task failed
+  @impl true
   def handle_info(
-        {:DOWN, ref, :process, _pid, _reason},
-        %{offers: %{ref: ref, timer: timer}} = state
+        {ref, {:error}},
+        %{activity_retrieve: %{ref: ref, timer: timer}} = state
       ) do
     timer = timer + 10_000
-    Process.send_after(self(), :restart_offers, timer)
+
+    Process.send_after(self(), :restart_retrieve_activity, timer)
     Process.demonitor(ref, [:flush])
-    Logger.warn("offer checking has failed, retrying after: #{timer} ms")
-    {:noreply, %{state | offers: %{ref: nil, timer: timer}}}
+
+    Logger.warn("IngestionProcessor: activity checking has failed, retrying after: #{timer} ms.")
+
+    {:noreply, %{state | activity_retrieve: %{ref: nil, timer: timer}}}
   end
 
-  # The task completed successfully
-  def handle_info({ref, _answer}, %{ngos: %{ref: ref}} = state) do
-    # We don't care about the DOWN message now, so let's demonitor and flush it
-    Process.demonitor(ref, [:flush])
-    send(self(), :check_tasks)
-    Logger.info("ngo checking has completed")
-    {:noreply, %{state | ngos: nil}}
-  end
-
-  # The task failed
   def handle_info(
-        {:DOWN, ref, :process, _pid, _reason},
-        %{ngos: %{ref: ref, timer: timer}} = state
-      ) do
-    timer = timer + 10_000
-    Process.send_after(self(), :restart_ngos, timer)
-    Process.demonitor(ref, [:flush])
-    Logger.warn("NGO checking has failed, retrying after #{timer}")
-    {:noreply, %{state | ngos: %{ref: nil, timer: timer}}}
-  end
-
-  def handle_info(:restart_offers, %{params: params, offers: %{timer: timer}} = state),
-    do: {:noreply, %{state | offers: %{ref: process_offers(params), timer: timer}}}
-
-  def handle_info(:restart_ngos, %{params: params, ngos: %{timer: timer}} = state),
-    do: {:noreply, %{state | ngos: %{ref: process_ngos(params), timer: timer}}}
-
-  def handle_info(:check_tasks, %{offers: nil, ngos: nil} = state), do: {:stop, :normal, state}
-  def handle_info(:check_tasks, state), do: {:noreply, state}
+        :restart_retrieve_activity,
+        %{params: params, activity_retrieve: %{timer: timer}} = state
+      ),
+      do:
+        {:noreply,
+         %{
+           state
+           | activity_retrieve: %{ref: retrieve_activity(params), timer: timer}
+         }}
 
   @impl true
   def terminate(:normal, state) do
-    Logger.info("Processing has finished.... going down")
+    Logger.info("IngestionProcessor: Processing has finished.... going down")
     {:shutdown, state}
   end
 
   def terminate(reason, state) do
-    Logger.error("Ingestion Processer is going down: #{reason}")
+    Logger.error("IngestionProcessor: Processer is going down: #{inspect(reason)}")
     {:shutdown, state}
   end
 
-  defp process_offers(params) do
+  defp retrieve_activity(params) do
     %{ref: ref} =
-      Task.Supervisor.async_nolink(TaskSupervisor, OfferActivitiesIngestion, :start, [params])
-
-    ref
-  end
-
-  defp process_ngos(params) do
-    %{ref: ref} =
-      Task.Supervisor.async_nolink(TaskSupervisor, ActivitiesIngestion, :process_strava_webhook, [
+      Task.Supervisor.async_nolink(TaskSupervisor, StravaApiHelpers, :process_strava_webhook, [
         params
       ])
 

@@ -1,13 +1,14 @@
 defmodule OmegaBravera.Challenges.Notifier do
   alias OmegaBravera.{
     Challenges.NGOChal,
-    Challenges.Activity,
     Repo,
     Money.Donation,
     Accounts.User,
     Accounts.Donor,
     Emails
   }
+
+  alias OmegaBravera.Activity.ActivityAccumulator
 
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
@@ -141,7 +142,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  def send_activity_completed_email(%NGOChal{} = challenge, %Activity{} = activity) do
+  def send_activity_completed_email(%NGOChal{} = challenge, %ActivityAccumulator{} = activity) do
     template_id = "d92b0884-818d-4f54-926a-a529e5caa7d8"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
@@ -156,12 +157,19 @@ defmodule OmegaBravera.Challenges.Notifier do
     end
   end
 
-  def activity_completed_email(%NGOChal{} = challenge, %Activity{} = activity, template_id) do
+  def activity_completed_email(
+        %NGOChal{} = challenge,
+        %ActivityAccumulator{} = activity,
+        template_id
+      ) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-activityDistance-", "#{Decimal.round(activity.distance)} Km")
-    |> Email.add_substitution("-completedChallengeDistance-", "#{challenge.distance_covered} Km")
+    |> Email.add_substitution("-activityDistance-", "#{Decimal.round(activity.distance, 2)} Km")
+    |> Email.add_substitution(
+      "-completedChallengeDistance-",
+      "#{Decimal.round(challenge.distance_covered, 2)} Km"
+    )
     |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
     |> Email.add_substitution("-timeRemaining-", "#{remaining_time(challenge)}")
     |> Email.add_substitution("-challengeURL-", challenge_url(challenge))

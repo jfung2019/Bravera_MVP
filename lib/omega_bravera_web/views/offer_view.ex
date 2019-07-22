@@ -39,4 +39,69 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
 
   def payment_offer?(nil), do: false
   def payment_offer?(payment_amount), do: Decimal.cmp(payment_amount, Decimal.new(0)) == :gt
+
+  def generate_offer_challenge_link(conn, nil, offer),
+    do:
+      link(gettext("Join the challenge"),
+        to: offer_offer_challenge_path(conn, :new, offer),
+        class: "btn btn-green sign-up text-capitalize"
+      )
+
+  def generate_offer_challenge_link(conn, %{offer_challenges: chals}, %{id: id} = offer) do
+    case Enum.find(chals, fn %{offer_id: offer_id} -> offer_id == id end) do
+      nil ->
+        generate_offer_challenge_link(conn, nil, offer)
+
+      challenge ->
+        cond do
+          challenge.status == "complete" ->
+            link(gettext("Get Reward"),
+              to: offer_offer_challenge_path(conn, :show, offer, challenge),
+              class: "btn btn-bravera sign-up text-capitalize"
+            )
+
+          challenge.status == "pre_registration" or challenge.status == "active" ->
+            link(gettext("View your progress"),
+              to: offer_offer_challenge_path(conn, :show, offer, challenge),
+              class: "btn btn-bravera sign-up text-capitalize"
+            )
+
+          true ->
+            generate_offer_challenge_link(conn, nil, offer)
+        end
+    end
+  end
+
+  def generate_team_member_offer_challenge_link(_conn, nil, _offer), do: ""
+
+  def generate_team_member_offer_challenge_link(conn, %User{offer_teams: offer_teams}, offer)
+      when length(offer_teams) > 0 do
+    team_challenges = Enum.filter(offer_teams, &(offer.id == &1.offer_challenge.offer_id))
+
+    if not Enum.empty?(team_challenges) do
+      oldest_team = Enum.min_by(team_challenges, & &1.offer_challenge.id)
+      generate_team_member_link(conn, oldest_team.offer_challenge, offer)
+    end
+  end
+
+  def generate_team_member_offer_challenge_link(_conn, _, _offer), do: ""
+
+  defp generate_team_member_link(conn, challenge, offer) do
+    cond do
+      challenge.status == "complete" ->
+        link(gettext("Get Team's Reward"),
+          to: offer_offer_challenge_path(conn, :show, offer, challenge),
+          class: "btn btn-bravera sign-up text-capitalize"
+        )
+
+      challenge.status == "pre_registration" or challenge.status == "active" ->
+        link(gettext("View your Team's progress"),
+          to: offer_offer_challenge_path(conn, :show, offer, challenge),
+          class: "btn btn-bravera sign-up text-capitalize"
+        )
+
+      true ->
+        ""
+    end
+  end
 end

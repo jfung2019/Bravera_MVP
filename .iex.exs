@@ -1,4 +1,5 @@
 alias OmegaBravera.Repo
-alias OmegaBravera.Accounts.AdminUser
+alias OmegaBravera.Accounts
+alias Accounts.AdminUser
 
 import Ecto.Query

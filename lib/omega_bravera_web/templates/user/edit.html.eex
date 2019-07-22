@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-8">
-      <h2>Edit Account</h2>
+      <h2><%= gettext("Edit Account") %></h2>
 
       <%= render "form.html", Map.put(assigns, :action, user_path(@conn, :update)) %>
     </div>

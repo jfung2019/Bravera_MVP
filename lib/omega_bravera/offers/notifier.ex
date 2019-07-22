@@ -1,7 +1,6 @@
 defmodule OmegaBravera.Offers.Notifier do
   alias OmegaBravera.{
     Offers.OfferChallenge,
-    Offers.OfferChallengeActivity,
     Repo,
     Emails,
     Offers.OfferRedeem,
@@ -9,6 +8,8 @@ defmodule OmegaBravera.Offers.Notifier do
     Accounts.User,
     Offers
   }
+
+  alias OmegaBravera.Activity.ActivityAccumulator
 
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
@@ -365,7 +366,7 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def send_team_activity_completed_email(
         %OfferChallenge{} = challenge,
-        %OfferChallengeActivity{} = activity,
+        %ActivityAccumulator{} = activity,
         %User{} = user
       ) do
     template_id = "d19178ae-5d36-4405-a5d7-d5862478356d"
@@ -385,7 +386,7 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def team_activity_completed_email(
         %OfferChallenge{} = challenge,
-        %OfferChallengeActivity{} = activity,
+        %ActivityAccumulator{} = activity,
         user,
         template_id
       ) do
@@ -404,7 +405,7 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def send_activity_completed_email(
         %OfferChallenge{} = challenge,
-        %OfferChallengeActivity{} = activity
+        %ActivityAccumulator{} = activity
       ) do
     template_id = "3364ef25-3318-4958-a3c3-4cb97f85dc7d"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
@@ -423,15 +424,21 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def activity_completed_email(
         %OfferChallenge{} = challenge,
-        %OfferChallengeActivity{} = activity,
+        %ActivityAccumulator{} = activity,
         template_id
       ) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-completedChallengeDistance-", "#{challenge.distance_covered} Km")
-    |> Email.add_substitution("-activityDistance-", "#{Decimal.round(activity.distance)} Km")
-    |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
+    |> Email.add_substitution(
+      "-completedChallengeDistance-",
+      "#{Decimal.round(challenge.distance_covered, 2)} Km"
+    )
+    |> Email.add_substitution("-activityDistance-", "#{Decimal.round(activity.distance, 2)} Km")
+    |> Email.add_substitution(
+      "-challengeDistance-",
+      "#{Decimal.round(challenge.distance_target, 2)} Km"
+    )
     |> Email.add_substitution("-timeRemaining-", "#{remaining_time(challenge)}")
     |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
     |> Email.put_from("admin@bravera.co", "Bravera")

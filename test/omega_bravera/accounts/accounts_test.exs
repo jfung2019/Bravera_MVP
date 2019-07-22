@@ -137,6 +137,78 @@ defmodule OmegaBravera.AccountsTest do
       user = user_fixture()
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
+
+    test "can get preloaded offer challenges that are active or haven't been redeemed" do
+      user = user_fixture()
+      vendor = insert(:vendor)
+      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
+      offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer.id})
+
+      %{id: completed_id} =
+        completed_challenge =
+        insert(:offer_challenge, %{
+          offer_id: offer.id,
+          offer: nil,
+          user: user,
+          has_team: false,
+          status: "complete",
+          slug: "complete"
+        })
+
+      redeem_params = %{
+        status: "redeemed",
+        offer: offer,
+        vendor: vendor,
+        offer_challenge: nil,
+        user: user,
+        offer_reward: offer_reward
+      }
+
+      insert(:offer_redeem_with_args, %{redeem_params | offer_challenge: completed_challenge})
+
+      %{id: completed_not_redeemed_id} =
+        completed_not_redeemed_challenge =
+        insert(:offer_challenge, %{
+          offer_id: offer.id,
+          offer: nil,
+          user: user,
+          has_team: false,
+          status: "complete",
+          slug: "complete_no_redeem"
+        })
+
+      insert(:offer_redeem_with_args, %{
+        redeem_params
+        | offer_challenge: completed_not_redeemed_challenge,
+          status: "pending"
+      })
+
+      %{id: pre_reg_id} =
+        insert(:offer_challenge, %{
+          offer_id: offer.id,
+          offer: nil,
+          user: user,
+          has_team: false,
+          status: "pre_registration",
+          slug: "pre"
+        })
+
+      %{id: active_id} =
+        insert(:offer_challenge, %{
+          offer: offer,
+          user: user,
+          has_team: false,
+          status: "active",
+          slug: "active"
+        })
+
+      %{offer_challenges: chals} = Accounts.preload_active_offer_challenges(user)
+      chal_ids = Enum.map(chals, fn %{id: id} -> id end)
+      assert active_id in chal_ids
+      assert pre_reg_id in chal_ids
+      assert completed_not_redeemed_id in chal_ids
+      refute completed_id in chal_ids
+    end
   end
 
   describe "settings" do
@@ -144,7 +216,8 @@ defmodule OmegaBravera.AccountsTest do
 
     @valid_attrs %{
       location: "UK",
-      weight: 35.5,
+      weight_whole: 35,
+      weight_fraction: 0.5,
       date_of_birth: "1940-07-14",
       gender: "Female"
     }
@@ -172,6 +245,8 @@ defmodule OmegaBravera.AccountsTest do
         |> Accounts.create_setting()
 
       setting
+      |> Map.put(:weight_whole, 0)
+      |> Map.put(:weight_fraction, 0.0)
     end
 
     test "list_settings/0 returns all settings" do
@@ -195,10 +270,6 @@ defmodule OmegaBravera.AccountsTest do
       assert setting.user_id == user.id
     end
 
-    test "create_setting/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_setting(@invalid_attrs)
-    end
-
     test "update_setting/2 with valid data updates the setting" do
       setting = setting_fixture()
       update_attrs = Map.put(@update_attrs, :user_id, setting.user_id)
@@ -206,12 +277,6 @@ defmodule OmegaBravera.AccountsTest do
       assert %Setting{} = setting
       assert setting.gender == "Male"
       assert setting.date_of_birth == ~D[1980-07-14]
-    end
-
-    test "update_setting/2 with invalid data returns error changeset" do
-      setting = setting_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_setting(setting, @invalid_attrs)
-      assert setting == Accounts.get_setting!(setting.id)
     end
 
     test "delete_setting/1 deletes the setting" do
@@ -328,12 +393,11 @@ defmodule OmegaBravera.AccountsTest do
 
       credential_attrs = %{
         password: @password,
-        password_confirmation: @password,
-        user_id: user.id
+        password_confirmation: @password
       }
 
       {:ok, credential} =
-        Credential.changeset(%Credential{}, credential_attrs)
+        Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
         |> Repo.insert()
 
       credential |> Repo.preload(:user)
