@@ -141,6 +141,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
 
   defp to_map(%_{} = value), do: Map.from_struct(value)
   defp to_map(%{} = value), do: value
+  defp to_map(nil), do: nil
 
   defp parse_athlete(%{athlete: athlete} = activity),
     do: %{activity | athlete: to_map(athlete)}
@@ -149,6 +150,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   defp parse_photos(%{photos: nil} = activity), do: activity
 
   defp parse_photos(%{photos: photos} = activity) do
+    photos = %{photos | primary: to_map(photos.primary)}
     %{activity | photos: to_map(photos)}
   end
 
