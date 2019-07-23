@@ -96,7 +96,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
           {:ok, challenge, activity}
 
         {:error, changeset} ->
-          Logger.error(
+          Logger.warn(
             "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{
               inspect(changeset.errors)
             }"
@@ -116,7 +116,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
           {:ok, challenge, activity}
 
         {:error, changeset} ->
-          Logger.error(
+          Logger.warn(
             "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{
               inspect(changeset.errors)
             }"

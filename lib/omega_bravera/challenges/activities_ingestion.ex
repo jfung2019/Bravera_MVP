@@ -134,7 +134,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
           {:ok, challenge, activity}
 
         {:error, changeset} ->
-          Logger.error(
+          Logger.warn(
             "ActivityIngestion: activity could not be saved. Changeset errors: #{
               inspect(changeset.errors)
             }"
