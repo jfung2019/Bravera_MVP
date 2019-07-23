@@ -8,7 +8,7 @@ defmodule OmegaBravera.Trackers.Strava do
     field(:email, :string)
     field(:firstname, :string)
     field(:lastname, :string)
-    field(:token, :string)
+    field(:token, :string) # access_token
     field(:refresh_token, :string)
     field(:token_expires_at, :utc_datetime)
     field(:strava_profile_picture, :string, default: nil)
@@ -17,7 +17,7 @@ defmodule OmegaBravera.Trackers.Strava do
     timestamps(type: :utc_datetime)
   end
 
-  @required_attributes [:athlete_id, :firstname, :lastname, :token]
+  @required_attributes [:athlete_id, :firstname, :lastname, :token, :refresh_token, :token_expires_at]
   @allowed_attributes [:strava_profile_picture | @required_attributes]
 
   @doc false

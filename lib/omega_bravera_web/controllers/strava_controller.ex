@@ -25,7 +25,7 @@ defmodule OmegaBraveraWeb.StravaController do
       OmegaBraveraWeb.Endpoint.url() <> "/strava/callback?redirect_to=#{team_invitation}"
 
     redirect(conn,
-      external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url)
+      external: Strava.Auth.authorize_url!(scope: "activity:read_all,profile:read_all", redirect_uri: redirect_url)
     )
   end
 
@@ -33,7 +33,7 @@ defmodule OmegaBraveraWeb.StravaController do
     redirect_url = strava_url(conn, :strava_callback, %{redirect_to: get_redirect_url(conn)})
 
     redirect(conn,
-      external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url)
+      external: Strava.Auth.authorize_url!(scope: "activity:read_all,profile:read_all", redirect_uri: redirect_url)
     )
   end
 
@@ -44,7 +44,7 @@ defmodule OmegaBraveraWeb.StravaController do
       })
 
     redirect(conn,
-      external: Strava.Auth.authorize_url!(scope: "view_private", redirect_uri: redirect_url)
+      external: Strava.Auth.authorize_url!(scope: "activity:read_all,profile:read_all", redirect_uri: redirect_url)
     )
   end
 
