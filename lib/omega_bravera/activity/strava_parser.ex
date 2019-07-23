@@ -26,7 +26,6 @@ defmodule OmegaBravera.Activity.StravaParser do
 
   defp parse_photos(%{photos: photos} = activity) do
     photos = %{photos | primary: to_map(photos.primary)}
-    IO.inspect photos, label: :pho
     %{activity | photos: to_map(photos)}
   end
 

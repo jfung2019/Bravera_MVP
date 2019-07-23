@@ -26,7 +26,10 @@ defmodule OmegaBravera.Factory do
       firstname: "John",
       lastname: "Doe",
       token: "abcd#{Enum.random(10_000_000..20_000_000)}",
+      refresh_token: "abcd#{Enum.random(10_000_000..20_000_000)}",
+      token_expires_at: Timex.shift(Timex.now(), hours: 5),
       strava_profile_picture: "some-profile-picture.png",
+
       user: build(:user)
     }
   end
