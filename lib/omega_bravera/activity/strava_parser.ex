@@ -2,8 +2,8 @@ defmodule OmegaBravera.Activity.StravaParser do
   def strava_activity_to_map(strava_activity) do
     strava_activity
     |> to_map()
-    |> parse_athlete
-    |> parse_photos
+    |> parse_athlete()
+    |> parse_photos()
     |> parse_laps()
     |> parse_splits_metric()
     |> parse_splits_standard()
@@ -16,6 +16,7 @@ defmodule OmegaBravera.Activity.StravaParser do
   defp to_map(%_{} = value), do: Map.from_struct(value)
   defp to_map(%{} = value), do: value
   defp to_map(nil), do: nil
+  defp to_map(value), do: value
 
   defp parse_athlete(%{athlete: athlete} = activity),
     do: %{activity | athlete: to_map(athlete)}
@@ -24,6 +25,8 @@ defmodule OmegaBravera.Activity.StravaParser do
   defp parse_photos(%{photos: nil} = activity), do: activity
 
   defp parse_photos(%{photos: photos} = activity) do
+    photos = %{photos | primary: to_map(photos.primary)}
+    IO.inspect photos, label: :pho
     %{activity | photos: to_map(photos)}
   end
 
@@ -101,7 +104,6 @@ defmodule OmegaBravera.Activity.StravaParser do
           end)
     }
   end
-
 
   defp parse_meta_activity(%{activity: meta_activity} = activity),
     do: %{activity | activity: to_map(meta_activity)}
