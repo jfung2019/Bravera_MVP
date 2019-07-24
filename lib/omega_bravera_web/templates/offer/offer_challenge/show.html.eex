@@ -8,6 +8,10 @@
           <%= render "team_invites.html", assigns %>
         <% end %>
 
+        <%= if is_own_offer_challenge?(@challenge, @current_user) and @challenge.has_team and has_accepted_members?(@challenge) do %>
+          <%= render "manage_team.html", assigns %>
+        <% end %>
+
         <%= render "challenge_header.html", assigns %>
         <%= render "qr_code.html", assigns %>
 

@@ -245,6 +245,37 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     end
   end
 
+  def kick_team_member(conn, %{
+    "offer_slug" => offer_slug,
+    "offer_challenge_slug" => slug,
+    "user_id" => team_member_user_id
+  }) do
+    case Guardian.Plug.current_resource(conn) do
+      nil ->
+        conn
+        |> put_flash(:error, "Invalid operation. Please make sure you are using the correct account.")
+        |> redirect(to: page_path(conn, :login))
+
+      logged_in_challenge_owner ->
+        challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, team: [:users]])
+        team_member = Offers.get_team_member(team_member_user_id, challenge.team.id)
+
+        case Offers.kick_team_member(team_member, challenge, logged_in_challenge_owner) do
+          {:ok, _struct} ->
+
+            conn
+            |> put_flash(:info, "Removed team member sucessfully!")
+            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+          {:error, reason} ->
+            Logger.error("Could not remove team member, reason: #{inspect(reason)}")
+
+            conn
+            |> put_flash(:error, "Could not remove team member.")
+            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+        end
+    end
+  end
+
   def add_team_member(conn, %{
         "offer_slug" => offer_slug,
         "offer_challenge_slug" => slug,
