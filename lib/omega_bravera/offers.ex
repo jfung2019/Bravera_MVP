@@ -891,6 +891,68 @@ defmodule OmegaBravera.Offers do
     |> Repo.update()
   end
 
+  def kick_team_member(
+        team_member,
+        %OfferChallenge{
+          status: status,
+          team: %{users: team_members},
+          user_id: challenge_owner_user_id
+        },
+        %User{id: logged_in_challenge_owner_id})
+  do
+    result =
+      team_member
+      |> validate_challenge_owner(challenge_owner_user_id, logged_in_challenge_owner_id)
+      |> validate_team_member(team_members) # is team member in challenge.team?
+      |> validate_challenge_status(status) # is challenge status active?
+
+    case result do
+      {:ok, struct} ->
+        Repo.delete(struct)
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp validate_challenge_owner(team_member, challenge_owner_user_id, logged_in_challenge_owner_id) do
+    if challenge_owner_user_id != logged_in_challenge_owner_id do
+      {:error, "Challenge owner is not correct!"}
+    else
+      {:ok, team_member}
+    end
+  end
+
+  defp validate_team_member({:ok, team_member} = struct, team_members) do
+    result = Enum.find(team_members, &(&1.id == team_member.user_id))
+
+    if not is_nil(result) and result > 0 do
+      struct
+    else
+      {:error, "team member not found in team!"}
+    end
+  end
+
+  defp validate_team_member({:error, _reason} = struct, _team_members), do: struct
+
+  defp validate_challenge_status({:ok, _team_member} = struct, status) do
+    cond do
+      status == "active" -> struct
+      status == "pre_registration" -> struct
+      status == "complete" -> {:error, "Cannot kick team member from complete challenge."}
+      status == "expired" -> {:error, "Cannot kick team member from expired challenge."}
+    end
+  end
+
+  defp validate_challenge_status({:error, _} = struct, _), do: struct
+
+  def get_team_member(user_id, team_id) do
+    from(
+      otm in OfferChallengeTeamMembers,
+      where: otm.user_id == ^user_id and otm.team_id == ^team_id
+    ) |> Repo.one()
+  end
+
   def get_team!(id), do: Repo.get!(OfferChallengeTeam, id)
 
   def create_offer_challenge_activity_m2m(
