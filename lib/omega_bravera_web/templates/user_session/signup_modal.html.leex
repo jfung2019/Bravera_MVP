@@ -9,7 +9,7 @@
         <%= unless @signup_ok? do %>
 
           <div class="modal-header">
-            <h5 class="modal-title mx-auto" id="signUpModalLabel">Signup</h5>
+            <h5 class="modal-title mx-auto" id="signUpModalLabel"><%= gettext("Signup") %></h5>
           </div>
 
           <div class="modal-body">
@@ -24,27 +24,27 @@
             <div class="container">
 
               <div class="form-group mt-2">
-                <%= text_input f, :firstname, class: add_error_class(f, :firstname, "form-control"), placeholder: gettext("First name"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                <%= text_input f, :firstname, class: add_error_class(f, :firstname, "form-control"), placeholder: gettext("First name"), required: "" %>
                 <%= error_tag f, :firstname %>
               </div>
 
               <div class="form-group mt-2">
-                <%= text_input f, :lastname, class: add_error_class(f, :lastname, "form-control"), placeholder: gettext("Last name"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                <%= text_input f, :lastname, class: add_error_class(f, :lastname, "form-control"), placeholder: gettext("Last name"), required: "" %>
                 <%= error_tag f, :lastname %>
               </div>
 
               <div class="form-group mt-2">
-                <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: gettext("Email"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: gettext("Email"), required: "" %>
                 <%= error_tag f, :email %>
               </div>
 
               <%= inputs_for f, :credential, fn fp -> %>
                 <div class="row mx-auto">
-                  <%= password_input fp, :password, value: input_value(fp, :password), class: add_error_class(fp, :password, "form-control"), placeholder: gettext("Password"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                  <%= password_input fp, :password, value: input_value(fp, :password), class: add_error_class(fp, :password, "form-control"), placeholder: gettext("Password"), required: "" %>
                   <%= error_tag fp, :password %>
                 </div>
                 <div class="row mx-auto mt-2">
-                  <%= password_input fp, :password_confirmation, value: input_value(fp, :password_confirmation), class: add_error_class(fp, :password_confirmation, "form-control"), placeholder: gettext("Confirm your password"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')"%>
+                  <%= password_input fp, :password_confirmation, value: input_value(fp, :password_confirmation), class: add_error_class(fp, :password_confirmation, "form-control"), placeholder: gettext("Confirm your password"), required: "" %>
                   <%= error_tag fp, :password_confirmation %>
                 </div>
               <% end %>
@@ -80,7 +80,7 @@
             </div>
 
             <div class="row mx-auto align-items-center">
-              <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Please check your email</strong></span>
+              <span class="d-block mt-3 mb-3 mx-auto text-center"><strong><%= gettext("Please check your email") %></strong></span>
             </div>
 
             <div class="row mx-auto align-items-center">
