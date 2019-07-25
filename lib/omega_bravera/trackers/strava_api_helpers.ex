@@ -17,9 +17,14 @@ defmodule OmegaBravera.Trackers.StravaApiHelpers do
 
   def process_strava_webhook(_), do: {:error, :webhook_not_processed}
 
-  defp get_strava_activity(%StravaTracker{token: token, refresh_token: refresh_token} = athlete, %{"object_id" => object_id}) do
-    client = Strava.Client.new(token,
-      refresh_token: refresh_token,
+  defp get_strava_activity(%StravaTracker{} = athlete, %{"object_id" => object_id}),
+   do: Strava.Activities.get_activity_by_id(get_strava_client(athlete), object_id, include_all_efforts: true)
+
+  defp get_strava_activity(nil, _), do: {:error, :no_user_matching_athlete_id}
+
+  def get_strava_client(athlete) do
+    Strava.Client.new(athlete.token,
+      refresh_token: athlete.refresh_token,
       token_refreshed: fn client ->
         attrs = %{
           token: client.token.access_token,
@@ -36,9 +41,5 @@ defmodule OmegaBravera.Trackers.StravaApiHelpers do
         end
       end
     )
-
-    Strava.Activities.get_activity_by_id(client, object_id, include_all_efforts: true)
   end
-
-  defp get_strava_activity(nil, _), do: {:error, :no_user_matching_athlete_id}
 end
