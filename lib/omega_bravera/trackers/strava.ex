@@ -17,8 +17,8 @@ defmodule OmegaBravera.Trackers.Strava do
     timestamps(type: :utc_datetime)
   end
 
-  @required_attributes [:athlete_id, :firstname, :lastname, :token, :refresh_token, :token_expires_at]
-  @allowed_attributes [:strava_profile_picture | @required_attributes]
+  @required_attributes [:athlete_id, :firstname, :lastname, :token]
+  @allowed_attributes [:refresh_token, :token_expires_at, :strava_profile_picture | @required_attributes]
 
   @doc false
   def changeset(strava, attrs) do

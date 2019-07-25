@@ -27,8 +27,8 @@ defmodule OmegaBravera.ProfilePictureSyncer do
 
   def get_profile_picture_link(%Trackers.Strava{} = strava) do
       case Strava.Athletes.get_logged_in_athlete(Trackers.StravaApiHelpers.get_strava_client(strava)) do
-        {:ok, %Strava.DetailedAthlete{profile: profile}} ->
-          profile
+        {:ok, athlete} ->
+          athlete.profile
 
         {:error, reason} ->
           Logger.error("ProfilePictureSyncer: Could not get athlete, reason: #{inspect(reason)}.")
