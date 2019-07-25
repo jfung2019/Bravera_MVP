@@ -22,9 +22,13 @@ defmodule OmegaBravera.Trackers.StravaApiHelpers do
 
   defp get_strava_activity(nil, _), do: {:error, :no_user_matching_athlete_id}
 
-  def get_strava_client(athlete) do
+  # Access token can be used as a refresh token only pre-october 2019. -Sherief
+  def get_strava_client(%StravaTracker{token: token, refresh_token: nil} = athlete), do: strava_client(athlete, token)
+  def get_strava_client(%StravaTracker{token: _token, refresh_token: refresh_token} = athlete), do: strava_client(athlete, refresh_token)
+
+  defp strava_client(athlete, refresh_token) do
     Strava.Client.new(athlete.token,
-      refresh_token: athlete.refresh_token,
+      refresh_token: refresh_token,
       token_refreshed: fn client ->
         attrs = %{
           token: client.token.access_token,
@@ -34,10 +38,10 @@ defmodule OmegaBravera.Trackers.StravaApiHelpers do
 
         case Trackers.update_strava(athlete, attrs) do
           {:ok, _} ->
-            Logger.info("Successfully refreshed token for strava athlete: #{athlete.firstname} #{athlete.lastname} #{athlete.athlete_id}")
+            Logger.info("StravaHelpers: Successfully refreshed token for strava athlete: #{athlete.firstname} #{athlete.lastname} #{athlete.athlete_id}")
 
           {:error, reason} ->
-            Logger.warn("Failed to refresh token, reason: #{inspect(reason)}.")
+            Logger.warn("StravaHelpers: Failed to refresh token, reason: #{inspect(reason)}.")
         end
       end
     )
