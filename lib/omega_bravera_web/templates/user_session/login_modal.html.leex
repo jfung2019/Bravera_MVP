@@ -29,12 +29,12 @@
 
           <div class="container">
             <div class="form-group mt-2">
-              <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: gettext("Email"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')" %>
+              <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: gettext("Email"), required: "" %>
               <%= error_tag f, :email %>
             </div>
 
             <div class="form-group">
-              <%= text_input f, :password, class: add_error_class(f, :password, "form-control"), type: "password", placeholder: gettext("Password"), required: "", readonly: "readonly", onfocus: "javascript: this.removeAttribute('readonly')" %>
+              <%= text_input f, :password, class: add_error_class(f, :password, "form-control"), type: "password", placeholder: gettext("Password"), required: "" %>
               <%= error_tag f, :password %>
             </div>
 
