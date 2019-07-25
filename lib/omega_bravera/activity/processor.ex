@@ -10,7 +10,10 @@ defmodule OmegaBravera.Activity.Processor do
     Challenges.ActivitiesIngestion
   }
 
-  def process_activity(%Strava.DetailedActivity{} = strava_activity, %{"owner_id" => athlete_id} = params) do
+  def process_activity(
+        %Strava.DetailedActivity{} = strava_activity,
+        %{"owner_id" => athlete_id} = params
+      ) do
     strava = Accounts.get_strava_by_athlete_id(athlete_id) |> Repo.preload(:user)
 
     case Activities.create_activity(strava_activity, strava.user) do

@@ -68,25 +68,25 @@ defmodule OmegaBravera.Activity.StravaParser do
   defp parse_splits_metric(%{splits_metric: nil} = activity), do: activity
 
   defp parse_splits_metric(%{splits_metric: splits_metric} = activity),
-    do: %{ activity | splits_metric: Enum.map(splits_metric, &(to_map(&1)))}
+    do: %{activity | splits_metric: Enum.map(splits_metric, &to_map(&1))}
 
   defp parse_splits_standard(activity)
   defp parse_splits_standard(%{splits_standard: nil} = activity), do: activity
 
   defp parse_splits_standard(%{splits_standard: splits_standard} = activity),
-    do: %{ activity | splits_standard: Enum.map(splits_standard, &(to_map(&1)))}
+    do: %{activity | splits_standard: Enum.map(splits_standard, &to_map(&1))}
 
   defp parse_gear(activity)
   defp parse_gear(%{gear: nil} = activity), do: activity
 
   defp parse_gear(%{gear: gear} = activity),
-    do: %{ activity | gear: to_map(gear)}
+    do: %{activity | gear: to_map(gear)}
 
   defp parse_map(activity)
   defp parse_map(%{map: nil} = activity), do: activity
 
   defp parse_map(%{map: map} = activity),
-    do: %{ activity | map: to_map(map)}
+    do: %{activity | map: to_map(map)}
 
   defp parse_best_efforts(activity)
   defp parse_best_efforts(%{best_efforts: nil} = activity), do: activity

@@ -253,7 +253,10 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
     # Calculate calories based on MET value and Weight and Duration.
     if activity.calories == nil do
-      {:ok, athlete} = Strava.Athletes.get_logged_in_athlete(StravaApiHelpers.get_strava_client(participant.strava))
+      {:ok, athlete} =
+        Strava.Athletes.get_logged_in_athlete(
+          StravaApiHelpers.get_strava_client(participant.strava)
+        )
 
       # calories per hour = met_value * weight in kg
       calories_per_hour =

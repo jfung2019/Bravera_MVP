@@ -17,7 +17,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
       strava_profile_picture:
         "https://lh3.googleusercontent.com/-d22eVvFVt_k/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVuVBQBIuLZLeuXyuu7f1H0M2AeYA/mo/photo.jpg",
       refresh_token: "ff875c4523a6c9ee99ebb3b33971865042efc8eb",
-      token_expires_at: Timex.from_unix(1563908347),
+      token_expires_at: Timex.from_unix(1_563_908_347)
     }
 
     [attrs: attrs]
@@ -32,6 +32,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
 
     use_cassette "strava_signup_sign_in" do
       result = Accounts.Strava.login_changeset(params)
+
       # Temp Bug Fix: I am not sure why the date gets updated. Probably the strava library? -Sherief
       expires_at = result.token_expires_at
 

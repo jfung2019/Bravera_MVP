@@ -3,15 +3,15 @@ defmodule OmegaBravera.Repo.Migrations.AddStravaRefreshTokenFields do
 
   def up do
     alter table("stravas") do
-      add :refresh_token, :string
-      add :token_expires_at, :utc_datetime
+      add(:refresh_token, :string)
+      add(:token_expires_at, :utc_datetime)
     end
   end
 
   def down do
     alter table("stravas") do
-      remove :refresh_token
-      remove :token_expires_at
+      remove(:refresh_token)
+      remove(:token_expires_at)
     end
   end
 end

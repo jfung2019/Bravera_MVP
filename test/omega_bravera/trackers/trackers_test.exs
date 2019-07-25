@@ -24,7 +24,15 @@ defmodule OmegaBravera.TrackersTest do
       refresh_token: "abcd129031092asd}",
       token_expires_at: Timex.shift(Timex.now(), hours: 5)
     }
-    @invalid_attrs %{athlete_id: nil, email: nil, firstname: nil, lastname: nil, token: nil, refresh_token: nil, token_expires_at: nil}
+    @invalid_attrs %{
+      athlete_id: nil,
+      email: nil,
+      firstname: nil,
+      lastname: nil,
+      token: nil,
+      refresh_token: nil,
+      token_expires_at: nil
+    }
 
     def strava_fixture(attrs \\ %{}) do
       changeset_attrs = Map.merge(@valid_attrs, attrs)

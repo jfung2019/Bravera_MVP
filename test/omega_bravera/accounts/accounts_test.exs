@@ -71,7 +71,17 @@ defmodule OmegaBravera.AccountsTest do
     test "insert_or_update_strava_user/1 updates both user and strava tracker" do
       user_attrs = %{firstname: "Rafael", lastname: "Garcia", email: "simon.garciar@gmail.com"}
       user = insert(:user, user_attrs)
-      strava = insert(:strava, Map.merge(user_attrs, %{token: "abcdef", user: user, refresh_token: "abcd129031092asd}", token_expires_at: Timex.shift(Timex.now(), hours: 5)}))
+
+      strava =
+        insert(
+          :strava,
+          Map.merge(user_attrs, %{
+            token: "abcdef",
+            user: user,
+            refresh_token: "abcd129031092asd}",
+            token_expires_at: Timex.shift(Timex.now(), hours: 5)
+          })
+        )
 
       attrs = %{
         athlete_id: strava.athlete_id,
