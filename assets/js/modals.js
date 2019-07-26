@@ -6,4 +6,9 @@ $(document).ready(function() {
     keyboard: false,
     show: true
   });
+
+  $(".trigger-modal").click(function() {
+    $(".login-modal-input").removeAttr("disabled");
+    $(".signup-modal-input").removeAttr("disabled");
+  });
 });

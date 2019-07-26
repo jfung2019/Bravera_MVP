@@ -9,8 +9,6 @@ $(() => {
     });
   });
 
-
-
   $('#next_raise_money_modal').click(function() {
       $('#raiseMoneyModal').modal({
           keyboard: false,
