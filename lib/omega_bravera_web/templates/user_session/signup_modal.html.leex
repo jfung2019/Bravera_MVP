@@ -24,27 +24,52 @@
             <div class="container">
 
               <div class="form-group mt-2">
-                <%= text_input f, :firstname, class: add_error_class(f, :firstname, "form-control"), placeholder: gettext("First name"), required: "" %>
+                <%= if @open_modal do %>
+                  <%= text_input f, :firstname, class: add_error_class(f, :firstname, "form-control signup-modal-input"), placeholder: gettext("First name"), required: "" %>
+                <% else %>
+                  <%= text_input f, :firstname, class: add_error_class(f, :firstname, "form-control signup-modal-input"), placeholder: gettext("First name"), required: "", disabled: "disabled" %>
+                <% end %>
+
                 <%= error_tag f, :firstname %>
               </div>
 
               <div class="form-group mt-2">
-                <%= text_input f, :lastname, class: add_error_class(f, :lastname, "form-control"), placeholder: gettext("Last name"), required: "" %>
+                <%= if @open_modal do %>
+                  <%= text_input f, :lastname, class: add_error_class(f, :lastname, "form-control signup-modal-input"), placeholder: gettext("Last name"), required: "" %>
+                <% else %>
+                  <%= text_input f, :lastname, class: add_error_class(f, :lastname, "form-control signup-modal-input"), placeholder: gettext("Last name"), required: "", disabled: "disabled" %>
+                <% end %>
+
                 <%= error_tag f, :lastname %>
               </div>
 
               <div class="form-group mt-2">
-                <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: gettext("Email"), required: "" %>
+                <%= if @open_modal do %>
+                  <%= email_input f, :email, class: add_error_class(f, :email, "form-control signup-modal-input"), placeholder: gettext("Email"), required: "" %>
+                <% else %>
+                  <%= email_input f, :email, class: add_error_class(f, :email, "form-control signup-modal-input"), placeholder: gettext("Email"), required: "", disabled: "disabled" %>
+                <% end %>
+
                 <%= error_tag f, :email %>
               </div>
 
               <%= inputs_for f, :credential, fn fp -> %>
                 <div class="row mx-auto">
-                  <%= password_input fp, :password, value: input_value(fp, :password), class: add_error_class(fp, :password, "form-control"), placeholder: gettext("Password"), required: "" %>
+                  <%= if @open_modal do %>
+                    <%= password_input fp, :password, value: input_value(fp, :password), class: add_error_class(fp, :password, "form-control signup-modal-input"), placeholder: gettext("Password"), required: "" %>
+                  <% else %>
+                      <%= password_input fp, :password, value: input_value(fp, :password), class: add_error_class(fp, :password, "form-control signup-modal-input"), placeholder: gettext("Password"), required: "", disabled: "disabled" %>
+                  <% end %>
+                  
                   <%= error_tag fp, :password %>
                 </div>
                 <div class="row mx-auto mt-2">
-                  <%= password_input fp, :password_confirmation, value: input_value(fp, :password_confirmation), class: add_error_class(fp, :password_confirmation, "form-control"), placeholder: gettext("Confirm your password"), required: "" %>
+                  <%= if @open_modal do %>
+                    <%= password_input fp, :password_confirmation, value: input_value(fp, :password_confirmation), class: add_error_class(fp, :password_confirmation, "form-control signup-modal-input"), placeholder: gettext("Confirm your password"), required: "" %>
+                  <% else %>
+                      <%= password_input fp, :password_confirmation, value: input_value(fp, :password_confirmation), class: add_error_class(fp, :password_confirmation, "form-control signup-modal-input"), placeholder: gettext("Confirm your password"), required: "", disabled: "disabled" %>
+                  <% end %>
+                  
                   <%= error_tag fp, :password_confirmation %>
                 </div>
               <% end %>

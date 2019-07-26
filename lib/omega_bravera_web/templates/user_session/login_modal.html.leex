@@ -29,12 +29,20 @@
 
           <div class="container">
             <div class="form-group mt-2">
-              <%= text_input f, :email, class: add_error_class(f, :email, "form-control"), type: "email", placeholder: gettext("Email"), required: "" %>
+              <%= if @open_modal do %>
+                <%= email_input f, :email, class: add_error_class(f, :email, "form-control login-modal-input"), placeholder: gettext("Email"), required: "" %>
+              <% else %>
+                <%= email_input f, :email, class: add_error_class(f, :email, "form-control login-modal-input"), placeholder: gettext("Email"), required: "", disabled: "disabled" %>
+              <% end %>
               <%= error_tag f, :email %>
             </div>
 
             <div class="form-group">
-              <%= text_input f, :password, class: add_error_class(f, :password, "form-control"), type: "password", placeholder: gettext("Password"), required: "" %>
+            <%= if @open_modal do %>
+              <%= password_input f, :password, class: add_error_class(f, :password, "form-control login-modal-input"), placeholder: gettext("Password"), required: "" %>
+            <% else %>
+              <%= password_input f, :password, class: add_error_class(f, :password, "form-control login-modal-input"), placeholder: gettext("Password"), required: "", disabled: "disabled" %>
+            <% end %>
               <%= error_tag f, :password %>
             </div>
 
