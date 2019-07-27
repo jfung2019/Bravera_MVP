@@ -851,6 +851,14 @@ defmodule OmegaBravera.Offers do
     |> Repo.insert(on_conflict: :nothing)
   end
 
+  def get_team_member_accepted_invitation(%{team_id: team_id, status: status, email: email}) do
+    from(
+      invitation in OfferChallengeTeamInvitation,
+      where: invitation.email == ^email and invitation.team_id == ^team_id and invitation.status == ^status
+    )
+    |> Repo.one()
+  end
+
   def get_team_member_invitation_by_token(token) do
     from(
       invitation in OfferChallengeTeamInvitation,
@@ -895,7 +903,7 @@ defmodule OmegaBravera.Offers do
         team_member,
         %OfferChallenge{
           status: status,
-          team: %{users: team_members},
+          team: %{users: team_members} = team,
           user_id: challenge_owner_user_id
         },
         %User{id: logged_in_challenge_owner_id})
@@ -908,6 +916,9 @@ defmodule OmegaBravera.Offers do
 
     case result do
       {:ok, struct} ->
+        get_team_member_accepted_invitation(%{team_id: team.id, status: "accepted", email: team_member.user.email})
+        |> Repo.delete
+
         Repo.delete(struct)
 
       {:error, reason} ->
@@ -949,7 +960,8 @@ defmodule OmegaBravera.Offers do
   def get_team_member(user_id, team_id) do
     from(
       otm in OfferChallengeTeamMembers,
-      where: otm.user_id == ^user_id and otm.team_id == ^team_id
+      where: otm.user_id == ^user_id and otm.team_id == ^team_id,
+      preload: [:user]
     ) |> Repo.one()
   end
 
