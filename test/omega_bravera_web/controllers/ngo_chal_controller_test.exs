@@ -240,6 +240,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       team = insert(:team, %{challenge: challenge})
       team_member_user = insert(:user)
       insert(:team_member, %{team_id: team.id, user_id: team_member_user.id})
+      insert(:team_invitation, %{team: nil, team_id: team.id, email: team_member_user.email, status: "accepted"})
       updated_team = Repo.get_by(Challenges.Team, id: team.id) |> Repo.preload(:users)
 
       assert length(updated_team.users) == 1
@@ -273,6 +274,7 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
 
       team = insert(:team, %{challenge: challenge})
       team_member_user = insert(:user)
+      insert(:team_invitation, %{team: nil, team_id: team.id, email: team_member_user.email, status: "accepted"})
       insert(:team_member, %{team_id: team.id, user_id: team_member_user.id})
       updated_team = Repo.get_by(Challenges.Team, id: team.id) |> Repo.preload(:users)
 

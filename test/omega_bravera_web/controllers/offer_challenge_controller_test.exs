@@ -433,6 +433,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
       team = insert(:offer_challenge_team, %{offer_challenge: offer_challenge})
       team_member_user = insert(:user)
+      insert(:offer_team_invitation, %{team: nil, team_id: team.id, email: team_member_user.email, status: "accepted"})
       insert(:offer_challenge_team_member, %{team_id: team.id, user_id: team_member_user.id})
       updated_team = Repo.get_by(Offers.OfferChallengeTeam, id: team.id) |> Repo.preload(:users)
 
