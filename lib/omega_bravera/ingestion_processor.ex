@@ -64,12 +64,12 @@ defmodule OmegaBravera.IngestionProcessor do
 
   @impl true
   def terminate(:normal, state) do
-    Logger.info("IngestionProcessor: Processing has finished.... going down")
+    Logger.warn("IngestionProcessor: Processing has finished.... going down")
     {:shutdown, state}
   end
 
   def terminate(reason, state) do
-    Logger.error("IngestionProcessor: Processer is going down: #{inspect(reason)}")
+    Logger.info("IngestionProcessor: Processer is going down: #{inspect(reason)}")
     {:shutdown, state}
   end
 
