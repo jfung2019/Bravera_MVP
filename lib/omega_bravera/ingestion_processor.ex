@@ -51,6 +51,12 @@ defmodule OmegaBravera.IngestionProcessor do
     {:noreply, %{state | activity_retrieve: %{ref: nil, timer: timer}}}
   end
 
+  def handle_info({ref, {:error, :no_user_matching_athlete_id}}, state) do
+    Process.demonitor(ref, [:flush])
+    Logger.info("Strava sent an activity of a non-existing user. Ignoring...")
+    {:stop, :normal, state}
+  end
+
   def handle_info(
         :restart_retrieve_activity,
         %{params: params, activity_retrieve: %{timer: timer}} = state
@@ -64,12 +70,12 @@ defmodule OmegaBravera.IngestionProcessor do
 
   @impl true
   def terminate(:normal, state) do
-    Logger.warn("IngestionProcessor: Processing has finished.... going down")
+    Logger.info("IngestionProcessor: Processing has finished.... going down")
     {:shutdown, state}
   end
 
   def terminate(reason, state) do
-    Logger.info("IngestionProcessor: Processer is going down: #{inspect(reason)}")
+    Logger.warn("IngestionProcessor: Processer is going down: #{inspect(reason)}")
     {:shutdown, state}
   end
 
