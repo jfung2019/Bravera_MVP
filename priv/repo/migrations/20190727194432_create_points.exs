@@ -31,7 +31,9 @@ defmodule OmegaBravera.Repo.Migrations.CreatePoints do
             int_distance == 1 -> 10
           end
 
-        if balance > 1 and !Enum.member?(["Cycle", "Ride", "VirtualRide"], activity.type) do
+        allowed_activity_type? =
+
+        if balance > 1 and Enum.member?(["Run", "Walk", "Hike", "VirtualRun"], activity.type) do
           [
             source: "activity",
             user_id: activity.user_id,

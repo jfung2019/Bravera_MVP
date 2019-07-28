@@ -11,7 +11,7 @@ defmodule OmegaBravera.Points.Point do
 
   @allowed_attributes [:activity_id, :user_id, :balance, :source]
   @required_attributes [:user_id, :balance, :source]
-  @excluded_activity_types ActivityOptions.points_excluded_activities()
+  @allowed_activity_types ActivityOptions.points_allowed_activities()
 
   schema "points" do
     # Can be in -ve or +ve.
@@ -34,7 +34,7 @@ defmodule OmegaBravera.Points.Point do
     |> put_change(:activity_id, activity_id)
     |> put_change(:user_id, user_id)
     |> put_change(:source, "activity")
-    |> validate_activity_type(@excluded_activity_types, activity_type)
+    |> validate_activity_type(@allowed_activity_types, activity_type)
     |> add_balance_from_distance(distance)
     |> validate_required(@required_attributes)
   end
@@ -45,11 +45,11 @@ defmodule OmegaBravera.Points.Point do
     |> validate_required(@required_attributes)
   end
 
-  defp validate_activity_type(changeset, types_to_exclude, activity_type) do
-    if Enum.member?(types_to_exclude, activity_type) do
-      add_error(changeset, :id, "Cycle activities are not eligible for points")
-    else
+  defp validate_activity_type(changeset, types_to_allow, activity_type) do
+    if Enum.member?(types_to_allow, activity_type) do
       changeset
+    else
+      add_error(changeset, :id, "Cycle activities are not eligible for points")
     end
   end
 
