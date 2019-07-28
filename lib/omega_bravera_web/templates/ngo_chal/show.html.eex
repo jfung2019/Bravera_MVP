@@ -6,6 +6,9 @@
         <%= if is_own_challenge?(@challenge, @current_user) and @challenge.has_team and !team_full?(@challenge) do %>
           <%= render "team_invites.html", assigns %>
         <% end %>
+        <%= if is_own_challenge?(@challenge, @current_user) and @challenge.has_team and has_accepted_members?(@challenge) do %>
+          <%= render "manage_team.html", assigns %>
+        <% end %>
         <%= if challenger_not_self_donated?(@challenge, @current_user) do %>
           <%= render "_self_donate_cta.html", assigns %>
         <% end %>

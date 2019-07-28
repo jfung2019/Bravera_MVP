@@ -56,6 +56,15 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
              open_modal: true,
              login_button_disabled?: false
            )}
+
+        {:error, :no_credential} ->
+          {:noreply,
+           assign(socket,
+             changeset: changeset,
+             error: "Please setup your password using Forgot password.",
+             open_modal: true,
+             login_button_disabled?: false
+           )}
       end
     else
       {:noreply,

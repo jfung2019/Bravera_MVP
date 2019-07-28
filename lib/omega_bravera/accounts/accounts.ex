@@ -382,7 +382,7 @@ defmodule OmegaBravera.Accounts do
         end
 
       credential == nil ->
-        {:error, :user_does_not_exist}
+        {:error, :no_credential}
     end
   end
 
@@ -461,6 +461,11 @@ defmodule OmegaBravera.Accounts do
   def create_credential_user(attrs \\ %{credential: %{}}) do
     %User{}
     |> User.create_credential_user_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_credential_for_existing_strava(attrs \\ %{}) do
+    Credential.create_credential_for_strava_user(attrs)
     |> Repo.insert()
   end
 

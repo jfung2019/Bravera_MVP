@@ -57,7 +57,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-bravera mr-auto" data-dismiss="modal" data-toggle="modal" data-target="#signUpModal"><%= gettext("Switch to Sign up") %></button>
+          <button type="button" class="btn btn-bravera mr-auto" data-dismiss="modal" data-toggle="modal" data-target="#signUpModal"><%= gettext("Sign up") %></button>
 
           <button type="button" class="btn btn-secondary" data-dismiss="modal" phx-click="close_modal"><%= gettext("Cancel") %></button>
           <button type="submit" class="btn btn-bravera" phx-disable-with="<%= gettext("Trying to signin...") %>" <%= unless @login_button_disabled?, do: " disabled" %>><%= gettext("Sign in") %></button>

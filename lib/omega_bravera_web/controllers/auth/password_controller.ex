@@ -1,6 +1,9 @@
 defmodule OmegaBraveraWeb.PasswordController do
   use OmegaBraveraWeb, :controller
 
+  require Logger
+
+  alias OmegaBravera.Repo
   alias OmegaBravera.Accounts
   alias OmegaBravera.Accounts.{User, Credential, Notifier}
 
@@ -23,9 +26,39 @@ defmodule OmegaBraveraWeb.PasswordController do
 
     case credential do
       nil ->
-        conn
-        |> put_flash(:error, "There's no account associated with that email")
-        |> redirect(to: password_path(conn, :new))
+        # search for email in users
+        case Repo.get_by(User, email: email) do
+          nil ->
+            conn
+            |> put_flash(:error, "There's no account associated with that email")
+            |> redirect(to: password_path(conn, :new))
+
+          user ->
+            case Accounts.create_credential_for_existing_strava(%{
+                   user_id: user.id,
+                   reset_token: random_string(64),
+                   reset_token_created: Timex.now()
+                 }) do
+              {:ok, created_credential} ->
+                Notifier.send_password_reset_email(created_credential)
+
+                conn
+                |> put_flash(
+                  :info,
+                  "You will receive a link in your #{email} inbox soon to set your new password."
+                )
+                |> redirect(to: page_path(conn, :index))
+
+              {:error, reason} ->
+                Logger.error(
+                  "PasswordController: could not create new credential, reason: #{inspect(reason)}"
+                )
+
+                conn
+                |> put_flash(:error, "Something went wrong while trying to reset your password.")
+                |> redirect(to: password_path(conn, :new))
+            end
+        end
 
       credential ->
         case reset_password_token(credential) do
@@ -34,12 +67,7 @@ defmodule OmegaBraveraWeb.PasswordController do
         end
 
         conn
-        |> put_flash(
-          :info,
-          "If your email address exists in our database, you will receive a password reset link in your #{
-            email
-          } inbox soon."
-        )
+        |> put_flash(:info, "You will receive a password reset link in your #{email} inbox soon.")
         |> redirect(to: page_path(conn, :index))
     end
   end

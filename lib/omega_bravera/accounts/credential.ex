@@ -32,6 +32,15 @@ defmodule OmegaBravera.Accounts.Credential do
     |> validate_required([:password])
   end
 
+  @doc """
+    Used to create credential for an existing Strava User
+  """
+
+  def create_credential_for_strava_user(attrs \\ %{}) do
+    %Credential{}
+    |> cast(attrs, [:user_id, :reset_token, :reset_token_created])
+  end
+
   def token_changeset(%Credential{} = credential, attrs) do
     credential
     |> cast(attrs, [:reset_token, :reset_token_created])

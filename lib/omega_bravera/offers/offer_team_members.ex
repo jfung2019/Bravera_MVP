@@ -8,7 +8,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeamMembers do
     Offers.OfferChallengeTeamInvitation
   }
 
-  @primary_key false
+  @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "offer_team_members" do
     belongs_to(:user, User)
@@ -20,7 +20,6 @@ defmodule OmegaBravera.Offers.OfferChallengeTeamMembers do
     |> cast(params, [:user_id, :team_id])
     |> verify_invitee_not_team_owner(current_user, challenge_owner)
     |> verify_team(invitation, team)
-    |> validate_required([:user_id, :team_id])
   end
 
   # Make sure challenge owner cannot invite himself.
