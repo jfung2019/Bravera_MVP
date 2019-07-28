@@ -14,7 +14,9 @@ defmodule OmegaBraveraWeb.Admin.UserControllerTest do
     firstname: "some firstname",
     lastname: "some lastname",
     athlete_id: 123_456,
-    token: "132kans81h23"
+    token: "132kans81h23",
+    refresh_token: "abcd129031092asd}",
+    token_expires_at: Timex.shift(Timex.now(), hours: 5)
   }
 
   setup %{conn: conn} do

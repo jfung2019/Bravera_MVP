@@ -1,0 +1,39 @@
+[
+  {
+    "request": {
+      "body": "client_id=23267&client_secret=508d46fce35e03a657546bf62283543c9ffe330f&code=4ce92c56bed42f3239a2b3a7af44632c894804bd&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fstrava%2Fcallback",
+      "headers": {
+        "content-type": "application/x-www-form-urlencoded",
+        "accept": "application/json"
+      },
+      "method": "post",
+      "options": [],
+      "request_body": "",
+      "url": "https://www.strava.com/oauth/token"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\"token_type\":\"Bearer\",\"expires_at\":1563908347,\"expires_in\":14867,\"refresh_token\":\"ff875c4523a6c9ee99ebb3b33971865042efc8eb\",\"access_token\":\"8a15d17c71df8e9d99e38c28c1b7a12b7b1f12f0\",\"athlete\":{\"id\":35409789,\"username\":\"sherief_alaa\",\"resource_state\":2,\"firstname\":\"Sherief\",\"lastname\":\"Alaa\",\"city\":\"Montréal\",\"state\":\"Québec\",\"country\":\"Canada\",\"sex\":\"M\",\"premium\":false,\"summit\":false,\"created_at\":\"2018-10-03T16:08:38Z\",\"updated_at\":\"2019-07-23T09:42:23Z\",\"badge_type_id\":0,\"profile_medium\":\"https://lh3.googleusercontent.com/-d22eVvFVt_k/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVuVBQBIuLZLeuXyuu7f1H0M2AeYA/mo/photo.jpg\",\"profile\":\"https://lh3.googleusercontent.com/-d22eVvFVt_k/AAAAAAAAAAI/AAAAAAAAAAA/AAN31DVuVBQBIuLZLeuXyuu7f1H0M2AeYA/mo/photo.jpg\",\"friend\":null,\"follower\":null}}",
+      "headers": {
+        "Date": "Tue, 23 Jul 2019 14:51:20 GMT",
+        "Content-Type": "application/json; charset=utf-8",
+        "Transfer-Encoding": "chunked",
+        "Connection": "keep-alive",
+        "Cache-Control": "max-age=0, private, must-revalidate",
+        "Via": "1.1 linkerd",
+        "X-Download-Options": "noopen",
+        "Status": "200 OK",
+        "X-Request-Id": "be2109be-763a-4fd1-bff0-60ace3ebc8f5",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "ETag": "W/\"8ce22bee7e15720ddd5ad9c9d913a315\"",
+        "X-Frame-Options": "SAMEORIGIN,DENY",
+        "X-Content-Type-Options": "nosniff",
+        "X-Permitted-Cross-Domain-Policies": "none",
+        "Vary": "Origin",
+        "X-XSS-Protection": "1; mode=block"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]

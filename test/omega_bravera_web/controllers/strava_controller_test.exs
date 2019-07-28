@@ -11,7 +11,9 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
     email: "sherief@plangora.com",
     firstname: "Sherief",
     lastname: "Alaa",
-    token: "some token"
+    token: "some token",
+    refresh_token: "abcd129031092asd}",
+    token_expires_at: Timex.shift(Timex.now(), hours: 5)
   }
   @user_create_attrs %{
     email: "sherief@plangora.com",
@@ -56,7 +58,7 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
       |> send_resp(:ok, "")
       |> get(strava_path(conn, :authenticate))
 
-    assert "https://www.strava.com/oauth/authorize?client_id=23267&redirect_uri=http%3A%2F%2Flocalhost%3A4001%2Fstrava%2Fcallback%3Fredirect_to%3D%252Foffers&response_type=code&scope=view_private" =
+    assert "https://www.strava.com/oauth/authorize?client_id=23267&redirect_uri=http%3A%2F%2Flocalhost%3A4001%2Fstrava%2Fcallback%3Fredirect_to%3D%252Foffers&response_type=code&scope=activity%3Aread_all%2Cprofile%3Aread_all" =
              redirected_to(conn)
   end
 
@@ -71,7 +73,7 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
 
       params = %{
         "code" => "some code",
-        "scope" => "view_private",
+        "scope" => "activity:read_all,profile:read_all",
         "redirect_to" => "/",
         "state" => ""
       }
@@ -83,7 +85,9 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
         firstname: "Sherief",
         lastname: "Alaa",
         token: "e5a4712333abdc9a6e24911e5e491231239cf",
-        strava_profile_picture: "some-profile-picture.png"
+        strava_profile_picture: "some-profile-picture.png",
+        refresh_token: "abcd129031092asd}",
+        token_expires_at: Timex.shift(Timex.now(), hours: 5)
       }
 
       with_mock(Strava, [], login_changeset: fn _code -> changeset end) do
