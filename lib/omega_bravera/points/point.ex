@@ -54,7 +54,7 @@ defmodule OmegaBravera.Points.Point do
   end
 
   defp add_balance_from_distance(changeset, distance) when not is_nil(distance) do
-    balance = distance |> Decimal.round() |> Decimal.to_integer()
+    balance = distance |> Decimal.round(0, :floor) |> Decimal.to_integer()
 
     cond do
       balance < 1 or balance == 0 or balance < 0 ->

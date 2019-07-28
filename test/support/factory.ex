@@ -272,4 +272,13 @@ defmodule OmegaBravera.Factory do
       token: Enum.random(10_000_000..20_000_000) |> Integer.to_string()
     }
   end
+
+  def point_factory do
+    %OmegaBravera.Points.Point{
+      source: "activity",
+      user_id: nil,
+      activity_id: nil,
+      balance: 50
+    }
+  end
 end
