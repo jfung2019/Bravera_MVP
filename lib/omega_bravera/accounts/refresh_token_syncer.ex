@@ -24,9 +24,9 @@ defmodule OmegaBravera.Accounts.RefreshTokenSyncer do
             Logger.error("RefreshTokenSyncer: failed to update. Reason: #{inspect(reason)}")
         end
       rescue
-        _ ->
+        exception ->
           Logger.warn(
-            "RefreshTokenSyncer: Coudl not get new tokens for athelte: #{inspect(strava)}"
+            "RefreshTokenSyncer: Could not get new tokens for athlete: #{inspect(strava)}: #{inspect(exception)}"
           )
       end
     end)
