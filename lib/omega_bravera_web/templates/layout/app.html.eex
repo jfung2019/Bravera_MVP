@@ -85,7 +85,7 @@
           <div class="collapse navbar-collapse flex-grow-1 text-right" id="navbarCollapse">
             <ul class="navbar-nav ml-auto flex-nowrap">
               <li class="nav-item pr-0">
-                <%= link("FAQ", to: "https://www.bravera.fit/faq/", target: "_blank") %>
+                <%= link(gettext("FAQ"), to: "https://www.bravera.fit/faq/", target: "_blank") %>
               </li>
               <li class="nav-item">
                 <%= link(gettext("Privacy"), to: "https://www.bravera.fit/privacy/", target: "_blank") %>

@@ -60,7 +60,7 @@
           <div class="row mx-auto">
             <%= error_tag fp, :name %>
             <%= label fp, :name, class: "form-control" do %>
-              <%= text_input fp, :name, class: "form-control", placeholder: "Enter your Team's name" %>
+              <%= text_input fp, :name, class: "form-control", placeholder: "#{gettext("Enter your Team's name")}" %>
             <% end %>
           </div>
           <div class="row mx-auto">
@@ -70,7 +70,7 @@
               <%= select fp, :count, 2..@ngo.additional_members, class: "form-control" %>
             <% end %>
           </div>
-          <span id="team-members-note" class="small mb-2">Invite <span>1</span> more member(s) after setting-up your challenge.</span>
+          <span id="team-members-note" class="small mb-2"><%= gettext("Invite") %> <span><%= gettext("1") %></span> <%= gettext("more member(s) after setting-up your challenge.") %></span>
         <% end %>
       </div>
 

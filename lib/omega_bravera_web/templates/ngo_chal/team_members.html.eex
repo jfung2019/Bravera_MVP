@@ -1,6 +1,6 @@
 <div class="team-members card border-bottom">
   <div class="card-body">
-    <span class="text-center mb-2 mx-auto d-block"><b>Team Members</b></span>
+    <span class="text-center mb-2 mx-auto d-block"><b><%= gettext("Team Members") %></b></span>
     <div class="row">
       <%= for user <- [@challenge.user] ++ @challenge.team.users do %>
       <div class="col-4 mx-auto text-center team-member">
