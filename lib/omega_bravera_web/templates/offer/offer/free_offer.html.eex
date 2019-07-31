@@ -1,6 +1,6 @@
 <%= if !has_active_offer_challenge?(@offer, @current_user) do %>
     <%= form_for @offer_challenge_changeset, offer_offer_challenge_path(@conn, :create, @offer.slug), fn _f -> %>
-        <%= submit "Join the Challenge", class: "btn btn-green sign-up" %>
+        <%= submit "Join the Challenge", class: "btn btn-green sign-up", data_ga_track_click: "Join Free Challenge" %>
     <% end %>
 <% else %>
 <%= link("View Your Progress", to: offer_offer_challenge_path(@conn, :show, @offer.slug, user_challenge_slug(@offer, @current_user)), class: "btn btn-bravera sign-up") %>

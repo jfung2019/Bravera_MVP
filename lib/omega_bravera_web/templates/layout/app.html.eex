@@ -111,10 +111,14 @@
       <!-- Google Analytics -->
       <script>
         window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};
-
         ga.l=+new Date;
         ga('create', '<%= assigns[:google_analytics_id] %>', 'auto');
         ga('send', 'pageview');
+        document.addEventListener("click", function(e){
+           if(e.target && e.target.dataset.gaTrackClick) {
+            ga('send', 'event', 'link', 'click', e.target.dataset.gaTrackClick);
+           }
+        });
       </script>
       <script async src='https://www.google-analytics.com/analytics.js'></script>
       <!-- End Google Analytics -->
