@@ -6,7 +6,7 @@ defmodule OmegaBravera.Accounts.RefreshTokenSyncer do
   def start() do
     Logger.info("RefreshTokenSyncer: started..")
 
-    stravas = Trackers.list_stravas()
+    stravas = Trackers.list_stravas_with_no_refresh_tokens()
 
     Enum.map(stravas, fn strava ->
       try do

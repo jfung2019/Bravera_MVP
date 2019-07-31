@@ -59,6 +59,10 @@ defmodule OmegaBravera.Trackers do
     Repo.all(Strava)
   end
 
+  def list_stravas_with_no_refresh_tokens() do
+    from(s in Strava, where: is_nil(s.refresh_token) == true) |> Repo.all()
+  end
+
   @doc """
   Gets a single strava.
 
