@@ -1,14 +1,14 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-8">
-      <h2>Connected Apps</h2>
+      <h2><%= gettext("Connected Apps") %></h2>
     </div>
 
     <div class="col-sm-8">
         <%= if is_nil(@user.strava) do %>
-            We currently support Strava. <%= link("Connect Strava Account", to: strava_path(@conn, :connect_strava_account, %{"redirect_to" => @redirect_to}), class: "btn btn-bravera mx-auto", role: "button") %>
+            <%= gettext("We currently support Strava.") %> <%= link(gettext("Connect Strava Account"), to: strava_path(@conn, :connect_strava_account, %{"redirect_to" => @redirect_to}), class: "btn btn-bravera mx-auto", role: "button") %>
         <% else %>
-            Your Strava Account is connected!
+            <%= gettext("Your Strava Account is connected!") %>
         <% end %>
     </div>
   </div>

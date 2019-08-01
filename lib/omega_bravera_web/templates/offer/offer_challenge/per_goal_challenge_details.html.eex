@@ -6,26 +6,26 @@
     <div id="challenge-status-container" class="<%= @challenge.status %>">
       <%= cond do %>
         <% active_challenge?(@challenge) -> %>
-          <h5 class="text-500 text-center mt-2 mb-0">Challenge ends in</h5>
+          <h5 class="text-500 text-center mt-2 mb-0"><%= gettext("Challenge ends in") %></h5>
           <h3 id="challenge_duration_countdown" class="text-success text-500 text-center mt-2 mb-0">
             <%= render_countdown_date(@challenge.end_date) %>
           </h3>
           <p class="text-center mb-0">
-            On <%= render_date(@challenge.end_date) %>
+            <%= gettext("On") %> <%= render_date(@challenge.end_date) %>
           </p>
 
         <% pre_registration_challenge?(@challenge) -> %>
-          <h5 class="text-500 text-center mt-2 mb-0">Challenge starts in</h5>
+          <h5 class="text-500 text-center mt-2 mb-0"><%= gettext("Challenge starts in") %></h5>
           <h3 id="challenge_duration_countdown" class="text-danger text-500 text-center mt-2 mb-0">
             <%= render_countdown_date(@challenge.start_date) %>
           </h3>
           <p class="text-center mb-0">
-            On <%= render_date(@challenge.start_date) %>
+            <%= gettext("On") %> <%= render_date(@challenge.start_date) %>
           </p>
 
         <% true -> %>
           <h5 class=" text-500 text-center mt-2 mb-0">
-            Challenge <%= render_status(@challenge.status) %>
+            <%= gettext("Challenge") %> <%= render_status(@challenge.status) %>
           </h5>
       <% end %>
     </div>
@@ -37,17 +37,17 @@
       <strong class="text-green">(<%= render_percentage_exceed(get_in(@stats, ["total", "charged"]) || 0, @challenge.money_target) %>%)</strong>
     </h5>
     <div class="mb-3 text-center mx-auto">
-      <a id="support-now" class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form">Support Now</a>
+      <a id="support-now" class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form"><%= gettext("Support Now") %></a>
     </div>
   </div>
 
   <div class="container">
     <h2 class="mb-0 mt-2 text-center">
-      Milestones
+      <%= gettext("Milestones") %>
     </h2>
     <div class="mb-3 mx-lg-3">
       <h5 class="text-420 mt-1 mb-3 ml-1 text-left">
-        Kick-off Donations
+        <%= gettext("Kick-off Donations") %>
         <span class="text-success"><strong class="float-right"><%= currency_to_symbol(@challenge.default_currency) %><%=get_in(@stats, ["1", "total"]) || 0 %></strong> </span>
       </h5>
       <div style="clear: both;"></div>
@@ -57,7 +57,7 @@
       <%= render_total_secured(get_in(@stats, ["total", "charged"]), @challenge.default_currency) %>
       <%= render_total_pledged(get_in(@stats, ["total", "pending"]) || 0, get_in(@stats, ["total", "charged"]) || 0, @challenge.default_currency)%>
       <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
-        Distance Completed:
+        <%= gettext("Distance Completed:") %>
         <strong class="text-500 float-right"><%= @challenge.distance_covered %>/<%= @challenge.distance_target %>km</strong>
       </h5>
       <div style="clear: both;"></div>
@@ -66,9 +66,9 @@
 
   <div class="card-footer border-top text-center mb-0 pb-0">
     <div class=" img-fluid margin-auto mb-3">
-      <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "Fitness Data Powered by Strava") %>
+      <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "#{gettext("Fitness Data Powered by Strava")}") %>
     </div>
-    
+
     <div class="m-3 text-justify challenge-desc d-none d-md-block">
       <span class="small"><%= raw @challenge.offer.toc %></span>
     </div>

@@ -57,7 +57,7 @@
 
         <% else %>
           <button type="button" class="btn btn-bravera trigger-modal" data-toggle="modal" data-target="#signUpModal" data-ga-track-click="Open Sign Up Modal from New Challenge Page">
-            Sign in/up to join the challenge
+            <%= gettext("Sign in/up to join the challenge") %>
           </button>
         <% end %>
 

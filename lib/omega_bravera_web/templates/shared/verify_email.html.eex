@@ -3,7 +3,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Email Verification Needed</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle"><%= gettext("Email Verification Needed") %></h5>
       </div>
       <div class="modal-body">
       <%= form_for @conn, user_path(@conn, :update), [as: :user], fn f -> %>

@@ -5,11 +5,11 @@
     </a>
   </div>
   <h1 class="my-3">
-    You look lost, Mate.
+    <%= gettext("You look lost, Mate.") %>
   </h1>
 
-  <a href="/"><h5>Let's get back on the trail.</h5></a>
+  <a href="/"><h5><%= gettext("Let's get back on the trail.") %></h5></a>
 
   <p class="mt-5 mb-3 text-muted">© <%= Timex.now.year %> Bravera <br/>
-  Photo of Alyn by Fox @ CountryOfOrigin.asia</p>
+  <%= gettext("Photo of Alyn by Fox @ CountryOfOrigin.asia") %></p>
 </div>

@@ -6,7 +6,7 @@
       <div class="card">
         <div class="card-body text-center mx-3 pb-2">
           <h2 style="font-weight: 350;">
-            Activities
+            <%= gettext("Activities") %>
           </h2>
           <%= render("_activities.html", assigns) %>
           <%= link("Back to challenge", to: offer_offer_challenge_path(@conn, :show, @challenge.offer.slug, @challenge.slug)) %>
