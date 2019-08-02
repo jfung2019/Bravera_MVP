@@ -11,7 +11,7 @@
             <%= render_countdown_date(@challenge.end_date) %>
           </h3>
           <p class="text-center mb-0">
-            <%= gettext("On %{end_date}", end_date: render_date(@challenge.end_date)) %>
+            <%= gettext("On ") %> <%= render_date(@challenge.end_date) %>
           </p>
         <% pre_registration_challenge?(@challenge) -> %>
           <h5 class="text-500 text-center mt-2 mb-0"><%= gettext("Challenge starts in") %><h5>
@@ -19,11 +19,11 @@
             <%= render_countdown_date(@challenge.offer.start_date) %>
           </h3>
           <p class="text-center mb-0">
-            <%= gettext("On %{start_date}", start_date: render_date(@challenge.offer.start_date)) %>
+            <%= gettext("On ") %> <%= render_date(@challenge.offer.start_date) %>
           </p>
         <% true -> %>
           <h5 class=" text-500 text-center mt-2 mb-0">
-            <%= gettext("Challenge",  status: render_status(@challenge.status)) %>
+            <%= gettext("Challenge") %> <%= render_status(@challenge.status) %>
           </h5>
       <% end %>
 
