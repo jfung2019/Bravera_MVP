@@ -12,7 +12,9 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
     firstname: "some firstname",
     lastname: "some lastname",
     athlete_id: 123_456,
-    token: "132kans81h23"
+    token: "132kans81h23",
+    refresh_token: "abcd129031092asd}",
+    token_expires_at: Timex.shift(Timex.now(), hours: 5)
   }
 
   setup %{conn: conn} do
@@ -172,10 +174,11 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       end
     end
 
-    test "create/2 redirects to paid offer challenge of type BRAVERA_SEGMENT when data is valid", %{
-      conn: conn,
-      current_user: user
-    } do
+    test "create/2 redirects to paid offer challenge of type BRAVERA_SEGMENT when data is valid",
+         %{
+           conn: conn,
+           current_user: user
+         } do
       {:ok, _user} =
         Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
 
@@ -184,7 +187,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           start_date: Timex.now(),
           end_date: Timex.shift(Timex.now(), days: 10),
           payment_amount: Decimal.new(57),
-          offer_challenge_types: ["BRAVERA_SEGMENT"],
+          offer_challenge_types: ["BRAVERA_SEGMENT"]
         })
 
       use_cassette "signup_for_paid_offer" do
@@ -418,5 +421,106 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
     #   assert length(updated_team.invitations) == 1
     #   assert %{status: "pending_acceptance"} = hd(updated_team.invitations)
     # end
+  end
+
+  describe "kick team member" do
+    test "kick_team_member/3 can kick team member out of offer challenge team", %{
+      conn: conn,
+      current_user: current_user
+    } do
+      {:ok, updated_user} =
+        Accounts.update_user(current_user, %{email: "sherief@plangora.com", email_verified: true})
+
+      offer_challenge =
+        insert(:offer_challenge, %{has_team: true, user: nil, user_id: updated_user.id})
+
+      team = insert(:offer_challenge_team, %{offer_challenge: offer_challenge})
+      team_member_user = insert(:user)
+      insert(:offer_team_invitation, %{team: nil, team_id: team.id, email: team_member_user.email, status: "accepted"})
+      insert(:offer_challenge_team_member, %{team_id: team.id, user_id: team_member_user.id})
+      updated_team = Repo.get_by(Offers.OfferChallengeTeam, id: team.id) |> Repo.preload(:users)
+
+      assert length(updated_team.users) == 1
+
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :kick_team_member,
+            offer_challenge.offer.slug,
+            offer_challenge.slug,
+            team_member_user.id
+          )
+        )
+
+      assert get_flash(conn, :info) =~ "Removed team member sucessfully!"
+    end
+
+    test "kick_team_member/3 only the logged in a challenge owner can kick team member", %{
+      conn: conn,
+      current_user: current_user
+    } do
+      {:ok, _updated_user} =
+        Accounts.update_user(current_user, %{email: "sherief@plangora.com", email_verified: true})
+
+      not_challenge_owner_user = insert(:user)
+
+      offer_challenge =
+        insert(:offer_challenge, %{has_team: true, user: nil, user_id: not_challenge_owner_user.id})
+
+      team = insert(:offer_challenge_team, %{offer_challenge: offer_challenge})
+      team_member_user = insert(:user)
+      insert(:offer_challenge_team_member, %{team_id: team.id, user_id: team_member_user.id})
+      updated_team = Repo.get_by(Offers.OfferChallengeTeam, id: team.id) |> Repo.preload(:users)
+
+      assert length(updated_team.users) == 1
+
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :kick_team_member,
+            offer_challenge.offer.slug,
+            offer_challenge.slug,
+            team_member_user.id
+          )
+        )
+
+      assert get_flash(conn, :error) =~ "Could not remove team member."
+    end
+
+    test "kick_team_member/3 cannot kick member after challenge is complete", %{
+      conn: conn,
+      current_user: current_user
+    } do
+      {:ok, updated_user} =
+        Accounts.update_user(current_user, %{email: "sherief@plangora.com", email_verified: true})
+
+      offer_challenge =
+        insert(:offer_challenge, %{has_team: true, user: nil, user_id: updated_user.id, status: "complete"})
+
+      team = insert(:offer_challenge_team, %{offer_challenge: offer_challenge})
+      team_member_user = insert(:user)
+      insert(:offer_challenge_team_member, %{team_id: team.id, user_id: team_member_user.id})
+      updated_team = Repo.get_by(Offers.OfferChallengeTeam, id: team.id) |> Repo.preload(:users)
+
+      assert length(updated_team.users) == 1
+
+      conn =
+        post(
+          conn,
+          offer_offer_challenge_offer_challenge_path(
+            conn,
+            :kick_team_member,
+            offer_challenge.offer.slug,
+            offer_challenge.slug,
+            team_member_user.id
+          )
+        )
+
+      assert get_flash(conn, :error) =~ "Could not remove team member."
+    end
   end
 end

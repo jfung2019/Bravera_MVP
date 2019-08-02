@@ -3,7 +3,7 @@ defmodule OmegaBravera.Accounts.Strava do
   alias OmegaBravera.{Repo, Accounts, Trackers, Accounts.Notifier}
 
   def login_changeset(%{"code" => code}) do
-    client = Strava.Auth.get_token!(code: code)
+    client = Strava.Auth.get_token!(code: code, grant_type: "authorization_code")
     athlete = Strava.Auth.get_athlete!(client)
 
     athlete
@@ -11,6 +11,8 @@ defmodule OmegaBravera.Accounts.Strava do
     |> Map.put(:athlete_id, athlete.id)
     |> Map.put(:strava_profile_picture, athlete.profile)
     |> Map.merge(%{token: client.token.access_token})
+    |> Map.merge(%{refresh_token: client.token.refresh_token})
+    |> Map.merge(%{token_expires_at: Timex.from_unix(client.token.expires_at)})
     |> Map.put(:additional_info, build_additional_info(athlete))
   end
 
@@ -36,7 +38,7 @@ defmodule OmegaBravera.Accounts.Strava do
   defp do_create_user(attrs), do: Accounts.create_user(attrs)
   defp do_create_tracker(user, attrs), do: Trackers.create_strava(user.id, attrs)
 
-  defp build_additional_info(%Strava.Athlete.Summary{} = athlete) do
+  defp build_additional_info(%Strava.DetailedAthlete{} = athlete) do
     %{sex: athlete.sex, location: "#{athlete.country}/#{athlete.city}/#{athlete.city}"}
   end
 end

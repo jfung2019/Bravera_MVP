@@ -56,6 +56,8 @@ defmodule OmegaBravera.AccountsTest do
         firstname: "Rafael",
         lastname: "Garcia",
         token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
+        refresh_token: "abcd129031092asd}",
+        token_expires_at: Timex.shift(Timex.now(), hours: 5),
         additional_info: %{sex: "M", location: "Spain/Barcelona/Barcelona"}
       }
 
@@ -69,7 +71,17 @@ defmodule OmegaBravera.AccountsTest do
     test "insert_or_update_strava_user/1 updates both user and strava tracker" do
       user_attrs = %{firstname: "Rafael", lastname: "Garcia", email: "simon.garciar@gmail.com"}
       user = insert(:user, user_attrs)
-      strava = insert(:strava, Map.merge(user_attrs, %{token: "abcdef", user: user}))
+
+      strava =
+        insert(
+          :strava,
+          Map.merge(user_attrs, %{
+            token: "abcdef",
+            user: user,
+            refresh_token: "abcd129031092asd}",
+            token_expires_at: Timex.shift(Timex.now(), hours: 5)
+          })
+        )
 
       attrs = %{
         athlete_id: strava.athlete_id,
@@ -78,7 +90,9 @@ defmodule OmegaBravera.AccountsTest do
         lastname: "Garcia",
         token: "87318aaded9cdeb99a1a3c20c6af26ccf059de30",
         additional_info: %{sex: "M", location: "Spain/Barcelona/Barcelona"},
-        strava_profile_picture: "some-profile-picture.png"
+        strava_profile_picture: "some-profile-picture.png",
+        refresh_token: "abcd129031092asd}",
+        token_expires_at: Timex.shift(Timex.now(), hours: 5)
       }
 
       {:ok, user} = Accounts.insert_or_update_strava_user(attrs)

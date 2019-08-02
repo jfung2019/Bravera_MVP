@@ -1,7 +1,7 @@
 <%= form_for @changeset, @action, [id: 'payment-form'], fn f -> %>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+      <p><%= gettext("Oops, something went wrong! Please check the errors below.") %></p>
     </div>
   <% end %>
 
@@ -12,7 +12,7 @@
           <button id="support-accordion-btn" class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             <h4 class="support-text-color text-center mx-auto">
               <i class="fa fa-plus align-icon"></i>
-              Support Now
+              <%= gettext("Support Now") %>
             </h4>
           </button>
         </h5>
@@ -27,7 +27,7 @@
               <label
                 class="control-label"
                 for="amount">
-                <h4 class="currency-select-label text-green">Donation Amount</h4>
+                <h4 class="currency-select-label text-green"><%= gettext("Donation Amount") %></h4>
               </label>
               <%= error_tag f, :currency %>
 
@@ -36,7 +36,7 @@
 
           <div class="mx-auto" style="max-width: 360px;">
             <div class="form-group row justify-content-between">
-              <span class="mr-auto pt-3">Your Donation Amount:</span>
+              <span class="mr-auto pt-3"><%= gettext("Your Donation Amount:") %></span>
               <span class="pull-right" style="max-width: 80px;">
                 <input type="number" class="form-control p-2" id="follow-on-donation-amount" name="donation[follow_on_donation_amount]" required min="1" placeholder="0">
               </span>
@@ -55,13 +55,13 @@
             <% else %>
               <div class="form-group row">
                 <%= checkbox f, :donor_pays_fees, class: "col-1 mt-1"%>
-                <p class="col-11 text-center small">Yes! I want to maximize my donation to the Cause and cover service fees (card payment & platform service fees).</p>
+                <p class="col-11 text-center small"><%= gettext("Yes! I want to maximize my donation to the Cause and cover service fees (card payment & platform service fees).") %></p>
               </div>
             <% end %>
 
             <div class="form-group row">
                 <%= checkbox f, :opt_in, class: "col-1 mt-1" %>
-                <p class="col-11 text-center small">Please also add me to the NGO newsletter mailing list.</p>
+                <p class="col-11 text-center small"><%= gettext("Please also add me to the NGO newsletter mailing list.") %></p>
             </div>
           </div>
       
@@ -70,7 +70,7 @@
         <!-- Billing form -->
         <div class="card-body border-top">
           <div class="text-center">
-            <h5>Billing Information</h5>
+            <h5><%= gettext("Billing Information") %></h5>
           </div>
           <div class="max-w-500 mx-auto">
           <div class="row">
@@ -78,36 +78,36 @@
               <form class="needs-validation" novalidate="">
                 <div class="row">
                   <div class="col-md-6 mb-3 form-group">
-                    <label for="first-name">First name</label>
+                    <label for="first-name"><%= gettext("First name") %></label>
                     <input type="text" class="form-control"
                     name="donation[first_name]" id="first-name" placeholder="" value="" required="">
                     <div class="invalid-feedback">
-                      Valid first name is required.
+                      <%= gettext("Valid first name is required.") %>
                     </div>
                   </div>
       
                   <div class="col-md-6 mb-3 form-group">
-                    <label for="first-name">Last name</label>
+                    <label for="first-name"><%= gettext("Last name") %></label>
                     <input type="text" class="form-control"
                     name="donation[last_name]" id="last-name" placeholder="" value="" required="">
                     <div class="invalid-feedback">
-                      Valid last name is required.
+                      <%= gettext("Valid last name is required.") %>
                     </div>
                   </div>
                 </div>
       
                 <div class="mb-3">
-                  <label for="email">Email</label>
+                  <label for="email"><%= gettext("Email") %></label>
                   <input type="email" class="form-control" id="email" placeholder="you@example.com" name="donation[email]" required="">
                   <div class="invalid-feedback">
-                    Please enter a valid email address.
+                    <%= gettext("Please enter a valid email address.") %>
                   </div>
                 </div>
       
       
                 <div class="form-group">
                   <label for="card-element">
-                    <h4 class="mb-3">Credit/Debit Card Info</h4>
+                    <h4 class="mb-3"><%= gettext("Credit/Debit Card Info") %></h4>
                   </label>
                   <div id="card-element">
                     <!-- A Stripe Element will be inserted here. -->
@@ -127,7 +127,7 @@
               </div>
 
               <div class="text-center mx-auto">
-                <button data-disable-button class="btn btn-bravera btn-block" style="width:200px;">Submit</button>
+                <button data-disable-button class="btn btn-bravera btn-block" style="width:200px;"><%= gettext("Submit") %></button>
               </div>
 
               </form>

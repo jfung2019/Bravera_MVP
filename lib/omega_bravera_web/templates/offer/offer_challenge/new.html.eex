@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-6 offset-md-3">
             <div class="card mt-3 chal-header">
-                <img class="card-img-top chal-image" src=<%= @offer.image %> alt=<%= @offer.name %> />
+                <img class="card-img-top chal-image" src="<%= @offer.image %>" alt=<%= @offer.name %> />
                 <div class="card-img-overlay text-white card-img-text-shadow">
                 <div class="row">
                     <div class="col-4 col-sm-3">
@@ -56,8 +56,8 @@
           <% end %>
 
         <% else %>
-          <button type="button" class="btn btn-bravera trigger-modal" data-toggle="modal" data-target="#signUpModal">
-            Sign in/up to join the challenge
+          <button type="button" class="btn btn-bravera trigger-modal" data-toggle="modal" data-target="#signUpModal" data-ga-track-click="Open Sign Up Modal from New Challenge Page">
+            <%= gettext("Sign in/up to join the challenge") %>
           </button>
         <% end %>
 

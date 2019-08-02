@@ -15,37 +15,37 @@
 
       <ul class="navbar-nav">
         <li class="nav-item">
-          <%= link("Emails", to: admin_panel_emails_path(@conn, :index)) %>
+          <%= link(gettext("Emails"), to: admin_panel_emails_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
-          <%= link("Users", to: admin_panel_user_path(@conn, :index)) %>
+          <%= link(gettext("Users"), to: admin_panel_user_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
-          <%= link("NGO Activities", to: admin_panel_activity_path(@conn, :new)) %>
+          <%= link(gettext("NGO Activities"), to: admin_panel_activity_path(@conn, :new)) %>
         </li>
         <li class="nav-item">
-          <%= link("Offer Activities", to: admin_panel_offer_challenge_activity_path(@conn, :new)) %>
+          <%= link(gettext("Offer Activities"), to: admin_panel_offer_challenge_activity_path(@conn, :new)) %>
         </li>
         <li class="nav-item">
-          <%= link("Offer Rewards", to: admin_panel_offer_reward_path(@conn, :index)) %>
+          <%= link(gettext("Offer Rewards"), to: admin_panel_offer_reward_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
-          <%= link("Offers", to: admin_panel_offer_path(@conn, :index)) %>
+          <%= link(gettext("Offers"), to: admin_panel_offer_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
-          <%= link("Offer Vendors", to: admin_panel_offer_vendor_path(@conn, :index)) %>
+          <%= link(gettext("Offer Vendors"), to: admin_panel_offer_vendor_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
-          <%= link("NGOs", to: admin_panel_ngo_path(@conn, :index)) %>
+          <%= link(gettext("NGOs"), to: admin_panel_ngo_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
-          <%= link("Challenges", to: admin_panel_challenges_path(@conn, :index)) %>
+          <%= link(gettext("Challenges"), to: admin_panel_challenges_path(@conn, :index)) %>
         </li>
 
       </ul>
       <div class="ml-md-4 pt-1">
       <%= form_for @conn, admin_user_session_path(@conn, :logout), [method: :get, class: "navbar-form"], fn _f -> %>
-          <button class="btn btn-dark">Log Out</button>
+          <button class="btn btn-dark"><%= gettext("Log Out") %></button>
       <% end %>
       </div>
     </div>

@@ -12,16 +12,16 @@
 
          <div class="mb-3 mx-lg-3">
             <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-               <a href="#" class="text-success" data-toggle="modal" data-target="#offerParticipantsModal-<%=@offer.id%>">Participants:</a>
+               <a href="#" class="text-success" data-toggle="modal" data-target="#offerParticipantsModal-<%=@offer.id%>"><%= gettext("Participants:") %></a>
                <strong class="text-500 float-right"><%= length(@offer.offer_challenges) %></strong>
             </div>
             <%= if !pre_registration_offer?(@offer) do %>
                <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-                  Start Date:
+                  <%= gettext("Start Date:") %>
                   <strong class="text-500 float-right"><%= render_date(@offer.start_date) %></strong>
                </div>
                <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-                  End Date:
+                  <%= gettext("End Date:") %>
                   <strong class="text-500 float-right"><%= render_date(@offer.end_date) %></strong>
                </div>
                <%= if offer_expired?(@offer) do %>
@@ -29,11 +29,11 @@
                <% end %>
             <% else %>
                <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-                  Pre-registration Start Date:
+                  <%= gettext("Pre-registration Start Date:") %>
                   <strong class="text-500 float-right"><%= render_date(@offer.pre_registration_start_date) %></strong>
                </div>
                <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-                  Launch/Start Date:
+                  <%= gettext("Launch/Start Date:") %>
                   <strong class="text-500 float-right text-danger"><%= render_date(@offer.start_date) %></strong>
                </div>
             <% end %>

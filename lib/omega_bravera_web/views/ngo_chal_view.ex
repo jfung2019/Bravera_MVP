@@ -321,4 +321,10 @@ defmodule OmegaBraveraWeb.NGOChalView do
 
   def can_resend?(%TeamInvitations{updated_at: updated_at}),
     do: Timex.before?(Timex.now(), Timex.shift(updated_at, days: 1))
+
+  def has_accepted_members?(%NGOChal{has_team: true, team: %{users: users}} = _challenge) when length(users) > 0,
+    do: true
+
+  def has_accepted_members?(%NGOChal{has_team: true, team: %{users: users}} = _challenge) when length(users) == 0,
+   do: false
 end

@@ -524,6 +524,14 @@ defmodule OmegaBravera.Challenges do
     |> Repo.insert(on_conflict: :nothing)
   end
 
+  def get_team_member_accepted_invitation(%{team_id: team_id, status: status, email: email}) do
+    from(
+      invitation in TeamInvitations,
+      where: invitation.email == ^email and invitation.team_id == ^team_id and invitation.status == ^status
+    )
+    |> Repo.one()
+  end
+
   def get_team_member_invitation_by_token(token) do
     from(
       invitation in TeamInvitations,
@@ -554,6 +562,73 @@ defmodule OmegaBravera.Challenges do
     team_invitation
     |> TeamInvitations.invitation_accepted_changeset()
     |> Repo.update()
+  end
+
+
+  def kick_team_member(
+        team_member,
+        %NGOChal{
+          status: status,
+          team: %{users: team_members} = team,
+          user_id: challenge_owner_user_id
+        },
+        %User{id: logged_in_challenge_owner_id})
+  do
+    result =
+      team_member
+      |> validate_challenge_owner(challenge_owner_user_id, logged_in_challenge_owner_id)
+      |> validate_team_member(team_members) # is team member in challenge.team?
+      |> validate_challenge_status(status) # is challenge status active?
+
+    case result do
+      {:ok, struct} ->
+        get_team_member_accepted_invitation(%{team_id: team.id, status: "accepted", email: team_member.user.email})
+        |> Repo.delete
+
+        Repo.delete(struct)
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp validate_challenge_owner(team_member, challenge_owner_user_id, logged_in_challenge_owner_id) do
+    if challenge_owner_user_id != logged_in_challenge_owner_id do
+      {:error, "Challenge owner is not correct!"}
+    else
+      {:ok, team_member}
+    end
+  end
+
+  defp validate_team_member({:ok, team_member} = struct, team_members) do
+    result = Enum.find(team_members, &(&1.id == team_member.user_id))
+
+    if not is_nil(result) and result > 0 do
+      struct
+    else
+      {:error, "team member not found in team!"}
+    end
+  end
+
+  defp validate_team_member({:error, _reason} = struct, _team_members), do: struct
+
+  defp validate_challenge_status({:ok, _team_member} = struct, status) do
+    cond do
+      status == "active" -> struct
+      status == "pre_registration" -> struct
+      status == "complete" -> {:error, "Cannot kick team member from complete challenge."}
+      status == "expired" -> {:error, "Cannot kick team member from expired challenge."}
+    end
+  end
+
+  defp validate_challenge_status({:error, _} = struct, _), do: struct
+
+  def get_team_member(user_id, team_id) do
+    from(
+      otm in TeamMembers,
+      where: otm.user_id == ^user_id and otm.team_id == ^team_id,
+      preload: [:user]
+    ) |> Repo.one()
   end
 
   def create_ngo_challenge_activity_m2m(

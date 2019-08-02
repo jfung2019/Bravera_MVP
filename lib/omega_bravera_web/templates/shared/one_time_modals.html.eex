@@ -5,7 +5,7 @@
       <div class="modal-content">
 
         <div class="modal-header">
-          <h5 class="modal-title mx-auto" id="welcomeModalLabel">Emailed Verified!</h5>
+          <h5 class="modal-title mx-auto" id="welcomeModalLabel"><%= gettext("Emailed Verified!") %></h5>
         </div>
 
         <div class="modal-body">
@@ -14,17 +14,17 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Welcome to Bravera!</strong></span>
+            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong><%= gettext("Welcome to Bravera!") %></strong></span>
           </div>
 
           <div class="row mx-auto align-items-center">
-            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse2.png"), alt: "Welcome to Bravera!", class: "mx-auto") %>
+            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse2.png"), alt: "#{gettext("Welcome to Bravera!")}", class: "mx-auto") %>
           </div>
 
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-bravera mx-auto" id="next_raise_money_modal" data-dismiss="modal">Next</button>
+          <button type="button" class="btn btn-bravera mx-auto" id="next_raise_money_modal" data-dismiss="modal"><%= gettext("Next") %></button>
         </div>
 
       </div>
@@ -47,13 +47,13 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse3.png"), alt: "Raise money for your chosen NGO.", class: "mx-auto") %>
+            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse3.png"), alt: "#{gettext("Raise money for your chosen NGO.")}", class: "mx-auto") %>
           </div>
 
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-bravera mx-auto mb-4" id="next_get_rewards_modal" data-dismiss="modal">Next</button>
+          <button type="button" class="btn btn-bravera mx-auto mb-4" id="next_get_rewards_modal" data-dismiss="modal"><%= gettext("Next") %></button>
         </div>
 
       </div>
@@ -76,13 +76,13 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse4.png"), alt: "Get rewards from our partnets", class: "mx-auto") %>
+            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse4.png"), alt: "#{gettext("Get rewards from our partnets")}", class: "mx-auto") %>
           </div>
 
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-bravera mx-auto mb-4" id="next_connect_strava_modal" data-dismiss="modal">Next</button>
+          <button type="button" class="btn btn-bravera mx-auto mb-4" id="next_connect_strava_modal" data-dismiss="modal"><%= gettext("Next") %></button>
         </div>
 
       </div>
@@ -101,11 +101,11 @@
             </div>
 
             <div class="row mx-auto align-items-center">
-              <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Connect your Strava account and get started!</strong></span>
+              <span class="d-block mt-3 mb-3 mx-auto text-center"><strong><%= gettext("Connect your Strava account and get started!") %></strong></span>
             </div>
 
             <div class="row mx-auto align-items-center">
-              <%= img_tag(static_path(@conn, "/images/modals/ellipse5.png"), alt: "Connect your Strava account to get started!", class: "mx-auto") %>
+              <%= img_tag(static_path(@conn, "/images/modals/ellipse5.png"), alt: "#{gettext("Connect your Strava account and get started!")}", class: "mx-auto") %>
             </div>
 
             <div class="row mx-auto align-items-center mt-3 mb-3">
@@ -113,11 +113,11 @@
             </div>
 
             <div class="row mx-auto align-items-center">
-              <span class="mx-auto">Don't have an account?</span>
+              <span class="mx-auto"><%= gettext("Don't have an account?") %></span>
             </div>
 
             <div class="row mx-auto align-items-center">
-              <a href="https://www.strava.com/" class="mx-auto mb-4">Create a Strava Account</a>
+              <a href="https://www.strava.com/" class="mx-auto mb-4"><%= gettext("Create a Strava Account") %></a>
             </div>
           </div>
 
@@ -139,12 +139,12 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong>Could not join the challenge. Can you please try again?</strong></span>
+            <span class="d-block mt-3 mb-3 mx-auto text-center"><strong><%= gettext("Could not join the challenge. Can you please try again?") %></strong></span>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-bravera mx-auto mb-4"  data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-bravera mx-auto mb-4"  data-dismiss="modal"></button>
         </div>
 
       </div>
@@ -175,7 +175,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-bravera mx-auto mb-4"  data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-bravera mx-auto mb-4"  data-dismiss="modal"><%= gettext("Close") %></button>
         </div>
 
       </div>

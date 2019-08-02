@@ -25,7 +25,7 @@ defmodule OmegaBravera.IngestionProcessor do
   # The task completed successfully
   @impl true
   def handle_info(
-        {ref, {:ok, %Strava.Activity{} = strava_activity}},
+        {ref, {:ok, %Strava.DetailedActivity{} = strava_activity}},
         %{activity_retrieve: %{ref: ref}} = state
       ) do
     # No need to continue to monitor

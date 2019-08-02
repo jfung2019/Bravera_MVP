@@ -30,13 +30,13 @@
             </a>
           </div>
           <h1 class="my-3">
-            You look lost.
+            <%= gettext("You look lost.") %>
           </h1>
-          <p>The page you are looking for either doesn't exist or there was an error.</p>
-          <a href="/"><h5>Let's get back on the trail.</h5></a>
+          <p><%= gettext("The page you are looking for either doesn't exist or there was an error.") %></p>
+          <a href="/"><h5><%= gettext("Let's get back on the trail.") %></h5></a>
 
           <p class="mt-5 mb-3 text-muted">© <%= Timex.now.year %> Bravera <br/>
-          Photo of Alyn by Fox @ CountryOfOrigin.asia</p>
+          <%= gettext("Photo of Alyn by Fox @ CountryOfOrigin.asia") %></p>
         </div>
       </main>
 

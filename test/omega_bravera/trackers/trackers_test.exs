@@ -11,16 +11,28 @@ defmodule OmegaBravera.TrackersTest do
       email: "someone@email.com",
       firstname: "firstname",
       lastname: "lastname",
-      token: "token"
+      token: "token",
+      refresh_token: "abcd129031092asd}",
+      token_expires_at: Timex.shift(Timex.now(), hours: 5)
     }
     @update_attrs %{
       athlete_id: 43,
       email: "someone@updatedemail.com",
       firstname: "updated firstname",
       lastname: "updated lastname",
-      token: "updated token"
+      token: "updated token",
+      refresh_token: "abcd129031092asd}",
+      token_expires_at: Timex.shift(Timex.now(), hours: 5)
     }
-    @invalid_attrs %{athlete_id: nil, email: nil, firstname: nil, lastname: nil, token: nil}
+    @invalid_attrs %{
+      athlete_id: nil,
+      email: nil,
+      firstname: nil,
+      lastname: nil,
+      token: nil,
+      refresh_token: nil,
+      token_expires_at: nil
+    }
 
     def strava_fixture(attrs \\ %{}) do
       changeset_attrs = Map.merge(@valid_attrs, attrs)

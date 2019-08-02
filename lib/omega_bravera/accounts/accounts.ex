@@ -216,9 +216,17 @@ defmodule OmegaBravera.Accounts do
     |> where([user], user.id == ^user_id)
     |> join(:left, [user], ngo_chals in assoc(user, :ngo_chals))
     |> join(:left, [user, ngo_chals], donations in assoc(ngo_chals, :donations))
-    |> preload([user, ngo_chals, donations, offer_teams, team_offer_challenge], ngo_chals: {ngo_chals, donations: donations})
+    |> preload([user, ngo_chals, donations, offer_teams, team_offer_challenge],
+      ngo_chals: {ngo_chals, donations: donations}
+    )
     |> Repo.one()
-    |> Repo.preload([:strava, :setting, :credential, :offer_challenges, offer_teams: [:offer_challenge]])
+    |> Repo.preload([
+      :strava,
+      :setting,
+      :credential,
+      :offer_challenges,
+      offer_teams: [:offer_challenge]
+    ])
   end
 
   def preload_active_offer_challenges(user) do
@@ -382,7 +390,7 @@ defmodule OmegaBravera.Accounts do
         end
 
       credential == nil ->
-        {:error, :user_does_not_exist}
+        {:error, :no_credential}
     end
   end
 
@@ -461,6 +469,11 @@ defmodule OmegaBravera.Accounts do
   def create_credential_user(attrs \\ %{credential: %{}}) do
     %User{}
     |> User.create_credential_user_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_credential_for_existing_strava(attrs \\ %{}) do
+    Credential.create_credential_for_strava_user(attrs)
     |> Repo.insert()
   end
 

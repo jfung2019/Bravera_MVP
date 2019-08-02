@@ -4,46 +4,46 @@
       <div class="form-group">
 
         <%= if pre_registration_ngo?(@ngo) do %>
-          <p>Challenge starts in:</p>
+          <p><%= gettext("Challenge starts in:") %></p>
           <h3 id="countdown" class="font-weight-bold mb-3 text-danger">
             <%= render_countdown_date(@ngo.launch_date) %>
           </h3>
         <% end %>
 
-        <p>Using Bravera is easy! Just follow the steps below.</p>
-        <p>1. Connect with a fitness Tracker</p>
+        <p><%= gettext("Using Bravera is easy! Just follow the steps below.") %></p>
+        <p><%= gettext("1. Connect with a fitness Tracker") %></p>
         <%= img_tag(static_path(@conn, "/images/connect-icon.png"))%>
 
         <%= if pre_registration_ngo?(@ngo) do %>
-          <p>2. Configure your challenge</p>
+          <p><%= gettext("2. Configure your challenge") %></p>
         <% end %>
     
         <%= img_tag(static_path(@conn, "/images/accept-icon.png"))%>
-        <p>3. Get friends and family involved</p>
+        <p><%= gettext("3. Get friends and family involved") %></p>
         <%= img_tag(static_path(@conn, "/images/invite-icon.png"))%>
-        <p>4. Use your activity Tracker app and turn activities into automatic fundraising.</p>
+        <p><%= gettext("4. Use your activity Tracker app and turn activities into automatic fundraising.") %></p>
         <%= img_tag(static_path(@conn, "/images/continue-icon.png"))%>
-        <p>Bravera currently works with STRAVA  activity data to convert activities into fundraising.</p>
+        <p><%= gettext("Bravera currently works with STRAVA  activity data to convert activities into fundraising.") %></p>
         <div class="form-button">
           <button type="button" class="btn btn-bravera btn-lg btn-block form-button" data-toggle="modal" data-target="#signUpModal">
-            I use Strava
+            <%= gettext("I use Strava") %>
           </button>
-          <%= button("I don't use Strava",
+          <%= button(gettext("I don't use Strava"),
             to: "https://www.strava.com/",
             id: "no-strava",
             class: "btn btn-bravera btn-lg btn-block form-button",
             method: "get",
             type: "button",
-            data: [toggle: "tooltip", placement: "top"], title: "You’ll be redirected to Strava to create an account,
+            data: [toggle: "tooltip", placement: "top"], title: " #{gettext("You’ll be redirected to Strava to create an account,
             when you’ve created anaccount and downloaded the Strava App on your smartphone,
-            come back to Bravera and finish your registration.",
+            come back to Bravera and finish your registration.")}",
             target: "_blank")
           %>
           <div class="no-strava-btn-text">
             <span>*</span>
-            You’ll be redirected to Strava to create an account,
+            <%= gettext("You’ll be redirected to Strava to create an account,
             when you’ve created anaccount and downloaded the Strava App on your smartphone,
-            come back to Bravera and finish your registration.
+            come back to Bravera and finish your registration.") %>
           </div>
         </div>
       </div>

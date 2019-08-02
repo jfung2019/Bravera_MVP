@@ -8,6 +8,10 @@
           <%= render "team_invites.html", assigns %>
         <% end %>
 
+        <%= if is_own_offer_challenge?(@challenge, @current_user) and @challenge.has_team and has_accepted_members?(@challenge) do %>
+          <%= render "manage_team.html", assigns %>
+        <% end %>
+
         <%= render "challenge_header.html", assigns %>
         <%= render "qr_code.html", assigns %>
 
@@ -15,10 +19,10 @@
         <div class="card mt-2 mb-2 d-block d-md-none">
           <div class="card-footer text-center">
             <%= if is_own_challenge?(@challenge, @current_user) do %>
-              <%= link("View Offers", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View Offers"), to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% else %>
-              <%= link("Join the Challenge", to: offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
-              <%= link("View All Challenges", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("Join the Challenge"), to: offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View All Challenges"), to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% end %>
           </div>
         </div>
@@ -30,9 +34,9 @@
           <div class="card-body text-center mx-3 pb-2">
 
             <%= if @challenge.has_team do %>
-              <h4> Latest Activities</h4>
+              <h4> <%= gettext("Latest Activities") %></h4>
             <% else %>
-              <h4> <%=@challenge.user.firstname%>'s Latest Activities</h4>
+              <h4> <%= gettext("%{firstname}'s Latest Activities", firstname: user_firstname_or_team_name(@challenge)) %></h4>
             <% end %>
             
             <%= if length(@activities) > 0 do %>
@@ -41,9 +45,9 @@
             <% else %>
 
               <%= if @challenge.has_team == true do %>
-                  No activites yet.
+                <%= gettext("No activites yet.") %>
               <% else %>
-                <%= @challenge.user.firstname %> hasn't logged any activites yet.
+                <%= gettext("%{firstname} hasn't logged any activites yet.", firstname: @challenge.user.firstname) %>
               <% end %>
             <% end %>
           </div>
@@ -53,15 +57,15 @@
         <div class="card mt-4 d-none d-md-block">
           <div class="card-body text-center mx-3 pb-2">
             <h4 style="font-weight: 350;">
-              Join a challenge and get a reward!
+              <%= gettext("Join a challenge and get a reward!") %>
             </h4>
           </div>
           <div class="card-footer text-center">
             <%= if is_own_challenge?(@challenge, @current_user) do %>
-              <%= link("View Offers", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View Offers"), to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% else %>
-              <%= link("Join the Challenge", to: offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
-              <%= link("View All Challenges", to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("Join the Challenge"), to: offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View All Challenges"), to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% end %>
           </div>
         </div>

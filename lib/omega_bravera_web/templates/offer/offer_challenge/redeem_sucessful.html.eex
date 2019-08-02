@@ -1,7 +1,7 @@
 <div class="container">
-    <h2 class="d-flex justify-content-center mt-5 text-success">Confirmed!</h2>
+    <h2 class="d-flex justify-content-center mt-5 text-success"><%= gettext("Confirmed!") %></h2>
     <div class="d-flex justify-content-center mt-5 text-danger">
-        <span>Total Redemptions to date:</span>
+        <span><%= gettext("Total Redemptions to date:") %></span>
         <span><b><%= @redeems_count %></b></span>
     </div>
 </div>

@@ -134,7 +134,13 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     offer_redeem = Repo.get_by(OfferRedeem, token: redeem_token)
     vendor = Repo.get_by(OfferVendor, vendor_id: offer_redeem_params["vendor_id"])
 
-    case Offers.update_offer_redeems(offer_redeem, offer_challenge, offer_challenge.offer, vendor, offer_redeem_params) do
+    case Offers.update_offer_redeems(
+           offer_redeem,
+           offer_challenge,
+           offer_challenge.offer,
+           vendor,
+           offer_redeem_params
+         ) do
       {:ok, offer_redeem} ->
         offer_redeem = Repo.preload(offer_redeem, :user)
         Notifier.send_user_reward_redemption_successful(offer_challenge, offer_redeem.user)
@@ -242,6 +248,37 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         |> open_welcome_modal()
         |> open_success_modal()
         |> render("show.html", render_attrs)
+    end
+  end
+
+  def kick_team_member(conn, %{
+    "offer_slug" => offer_slug,
+    "offer_challenge_slug" => slug,
+    "user_id" => team_member_user_id
+  }) do
+    case Guardian.Plug.current_resource(conn) do
+      nil ->
+        conn
+        |> put_flash(:error, "Invalid operation. Please make sure you are using the correct account.")
+        |> redirect(to: page_path(conn, :login))
+
+      logged_in_challenge_owner ->
+        challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, team: [:users]])
+        team_member = Offers.get_team_member(team_member_user_id, challenge.team.id)
+
+        case Offers.kick_team_member(team_member, challenge, logged_in_challenge_owner) do
+          {:ok, _struct} ->
+
+            conn
+            |> put_flash(:info, "Removed team member sucessfully!")
+            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+          {:error, reason} ->
+            Logger.error("Could not remove team member, reason: #{inspect(reason)}")
+
+            conn
+            |> put_flash(:error, "Could not remove team member.")
+            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+        end
     end
   end
 

@@ -6,24 +6,24 @@
     <div id="challenge-status-container" class="<%= @challenge.status %>">
       <%= cond do %>
         <% active_challenge?(@challenge) -> %>
-          <h5 class="text-500 text-center mt-2 mb-0">Challenge ends in<h5>
+          <h5 class="text-500 text-center mt-2 mb-0"><%= gettext("Challenge ends in") %><h5>
           <h3 id="challenge_duration_countdown" class="text-success text-500 text-center mt-2 mb-0">
             <%= render_countdown_date(@challenge.end_date) %>
           </h3>
           <p class="text-center mb-0">
-            On <%= render_date(@challenge.end_date) %>
+            <%= gettext("On %{end_date}", end_date: render_date(@challenge.end_date)) %>
           </p>
         <% pre_registration_challenge?(@challenge) -> %>
-          <h5 class="text-500 text-center mt-2 mb-0">Challenge starts in<h5>
+          <h5 class="text-500 text-center mt-2 mb-0"><%= gettext("Challenge starts in") %><h5>
           <h3 id="challenge_duration_countdown" class="text-danger text-500 text-center mt-2 mb-0">
             <%= render_countdown_date(@challenge.offer.start_date) %>
           </h3>
           <p class="text-center mb-0">
-            On <%= render_date(@challenge.offer.start_date) %>
+            <%= gettext("On %{start_date}", start_date: render_date(@challenge.offer.start_date)) %>
           </p>
         <% true -> %>
           <h5 class=" text-500 text-center mt-2 mb-0">
-            Challenge <%= render_status(@challenge.status) %>
+            <%= gettext("Challenge",  status: render_status(@challenge.status)) %>
           </h5>
       <% end %>
 
@@ -39,7 +39,7 @@
 
   <div class="card-footer border-top text-center mb-0 pb-0">
     <div class=" img-fluid margin-auto mb-3">
-      <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "Fitness Data Powered by Strava") %>
+      <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "#{gettext("Fitness Data Powered by Strava")}") %>
     </div>
 
     <div class="m-3 text-justify challenge-desc d-none d-md-block">

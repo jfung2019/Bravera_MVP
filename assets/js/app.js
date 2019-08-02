@@ -42,4 +42,7 @@ import "chosen-js";
 
 $(() => {
   $('select.chosen').chosen();
+  $(window).on('shown.bs.modal', (e) => {
+    $(e.target).find('input:first').focus();
+  });
 });

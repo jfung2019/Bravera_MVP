@@ -10,14 +10,14 @@
         <%= form_for @changeset, user_profile_path(@conn, :update_profile_picture), [multipart: true], fn f -> %>
         <div class="input-group">
           <div class="input-group-prepend">
-            <span class="input-group-text">Change</span>
+            <span class="input-group-text"><%= gettext("Change") %></span>
           </div>
           <div class="custom-file">
             <%= file_input f, :profile_picture, class: "custom-file-input image_upload", id: "image_upload_label", accept: "image/*" %>
             <%= label f, "Profile picture", class: "custom-file-label", for: "image_upload_label" %>    
             <%= error_tag f, :profile_picture %>  
           </div>
-          <span class="upload-too-large text-danger d-none">Image too large, please upload image that is less than 2MBs.</span>
+          <span class="upload-too-large text-danger d-none"><%= gettext("Image too large, please upload image that is less than 2MBs.") %></span>
         </div>
         <%= submit gettext("Upload Now"), class: "upload-now btn btn-success mb-1 mt-2 d-none" %>
       <% end %>
@@ -34,6 +34,7 @@
 		        <li> <b> <%= gettext("Total Number of Challenges") %>: </b> <%= length(@user.ngo_chals ++ @user.offer_challenges) %> </li>
 		        <li> <b> <%= gettext("Activities to date") %>: </b> <%= @num_of_activities %> </li>
 		        <li> <b> <%= gettext("Total Distance covered on Bravera Challenges") %>: </b> <%= render_activity(@total_distance) %> KMs </li>
+		        <li> <b> <%= gettext("Total Points") %>: </b> <%= @total_points %> </li>
 		      </ul>
 	      </div>
       </div>
@@ -119,7 +120,7 @@
 
   <div class="row">
     <div class="col-5"><h5><%= gettext("Solo Charity Challenges") %>:</h5></div>
-    <div class="col-5 ml-1"><%= link("Take another challenge", to: ngo_path(@conn, :index)) %></div>
+    <div class="col-5 ml-1"><%= link(gettext("Take another challenge"), to: ngo_path(@conn, :index)) %></div>
   </div>
   <br />
 
@@ -179,7 +180,7 @@
   </div>
 <% else %>
 
-  <p>You have no challenges yet. You can go and create you own
+  <p><%= gettext("You have no challenges yet. You can go and create you own") %>
   <%= link("here!", to: ngo_path(@conn, :index)) %>
   </p>
 
