@@ -295,7 +295,9 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   end
 
   defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do
-    case Decimal.cmp(changeset.changes[:distance_covered], challenge.distance_target) do
+    distance_covered = get_change(changeset, :distance_covered, Decimal.new(0))
+
+    case Decimal.cmp(distance_covered, challenge.distance_target) do
       :lt -> changeset
       _ -> change(changeset, status: "complete")
     end
