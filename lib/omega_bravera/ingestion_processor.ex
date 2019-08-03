@@ -36,9 +36,21 @@ defmodule OmegaBravera.IngestionProcessor do
     {:noreply, %{state | activity_retrieve: nil}}
   end
 
+  def handle_info({ref, {:error, :no_user_matching_athlete_id}}, state) do
+    Process.demonitor(ref, [:flush])
+    Logger.info("Strava sent an activity of a non-existing user. Ignoring...")
+    {:stop, :normal, state}
+  end
+
+  def handle_info({ref, {:error, %Tesla.Env{status: 404}}}, state) do
+    Process.demonitor(ref, [:flush])
+    Logger.info("Strava sent an activity of a non-existing activity. Ignoring...")
+    {:stop, :normal, state}
+  end
+
   @impl true
   def handle_info(
-        {ref, {:error}},
+        {ref, {:error, _}},
         %{activity_retrieve: %{ref: ref, timer: timer}} = state
       ) do
     timer = timer + 10_000
@@ -49,12 +61,6 @@ defmodule OmegaBravera.IngestionProcessor do
     Logger.warn("IngestionProcessor: activity checking has failed, retrying after: #{timer} ms.")
 
     {:noreply, %{state | activity_retrieve: %{ref: nil, timer: timer}}}
-  end
-
-  def handle_info({ref, {:error, :no_user_matching_athlete_id}}, state) do
-    Process.demonitor(ref, [:flush])
-    Logger.info("Strava sent an activity of a non-existing user. Ignoring...")
-    {:stop, :normal, state}
   end
 
   def handle_info(
