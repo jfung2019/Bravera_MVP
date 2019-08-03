@@ -58,9 +58,9 @@
             <% else %>
 
               <%= if @challenge.has_team == true do %>
-                  <%= gettext("No activites yet.") %>
+                  <%= gettext("No activities yet.") %>
               <% else %>
-                <%= gettext("%{firstname} hasn't logged any activites yet.", firstname: @challenge.user.firstname) %>
+                <%= gettext("%{firstname} hasn't logged any activities yet.", firstname: @challenge.user.firstname) %>
               <% end %>
 
             <% end %>
