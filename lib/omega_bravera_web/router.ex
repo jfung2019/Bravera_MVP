@@ -113,6 +113,7 @@ defmodule OmegaBraveraWeb.Router do
     scope "/" do
       pipe_through(:admin_authenticated)
       get("/", AdminUserPageController, :index)
+      resources "/locations", AdminPanelLocationsController
       resources("/admin-users", AdminUserController)
       resources("/users", AdminPanelUserController, only: [:index, :show])
       resources("/activities", AdminPanelActivityController, only: [:new, :create])

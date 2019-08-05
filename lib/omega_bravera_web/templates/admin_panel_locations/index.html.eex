@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-6 offset-2">
+    <h2>Listing Locations</h2>
+
+    <span><%= link "Create New Location", to: admin_panel_locations_path(@conn, :new) %></span>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>English Name</th>
+          <th>Chinese Name</th>
+          <th colspan="3"></th>
+        </tr>
+      </thead>
+      <tbody>
+    <%= for location <- @locations do %>
+        <tr>
+          <td><%= location.name_en %></td>
+          <td><%= location.name_zh %></td>
+          <td class="text-right">
+            <span><%= link "Show", to: admin_panel_locations_path(@conn, :show, location), class: "btn btn-primary btn-xs"%> </span>
+          </td>
+          <td class="text-right">
+            <span><%= link "Edit", to: admin_panel_locations_path(@conn, :edit, location), class: "btn btn-warning btn-xs"%> </span>
+          </td>
+          <td class="text-right">
+            <span><%= link "Delete", to: admin_panel_locations_path(@conn, :delete, location), class: "btn btn-danger btn-xs", method: :delete %> </span>
+          </td>
+
+
+        </tr>
+    <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

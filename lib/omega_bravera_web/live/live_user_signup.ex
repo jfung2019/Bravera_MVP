@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.LiveUserSignup do
   use OmegaBraveraWeb, :live_view
 
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.{Accounts, Locations}
 
   def mount(%{redirect_uri: redirect_uri}, socket) do
     {:ok,
@@ -10,7 +10,8 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
        changeset: Accounts.change_credential_user(%Accounts.User{}),
        open_modal: false,
        signup_ok?: false,
-       signup_button_disabled?: false
+       signup_button_disabled?: false,
+       locations: Locations.list_locations()
      })}
   end
 

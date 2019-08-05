@@ -44,7 +44,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
       firstname: "sherief",
       lastname: "alaa ",
       email: "user@example.com",
-      password: "test1234"
+      password: "test1234",
+      location_id: 1
     }
 
     {:ok, user} = Accounts.create_user(user_attrs)
@@ -99,7 +100,8 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
         firstname: "sherief",
         lastname: "alaa ",
         email: "user@example.com",
-        password: "test1234"
+        password: "test1234",
+        location_id: 1
       }
 
       {:ok, user} = Accounts.create_user(attrs)

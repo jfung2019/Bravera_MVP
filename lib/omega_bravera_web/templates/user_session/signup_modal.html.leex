@@ -52,6 +52,10 @@
 
                 <%= error_tag f, :email %>
               </div>
+              <div class="form-group mt-2">
+                <%= select f, :location_id, Enum.map(@locations, &{&1.name_en, &1.id}), class: "form-control signup-modal-input" %>
+                <%= error_tag f, :location_id %>
+              </div>
 
               <%= inputs_for f, :credential, fn fp -> %>
                 <div class="row mx-auto">

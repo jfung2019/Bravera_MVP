@@ -10,7 +10,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Stripe.StrCustomer
   alias OmegaBravera.Offers.{OfferChallenge, OfferChallengeTeam}
 
-  @required_attributes [:firstname, :lastname]
+  @required_attributes [:firstname, :lastname, :location_id]
   @allowed_attributes [
     :email,
     :firstname,
@@ -18,7 +18,8 @@ defmodule OmegaBravera.Accounts.User do
     :additional_info,
     :email_verified,
     :profile_picture,
-    :accept_terms
+    :accept_terms,
+    :location_id
   ]
 
   schema "users" do
@@ -41,6 +42,7 @@ defmodule OmegaBravera.Accounts.User do
     has_many(:str_customers, StrCustomer)
     has_many(:subscribed_email_categories, OmegaBravera.Emails.UserEmailCategories)
     has_many(:offer_challenges, OfferChallenge)
+    belongs_to :location, OmegaBravera.Locations.Location
 
     many_to_many(:teams, Team, join_through: "team_members")
 

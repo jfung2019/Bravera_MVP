@@ -41,6 +41,9 @@
         <li class="nav-item">
           <%= link(gettext("Challenges"), to: admin_panel_challenges_path(@conn, :index)) %>
         </li>
+        <li class="nav-item">
+          <%= link(gettext("Locations"), to: admin_panel_locations_path(@conn, :index)) %>
+        </li>
 
       </ul>
       <div class="ml-md-4 pt-1">

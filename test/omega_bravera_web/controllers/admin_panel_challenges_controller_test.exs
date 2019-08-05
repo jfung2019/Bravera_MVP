@@ -6,7 +6,8 @@ defmodule OmegaBraveraWeb.Admin.ChallengesControllerTest do
   @user_create_attrs %{
     email: "test@test.com",
     firstname: "some firstname",
-    lastname: "some lastname"
+    lastname: "some lastname",
+    location_id: 1
   }
 
   setup %{conn: conn} do

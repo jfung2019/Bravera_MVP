@@ -15,7 +15,8 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     start_date: Timex.now(),
     end_date: Timex.shift(Timex.now(), days: 30),
     toc: "some toc",
-    vendor_id: nil
+    vendor_id: nil,
+    location_id: 1
   }
 
   @update_attrs %{
@@ -129,7 +130,8 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
           pre_registration_start_date: Timex.now(),
           start_date: Timex.shift(Timex.now(), days: 5),
           end_date: Timex.shift(Timex.now(), days: 10),
-          time_limit: 0
+          time_limit: 0,
+          location_id: 1
         })
 
       Offers.create_offer_challenge(offer, insert(:user))
