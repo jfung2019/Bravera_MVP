@@ -12,7 +12,9 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
     firstname: "some firstname",
     lastname: "some lastname",
     athlete_id: 123_456,
-    token: "132kans81h23"
+    token: "132kans81h23",
+    refresh_token: "abcd129031092asd}",
+    token_expires_at: Timex.shift(Timex.now(), hours: 5)
   }
 
   setup %{conn: conn} do
@@ -172,10 +174,11 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       end
     end
 
-    test "create/2 redirects to paid offer challenge of type BRAVERA_SEGMENT when data is valid", %{
-      conn: conn,
-      current_user: user
-    } do
+    test "create/2 redirects to paid offer challenge of type BRAVERA_SEGMENT when data is valid",
+         %{
+           conn: conn,
+           current_user: user
+         } do
       {:ok, _user} =
         Accounts.update_user(user, %{email: "sherief@plangora.com", email_verified: true})
 
@@ -184,7 +187,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
           start_date: Timex.now(),
           end_date: Timex.shift(Timex.now(), days: 10),
           payment_amount: Decimal.new(57),
-          offer_challenge_types: ["BRAVERA_SEGMENT"],
+          offer_challenge_types: ["BRAVERA_SEGMENT"]
         })
 
       use_cassette "signup_for_paid_offer" do

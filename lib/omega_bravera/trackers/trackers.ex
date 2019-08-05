@@ -11,7 +11,11 @@ defmodule OmegaBravera.Trackers do
 
   def create_or_update_tracker(
         %{id: user_id},
-        %{token: token, strava_profile_picture: strava_profile_picture} = changeset
+        %{
+          token: token,
+          strava_profile_picture: strava_profile_picture,
+          refresh_token: refresh_token
+        } = changeset
       ) do
     case Repo.get_by(Strava, user_id: user_id) do
       nil ->
@@ -19,7 +23,8 @@ defmodule OmegaBravera.Trackers do
 
       strava ->
         # is this some convoluted way of saying to update it when the token's been refreshed?
-        unless strava.token == token and strava.strava_profile_picture == strava_profile_picture do
+        unless strava.token == token and strava.refresh_token == refresh_token and
+                 strava.strava_profile_picture == strava_profile_picture do
           update_strava(strava, changeset)
         end
     end
@@ -52,6 +57,10 @@ defmodule OmegaBravera.Trackers do
   """
   def list_stravas do
     Repo.all(Strava)
+  end
+
+  def list_stravas_with_no_refresh_tokens() do
+    from(s in Strava, where: is_nil(s.refresh_token) == true) |> Repo.all()
   end
 
   @doc """

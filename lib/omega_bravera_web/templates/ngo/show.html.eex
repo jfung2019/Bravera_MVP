@@ -31,7 +31,7 @@
 
       <% else %>
       <h4>
-        Connect a Fitness Tracker to Continue
+        <%= gettext("Connect a Fitness Tracker to Continue") %>
       </h4>
       <a href="/strava/login" class="mb-1">
         <img src="/images/strava/btn_strava_connect-orange.png" />
@@ -42,7 +42,7 @@
         <div class="card-footer text-center">
 
           <a href=<%= @ngo.url %> target="_blank" rel="noopener noreferrer">
-            Click here to visit <%= @ngo.name %> online!
+            <%= gettext("Click here to visit") %> <%= @ngo.name %> <%= gettext("online!") %>
           </a>
         </div>
       <% end %>

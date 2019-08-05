@@ -1,6 +1,6 @@
 <div class="card mb-3">
   <div class="card-body">
-    <p><%= @current_user.firstname %>, you haven't donated yet.</p>
-    <a href="#donation-form" class="btn btn-danger">Self-Donation</a>
+    <p><%= @current_user.firstname %> <%= gettext(", you haven't donated yet.") %></p>
+    <a href="#donation-form" class="btn btn-danger"><%= gettext("Self-Donation") %></a>
   </div>
 </div>

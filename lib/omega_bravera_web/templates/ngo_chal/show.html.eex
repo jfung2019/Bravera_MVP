@@ -38,29 +38,29 @@
       <div class="col-lg-4 max-w-775 margin-auto">
         <div class="card mt-4">
           <div class="card-body text-center mx-3 pb-2">
-            <h4>Latest Supporters</h4>
+            <h4><%= gettext("Latest Supporters") %></h4>
             <%= if length(@donors) > 0 do %>
               <%= render(OmegaBraveraWeb.DonationView, "_donation.html", assigns) %>
               <%= link("View all", to: ngo_ngo_chal_donation_path(@conn, :index, @challenge.ngo.slug, @challenge.slug)) %>
             <% else %>
               <div>
                 <a href="#donation-form">
-                  There's no donors yet, be the first to support <%= @challenge.user.firstname %>'s challenge
+                  <%= gettext("There's no donors yet, be the first to support %{firstname}'s challenge", firstname: @challenge.user.firstname) %>
                 </a>
               </div>
             <% end %>
           </div>
           <div class="card-body text-center mx-3 pb-2">
-            <h4> <%=user_firstname_or_team_name(@challenge)%>'s Latest Activities</h4>
+            <h4> <%= gettext("%{firstname}'s Latest Activities", firstname: user_firstname_or_team_name(@challenge)) %></h4>
             <%= if length(@activities) > 0 do %>
               <%= render(OmegaBraveraWeb.ActivityView, "_activity.html", assigns) %>
               <%= link("View all", to: ngo_ngo_chal_activity_path(@conn, :index, @challenge.ngo.slug, @challenge.slug)) %>
             <% else %>
 
               <%= if @challenge.has_team == true do %>
-                  No activites yet.
+                  <%= gettext("No activities yet.") %>
               <% else %>
-                <%= @challenge.user.firstname %> hasn't logged any activites yet.
+                <%= gettext("%{firstname} hasn't logged any activities yet.", firstname: @challenge.user.firstname) %>
               <% end %>
 
             <% end %>
@@ -73,15 +73,15 @@
         <div class="card mt-4">
           <div class="card-body text-center mx-3 pb-2">
             <h4 style="font-weight: 350;">
-              Join a challenge and Fundraise while you Train!
+              <%= gettext("Join a challenge and Fundraise while you Train!") %>
             </h4>
           </div>
           <div class="card-footer text-center">
             <%= if is_own_challenge?(@challenge, @current_user) do %>
-              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View Challenges"), to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% else %>
-              <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %>
-              <%= link("View Challenges", to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("Join the Challenge"), to: ngo_ngo_chal_path(@conn, :new, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View Challenges"), to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% end %>
           </div>
         </div>

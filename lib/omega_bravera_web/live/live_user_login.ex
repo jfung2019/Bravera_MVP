@@ -43,7 +43,7 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
           {:noreply,
            assign(socket,
              changeset: changeset,
-             error: "Invalid email and password combo.",
+             error: gettext("Invalid email and password combo."),
              open_modal: true,
              login_button_disabled?: false
            )}
@@ -52,7 +52,7 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
           {:noreply,
            assign(socket,
              changeset: changeset,
-             error: "Seems you don't have an account, please sign up.",
+             error: gettext("Seems you don't have an account, please sign up."),
              open_modal: true,
              login_button_disabled?: false
            )}
@@ -61,7 +61,7 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
           {:noreply,
            assign(socket,
              changeset: changeset,
-             error: "Please setup your password using Forgot password.",
+             error: gettext("Please setup your password using Forgot password."),
              open_modal: true,
              login_button_disabled?: false
            )}

@@ -1,0 +1,1728 @@
+## This file is a PO Template file.
+##
+## `msgid`s here are often extracted from source code.
+## Add new translations manually only if they're dynamic
+## translations that can't be statically extracted.
+##
+## Run `mix gettext.extract` to bring this file up to
+## date. Leave `msgstr`s empty as changing them here as no
+## effect: edit them in PO (`.po`) files instead.
+msgid ""
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/show.html.eex:63
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:50
+msgid "%{firstname} hasn't logged any activities yet."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/show.html.eex:54
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:39
+msgid "%{firstname}'s Latest Activities"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/activity/_activity.html.eex:21
+#: lib/omega_bravera_web/templates/offer/offer_challenge_activity/_activities.html.eex:21
+msgid "(average)"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/_self_donate_cta.html.eex:3
+msgid ", you haven't donated yet."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:73
+msgid "1"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:14
+msgid "1. Connect with a fitness Tracker"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:47
+msgid "160"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:18
+msgid "2. Configure your challenge"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:22
+msgid "3. Get friends and family involved"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:44
+msgid "320"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:24
+msgid "4. Use your activity Tracker app and turn activities into automatic fundraising."
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:41
+msgid "400"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:38
+msgid "600"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:68
+msgid "A healthy lifestyle is a transformative journey, data becomes your "
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/unauth_nav.html.leex:21
+msgid "About us"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/team_invites.html.eex:3
+msgid "Accepted:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:3
+msgid "Accepted: "
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/_menu_nav.html.eex:1
+msgid "Account Settings"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/activity/index.html.eex:9
+#: lib/omega_bravera_web/templates/offer/offer_challenge_activity/index.html.eex:9
+msgid "Activities"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:35
+msgid "Activities to date"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/admin_panel_emails/new.html.eex:2
+msgid "Add Sendgrid email to Category"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/_invite_buddies.html.eex:24
+msgid "Add another"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/index.html.eex:23
+msgid "Are you sure?"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:116
+msgid "As a small non-profit with multiple programmes, Bravera is a great"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/admin_panel_emails/new.html.eex:4
+msgid "Back"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:73
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:116
+msgid "Billing Information"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:87
+msgid "Billing Information</h5>"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/500.html.eex:13
+msgid "Bravera"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:26
+msgid "Bravera currently works with STRAVA  activity data to convert activities into fundraising."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:103
+msgid "Bravera definitley motivated me and gave me the drive to put on my"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:63
+msgid "Bravera is a platform that converts activity data into something"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/login.html.eex:8
+msgid "By logging in to Bravera you agree to our "
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/signup.html.eex:8
+msgid "By signing up for Bravera you agree to our "
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:80
+msgid "By signing-up you agree to our"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:17
+#: lib/omega_bravera_web/templates/page/index.html.eex:75
+#: lib/omega_bravera_web/templates/page/index.html.eex:136
+msgid "CREATE IMPACT"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/activity/_activity.html.eex:18
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:48
+#: lib/omega_bravera_web/templates/offer/offer_challenge_activity/_activities.html.eex:18
+msgid "Calories"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:47
+msgid "Calories Burned:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer/payment_offer.html.eex:67
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:50
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:62
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:94
+msgid "Cancel"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:28
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:26
+#: lib/omega_bravera_web/templates/offer/offer_challenge/bravera_segment_details.html.eex:26
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:28
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_km_challenge_details.html.eex:26
+msgid "Challenge"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:19
+msgid "Challenge Fundraising Leaderboard"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:9
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:9
+#: lib/omega_bravera_web/templates/offer/offer_challenge/bravera_segment_details.html.eex:9
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:9
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_km_challenge_details.html.eex:9
+msgid "Challenge ends in"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:51
+msgid "Challenge starts"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:18
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:17
+#: lib/omega_bravera_web/templates/offer/offer_challenge/bravera_segment_details.html.eex:17
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:18
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_km_challenge_details.html.eex:17
+msgid "Challenge starts in"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:7
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:7
+msgid "Challenge starts in:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:42
+msgid "Challenges"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:13
+msgid "Change"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:126
+msgid "Choose Team Duration and Distance"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:127
+msgid "Choose Your Duration and Distance"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/redeem_form.html.eex:24
+msgid "Choose a reward.."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:121
+msgid "Chris Geary, Founder, BSD Coding Academy and Fargo Foundation / RefuGeek"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/show.html.eex:45
+msgid "Click here to visit"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer/show.html.eex:45
+msgid "Click here to visit %{offer} online!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:116
+msgid "Click on the link that has been sent to your email address to complete your registration."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:72
+msgid "Click to see details"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:87
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:178
+msgid "Close"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form.html.eex:11
+msgid "Configure your Challenge"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/password/edit.html.eex:15
+msgid "Confirm new password"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:68
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:70
+msgid "Confirm your password"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/offer/offer_challenge/redeem_sucessful.html.eex:2
+msgid "Confirmed!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/trackers.html.eex:9
+msgid "Connect Strava Account"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/show.html.eex:34
+#: lib/omega_bravera_web/templates/offer/offer/show.html.eex:34
+msgid "Connect a Fitness Tracker to Continue"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:104
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:108
+msgid "Connect your Strava account and get started!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/_menu_nav.html.eex:3
+#: lib/omega_bravera_web/templates/user/trackers.html.eex:4
+msgid "Connected Apps"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/app.html.eex:97
+msgid "Contact Us"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/login.html.eex:8
+#: lib/omega_bravera_web/templates/page/signup.html.eex:8
+msgid "Cookies & Privacy Policy"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:83
+msgid "Cookies/Privacy Policy"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:142
+msgid "Could not join the challenge. Can you please try again?"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:46
+msgid "Create Social Impact"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:120
+msgid "Create a Strava Account"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/index.html.eex:4
+msgid "Create your challenge"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:110
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:124
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:151
+#: lib/omega_bravera_web/templates/offer/offer/payment_offer.html.eex:34
+msgid "Credit/Debit Card Info"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:46
+msgid "Current Distance Value:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/manage_team.html.eex:5
+#: lib/omega_bravera_web/templates/offer/offer_challenge/manage_team.html.eex:5
+msgid "Current Team members:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/activity/_activity.html.eex:9
+#: lib/omega_bravera_web/templates/offer/offer_challenge_activity/_activities.html.eex:9
+msgid "Date"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/form.html.eex:54
+msgid "Date of Birth"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/index.html.eex:23
+msgid "Delete"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/activity/_activity.html.eex:15
+#: lib/omega_bravera_web/templates/offer/offer_challenge_activity/_activities.html.eex:15
+msgid "Distance"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:70
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:60
+msgid "Distance Completed:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:74
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:144
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:212
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:280
+msgid "Distance Covered"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:43
+msgid "Distance Travelled:"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:34
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_km_challenge_details.html.eex:34
+msgid "Distance completed:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:116
+msgid "Don't have an account?"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:30
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:30
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:30
+msgid "Donation Amount"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/donation/index.html.eex:9
+msgid "Donors"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/activity/_activity.html.eex:12
+#: lib/omega_bravera_web/templates/offer/offer_challenge_activity/_activities.html.eex:12
+msgid "Duration"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:75
+msgid "Earn Rewards"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/index.html.eex:22
+msgid "Edit"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/edit.html.eex:4
+msgid "Edit Account"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/_invite_buddies.html.eex:12
+#: lib/omega_bravera_web/templates/ngo_chal/_invite_buddies.html.eex:20
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:100
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:114
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:142
+#: lib/omega_bravera_web/templates/ngo_chal/team_invites.html.eex:14
+#: lib/omega_bravera_web/templates/password/new.html.eex:7
+#: lib/omega_bravera_web/templates/user/form.html.eex:9
+#: lib/omega_bravera_web/templates/user/index.html.eex:6
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:33
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:35
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:48
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:50
+msgid "Email"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/_menu_nav.html.eex:4
+msgid "Email Preferences"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/email_settings/edit.html.eex:3
+msgid "Email Settings"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:27
+msgid "Email Sign in"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:21
+msgid "Email Signup"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/verify_email.html.eex:6
+msgid "Email Verification Needed"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/controllers/user_controller.ex:81
+msgid "Email updated. Please check your inbox now!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:8
+msgid "Emailed Verified!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:18
+msgid "Emails"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:71
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:141
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:209
+msgid "End Date"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer/offer_stats.html.eex:24
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:277
+msgid "End Date:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:63
+msgid "Enter your Team's name"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/redeem_form.html.eex:12
+msgid "Enter your Vendor ID"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/app.html.eex:88
+msgid "FAQ"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer/payment_offer.html.eex:24
+msgid "Fee: "
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:81
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:95
+#: lib/omega_bravera_web/templates/user/form.html.eex:17
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:28
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:30
+msgid "First name"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/index.html.eex:7
+msgid "Firstname"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:79
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:68
+#: lib/omega_bravera_web/templates/offer/offer_challenge/bravera_segment_details.html.eex:42
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:69
+msgid "Fitness Data Powered by Strava"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:8
+msgid "Fitness with Impact"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:49
+msgid "Forgot your password?"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:14
+msgid "Fundraising Goal:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:16
+#: lib/omega_bravera_web/templates/page/index.html.eex:74
+#: lib/omega_bravera_web/templates/page/index.html.eex:131
+msgid "GET REWARDS"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/form.html.eex:48
+msgid "Gender"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/views/offer_view.ex:59
+msgid "Get Reward"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/views/offer_view.ex:93
+msgid "Get Team's Reward"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:79
+msgid "Get rewards from our partnets"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:171
+msgid "Good Luck"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/auth_nav.html.eex:28
+msgid "How it Works"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:31
+msgid "I don't use Strava"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:29
+msgid "I use Strava"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/form.html.eex:14
+msgid "If you add/change your email, we will send you a verification link that you have to click to be able to take challenges."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:20
+msgid "Image too large, please upload image that is less than 2MBs."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/live/live_user_login.ex:46
+msgid "Invalid email and password combo."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/team_invites.html.eex:58
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:58
+msgid "Invitations cannot be resent until a day passes."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/_invite_buddies.html.eex:25
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:73
+#: lib/omega_bravera_web/templates/ngo_chal/team_invites.html.eex:18
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:18
+msgid "Invite"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/_invite_buddies.html.eex:3
+msgid "Invite others to join your challenge!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/team_invites.html.eex:5
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:5
+msgid "Invite your"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:95
+msgid "Join Now"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/show.html.eex:76
+msgid "Join a challenge and Fundraise while you Train!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:60
+msgid "Join a challenge and get a reward!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/index.html.eex:38
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:141
+#: lib/omega_bravera_web/templates/ngo_chal/show.html.eex:83
+#: lib/omega_bravera_web/templates/offer/offer/free_offer.html.eex:3
+#: lib/omega_bravera_web/templates/offer/offer/payment_offer.html.eex:2
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:24
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:67
+msgid "Join the Challenge"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/views/offer_view.ex:45
+msgid "Join the challenge"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:56
+msgid "Kick-off Donation (now)"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:54
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:50
+msgid "Kick-off Donations"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:90
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:104
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:133
+#: lib/omega_bravera_web/templates/user/form.html.eex:23
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:38
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:40
+msgid "Last name"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/index.html.eex:8
+msgid "Lastname"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:37
+msgid "Latest Activities"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/show.html.eex:41
+msgid "Latest Supporters"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer/offer_stats.html.eex:36
+msgid "Launch/Start Date:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/error/404.html.eex:36
+#: lib/omega_bravera_web/templates/error/500.html.eex:36
+#: lib/omega_bravera_web/templates/page/404.html.eex:11
+#: lib/omega_bravera_web/templates/page/500.html.eex:11
+msgid "Let's get back on the trail."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:77
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:147
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:215
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:283
+msgid "Link"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/form.html.eex:30
+msgid "Location"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:48
+#: lib/omega_bravera_web/templates/layout/auth_nav.html.eex:42
+msgid "Log Out"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/login.html.eex:5
+#: lib/omega_bravera_web/templates/page/login.html.eex:34
+msgid "Log in"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:33
+msgid "Member Since"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:47
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:46
+msgid "Milestones"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/auth_nav.html.eex:33
+msgid "My Account"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:24
+msgid "NGO Activities"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:39
+msgid "NGOs"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:36
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:92
+#: lib/omega_bravera_web/templates/ngo_chal/_invite_buddies.html.eex:9
+#: lib/omega_bravera_web/templates/ngo_chal/_invite_buddies.html.eex:17
+#: lib/omega_bravera_web/templates/ngo_chal/team_invites.html.eex:11
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:11
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:14
+msgid "Name"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/form.html.eex:62
+msgid "New Password"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/new_redeem.html.eex:2
+msgid "New Redemption"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/password/edit.html.eex:9
+msgid "New password"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:27
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:56
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:85
+msgid "Next"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/show.html.eex:61
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:48
+msgid "No activities yet."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/manage_team.html.eex:23
+#: lib/omega_bravera_web/templates/offer/offer_challenge/manage_team.html.eex:23
+msgid "Note:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:27
+msgid "Offer Activities"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:46
+msgid "Offer Challenges"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:30
+msgid "Offer Rewards"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:36
+msgid "Offer Vendors"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:33
+#: lib/omega_bravera_web/templates/offer/offer/index.html.eex:4
+msgid "Offers"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:122
+msgid "Ok"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:52
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:14
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:23
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:14
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:22
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:14
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:23
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_km_challenge_details.html.eex:14
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_km_challenge_details.html.eex:22
+msgid "On"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/offer/offer_challenge/bravera_segment_details.html.eex:14
+#: lib/omega_bravera_web/templates/offer/offer_challenge/bravera_segment_details.html.eex:22
+msgid "On "
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/email_settings/form.html.eex:4
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form.html.eex:5
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:4
+#: lib/omega_bravera_web/templates/ngo_chal/form.html.eex:4
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:4
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:4
+#: lib/omega_bravera_web/templates/offer/offer_challenge/redeem_form.html.eex:4
+#: lib/omega_bravera_web/templates/user/form.html.eex:4
+msgid "Oops, something went wrong! Please check the errors below."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:31
+msgid "Overview"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:38
+#: lib/omega_bravera_web/templates/offer/offer/offer_stats.html.eex:15
+msgid "Participants:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:141
+msgid "Partner with us"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/unauth_nav.html.leex:17
+msgid "Partners"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:42
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:44
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:59
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:61
+msgid "Password"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/form.html.eex:68
+msgid "Password Confirmation"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/password/edit.html.eex:4
+#: lib/omega_bravera_web/templates/password/new.html.eex:4
+msgid "Password reset"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:69
+msgid "Patricipants"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer/payment_offer.html.eex:18
+msgid "Payment"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:25
+msgid "Pending invitations"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:23
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:90
+msgid "Per Goal"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:26
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:105
+msgid "Per KM"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/error/404.html.eex:39
+#: lib/omega_bravera_web/templates/error/500.html.eex:39
+#: lib/omega_bravera_web/templates/page/404.html.eex:14
+#: lib/omega_bravera_web/templates/page/500.html.eex:14
+msgid "Photo of Alyn by Fox @ CountryOfOrigin.asia"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:64
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:70
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:100
+msgid "Please also add me to the NGO newsletter mailing list."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:108
+msgid "Please check your email"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/password/edit.html.eex:5
+msgid "Please enter a new password for your account."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:103
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:117
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:145
+msgid "Please enter a valid email address."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/live/live_user_login.ex:64
+msgid "Please setup your password using Forgot password."
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:38
+msgid "Pledge value:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:37
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:93
+msgid "Pledged"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:57
+msgid "Pledged of Goal"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:18
+msgid "Pledged to date:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer/offer_stats.html.eex:32
+msgid "Pre-registration Start Date:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/app.html.eex:91
+msgid "Privacy"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/_menu_nav.html.eex:2
+msgid "Profile and Rewards"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:50
+msgid "Raise money for your chosen NGO."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:34
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:90
+msgid "Rank"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/manage_team.html.eex:17
+#: lib/omega_bravera_web/templates/offer/offer_challenge/manage_team.html.eex:17
+msgid "Remove"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:38
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:44
+msgid "Resend"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/password/edit.html.eex:21
+msgid "Reset password"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/offer/offer_challenge/previously_redeemed.html.eex:2
+msgid "Reward previously redeemed for this challenge."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/email_settings/form.html.eex:33
+msgid "Save"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:38
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:94
+msgid "Secured"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:28
+msgid "Secured to date:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/live/live_user_login.ex:55
+msgid "Seems you don't have an account, please sign up."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/redeem_form.html.eex:23
+msgid "Select Reward"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:112
+msgid "Select a total distance and ask for donations per KM. Pledged funds released at the end of your challenge."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:97
+msgid "Select a total distance but your goals are broken down into x3 milestones that release pledged funds, automatically."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:16
+msgid "Select an Activity"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:81
+msgid "Select an Challenge Type"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/_self_donate_cta.html.eex:4
+msgid "Self-Donation"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/password/new.html.eex:13
+msgid "Send reset link"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:153
+msgid "Set Fundraising Target"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/index.html.eex:21
+msgid "Show"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/unauth_nav.html.leex:26
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:11
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:63
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:92
+msgid "Sign in"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/new.html.eex:60
+msgid "Sign in/up to join the challenge"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/signup.html.eex:5
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:60
+msgid "Sign up"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:95
+msgid "Signing up.."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/unauth_nav.html.leex:32
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:12
+msgid "Signup"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:99
+msgid "Signup Sucessful"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:42
+msgid "Solo"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:122
+msgid "Solo Charity Challenges"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:36
+msgid "Solo or Team Challenge?"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/controllers/strava_controller.ex:131
+msgid "Sorry, this Strava account is already connected to an exiting Bravera account"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/activity/_activity.html.eex:21
+#: lib/omega_bravera_web/templates/offer/offer_challenge_activity/_activities.html.eex:21
+msgid "Speed"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:68
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:138
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:206
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:274
+msgid "Start Date"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer/offer_stats.html.eex:20
+msgid "Start Date:"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:171
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:130
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:144
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:172
+#: lib/omega_bravera_web/templates/user/form.html.eex:74
+msgid "Submit"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer/payment_offer.html.eex:62
+msgid "Submit payment"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:169
+msgid "Success!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/controllers/strava_controller.ex:119
+msgid "Success! You have connected your Strava account and can now take Challenges."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/controllers/offer/offer_challenge_controller.ex:214
+msgid "Success! You have registered for this offer!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:15
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:15
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:15
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:40
+#: lib/omega_bravera_web/templates/ngo_chal/per_km_challenge_milestones.html.eex:62
+#: lib/omega_bravera_web/templates/offer/offer_challenge/per_goal_challenge_details.html.eex:40
+msgid "Support Now"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:123
+msgid "Take another challenge"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:53
+msgid "Take another offer challenge"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:46
+msgid "Team"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:191
+msgid "Team Charity Challenges"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:259
+msgid "Team Charity Memberships"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/team_members.html.eex:3
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_members.html.eex:3
+msgid "Team Members"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:55
+msgid "Team name and members"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:81
+msgid "Terms"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/app.html.eex:94
+msgid "Terms of Use"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/error/404.html.eex:35
+#: lib/omega_bravera_web/templates/error/500.html.eex:35
+msgid "The page you are looking for either doesn't exist or there was an error."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/show.html.eex:48
+msgid "There's no donors yet, be the first to support %{firstname}'s challenge"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:36
+msgid "Total Distance covered on Bravera Challenges"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:34
+msgid "Total Number of Challenges"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:37
+msgid "Total Points"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/redeem_form.html.eex:29
+#: lib/omega_bravera_web/templates/offer/offer_challenge/redeem_sucessful.html.eex:4
+msgid "Total Redemptions to date:"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:104
+msgid "Total Support:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:63
+msgid "Trying to signin..."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:49
+msgid "Turn your mobile screen for better view."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/controllers/user_controller.ex:85
+msgid "Updated account settings successfully."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:22
+msgid "Upload Now"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/activity/_activity.html.eex:6
+#: lib/omega_bravera_web/templates/offer/offer_challenge_activity/_activities.html.eex:6
+msgid "User"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:21
+msgid "Users"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:13
+msgid "Using Bravera is easy! Just follow the steps below."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:10
+msgid "Using Bravera, users convert fitness activity data into immediate rewards or social impact. Take solo or team challenges, reach goals, and create impact, automatically."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:85
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:99
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:128
+msgid "Valid first name is required."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:94
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:108
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:137
+msgid "Valid last name is required."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:106
+msgid "Victoria, Challenge Participant"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:307
+msgid "View"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:25
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:68
+msgid "View All Challenges"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/show.html.eex:81
+#: lib/omega_bravera_web/templates/ngo_chal/show.html.eex:84
+msgid "View Challenges"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/index.html.eex:39
+msgid "View Leaderboard"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:22
+#: lib/omega_bravera_web/templates/offer/offer_challenge/show.html.eex:65
+msgid "View Offers"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/leaderboard.html.eex:142
+msgid "View all Challenges"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/views/offer_view.ex:99
+msgid "View your Team's progress"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/views/offer_view.ex:65
+msgid "View your progress"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/trackers.html.eex:9
+msgid "We currently support Strava."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/form.html.eex:36
+msgid "Weight - KG"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/form.html.eex:42
+msgid "Weight fraction - KG"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:17
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:21
+msgid "Welcome to Bravera!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:61
+msgid "What is Bravera?"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:94
+msgid "What people are saying"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:13
+msgid "What would you like to do?"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:66
+msgid "Why Bravera?"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:58
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:64
+#: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:94
+msgid "Yes! I want to maximize my donation to the Cause and cover service fees (card payment & platform service fees)."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:113
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:319
+msgid "You did not join any teams yet!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:183
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:251
+msgid "You have no challenges yet. You can go and create you own"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/404.html.eex:8
+#: lib/omega_bravera_web/templates/page/500.html.eex:8
+msgid "You look lost, Mate."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/error/404.html.eex:33
+#: lib/omega_bravera_web/templates/error/500.html.eex:33
+msgid "You look lost."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:39
+msgid "Your Donation Amount:"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:45
+msgid "Your Pledge Per KM:"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user/trackers.html.eex:11
+msgid "Your Strava Account is connected!"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:77
+msgid "Your card will not be charged until the challenge ends."
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:76
+msgid "Your card will only be charged based on the actual distance covered."
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:37
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_not_signed_in.html.eex:44
+msgid "You’ll be redirected to Strava to create an account,\n            when you’ve created anaccount and downloaded the Strava App on your smartphone,\n            come back to Bravera and finish your registration."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:170
+msgid "You’ve activated the challenge!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:105
+msgid "but for the charity and the children it supports too."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:120
+msgid "delivering great results!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:71
+msgid "extra!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:119
+msgid "giving and health is building a really committed community that is"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:114
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:252
+#: lib/omega_bravera_web/templates/user_profile/show.html.eex:320
+msgid "here!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:70
+msgid "is a celebration. We take this a step further and add something"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:118
+msgid "is a time-saving tool that builds awareness. Making the connection of"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:64
+msgid "meaningful."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/challenge_form_signed_in.html.eex:73
+msgid "more member(s) after setting-up your challenge."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo/show.html.eex:45
+msgid "online!"
+msgstr ""
+
+#, elixir-format
+#:
+#: lib/omega_bravera_web/templates/ngo_chal/per_goal_challenge_milestones.html.eex:35
+msgid "raised of target"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/team_invites.html.eex:5
+msgid "team members"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:5
+msgid "team members!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:104
+msgid "trainers. I was running with real purpose, not just for my own health"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:117
+msgid "way people can connect with our initiatives. With limited resources this"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/ngo_chal/manage_team.html.eex:23
+msgid "when you kick a team member, all of their activities will be removed from your team challenge."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/offer/offer_challenge/manage_team.html.eex:23
+msgid "when you remove a team member, all of their activities will be removed from your team challenge."
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/page/index.html.eex:69
+msgid "‘story’ with high emotional value. Each goal met & personal record"
+msgstr ""

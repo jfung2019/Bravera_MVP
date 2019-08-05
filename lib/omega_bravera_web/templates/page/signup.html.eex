@@ -2,17 +2,17 @@
   <form class="form-signin text-center">
     <img class="circle-logo" src="/images/bravera-logo-circle.png" alt="Bravera">
     <h1 class="my-3">
-      Sign up
+      <%= gettext("Sign up") %>
     </h1>
 
-    <p class="mt-5 mb-3 text-muted">By signing up for Bravera you agree to our <a href="https://www.bravera.fit/terms" target="_blank" rel="noreferrer noopener">Cookies & Privacy Policy</a></p>
+    <p class="mt-5 mb-3 text-muted"><%= gettext("By signing up for Bravera you agree to our ") %><a href="https://www.bravera.fit/terms" target="_blank" rel="noreferrer noopener"><%= gettext("Cookies & Privacy Policy") %></a></p>
     <div class="mb-3">
       <a href="/strava/login" class="mb-1">
         <img src="/images/strava/btn_strava_connect-orange.png" alt="Connect with Strava" />
       </a>
     </div>
 
-    <img src="/images/fitbit-coming-soon.png"  alt="Fitbit coming soon!"/>
+    <img src="/images/fitbit-coming-soon.png"  alt="#{gettext("Fitbit coming soon!")}"/>
 
     <p class="mt-5 mb-3 text-muted">© <%= Timex.now.year %> Bravera</p>
   </form>

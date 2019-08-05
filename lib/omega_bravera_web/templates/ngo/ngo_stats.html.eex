@@ -11,11 +11,11 @@
 
          <div class="mb-3 mx-lg-3">
             <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-               Fundraising Goal:
+              <%= gettext("Fundraising Goal:") %>
                <strong class="text-500 float-right"><%= "#{currency_to_symbol(@ngo.currency)}#{number_with_commas(@ngo.fundraising_goal)}" %></strong>
             </div>
             <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-              Pledged to date:
+              <%= gettext("Pledged to date:") %>
               <span class="float-right">
                 <strong class="text-500">
                   <%= "#{currency_to_symbol(@ngo.currency)}#{number_with_commas(@ngo.total_pledged || 0)}" %>
@@ -25,7 +25,7 @@
             </div>
             <%= if !pre_registration_ngo?(@ngo) do %>
               <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-                Secured to date:
+                <%= gettext("Secured to date:") %>
                 <span class="float-right">
                   <strong class="text-500">
                     <%= "#{currency_to_symbol(@ngo.currency)}#{number_with_commas(@ngo.total_secured || 0)}" %>
@@ -35,21 +35,21 @@
               </div>
             <% end %>
             <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-               <a href="#" class="text-success" data-toggle="modal" data-target="#ngoParticipantsModal-<%=@ngo.id%>">Participants:</a>
+               <a href="#" class="text-success" data-toggle="modal" data-target="#ngoParticipantsModal-<%=@ngo.id%>"><%= gettext("Participants:") %></a>
                <strong class="text-500 float-right"><%= @ngo.num_of_challenges || 0 %></strong>
             </div>
             <%= if !pre_registration_ngo?(@ngo) do %>
               <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-                Distance Travelled:
+                <%= gettext("Distance Travelled:") %>
                 <strong class="text-500 float-right"><%= @ngo.total_distance_covered || 0 %> KM</strong>
               </div>
               <div class="text-420 mt-2 mb-1 ml-1 text-left stats-font">
-                Calories Burned:
-                <strong class="text-500 float-right"><%= @ngo.total_calories || 0 %> Calories</strong>
+                <%= gettext("Calories Burned:") %>
+                <strong class="text-500 float-right"><%= @ngo.total_calories || 0 %> <%= gettext("Calories") %></strong>
               </div>
             <% else %>
-              <div class="text-500 text-center mt-2 mb-0 stats-font">Challenge starts</div>
-              <div class="text-center text-danger" On <%= render_date(@ngo.launch_date) %> </div>
+              <div class="text-500 text-center mt-2 mb-0 stats-font"><%= gettext("Challenge starts") %></div>
+              <div class="text-center text-danger" <%= gettext("On") %> <%= render_date(@ngo.launch_date) %> </div>
 
             <% end %>
             <div style="clear: both;"></div>
@@ -66,10 +66,10 @@
       <div class="modal-content">
 
       <div class="modal-header">
-         <h5 class="modal-title mx-auto text-success" id="ngoParticipantsModalLabel">Patricipants</h5>
+         <h5 class="modal-title mx-auto text-success" id="ngoParticipantsModalLabel"><%= gettext("Patricipants") %></h5>
       </div>
 
-      <h6 class="mx-auto mt-2">Click to see details</h6>
+      <h6 class="mx-auto mt-2"><%= gettext("Click to see details") %></h6>
 
       <div class="modal-body">
             <%= for challenge <- @ngo.ngo_chals do %>
@@ -84,7 +84,7 @@
       </div>
 
       <div class="modal-footer">
-         <button type="button" class="btn btn-bravera mx-auto" data-dismiss="modal">Close</button>
+         <button type="button" class="btn btn-bravera mx-auto" data-dismiss="modal"><%= gettext("Close") %></button>
       </div>
 
       </div>

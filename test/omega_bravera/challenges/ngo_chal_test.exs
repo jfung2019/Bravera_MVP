@@ -46,7 +46,7 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
       completed_distance = challenge.distance_target * 1000 + 1
 
       changeset =
-        NGOChal.activity_completed_changeset(challenge, %Strava.Activity{
+        NGOChal.activity_completed_changeset(challenge, %Strava.DetailedActivity{
           distance: completed_distance
         })
 
@@ -64,7 +64,7 @@ defmodule OmegaBravera.Challenges.NGOChalTest do
         })
 
       changeset =
-        NGOChal.activity_completed_changeset(challenge, %Strava.Activity{distance: 3215})
+        NGOChal.activity_completed_changeset(challenge, %Strava.DetailedActivity{distance: 3215})
 
       assert changeset.changes[:participant_notified_of_inactivity] == false
       assert changeset.changes[:donor_notified_of_inactivity] == false

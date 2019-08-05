@@ -57,10 +57,10 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-bravera mr-auto" data-dismiss="modal" data-toggle="modal" data-target="#signUpModal"><%= gettext("Sign up") %></button>
+          <button type="button" class="btn btn-bravera mr-auto" data-dismiss="modal" data-toggle="modal" data-target="#signUpModal" data-ga-track-click="Sign Up BTN From Login Modal"><%= gettext("Sign up") %></button>
 
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" phx-click="close_modal"><%= gettext("Cancel") %></button>
-          <button type="submit" class="btn btn-bravera" phx-disable-with="<%= gettext("Trying to signin...") %>" <%= unless @login_button_disabled?, do: " disabled" %>><%= gettext("Sign in") %></button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" phx-click="close_modal" data-ga-track-click="Close Modal From Login Modal"><%= gettext("Cancel") %></button>
+          <button type="submit" class="btn btn-bravera" phx-disable-with="<%= gettext("Trying to signin...") %>" <%= unless @login_button_disabled?, do: " disabled" %> data-ga-track-click="Sign In BTN From Login Modal"><%= gettext("Sign in") %></button>
         </div>
 
       </div>

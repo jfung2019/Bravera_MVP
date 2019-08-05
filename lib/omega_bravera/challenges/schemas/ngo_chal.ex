@@ -249,7 +249,9 @@ defmodule OmegaBravera.Challenges.NGOChal do
   defp add_start_and_end_dates(%Ecto.Changeset{} = changeset, _, _), do: changeset
 
   defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do
-    case Decimal.cmp(changeset.changes[:distance_covered], challenge.distance_target) do
+    distance_covered = get_change(changeset, :distance_covered, Decimal.new(0))
+
+    case Decimal.cmp(distance_covered, challenge.distance_target) do
       :lt -> changeset
       _ -> change(changeset, status: "complete")
     end
