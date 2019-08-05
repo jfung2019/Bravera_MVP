@@ -9,9 +9,9 @@ defmodule OmegaBravera.Points do
   alias OmegaBravera.Points.Point
 
 
-  def create_points_from_activity(activity) do
+  def create_points_from_activity(activity, user_with_points) do
     %Point{}
-    |> Point.activity_points_changeset(activity)
+    |> Point.activity_points_changeset(activity, user_with_points)
     |> Repo.insert()
   end
 

@@ -12,6 +12,7 @@ defmodule OmegaBravera.Points.Point do
   @allowed_attributes [:activity_id, :user_id, :balance, :source]
   @required_attributes [:user_id, :balance, :source]
   @allowed_activity_types ActivityOptions.points_allowed_activities()
+  @points_per_km 10
 
   schema "points" do
     # Can be in -ve or +ve.
@@ -19,23 +20,25 @@ defmodule OmegaBravera.Points.Point do
     # Can be redeem, activity, referral, bonus, ...
     field(:source, :string)
 
+    timestamps(type: :utc_datetime)
+
     belongs_to(:user, User)
     belongs_to(:activity, ActivityAccumulator)
   end
 
   def activity_points_changeset(point, %ActivityAccumulator{
         id: activity_id,
-        user_id: user_id,
         type: activity_type,
         distance: distance
-      }) do
+      },
+      %User{id: user_id, daily_points_limit: daily_points_limit, todays_points: todays_points}) do
     point
     |> cast(%{}, [])
     |> put_change(:activity_id, activity_id)
     |> put_change(:user_id, user_id)
     |> put_change(:source, "activity")
     |> validate_activity_type(@allowed_activity_types, activity_type)
-    |> add_balance_from_distance(distance)
+    |> add_balance_from_distance(distance, daily_points_limit, todays_points)
     |> validate_required(@required_attributes)
   end
 
@@ -53,18 +56,27 @@ defmodule OmegaBravera.Points.Point do
     end
   end
 
-  defp add_balance_from_distance(changeset, distance) when not is_nil(distance) do
-    balance = distance |> Decimal.round(0, :floor) |> Decimal.to_integer()
+  defp add_balance_from_distance(changeset, distance, daily_points_limit, todays_points) when not is_nil(distance) do
+    max_balance = daily_points_limit * @points_per_km
+    remaining_balance_today = max_balance - todays_points
+    points = distance |> Decimal.round(0, :floor) |> Decimal.to_integer() |> Kernel.*(@points_per_km)
 
     cond do
-      balance < 1 or balance == 0 or balance < 0 ->
+      remaining_balance_today == 0  ->
+        add_error(changeset, :id, "User reached max points for today")
+
+      points < 10 or points == 0 ->
         add_error(changeset, :id, "Activity's distance is less than 1KM")
 
-      balance == 1 ->
-        put_change(changeset, :balance, 10)
+      points >= remaining_balance_today ->
+        put_change(changeset, :balance, remaining_balance_today)
 
-      balance > 1 ->
-        put_change(changeset, :balance, balance * 10)
+      points < remaining_balance_today ->
+        put_change(changeset, :balance, points)
     end
   end
+
+  defp add_balance_from_distance(changeset, _, _, _), do: changeset
+
+  def get_points_per_km(), do: @points_per_km
 end

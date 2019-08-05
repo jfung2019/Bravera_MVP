@@ -27,9 +27,12 @@ defmodule OmegaBravera.Accounts.User do
     field(:email_activation_token, :string)
     field(:firstname, :string)
     field(:lastname, :string)
+    # Represents KMs
+    field(:daily_points_limit, :integer, default: 15)
     field(:additional_info, :map, default: %{})
     field(:profile_picture, :string, default: nil)
     field(:accept_terms, :boolean, virtual: true)
+    field(:todays_points, :integer, virtual: true)
 
     # associations
     has_one(:credential, Credential)

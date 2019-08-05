@@ -21,8 +21,10 @@ defmodule OmegaBravera.Activity.Processor do
       {:ok, activity} ->
         Logger.info("ActivityProcessor: Saved a new activity for user #{strava.user.id}")
 
+        user_with_points = Accounts.get_user_with_todays_points(strava.user)
+
         # Add reward points if activity is eligible.
-        case Points.create_points_from_activity(activity) do
+        case Points.create_points_from_activity(activity, user_with_points) do
           {:ok, _point} ->
             Logger.info("ActivityProcessor: Successfully created points for activity: #{activity.id}")
 
