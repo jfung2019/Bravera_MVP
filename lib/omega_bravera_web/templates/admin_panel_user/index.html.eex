@@ -1,8 +1,8 @@
 <div class="row">
-	<div class="col-6 offset-3">
+	<div class="col-6 offset-2">
 		<h2>Listing Users</h2>
 
-		<table class="table">
+		<table class="table table-bordered table-hover">
 		  <thead>
 		    <tr>
 		      <th>First Name</th>
@@ -24,6 +24,9 @@
 		      <td class="text-right">
 		        <span><%= link "Show", to: admin_panel_user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
 		      </td>
+          <td class="text-right">
+            <span><%= link "Edit", to: admin_panel_user_path(@conn, :edit, user), class: "btn btn-default btn-xs"%> </span>
+          </td>
 		    </tr>
 		<% end %>
 		  </tbody>

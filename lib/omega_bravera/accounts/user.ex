@@ -10,7 +10,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Stripe.StrCustomer
   alias OmegaBravera.Offers.{OfferChallenge, OfferChallengeTeam}
 
-  @required_attributes [:firstname, :lastname]
+  @required_attributes [:firstname, :lastname, :daily_points_limit]
   @allowed_attributes [
     :email,
     :firstname,
@@ -18,7 +18,8 @@ defmodule OmegaBravera.Accounts.User do
     :additional_info,
     :email_verified,
     :profile_picture,
-    :accept_terms
+    :accept_terms,
+    :daily_points_limit
   ]
 
   schema "users" do

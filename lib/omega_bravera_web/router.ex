@@ -114,7 +114,8 @@ defmodule OmegaBraveraWeb.Router do
       pipe_through(:admin_authenticated)
       get("/", AdminUserPageController, :index)
       resources("/admin-users", AdminUserController)
-      resources("/users", AdminPanelUserController, only: [:index, :show])
+      resources("/users", AdminPanelUserController, only: [:index, :show, :edit])
+      put("/users/:id/edit", AdminPanelUserController, :update)
       resources("/activities", AdminPanelActivityController, only: [:new, :create])
 
       resources("/offer-activities", AdminPanelOfferChallengeActivityController,

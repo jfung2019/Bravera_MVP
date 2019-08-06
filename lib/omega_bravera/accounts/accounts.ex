@@ -405,7 +405,8 @@ defmodule OmegaBravera.Accounts do
 
   """
   def list_users do
-    Repo.all(User)
+    from(u in User, order_by: [desc: :inserted_at])
+    |> Repo.all()
   end
 
   @doc """
