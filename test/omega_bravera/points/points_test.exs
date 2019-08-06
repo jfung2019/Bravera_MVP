@@ -22,7 +22,8 @@ defmodule OmegaBravera.Points.PointsTest do
 
   describe "create points from activity data" do
     test "activity_points_changeset/3 is valid when correct data is given", %{user: user} do
-      activity = insert(:activity_accumulator, %{distance: Decimal.new(50), user: nil, user_id: user.id})
+      activity =
+        insert(:activity_accumulator, %{distance: Decimal.new(50), user: nil, user_id: user.id})
 
       assert Point.activity_points_changeset(%Point{}, activity, user).valid?
     end
@@ -60,16 +61,29 @@ defmodule OmegaBravera.Points.PointsTest do
       refute Point.activity_points_changeset(%Point{}, activity3, user).valid?
     end
 
-    test "activity_points_changeset/3 multiplies activity distance by 10 to fill balance", %{user: user} do
-      activity = insert(:activity_accumulator, %{distance: Decimal.new(50), user: nil, user_id: user.id})
+    test "activity_points_changeset/3 multiplies activity distance by 10 to fill balance", %{
+      user: user
+    } do
+      activity =
+        insert(:activity_accumulator, %{distance: Decimal.new(50), user: nil, user_id: user.id})
+
       changeset = Point.activity_points_changeset(%Point{}, activity, user)
       assert changeset.valid?
+
       # Balance is 150 not 500 due to daily_points_limit being equals 15k * Point.@points_per_km (10 points)
       assert %{changes: %{balance: 150}} = changeset
     end
 
-    test "activity_points_changeset/3 will reject activities of distance less than 1KM", %{user: user} do
-      activity = insert(:activity_accumulator, %{distance: Decimal.from_float(0.9), user: nil, user_id: user.id})
+    test "activity_points_changeset/3 will reject activities of distance less than 1KM", %{
+      user: user
+    } do
+      activity =
+        insert(:activity_accumulator, %{
+          distance: Decimal.from_float(0.9),
+          user: nil,
+          user_id: user.id
+        })
+
       changeset = Point.activity_points_changeset(%Point{}, activity, user)
       refute changeset.valid?
       assert %{errors: [balance: _, id: {"Activity's distance is less than 1KM", []}]} = changeset
@@ -126,10 +140,13 @@ defmodule OmegaBravera.Points.PointsTest do
           user_id: user.id
         })
 
-      {:ok, point1} = Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user))
+      {:ok, point1} =
+        Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user))
 
       point1
-      |> Ecto.Changeset.change(inserted_at: DateTime.truncate(Timex.shift(now, days: -5), :second))
+      |> Ecto.Changeset.change(
+        inserted_at: DateTime.truncate(Timex.shift(now, days: -5), :second)
+      )
       |> Repo.update()
 
       activity2 =
@@ -141,7 +158,8 @@ defmodule OmegaBravera.Points.PointsTest do
           user_id: user.id
         })
 
-      {:ok, point2} = Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
+      {:ok, point2} =
+        Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
 
       point2
       |> Ecto.Changeset.change(inserted_at: DateTime.truncate(Timex.shift(now, days: 5), :second))
@@ -163,7 +181,8 @@ defmodule OmegaBravera.Points.PointsTest do
       assert user_with_points.todays_points == 50
     end
 
-    test "create_points_from_activity/2 will not add more points than daily_points_limit * points_per_km", %{user: user} do
+    test "create_points_from_activity/2 will not add more points than daily_points_limit * points_per_km",
+         %{user: user} do
       activity1 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
@@ -184,14 +203,13 @@ defmodule OmegaBravera.Points.PointsTest do
           user_id: user.id
         })
 
-      {:error, reason} = Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
+      {:error, reason} =
+        Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
 
       updated_user_with_points = Accounts.get_user_with_todays_points(user)
       assert updated_user_with_points.todays_points == 150
       assert %{errors: [_, id: {"User reached max points for today", []}]} = reason
-
     end
-
 
     # TODO: for the future:
 

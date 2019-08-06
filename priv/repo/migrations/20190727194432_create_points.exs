@@ -41,8 +41,8 @@ defmodule OmegaBravera.Repo.Migrations.CreatePoints do
             user_id: activity.user_id,
             activity_id: activity.id,
             balance: balance,
-            inserted_at: DateTime.truncate(Timex.now, :second),
-            updated_at: DateTime.truncate(Timex.now, :second),
+            inserted_at: DateTime.truncate(Timex.now(), :second),
+            updated_at: DateTime.truncate(Timex.now(), :second)
           ]
         else
           nil

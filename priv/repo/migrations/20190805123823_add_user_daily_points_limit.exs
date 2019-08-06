@@ -3,13 +3,13 @@ defmodule OmegaBravera.Repo.Migrations.AddUserDailyPointsLimit do
 
   def up do
     alter table("users") do
-      add :daily_points_limit, :integer, default: 15
+      add(:daily_points_limit, :integer, default: 15)
     end
   end
 
   def down do
     alter table("users") do
-      remove :daily_points_limit
+      remove(:daily_points_limit)
     end
   end
 end

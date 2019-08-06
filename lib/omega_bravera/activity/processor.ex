@@ -26,10 +26,14 @@ defmodule OmegaBravera.Activity.Processor do
         # Add reward points if activity is eligible.
         case Points.create_points_from_activity(activity, user_with_points) do
           {:ok, _point} ->
-            Logger.info("ActivityProcessor: Successfully created points for activity: #{activity.id}")
+            Logger.info(
+              "ActivityProcessor: Successfully created points for activity: #{activity.id}"
+            )
 
           {:error, reason} ->
-            Logger.warn("ActivityProcessor: Could not create points for activity, reason: #{inspect(reason)}")
+            Logger.warn(
+              "ActivityProcessor: Could not create points for activity, reason: #{inspect(reason)}"
+            )
         end
 
         Task.Supervisor.start_child(

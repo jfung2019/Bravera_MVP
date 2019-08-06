@@ -854,7 +854,9 @@ defmodule OmegaBravera.Offers do
   def get_team_member_accepted_invitation(%{team_id: team_id, status: status, email: email}) do
     from(
       invitation in OfferChallengeTeamInvitation,
-      where: invitation.email == ^email and invitation.team_id == ^team_id and invitation.status == ^status
+      where:
+        invitation.email == ^email and invitation.team_id == ^team_id and
+          invitation.status == ^status
     )
     |> Repo.one()
   end
@@ -906,18 +908,24 @@ defmodule OmegaBravera.Offers do
           team: %{users: team_members} = team,
           user_id: challenge_owner_user_id
         },
-        %User{id: logged_in_challenge_owner_id})
-  do
+        %User{id: logged_in_challenge_owner_id}
+      ) do
     result =
       team_member
       |> validate_challenge_owner(challenge_owner_user_id, logged_in_challenge_owner_id)
-      |> validate_team_member(team_members) # is team member in challenge.team?
-      |> validate_challenge_status(status) # is challenge status active?
+      # is team member in challenge.team?
+      |> validate_team_member(team_members)
+      # is challenge status active?
+      |> validate_challenge_status(status)
 
     case result do
       {:ok, struct} ->
-        get_team_member_accepted_invitation(%{team_id: team.id, status: "accepted", email: team_member.user.email})
-        |> Repo.delete
+        get_team_member_accepted_invitation(%{
+          team_id: team.id,
+          status: "accepted",
+          email: team_member.user.email
+        })
+        |> Repo.delete()
 
         Repo.delete(struct)
 
@@ -926,7 +934,11 @@ defmodule OmegaBravera.Offers do
     end
   end
 
-  defp validate_challenge_owner(team_member, challenge_owner_user_id, logged_in_challenge_owner_id) do
+  defp validate_challenge_owner(
+         team_member,
+         challenge_owner_user_id,
+         logged_in_challenge_owner_id
+       ) do
     if challenge_owner_user_id != logged_in_challenge_owner_id do
       {:error, "Challenge owner is not correct!"}
     else
@@ -962,7 +974,8 @@ defmodule OmegaBravera.Offers do
       otm in OfferChallengeTeamMembers,
       where: otm.user_id == ^user_id and otm.team_id == ^team_id,
       preload: [:user]
-    ) |> Repo.one()
+    )
+    |> Repo.one()
   end
 
   def get_team!(id), do: Repo.get!(OfferChallengeTeam, id)

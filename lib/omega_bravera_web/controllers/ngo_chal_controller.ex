@@ -191,14 +191,17 @@ defmodule OmegaBraveraWeb.NGOChalController do
   end
 
   def kick_team_member(conn, %{
-    "ngo_slug" => ngo_slug,
-    "ngo_chal_slug" => slug,
-    "user_id" => team_member_user_id
-  }) do
+        "ngo_slug" => ngo_slug,
+        "ngo_chal_slug" => slug,
+        "user_id" => team_member_user_id
+      }) do
     case Guardian.Plug.current_resource(conn) do
       nil ->
         conn
-        |> put_flash(:error, "Invalid operation. Please make sure you are using the correct account.")
+        |> put_flash(
+          :error,
+          "Invalid operation. Please make sure you are using the correct account."
+        )
         |> redirect(to: page_path(conn, :login))
 
       logged_in_challenge_owner ->
@@ -207,10 +210,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
         case Challenges.kick_team_member(team_member, challenge, logged_in_challenge_owner) do
           {:ok, _struct} ->
-
             conn
             |> put_flash(:info, "Removed team member sucessfully!")
             |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+
           {:error, reason} ->
             Logger.error("Could not remove team member, reason: #{inspect(reason)}")
 

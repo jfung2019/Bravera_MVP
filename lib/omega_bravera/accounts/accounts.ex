@@ -450,16 +450,19 @@ defmodule OmegaBravera.Accounts do
   end
 
   def get_user_with_todays_points(%User{id: user_id}) do
-    now = Timex.now
+    now = Timex.now()
 
     from(
       u in User,
       where: u.id == ^user_id,
       left_join: p in Point,
-      on: p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and p.inserted_at <= ^Timex.end_of_day(now),
+      on:
+        p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and
+          p.inserted_at <= ^Timex.end_of_day(now),
       group_by: u.id,
       select: %{u | todays_points: fragment("sum(coalesce(?,0))", p.balance)}
-    ) |> Repo.one()
+    )
+    |> Repo.one()
   end
 
   @doc """

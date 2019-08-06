@@ -13,6 +13,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
       user ->
         distance = Challenges.get_total_distance_by_user(user.id)
         points = Points.get_user_points(user.id)
+
         render(
           conn,
           "show.html",

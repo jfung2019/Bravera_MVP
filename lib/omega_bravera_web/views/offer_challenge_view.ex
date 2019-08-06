@@ -332,11 +332,13 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
   def team_full?(%OfferChallenge{has_team: true, team: %{count: count}} = challenge),
     do: count == accepted_invitations(challenge)
 
-  def has_accepted_members?(%OfferChallenge{has_team: true, team: %{users: users}} = _challenge) when length(users) > 0,
-    do: true
+  def has_accepted_members?(%OfferChallenge{has_team: true, team: %{users: users}} = _challenge)
+      when length(users) > 0,
+      do: true
 
-  def has_accepted_members?(%OfferChallenge{has_team: true, team: %{users: users}} = _challenge) when length(users) == 0,
-   do: false
+  def has_accepted_members?(%OfferChallenge{has_team: true, team: %{users: users}} = _challenge)
+      when length(users) == 0,
+      do: false
 
   def pending_invitations(%OfferChallenge{has_team: true, team: %{invitations: invitations}}) do
     Enum.map(invitations, fn invitation ->

@@ -26,12 +26,15 @@ defmodule OmegaBravera.Points.Point do
     belongs_to(:activity, ActivityAccumulator)
   end
 
-  def activity_points_changeset(point, %ActivityAccumulator{
-        id: activity_id,
-        type: activity_type,
-        distance: distance
-      },
-      %User{id: user_id, daily_points_limit: daily_points_limit, todays_points: todays_points}) do
+  def activity_points_changeset(
+        point,
+        %ActivityAccumulator{
+          id: activity_id,
+          type: activity_type,
+          distance: distance
+        },
+        %User{id: user_id, daily_points_limit: daily_points_limit, todays_points: todays_points}
+      ) do
     point
     |> cast(%{}, [])
     |> put_change(:activity_id, activity_id)
@@ -56,13 +59,16 @@ defmodule OmegaBravera.Points.Point do
     end
   end
 
-  defp add_balance_from_distance(changeset, distance, daily_points_limit, todays_points) when not is_nil(distance) do
+  defp add_balance_from_distance(changeset, distance, daily_points_limit, todays_points)
+       when not is_nil(distance) do
     max_balance = daily_points_limit * @points_per_km
     remaining_balance_today = max_balance - todays_points
-    points = distance |> Decimal.round(0, :floor) |> Decimal.to_integer() |> Kernel.*(@points_per_km)
+
+    points =
+      distance |> Decimal.round(0, :floor) |> Decimal.to_integer() |> Kernel.*(@points_per_km)
 
     cond do
-      remaining_balance_today == 0  ->
+      remaining_balance_today == 0 ->
         add_error(changeset, :id, "User reached max points for today")
 
       points < 10 or points == 0 ->

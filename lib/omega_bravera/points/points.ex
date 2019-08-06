@@ -4,10 +4,8 @@ defmodule OmegaBravera.Points do
   """
   import Ecto.Query
 
-
   alias OmegaBravera.{Repo}
   alias OmegaBravera.Points.Point
-
 
   def create_points_from_activity(activity, user_with_points) do
     %Point{}
@@ -29,6 +27,7 @@ defmodule OmegaBravera.Points do
       where: p.user_id == ^user_id,
       group_by: p.user_id,
       select: sum(p.balance)
-    ) |> Repo.one
+    )
+    |> Repo.one()
   end
 end
