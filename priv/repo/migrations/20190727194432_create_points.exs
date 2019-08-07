@@ -6,7 +6,7 @@ defmodule OmegaBravera.Repo.Migrations.CreatePoints do
 
   def up do
     create table(:points) do
-      add(:balance, :integer, null: false)
+      add(:value, :integer, null: false)
       add(:source, :string, null: false)
       add(:user_id, references(:users, on_delete: :delete_all), null: false)
       add(:activity_id, references(:activities_accumulator, on_delete: :nothing))
@@ -26,21 +26,19 @@ defmodule OmegaBravera.Repo.Migrations.CreatePoints do
       |> Enum.map(fn activity ->
         int_distance = activity.distance |> Decimal.round() |> Decimal.to_integer()
 
-        balance =
+        value =
           cond do
             int_distance > 1 -> int_distance * 10
             int_distance < 1 -> 0
             int_distance == 1 -> 10
           end
 
-        # allowed_activity_type? =
-
-        if balance > 1 and Enum.member?(["Run", "Walk", "Hike", "VirtualRun"], activity.type) do
+        if value > 1 and Enum.member?(["Run", "Walk", "Hike", "VirtualRun"], activity.type) do
           [
             source: "activity",
             user_id: activity.user_id,
             activity_id: activity.id,
-            balance: balance,
+            value: value,
             inserted_at: DateTime.truncate(Timex.now(), :second),
             updated_at: DateTime.truncate(Timex.now(), :second)
           ]

@@ -280,7 +280,7 @@ defmodule OmegaBravera.Factory do
       source: "activity",
       user_id: nil,
       activity_id: nil,
-      balance: 50
+      value: 50
     }
   end
 end

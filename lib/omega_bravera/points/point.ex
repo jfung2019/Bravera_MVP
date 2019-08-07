@@ -9,14 +9,14 @@ defmodule OmegaBravera.Points.Point do
   alias OmegaBravera.Activity.ActivityAccumulator
   alias OmegaBravera.Activity.ActivityOptions
 
-  @allowed_attributes [:activity_id, :user_id, :balance, :source]
-  @required_attributes [:user_id, :balance, :source]
+  @allowed_attributes [:activity_id, :user_id, :value, :source]
+  @required_attributes [:user_id, :value, :source]
   @allowed_activity_types ActivityOptions.points_allowed_activities()
   @points_per_km 10
 
   schema "points" do
     # Can be in -ve or +ve.
-    field(:balance, :integer)
+    field(:value, :integer)
     # Can be redeem, activity, referral, bonus, ...
     field(:source, :string)
 
@@ -41,7 +41,7 @@ defmodule OmegaBravera.Points.Point do
     |> put_change(:user_id, user_id)
     |> put_change(:source, "activity")
     |> validate_activity_type(@allowed_activity_types, activity_type)
-    |> add_balance_from_distance(distance, daily_points_limit, todays_points)
+    |> add_value_from_distance(distance, daily_points_limit, todays_points)
     |> validate_required(@required_attributes)
   end
 
@@ -59,30 +59,31 @@ defmodule OmegaBravera.Points.Point do
     end
   end
 
-  defp add_balance_from_distance(changeset, distance, daily_points_limit, todays_points)
+  defp add_value_from_distance(changeset, distance, daily_points_limit, todays_points)
        when not is_nil(distance) do
-    max_balance = daily_points_limit * @points_per_km
-    remaining_balance_today = max_balance - todays_points
+    max_value = daily_points_limit * @points_per_km
+    remaining_value_today = max_value - todays_points
 
+    # check if we will support :ceil too (distance = 1.95)
     points =
       distance |> Decimal.round(0, :floor) |> Decimal.to_integer() |> Kernel.*(@points_per_km)
 
     cond do
-      remaining_balance_today == 0 ->
+      remaining_value_today == 0 ->
         add_error(changeset, :id, "User reached max points for today")
 
       points < 10 or points == 0 ->
         add_error(changeset, :id, "Activity's distance is less than 1KM")
 
-      points >= remaining_balance_today ->
-        put_change(changeset, :balance, remaining_balance_today)
+      points >= remaining_value_today ->
+        put_change(changeset, :value, remaining_value_today)
 
-      points < remaining_balance_today ->
-        put_change(changeset, :balance, points)
+      points < remaining_value_today ->
+        put_change(changeset, :value, points)
     end
   end
 
-  defp add_balance_from_distance(changeset, _, _, _), do: changeset
+  defp add_value_from_distance(changeset, _, _, _), do: changeset
 
   def get_points_per_km(), do: @points_per_km
 end

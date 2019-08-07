@@ -18,8 +18,7 @@ defmodule OmegaBravera.Accounts.User do
     :additional_info,
     :email_verified,
     :profile_picture,
-    :accept_terms,
-    :daily_points_limit
+    :accept_terms
   ]
 
   schema "users" do
@@ -59,9 +58,9 @@ defmodule OmegaBravera.Accounts.User do
   end
 
   @doc false
-  def changeset(user, attrs) do
+  def changeset(user, attrs, allowed_attrs \\ @allowed_attributes) do
     user
-    |> cast(attrs, @allowed_attributes)
+    |> cast(attrs, allowed_attrs)
     |> validate_required(@required_attributes)
     |> validate_format(:email, ~r/@/)
     |> validate_length(:email, max: 254)
@@ -83,6 +82,11 @@ defmodule OmegaBravera.Accounts.User do
     user
     |> changeset(attrs)
     |> email_changed(user)
+  end
+
+  def admin_update_changeset(user, attrs) do
+    user
+    |> changeset(attrs, @allowed_attributes ++ [:daily_points_limit])
   end
 
   def email_changed(%Ecto.Changeset{} = changeset, %__MODULE__{} = user) do

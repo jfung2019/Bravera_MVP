@@ -61,7 +61,7 @@ defmodule OmegaBravera.Points.PointsTest do
       refute Point.activity_points_changeset(%Point{}, activity3, user).valid?
     end
 
-    test "activity_points_changeset/3 multiplies activity distance by 10 to fill balance", %{
+    test "activity_points_changeset/3 multiplies activity distance by 10 to fill value", %{
       user: user
     } do
       activity =
@@ -70,8 +70,8 @@ defmodule OmegaBravera.Points.PointsTest do
       changeset = Point.activity_points_changeset(%Point{}, activity, user)
       assert changeset.valid?
 
-      # Balance is 150 not 500 due to daily_points_limit being equals 15k * Point.@points_per_km (10 points)
-      assert %{changes: %{balance: 150}} = changeset
+      # value is 150 not 500 due to daily_points_limit being equals 15k * Point.@points_per_km (10 points)
+      assert %{changes: %{value: 150}} = changeset
     end
 
     test "activity_points_changeset/3 will reject activities of distance less than 1KM", %{
@@ -86,7 +86,7 @@ defmodule OmegaBravera.Points.PointsTest do
 
       changeset = Point.activity_points_changeset(%Point{}, activity, user)
       refute changeset.valid?
-      assert %{errors: [balance: _, id: {"Activity's distance is less than 1KM", []}]} = changeset
+      assert %{errors: [value: _, id: {"Activity's distance is less than 1KM", []}]} = changeset
     end
 
     test "get_user_with_todays_points/1 counts user's today's points", %{user: user} do
@@ -215,8 +215,8 @@ defmodule OmegaBravera.Points.PointsTest do
 
     # test if daily_points_limit is modified, it will take effect. - Sherief.
 
-    # test if negative balance will not affect adding points. For example:
-    # user X reached daily_points_limit (150 points) but he spent 100 with -100 balance.
+    # test if negative value will not affect adding points. For example:
+    # user X reached daily_points_limit (150 points) but he spent 100 with -100 value.
     # make sure that he still cannot add more points. - Sherief.
   end
 end

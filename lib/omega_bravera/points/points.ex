@@ -26,7 +26,7 @@ defmodule OmegaBravera.Points do
       p in Point,
       where: p.user_id == ^user_id,
       group_by: p.user_id,
-      select: sum(p.balance)
+      select: sum(p.value)
     )
     |> Repo.one()
   end

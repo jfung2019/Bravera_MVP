@@ -453,17 +453,24 @@ defmodule OmegaBravera.Accounts do
   def get_user_with_todays_points(%User{id: user_id}) do
     now = Timex.now()
 
-    from(
-      u in User,
-      where: u.id == ^user_id,
-      left_join: p in Point,
-      on:
-        p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and
-          p.inserted_at <= ^Timex.end_of_day(now),
-      group_by: u.id,
-      select: %{u | todays_points: fragment("sum(coalesce(?,0))", p.balance)}
-    )
-    |> Repo.one()
+    user =
+      from(
+        u in User,
+        where: u.id == ^user_id,
+        left_join: p in Point,
+        on:
+          p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and
+            p.inserted_at <= ^Timex.end_of_day(now),
+        group_by: u.id,
+        select: %{u | todays_points: sum(p.value)}
+      )
+      |> Repo.one!()
+
+    if is_nil(user.todays_points) do
+      %{user | todays_points: 0}
+    else
+      user
+    end
   end
 
   @doc """
@@ -510,6 +517,12 @@ defmodule OmegaBravera.Accounts do
   def update_user(%User{} = user, attrs) do
     user
     |> User.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_user_by_admin(%User{} = user, attrs) do
+    user
+    |> User.admin_update_changeset(attrs)
     |> Repo.update()
   end
 

@@ -4,6 +4,6 @@
 
 		<%= render "form.html", Map.put(assigns, :action, admin_panel_user_path(@conn, :edit, @user)) %>
 
-		<span><%= link "Back", to: admin_user_path(@conn, :index) %></span>
+		<span><%= link "Back", to: admin_panel_user_path(@conn, :index) %></span>
 	</div>
 </div>

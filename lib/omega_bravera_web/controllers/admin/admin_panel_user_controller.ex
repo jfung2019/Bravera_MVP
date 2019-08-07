@@ -24,7 +24,7 @@ defmodule OmegaBraveraWeb.AdminPanelUserController do
   def update(conn, %{"id" => id, "user" => user_attrs}) do
     user = Accounts.get_user!(id)
 
-    case Accounts.update_user(user, user_attrs) do
+    case Accounts.update_user_by_admin(user, user_attrs) do
       {:ok, _user} ->
         conn
         |> put_flash(:info, "User updated successfully.")
