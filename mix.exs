@@ -71,6 +71,8 @@ defmodule OmegaBravera.Mixfile do
       {:uuid, "~> 1.1"},
       {:mogrify, "~> 0.7.0"},
       {:eqrcode, "~> 0.1.6"},
+      {:absinthe, "~> 1.4.0"},
+      {:absinthe_plug, "~> 1.4.0"},
       {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"}
     ]
   end

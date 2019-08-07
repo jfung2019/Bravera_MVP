@@ -34,6 +34,17 @@ defmodule OmegaBraveraWeb.Router do
   end
 
   scope "/" do
+    pipe_through :api
+
+    if Mix.env == :dev do
+      forward "/graphiql", Absinthe.Plug.GraphiQL,
+        schema: OmegaBraveraWeb.Api.Schema,
+        interface: :simple,
+        context: %{pubsub: OmegaBraveraWeb.Endpoint}
+    end
+  end
+
+  scope "/" do
     get("/health-check", OmegaBraveraWeb.PageController, :health_check)
   end
 
