@@ -54,6 +54,7 @@ defmodule OmegaBravera.Offers.Offer do
     field(:offer_challenge_types, {:array, :string})
 
     belongs_to(:vendor, OfferVendor)
+    belongs_to :location, OmegaBravera.Locations.Location
     has_many(:offer_challenges, OfferChallenge)
     has_many(:offer_rewards, OfferReward)
     has_many(:offer_redeems, OfferRedeem)
@@ -86,7 +87,8 @@ defmodule OmegaBravera.Offers.Offer do
     :time_limit,
     :payment_amount,
     :external_terms_url,
-    :accept_terms_text
+    :accept_terms_text,
+    :location_id
   ]
   @required_attributes [
     :name,
@@ -97,7 +99,8 @@ defmodule OmegaBravera.Offers.Offer do
     :start_date,
     :end_date,
     :toc,
-    :vendor_id
+    :vendor_id,
+    :location_id
   ]
 
   @doc false

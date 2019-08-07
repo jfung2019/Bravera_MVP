@@ -35,7 +35,8 @@ defmodule OmegaBravera.Accounts.Strava do
     |> Repo.transaction()
   end
 
-  defp do_create_user(attrs), do: Accounts.create_user(attrs)
+  # TODO: address properly
+  defp do_create_user(attrs), do: Accounts.create_user(Map.put(attrs, :location_id, 1))
   defp do_create_tracker(user, attrs), do: Trackers.create_strava(user.id, attrs)
 
   defp build_additional_info(%Strava.DetailedAthlete{} = athlete) do

@@ -12,6 +12,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
       email: "sheriefalaa.w@gmail.com",
       email_verified: true,
       accept_terms: true,
+      location_id: 1,
       credential: %{"password" => "testing", "password_confirmation" => "testing"}
     }
 
@@ -27,6 +28,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
         "lastname" => "bond",
         "email" => "allen_bond@plangora.com",
         "accept_terms" => true,
+        "location_id" => "1",
         "credential" => %{
           "password" => "leet_bond!",
           "password_confirmation" => "leet_bond!"
@@ -45,6 +47,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
         "firstname" => "allen",
         "lastname" => "bond",
         "email" => "allen_bond@plangora.com",
+        "location_id" => 1,
         "accept_terms" => true,
         "credential" => %{
           "password" => "leet_bond!",
@@ -69,6 +72,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
         lastname: "alaa",
         email: "sheriefalaa.w@gmail.com",
         accept_terms: "true",
+        location_id: 1,
         credential: %{"password" => "testing", "password_confirmation" => "testing"}
       }
 

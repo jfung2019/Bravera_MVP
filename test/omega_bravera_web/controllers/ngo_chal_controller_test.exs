@@ -38,7 +38,8 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       firstname: "sherief",
       lastname: "alaa ",
       email: "user@example.com",
-      email_verified: true
+      email_verified: true,
+      location_id: 1
     }
 
     with {:ok, user} <- Accounts.create_user(attrs),

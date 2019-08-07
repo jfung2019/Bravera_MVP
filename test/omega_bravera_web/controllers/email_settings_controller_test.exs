@@ -10,7 +10,8 @@ defmodule OmegaBraveraWeb.EmailSettingsControllerTest do
       firstname: "sherief",
       lastname: "alaa ",
       email: "sheriefalaa.w@gmail.com",
-      password: "test1234"
+      password: "test1234",
+      location_id: 1
     }
 
     with {:ok, user} <- Accounts.create_user(attrs),

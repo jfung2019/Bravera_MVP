@@ -18,7 +18,8 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
   @user_create_attrs %{
     email: "sherief@plangora.com",
     firstname: "firstname",
-    lastname: "lastname"
+    lastname: "lastname",
+    location_id: 1
   }
 
   def fixture(:strava) do
