@@ -28,9 +28,12 @@ defmodule OmegaBravera.Accounts.User do
     field(:email_activation_token, :string)
     field(:firstname, :string)
     field(:lastname, :string)
+    # Represents KMs
+    field(:daily_points_limit, :integer, default: 15)
     field(:additional_info, :map, default: %{})
     field(:profile_picture, :string, default: nil)
     field(:accept_terms, :boolean, virtual: true)
+    field(:todays_points, :integer, virtual: true)
 
     # associations
     has_one(:credential, Credential)
@@ -57,9 +60,9 @@ defmodule OmegaBravera.Accounts.User do
   end
 
   @doc false
-  def changeset(user, attrs) do
+  def changeset(user, attrs, allowed_attrs \\ @allowed_attributes) do
     user
-    |> cast(attrs, @allowed_attributes)
+    |> cast(attrs, allowed_attrs)
     |> validate_required(@required_attributes)
     |> validate_format(:email, ~r/@/)
     |> validate_length(:email, max: 254)
@@ -81,6 +84,11 @@ defmodule OmegaBravera.Accounts.User do
     user
     |> changeset(attrs)
     |> email_changed(user)
+  end
+
+  def admin_update_changeset(user, attrs) do
+    user
+    |> changeset(attrs, @allowed_attributes ++ [:daily_points_limit])
   end
 
   def email_changed(%Ecto.Changeset{} = changeset, %__MODULE__{} = user) do

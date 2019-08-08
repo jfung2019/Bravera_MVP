@@ -54,8 +54,10 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
         generate_offer_challenge_link(conn, nil, offer)
 
       challenge ->
+        redeemed_found = Enum.find(challenge.offer_redeems, &(&1.status == "redeemed"))
+
         cond do
-          challenge.status == "complete" ->
+          challenge.status == "complete" and is_nil(redeemed_found) ->
             link(gettext("Get Reward"),
               to: offer_offer_challenge_path(conn, :show, offer, challenge),
               class: "btn btn-bravera sign-up text-capitalize"

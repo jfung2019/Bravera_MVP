@@ -4,6 +4,7 @@ defmodule OmegaBravera.Activity.Processor do
   alias OmegaBravera.{
     TaskSupervisor,
     Repo,
+    Points,
     Accounts,
     Activity.Activities,
     Offers.OfferActivitiesIngestion,
@@ -19,6 +20,21 @@ defmodule OmegaBravera.Activity.Processor do
     case Activities.create_activity(strava_activity, strava.user) do
       {:ok, activity} ->
         Logger.info("ActivityProcessor: Saved a new activity for user #{strava.user.id}")
+
+        user_with_points = Accounts.get_user_with_todays_points(strava.user)
+
+        # Add reward points if activity is eligible.
+        case Points.create_points_from_activity(activity, user_with_points) do
+          {:ok, _point} ->
+            Logger.info(
+              "ActivityProcessor: Successfully created points for activity: #{activity.id}"
+            )
+
+          {:error, reason} ->
+            Logger.warn(
+              "ActivityProcessor: Could not create points for activity, reason: #{inspect(reason)}"
+            )
+        end
 
         Task.Supervisor.start_child(
           TaskSupervisor,

@@ -126,7 +126,8 @@ defmodule OmegaBraveraWeb.Router do
       get("/", AdminUserPageController, :index)
       resources "/locations", AdminPanelLocationsController
       resources("/admin-users", AdminUserController)
-      resources("/users", AdminPanelUserController, only: [:index, :show])
+      resources("/users", AdminPanelUserController, only: [:index, :show, :edit])
+      put("/users/:id/edit", AdminPanelUserController, :update)
       resources("/activities", AdminPanelActivityController, only: [:new, :create])
 
       resources("/offer-activities", AdminPanelOfferChallengeActivityController,

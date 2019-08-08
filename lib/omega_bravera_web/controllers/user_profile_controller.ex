@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
   import Mogrify
 
-  alias OmegaBravera.{Challenges, Accounts.User, Repo, Offers}
+  alias OmegaBravera.{Challenges, Accounts.User, Repo, Offers, Points}
 
   def show(conn, _) do
     case Guardian.Plug.current_resource(conn) do
@@ -12,14 +12,15 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
       user ->
         distance = Challenges.get_total_distance_by_user(user.id)
-        # TODO: calculate points after redemption
+        points = Points.get_user_points(user.id)
+
         render(
           conn,
           "show.html",
           user: user,
           num_of_activities: Challenges.get_number_of_activities_by_user(user.id),
           total_distance: distance,
-          total_points: distance,
+          total_points: points,
           solo_challenges: Challenges.get_user_solo_ngo_chals(user.id),
           team_challenges: Challenges.get_user_team_ngo_chals(user.id),
           offer_challenges: Offers.get_user_offer_challenges(user.id, [:offer, :offer_redeems]),
