@@ -12,7 +12,8 @@ defmodule OmegaBravera.Points.PointsTest do
       lastname: "alaa",
       email: "sheriefalaa.w@gmail.com",
       email_verified: true,
-      accept_terms: true
+      accept_terms: true,
+      location_id: 1
     }
 
     {:ok, user} = Accounts.create_user(attrs)
