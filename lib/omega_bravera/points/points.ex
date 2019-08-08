@@ -22,12 +22,19 @@ defmodule OmegaBravera.Points do
   # end
 
   def get_user_points(user_id) do
-    from(
-      p in Point,
-      where: p.user_id == ^user_id,
-      group_by: p.user_id,
-      select: sum(p.value)
-    )
-    |> Repo.one()
+    points =
+      from(
+        p in Point,
+        where: p.user_id == ^user_id,
+        group_by: p.user_id,
+        select: sum(p.value)
+      )
+      |> Repo.one()
+
+    if is_nil(points) do
+      Decimal.new(0)
+    else
+      points
+    end
   end
 end
