@@ -1,13 +1,10 @@
 defmodule OmegaBraveraWeb.Api.Schema do
   use Absinthe.Schema
 
-  alias OmegaBravera.Offers
-  alias OmegaBraveraWeb.Api.Resolvers.OffersResolver
+  alias OmegaBraveraWeb.Api.Resolvers
+  alias OmegaBraveraWeb.Schema.Types
 
-  object :offer do
-    field(:id, non_null(:integer))
-    field(:name, non_null(:string))
-  end
+  import_types(Types.Offer)
 
   query do
     field :offer, :offer do
@@ -20,7 +17,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     end
 
     field :all_offers, non_null(list_of(non_null(:offer))) do
-      resolve &OffersResolver.all_offers/3
+      resolve &Resolvers.Offers.all_offers/3
     end
   end
 end
