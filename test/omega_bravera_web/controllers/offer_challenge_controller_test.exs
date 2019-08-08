@@ -24,7 +24,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       firstname: "sherief",
       lastname: "alaa ",
       email: "sherief@plangora.com",
-      email_verified: false
+      email_verified: false,
+      location_id: 1
     }
 
     with {:ok, user} <- OmegaBravera.Accounts.create_user(attrs),

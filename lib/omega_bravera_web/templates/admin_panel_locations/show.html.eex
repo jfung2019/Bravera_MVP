@@ -1,0 +1,4 @@
+<ul>
+  <li>English Name: <%= @location.name_en %></li>
+  <li>Chinese Name: <%= @location.name_zh %></li>
+</ul>

@@ -8,7 +8,8 @@ defmodule OmegaBravera.Factory do
       firstname: "John",
       lastname: "Doe",
       email: sequence(:email, &"john.doe.#{&1}@example.com"),
-      email_verified: true
+      email_verified: true,
+      location_id: 1
     }
   end
 

@@ -57,7 +57,8 @@ defmodule OmegaBravera.TrackersTest do
         Accounts.create_user(%{
           email: "someone@email.com",
           firstname: "firstname",
-          lastname: "lastname"
+          lastname: "lastname",
+          location_id: 1
         })
 
       {:ok, strava} = Trackers.create_strava(user.id, @valid_attrs)

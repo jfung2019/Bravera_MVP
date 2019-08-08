@@ -28,7 +28,8 @@ defmodule OmegaBravera.OffersTest do
       vendor_id: nil,
       start_date: Timex.now(),
       end_date: Timex.shift(Timex.now(), days: 5),
-      payment_amount: Decimal.new(0)
+      payment_amount: Decimal.new(0),
+      location_id: 1
     }
     @update_attrs %{
       activities: [],
