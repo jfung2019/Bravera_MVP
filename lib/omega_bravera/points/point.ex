@@ -12,11 +12,11 @@ defmodule OmegaBravera.Points.Point do
   @allowed_attributes [:activity_id, :user_id, :value, :source]
   @required_attributes [:user_id, :value, :source]
   @allowed_activity_types ActivityOptions.points_allowed_activities()
-  @points_per_km 10
+  @points_per_km Decimal.new(10)
 
   schema "points" do
     # Can be in -ve or +ve.
-    field(:value, :integer)
+    field(:value, :decimal)
     # Can be redeem, activity, referral, bonus, ...
     field(:source, :string)
 
@@ -61,24 +61,21 @@ defmodule OmegaBravera.Points.Point do
 
   defp add_value_from_distance(changeset, distance, daily_points_limit, todays_points)
        when not is_nil(distance) do
-    max_value = daily_points_limit * @points_per_km
-    remaining_value_today = max_value - todays_points
+    max_value = Decimal.mult(Decimal.new(daily_points_limit), @points_per_km)
+    remaining_value_today = Decimal.sub(max_value, todays_points)
 
     # check if we will support :ceil too (distance = 1.95)
     points =
-      distance |> Decimal.round(0, :floor) |> Decimal.to_integer() |> Kernel.*(@points_per_km)
+      distance |> Decimal.round(2, :floor) |> Decimal.mult(@points_per_km)
 
     cond do
-      remaining_value_today == 0 ->
+      remaining_value_today == Decimal.new(0) or remaining_value_today == Decimal.from_float(0.00) ->
         add_error(changeset, :id, "User reached max points for today")
 
-      points < 10 or points == 0 ->
-        add_error(changeset, :id, "Activity's distance is less than 1KM")
-
-      points >= remaining_value_today ->
+      Decimal.cmp(points, remaining_value_today) == :gt or Decimal.cmp(points, remaining_value_today) == :eq ->
         put_change(changeset, :value, remaining_value_today)
 
-      points < remaining_value_today ->
+      Decimal.cmp(points, remaining_value_today) == :lt ->
         put_change(changeset, :value, points)
     end
   end

@@ -71,22 +71,24 @@ defmodule OmegaBravera.Points.PointsTest do
       assert changeset.valid?
 
       # value is 150 not 500 due to daily_points_limit being equals 15k * Point.@points_per_km (10 points)
-      assert %{changes: %{value: 150}} = changeset
+      value = Decimal.new(150)
+      assert %{changes: %{value: ^value}} = changeset
     end
 
-    test "activity_points_changeset/3 will reject activities of distance less than 1KM", %{
+    test "activity_points_changeset/3 will allow activities of distance less than 1KM", %{
       user: user
     } do
       activity =
         insert(:activity_accumulator, %{
-          distance: Decimal.from_float(0.9),
+          distance: Decimal.from_float(0.95),
           user: nil,
           user_id: user.id
         })
 
       changeset = Point.activity_points_changeset(%Point{}, activity, user)
-      refute changeset.valid?
-      assert %{errors: [value: _, id: {"Activity's distance is less than 1KM", []}]} = changeset
+      assert changeset.valid?
+      value = Decimal.from_float(9.5) |> Decimal.round(2)
+      assert %{changes: %{value: ^value}} = changeset
     end
 
     test "get_user_with_todays_points/1 counts user's today's points", %{user: user} do
@@ -125,7 +127,7 @@ defmodule OmegaBravera.Points.PointsTest do
 
       updated_user_with_points = Accounts.get_user_with_todays_points(user)
 
-      assert updated_user_with_points.todays_points == 150
+      assert updated_user_with_points.todays_points == Decimal.from_float(150.00) |> Decimal.round(2)
     end
 
     test "get_user_with_todays_points/1 will only count today's points for a user", %{user: user} do
@@ -178,7 +180,7 @@ defmodule OmegaBravera.Points.PointsTest do
       Points.create_points_from_activity(activity3, Accounts.get_user_with_todays_points(user))
 
       user_with_points = Accounts.get_user_with_todays_points(user)
-      assert user_with_points.todays_points == 50
+      assert user_with_points.todays_points == Decimal.new(50) |> Decimal.round(2)
     end
 
     test "create_points_from_activity/2 will not add more points than daily_points_limit * points_per_km",
@@ -207,7 +209,7 @@ defmodule OmegaBravera.Points.PointsTest do
         Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
 
       updated_user_with_points = Accounts.get_user_with_todays_points(user)
-      assert updated_user_with_points.todays_points == 150
+      assert updated_user_with_points.todays_points == Decimal.new(150)
       assert %{errors: [_, id: {"User reached max points for today", []}]} = reason
     end
 

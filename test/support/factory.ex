@@ -280,7 +280,7 @@ defmodule OmegaBravera.Factory do
       source: "activity",
       user_id: nil,
       activity_id: nil,
-      value: 50
+      value: Decimal.new(50)
     }
   end
 end
