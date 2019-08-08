@@ -224,7 +224,7 @@ defmodule OmegaBravera.Accounts do
       :strava,
       :setting,
       :credential,
-      :offer_challenges,
+      offer_challenges: [:offer_redeems],
       offer_teams: [:offer_challenge]
     ])
   end
