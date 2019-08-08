@@ -64,15 +64,14 @@ defmodule OmegaBravera.Points.Point do
     max_value = Decimal.mult(Decimal.new(daily_points_limit), @points_per_km)
     remaining_value_today = Decimal.sub(max_value, todays_points)
 
-    # check if we will support :ceil too (distance = 1.95)
-    points =
-      distance |> Decimal.round(2, :floor) |> Decimal.mult(@points_per_km)
+    points = distance |> Decimal.round(2, :floor) |> Decimal.mult(@points_per_km)
 
     cond do
       remaining_value_today == Decimal.new(0) or remaining_value_today == Decimal.from_float(0.00) ->
         add_error(changeset, :id, "User reached max points for today")
 
-      Decimal.cmp(points, remaining_value_today) == :gt or Decimal.cmp(points, remaining_value_today) == :eq ->
+      Decimal.cmp(points, remaining_value_today) == :gt or
+          Decimal.cmp(points, remaining_value_today) == :eq ->
         put_change(changeset, :value, remaining_value_today)
 
       Decimal.cmp(points, remaining_value_today) == :lt ->

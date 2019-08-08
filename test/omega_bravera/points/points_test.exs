@@ -127,7 +127,8 @@ defmodule OmegaBravera.Points.PointsTest do
 
       updated_user_with_points = Accounts.get_user_with_todays_points(user)
 
-      assert updated_user_with_points.todays_points == Decimal.from_float(150.00) |> Decimal.round(2)
+      assert updated_user_with_points.todays_points ==
+               Decimal.from_float(150.00) |> Decimal.round(2)
     end
 
     test "get_user_with_todays_points/1 will only count today's points for a user", %{user: user} do
