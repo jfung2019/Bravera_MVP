@@ -33,8 +33,14 @@ defmodule OmegaBraveraWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  pipeline :absinthe_api do
+    plug(Plug.Logger)
+    plug(:accepts, ["json"])
+    plug OmegaBraveraWeb.Api.Context
+  end
+
   scope "/" do
-    pipe_through :api
+    pipe_through :absinthe_api
 
     forward "/api", Absinthe.Plug,
       schema: OmegaBraveraWeb.Api.Schema
@@ -42,7 +48,7 @@ defmodule OmegaBraveraWeb.Router do
     if Mix.env == :dev do
       forward "/graphiql", Absinthe.Plug.GraphiQL,
         schema: OmegaBraveraWeb.Api.Schema,
-        interface: :simple,
+        socket: OmegaBraveraWeb.UserSocket,
         context: %{pubsub: OmegaBraveraWeb.Endpoint}
     end
   end

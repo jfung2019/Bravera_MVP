@@ -20,11 +20,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     @desc "Get a single offer by ID"
     field :offer, :offer do
       arg(:id, non_null(:integer))
-
-      resolve(fn %{id: offer_id}, _ ->
-        {:ok, OmegaBravera.Offers.get_offer!(offer_id)}
-
-      end)
+      resolve &Resolvers.Offers.get_offer/3
     end
 
     @desc "Get a list of all offers"
