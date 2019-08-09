@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Schema.Types.OfferChallenge do
+defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
   use Absinthe.Schema.Notation
 
   object :offer_challenge do

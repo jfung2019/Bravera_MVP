@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Schema.Types.Offer do
+defmodule OmegaBraveraWeb.Api.Types.Offer do
   use Absinthe.Schema.Notation
 
   object :offer do

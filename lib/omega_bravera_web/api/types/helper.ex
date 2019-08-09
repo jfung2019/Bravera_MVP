@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Schema.Types.Helper do
+defmodule OmegaBraveraWeb.Api.Types.Helper do
   use Absinthe.Schema.Notation
 
   scalar :date do
@@ -13,5 +13,16 @@ defmodule OmegaBraveraWeb.Schema.Types.Helper do
     serialize fn date ->
       DateTime.to_iso8601(date)
     end
+  end
+
+  scalar :decimal do
+    parse fn %{value: value}, _ ->
+      Decimal.parse(value)
+
+    _, _ ->
+      :error
+    end
+
+    serialize &to_string/1
   end
 end

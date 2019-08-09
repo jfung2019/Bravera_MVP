@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
   use Absinthe.Schema
 
   alias OmegaBraveraWeb.Api.Resolvers
-  alias OmegaBraveraWeb.Schema.Types
+  alias OmegaBraveraWeb.Api.Types
 
   import_types(Types.Offer)
   import_types(Types.OfferChallenge)
@@ -16,12 +16,18 @@ defmodule OmegaBraveraWeb.Api.Schema do
       arg :password, non_null(:string)
       resolve &Resolvers.Accounts.login/3
     end
+
+    @desc "Sign a user up."
+    field :create_user, :user do
+      arg :input, non_null(:user_signup_input)
+      resolve &Resolvers.Accounts.create_user/3
+    end
   end
 
   query do
     @desc "Get a single offer by ID"
     field :offer, :offer do
-      arg(:id, non_null(:integer))
+      arg :id, non_null(:integer)
       resolve &Resolvers.Offers.get_offer/3
     end
 

@@ -15,4 +15,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       {:error, :no_credential} -> {:error, gettext("Please setup your password using Forgot password.")}
     end
   end
+
+  def create_user(_root, %{input: params}, _info) do
+    case Accounts.create_credential_user(params) do
+      {:ok, user} ->
+        Accounts.Notifier.send_user_signup_email(user)
+        {:ok, user}
+
+      {:error, changeset} ->
+        {:error, changeset.errors}
+    end
+  end
 end

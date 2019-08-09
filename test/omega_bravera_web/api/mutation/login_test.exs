@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Schema.Mutation.LoginEmployeeTest do
+defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
   import OmegaBravera.Factory
