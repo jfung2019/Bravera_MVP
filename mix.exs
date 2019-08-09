@@ -48,7 +48,6 @@ defmodule OmegaBravera.Mixfile do
       {:comeonin, "~> 4.0"},
       {:guardian, "~> 1.0"},
       {:timex, "~> 3.1"},
-      {:bamboo, "~> 0.8"},
       {:strava, "~> 1.0"},
       {:stripy, "~> 1.0"},
       {:decimal, "~> 1.0", override: true},

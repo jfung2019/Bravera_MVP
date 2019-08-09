@@ -5,7 +5,9 @@ defmodule OmegaBraveraWeb.Api.Schema do
   alias OmegaBraveraWeb.Schema.Types
 
   import_types(Types.Offer)
+  import_types(Types.OfferChallenge)
   import_types(Types.Account)
+  import_types(Types.Helper)
 
   mutation do
     @desc "Authenticate and receive an authorization token and a user."
