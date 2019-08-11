@@ -22,6 +22,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
       arg :input, non_null(:user_signup_input)
       resolve &Resolvers.Accounts.create_user/3
     end
+
+    @desc "Create offer challenge."
+    field :create_offer_challenge, :offer_challenge do
+      arg :input, non_null(:offer_challenge_create_input)
+      resolve &Resolvers.OfferChallenges.create/3
+    end
   end
 
   query do

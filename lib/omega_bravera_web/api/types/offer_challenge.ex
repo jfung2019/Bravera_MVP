@@ -15,4 +15,9 @@ defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
     field(:inserted_at, :date)
     field(:updated_at, :date)
   end
+
+  input_object :offer_challenge_create_input do
+    field(:offer_slug, :string)
+  end
+
 end
