@@ -3,6 +3,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
 
   alias OmegaBravera.{Offers, Repo}
   alias OmegaBraveraWeb.Offer.OfferChallengeHelper
+  alias OmegaBraveraWeb.Api.Resolvers.Helpers
 
   def create(_root, %{input: %{offer_slug: offer_slug}}, %{context: %{current_user: current_user}}) do
 
@@ -15,16 +16,17 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
     end
   end
 
-  def create(_, _, %{}), do: {:error, "Action Requires Login"}
+  def create(_, _, %{}), do: {:ok, %{errors: Helpers.transform_errors(%{"user_id" => "Action Requires Login"})}}
 
   defp create_challenge(offer, current_user) do
     case Offers.create_offer_challenge(offer, current_user) do
       {:ok, offer_challenge} ->
         OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
-        {:ok, offer_challenge}
+        {:ok, %{offer_challenge: offer_challenge}}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         Logger.error("API: Could not sign up user for offer. Reason: #{inspect(changeset)}")
+        {:ok, %{errors: Helpers.transform_errors(changeset)}}
     end
   end
 end

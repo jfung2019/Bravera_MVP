@@ -7,24 +7,24 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Offer)
   import_types(Types.OfferChallenge)
   import_types(Types.Account)
-  import_types(Types.Helper)
+  import_types(Types.Helpers)
 
   mutation do
     @desc "Authenticate and receive an authorization token and a user."
-    field :login, :user_session do
+    field :login, :user_session_result do
       arg :email, non_null(:string)
       arg :password, non_null(:string)
       resolve &Resolvers.Accounts.login/3
     end
 
     @desc "Sign a user up."
-    field :create_user, :user do
+    field :create_user, :user_signup_result do
       arg :input, non_null(:user_signup_input)
       resolve &Resolvers.Accounts.create_user/3
     end
 
     @desc "Create offer challenge."
-    field :create_offer_challenge, :offer_challenge do
+    field :create_offer_challenge, :offer_challenge_create_result do
       arg :input, non_null(:offer_challenge_create_input)
       resolve &Resolvers.OfferChallenges.create/3
     end
