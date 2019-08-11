@@ -41,13 +41,6 @@ defmodule OmegaBraveraWeb.UserControllerTest do
             conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), user: user}
   end
 
-  describe "new user" do
-    test "renders form", %{conn: conn} do
-      conn = get(conn, user_path(conn, :new))
-      assert html_response(conn, 200) =~ "New User"
-    end
-  end
-
   describe "edit user" do
     test "renders form for editing chosen user", %{conn: conn} do
       conn = get(conn, user_path(conn, :edit))

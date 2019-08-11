@@ -24,10 +24,6 @@ defmodule OmegaBraveraWeb.Router do
     plug(OmegaBraveraWeb.AdminLoggedIn)
   end
 
-  pipeline :dashboard do
-    plug(:put_layout, {OmegaBraveraWeb.LayoutView, "dashboard.html"})
-  end
-
   pipeline :api do
     plug(Plug.Logger)
     plug(:accepts, ["json"])
@@ -87,17 +83,6 @@ defmodule OmegaBraveraWeb.Router do
 
     get("/webhook-callback", StravaController, :get_webhook_callback)
     post("/webhook-callback", StravaController, :post_webhook_callback)
-  end
-
-  scope "/dashboard", OmegaBraveraWeb do
-    pipe_through([:browser, :user_authenticated, :dashboard])
-
-    get("/", UserController, :dashboard)
-    get("/donations", UserController, :user_donations)
-
-    scope "/ngos" do
-      get("/", UserController, :ngos)
-    end
   end
 
   pipeline :admin_section do
