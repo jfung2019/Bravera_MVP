@@ -150,7 +150,7 @@ defmodule OmegaBraveraWeb.Router do
       get("/challenges", AdminPanelChallengesController, :index)
 
       resources("/ngos", AdminPanelNGOController, only: [:index, :new, :create]) do
-        resources("/", AdminPanelChallengesController,
+        resources("/challenges", AdminPanelChallengesController,
           only: [:show, :edit, :update],
           param: "slug"
         )
