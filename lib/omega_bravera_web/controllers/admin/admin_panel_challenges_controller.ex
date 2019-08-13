@@ -10,12 +10,12 @@ defmodule OmegaBraveraWeb.AdminPanelChallengesController do
     render(conn, "index.html", challenges: challenges)
   end
 
-  def show(conn, %{"admin_panel_ngo_id" => ngo_slug, "id" => slug}) do
+  def show(conn, %{"admin_panel_ngo_id" => ngo_slug, "slug" => slug}) do
     ngo_chal = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
     render(conn, "show.html", ngo_chal: ngo_chal)
   end
 
-  def edit(conn, %{"admin_panel_ngo_id" => ngo_slug, "id" => slug}) do
+  def edit(conn, %{"admin_panel_ngo_id" => ngo_slug, "slug" => slug}) do
     ngo_chal = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
     users = Accounts.list_users()
     changeset = Challenges.change_ngo_chal(ngo_chal, ngo_chal.user)
@@ -24,7 +24,7 @@ defmodule OmegaBraveraWeb.AdminPanelChallengesController do
 
   def update(conn, %{
         "admin_panel_ngo_id" => ngo_slug,
-        "id" => slug,
+        "slug" => slug,
         "ngo_chal" => ngo_chal_params
       }) do
     ngo_chal = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, user: [:strava], ngo: [])
