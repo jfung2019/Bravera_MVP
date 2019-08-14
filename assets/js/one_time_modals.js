@@ -24,9 +24,16 @@ $(() => {
   });
 
   $('#next_connect_strava_modal').click(function() {
-      $('#connectStravaModal').modal({
-          keyboard: false,
-          backdrop: 'static'
-        });
+    $('#connectStravaModal').modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
+  });
+
+  $('.open-delayed-donation-modal').click(function() {
+    $('#delayedDonationModal').modal({
+        keyboard: false,
+        backdrop: 'static'
+      });
   });
 });

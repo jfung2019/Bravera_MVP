@@ -150,14 +150,9 @@ msgstr ""
 
 #, elixir-format
 #: lib/omega_bravera_web/templates/ngo_chal/follow_on_donation_form.html.eex:73
+#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:87
 #: lib/omega_bravera_web/templates/ngo_chal/milestone_challenge_donation_form.html.eex:116
 msgid "Billing Information"
-msgstr ""
-
-#, elixir-format
-#:
-#: lib/omega_bravera_web/templates/ngo_chal/km_challenge_donation_form.html.eex:87
-msgid "Billing Information</h5>"
 msgstr ""
 
 #, elixir-format
@@ -192,7 +187,7 @@ msgid "By signing up for Bravera you agree to our "
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:80
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:84
 msgid "By signing-up you agree to our"
 msgstr ""
 
@@ -219,7 +214,7 @@ msgstr ""
 #: lib/omega_bravera_web/templates/offer/offer/payment_offer.html.eex:67
 #: lib/omega_bravera_web/templates/offer/offer_challenge/team_invites.html.eex:50
 #: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:62
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:94
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:98
 msgid "Cancel"
 msgstr ""
 
@@ -313,7 +308,7 @@ msgid "Click here to visit %{offer} online!"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:116
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:120
 msgid "Click on the link that has been sent to your email address to complete your registration."
 msgstr ""
 
@@ -325,6 +320,7 @@ msgstr ""
 #, elixir-format
 #: lib/omega_bravera_web/templates/ngo/ngo_stats.html.eex:87
 #: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:178
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:208
 msgid "Close"
 msgstr ""
 
@@ -339,8 +335,8 @@ msgid "Confirm new password"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:68
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:70
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:72
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:74
 msgid "Confirm your password"
 msgstr ""
 
@@ -385,7 +381,7 @@ msgid "Cookies & Privacy Policy"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:83
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:87
 msgid "Cookies/Privacy Policy"
 msgstr ""
 
@@ -559,7 +555,7 @@ msgid "Email Verification Needed"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/controllers/user_controller.ex:81
+#: lib/omega_bravera_web/controllers/user_controller.ex:43
 msgid "Email updated. Please check your inbox now!"
 msgstr ""
 
@@ -657,12 +653,12 @@ msgid "Gender"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/views/offer_view.ex:59
+#: lib/omega_bravera_web/views/offer_view.ex:61
 msgid "Get Reward"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/views/offer_view.ex:93
+#: lib/omega_bravera_web/views/offer_view.ex:95
 msgid "Get Team's Reward"
 msgstr ""
 
@@ -734,7 +730,7 @@ msgid "Invite your"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:95
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:99
 msgid "Join Now"
 msgstr ""
 
@@ -824,12 +820,12 @@ msgid "Link"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user/form.html.eex:30
+#: lib/omega_bravera_web/templates/user/form.html.eex:29
 msgid "Location"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:48
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:51
 #: lib/omega_bravera_web/templates/layout/auth_nav.html.eex:42
 msgid "Log Out"
 msgstr ""
@@ -939,7 +935,7 @@ msgid "Offers"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:122
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:126
 msgid "Ok"
 msgstr ""
 
@@ -999,8 +995,8 @@ msgstr ""
 #, elixir-format
 #: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:42
 #: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:44
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:59
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:61
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:63
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:65
 msgid "Password"
 msgstr ""
 
@@ -1059,7 +1055,7 @@ msgid "Please also add me to the NGO newsletter mailing list."
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:108
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:112
 msgid "Please check your email"
 msgstr ""
 
@@ -1225,7 +1221,7 @@ msgstr ""
 #: lib/omega_bravera_web/templates/layout/unauth_nav.html.leex:26
 #: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:11
 #: lib/omega_bravera_web/templates/user_session/login_modal.html.leex:63
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:92
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:96
 msgid "Sign in"
 msgstr ""
 
@@ -1241,7 +1237,7 @@ msgid "Sign up"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:95
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:99
 msgid "Signing up.."
 msgstr ""
 
@@ -1252,7 +1248,7 @@ msgid "Signup"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:99
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:103
 msgid "Signup Sucessful"
 msgstr ""
 
@@ -1372,7 +1368,7 @@ msgid "Team name and members"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:81
+#: lib/omega_bravera_web/templates/user_session/signup_modal.html.leex:85
 msgid "Terms"
 msgstr ""
 
@@ -1430,7 +1426,7 @@ msgid "Turn your mobile screen for better view."
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/controllers/user_controller.ex:85
+#: lib/omega_bravera_web/controllers/user_controller.ex:47
 msgid "Updated account settings successfully."
 msgstr ""
 
@@ -1514,12 +1510,12 @@ msgid "View all Challenges"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/views/offer_view.ex:99
+#: lib/omega_bravera_web/views/offer_view.ex:101
 msgid "View your Team's progress"
 msgstr ""
 
 #, elixir-format
-#: lib/omega_bravera_web/views/offer_view.ex:65
+#: lib/omega_bravera_web/views/offer_view.ex:67
 msgid "View your progress"
 msgstr ""
 
@@ -1726,4 +1722,24 @@ msgstr ""
 #, elixir-format
 #: lib/omega_bravera_web/templates/page/index.html.eex:69
 msgid "‘story’ with high emotional value. Each goal met & personal record"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:199
+msgid "Attention"
+msgstr ""
+
+#, elixir-format, fuzzy
+#: lib/omega_bravera_web/templates/layout/admin_panel_nav.html.eex:45
+msgid "Locations"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:201
+msgid "Thank you!"
+msgstr ""
+
+#, elixir-format
+#: lib/omega_bravera_web/templates/shared/one_time_modals.html.eex:200
+msgid "Your credit card donation will be charged when the challenge has been completed. Please make sure that your credit card is valid for at least 90 days."
 msgstr ""
