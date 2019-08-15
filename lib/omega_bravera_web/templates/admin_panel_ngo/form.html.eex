@@ -54,6 +54,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, "Enable Immediate Donations", class: "control-label" %>
+    <%= checkbox f, :one_off_donations %>
+    <%= error_tag f, :one_off_donations %>
+  </div>
+
+  <div class="form-group">
     <%= label f, "Description (displayed on /ngos)", class: "control-label" %>
     <%= textarea f, :desc, class: "form-control", rows: 3 %>
     <%= error_tag f, :desc %>

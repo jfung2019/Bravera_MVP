@@ -9,6 +9,8 @@ defmodule OmegaBraveraWeb.NGOChalView do
     Challenges.TeamInvitations
   }
 
+  def immediate_donation?(%NGOChal{ngo: %NGO{one_off_donations: one_off_donations}}), do: one_off_donations
+
   def user_full_name(%User{} = user), do: User.full_name(user)
   def user_full_name(%Donor{} = donor), do: Donor.full_name(donor)
 
