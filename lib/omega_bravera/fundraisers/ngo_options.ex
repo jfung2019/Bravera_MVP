@@ -101,7 +101,7 @@ defmodule OmegaBravera.Fundraisers.NgoOptions do
 
   def activity_options, do: @available_activities
 
-  def distance_options, do: Map.keys(@available_distances)
+  def distance_options, do: Map.keys(@available_distances) |> Enum.sort()
 
   def duration_options, do: @available_durations
 
