@@ -9,7 +9,7 @@
     <div class="card">
       <div class="card-header mx-auto" id="headingOne">
         <h5 class="mb-0">
-          <button id="support-accordion-btn" class="btn btn-link open-delayed-donation-modal" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          <button id="support-accordion-btn" class="btn btn-link <%= open_delayed_modal(@challenge) %>" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             <h4 class="support-text-color text-center mx-auto">
               <i class="fa fa-plus align-icon"></i>
               <%= gettext("Support Now") %>
