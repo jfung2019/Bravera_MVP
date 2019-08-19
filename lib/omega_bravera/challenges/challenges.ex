@@ -353,6 +353,14 @@ defmodule OmegaBravera.Challenges do
     |> Repo.all()
   end
 
+  def get_challenge_total_one_off_donations(challenge_id) do
+    from(
+      d in Donation,
+      where: d.ngo_chal_id == ^challenge_id,
+      select: fragment("sum(coalesce(?,0))", d.charged_amount)
+    ) |> Repo.one()
+  end
+
   def get_per_km_challenge_total_pledges(slug) do
     km_pledges =
       from(

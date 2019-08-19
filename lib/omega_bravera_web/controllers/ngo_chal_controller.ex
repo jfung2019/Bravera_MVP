@@ -332,7 +332,8 @@ defmodule OmegaBraveraWeb.NGOChalController do
       ngo_with_stats:
         Fundraisers.get_ngo_with_stats(ngo_slug,
           ngo_chals: [user: [:strava], team: [users: [:strava]]]
-        )
+        ),
+      total_one_off_donations: Challenges.get_challenge_total_one_off_donations(challenge.id),
     }
   end
 
@@ -375,6 +376,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
       activities: Challenges.latest_activities(challenge, 5),
       current_user: Guardian.Plug.current_resource(conn),
       total_pledges_per_km: Challenges.get_per_km_challenge_total_pledges(challenge.slug),
+      total_one_off_donations: Challenges.get_challenge_total_one_off_donations(challenge.id),
       ngo_with_stats:
         Fundraisers.get_ngo_with_stats(ngo_slug,
           ngo_chals: [user: [:strava], team: [users: [:strava]]]
