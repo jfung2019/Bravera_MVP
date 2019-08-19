@@ -7,6 +7,10 @@ defmodule OmegaBravera.Points do
   alias OmegaBravera.{Repo}
   alias OmegaBravera.Points.Point
 
+  def change_point(%Point{} = point) do
+    Point.changeset(point)
+  end
+
   def create_points_from_activity(activity, user_with_points) do
     %Point{}
     |> Point.activity_points_changeset(activity, user_with_points)
@@ -17,9 +21,13 @@ defmodule OmegaBravera.Points do
 
   # end
 
-  # def create_bonus_points() do
+  def create_bonus_points(attrs \\ %{}) do
+    attrs = Map.put(attrs, "source", "admin")
 
-  # end
+    %Point{}
+    |> Point.changeset(attrs)
+    |> Repo.insert()
+  end
 
   def get_user_points(user_id) do
     points =

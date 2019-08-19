@@ -46,6 +46,7 @@ defmodule OmegaBravera.Points.Point do
   end
 
   def changeset(point, attrs \\ %{}) do
+    IO.inspect attrs
     point
     |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)

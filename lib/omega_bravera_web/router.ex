@@ -151,6 +151,7 @@ defmodule OmegaBraveraWeb.Router do
       get("/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list)
 
       resources("/offers", AdminPanelOfferController, only: [:index, :new, :create])
+      resources("/points", AdminPanelPointsController, only: [:new, :create])
 
       get("/offers/:slug", AdminPanelOfferController, :show)
       get("/offers/:slug/edit", AdminPanelOfferController, :edit)
