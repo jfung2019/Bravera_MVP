@@ -50,9 +50,9 @@
 
             <div class="form-group row">
               <span class="mr-auto p-2">
-                <%= "Your Total Pledged Support: " %>
+                <%= gettext("Your Total Pledged Support: ") %>
               </span>
-              <span class="p-2 text-500"><%="#{currency_to_symbol(@challenge.default_currency)}"%><span id="total-pledged">0</span>
+              <span class="p-2 text-500 text-danger"><%="#{currency_to_symbol(@challenge.default_currency)}"%><span id="total-pledged">0</span>
               </span>
             </div>
 

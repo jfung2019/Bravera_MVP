@@ -46,7 +46,7 @@
               <span class="mr-auto">
                 <%= "Total Donation Amount: " %>
               </span>
-              <span class="text-500"><%="#{currency_to_symbol(@challenge.default_currency)}"%><span id="total-donation">0</span>
+              <span class="text-500 text-danger"><%="#{currency_to_symbol(@challenge.default_currency)}"%><span id="total-donation">0</span>
               </span>
             </div>
 
