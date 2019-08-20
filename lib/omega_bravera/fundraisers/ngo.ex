@@ -29,6 +29,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
     field(:hidden, :boolean, default: false)
     field(:hide_donor_pays_fees, :boolean, default: true)
     field(:one_off_donations, :boolean, default: false)
+    field(:minimum_immediate_donation, :integer)
 
     field(:active_challenges, :integer, default: 0, virtual: true)
     field(:utc_launch_date, :utc_datetime, virtual: true)
@@ -72,7 +73,8 @@ defmodule OmegaBravera.Fundraisers.NGO do
     :open_registration,
     :hidden,
     :hide_donor_pays_fees,
-    :one_off_donations
+    :one_off_donations,
+    :minimum_immediate_donation
   ]
   @required_attributes [
     :name,
