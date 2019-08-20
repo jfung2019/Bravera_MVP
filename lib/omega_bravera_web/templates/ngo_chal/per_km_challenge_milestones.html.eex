@@ -44,7 +44,7 @@
         </h5>
       <% else %>
         <h5 class="text-420 mt-2 mb-1 ml-1 text-left">
-          <%= gettext("Secured value:") %>
+          <%= gettext("Secured value per KM:") %>
           <strong class="text-500 float-right">
             <%= currency_to_symbol(@challenge.default_currency)%>
             <%= render_immediate_donation_secured_value_per_km(@total_one_off_donations, @challenge.distance_target) %>
@@ -64,7 +64,11 @@
     </div>
     <h5 class="text-420 mt-0 mb-3 text-center">
       <strong><%= currency_to_symbol(@challenge.default_currency) %><%= render_current_pledges(@total_pledges_per_km, @challenge.distance_target) %></strong>
-      <%= gettext("Pledged of Goal") %>
+      <%= if !immediate_donation?(@challenge) do %>
+        <%= gettext("Pledged of Goal") %>
+      <% else %>
+        <%= gettext("Secured of Goal") %>
+      <% end %>
       <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %></strong>
       <strong class="text-green">(<%= render_percentage_exceed(total_pledges(@total_pledges_per_km, @challenge.distance_target), @challenge.money_target) %>%)</strong>
     </h5>
