@@ -3,17 +3,19 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
 
   alias OmegaBravera.Accounts
 
-  def mount(%{csrf: csrf}, socket) do
+  def mount(%{csrf: csrf, redirect_uri: redirect_uri}, socket) do
     {:ok,
      assign(socket, %{
        csrf: csrf,
        changeset: Accounts.Login.changeset(%Accounts.Login{}),
        open_modal: false,
        error: nil,
-       login_button_disabled?: false
+       login_button_disabled?: false,
+       redirect_uri: redirect_uri,
      })}
   end
 
+  def mount(%{redirect_uri: redirect_uri}, socket), do: {:stop, redirect(socket, to: redirect_uri)}
   def mount(_session, socket), do: {:stop, redirect(socket, to: "/")}
 
   def render(assigns), do: OmegaBraveraWeb.UserSessionView.render("login_modal.html", assigns)
