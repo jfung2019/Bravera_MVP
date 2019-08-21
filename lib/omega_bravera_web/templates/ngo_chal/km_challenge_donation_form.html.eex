@@ -9,7 +9,7 @@
     <div class="card">
       <div class="card-header mx-auto" id="headingOne">
         <h5 class="mb-0">
-          <button id="support-accordion-btn" class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          <button id="support-accordion-btn" class="btn btn-link <%= open_delayed_modal(@challenge) %>" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             <h4 class="support-text-color text-center mx-auto">
               <i class="fa fa-plus align-icon"></i>
               <%= gettext("Support Now") %>
@@ -50,9 +50,9 @@
 
             <div class="form-group row">
               <span class="mr-auto p-2">
-                <%= "Your Total Pledged Support: " %>
+                <%= gettext("Your Total Pledged Support: ") %>
               </span>
-              <span class="p-2 text-500"><%="#{currency_to_symbol(@challenge.default_currency)}"%><span id="total-pledged">0</span>
+              <span class="p-2 text-500 text-danger"><%="#{currency_to_symbol(@challenge.default_currency)}"%><span id="total-pledged">0</span>
               </span>
             </div>
 
@@ -84,7 +84,7 @@
         <!-- Billing form -->
         <div class="card-body border-top">
           <div class="text-center">
-            <h5><%= gettext("Billing Information</h5>") %>
+            <h5><%= gettext("Billing Information") %> </h5>
           </div>
           <div class="max-w-500 mx-auto">
           <div class="row">

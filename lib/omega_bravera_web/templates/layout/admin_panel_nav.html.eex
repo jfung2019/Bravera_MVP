@@ -21,27 +21,34 @@
           <%= link(gettext("Users"), to: admin_panel_user_path(@conn, :index)) %>
         </li>
         <li class="nav-item">
-          <%= link(gettext("NGO Activities"), to: admin_panel_activity_path(@conn, :new)) %>
+          <%= link(gettext("Locations"), to: admin_panel_locations_path(@conn, :index)) %>
         </li>
-        <li class="nav-item">
-          <%= link(gettext("Offer Activities"), to: admin_panel_offer_challenge_activity_path(@conn, :new)) %>
+       <li class="nav-item">
+          <%= link(gettext("Points"), to: admin_panel_points_path(@conn, :new)) %>
         </li>
-        <li class="nav-item">
-          <%= link(gettext("Offer Rewards"), to: admin_panel_offer_reward_path(@conn, :index)) %>
-        </li>
-        <li class="nav-item">
-          <%= link(gettext("Offers"), to: admin_panel_offer_path(@conn, :index)) %>
-        </li>
-        <li class="nav-item">
-          <%= link(gettext("Offer Vendors"), to: admin_panel_offer_vendor_path(@conn, :index)) %>
-        </li>
-        <li class="nav-item">
-          <%= link(gettext("NGOs"), to: admin_panel_ngo_path(@conn, :index)) %>
-        </li>
-        <li class="nav-item">
-          <%= link(gettext("Challenges"), to: admin_panel_challenges_path(@conn, :index)) %>
-        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            NGO
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <%= link(gettext("List"), to: admin_panel_ngo_path(@conn, :index), class: "dropdown-item") %>
+            <%= link(gettext("Activities"), to: admin_panel_activity_path(@conn, :new), class: "dropdown-item") %>
+            <%= link(gettext("Challenges"), to: admin_panel_challenges_path(@conn, :index), class: "dropdown-item") %>
 
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Offer
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <%= link(gettext("List"), to: admin_panel_offer_path(@conn, :index), class: "dropdown-item") %>
+            <%= link(gettext("Activities"), to: admin_panel_offer_challenge_activity_path(@conn, :new), class: "dropdown-item") %>
+            <%= link(gettext("Rewards"), to: admin_panel_offer_reward_path(@conn, :index), class: "dropdown-item") %>
+            <%= link(gettext("Vendors"), to: admin_panel_offer_vendor_path(@conn, :index), class: "dropdown-item") %>
+
+          </div>
+        </li>
       </ul>
       <div class="ml-md-4 pt-1">
       <%= form_for @conn, admin_user_session_path(@conn, :logout), [method: :get, class: "navbar-form"], fn _f -> %>

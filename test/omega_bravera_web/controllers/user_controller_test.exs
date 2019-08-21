@@ -6,6 +6,7 @@ defmodule OmegaBraveraWeb.UserControllerTest do
   @update_attrs %{
     firstname: "sherief",
     lastname: "Alaa",
+    location_id: 1,
     setting: %{
       location: "US",
       weight_whole: "45",
@@ -29,7 +30,8 @@ defmodule OmegaBraveraWeb.UserControllerTest do
       firstname: "sherief",
       lastname: "alaa ",
       email: "user@example.com",
-      password: "test1234"
+      password: "test1234",
+      location_id: 1
     }
 
     with {:ok, user} <- Accounts.create_user(attrs),
@@ -37,13 +39,6 @@ defmodule OmegaBraveraWeb.UserControllerTest do
          do:
            {:ok,
             conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), user: user}
-  end
-
-  describe "new user" do
-    test "renders form", %{conn: conn} do
-      conn = get(conn, user_path(conn, :new))
-      assert html_response(conn, 200) =~ "New User"
-    end
   end
 
   describe "edit user" do
@@ -64,6 +59,7 @@ defmodule OmegaBraveraWeb.UserControllerTest do
       assert %{
                firstname: "sherief",
                lastname: "Alaa",
+               location_id: 1,
                setting: %{
                  location: "US",
                  weight: ^weight,

@@ -19,6 +19,12 @@
         <%= render "challenge_header.html", assigns %>
         <%= render "challenge_details.html", assigns %>
 
+        <%= if immediate_donation?(@challenge) do %>
+          <div id="donation-form" class="donation-form mt-4">
+            <%= render "follow_on_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create_and_charge_follow_on_donation, @challenge.ngo.slug, @challenge.slug)) %>
+          </div>
+        <% else %>
+
           <%= if active_challenge?(@challenge) or pre_registration_challenge?(@challenge) do %>
             <div id="donation-form" class="donation-form mt-4">
               <%= if @challenge.type == "PER_MILESTONE" do %>
@@ -29,10 +35,12 @@
                 <%= render "km_challenge_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
               <% end %>
             </div>
-        <% else %>
-            <div id="donation-form" class="donation-form mt-4">
-              <%= render "follow_on_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create_and_charge_follow_on_donation, @challenge.ngo.slug, @challenge.slug)) %>
-            </div>
+          <% else %>
+              <div id="donation-form" class="donation-form mt-4">
+                <%= render "follow_on_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create_and_charge_follow_on_donation, @challenge.ngo.slug, @challenge.slug)) %>
+              </div>
+          <% end %>
+
         <% end %>
       </div>
       <div class="col-lg-4 max-w-775 margin-auto">
@@ -58,9 +66,9 @@
             <% else %>
 
               <%= if @challenge.has_team == true do %>
-                  <%= gettext("No activites yet.") %>
+                  <%= gettext("No activities yet.") %>
               <% else %>
-                <%= gettext("%{firstname} hasn't logged any activites yet.", firstname: @challenge.user.firstname) %>
+                <%= gettext("%{firstname} hasn't logged any activities yet.", firstname: @challenge.user.firstname) %>
               <% end %>
 
             <% end %>
@@ -100,7 +108,11 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   <%= if !is_nil(@challenge.ngo.ga_id) do %>
-    ga('create', '<%=@challenge.ngo.ga_id%>', 'auto', '<%=@challenge.ngo.slug%>');
+    try {
+      ga('create', '<%=@challenge.ngo.ga_id%>', 'auto', '<%=@challenge.ngo.slug%>');
+    } catch(error) {
+      console.log(`Could not execute ga('create'), reason: ${error}`);
+    }
   <% end %>
 
   $('#amount').change(function(){

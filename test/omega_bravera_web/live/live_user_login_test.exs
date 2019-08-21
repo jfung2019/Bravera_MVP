@@ -10,6 +10,7 @@ defmodule OmegaBraveraWeb.LiveUserLoginTest do
       firstname: "sherief",
       lastname: "alaa",
       email: "sheriefalaa.w@gmail.com",
+      location_id: 1,
       email_verified: true,
       accept_terms: true,
       credential: %{"password" => "testing", "password_confirmation" => "testing"}
@@ -20,7 +21,7 @@ defmodule OmegaBraveraWeb.LiveUserLoginTest do
 
   describe "login" do
     test "LiveUserLogin can handle event validate can validate user input" do
-      {:ok, view, _html} = mount(@endpoint, @view, session: %{csrf: "123"})
+      {:ok, view, _html} = mount(@endpoint, @view, session: %{csrf: "123", redirect_uri: "/"})
 
       params = %{"email" => "sherief", "password" => "foo"}
       html = render_change(view, "validate", %{"session" => params})
@@ -36,7 +37,7 @@ defmodule OmegaBraveraWeb.LiveUserLoginTest do
     end
 
     test "LiveUserLogin can handle event validate can validate if user exists" do
-      {:ok, view, _html} = mount(@endpoint, @view, session: %{csrf: "123"})
+      {:ok, view, _html} = mount(@endpoint, @view, session: %{csrf: "123", redirect_uri: "/"})
 
       params = %{"email" => "fakesherief@example.com", "password" => "testing"}
       html = render_change(view, "validate", %{"session" => params})

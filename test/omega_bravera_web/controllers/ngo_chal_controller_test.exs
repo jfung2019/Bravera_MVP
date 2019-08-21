@@ -38,7 +38,8 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       firstname: "sherief",
       lastname: "alaa ",
       email: "user@example.com",
-      email_verified: true
+      email_verified: true,
+      location_id: 1
     }
 
     with {:ok, user} <- Accounts.create_user(attrs),
@@ -236,13 +237,19 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
       {:ok, updated_user} =
         Accounts.update_user(current_user, %{email: "sherief@plangora.com", email_verified: true})
 
-      challenge =
-        insert(:ngo_challenge, %{has_team: true, user: nil, user_id: updated_user.id})
+      challenge = insert(:ngo_challenge, %{has_team: true, user: nil, user_id: updated_user.id})
 
       team = insert(:team, %{challenge: challenge})
       team_member_user = insert(:user)
       insert(:team_member, %{team_id: team.id, user_id: team_member_user.id})
-      insert(:team_invitation, %{team: nil, team_id: team.id, email: team_member_user.email, status: "accepted"})
+
+      insert(:team_invitation, %{
+        team: nil,
+        team_id: team.id,
+        email: team_member_user.email,
+        status: "accepted"
+      })
+
       updated_team = Repo.get_by(Challenges.Team, id: team.id) |> Repo.preload(:users)
 
       assert length(updated_team.users) == 1
@@ -276,7 +283,14 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
 
       team = insert(:team, %{challenge: challenge})
       team_member_user = insert(:user)
-      insert(:team_invitation, %{team: nil, team_id: team.id, email: team_member_user.email, status: "accepted"})
+
+      insert(:team_invitation, %{
+        team: nil,
+        team_id: team.id,
+        email: team_member_user.email,
+        status: "accepted"
+      })
+
       insert(:team_member, %{team_id: team.id, user_id: team_member_user.id})
       updated_team = Repo.get_by(Challenges.Team, id: team.id) |> Repo.preload(:users)
 
@@ -305,7 +319,12 @@ defmodule OmegaBraveraWeb.NGOChalControllerTest do
         Accounts.update_user(current_user, %{email: "sherief@plangora.com", email_verified: true})
 
       challenge =
-        insert(:ngo_challenge, %{has_team: true, user: nil, user_id: updated_user.id, status: "complete"})
+        insert(:ngo_challenge, %{
+          has_team: true,
+          user: nil,
+          user_id: updated_user.id,
+          status: "complete"
+        })
 
       team = insert(:team, %{challenge: challenge})
       team_member_user = insert(:user)

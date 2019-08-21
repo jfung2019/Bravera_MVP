@@ -212,8 +212,8 @@ defmodule OmegaBravera.Fundraisers do
   def list_ngos_preload() do
     from(
       n in NGO,
-      join: user in assoc(n, :user),
-      join: strava in assoc(user, :strava),
+      left_join: user in assoc(n, :user),
+      left_join: strava in assoc(user, :strava),
       preload: [user: {user, strava: strava}],
       order_by: n.inserted_at
     )

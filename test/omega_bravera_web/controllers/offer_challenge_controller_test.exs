@@ -24,7 +24,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       firstname: "sherief",
       lastname: "alaa ",
       email: "sherief@plangora.com",
-      email_verified: false
+      email_verified: false,
+      location_id: 1
     }
 
     with {:ok, user} <- OmegaBravera.Accounts.create_user(attrs),
@@ -436,7 +437,14 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
       team = insert(:offer_challenge_team, %{offer_challenge: offer_challenge})
       team_member_user = insert(:user)
-      insert(:offer_team_invitation, %{team: nil, team_id: team.id, email: team_member_user.email, status: "accepted"})
+
+      insert(:offer_team_invitation, %{
+        team: nil,
+        team_id: team.id,
+        email: team_member_user.email,
+        status: "accepted"
+      })
+
       insert(:offer_challenge_team_member, %{team_id: team.id, user_id: team_member_user.id})
       updated_team = Repo.get_by(Offers.OfferChallengeTeam, id: team.id) |> Repo.preload(:users)
 
@@ -467,7 +475,11 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       not_challenge_owner_user = insert(:user)
 
       offer_challenge =
-        insert(:offer_challenge, %{has_team: true, user: nil, user_id: not_challenge_owner_user.id})
+        insert(:offer_challenge, %{
+          has_team: true,
+          user: nil,
+          user_id: not_challenge_owner_user.id
+        })
 
       team = insert(:offer_challenge_team, %{offer_challenge: offer_challenge})
       team_member_user = insert(:user)
@@ -499,7 +511,12 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         Accounts.update_user(current_user, %{email: "sherief@plangora.com", email_verified: true})
 
       offer_challenge =
-        insert(:offer_challenge, %{has_team: true, user: nil, user_id: updated_user.id, status: "complete"})
+        insert(:offer_challenge, %{
+          has_team: true,
+          user: nil,
+          user_id: updated_user.id,
+          status: "complete"
+        })
 
       team = insert(:offer_challenge_team, %{offer_challenge: offer_challenge})
       team_member_user = insert(:user)

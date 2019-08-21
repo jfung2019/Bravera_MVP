@@ -2,7 +2,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateDonors do
   use Ecto.Migration
   import Ecto.Query
 
-  alias OmegaBravera.{Repo, Accounts.User, Accounts.Donor, Money.Donation}
+  alias OmegaBravera.{Repo, Accounts.Donor, Money.Donation}
 
   def change do
     create table(:donors) do
@@ -26,7 +26,17 @@ defmodule OmegaBravera.Repo.Migrations.CreateDonors do
 
     # Get all users who made a donation.
     users_who_donated =
-      from(u in User, where: u.id in ^unique_user_donors, preload: [:donations])
+      from(u in "users",
+        where: u.id in ^unique_user_donors,
+        select: [
+          :firstname,
+          :lastname,
+          :email,
+          :inserted_at,
+          :updated_at
+        ],
+        preload: [:donations]
+      )
       |> Repo.all()
 
     donor_entries =

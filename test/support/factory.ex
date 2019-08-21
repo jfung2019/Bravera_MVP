@@ -8,7 +8,8 @@ defmodule OmegaBravera.Factory do
       firstname: "John",
       lastname: "Doe",
       email: sequence(:email, &"john.doe.#{&1}@example.com"),
-      email_verified: true
+      email_verified: true,
+      location_id: 1
     }
   end
 
@@ -272,6 +273,15 @@ defmodule OmegaBravera.Factory do
       offer_challenge: nil,
       offer_reward: nil,
       token: Enum.random(10_000_000..20_000_000) |> Integer.to_string()
+    }
+  end
+
+  def point_factory do
+    %OmegaBravera.Points.Point{
+      source: "activity",
+      user_id: nil,
+      activity_id: nil,
+      value: Decimal.new(50)
     }
   end
 end

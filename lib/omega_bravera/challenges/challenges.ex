@@ -353,6 +353,14 @@ defmodule OmegaBravera.Challenges do
     |> Repo.all()
   end
 
+  def get_challenge_total_one_off_donations(challenge_id) do
+    from(
+      d in Donation,
+      where: d.ngo_chal_id == ^challenge_id,
+      select: fragment("sum(coalesce(?,0))", d.charged_amount)
+    ) |> Repo.one()
+  end
+
   def get_per_km_challenge_total_pledges(slug) do
     km_pledges =
       from(
@@ -527,7 +535,9 @@ defmodule OmegaBravera.Challenges do
   def get_team_member_accepted_invitation(%{team_id: team_id, status: status, email: email}) do
     from(
       invitation in TeamInvitations,
-      where: invitation.email == ^email and invitation.team_id == ^team_id and invitation.status == ^status
+      where:
+        invitation.email == ^email and invitation.team_id == ^team_id and
+          invitation.status == ^status
     )
     |> Repo.one()
   end
@@ -564,7 +574,6 @@ defmodule OmegaBravera.Challenges do
     |> Repo.update()
   end
 
-
   def kick_team_member(
         team_member,
         %NGOChal{
@@ -572,18 +581,24 @@ defmodule OmegaBravera.Challenges do
           team: %{users: team_members} = team,
           user_id: challenge_owner_user_id
         },
-        %User{id: logged_in_challenge_owner_id})
-  do
+        %User{id: logged_in_challenge_owner_id}
+      ) do
     result =
       team_member
       |> validate_challenge_owner(challenge_owner_user_id, logged_in_challenge_owner_id)
-      |> validate_team_member(team_members) # is team member in challenge.team?
-      |> validate_challenge_status(status) # is challenge status active?
+      # is team member in challenge.team?
+      |> validate_team_member(team_members)
+      # is challenge status active?
+      |> validate_challenge_status(status)
 
     case result do
       {:ok, struct} ->
-        get_team_member_accepted_invitation(%{team_id: team.id, status: "accepted", email: team_member.user.email})
-        |> Repo.delete
+        get_team_member_accepted_invitation(%{
+          team_id: team.id,
+          status: "accepted",
+          email: team_member.user.email
+        })
+        |> Repo.delete()
 
         Repo.delete(struct)
 
@@ -592,7 +607,11 @@ defmodule OmegaBravera.Challenges do
     end
   end
 
-  defp validate_challenge_owner(team_member, challenge_owner_user_id, logged_in_challenge_owner_id) do
+  defp validate_challenge_owner(
+         team_member,
+         challenge_owner_user_id,
+         logged_in_challenge_owner_id
+       ) do
     if challenge_owner_user_id != logged_in_challenge_owner_id do
       {:error, "Challenge owner is not correct!"}
     else
@@ -628,7 +647,8 @@ defmodule OmegaBravera.Challenges do
       otm in TeamMembers,
       where: otm.user_id == ^user_id and otm.team_id == ^team_id,
       preload: [:user]
-    ) |> Repo.one()
+    )
+    |> Repo.one()
   end
 
   def create_ngo_challenge_activity_m2m(
