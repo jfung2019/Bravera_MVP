@@ -1,5 +1,5 @@
 <!-- Login Modal -->
-<%= form_for @changeset, user_session_path(OmegaBraveraWeb.Endpoint, :create), [phx_change: :validate, as: :session, _csrf_token: @csrf, redirect_uri: @redirect_uri], fn f -> %>
+<%= form_for @changeset, user_session_path(OmegaBraveraWeb.Endpoint, :create), [phx_change: :validate, as: :session, _csrf_token: @csrf, redirect_uri: @redirect_uri, add_team_member_redirect_uri: @add_team_member_redirect_uri], fn f -> %>
 <%= if @open_modal do %>
   <div class="live-modal modal fade show" data-backdrop="false" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" style="display: block;">
 <% else %>
@@ -55,6 +55,10 @@
             <input type="hidden" name="_csrf_token" value="<%= @csrf %>" />
             <%= if @redirect_uri do %>
               <input type="hidden" name="redirect_uri" value="<%= @redirect_uri %>" />
+            <% end %>
+
+            <%= if @add_team_member_redirect_uri do %>
+              <input type="hidden" name="add_team_member_redirect_uri" value="<%= @add_team_member_redirect_uri %>" />
             <% end %>
           </div>
 

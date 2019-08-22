@@ -144,6 +144,16 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   defp get_redirect_url(conn) do
+    case  get_add_team_member_redirect_uri(conn) do
+      nil ->
+        get_redirect_url_fallback(conn)
+
+      add_team_member_url ->
+        add_team_member_url
+    end
+  end
+
+  defp get_redirect_url_fallback(conn) do
     # Return the user back the very last page he was on (used only for logins in the :ngo/:ngo_chal/new page)
     case get_session(conn, "after_login_redirect") do
       nil ->

@@ -35,6 +35,13 @@
     </div>
 </nav>
 
-<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserLogin, session: %{csrf: Plug.CSRFProtection.get_csrf_token, redirect_uri: @conn.request_path}) %>
-<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserSignup, session: %{redirect_uri: @conn.request_path}) %>
+<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserLogin, session: %{
+  csrf: Plug.CSRFProtection.get_csrf_token,
+  redirect_uri: @conn.request_path,
+  add_team_member_redirect_uri: get_add_team_member_redirect_uri(@conn)
+}) %>
+<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserSignup, session: %{
+  redirect_uri: @conn.request_path, 
+  add_team_member_redirect_uri: get_add_team_member_redirect_uri(@conn)
+}) %>
 <%= render OmegaBraveraWeb.SharedView, "one_time_modals.html", conn: @conn %>

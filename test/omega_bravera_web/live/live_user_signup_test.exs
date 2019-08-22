@@ -21,7 +21,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
 
   describe "live signup" do
     test "LiveUserSignup can handle event validate can validate user input" do
-      {:ok, view, _html} = mount(@endpoint, @view, session: %{redirect_uri: "/"})
+      {:ok, view, _html} = mount(@endpoint, @view, session: %{redirect_uri: "/", add_team_member_redirect_uri: nil})
 
       params = %{
         "firstname" => "allen",
@@ -41,7 +41,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
     end
 
     test "LiveUserSignup can handle event signup can create credential user" do
-      {:ok, view, _html} = mount(@endpoint, @view, session: %{redirect_uri: "/"})
+      {:ok, view, _html} = mount(@endpoint, @view, session: %{redirect_uri: "/", add_team_member_redirect_uri: nil})
 
       params = %{
         "firstname" => "allen",
@@ -65,7 +65,7 @@ defmodule OmegaBraveraWeb.LiveUserSignupTest do
     end
 
     test "LiveUserSignup can handle event signup refuses user if exists" do
-      {:ok, view, _html} = mount(@endpoint, @view, session: %{redirect_uri: "/"})
+      {:ok, view, _html} = mount(@endpoint, @view, session: %{redirect_uri: "/", add_team_member_redirect_uri: nil})
 
       params = %{
         firstname: "sherief",

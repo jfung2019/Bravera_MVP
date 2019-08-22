@@ -11,6 +11,16 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     if user !== nil, do: true, else: false
   end
 
+  def get_add_team_member_redirect_uri(conn) do
+    case Plug.Conn.get_session(conn, "add_team_member_url") do
+      nil ->
+        nil
+      uri ->
+        Plug.Conn.delete_session(conn, "add_team_member_url")
+        uri
+    end
+  end
+
   def has_tracker?(conn) do
     case Guardian.Plug.current_resource(conn) do
       %User{strava: strava} when strava != nil ->

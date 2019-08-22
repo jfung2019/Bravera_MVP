@@ -249,6 +249,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
               "Please login using Strava first then click the invitation link again from your email."
             )
             |> put_session("open_login_or_sign_up_to_join_team_modal", true)
+            |> put_session("add_team_member_url", conn.request_path)
             |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
 
           user ->
