@@ -205,7 +205,7 @@ defmodule OmegaBraveraWeb.NGOChalView do
   end
 
   def render_immediate_donation_secured_value_per_km(%Decimal{} = total_one_off_donations, distance_target),
-   do: Decimal.div(total_one_off_donations, Decimal.new(distance_target))
+   do: Decimal.div(total_one_off_donations, Decimal.new(distance_target)) |> Decimal.round(1)
 
    def render_immediate_donation_secured_value_per_km(_, _), do: 0
 
