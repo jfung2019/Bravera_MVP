@@ -378,16 +378,13 @@ defmodule OmegaBravera.Challenges.Notifier do
   end
 
   defp team_member_invite_link(challenge, token) do
-    Routes.page_url(Endpoint, :login, %{
-      team_invitation:
-        Routes.ngo_ngo_chal_ngo_chal_path(
-          Endpoint,
-          :add_team_member,
-          challenge.ngo.slug,
-          challenge.slug,
-          token
-        )
-    })
+    Routes.ngo_ngo_chal_ngo_chal_url(
+      Endpoint,
+      :add_team_member,
+      challenge.ngo.slug,
+      challenge.slug,
+      token
+    )
   end
 
   defp remaining_time(%NGOChal{end_date: end_date}) do
