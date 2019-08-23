@@ -78,5 +78,8 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
     end
   end
 
+  # TODO: see why we are getting %{} for params in prod with some users
+  def handle_event("validate", _, socket), do: {:noreply, socket}
+
   def handle_event("close_modal", _, socket), do: {:noreply, assign(socket, open_modal: false)}
 end
