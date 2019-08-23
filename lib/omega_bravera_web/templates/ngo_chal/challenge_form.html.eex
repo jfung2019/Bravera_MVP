@@ -54,7 +54,7 @@
             <%= if pre_registration_ngo?(@ngo) do %>
               <p class="sign-up">Challenge starts in:</p>
               <h3 id="countdown" class="font-weight-bold mb-3 text-danger">
-                <%= render_countdown_date(@ngo.pre_registration_start_date) %>
+                <%= render_countdown_date(@ngo.launch_date) %>
               </h3>
             <% end %>
 
