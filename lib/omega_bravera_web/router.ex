@@ -29,6 +29,26 @@ defmodule OmegaBraveraWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  pipeline :absinthe_api do
+    plug(Plug.Logger)
+    plug(:accepts, ["json"])
+    plug OmegaBraveraWeb.Api.Context
+  end
+
+  scope "/" do
+    pipe_through :absinthe_api
+
+    forward "/api", Absinthe.Plug,
+      schema: OmegaBraveraWeb.Api.Schema
+
+    if Mix.env == :dev do
+      forward "/graphiql", Absinthe.Plug.GraphiQL,
+        schema: OmegaBraveraWeb.Api.Schema,
+        socket: OmegaBraveraWeb.UserSocket,
+        context: %{pubsub: OmegaBraveraWeb.Endpoint}
+    end
+  end
+
   scope "/" do
     get("/health-check", OmegaBraveraWeb.PageController, :health_check)
   end

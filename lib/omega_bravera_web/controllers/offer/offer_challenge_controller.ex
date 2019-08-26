@@ -15,6 +15,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Repo,
     Accounts.User
   }
+  alias OmegaBraveraWeb.Offer.OfferChallengeHelper
 
   plug :put_layout, false when action in [:qr_code]
 
@@ -208,7 +209,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       offer ->
         case Offers.create_offer_challenge(offer, current_user, offer_challenge_attrs) do
           {:ok, offer_challenge} ->
-            send_emails(Repo.preload(offer_challenge, :user))
+            OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
 
             conn
             |> put_flash(:info, gettext("Success! You have registered for this offer!"))
@@ -492,26 +493,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           offer_challenges: [user: [:strava], team: [users: [:strava]]]
         )
     }
-  end
-
-  defp send_emails(%OfferChallenge{status: status, has_team: false} = challenge) do
-    case status do
-      "pre_registration" ->
-        Offers.Notifier.send_pre_registration_challenge_sign_up_email(challenge)
-
-      _ ->
-        Offers.Notifier.send_challenge_signup_email(challenge, challenge.user)
-    end
-  end
-
-  defp send_emails(%OfferChallenge{status: status, has_team: true} = challenge) do
-    case status do
-      "pre_registration" ->
-        Offers.Notifier.send_pre_registration_challenge_sign_up_email(challenge)
-
-      _ ->
-        Offers.Notifier.send_team_challenge_signup_email(challenge, challenge.user)
-    end
   end
 
   defp assign_available_options(conn, _opts) do

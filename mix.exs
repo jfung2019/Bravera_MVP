@@ -48,7 +48,6 @@ defmodule OmegaBravera.Mixfile do
       {:comeonin, "~> 4.0"},
       {:guardian, "~> 1.0"},
       {:timex, "~> 3.1"},
-      {:bamboo, "~> 0.8"},
       {:strava, "~> 1.0"},
       {:stripy, "~> 1.0"},
       {:decimal, "~> 1.0", override: true},
@@ -71,6 +70,9 @@ defmodule OmegaBravera.Mixfile do
       {:uuid, "~> 1.1"},
       {:mogrify, "~> 0.7.0"},
       {:eqrcode, "~> 0.1.6"},
+      {:absinthe, "~> 1.4.0"},
+      {:absinthe_plug, "~> 1.4.0"},
+      {:absinthe_phoenix, "~> 1.4.0"},
       {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"}
     ]
   end
