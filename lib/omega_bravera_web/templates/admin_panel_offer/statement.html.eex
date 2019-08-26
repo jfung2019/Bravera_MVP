@@ -58,7 +58,7 @@
           <td data-title="Challenge Completed Date"><%= render_datetime(redeem.offer_challenge.updated_at) %></td>
           <td data-title="Redeemed Date"><%= redeem.offer_challenge.has_team %></td>
           <td data-title="Redeemed Date"><%= render_datetime(redeem.updated_at) %></td>
-          <td data-title="Name"><%= redeem.offer_reward.name %></td>
+          <td data-title="Name"><%= if redeem.offer_reward, do: redeem.offer_reward.name %></td>
         </tr>
       <% end %>
     </tbody>
