@@ -41,5 +41,10 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :all_offers, list_of(non_null(:offer)) do
       resolve &Resolvers.Offers.all_offers/3
     end
+
+    @desc "Get a list of all locations"
+    field :all_locations, list_of(non_null(:location)) do
+      resolve &Resolvers.Accounts.all_locations/3
+    end
   end
 end

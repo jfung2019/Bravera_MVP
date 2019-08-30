@@ -39,4 +39,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :user_session, :user_session
     field :errors, list_of(:input_error)
   end
+
+  object :location do
+    field :id, non_null(:integer)
+    field :name_en, :string
+    field :name_zh, :string
+  end
 end

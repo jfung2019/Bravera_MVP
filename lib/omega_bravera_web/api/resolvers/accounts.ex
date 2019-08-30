@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   import OmegaBraveraWeb.Gettext
 
   alias OmegaBravera.Guardian
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.{Accounts, Locations}
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
 
   def login(_root, %{email: email, password: password}, _info) do
@@ -33,4 +33,6 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:ok, %{errors: Helpers.transform_errors(changeset)}}
     end
   end
+
+  def all_locations(_root, _args, _info), do: {:ok, Locations.list_locations()}
 end
