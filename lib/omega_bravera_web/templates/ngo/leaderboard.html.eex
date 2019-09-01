@@ -45,12 +45,14 @@
                         <td><%= index + 1 %></td>
                         <td>
                           <div class="avatars mx-auto">
-                            <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
-                              <%= img_tag(profile_picture_or_default(
-                                challenge.user,
-                                static_path(@conn, "/images/profile_default.jpeg")),
-                                class: "thumbnail img-fluid rounded-circle border"
-                              ) %>
+                            <%= if challenge.user.strava != nil do %>
+	                            <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
+	                              <%= img_tag(profile_picture_or_default(
+	                                challenge.user,
+	                                static_path(@conn, "/images/profile_default.jpeg")),
+	                                class: "thumbnail img-fluid rounded-circle border"
+	                              ) %>
+	                            <% end %>
                             <% end %>
                           </div>
                         </td>
@@ -101,12 +103,14 @@
                       <td><%= index + 1 %></td>
                       <td>
                         <div class="avatars mx-auto">
-                          <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
-                            <%= img_tag(profile_picture_or_default(
-                              challenge.user,
-                              static_path(@conn, "/images/profile_default.jpeg")),
-                              class: "thumbnail img-fluid rounded-circle border"
-                            ) %>
+                          <%= if challenge.user.strava != nil do %>
+	                          <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
+	                            <%= img_tag(profile_picture_or_default(
+	                              challenge.user,
+	                              static_path(@conn, "/images/profile_default.jpeg")),
+	                              class: "thumbnail img-fluid rounded-circle border"
+	                            ) %>
+	                          <% end %>
                           <% end %>
                         </div>
                       </td>
