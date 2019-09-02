@@ -36,7 +36,6 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
         lastname
         email
       }
-      errors { key message }
     }
   }
   """
