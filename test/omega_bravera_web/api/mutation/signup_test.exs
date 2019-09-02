@@ -15,7 +15,6 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     }
   }
 
-
   @invalid_user_input %{
     "firstname" => "Sherief",
     "lastname" => "Who",
@@ -43,15 +42,22 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
   """
 
   test "create_user/3 creates a user when valid input provided" do
-    response = post(build_conn(), "/api", %{query: @query, variables: %{"user" => @valid_user_input}})
+    response =
+      post(build_conn(), "/api", %{query: @query, variables: %{"user" => @valid_user_input}})
+
     email = @valid_user_input["email"]
-    assert %{"data" => %{"createUser" => %{"user" => %{"email" => ^email}}}} = json_response(response, 200)
+
+    assert %{"data" => %{"createUser" => %{"user" => %{"email" => ^email}}}} =
+             json_response(response, 200)
+
     assert %{email: ^email} = Accounts.list_users() |> hd()
   end
 
   test "create_user/3 returns :ok, errors if data is invalid" do
-    response = post(build_conn(), "/api", %{query: @query, variables: %{"user" => @invalid_user_input}})
-    assert %{"data" => %{"createUser" => %{"errors" => [%{"key" => "email", "message" => "has invalid format"}]}}} = json_response(response, 200)
+    response =
+      post(build_conn(), "/api", %{query: @query, variables: %{"user" => @invalid_user_input}})
 
+    assert %{"errors" => [%{"details" => %{"email" => ["has invalid format"]}}]} =
+             json_response(response, 200)
   end
 end

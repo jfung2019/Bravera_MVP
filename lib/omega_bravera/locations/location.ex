@@ -3,8 +3,8 @@ defmodule OmegaBravera.Locations.Location do
   import Ecto.Changeset
 
   schema "locations" do
-    field :name_en, :string
-    field :name_zh, :string
+    field(:name_en, :string)
+    field(:name_zh, :string)
 
     timestamps()
   end

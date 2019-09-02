@@ -14,12 +14,10 @@ defmodule OmegaBraveraWeb.Api.Context do
 
   defp build_context(conn) do
     with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
-    {:ok, data} <- Guardian.decode_and_verify(token),
-    %{} = user <- get_user(data) do
-
+         {:ok, data} <- Guardian.decode_and_verify(token),
+         %{} = user <- get_user(data) do
       %{current_user: user}
     else
-
       _ ->
         %{}
     end

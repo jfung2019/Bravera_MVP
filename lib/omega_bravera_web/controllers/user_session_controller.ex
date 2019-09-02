@@ -3,8 +3,10 @@ defmodule OmegaBraveraWeb.UserSessionController do
   alias OmegaBravera.Guardian
   alias OmegaBravera.Accounts
 
-
-  def create(conn, %{"session" => %{"email" => email, "password" => pass}, "add_team_member_redirect_uri" => add_team_member_redirect_uri}) do
+  def create(conn, %{
+        "session" => %{"email" => email, "password" => pass},
+        "add_team_member_redirect_uri" => add_team_member_redirect_uri
+      }) do
     case Accounts.email_password_auth(email, pass) do
       {:ok, user} ->
         conn
@@ -19,7 +21,10 @@ defmodule OmegaBraveraWeb.UserSessionController do
     end
   end
 
-  def create(conn, %{"session" => %{"email" => email, "password" => pass}, "redirect_uri" => redirect_uri} = params) do
+  def create(conn, %{
+        "session" => %{"email" => email, "password" => pass},
+        "redirect_uri" => redirect_uri
+      }) do
     case Accounts.email_password_auth(email, pass) do
       {:ok, user} ->
         conn

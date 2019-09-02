@@ -3,7 +3,10 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
 
   alias OmegaBravera.{Accounts, Locations}
 
-  def mount(%{redirect_uri: redirect_uri, add_team_member_redirect_uri: add_team_member_redirect_uri}, socket) do
+  def mount(
+        %{redirect_uri: redirect_uri, add_team_member_redirect_uri: add_team_member_redirect_uri},
+        socket
+      ) do
     {:ok,
      assign(socket, %{
        redirect_uri: redirect_uri,
@@ -33,7 +36,12 @@ defmodule OmegaBraveraWeb.LiveUserSignup do
      )}
   end
 
-  def handle_event("signup", %{"user" => params}, %{assigns: %{add_team_member_redirect_uri: add_team_member_redirect_uri}} = socket) when not is_nil(add_team_member_redirect_uri) do
+  def handle_event(
+        "signup",
+        %{"user" => params},
+        %{assigns: %{add_team_member_redirect_uri: add_team_member_redirect_uri}} = socket
+      )
+      when not is_nil(add_team_member_redirect_uri) do
     case Accounts.create_credential_user(params) do
       {:ok, user} ->
         Accounts.Notifier.send_user_signup_email(user, add_team_member_redirect_uri)

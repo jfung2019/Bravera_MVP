@@ -12,14 +12,31 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:ok, %{user_session: %{token: token, user: user}}}
 
       {:error, :invalid_password} ->
-        {:ok, %{errors: Helpers.transform_errors(%{"password" => gettext("Invalid email and password combo.")})}}
+        {:ok,
+         %{
+           errors:
+             Helpers.transform_errors(%{
+               "password" => gettext("Invalid email and password combo.")
+             })
+         }}
 
       {:error, :user_does_not_exist} ->
-        {:ok, %{errors: Helpers.transform_errors(%{"id" => gettext("Seems you don't have an account, please sign up.")})}}
+        {:ok,
+         %{
+           errors:
+             Helpers.transform_errors(%{
+               "id" => gettext("Seems you don't have an account, please sign up.")
+             })
+         }}
 
       {:error, :no_credential} ->
-        {:ok, %{errors: Helpers.transform_errors(%{"password" => gettext("Please setup your password using Forgot password.")})}}
-
+        {:ok,
+         %{
+           errors:
+             Helpers.transform_errors(%{
+               "password" => gettext("Please setup your password using Forgot password.")
+             })
+         }}
     end
   end
 
@@ -30,7 +47,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:ok, %{user: user}}
 
       {:error, changeset} ->
-        {:ok, %{errors: Helpers.transform_errors(changeset)}}
+        {:error, message: "Could not signup", details: Helpers.transform_errors(changeset)}
     end
   end
 

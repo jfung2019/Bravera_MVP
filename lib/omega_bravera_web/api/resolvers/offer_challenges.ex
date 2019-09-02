@@ -6,7 +6,6 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
 
   def create(_root, %{input: %{offer_slug: offer_slug}}, %{context: %{current_user: current_user}}) do
-
     case Offers.get_offer_by_slug(offer_slug) do
       nil ->
         {:error, "Offer not found"}
@@ -16,7 +15,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
     end
   end
 
-  def create(_, _, %{}), do: {:ok, %{errors: Helpers.transform_errors(%{"user_id" => "Action Requires Login"})}}
+  def create(_, _, %{}),
+    do: {:ok, %{errors: Helpers.transform_errors(%{"user_id" => "Action Requires Login"})}}
 
   defp create_challenge(offer, current_user) do
     case Offers.create_offer_challenge(offer, current_user) do

@@ -38,10 +38,9 @@ defmodule OmegaBraveraWeb.Router do
   scope "/" do
     pipe_through :absinthe_api
 
-    forward "/api", Absinthe.Plug,
-      schema: OmegaBraveraWeb.Api.Schema
+    forward "/api", Absinthe.Plug, schema: OmegaBraveraWeb.Api.Schema
 
-    if Mix.env == :dev do
+    if Mix.env() == :dev do
       forward "/graphiql", Absinthe.Plug.GraphiQL,
         schema: OmegaBraveraWeb.Api.Schema,
         socket: OmegaBraveraWeb.UserSocket,

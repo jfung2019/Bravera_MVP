@@ -38,9 +38,19 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
 
   test "creating a user session" do
     credential = credential_fixture()
-    response = post(build_conn(), "/api", %{query: @query, variables: %{"email" => @email, "password" => @password}})
-    assert %{"data" => %{ "login" => %{"userSession" => %{"token" => token, "user" => user_data}}}} = json_response(response, 200)
-    assert %{"firstname" => credential.user.firstname, "lastname" => credential.user.lastname} == user_data
+
+    response =
+      post(build_conn(), "/api", %{
+        query: @query,
+        variables: %{"email" => @email, "password" => @password}
+      })
+
+    assert %{"data" => %{"login" => %{"userSession" => %{"token" => token, "user" => user_data}}}} =
+             json_response(response, 200)
+
+    assert %{"firstname" => credential.user.firstname, "lastname" => credential.user.lastname} ==
+             user_data
+
     guardian_sub = "user:#{credential.user_id}"
     assert {:ok, %{"sub" => ^guardian_sub}} = OmegaBravera.Guardian.decode_and_verify(token)
   end

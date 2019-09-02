@@ -42,6 +42,7 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
     case Plug.Conn.get_session(conn, "add_team_member_url") do
       nil ->
         nil
+
       uri ->
         Plug.Conn.delete_session(conn, "add_team_member_url")
         uri

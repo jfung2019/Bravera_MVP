@@ -144,7 +144,7 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   defp get_redirect_url(conn) do
-    case  get_add_team_member_redirect_uri(conn) do
+    case get_add_team_member_redirect_uri(conn) do
       nil ->
         get_redirect_url_fallback(conn)
 

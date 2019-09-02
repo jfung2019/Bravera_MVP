@@ -45,7 +45,7 @@ defmodule OmegaBravera.Accounts.User do
     has_many(:str_customers, StrCustomer)
     has_many(:subscribed_email_categories, OmegaBravera.Emails.UserEmailCategories)
     has_many(:offer_challenges, OfferChallenge)
-    belongs_to :location, OmegaBravera.Locations.Location
+    belongs_to(:location, OmegaBravera.Locations.Location)
 
     many_to_many(:teams, Team, join_through: "team_members")
 

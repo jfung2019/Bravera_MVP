@@ -230,7 +230,6 @@ defmodule OmegaBraveraWeb.NGOChalController do
         "ngo_chal_slug" => slug,
         "invitation_token" => invitation_token
       }) do
-
     case Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user, :ngo]) do
       nil ->
         conn
@@ -288,7 +287,10 @@ defmodule OmegaBraveraWeb.NGOChalController do
                     )
 
                     conn
-                    |> put_flash(:error, "Could not add you to team. Please contact admin@bravera.co")
+                    |> put_flash(
+                      :error,
+                      "Could not add you to team. Please contact admin@bravera.co"
+                    )
                     |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
                 end
               else
@@ -343,7 +345,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
         Fundraisers.get_ngo_with_stats(ngo_slug,
           ngo_chals: [user: [:strava], team: [users: [:strava]]]
         ),
-      total_one_off_donations: Challenges.get_challenge_total_one_off_donations(challenge.id),
+      total_one_off_donations: Challenges.get_challenge_total_one_off_donations(challenge.id)
     }
   end
 

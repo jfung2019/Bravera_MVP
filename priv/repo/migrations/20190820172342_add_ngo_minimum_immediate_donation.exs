@@ -3,13 +3,13 @@ defmodule OmegaBravera.Repo.Migrations.AddNgoMinimumImmediateDonation do
 
   def up do
     alter table("ngos") do
-      add :minimum_immediate_donation, :integer
+      add(:minimum_immediate_donation, :integer)
     end
   end
 
   def down do
     alter table("ngos") do
-      add :minimum_immediate_donation, :integer
+      add(:minimum_immediate_donation, :integer)
     end
   end
 end

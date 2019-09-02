@@ -15,6 +15,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Repo,
     Accounts.User
   }
+
   alias OmegaBraveraWeb.Offer.OfferChallengeHelper
 
   plug :put_layout, false when action in [:qr_code]
@@ -292,7 +293,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         "offer_challenge_slug" => slug,
         "invitation_token" => invitation_token
       }) do
-
     case Offers.get_offer_chal_by_slugs(offer_slug, slug, [:team, :user, offer: [:vendor]]) do
       nil ->
         conn
@@ -361,8 +361,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             end
         end
     end
-
-
   end
 
   def invite_team_members(conn, %{

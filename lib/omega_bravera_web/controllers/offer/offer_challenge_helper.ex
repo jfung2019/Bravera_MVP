@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Offer.OfferChallengeHelper  do
+defmodule OmegaBraveraWeb.Offer.OfferChallengeHelper do
   alias OmegaBravera.Offers.OfferChallenge
   alias OmegaBravera.Offers
 

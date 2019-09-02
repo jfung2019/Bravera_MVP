@@ -9,10 +9,14 @@ defmodule OmegaBraveraWeb.NGOChalView do
     Challenges.TeamInvitations
   }
 
-  def open_delayed_modal(%NGOChal{ngo: %NGO{one_off_donations: one_off_donations}}) when one_off_donations == false, do: "open-delayed-donation-modal"
+  def open_delayed_modal(%NGOChal{ngo: %NGO{one_off_donations: one_off_donations}})
+      when one_off_donations == false,
+      do: "open-delayed-donation-modal"
+
   def open_delayed_modal(_), do: ""
 
-  def immediate_donation?(%NGOChal{ngo: %NGO{one_off_donations: one_off_donations}}), do: one_off_donations
+  def immediate_donation?(%NGOChal{ngo: %NGO{one_off_donations: one_off_donations}}),
+    do: one_off_donations
 
   def user_full_name(%User{} = user), do: User.full_name(user)
   def user_full_name(%Donor{} = donor), do: Donor.full_name(donor)
@@ -204,10 +208,13 @@ defmodule OmegaBraveraWeb.NGOChalView do
     end
   end
 
-  def render_immediate_donation_secured_value_per_km(%Decimal{} = total_one_off_donations, distance_target),
-   do: Decimal.div(total_one_off_donations, Decimal.new(distance_target)) |> Decimal.round(1)
+  def render_immediate_donation_secured_value_per_km(
+        %Decimal{} = total_one_off_donations,
+        distance_target
+      ),
+      do: Decimal.div(total_one_off_donations, Decimal.new(distance_target)) |> Decimal.round(1)
 
-   def render_immediate_donation_secured_value_per_km(_, _), do: 0
+  def render_immediate_donation_secured_value_per_km(_, _), do: 0
 
   def render_pledge_per_km({nil, nil}), do: 0
 
