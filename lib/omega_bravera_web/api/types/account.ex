@@ -28,15 +28,14 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:credential, :credential)
   end
 
-  # For success/error reporting
+  # For success reporting
   object :user_signup_result do
     field(:user, :user)
   end
 
-  # For success/error reporting
+  # For success reporting
   object :user_session_result do
     field(:user_session, :user_session)
-    field(:errors, list_of(:input_error))
   end
 
   object :location do

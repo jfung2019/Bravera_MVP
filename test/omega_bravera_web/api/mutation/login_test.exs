@@ -10,7 +10,6 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
   @query """
   mutation ($email: String!, $password: String!) {
     login(email: $email, password: $password) {
-      errors { key message }
       userSession{
         token
         user{
@@ -33,19 +32,36 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
       Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
       |> Repo.insert()
 
-    credential |> Repo.preload(:user)
+    credential
+    |> Repo.preload(:user)
   end
 
   test "creating a user session" do
     credential = credential_fixture()
 
     response =
-      post(build_conn(), "/api", %{
-        query: @query,
-        variables: %{"email" => @email, "password" => @password}
-      })
+      post(
+        build_conn(),
+        "/api",
+        %{
+          query: @query,
+          variables: %{
+            "email" => @email,
+            "password" => @password
+          }
+        }
+      )
 
-    assert %{"data" => %{"login" => %{"userSession" => %{"token" => token, "user" => user_data}}}} =
+    assert %{
+             "data" => %{
+               "login" => %{
+                 "userSession" => %{
+                   "token" => token,
+                   "user" => user_data
+                 }
+               }
+             }
+           } =
              json_response(response, 200)
 
     assert %{"firstname" => credential.user.firstname, "lastname" => credential.user.lastname} ==
@@ -53,5 +69,25 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
 
     guardian_sub = "user:#{credential.user_id}"
     assert {:ok, %{"sub" => ^guardian_sub}} = OmegaBravera.Guardian.decode_and_verify(token)
+  end
+
+  test "trying to login to a non-existing account" do
+    response =
+      post(
+        build_conn(),
+        "/api",
+        %{
+          query: @query,
+          variables: %{
+            "email" => @email,
+            "password" => @password
+          }
+        }
+      )
+    assert %{
+             "errors" => [%{
+               "message" => "Seems you don't have an account, please sign up."
+             }]
+           } = json_response(response, 200)
   end
 end
