@@ -26,7 +26,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     case Accounts.create_credential_user(params) do
       {:ok, user} ->
         Accounts.Notifier.send_user_signup_email(user)
-        {:ok, %{user: user}}
+        {:ok, token, _} = Guardian.encode_and_sign(user, %{})
+        {:ok, %{user: user, token: token}}
 
       {:error, changeset} ->
         {:error, message: "Could not signup", details: Helpers.transform_errors(changeset)}

@@ -30,6 +30,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   # For success reporting
   object :user_signup_result do
+    field(:token, :string)
     field(:user, :user)
   end
 

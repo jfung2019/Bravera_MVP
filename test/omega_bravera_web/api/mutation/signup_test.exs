@@ -30,7 +30,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
   @query """
   mutation createUser($user: UserSignupInput!) {
     createUser(input: $user) {
-      user{
+      token
+      user {
         id
         firstname
         lastname
