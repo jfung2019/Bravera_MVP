@@ -10,7 +10,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Stripe.StrCustomer
   alias OmegaBravera.Offers.{OfferChallenge, OfferChallengeTeam}
 
-  @required_attributes [:firstname, :lastname, :location_id]
+  @required_attributes [:firstname, :lastname, :location_id, :locale]
   @allowed_attributes [
     :email,
     :firstname,
@@ -19,7 +19,8 @@ defmodule OmegaBravera.Accounts.User do
     :email_verified,
     :profile_picture,
     :accept_terms,
-    :location_id
+    :location_id,
+    :locale
   ]
 
   schema "users" do
@@ -28,6 +29,7 @@ defmodule OmegaBravera.Accounts.User do
     field(:email_activation_token, :string)
     field(:firstname, :string)
     field(:lastname, :string)
+    field(:locale, :string, default: "en")
     # Represents KMs
     field(:daily_points_limit, :integer, default: 15)
     field(:additional_info, :map, default: %{})

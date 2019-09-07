@@ -13,11 +13,12 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  defp do_login(_root, %{email: email, password: password, locale: _locale}, _info) do
+  defp do_login(_root, %{email: email, password: password, locale: locale}, _info) do
     case Accounts.email_password_auth(email, password) do
       {:ok, user} ->
-        {:ok, token, _} = Guardian.encode_and_sign(user, %{})
-        {:ok, %{user_session: %{token: token, user: user, user_profile: Accounts.api_user_profile(user.id)}}}
+        {:ok, updated_user} = Accounts.update_user(user, %{locale: locale})
+        {:ok, token, _} = Guardian.encode_and_sign(updated_user, %{})
+        {:ok, %{user_session: %{token: token, user: updated_user, user_profile: Accounts.api_user_profile(updated_user.id)}}}
 
       {:error, :invalid_password} ->
         {:error, message: gettext("Invalid email and password combo.")}
