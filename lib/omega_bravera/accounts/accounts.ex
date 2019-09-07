@@ -291,14 +291,15 @@ defmodule OmegaBravera.Accounts do
           live: live_challenges,
           expired: expired_challenges,
           completed: completed_challenges,
-          total: list_length(live_challenges) + list_length(expired_challenges) + list_length(completed_challenges)
+          total:
+            list_length(live_challenges) + list_length(expired_challenges) +
+              list_length(completed_challenges)
         }
-      }
+    }
   end
 
   defp list_length(list) when is_nil(list) == true, do: 0
   defp list_length(list), do: length(list)
-
 
   def preload_active_offer_challenges(user) do
     user

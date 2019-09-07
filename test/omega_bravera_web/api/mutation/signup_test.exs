@@ -65,9 +65,15 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
 
   test "create_user/3 returns errors locale is invalid" do
     response =
-      post(build_conn(), "/api", %{query: @query, variables: %{"user" => %{@invalid_user_input | "locale" => "xxx"}}})
+      post(build_conn(), "/api", %{
+        query: @query,
+        variables: %{"user" => %{@invalid_user_input | "locale" => "xxx"}}
+      })
 
-    assert %{"errors" => [%{"message" => "Locale is required to signup. Supported locales are: en, zh."}]} =
-             json_response(response, 200)
+    assert %{
+             "errors" => [
+               %{"message" => "Locale is required to signup. Supported locales are: en, zh."}
+             ]
+           } = json_response(response, 200)
   end
 end

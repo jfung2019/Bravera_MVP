@@ -3,13 +3,13 @@ defmodule OmegaBravera.Repo.Migrations.AddUserLocale do
 
   def up do
     alter table("users") do
-      add :locale, :string, default: "en"
+      add(:locale, :string, default: "en")
     end
   end
 
   def down do
     alter table("users") do
-      remove :locale
+      remove(:locale)
     end
   end
 end

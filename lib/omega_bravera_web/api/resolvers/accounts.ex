@@ -7,9 +7,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def login(root, %{locale: locale} = params, info) do
     case locale do
-      "en" -> do_login(root, params, info)
-      "zh" -> do_login(root, params, info)
-      _ -> {:error, message: gettext("Locale is required to login. Supported locales are: en, zh.")}
+      "en" ->
+        do_login(root, params, info)
+
+      "zh" ->
+        do_login(root, params, info)
+
+      _ ->
+        {:error, message: gettext("Locale is required to login. Supported locales are: en, zh.")}
     end
   end
 
@@ -18,7 +23,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       {:ok, user} ->
         {:ok, updated_user} = Accounts.update_user(user, %{locale: locale})
         {:ok, token, _} = Guardian.encode_and_sign(updated_user, %{})
-        {:ok, %{user_session: %{token: token, user: updated_user, user_profile: Accounts.api_user_profile(updated_user.id)}}}
+
+        {:ok,
+         %{
+           user_session: %{
+             token: token,
+             user: updated_user,
+             user_profile: Accounts.api_user_profile(updated_user.id)
+           }
+         }}
 
       {:error, :invalid_password} ->
         {:error, message: gettext("Invalid email and password combo.")}
@@ -33,9 +46,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def create_user(root, %{input: %{locale: locale}} = params, info) do
     case locale do
-      "en" -> do_create_user(root, params, info)
-      "zh" -> do_create_user(root, params, info)
-      _ -> {:error, message: gettext("Locale is required to signup. Supported locales are: en, zh.")}
+      "en" ->
+        do_create_user(root, params, info)
+
+      "zh" ->
+        do_create_user(root, params, info)
+
+      _ ->
+        {:error, message: gettext("Locale is required to signup. Supported locales are: en, zh.")}
     end
   end
 
@@ -53,6 +71,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def all_locations(_root, _args, _info), do: {:ok, Locations.list_locations()}
 
-  def user_profile(_root, %{user_id: user_id}, %{context: %{current_user: current_user}}) when current_user == user_id, do: {:ok, Accounts.api_user_profile(user_id)}
+  def user_profile(_root, %{user_id: user_id}, %{context: %{current_user: current_user}})
+      when current_user == user_id,
+      do: {:ok, Accounts.api_user_profile(user_id)}
+
   def user_profile(_root, _args, _info), do: {:error, "not_authorized"}
 end

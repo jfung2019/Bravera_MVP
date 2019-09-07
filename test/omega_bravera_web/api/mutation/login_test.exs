@@ -83,8 +83,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
                  }
                }
              }
-           } =
-             json_response(response, 200)
+           } = json_response(response, 200)
 
     assert %{"firstname" => credential.user.firstname, "lastname" => credential.user.lastname} ==
              user_data
@@ -93,12 +92,12 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
     assert {:ok, %{"sub" => ^guardian_sub}} = OmegaBravera.Guardian.decode_and_verify(token)
 
     assert %{
-      "offerChallengesMap" => %{"completed" => [], "expired" => [], "live" => []},
-      "totalChallenges" => 0,
-      "totalKilometers" => nil,
-      "totalPoints" => nil,
-      "totalRewards" => 0
-    } = user_profile
+             "offerChallengesMap" => %{"completed" => [], "expired" => [], "live" => []},
+             "totalChallenges" => 0,
+             "totalKilometers" => nil,
+             "totalPoints" => nil,
+             "totalRewards" => 0
+           } = user_profile
   end
 
   test "trying to login to a non-existing account" do
@@ -115,10 +114,13 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
           }
         }
       )
+
     assert %{
-             "errors" => [%{
-               "message" => "Seems you don't have an account, please sign up."
-             }]
+             "errors" => [
+               %{
+                 "message" => "Seems you don't have an account, please sign up."
+               }
+             ]
            } = json_response(response, 200)
   end
 
@@ -138,12 +140,16 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
           }
         }
       )
+
     assert %{
-             "errors" => [%{
-               "message" => "Argument \"locale\" has invalid value $locale."
-             }, %{
-               "message" => "Variable \"locale\": Expected non-null, found null."
-             }]
+             "errors" => [
+               %{
+                 "message" => "Argument \"locale\" has invalid value $locale."
+               },
+               %{
+                 "message" => "Variable \"locale\": Expected non-null, found null."
+               }
+             ]
            } = json_response(response, 200)
   end
 
@@ -163,10 +169,13 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
           }
         }
       )
+
     assert %{
-             "errors" => [%{
-               "message" => "Locale is required to login. Supported locales are: en, zh."
-             }]
+             "errors" => [
+               %{
+                 "message" => "Locale is required to login. Supported locales are: en, zh."
+               }
+             ]
            } = json_response(response, 200)
   end
 end
