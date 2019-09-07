@@ -46,5 +46,11 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :all_locations, list_of(non_null(:location)) do
       resolve(&Resolvers.Accounts.all_locations/3)
     end
+
+    @desc "Get logged in user profile"
+    field :user_profile, :user_profile do
+      arg(:user_id, non_null(:integer))
+      resolve(&Resolvers.Accounts.user_profile/3)
+    end
   end
 end

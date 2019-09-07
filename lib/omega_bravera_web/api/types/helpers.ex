@@ -23,7 +23,7 @@ defmodule OmegaBraveraWeb.Api.Types.Helpers do
         :error
     end)
 
-    serialize(&to_string/1)
+    serialize(&Decimal.to_float/1)
   end
 
   @desc "An error encountered trying to persist input"

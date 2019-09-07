@@ -8,9 +8,18 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:lastname, :string)
   end
 
+  object :user_profile do
+    field(:total_points, :decimal)
+    field(:total_rewards, :integer)
+    field(:total_kilometers, :decimal)
+    field(:total_challenges, :integer)
+    field(:offer_challenges_map, :offer_challenges_map)
+  end
+
   object :user_session do
     field(:token, :string)
     field(:user, :user)
+    field(:user_profile, :user_profile)
   end
 
   input_object :credential do
@@ -32,6 +41,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :user_signup_result do
     field(:token, :string)
     field(:user, :user)
+    field(:user_profile, :user_profile)
   end
 
   # For success reporting

@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     case Accounts.email_password_auth(email, password) do
       {:ok, user} ->
         {:ok, token, _} = Guardian.encode_and_sign(user, %{})
-        {:ok, %{user_session: %{token: token, user: user}}}
+        {:ok, %{user_session: %{token: token, user: user, user_profile: Accounts.api_user_profile(user.id)}}}
 
       {:error, :invalid_password} ->
         {:error, message: gettext("Invalid email and password combo.")}
@@ -27,7 +27,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       {:ok, user} ->
         Accounts.Notifier.send_user_signup_email(user)
         {:ok, token, _} = Guardian.encode_and_sign(user, %{})
-        {:ok, %{user: user, token: token}}
+        {:ok, %{user: user, token: token, user_profile: Accounts.api_user_profile(user.id)}}
 
       {:error, changeset} ->
         {:error, message: "Could not signup", details: Helpers.transform_errors(changeset)}
@@ -35,4 +35,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   end
 
   def all_locations(_root, _args, _info), do: {:ok, Locations.list_locations()}
+
+  def user_profile(_root, %{user_id: user_id}, %{context: %{current_user: current_user}}) when current_user == user_id, do: {:ok, Accounts.api_user_profile(user_id)}
+  def user_profile(_root, _args, _info), do: {:error, "not_authorized"}
 end

@@ -23,7 +23,10 @@ defmodule OmegaBravera.Accounts do
     Money.Donation,
     Offers.OfferChallenge,
     Offers.OfferChallengeTeam,
-    Offers.OfferChallengeTeamMembers
+    Offers.OfferChallengeTeamMembers,
+    Offers.OfferRedeem,
+    Offers.OfferChallengeActivitiesM2m,
+    Activity.ActivityAccumulator
   }
 
   def get_all_athlete_ids() do
@@ -229,6 +232,73 @@ defmodule OmegaBravera.Accounts do
       offer_teams: [:offer_challenge]
     ])
   end
+
+  def api_user_profile(user_id) do
+    total_points = Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value)
+
+    total_rewards =
+      Repo.aggregate(
+        from(ofr in OfferRedeem, where: ofr.status == "redeemed" and ofr.user_id == ^user_id),
+        :count,
+        :id
+      )
+
+    total_kms_offers =
+      Repo.aggregate(
+        from(
+          a in ActivityAccumulator,
+          where: a.user_id == ^user_id,
+          left_join: offer_ac in OfferChallengeActivitiesM2m,
+          on: a.id == offer_ac.activity_id
+        ),
+        :sum,
+        :distance
+      )
+
+    total_kms_offers = if !is_nil(total_kms_offers), do: Decimal.round(total_kms_offers)
+
+    live_challenges =
+      from(oc_live in OfferChallenge,
+        where: oc_live.status == "active" and oc_live.user_id == ^user_id
+      )
+      |> Repo.all()
+
+    expired_challenges =
+      from(oc_live in OfferChallenge,
+        where: oc_live.status == "expired" and oc_live.user_id == ^user_id
+      )
+      |> Repo.all()
+
+    completed_challenges =
+      from(oc_live in OfferChallenge,
+        where: oc_live.status == "complete" and oc_live.user_id == ^user_id
+      )
+      |> Repo.all()
+
+    user =
+      from(
+        u in User,
+        where: u.id == ^user_id
+      )
+      |> Repo.one()
+
+    %{
+      user
+      | total_points: total_points,
+        total_rewards: total_rewards,
+        total_kilometers: total_kms_offers,
+        offer_challenges_map: %{
+          live: live_challenges,
+          expired: expired_challenges,
+          completed: completed_challenges,
+          total: list_length(live_challenges) + list_length(expired_challenges) + list_length(completed_challenges)
+        }
+      }
+  end
+
+  defp list_length(list) when is_nil(list) == true, do: 0
+  defp list_length(list), do: length(list)
+
 
   def preload_active_offer_challenges(user) do
     user

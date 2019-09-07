@@ -73,7 +73,8 @@ defmodule OmegaBravera.Mixfile do
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4.0"},
       {:absinthe_phoenix, "~> 1.4.0"},
-      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"}
+      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
+      {:benchee, "~> 1.0", only: :dev}
     ]
   end
 

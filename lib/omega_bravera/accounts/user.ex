@@ -35,6 +35,14 @@ defmodule OmegaBravera.Accounts.User do
     field(:accept_terms, :boolean, virtual: true)
     field(:todays_points, :integer, virtual: true)
 
+    # API related
+    field(:total_points, :decimal, virtual: true, default: Decimal.new(0))
+    field(:total_rewards, :integer, virtual: true, default: 0)
+    field(:total_kilometers, :decimal, virtual: true, default: Decimal.new(0))
+    field(:offer_challenges_map, :map, virtual: true, default: %{live: [], expired: [], completed: [], total: 0})
+    field(:total_challenges, :integer, virtual: true, default: 0)
+    field(:position_on_leaderboard, :integer, virtual: true, default: 0)
+
     # associations
     has_one(:credential, Credential)
     has_one(:strava, Strava)

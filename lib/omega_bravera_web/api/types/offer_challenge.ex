@@ -16,6 +16,12 @@ defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
     field(:updated_at, :date)
   end
 
+  object :offer_challenges_map do
+    field(:live, list_of(:offer_challenge))
+    field(:expired, list_of(:offer_challenge))
+    field(:completed, list_of(:offer_challenge))
+  end
+
   input_object :offer_challenge_create_input do
     field(:offer_slug, :string)
   end
