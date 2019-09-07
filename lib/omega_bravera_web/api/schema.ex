@@ -14,6 +14,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :login, :user_session_result do
       arg(:email, non_null(:string))
       arg(:password, non_null(:string))
+      arg(:locale, non_null(:string))
       resolve(&Resolvers.Accounts.login/3)
     end
 

@@ -32,6 +32,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:lastname, non_null(:string))
     field(:accept_terms, non_null(:boolean))
     field(:location_id, non_null(:integer))
+    field(:locale, non_null(:string))
     # should create an email scalar type to validate.
     field(:email, non_null(:string))
     field(:credential, :credential)

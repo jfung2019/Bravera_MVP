@@ -5,7 +5,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   alias OmegaBravera.{Accounts, Locations}
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
 
-  def login(_root, %{email: email, password: password}, _info) do
+  def login(root, %{locale: locale} = params, info) do
+    case locale do
+      "en" -> do_login(root, params, info)
+      "zh" -> do_login(root, params, info)
+      _ -> {:error, message: gettext("Locale is required to login. Supported locales are: en, zh.")}
+    end
+  end
+
+  defp do_login(_root, %{email: email, password: password, locale: _locale}, _info) do
     case Accounts.email_password_auth(email, password) do
       {:ok, user} ->
         {:ok, token, _} = Guardian.encode_and_sign(user, %{})
@@ -22,7 +30,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  def create_user(_root, %{input: params}, _info) do
+  def create_user(root, %{input: %{locale: locale}} = params, info) do
+    case locale do
+      "en" -> do_create_user(root, params, info)
+      "zh" -> do_create_user(root, params, info)
+      _ -> {:error, message: gettext("Locale is required to signup. Supported locales are: en, zh.")}
+    end
+  end
+
+  defp do_create_user(_root, %{input: params}, _info) do
     case Accounts.create_credential_user(params) do
       {:ok, user} ->
         Accounts.Notifier.send_user_signup_email(user)

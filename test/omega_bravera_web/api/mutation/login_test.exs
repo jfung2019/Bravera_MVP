@@ -8,8 +8,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
   @query """
-  mutation ($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+  mutation ($email: String!, $password: String!, $locale: String!) {
+    login(email: $email, password: $password, locale: $locale) {
       userSession{
         token
         user{
@@ -67,7 +67,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
           query: @query,
           variables: %{
             "email" => @email,
-            "password" => @password
+            "password" => @password,
+            "locale" => "en"
           }
         }
       )
@@ -109,13 +110,62 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
           query: @query,
           variables: %{
             "email" => @email,
-            "password" => @password
+            "password" => @password,
+            "locale" => "en"
           }
         }
       )
     assert %{
              "errors" => [%{
                "message" => "Seems you don't have an account, please sign up."
+             }]
+           } = json_response(response, 200)
+  end
+
+  test "locale is requred to login" do
+    credential_fixture()
+
+    response =
+      post(
+        build_conn(),
+        "/api",
+        %{
+          query: @query,
+          variables: %{
+            "email" => @email,
+            "password" => @password,
+            "locale" => nil
+          }
+        }
+      )
+    assert %{
+             "errors" => [%{
+               "message" => "Argument \"locale\" has invalid value $locale."
+             }, %{
+               "message" => "Variable \"locale\": Expected non-null, found null."
+             }]
+           } = json_response(response, 200)
+  end
+
+  test "only en and zh are the correct locales" do
+    credential_fixture()
+
+    response =
+      post(
+        build_conn(),
+        "/api",
+        %{
+          query: @query,
+          variables: %{
+            "email" => @email,
+            "password" => @password,
+            "locale" => "fo"
+          }
+        }
+      )
+    assert %{
+             "errors" => [%{
+               "message" => "Locale is required to login. Supported locales are: en, zh."
              }]
            } = json_response(response, 200)
   end

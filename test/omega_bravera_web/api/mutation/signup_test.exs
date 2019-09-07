@@ -9,6 +9,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     "email" => "sheriefalaa.w@gmail.com",
     "acceptTerms" => true,
     "locationId" => 1,
+    "locale" => "en",
     "credential" => %{
       "password" => "dev123",
       "passwordConfirm" => "dev123"
@@ -21,6 +22,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     "email" => "bad email",
     "acceptTerms" => true,
     "locationId" => 1,
+    "locale" => "zh",
     "credential" => %{
       "password" => "dev123",
       "passwordConfirm" => "bad confirm"
@@ -53,11 +55,19 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     assert %{email: ^email} = Accounts.list_users() |> hd()
   end
 
-  test "create_user/3 returns :ok, errors if data is invalid" do
+  test "create_user/3 returns errors if data is invalid" do
     response =
       post(build_conn(), "/api", %{query: @query, variables: %{"user" => @invalid_user_input}})
 
     assert %{"errors" => [%{"details" => %{"email" => ["has invalid format"]}}]} =
+             json_response(response, 200)
+  end
+
+  test "create_user/3 returns errors locale is invalid" do
+    response =
+      post(build_conn(), "/api", %{query: @query, variables: %{"user" => %{@invalid_user_input | "locale" => "xxx"}}})
+
+    assert %{"errors" => [%{"message" => "Locale is required to signup. Supported locales are: en, zh."}]} =
              json_response(response, 200)
   end
 end
