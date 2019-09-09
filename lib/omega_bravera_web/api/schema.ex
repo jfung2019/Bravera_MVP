@@ -34,7 +34,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
   query do
     @desc "Get a single offer by ID"
     field :offer, :offer do
-      arg(:id, non_null(:integer))
+      arg(:id, non_null(:id))
       resolve(&Resolvers.Offers.get_offer/3)
     end
 
@@ -50,7 +50,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "Get logged in user profile"
     field :user_profile, :user_profile do
-      arg(:user_id, non_null(:integer))
+      arg(:user_id, non_null(:id))
       resolve(&Resolvers.Accounts.user_profile/3)
     end
   end
