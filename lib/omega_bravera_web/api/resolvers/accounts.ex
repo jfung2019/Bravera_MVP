@@ -72,7 +72,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   def all_locations(_root, _args, _info), do: {:ok, Locations.list_locations()}
 
   def user_profile(_root, %{user_id: user_id}, %{context: %{current_user: current_user}})
-      when current_user == user_id,
+      when current_user.id == user_id,
       do: {:ok, Accounts.api_user_profile(user_id)}
 
   def user_profile(_root, _args, _info), do: {:error, "not_authorized"}
