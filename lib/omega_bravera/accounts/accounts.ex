@@ -259,19 +259,22 @@ defmodule OmegaBravera.Accounts do
 
     live_challenges =
       from(oc_live in OfferChallenge,
-        where: oc_live.status == "active" and oc_live.user_id == ^user_id
+        where: oc_live.status == "active" and oc_live.user_id == ^user_id,
+        preload: [:offer]
       )
       |> Repo.all()
 
     expired_challenges =
       from(oc_live in OfferChallenge,
-        where: oc_live.status == "expired" and oc_live.user_id == ^user_id
+        where: oc_live.status == "expired" and oc_live.user_id == ^user_id,
+        preload: [:offer]
       )
       |> Repo.all()
 
     completed_challenges =
       from(oc_live in OfferChallenge,
-        where: oc_live.status == "complete" and oc_live.user_id == ^user_id
+        where: oc_live.status == "complete" and oc_live.user_id == ^user_id,
+        preload: [:offer]
       )
       |> Repo.all()
 
