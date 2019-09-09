@@ -71,9 +71,12 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def all_locations(_root, _args, _info), do: {:ok, Locations.list_locations()}
 
-  def user_profile(_root, %{user_id: user_id}, %{context: %{current_user: %{id: id}}})
-      when id == user_id,
-      do: {:ok, Accounts.api_user_profile(user_id)}
-
-  def user_profile(_root, _args, _info), do: {:error, "not_authorized"}
+  def user_profile(_root, %{user_id: user_id}, %{context: %{current_user: %{id: id}}}) do
+    input_user_id = String.to_integer(user_id)
+    if input_user_id == id do
+      {:ok, Accounts.api_user_profile(user_id)}
+    else
+      {:error, "not_authorized"}
+    end
+  end
 end
