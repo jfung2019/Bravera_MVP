@@ -24,14 +24,16 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:ok, updated_user} = Accounts.update_user(user, %{locale: locale})
         {:ok, token, _} = Guardian.encode_and_sign(updated_user, %{})
 
-        {:ok,
-         %{
-           user_session: %{
-             token: token,
-             user: updated_user,
-             user_profile: Accounts.api_user_profile(updated_user.id)
-           }
-         }}
+        {
+          :ok,
+          %{
+            user_session: %{
+              token: token,
+              user: updated_user,
+              user_profile: Accounts.api_user_profile(updated_user.id)
+            }
+          }
+        }
 
       {:error, :invalid_password} ->
         {:error, message: gettext("Invalid email and password combo.")}
@@ -44,7 +46,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  def create_user(root, %{input: %{locale: locale}} = params, info) do
+  def create_user(
+        root,
+        %{
+          input: %{
+            locale: locale
+          }
+        } = params,
+        info
+      ) do
     case locale do
       "en" ->
         do_create_user(root, params, info)
@@ -71,12 +81,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def all_locations(_root, _args, _info), do: {:ok, Locations.list_locations()}
 
-  def user_profile(_root, %{user_id: user_id}, %{context: %{current_user: %{id: id}}}) do
-    input_user_id = String.to_integer(user_id)
-    if input_user_id == id do
-      {:ok, Accounts.api_user_profile(user_id)}
-    else
-      {:error, "not_authorized"}
-    end
-  end
+  def user_profile(
+        _root,
+        _args,
+        %{
+          context: %{
+            current_user: %{
+              id: id
+            }
+          }
+        }
+      ), do: {:ok, Accounts.api_user_profile(id)}
 end
