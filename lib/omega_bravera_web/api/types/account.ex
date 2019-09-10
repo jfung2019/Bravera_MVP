@@ -6,6 +6,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:email, :string)
     field(:firstname, :string)
     field(:lastname, :string)
+    field(:profile_picture, :string)
   end
 
   object :user_profile do
@@ -40,9 +41,9 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   # For success reporting
   object :user_signup_result do
-    field(:token, :string)
-    field(:user, :user)
-    field(:user_profile, :user_profile)
+    field(:token, non_null(:string))
+    field(:user, non_null(:user))
+    field(:user_profile, non_null(:user_profile))
   end
 
   # For success reporting
@@ -52,7 +53,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   object :location do
     field(:id, non_null(:integer))
-    field(:name_en, :string)
-    field(:name_zh, :string)
+    field(:name_en, non_null(:string))
+    field(:name_zh, non_null(:string))
   end
 end
