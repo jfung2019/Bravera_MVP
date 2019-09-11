@@ -40,6 +40,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
   end
 
   query do
+    @desc "Refresh existing device token."
+    field :refresh_device_token, :register_device_result do
+      arg(:input, non_null(:refresh_device_input))
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.Devices.refresh_device_token/3)
+    end
+
     @desc "Get a single offer by ID"
     field :offer, :offer do
       arg(:id, non_null(:id))

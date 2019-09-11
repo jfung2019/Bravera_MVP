@@ -18,4 +18,8 @@ defmodule OmegaBraveraWeb.Api.Types.Device do
     field(:uuid, non_null(:string))
     field(:active, non_null(:boolean))
   end
+
+  input_object :refresh_device_input do
+    field(:uuid, non_null(:string))
+  end
 end

@@ -21,4 +21,16 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
          message: gettext("Could not create device"), details: Helpers.transform_errors(changeset)}
     end
   end
+
+  def refresh_device_token(_root, %{input: %{uuid: uuid}}, %{context: %{current_user: %{id: user_id}}}) do
+    case Devices.get_device_by_uuid(uuid, user_id) do
+      nil ->
+        {:error, "Device not registered."}
+      device ->
+        {:ok, %{
+          token: Auth.generate_device_token(device.uuid),
+          expires_at: Timex.shift(Timex.now(), days: 1)
+        }}
+    end
+  end
 end
