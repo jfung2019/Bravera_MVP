@@ -3,7 +3,6 @@ defmodule OmegaBravera.Factory do
 
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 
-
   def device_factory do
     %OmegaBravera.Devices.Device{
       uuid: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
