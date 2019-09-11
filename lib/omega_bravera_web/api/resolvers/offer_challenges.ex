@@ -16,7 +16,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
   end
 
   def create(_, _, %{}),
-    do: {:ok, %{errors: Helpers.transform_errors(%{"user_id" => "Action Requires Login"})}}
+    do: {:error, "Action Requires Login"}
 
   defp create_challenge(offer, current_user) do
     case Offers.create_offer_challenge(offer, current_user) do

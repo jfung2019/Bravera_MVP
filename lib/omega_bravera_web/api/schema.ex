@@ -6,9 +6,17 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Offer)
   import_types(Types.OfferChallenge)
   import_types(Types.Account)
+  import_types(Types.Device)
   import_types(Types.Helpers)
 
   mutation do
+    @desc "Register a new user device."
+    field :register_device, :register_device_result do
+      arg(:input, non_null(:register_device_input))
+      middleware Middleware.Authenticate
+      resolve(&Resolvers.Devices.register_device/3)
+    end
+
     @desc "Authenticate and receive an authorization token and a user."
     field :login, :user_session_result do
       arg(:email, non_null(:string))
