@@ -37,6 +37,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
     conn = build_conn() |> put_req_header("authorization", "Bearer #{auth_token}")
+
     response =
       post(
         conn,
@@ -49,15 +50,16 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
           }
         }
       )
-      assert  %{
-        "data" => %{
-          "registerDevice" => %{
-            "expiresAt" => _expires_at,
-            "token" => token
-          }
-        }
-      } = json_response(response, 200)
 
-      assert {:ok, {:device_uuid, "aasas1231"}} == OmegaBraveraWeb.Api.Auth.decrypt_token(token)
+    assert %{
+             "data" => %{
+               "registerDevice" => %{
+                 "expiresAt" => _expires_at,
+                 "token" => token
+               }
+             }
+           } = json_response(response, 200)
+
+    assert {:ok, {:device_uuid, "aasas1231"}} == OmegaBraveraWeb.Api.Auth.decrypt_token(token)
   end
 end

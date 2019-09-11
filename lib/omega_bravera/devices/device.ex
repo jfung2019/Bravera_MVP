@@ -3,8 +3,8 @@ defmodule OmegaBravera.Devices.Device do
   import Ecto.Changeset
 
   schema "devices" do
-    field :active, :boolean, default: false
-    field :uuid, :string
+    field(:active, :boolean, default: false)
+    field(:uuid, :string)
 
     belongs_to(:user, OmegaBravera.Accounts.User)
 

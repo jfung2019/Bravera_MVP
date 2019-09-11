@@ -14,8 +14,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
          %{
            token: Auth.generate_device_token(device.uuid),
            expires_at: Timex.shift(Timex.now(), days: 1)
-         }
-        }
+         }}
 
       {:error, changeset} ->
         {:error,

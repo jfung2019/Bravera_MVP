@@ -13,7 +13,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     @desc "Register a new user device."
     field :register_device, :register_device_result do
       arg(:input, non_null(:register_device_input))
-      middleware Middleware.Authenticate
+      middleware(Middleware.Authenticate)
       resolve(&Resolvers.Devices.register_device/3)
     end
 
@@ -34,7 +34,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     @desc "Create offer challenge."
     field :create_offer_challenge, :offer_challenge_create_result do
       arg(:input, non_null(:offer_challenge_create_input))
-      middleware Middleware.Authenticate
+      middleware(Middleware.Authenticate)
       resolve(&Resolvers.OfferChallenges.create/3)
     end
   end
@@ -58,7 +58,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "Get logged in user profile"
     field :user_profile, :user_profile do
-      middleware Middleware.Authenticate
+      middleware(Middleware.Authenticate)
       resolve(&Resolvers.Accounts.user_profile/3)
     end
   end

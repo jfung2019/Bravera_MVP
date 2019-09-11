@@ -10,7 +10,8 @@ defmodule OmegaBraveraWeb.Api.Types.Device do
 
   object :register_device_result do
     field(:token, non_null(:string))
-    field(:expires_at, non_null(:date)) # Actually datetime.
+    # Actually datetime.
+    field(:expires_at, non_null(:date))
   end
 
   input_object :register_device_input do
