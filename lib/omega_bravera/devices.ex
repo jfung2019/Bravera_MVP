@@ -54,13 +54,13 @@ defmodule OmegaBravera.Devices do
   def create_device(%{active: true, user_id: user_id} = attrs) do
     Multi.new()
     |> Multi.run(:deactivate_devices, fn _repo, _changes -> deactivate_all_devices(user_id) end)
-    |> Multi.run(:create_device, fn _repo, _changes ->  do_create_device(attrs) end)
+    |> Multi.run(:create_device, fn _repo, _changes -> do_create_device(attrs) end)
     |> Repo.transaction()
   end
 
   def create_device(%{active: false} = attrs) do
     Multi.new()
-    |> Multi.run(:create_device, fn _repo, _changes ->  do_create_device(attrs) end)
+    |> Multi.run(:create_device, fn _repo, _changes -> do_create_device(attrs) end)
     |> Repo.transaction()
   end
 
