@@ -5,6 +5,7 @@ defmodule OmegaBravera.Devices do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
+  alias Ecto.Multi
 
   alias OmegaBravera.Devices.Device
 
@@ -49,7 +50,29 @@ defmodule OmegaBravera.Devices do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_device(attrs \\ %{}) do
+
+  def create_device(%{active: true, user_id: user_id} = attrs) do
+    Multi.new()
+    |> Multi.run(:deactivate_devices, fn _repo, _changes -> deactivate_all_devices(user_id) end)
+    |> Multi.run(:create_device, fn _repo, _changes ->  do_create_device(attrs) end)
+    |> Repo.transaction()
+  end
+
+  def create_device(%{active: false} = attrs) do
+    Multi.new()
+    |> Multi.run(:create_device, fn _repo, _changes ->  do_create_device(attrs) end)
+    |> Repo.transaction()
+  end
+
+  def deactivate_all_devices(user_id) do
+    {count, nil} =
+      from(d in Device, where: d.user_id == ^user_id)
+      |> Repo.update_all(set: [active: false])
+
+    {:ok, count}
+  end
+
+  defp do_create_device(attrs) do
     %Device{}
     |> Device.changeset(attrs)
     |> Repo.insert()

@@ -9,14 +9,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
         context: %{current_user: %{id: user_id}}
       }) do
     case Devices.create_device(%{active: active, uuid: uuid, user_id: user_id}) do
-      {:ok, device} ->
+      {:ok, %{create_device: device}} ->
         {:ok,
          %{
            token: Auth.generate_device_token(device.uuid),
            expires_at: Timex.shift(Timex.now(), days: 1)
          }}
 
-      {:error, changeset} ->
+      {:error, :create_device, changeset, _changes} ->
         {:error,
          message: gettext("Could not create device"), details: Helpers.transform_errors(changeset)}
     end
