@@ -8,8 +8,8 @@ defmodule OmegaBraveraWeb.Api.Query.DeviceTest do
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
   @query """
-  query($uuid: String!) {
-    refreshDeviceToken(input: {uuid: $uuid}) {
+  query {
+    refreshDeviceToken{
       token
       expiresAt
     }
@@ -34,23 +34,13 @@ defmodule OmegaBraveraWeb.Api.Query.DeviceTest do
 
   test "refresh_device_token/3 can refresh device token" do
     credential = credential_fixture()
-    device = insert(:device, %{user_id: credential.user_id})
+    device = insert(:device, %{user_id: credential.user_id, active: true})
 
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
     conn = build_conn() |> put_req_header("authorization", "Bearer #{auth_token}")
 
-    response =
-      post(
-        conn,
-        "/api",
-        %{
-          query: @query,
-          variables: %{
-            "uuid" => device.uuid
-          }
-        }
-      )
+    response = post(conn, "/api", %{query: @query})
 
     assert %{
              "data" => %{

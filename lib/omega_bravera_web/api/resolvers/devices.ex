@@ -22,10 +22,10 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
     end
   end
 
-  def refresh_device_token(_root, %{input: %{uuid: uuid}}, %{
+  def refresh_device_token(_root, _input, %{
         context: %{current_user: %{id: user_id}}
       }) do
-    case Devices.get_device_by_uuid(uuid, user_id) do
+    case Devices.get_active_device_by_user_id(user_id) do
       nil ->
         {:error, "Device not registered."}
 
