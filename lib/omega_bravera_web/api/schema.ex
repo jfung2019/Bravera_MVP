@@ -7,6 +7,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.OfferChallenge)
   import_types(Types.Account)
   import_types(Types.Device)
+  import_types(Types.Activity)
   import_types(Types.Helpers)
 
   mutation do
@@ -36,6 +37,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       arg(:input, non_null(:offer_challenge_create_input))
       middleware(Middleware.Authenticate)
       resolve(&Resolvers.OfferChallenges.create/3)
+    end
+
+    @desc "Create activity."
+    field :create_activity, :save_activity_result do
+      arg(:input, non_null(:save_activity_input))
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.Activity.create/3)
     end
   end
 

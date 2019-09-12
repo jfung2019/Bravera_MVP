@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Api.Mutation.CreateOfferChallenge do
+defmodule OmegaBraveraWeb.Api.Mutation.OfferChallengeTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
   import OmegaBravera.Factory
@@ -15,7 +15,6 @@ defmodule OmegaBraveraWeb.Api.Mutation.CreateOfferChallenge do
         slug
         hasTeam
       }
-      errors { key message }
     }
   }
   """
@@ -46,14 +45,14 @@ defmodule OmegaBraveraWeb.Api.Mutation.CreateOfferChallenge do
       })
 
     assert json_response(conn, 200) == %{
-             "data" => %{
-               "createOfferChallenge" => %{
-                 "errors" => [
-                   %{"key" => "user_id", "message" => "Action Requires Login"}
-                 ],
-                 "offerChallenge" => nil
+             "data" => %{"createOfferChallenge" => nil},
+             "errors" => [
+               %{
+                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "message" => "not_authorized",
+                 "path" => ["createOfferChallenge"]
                }
-             }
+             ]
            }
   end
 

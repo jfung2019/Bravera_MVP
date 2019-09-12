@@ -22,4 +22,32 @@ defmodule OmegaBravera.Activity.Activities do
   def get_activity!(id) do
     from(a in ActivityAccumulator, where: a.id == ^id) |> Repo.one()
   end
+
+  def create_app_activity(activity_attrs, user_id, device_id, user_activities) do
+    ActivityAccumulator.create_bravera_app_activity(
+      activity_attrs,
+      user_id,
+      device_id,
+      user_activities
+    )
+    |> Repo.insert()
+  end
+
+  def get_user_activities_at_time(
+        %{start_date: start_date, end_date: end_date},
+        user_id,
+        device_id
+      ) do
+    from(
+      a in ActivityAccumulator,
+      where:
+        a.user_id == ^user_id and
+          a.device_id == ^device_id,
+      where: a.start_date >= ^start_date,
+      where: a.start_date <= ^end_date,
+      where: not is_nil(a.device_id) == true,
+      select: count(a.id)
+    )
+    |> Repo.one()
+  end
 end

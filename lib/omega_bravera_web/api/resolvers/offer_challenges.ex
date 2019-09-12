@@ -26,7 +26,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         Logger.error("API: Could not sign up user for offer. Reason: #{inspect(changeset)}")
-        {:ok, %{errors: Helpers.transform_errors(changeset)}}
+
+        {:error,
+         message: "Could not create offer challenge", details: Helpers.transform_errors(changeset)}
     end
   end
 end

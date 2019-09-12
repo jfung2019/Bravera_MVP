@@ -38,6 +38,14 @@ defmodule OmegaBravera.Devices do
   """
   def get_device!(id), do: Repo.get!(Device, id)
 
+  def get_device_by_uuid(uuid) do
+    from(
+      d in Device,
+      where: d.uuid == ^uuid and d.active == true
+    )
+    |> Repo.one()
+  end
+
   def get_active_device_by_user_id(user_id) do
     from(
       d in Device,
