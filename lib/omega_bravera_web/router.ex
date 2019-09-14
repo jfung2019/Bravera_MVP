@@ -171,9 +171,7 @@ defmodule OmegaBraveraWeb.Router do
   scope "/offers", OmegaBraveraWeb do
     pipe_through(:browser)
 
-    get("/", Offer.OfferController, :index)
-
-    resources "/", Offer.OfferController, only: [:show], param: "slug" do
+    resources "/", Offer.OfferController, only: [:index], param: "slug" do
       resources "/", Offer.OfferChallengeController, only: [:show, :new, :create], param: "slug" do
         get("/activities", Offer.OfferChallengeActivityController, :index)
         get("/:redeem_token", Offer.OfferChallengeController, :send_qr_code)
