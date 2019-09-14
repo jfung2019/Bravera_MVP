@@ -49,6 +49,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
     end
   end
 
+  def get_qr_code(_conn, _user, _challenge), do: ""
+
   def user_full_name(%User{} = user), do: User.full_name(user)
 
   def user_profile_pic(nil), do: ""
