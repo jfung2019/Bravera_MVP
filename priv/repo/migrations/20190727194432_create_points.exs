@@ -21,7 +21,7 @@ defmodule OmegaBravera.Repo.Migrations.CreatePoints do
     flush()
 
     point_entries =
-      from(a in ActivityAccumulator)
+      from(a in "activities_accumulator", select: [:user_id, :id, :inserted_at, :updated_at])
       |> Repo.all()
       |> Enum.map(fn activity ->
         value =
