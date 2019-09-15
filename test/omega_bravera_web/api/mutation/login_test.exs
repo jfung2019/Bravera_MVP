@@ -94,8 +94,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
     assert %{
              "offerChallengesMap" => %{"completed" => [], "expired" => [], "live" => []},
              "totalChallenges" => 0,
-             "totalKilometers" => nil,
-             "totalPoints" => nil,
+             "totalKilometers" => 0.0,
+             "totalPoints" => 0.0,
              "totalRewards" => 0
            } = user_profile
   end

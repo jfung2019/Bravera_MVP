@@ -234,7 +234,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   def api_user_profile(user_id) do
-    total_points = Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) || 0
+    total_points = Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) || Decimal.from_float(0.0)
 
     total_rewards =
       Repo.aggregate(
@@ -255,7 +255,7 @@ defmodule OmegaBravera.Accounts do
         :distance
       )
 
-    total_kms_offers = if !is_nil(total_kms_offers), do: Decimal.round(total_kms_offers)
+    total_kms_offers = if is_nil(total_kms_offers), do: Decimal.from_float(0.0), else: Decimal.round(total_kms_offers)
 
     live_challenges =
       from(oc_live in OfferChallenge,
