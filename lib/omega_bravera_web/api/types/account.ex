@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   use Absinthe.Schema.Notation
 
   object :user do
-    field(:id, :id)
+    field(:id, non_null(:id))
     field(:email, :string)
     field(:firstname, :string)
     field(:lastname, :string)
@@ -10,11 +10,12 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :user_profile do
-    field(:total_points, :decimal)
-    field(:total_rewards, :integer)
-    field(:total_kilometers, :decimal)
-    field(:total_challenges, :integer)
+    field(:total_points, non_null(:decimal))
+    field(:total_rewards, non_null(:integer))
+    field(:total_kilometers, non_null(:decimal))
+    field(:total_challenges, non_null(:integer))
     field(:offer_challenges_map, :offer_challenges_map)
+    field(:profile_picture, :string)
   end
 
   object :user_session do

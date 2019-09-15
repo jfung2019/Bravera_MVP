@@ -37,17 +37,18 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
     credential |> Repo.preload(:user)
   end
 
-  test "api/create_activity can create activity" do
+  setup do
     credential = credential_fixture()
     device = insert(:device, %{active: true, user_id: credential.user_id})
+    token = Auth.generate_device_token(device.uuid)
+    {:ok, user_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
+    {:ok, token: token, user_token: user_token}
+  end
 
-    {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-    device_token = Auth.generate_device_token(device.uuid)
-
+  test "api/create_activity can create activity", %{token: token} do
     conn =
       build_conn()
-      |> put_req_header("authorization", "Bearer #{auth_token}")
-      |> put_req_header("device", "Device #{device_token}")
+      |> put_req_header("authorization", "Bearer #{token}")
 
     response =
       post(
@@ -76,17 +77,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
            } = json_response(response, 200)
   end
 
-  test "api/create_activity will refuse duplicate activities based on start and end dates" do
-    credential = credential_fixture()
-    device = insert(:device, %{active: true, user_id: credential.user_id})
-
-    {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-    device_token = Auth.generate_device_token(device.uuid)
-
+  test "api/create_activity will refuse duplicate activities based on start and end dates", %{token: token} do
     conn =
       build_conn()
-      |> put_req_header("authorization", "Bearer #{auth_token}")
-      |> put_req_header("device", "Device #{device_token}")
+      |> put_req_header("authorization", "Bearer #{token}")
 
     post(
       conn,
@@ -130,15 +124,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
            } = json_response(response, 200)
   end
 
-  test "api/create_activity requires device token to be present in request" do
-    credential = credential_fixture()
-    _device = insert(:device, %{active: true, user_id: credential.user_id})
-
-    {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-
+  test "api/create_activity requires device token to be present in request", %{user_token: user_token} do
     conn =
       build_conn()
-      |> put_req_header("authorization", "Bearer #{auth_token}")
+      |> put_req_header("authorization", "Bearer #{user_token}")
 
     response =
       post(

@@ -32,16 +32,16 @@ defmodule OmegaBraveraWeb.Api.Query.DeviceTest do
     |> Repo.preload(:user)
   end
 
-  test "refresh_device_token/3 can refresh device token" do
+  setup do
     credential = credential_fixture()
     device = insert(:device, %{user_id: credential.user_id, active: true})
+    token = OmegaBraveraWeb.Api.Auth.generate_device_token(device.uuid)
+    {:ok, device_token: token, device: device, token: token}
+  end
 
-    {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-
-    conn = build_conn() |> put_req_header("authorization", "Bearer #{auth_token}")
-
+  test "refresh_device_token/3 can refresh device token", %{token: token, device: device} do
+    conn = build_conn() |> put_req_header("authorization", "Bearer #{token}")
     response = post(conn, "/api", %{query: @query})
-
     assert %{
              "data" => %{
                "refreshDeviceToken" => %{

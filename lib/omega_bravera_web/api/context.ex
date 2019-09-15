@@ -15,24 +15,25 @@ defmodule OmegaBraveraWeb.Api.Context do
 
   defp build_context(conn) do
     with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
-         {:ok, %{"sub" => "user:" <> id}} <- Guardian.decode_and_verify(token),
-         %{} = user <- Accounts.get_user_with_everything!(id) do
-      case get_req_header(conn, "device") do
-        ["Device " <> device_token] ->
-          case Auth.decrypt_token(device_token) do
-            {:ok, {:device_uuid, device_uuid}} ->
-              %{current_user: user, device: Devices.get_device_by_uuid(device_uuid)}
-
-            _ ->
-              %{current_user: user, device: nil}
-          end
-
-        _ ->
-          %{current_user: user, device: nil}
-      end
+         {:ok, user, device} <- get_user_device(token) do
+      %{current_user: user, device: device}
     else
       _ ->
         %{}
+    end
+  end
+
+  defp get_user_device(token) do
+    case Guardian.decode_and_verify(token) do
+      {:ok, %{"sub" => "user:" <> id}} -> {:ok, Accounts.get_user_with_everything!(id), nil}
+      _ ->
+        case Auth.decrypt_token(token) do
+          {:ok, {:device_uuid, device_uuid}} ->
+            device = Devices.get_device_by_uuid(device_uuid)
+            {:ok, Accounts.get_user_with_everything!(device.user_id), device}
+          _ ->
+            :error
+        end
     end
   end
 end
