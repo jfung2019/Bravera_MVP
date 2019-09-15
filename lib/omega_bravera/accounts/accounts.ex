@@ -234,14 +234,14 @@ defmodule OmegaBravera.Accounts do
   end
 
   def api_user_profile(user_id) do
-    total_points = Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value)
+    total_points = Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) || 0
 
     total_rewards =
       Repo.aggregate(
         from(ofr in OfferRedeem, where: ofr.status == "redeemed" and ofr.user_id == ^user_id),
         :count,
         :id
-      ) || 0
+      )
 
     total_kms_offers =
       Repo.aggregate(
