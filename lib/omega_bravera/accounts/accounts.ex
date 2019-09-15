@@ -241,7 +241,7 @@ defmodule OmegaBravera.Accounts do
         from(ofr in OfferRedeem, where: ofr.status == "redeemed" and ofr.user_id == ^user_id),
         :count,
         :id
-      )
+      ) || 0
 
     total_kms_offers =
       Repo.aggregate(

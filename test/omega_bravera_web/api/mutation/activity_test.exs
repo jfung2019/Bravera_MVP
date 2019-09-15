@@ -156,14 +156,14 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
       )
 
     assert %{
-      "data" => %{"createActivity" => nil},
-      "errors" => [
-        %{
-          "locations" => [%{"column" => 0, "line" => 2}],
-          "message" => "Device token expired or non-existent",
-          "path" => ["createActivity"]
-        }
-      ]
-    } = json_response(response, 200)
+             "data" => %{"createActivity" => nil},
+             "errors" => [
+               %{
+                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "message" => "Device token expired or non-existent",
+                 "path" => ["createActivity"]
+               }
+             ]
+           } = json_response(response, 200)
   end
 end
