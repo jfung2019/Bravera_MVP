@@ -4,6 +4,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
   alias OmegaBravera.Devices
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   alias OmegaBraveraWeb.Api.Auth
+  alias OmegaBravera.Activity.Activities
 
   def register_device(_root, %{input: %{active: active, uuid: uuid}}, %{
         context: %{current_user: %{id: user_id}}
@@ -35,6 +36,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
            token: Auth.generate_device_token(device.uuid),
            expires_at: Timex.shift(Timex.now(), days: 1)
          }}
+    end
+  end
+
+  def get_latest_sync_time(_root, _input, %{context: %{current_user: %{id: user_id}, device: %{id: device_id, inserted_at: inserted_at}}}) do
+    case Activities.get_latest_device_activity(user_id, device_id) do
+      %{end_date: end_date} ->
+        {:ok, %{last_sync_at: end_date}}
+      nil ->
+        {:ok, %{last_sync_at: inserted_at}}
     end
   end
 end

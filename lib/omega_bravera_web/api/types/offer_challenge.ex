@@ -6,6 +6,7 @@ defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
     field(:activity_type, :string)
     field(:default_currency, :string)
     field(:distance_target, :integer)
+    field(:distance_covered, :decimal)
     field(:end_date, :date)
     field(:has_team, :boolean)
     field(:slug, :string)

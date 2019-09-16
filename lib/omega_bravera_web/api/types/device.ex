@@ -18,4 +18,8 @@ defmodule OmegaBraveraWeb.Api.Types.Device do
     field(:uuid, non_null(:string))
     field(:active, non_null(:boolean))
   end
+
+  object :device_latest_sync_result do
+    field(:last_sync_at, non_null(:date))
+  end
 end

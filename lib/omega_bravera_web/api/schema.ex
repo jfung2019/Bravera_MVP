@@ -48,6 +48,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
   end
 
   query do
+    @desc "Get latest device sync datetime"
+    field :latest_device_sync, :device_latest_sync_result do
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.Devices.get_latest_sync_time/3)
+    end
+
     @desc "Refresh existing device token."
     field :refresh_device_token, :register_device_result do
       middleware(Middleware.Authenticate)

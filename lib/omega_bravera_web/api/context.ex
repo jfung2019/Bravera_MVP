@@ -25,12 +25,15 @@ defmodule OmegaBraveraWeb.Api.Context do
 
   defp get_user_device(token) do
     case Guardian.decode_and_verify(token) do
-      {:ok, %{"sub" => "user:" <> id}} -> {:ok, Accounts.get_user_with_everything!(id), nil}
+      {:ok, %{"sub" => "user:" <> id}} ->
+        {:ok, Accounts.get_user_with_everything!(id), nil}
+
       _ ->
         case Auth.decrypt_token(token) do
           {:ok, {:device_uuid, device_uuid}} ->
             device = Devices.get_device_by_uuid(device_uuid)
             {:ok, Accounts.get_user_with_everything!(device.user_id), device}
+
           _ ->
             :error
         end

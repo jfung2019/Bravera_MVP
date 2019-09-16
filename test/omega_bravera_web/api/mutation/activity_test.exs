@@ -77,7 +77,9 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
            } = json_response(response, 200)
   end
 
-  test "api/create_activity will refuse duplicate activities based on start and end dates", %{token: token} do
+  test "api/create_activity will refuse duplicate activities based on start and end dates", %{
+    token: token
+  } do
     conn =
       build_conn()
       |> put_req_header("authorization", "Bearer #{token}")
@@ -124,7 +126,9 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
            } = json_response(response, 200)
   end
 
-  test "api/create_activity requires device token to be present in request", %{user_token: user_token} do
+  test "api/create_activity requires device token to be present in request", %{
+    user_token: user_token
+  } do
     conn =
       build_conn()
       |> put_req_header("authorization", "Bearer #{user_token}")

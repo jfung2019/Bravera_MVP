@@ -234,7 +234,9 @@ defmodule OmegaBravera.Accounts do
   end
 
   def api_user_profile(user_id) do
-    total_points = Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) || Decimal.from_float(0.0)
+    total_points =
+      Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) ||
+        Decimal.from_float(0.0)
 
     total_rewards =
       Repo.aggregate(
@@ -255,26 +257,56 @@ defmodule OmegaBravera.Accounts do
         :distance
       )
 
-    total_kms_offers = if is_nil(total_kms_offers), do: Decimal.from_float(0.0), else: Decimal.round(total_kms_offers)
+    total_kms_offers =
+      if is_nil(total_kms_offers),
+        do: Decimal.from_float(0.0),
+        else: Decimal.round(total_kms_offers)
 
     live_challenges =
-      from(oc_live in OfferChallenge,
-        where: oc_live.status == "active" and oc_live.user_id == ^user_id,
-        preload: [:offer]
+      from(oc in OfferChallenge,
+        where: oc.status == "active" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        group_by: oc.id,
+        preload: [:offer],
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+        }
       )
       |> Repo.all()
 
     expired_challenges =
-      from(oc_live in OfferChallenge,
-        where: oc_live.status == "expired" and oc_live.user_id == ^user_id,
-        preload: [:offer]
+      from(oc in OfferChallenge,
+        where: oc.status == "expired" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        group_by: oc.id,
+        preload: [:offer],
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+        }
       )
       |> Repo.all()
 
     completed_challenges =
-      from(oc_live in OfferChallenge,
-        where: oc_live.status == "complete" and oc_live.user_id == ^user_id,
-        preload: [:offer]
+      from(oc in OfferChallenge,
+        where: oc.status == "complete" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        group_by: oc.id,
+        preload: [:offer],
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+        }
       )
       |> Repo.all()
 
