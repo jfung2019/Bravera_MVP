@@ -1,4 +1,6 @@
 defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
+  require Logger
+
   import OmegaBraveraWeb.Gettext
 
   alias OmegaBravera.Devices
@@ -18,6 +20,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
          }}
 
       {:error, :create_device, changeset, _changes} ->
+        Logger.info("Could not register device, reason: #{inspect(changeset)}")
+
         {:error,
          message: gettext("Could not create device"), details: Helpers.transform_errors(changeset)}
     end

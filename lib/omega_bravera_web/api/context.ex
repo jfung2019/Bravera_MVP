@@ -31,8 +31,13 @@ defmodule OmegaBraveraWeb.Api.Context do
       _ ->
         case Auth.decrypt_token(token) do
           {:ok, {:device_uuid, device_uuid}} ->
-            device = Devices.get_device_by_uuid(device_uuid)
-            {:ok, Accounts.get_user_with_everything!(device.user_id), device}
+            case Devices.get_device_by_uuid(device_uuid) do
+              nil ->
+                :error
+
+              device ->
+                {:ok, Accounts.get_user_with_everything!(device.user_id), device}
+            end
 
           _ ->
             :error

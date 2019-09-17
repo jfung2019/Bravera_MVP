@@ -3,9 +3,12 @@ defmodule OmegaBraveraWeb.Api.Types.Helpers do
 
   scalar :date do
     parse(fn input ->
-      case DateTime.from_iso8601(input.value) do
-        {:ok, date, _} -> {:ok, date}
-        _ -> :error
+      case Timex.parse(input.value, "{ISO:Extended}") do
+        {:ok, iso_date} ->
+          {:ok, date} = DateTime.from_naive(iso_date, "Etc/UTC")
+          {:ok, date}
+        _ ->
+          :error
       end
     end)
 
