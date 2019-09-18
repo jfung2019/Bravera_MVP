@@ -7,7 +7,7 @@ defmodule OmegaBraveraWeb.Api.Middleware.Authenticate do
         resolution
 
       _ ->
-        Absinthe.Resolution.put_result(resolution, {:error, "not_authorized"})
+        Absinthe.Resolution.put_result(resolution, {:error, message: "not_authorized"})
     end
   end
 end
