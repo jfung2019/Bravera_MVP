@@ -27,5 +27,6 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
     end
   end
 
-  def create(_root, _params, _info), do: {:error, message: gettext("Device token expired or non-existent")}
+  def create(_root, _params, _info),
+    do: {:error, message: gettext("Device token expired or non-existent")}
 end

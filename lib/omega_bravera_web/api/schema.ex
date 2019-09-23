@@ -8,9 +8,16 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Account)
   import_types(Types.Device)
   import_types(Types.Activity)
+  import_types(Types.Referral)
   import_types(Types.Helpers)
 
   mutation do
+    @desc "Create a Bravera referral link."
+    field :create_referral, :create_referral_result do
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.Referrals.create_referral/3)
+    end
+
     @desc "Register a new user device."
     field :register_device, :register_device_result do
       arg(:input, non_null(:register_device_input))

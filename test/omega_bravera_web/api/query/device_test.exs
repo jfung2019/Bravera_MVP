@@ -85,6 +85,7 @@ defmodule OmegaBraveraWeb.Api.Query.DeviceTest do
   } do
     now = DateTime.utc_now()
     end_date = DateTime.add(now, 3600, :second)
+
     assert {:ok, activity} =
              OmegaBravera.Activity.Activities.create_app_activity(
                %{distance: 1.0, start_date: now, end_date: end_date, source: "test"},
@@ -92,6 +93,7 @@ defmodule OmegaBraveraWeb.Api.Query.DeviceTest do
                device.id,
                nil
              )
+
     conn = build_conn() |> put_req_header("authorization", "Bearer #{token}")
     response = post(conn, "/api", %{query: @latest_activity_query})
 
@@ -100,6 +102,7 @@ defmodule OmegaBraveraWeb.Api.Query.DeviceTest do
                "latestDeviceSync" => %{"lastSyncAt" => datetime}
              }
            } = json_response(response, 200)
+
     refute DateTime.to_iso8601(device.inserted_at) == datetime
     assert DateTime.to_iso8601(activity.end_date) == datetime
   end

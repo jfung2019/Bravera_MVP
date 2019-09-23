@@ -7,6 +7,7 @@ defmodule OmegaBraveraWeb.Api.Types.Helpers do
         {:ok, iso_date} ->
           {:ok, date} = DateTime.from_naive(iso_date, "Etc/UTC")
           {:ok, date}
+
         _ ->
           :error
       end
