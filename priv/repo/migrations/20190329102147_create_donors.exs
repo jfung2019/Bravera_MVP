@@ -26,7 +26,17 @@ defmodule OmegaBravera.Repo.Migrations.CreateDonors do
 
     # Get all users who made a donation.
     users_who_donated =
-      from(u in "users", where: u.id in ^unique_user_donors, preload: [:donations], select: u)
+      from(u in "users",
+        where: u.id in ^unique_user_donors,
+        select: [
+          :firstname,
+          :lastname,
+          :email,
+          :inserted_at,
+          :updated_at
+        ],
+        preload: [:donations]
+      )
       |> Repo.all()
 
     donor_entries =

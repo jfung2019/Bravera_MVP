@@ -24,13 +24,26 @@ defmodule OmegaBraveraWeb.Router do
     plug(OmegaBraveraWeb.AdminLoggedIn)
   end
 
-  pipeline :dashboard do
-    plug(:put_layout, {OmegaBraveraWeb.LayoutView, "dashboard.html"})
-  end
-
   pipeline :api do
     plug(Plug.Logger)
     plug(:accepts, ["json"])
+  end
+
+  pipeline :absinthe_api do
+    plug(Plug.Logger)
+    plug(:accepts, ["json"])
+    plug OmegaBraveraWeb.Api.Context
+  end
+
+  scope "/" do
+    pipe_through :absinthe_api
+
+    forward "/api", Absinthe.Plug, schema: OmegaBraveraWeb.Api.Schema
+
+    forward "/graphiql", Absinthe.Plug.GraphiQL,
+      schema: OmegaBraveraWeb.Api.Schema,
+      socket: OmegaBraveraWeb.UserSocket,
+      context: %{pubsub: OmegaBraveraWeb.Endpoint}
   end
 
   scope "/" do
@@ -89,17 +102,6 @@ defmodule OmegaBraveraWeb.Router do
     post("/webhook-callback", StravaController, :post_webhook_callback)
   end
 
-  scope "/dashboard", OmegaBraveraWeb do
-    pipe_through([:browser, :user_authenticated, :dashboard])
-
-    get("/", UserController, :dashboard)
-    get("/donations", UserController, :user_donations)
-
-    scope "/ngos" do
-      get("/", UserController, :ngos)
-    end
-  end
-
   pipeline :admin_section do
     plug(:browser)
     plug(:put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel})
@@ -115,7 +117,8 @@ defmodule OmegaBraveraWeb.Router do
       get("/", AdminUserPageController, :index)
       resources "/locations", AdminPanelLocationsController
       resources("/admin-users", AdminUserController)
-      resources("/users", AdminPanelUserController, only: [:index, :show])
+      resources("/users", AdminPanelUserController, only: [:index, :show, :edit])
+      put("/users/:id/edit", AdminPanelUserController, :update)
       resources("/activities", AdminPanelActivityController, only: [:new, :create])
 
       resources("/offer-activities", AdminPanelOfferChallengeActivityController,
@@ -165,6 +168,7 @@ defmodule OmegaBraveraWeb.Router do
       get("/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list)
 
       resources("/offers", AdminPanelOfferController, only: [:index, :new, :create])
+      resources("/points", AdminPanelPointsController, only: [:new, :create])
 
       get("/offers/:slug", AdminPanelOfferController, :show)
       get("/offers/:slug/edit", AdminPanelOfferController, :edit)
@@ -184,9 +188,7 @@ defmodule OmegaBraveraWeb.Router do
   scope "/offers", OmegaBraveraWeb do
     pipe_through(:browser)
 
-    get("/", Offer.OfferController, :index)
-
-    resources "/", Offer.OfferController, only: [:show], param: "slug" do
+    resources "/", Offer.OfferController, only: [:index], param: "slug" do
       resources "/", Offer.OfferChallengeController, only: [:show, :new, :create], param: "slug" do
         get("/activities", Offer.OfferChallengeActivityController, :index)
         get("/:redeem_token", Offer.OfferChallengeController, :send_qr_code)

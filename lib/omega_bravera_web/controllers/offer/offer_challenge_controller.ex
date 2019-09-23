@@ -16,6 +16,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Accounts.User
   }
 
+  alias OmegaBraveraWeb.Offer.OfferChallengeHelper
+
   plug :put_layout, false when action in [:qr_code]
 
   plug(:assign_available_options when action in [:create])
@@ -208,7 +210,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       offer ->
         case Offers.create_offer_challenge(offer, current_user, offer_challenge_attrs) do
           {:ok, offer_challenge} ->
-            send_emails(Repo.preload(offer_challenge, :user))
+            OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
 
             conn
             |> put_flash(:info, gettext("Success! You have registered for this offer!"))
@@ -247,19 +249,23 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         conn
         |> open_welcome_modal()
         |> open_success_modal()
+        |> open_signup_or_login_modal()
         |> render("show.html", render_attrs)
     end
   end
 
   def kick_team_member(conn, %{
-    "offer_slug" => offer_slug,
-    "offer_challenge_slug" => slug,
-    "user_id" => team_member_user_id
-  }) do
+        "offer_slug" => offer_slug,
+        "offer_challenge_slug" => slug,
+        "user_id" => team_member_user_id
+      }) do
     case Guardian.Plug.current_resource(conn) do
       nil ->
         conn
-        |> put_flash(:error, "Invalid operation. Please make sure you are using the correct account.")
+        |> put_flash(
+          :error,
+          "Invalid operation. Please make sure you are using the correct account."
+        )
         |> redirect(to: page_path(conn, :login))
 
       logged_in_challenge_owner ->
@@ -268,10 +274,10 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
         case Offers.kick_team_member(team_member, challenge, logged_in_challenge_owner) do
           {:ok, _struct} ->
-
             conn
             |> put_flash(:info, "Removed team member sucessfully!")
             |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+
           {:error, reason} ->
             Logger.error("Could not remove team member, reason: #{inspect(reason)}")
 
@@ -287,62 +293,72 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         "offer_challenge_slug" => slug,
         "invitation_token" => invitation_token
       }) do
-    case Guardian.Plug.current_resource(conn) do
+    case Offers.get_offer_chal_by_slugs(offer_slug, slug, [:team, :user, offer: [:vendor]]) do
       nil ->
         conn
         |> put_flash(
           :info,
-          "Please login using Strava first then click the invitation link again from your email."
+          "Challenge not found. Please make sure you clicked the correct link."
         )
-        |> redirect(to: page_path(conn, :login))
+        |> redirect(to: ngo_path(conn, :index))
 
-      user ->
-        challenge =
-          Offers.get_offer_chal_by_slugs(offer_slug, slug, [:team, :user, offer: [:vendor]])
-
-        # TODO: allow to fail gracefully when not found and passed to changeset. -Sherief
-        invitation = Offers.get_team_member_invitation_by_token(invitation_token)
-
-        case Offers.add_user_to_team(invitation, challenge.team, user, challenge.user) do
-          {:ok, _} ->
-            # TODO cast_assoc this add_user_to_team? -Sherief
-            Offers.accepted_team_member_invitation(invitation)
-
-            # TODO: cast_assoc with add_user_to_team. -Sherief
-            case Offers.create_offer_redeems(challenge, challenge.offer.vendor, %{}, user) do
-              {:ok, _} ->
-                # Notifications
-                Offers.Notifier.send_team_owner_member_added_notification(challenge, user)
-                Offers.Notifier.send_challenge_signup_email(challenge, user)
-
-              {:error, reason} ->
-                Logger.info(
-                  "OfferChallengeController: could not create redeem, reason: #{
-                    inspect(reason.errors)
-                  }"
-                )
-            end
-
+      challenge ->
+        case Guardian.Plug.current_resource(conn) do
+          nil ->
             conn
             |> put_flash(
               :info,
-              "You are now part of #{inspect(User.full_name(challenge.user))} team."
+              "Please login using Strava first then click the invitation link again from your email."
             )
+            |> put_session("open_login_or_sign_up_to_join_team_modal", true)
+            |> put_session("add_team_member_url", conn.request_path)
             |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
 
-          {:error, reason} ->
-            Logger.info(
-              "OfferChallengeController: add team member to team, reason: #{
-                inspect(reason.errors)
-              }"
-            )
+          user ->
+            # TODO: allow to fail gracefully when not found and passed to changeset. -Sherief
+            invitation = Offers.get_team_member_invitation_by_token(invitation_token)
 
-            conn
-            |> put_flash(
-              :error,
-              "Something went wrong, please make sure you are logged in and clicked your link in your invitation email."
-            )
-            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+            case Offers.add_user_to_team(invitation, challenge.team, user, challenge.user) do
+              {:ok, _} ->
+                # TODO cast_assoc this add_user_to_team? -Sherief
+                Offers.accepted_team_member_invitation(invitation)
+
+                # TODO: cast_assoc with add_user_to_team. -Sherief
+                case Offers.create_offer_redeems(challenge, challenge.offer.vendor, %{}, user) do
+                  {:ok, _} ->
+                    # Notifications
+                    Offers.Notifier.send_team_owner_member_added_notification(challenge, user)
+                    Offers.Notifier.send_challenge_signup_email(challenge, user)
+
+                  {:error, reason} ->
+                    Logger.info(
+                      "OfferChallengeController: could not create redeem, reason: #{
+                        inspect(reason.errors)
+                      }"
+                    )
+                end
+
+                conn
+                |> put_flash(
+                  :info,
+                  "You are now part of #{inspect(User.full_name(challenge.user))} team."
+                )
+                |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+
+              {:error, reason} ->
+                Logger.info(
+                  "OfferChallengeController: add team member to team, reason: #{
+                    inspect(reason.errors)
+                  }"
+                )
+
+                conn
+                |> put_flash(
+                  :error,
+                  "Something went wrong, please make sure you are logged in and clicked your link in your invitation email."
+                )
+                |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+            end
         end
     end
   end
@@ -475,26 +491,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           offer_challenges: [user: [:strava], team: [users: [:strava]]]
         )
     }
-  end
-
-  defp send_emails(%OfferChallenge{status: status, has_team: false} = challenge) do
-    case status do
-      "pre_registration" ->
-        Offers.Notifier.send_pre_registration_challenge_sign_up_email(challenge)
-
-      _ ->
-        Offers.Notifier.send_challenge_signup_email(challenge, challenge.user)
-    end
-  end
-
-  defp send_emails(%OfferChallenge{status: status, has_team: true} = challenge) do
-    case status do
-      "pre_registration" ->
-        Offers.Notifier.send_pre_registration_challenge_sign_up_email(challenge)
-
-      _ ->
-        Offers.Notifier.send_team_challenge_signup_email(challenge, challenge.user)
-    end
   end
 
   defp assign_available_options(conn, _opts) do

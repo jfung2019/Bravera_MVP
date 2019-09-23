@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :omega_bravera
+  use Absinthe.Phoenix.Endpoint
 
   socket "/socket", OmegaBraveraWeb.UserSocket, websocket: true
   socket "/live", Phoenix.LiveView.Socket
@@ -44,6 +45,8 @@ defmodule OmegaBraveraWeb.Endpoint do
     max_age: Application.get_env(:omega_bravera, :cookie_age)
   )
 
+  # Absinthe Debugging
+  # plug :debug_response
   plug(OmegaBraveraWeb.Router)
 
   @doc """
@@ -60,4 +63,12 @@ defmodule OmegaBraveraWeb.Endpoint do
       {:ok, config}
     end
   end
+
+  # Absinthe Debugging
+  # defp debug_response(conn, _) do
+  #   Plug.Conn.register_before_send(conn, fn conn ->
+  #     conn.resp_body |> IO.inspect(label: :Absinthe)
+  #     conn
+  #   end)
+  # end
 end

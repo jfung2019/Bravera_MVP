@@ -1,5 +1,5 @@
 <!-- Login Modal -->
-<%= form_for @changeset, user_session_path(OmegaBraveraWeb.Endpoint, :create), [phx_change: :validate, as: :session, _csrf_token: @csrf], fn f -> %>
+<%= form_for @changeset, user_session_path(OmegaBraveraWeb.Endpoint, :create), [phx_change: :validate, as: :session, _csrf_token: @csrf, redirect_uri: @redirect_uri, add_team_member_redirect_uri: @add_team_member_redirect_uri], fn f -> %>
 <%= if @open_modal do %>
   <div class="live-modal modal fade show" data-backdrop="false" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" style="display: block;">
 <% else %>
@@ -14,14 +14,6 @@
           <div class="row mx-auto align-items-center">
             <span class="big-logo mx-auto"></span>
           </div>
-
-          <div class="row mx-auto mt-3 align-items-center">
-            <%= link(to: strava_path(OmegaBraveraWeb.Endpoint, :authenticate), class: "mb-1 mx-auto") do %>
-              <img src="/images/strava/btn_strava_connect-orange.png" alt="Connect with Strava"/>
-            <% end %>
-          </div>
-
-          <hr>
 
           <div class="row mx-auto align-items-center">
             <span class="mx-auto"><%= gettext("Email Sign in") %></span>
@@ -53,6 +45,13 @@
             <% end %>
 
             <input type="hidden" name="_csrf_token" value="<%= @csrf %>" />
+            <%= if @redirect_uri do %>
+              <input type="hidden" name="redirect_uri" value="<%= @redirect_uri %>" />
+            <% end %>
+
+            <%= if @add_team_member_redirect_uri do %>
+              <input type="hidden" name="add_team_member_redirect_uri" value="<%= @add_team_member_redirect_uri %>" />
+            <% end %>
           </div>
 
         </div>

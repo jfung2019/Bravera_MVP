@@ -483,16 +483,13 @@ defmodule OmegaBravera.Offers.Notifier do
   end
 
   defp team_member_invite_link(challenge, token) do
-    Routes.page_url(Endpoint, :login, %{
-      team_invitation:
-        Routes.offer_offer_challenge_offer_challenge_path(
-          Endpoint,
-          :add_team_member,
-          challenge.offer.slug,
-          challenge.slug,
-          token
-        )
-    })
+    Routes.offer_offer_challenge_offer_challenge_url(
+      Endpoint,
+      :add_team_member,
+      challenge.offer.slug,
+      challenge.slug,
+      token
+    )
   end
 
   defp remaining_time(%OfferChallenge{end_date: end_date}) do

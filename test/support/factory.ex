@@ -3,6 +3,14 @@ defmodule OmegaBravera.Factory do
 
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 
+  def device_factory do
+    %OmegaBravera.Devices.Device{
+      uuid: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
+      active: false,
+      user_id: nil
+    }
+  end
+
   def user_factory do
     %OmegaBravera.Accounts.User{
       firstname: "John",
@@ -273,6 +281,15 @@ defmodule OmegaBravera.Factory do
       offer_challenge: nil,
       offer_reward: nil,
       token: Enum.random(10_000_000..20_000_000) |> Integer.to_string()
+    }
+  end
+
+  def point_factory do
+    %OmegaBravera.Points.Point{
+      source: "activity",
+      user_id: nil,
+      activity_id: nil,
+      value: Decimal.new(50)
     }
   end
 end

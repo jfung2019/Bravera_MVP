@@ -11,6 +11,7 @@ defmodule OmegaBravera.Application do
       # Start the endpoint when the application starts
       OmegaBraveraWeb.Endpoint,
       OmegaBravera.IngestionSupervisor,
+      {Absinthe.Subscription, [OmegaBraveraWeb.Endpoint]},
       {Task.Supervisor, name: OmegaBravera.TaskSupervisor}
     ]
 

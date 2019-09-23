@@ -3,16 +3,31 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
 
   alias OmegaBravera.Accounts
 
-  def mount(%{csrf: csrf}, socket) do
+  def mount(
+        %{
+          csrf: csrf,
+          redirect_uri: redirect_uri,
+          add_team_member_redirect_uri: add_team_member_redirect_uri
+        },
+        socket
+      ) do
     {:ok,
      assign(socket, %{
        csrf: csrf,
        changeset: Accounts.Login.changeset(%Accounts.Login{}),
        open_modal: false,
        error: nil,
-       login_button_disabled?: false
+       login_button_disabled?: false,
+       redirect_uri: redirect_uri,
+       add_team_member_redirect_uri: add_team_member_redirect_uri
      })}
   end
+
+  def mount(%{add_team_member_redirect_uri: add_team_member_redirect_uri}, socket),
+    do: {:stop, redirect(socket, to: add_team_member_redirect_uri)}
+
+  def mount(%{redirect_uri: redirect_uri}, socket),
+    do: {:stop, redirect(socket, to: redirect_uri)}
 
   def mount(_session, socket), do: {:stop, redirect(socket, to: "/")}
 
@@ -75,6 +90,9 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
        )}
     end
   end
+
+  # TODO: see why we are getting %{} for params in prod with some users
+  def handle_event("validate", _, socket), do: {:noreply, socket}
 
   def handle_event("close_modal", _, socket), do: {:noreply, assign(socket, open_modal: false)}
 end

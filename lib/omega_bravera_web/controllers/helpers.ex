@@ -18,6 +18,16 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
     end
   end
 
+  def open_signup_or_login_modal(conn) do
+    if is_nil(Plug.Conn.get_session(conn, "open_login_or_sign_up_to_join_team_modal")) do
+      conn
+    else
+      conn
+      |> Plug.Conn.delete_session("open_login_or_sign_up_to_join_team_modal")
+      |> Plug.Conn.assign(:open_login_or_sign_up_to_join_team_modal, true)
+    end
+  end
+
   def open_modal(conn, atom_key_word) do
     if is_nil(Plug.Conn.get_session(conn, Atom.to_string(atom_key_word))) do
       conn
@@ -25,6 +35,17 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
       conn
       |> Plug.Conn.delete_session(Atom.to_string(atom_key_word))
       |> Plug.Conn.assign(atom_key_word, true)
+    end
+  end
+
+  def get_add_team_member_redirect_uri(conn) do
+    case Plug.Conn.get_session(conn, "add_team_member_url") do
+      nil ->
+        nil
+
+      uri ->
+        Plug.Conn.delete_session(conn, "add_team_member_url")
+        uri
     end
   end
 

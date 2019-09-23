@@ -15,6 +15,7 @@ defmodule OmegaBravera.Accounts do
     Accounts.Donor,
     Money.Donation,
     Trackers,
+    Points.Point,
     Trackers.Strava,
     Challenges.NGOChal,
     Challenges.Team,
@@ -22,7 +23,10 @@ defmodule OmegaBravera.Accounts do
     Money.Donation,
     Offers.OfferChallenge,
     Offers.OfferChallengeTeam,
-    Offers.OfferChallengeTeamMembers
+    Offers.OfferChallengeTeamMembers,
+    Offers.OfferRedeem,
+    Offers.OfferChallengeActivitiesM2m,
+    Activity.ActivityAccumulator
   }
 
   def get_all_athlete_ids() do
@@ -224,10 +228,113 @@ defmodule OmegaBravera.Accounts do
       :strava,
       :setting,
       :credential,
-      :offer_challenges,
+      offer_challenges: [:offer_redeems],
       offer_teams: [:offer_challenge]
     ])
   end
+
+  def api_user_profile(user_id) do
+    total_points =
+      Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) ||
+        Decimal.from_float(0.0)
+
+    total_rewards =
+      Repo.aggregate(
+        from(ofr in OfferRedeem, where: ofr.status == "redeemed" and ofr.user_id == ^user_id),
+        :count,
+        :id
+      )
+
+    total_kms_offers =
+      Repo.aggregate(
+        from(
+          a in ActivityAccumulator,
+          where: a.user_id == ^user_id,
+          left_join: offer_ac in OfferChallengeActivitiesM2m,
+          on: a.id == offer_ac.activity_id
+        ),
+        :sum,
+        :distance
+      )
+
+    total_kms_offers =
+      if is_nil(total_kms_offers),
+        do: Decimal.from_float(0.0),
+        else: Decimal.round(total_kms_offers)
+
+    live_challenges =
+      from(oc in OfferChallenge,
+        where: oc.status == "active" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        group_by: oc.id,
+        preload: [:offer],
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+        }
+      )
+      |> Repo.all()
+
+    expired_challenges =
+      from(oc in OfferChallenge,
+        where: oc.status == "expired" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        group_by: oc.id,
+        preload: [:offer],
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+        }
+      )
+      |> Repo.all()
+
+    completed_challenges =
+      from(oc in OfferChallenge,
+        where: oc.status == "complete" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        group_by: oc.id,
+        preload: [:offer],
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+        }
+      )
+      |> Repo.all()
+
+    user =
+      from(
+        u in User,
+        where: u.id == ^user_id
+      )
+      |> Repo.one()
+
+    %{
+      user
+      | total_points: total_points,
+        total_rewards: total_rewards,
+        total_kilometers: total_kms_offers,
+        offer_challenges_map: %{
+          live: live_challenges,
+          expired: expired_challenges,
+          completed: completed_challenges,
+          total:
+            list_length(live_challenges) + list_length(expired_challenges) +
+              list_length(completed_challenges)
+        }
+    }
+  end
+
+  defp list_length(list) when is_nil(list) == true, do: 0
+  defp list_length(list), do: length(list)
 
   def preload_active_offer_challenges(user) do
     user
@@ -404,7 +511,8 @@ defmodule OmegaBravera.Accounts do
 
   """
   def list_users do
-    Repo.all(User)
+    from(u in User, order_by: [desc: :inserted_at])
+    |> Repo.all()
   end
 
   @doc """
@@ -446,6 +554,29 @@ defmodule OmegaBravera.Accounts do
           }
         )
     ])
+  end
+
+  def get_user_with_todays_points(%User{id: user_id}) do
+    now = Timex.now()
+
+    user =
+      from(
+        u in User,
+        where: u.id == ^user_id,
+        left_join: p in Point,
+        on:
+          p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and
+            p.inserted_at <= ^Timex.end_of_day(now),
+        group_by: u.id,
+        select: %{u | todays_points: sum(p.value)}
+      )
+      |> Repo.one!()
+
+    if is_nil(user.todays_points) do
+      %{user | todays_points: 0}
+    else
+      user
+    end
   end
 
   @doc """
@@ -492,6 +623,12 @@ defmodule OmegaBravera.Accounts do
   def update_user(%User{} = user, attrs) do
     user
     |> User.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_user_by_admin(%User{} = user, attrs) do
+    user
+    |> User.admin_update_changeset(attrs)
     |> Repo.update()
   end
 
