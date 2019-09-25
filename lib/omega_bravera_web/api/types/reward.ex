@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.Api.Types.Reward do
   use Absinthe.Schema.Notation
 
-  object :reward do
+  object :offer_reward do
     field(:name, non_null(:string))
     field(:value, :integer)
     field(:offer, :offer)

@@ -92,5 +92,5 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
           }
         }
       ),
-      do: {:ok, Accounts.api_user_profile(id)}
+      do: {:ok, Accounts.api_user_profile(4)}
 end

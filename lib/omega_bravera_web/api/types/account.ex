@@ -22,13 +22,9 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:offer_challenges_map, :offer_challenges_map)
     field(:profile_picture, :string)
     field(:strava, :strava)
-    field(:redeems, :user_redeems_map)
+    field(:future_redeems, list_of(:redeem))
+    field(:past_redeems, list_of(:redeem))
     field(:points_history, list_of(:point))
-  end
-
-  object :user_redeems_map do
-    field(:ready, list_of(:redeem))
-    field(:redeemed, list_of(:redeem))
   end
 
   object :user_session do

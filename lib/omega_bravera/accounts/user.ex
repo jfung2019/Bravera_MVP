@@ -41,11 +41,13 @@ defmodule OmegaBravera.Accounts.User do
     field(:total_points, :decimal, virtual: true, default: Decimal.new(0))
     field(:total_rewards, :integer, virtual: true, default: 0)
     field(:total_kilometers, :decimal, virtual: true, default: Decimal.new(0))
-
     field(:offer_challenges_map, :map,
       virtual: true,
       default: %{live: [], expired: [], completed: [], total: 0}
     )
+    field(:future_redeems, {:array, :map}, virtual: true, default: [])
+    field(:past_redeems, {:array, :map}, virtual: true, default: [])
+    field(:points_history, {:array, :map}, virtual: true, default: [])
 
     field(:total_challenges, :integer, virtual: true, default: 0)
     field(:position_on_leaderboard, :integer, virtual: true, default: 0)

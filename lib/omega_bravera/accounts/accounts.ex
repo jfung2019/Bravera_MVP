@@ -318,11 +318,41 @@ defmodule OmegaBravera.Accounts do
       )
       |> Repo.one()
 
+      # Complete Challenges and has redeems that are pedning
+      future_redeems =
+      from(
+        ofr in OfferRedeem,
+        join: oc in OfferChallenge,
+        on: oc.status == ^"complete" and ofr.offer_challenge_id == oc.id,
+        where: ofr.user_id == ^user_id and ofr.status == ^"pending",
+        preload: [:offer]
+
+      )
+      |> Repo.all()
+
+      past_redeems =
+        from(
+          ofr in OfferRedeem,
+          where: ofr.user_id == ^user_id and ofr.status == ^"redeemed",
+          preload: [:offer]
+        )
+        |> Repo.all()
+
+      points_history =
+        from(
+          p in Point,
+          where: p.user_id == ^user_id
+        )
+        |> Repo.all()
+
     %{
       user
       | total_points: total_points,
         total_rewards: total_rewards,
         total_kilometers: total_kms_offers,
+        future_redeems: future_redeems,
+        past_redeems: past_redeems,
+        points_history: points_history,
         offer_challenges_map: %{
           live: live_challenges,
           expired: expired_challenges,

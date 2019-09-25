@@ -4,7 +4,8 @@ defmodule OmegaBraveraWeb.Api.Types.Redeem do
   object :redeem do
     field(:token, :string)
     field(:status, :string)
-    field(:reward, :reward)
+    field(:offer_reward, :offer_reward)
+    field(:offer, :offer)
     field(:inserted_at, :date)
     field(:updated_at, :date)
   end
