@@ -9,6 +9,9 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Device)
   import_types(Types.Activity)
   import_types(Types.Referral)
+  import_types(Types.Reward)
+  import_types(Types.Redeem)
+  import_types(Types.Point)
   import_types(Types.Helpers)
 
   mutation do

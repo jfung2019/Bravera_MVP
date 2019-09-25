@@ -313,7 +313,8 @@ defmodule OmegaBravera.Accounts do
     user =
       from(
         u in User,
-        where: u.id == ^user_id
+        where: u.id == ^user_id,
+        preload: [:strava]
       )
       |> Repo.one()
 
