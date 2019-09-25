@@ -325,7 +325,7 @@ defmodule OmegaBravera.Accounts do
         join: oc in OfferChallenge,
         on: oc.status == ^"complete" and ofr.offer_challenge_id == oc.id,
         where: ofr.user_id == ^user_id and ofr.status == ^"pending",
-        preload: [:offer]
+        preload: [:offer, :offer_challenge]
 
       )
       |> Repo.all()
@@ -334,7 +334,7 @@ defmodule OmegaBravera.Accounts do
         from(
           ofr in OfferRedeem,
           where: ofr.user_id == ^user_id and ofr.status == ^"redeemed",
-          preload: [:offer]
+          preload: [:offer, :offer_challenge]
         )
         |> Repo.all()
 
