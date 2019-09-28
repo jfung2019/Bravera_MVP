@@ -20,7 +20,8 @@ defmodule OmegaBravera.Accounts.User do
     :profile_picture,
     :accept_terms,
     :location_id,
-    :locale
+    :locale,
+    :referred_by_id
   ]
 
   schema "users" do
@@ -36,15 +37,18 @@ defmodule OmegaBravera.Accounts.User do
     field(:profile_picture, :string, default: nil)
     field(:accept_terms, :boolean, virtual: true)
     field(:todays_points, :integer, virtual: true)
+    field(:referred_by_id, :id, default: nil)
 
     # API related
     field(:total_points, :decimal, virtual: true, default: Decimal.new(0))
     field(:total_rewards, :integer, virtual: true, default: 0)
     field(:total_kilometers, :decimal, virtual: true, default: Decimal.new(0))
+
     field(:offer_challenges_map, :map,
       virtual: true,
       default: %{live: [], expired: [], completed: [], total: 0}
     )
+
     field(:future_redeems, {:array, :map}, virtual: true, default: [])
     field(:past_redeems, {:array, :map}, virtual: true, default: [])
     field(:points_history, {:array, :map}, virtual: true, default: [])
@@ -89,11 +93,12 @@ defmodule OmegaBravera.Accounts.User do
     |> cast_assoc(:credential, with: &Credential.optional_changeset/2, required: false)
   end
 
-  def create_credential_user_changeset(user, attrs \\ %{credential: %{}}) do
+  def create_credential_user_changeset(user, attrs \\ %{credential: %{}}, referral \\ nil) do
     user
     |> changeset(attrs)
     |> validate_required([:email, :accept_terms])
     |> validate_acceptance(:accept_terms)
+    |> add_referred_by(referral)
     |> cast_assoc(:credential, with: &Credential.changeset/2, required: true)
   end
 
@@ -139,6 +144,11 @@ defmodule OmegaBravera.Accounts.User do
         changeset
     end
   end
+
+  def add_referred_by(changeset, referral) when is_nil(referral), do: changeset
+
+  def add_referred_by(changeset, referral) when not is_nil(referral),
+    do: put_change(changeset, :referred_by_id, referral.user_id)
 
   defp gen_token(length \\ 16),
     do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)

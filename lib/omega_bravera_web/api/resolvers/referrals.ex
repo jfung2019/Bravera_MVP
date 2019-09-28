@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Referrals do
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
 
   def create_referral(_info, _params, %{context: %{current_user: %{id: user_id}}}) do
-    case OmegaBravera.Referrals.create_referral(%{user_id: user_id}) do
+    case OmegaBravera.Referrals.get_or_create_referral(user_id) do
       {:ok, referral} ->
         {:ok, %{referral: referral}}
 

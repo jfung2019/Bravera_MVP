@@ -1,7 +1,9 @@
 defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
-  alias OmegaBravera.{Accounts}
+  import OmegaBravera.Factory
+
+  alias OmegaBravera.{Accounts, Repo}
 
   @valid_user_input %{
     "firstname" => "Sherief",
@@ -10,6 +12,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     "acceptTerms" => true,
     "locationId" => 1,
     "locale" => "en",
+    "referral_token" => nil,
     "credential" => %{
       "password" => "dev123",
       "passwordConfirm" => "dev123"
@@ -75,5 +78,28 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
                %{"message" => "Locale is required to signup. Supported locales are: en, zh."}
              ]
            } = json_response(response, 200)
+  end
+
+  test "create_user/3 creates a user and adds points to both users if one referred the other" do
+    inviter = insert(:user)
+    {:ok, referral} = OmegaBravera.Referrals.get_or_create_referral(inviter.id)
+
+    response =
+      post(build_conn(), "/api", %{
+        query: @query,
+        variables: %{"user" => %{@valid_user_input | "referral_token" => referral.token}}
+      })
+
+    email = @valid_user_input["email"]
+
+    assert %{"data" => %{"createUser" => %{"user" => %{"email" => ^email}}}} =
+             json_response(response, 200)
+
+    invited_user = Repo.get_by(OmegaBravera.Accounts.User, email: email)
+
+    assert Decimal.cmp(OmegaBravera.Points.get_user_points(inviter.id), Decimal.new(10)) == :eq
+
+    assert Decimal.cmp(OmegaBravera.Points.get_user_points(invited_user.id), Decimal.new(5)) ==
+             :eq
   end
 end

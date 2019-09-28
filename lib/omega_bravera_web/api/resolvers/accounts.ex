@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   import OmegaBraveraWeb.Gettext
 
   alias OmegaBravera.Guardian
-  alias OmegaBravera.{Accounts, Locations}
+  alias OmegaBravera.{Accounts, Locations, Points}
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
 
   def login(root, %{locale: locale} = params, info) do
@@ -68,8 +68,29 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   end
 
   defp do_create_user(_root, %{input: params}, _info) do
-    case Accounts.create_credential_user(params) do
+    referral =
+      if Map.has_key?(params, :referral_token) do
+        OmegaBravera.Referrals.get_referral_by_token(params.referral_token)
+      else
+        nil
+      end
+
+    case Accounts.create_credential_user(params, referral) do
       {:ok, user} ->
+        if not is_nil(user.referred_by_id) do
+          Points.create_bonus_points(%{
+            user_id: user.referred_by_id,
+            source: "referral",
+            value: Decimal.new(10)
+          })
+
+          Points.create_bonus_points(%{
+            user_id: user.id,
+            source: "referral",
+            value: Decimal.new(5)
+          })
+        end
+
         Accounts.Notifier.send_user_signup_email(user)
         {:ok, token, _} = Guardian.encode_and_sign(user, %{})
         {:ok, %{user: user, token: token, user_profile: Accounts.api_user_profile(user.id)}}

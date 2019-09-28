@@ -37,6 +37,22 @@ defmodule OmegaBravera.Referrals do
   """
   def get_referral!(id), do: Repo.get!(Referral, id)
 
+  def get_or_create_referral(user_id) do
+    case Repo.get_by(Referral, user_id: user_id) do
+      nil ->
+        create_referral(%{"user_id" => user_id})
+
+      referral ->
+        {:ok, referral}
+    end
+  end
+
+  def get_referral_by_token(nil), do: nil
+
+  def get_referral_by_token(token) do
+    from(r in Referral, where: r.token == ^token) |> Repo.one()
+  end
+
   @doc """
   Creates a referral.
 

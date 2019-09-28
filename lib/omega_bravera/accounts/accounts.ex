@@ -318,32 +318,31 @@ defmodule OmegaBravera.Accounts do
       )
       |> Repo.one()
 
-      # Complete Challenges and has redeems that are pedning
-      future_redeems =
+    # Complete Challenges and has redeems that are pedning
+    future_redeems =
       from(
         ofr in OfferRedeem,
         join: oc in OfferChallenge,
         on: oc.status == ^"complete" and ofr.offer_challenge_id == oc.id,
         where: ofr.user_id == ^user_id and ofr.status == ^"pending",
         preload: [:offer, :offer_challenge]
-
       )
       |> Repo.all()
 
-      past_redeems =
-        from(
-          ofr in OfferRedeem,
-          where: ofr.user_id == ^user_id and ofr.status == ^"redeemed",
-          preload: [:offer, :offer_challenge]
-        )
-        |> Repo.all()
+    past_redeems =
+      from(
+        ofr in OfferRedeem,
+        where: ofr.user_id == ^user_id and ofr.status == ^"redeemed",
+        preload: [:offer, :offer_challenge]
+      )
+      |> Repo.all()
 
-      points_history =
-        from(
-          p in Point,
-          where: p.user_id == ^user_id
-        )
-        |> Repo.all()
+    points_history =
+      from(
+        p in Point,
+        where: p.user_id == ^user_id
+      )
+      |> Repo.all()
 
     %{
       user
@@ -628,9 +627,9 @@ defmodule OmegaBravera.Accounts do
     |> Repo.insert()
   end
 
-  def create_credential_user(attrs \\ %{credential: %{}}) do
+  def create_credential_user(attrs \\ %{credential: %{}}, referral \\ nil) do
     %User{}
-    |> User.create_credential_user_changeset(attrs)
+    |> User.create_credential_user_changeset(attrs, referral)
     |> Repo.insert()
   end
 
