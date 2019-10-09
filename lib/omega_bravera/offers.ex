@@ -334,6 +334,29 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
+  def list_offer_offer_challenges(offer_id) do
+    from(
+      oc in OfferChallenge,
+      left_join: a in OfferChallengeActivitiesM2m,
+      on: oc.id == a.offer_challenge_id,
+      left_join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
+      where: oc.offer_id == ^offer_id,
+      group_by: [oc.id],
+      preload: [user: [:strava]],
+      select: %{
+        oc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
+      }
+    ) |> Repo.all()
+  end
+
+  def get_redeem(challenge_id, user_id) do
+    from(
+      redeem in OfferRedeem,
+      where: redeem.offer_challenge_id == ^challenge_id and redeem.user_id == ^user_id
+    )
+    |> Repo.one()
+  end
   @doc """
   Gets a single offer_challenge.
 

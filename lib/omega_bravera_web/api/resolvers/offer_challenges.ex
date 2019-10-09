@@ -31,4 +31,11 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
          message: "Could not create offer challenge", details: Helpers.transform_errors(changeset)}
     end
   end
+
+  def getChallengeRedeem(_root, %{challenge_id: challenge_id}, %{context: %{current_user: %{id: user_id}}}) do
+    case Offers.get_redeem(challenge_id, user_id) do
+      nil -> {:error, message: "Redeem not found.", details: "Could not find redeem using provided challenge_id and user_id."}
+      redeem -> {:ok, redeem}
+    end
+  end
 end

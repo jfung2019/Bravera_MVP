@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
   use Absinthe.Schema.Notation
 
   object :offer_challenge do
-    field(:id, :id)
+    field(:id, :integer)
     field(:activity_type, :string)
     field(:default_currency, :string)
     field(:distance_target, :integer)
@@ -13,8 +13,10 @@ defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
     field(:start_date, :date)
     field(:status, :string)
     field(:type, :string)
+    field(:offer_id, :integer)
     field(:inserted_at, :date)
     field(:updated_at, :date)
+    field(:user, :user)
     field(:offer, :offer)
   end
 

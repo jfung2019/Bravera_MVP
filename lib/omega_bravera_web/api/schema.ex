@@ -81,6 +81,19 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve(&Resolvers.Offers.all_offers/3)
     end
 
+    @desc "Get offer's offer challenges."
+    field :offer_offer_challenges, list_of(:offer_challenge) do
+      arg(:offer_id, non_null(:integer))
+      resolve(&Resolvers.Offers.offer_offer_challenges/3)
+    end
+
+    @desc "Get Challenge Redeem."
+    field :get_challenge_redeem, :redeem do
+      arg(:challenge_id, non_null(:integer))
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.OfferChallenges.getChallengeRedeem/3)
+    end
+
     @desc "Get a list of all locations"
     field :all_locations, list_of(non_null(:location)) do
       resolve(&Resolvers.Accounts.all_locations/3)
