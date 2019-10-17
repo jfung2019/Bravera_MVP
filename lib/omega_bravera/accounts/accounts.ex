@@ -233,6 +233,24 @@ defmodule OmegaBravera.Accounts do
     ])
   end
 
+  def get_user_with_points(user_id) do
+    user =
+      from(u in User,
+        where: u.id == ^user_id,
+        left_join: p in Point,
+        on: p.user_id == u.id,
+        group_by: [u.id],
+        select: %{u | total_points: sum(p.value)}
+      )
+      |> Repo.one()
+
+    if is_nil(user.total_points) do
+      %{user | total_points: Decimal.new(0)}
+    else
+      user
+    end
+  end
+
   def api_user_profile(user_id) do
     total_points =
       Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) ||

@@ -4,6 +4,8 @@ defmodule OmegaBravera.Offers do
   """
 
   import Ecto.Query, warn: false
+
+  alias Ecto.Multi
   alias OmegaBravera.Repo
 
   alias OmegaBravera.Offers.{
@@ -17,6 +19,8 @@ defmodule OmegaBravera.Offers do
     OfferChallengeActivitiesM2m
   }
 
+  alias OmegaBravera.Points
+
   alias OmegaBravera.Activity.ActivityAccumulator
   alias OmegaBravera.Accounts.User
 
@@ -29,6 +33,22 @@ defmodule OmegaBravera.Offers do
       [%Offer{}, ...]
 
   """
+
+  def buy_offer_with_points(offer, user) do
+    Multi.new()
+    |> Multi.run(:create_offer_challenge_with_points, fn _repo, _changes ->
+      do_create_offer_challenge_with_points(offer, user)
+    end)
+    |> Multi.run(:deduct_points_from_user, fn _repo, _changes ->
+      Points.do_deduct_points_from_user(user, offer)
+    end)
+    |> Repo.transaction()
+  end
+
+  defp do_create_offer_challenge_with_points(offer, user) do
+    OfferChallenge.buy_offer_challenge_with_points_changeset(offer, user)
+    |> Repo.insert()
+  end
 
   def list_offers_all_offers() do
     from(
@@ -345,9 +365,11 @@ defmodule OmegaBravera.Offers do
       group_by: [oc.id],
       preload: [user: [:strava]],
       select: %{
-        oc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
+        oc
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
       }
-    ) |> Repo.all()
+    )
+    |> Repo.all()
   end
 
   def get_redeem(challenge_id, user_id) do
@@ -357,6 +379,7 @@ defmodule OmegaBravera.Offers do
     )
     |> Repo.one()
   end
+
   @doc """
   Gets a single offer_challenge.
 

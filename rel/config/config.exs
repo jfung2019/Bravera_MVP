@@ -6,7 +6,7 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
 
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
        secret_key_base: System.get_env("SECRET_KEY_BASE")
-       
+
 config :strava,
        client_id: System.get_env("STRAVA_CLIENT_ID"),
        client_secret: System.get_env("STRAVA_CLIENT_SECRET"),
@@ -23,7 +23,7 @@ config :omega_bravera, OmegaBravera.Guardian,
        secret_key: System.get_env("GUARDIAN_SECRET_KEY")
 
 # Email config
-config :omega_bravera, OmegaBravera.Mailer,
+config :omega_bravera, OmegaBravera.Mail,
        api_key: System.get_env("SENDGRID_API_KEY")
 
 config :sendgrid,

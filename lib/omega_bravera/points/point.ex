@@ -51,6 +51,24 @@ defmodule OmegaBravera.Points.Point do
     |> validate_required(@required_attributes)
   end
 
+  def deduct_points_changeset(point, %OmegaBravera.Offers.Offer{target: target}, user) do
+    point
+    |> cast(%{}, @allowed_attributes)
+    |> put_change(:user_id, user.id)
+    |> put_change(:source, "purchase")
+    |> add_deduct_value(target)
+    |> validate_required(@required_attributes)
+  end
+
+  defp add_deduct_value(changeset, offer_target) do
+    value =
+      Decimal.new(offer_target)
+      |> Decimal.mult(@points_per_km)
+      |> Decimal.mult(-1)
+
+    put_change(changeset, :value, value)
+  end
+
   defp validate_activity_type(changeset, types_to_allow, activity_type) do
     if Enum.member?(types_to_allow, activity_type) do
       changeset

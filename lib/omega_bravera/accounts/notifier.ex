@@ -3,7 +3,7 @@ defmodule OmegaBravera.Accounts.Notifier do
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
 
-  alias SendGrid.{Mailer, Email}
+  alias SendGrid.{Mail, Email}
 
   def send_user_signup_email(%User{} = user, redirect_to \\ "/") do
     template_id = "b47d2224-792a-43d8-b4b2-f53b033d2f41"
@@ -13,7 +13,7 @@ defmodule OmegaBravera.Accounts.Notifier do
     if user_subscribed_in_category?(user.subscribed_email_categories, sendgrid_email.category.id) do
       user
       |> user_signup_email(redirect_to, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -43,7 +43,7 @@ defmodule OmegaBravera.Accounts.Notifier do
        ) do
       credential
       |> password_reset_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 

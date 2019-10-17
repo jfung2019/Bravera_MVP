@@ -14,7 +14,7 @@ defmodule OmegaBravera.Offers.Notifier do
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
 
-  alias SendGrid.{Email, Mailer}
+  alias SendGrid.{Email, Mail}
 
   def send_challenge_activated_email(%OfferChallenge{} = challenge) do
     template_id = "75516ad9-3ce8-4742-bd70-1227ce3cba1d"
@@ -28,7 +28,7 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> challenge_activated_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -54,7 +54,7 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> team_owner_member_added_notification_email(user, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -97,7 +97,7 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> team_member_invite_email(team_member, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -145,7 +145,7 @@ defmodule OmegaBravera.Offers.Notifier do
         redeems_count,
         template_id
       )
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -185,7 +185,7 @@ defmodule OmegaBravera.Offers.Notifier do
       challenge
       |> Repo.preload(:offer)
       |> user_reward_redemption_successful_email(user, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -198,6 +198,53 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
     |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(user.email)
+  end
+
+  def send_points_reward_email(
+        %OfferChallenge{} = challenge,
+        %User{} = user,
+        %OfferRedeem{} = offer_redeem
+      ) do
+    template_id = "d-2b845e5863eb4365a6ef98b2225573be"
+    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
+
+    if not is_nil(sendgrid_email) and
+         user_subscribed_in_category?(
+           challenge.user.subscribed_email_categories,
+           sendgrid_email.category.id
+         ) do
+      challenge
+      |> Repo.preload(:offer)
+      |> points_reward_email(user, offer_redeem, template_id)
+      |> Mail.send()
+    end
+  end
+
+  def send_points_reward_email(_, _, _), do: :error
+
+  def points_reward_email(
+        %OfferChallenge{} = challenge,
+        %User{} = user,
+        %OfferRedeem{} = offer_redeem,
+        template_id
+      ) do
+    Email.build()
+    |> Email.put_template(template_id)
+    |> Email.add_dynamic_template_data("prevBalance", Decimal.to_string(user.total_points))
+    |> Email.add_dynamic_template_data(
+      "rewardPrice",
+      Integer.to_string(challenge.distance_target)
+    )
+    |> Email.add_dynamic_template_data("newBalance", calc_new_balance(challenge, user))
+    |> Email.add_dynamic_template_data("firstName", challenge.user.firstname)
+    |> Email.add_dynamic_template_data("offerName", challenge.offer.name)
+    |> Email.add_dynamic_template_data("challengeLink", new_challenge_url(challenge))
+    |> Email.add_dynamic_template_data("qrCode", challenge_qr_code_url(challenge, offer_redeem))
+    |> Email.add_dynamic_template_data("terms", challenge.offer.toc)
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(user.email)
@@ -220,7 +267,7 @@ defmodule OmegaBravera.Offers.Notifier do
       challenge
       |> Repo.preload(:offer)
       |> reward_completion_email(user, offer_redeem, template_id)
-      |> Mailer.send()
+      |> SendGrid.Mail.send()
     end
   end
 
@@ -256,7 +303,7 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> pre_registration_challenge_signup_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -296,7 +343,7 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> team_challenge_signup_email(user, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -336,7 +383,7 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> challenge_signup_email(user, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -380,7 +427,7 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> team_activity_completed_email(activity, user, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -418,7 +465,7 @@ defmodule OmegaBravera.Offers.Notifier do
          ) do
       challenge
       |> activity_completed_email(activity, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -457,7 +504,7 @@ defmodule OmegaBravera.Offers.Notifier do
        ) do
       challenge
       |> challenge_failed_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -548,4 +595,12 @@ defmodule OmegaBravera.Offers.Notifier do
   end
 
   defp add_cc(email, _), do: email
+
+  def calc_new_balance(challenge, user) do
+    reward_price =
+      Decimal.new(challenge.distance_target)
+      |> Decimal.mult(OmegaBravera.Points.Point.get_points_per_km())
+
+    Decimal.sub(user.total_points, reward_price) |> Decimal.to_string()
+  end
 end

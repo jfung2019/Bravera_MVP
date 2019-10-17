@@ -43,4 +43,10 @@ defmodule OmegaBravera.Points do
       points
     end
   end
+
+  def do_deduct_points_from_user(user, offer) do
+    %Point{}
+    |> Point.deduct_points_changeset(offer, user)
+    |> Repo.insert()
+  end
 end
