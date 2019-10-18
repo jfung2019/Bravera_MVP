@@ -46,6 +46,9 @@
                   <option value="160">
                     <%= currency_to_symbol(@challenge.default_currency) %><%= gettext("160") %>
                   </option>
+                  <option value="0">
+                    <%= gettext("Other") %>
+                  </option>
                 </select>
             </div>
           </div>
@@ -56,7 +59,7 @@
               <label for="starter-donation" class="col-sm-8 col-form-label"><%= gettext("Kick-off Donation (now)") %></label>
               <div class="col-sm-4">
                 <input type="number" class="form-control" id="kickstarter" name="donation[milestone_1]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                >
+                min="1">
               </div>
             </div>
             <div class="form-group row" id="m1-donation-group">
@@ -65,7 +68,7 @@
               </label>
               <div class="col-sm-4">
                 <input type="number" class="form-control" id="m1-donation" name="donation[milestone_2]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                >
+                min="1">
               </div>
             </div>
             <div class="form-group row" id="m2-donation-group">
@@ -74,7 +77,7 @@
               </label>
               <div class="col-sm-4">
                 <input type="number" class="form-control" id="m2-donation" name="donation[milestone_3]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                >
+                min="1">
               </div>
             </div>
             <div class="form-group row" id="m3-donation-group">
@@ -83,7 +86,7 @@
               </label>
               <div class="col-sm-4">
                 <input type="number" class="form-control" id="m3-donation" name="donation[milestone_4]" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                >
+                min="1">
               </div>
             </div>
             <%= if hide_donor_pays_fees?(@challenge.ngo) do %>

@@ -136,7 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
       $('#m1-donation').val(40);
       $('#m2-donation').val(40);
       $('#m3-donation').val(40);
-    }
+    } else if ($(this).val() == 0){
+      $('#kickstarter').val(0);
+      $('#m1-donation').val(0);
+      $('#m2-donation').val(0);
+      $('#m3-donation').val(0);
+    }  
   }).change();
 
  var kickValue = 0,
