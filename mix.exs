@@ -56,7 +56,7 @@ defmodule OmegaBravera.Mixfile do
       {:distillery, "~> 2.1"},
       {:coerce, "~> 1.0.0"},
       {:exvcr, "~> 0.10", only: :test},
-      {:sendgrid, "~> 1.8.0"},
+      {:sendgrid, "~> 2.0"},
       {:ex_machina, "~> 2.2"},
       {:sched_ex, "~> 1.0"},
       {:csv, "~> 2.0.0"},

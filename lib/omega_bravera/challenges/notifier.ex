@@ -13,7 +13,7 @@ defmodule OmegaBravera.Challenges.Notifier do
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
 
-  alias SendGrid.{Email, Mailer}
+  alias SendGrid.{Email, Mail}
 
   def send_manual_activity_blocked_email(%NGOChal{} = challenge) do
     template_id = "fcd40945-8a55-4459-94b9-401a995246fb"
@@ -26,7 +26,7 @@ defmodule OmegaBravera.Challenges.Notifier do
        ) do
       challenge
       |> manual_activity_blocked_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -51,7 +51,7 @@ defmodule OmegaBravera.Challenges.Notifier do
        ) do
       challenge
       |> challenge_activated_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -76,7 +76,7 @@ defmodule OmegaBravera.Challenges.Notifier do
        ) do
       challenge
       |> pre_registration_challenge_signup_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -114,7 +114,7 @@ defmodule OmegaBravera.Challenges.Notifier do
        ) do
       challenge
       |> challenge_signup_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -153,7 +153,7 @@ defmodule OmegaBravera.Challenges.Notifier do
        ) do
       challenge
       |> activity_completed_email(activity, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -184,7 +184,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     donation
     |> Repo.preload([:donor, ngo_chal: [:ngo, :user]])
     |> donor_milestone_email(template_id)
-    |> Mailer.send()
+    |> Mail.send()
   end
 
   def donor_milestone_email(%Donation{} = donation, template_id) do
@@ -209,7 +209,7 @@ defmodule OmegaBravera.Challenges.Notifier do
        ) do
       challenge
       |> participant_milestone_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -233,7 +233,7 @@ defmodule OmegaBravera.Challenges.Notifier do
        ) do
       challenge
       |> participant_inactivity_email(template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -253,7 +253,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     challenge
     |> Repo.preload([:user, :ngo])
     |> donor_inactivity_email(donor, template_id)
-    |> Mailer.send()
+    |> Mail.send()
   end
 
   def donor_inactivity_email(%NGOChal{} = challenge, %Donor{} = donor, template_id) do
@@ -280,7 +280,7 @@ defmodule OmegaBravera.Challenges.Notifier do
          ) do
       challenge
       |> team_member_invite_email(team_member, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -318,7 +318,7 @@ defmodule OmegaBravera.Challenges.Notifier do
        ) do
       challenge
       |> team_owner_member_added_notification_email(user, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -354,7 +354,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     buddies
     |> Enum.map(&buddy_invite_email(challenge, &1))
     |> Enum.reject(&is_nil/1)
-    |> Enum.each(&Mailer.send/1)
+    |> Enum.each(&Mail.send/1)
   end
 
   def buddy_invite_email(%NGOChal{} = challenge, %{"name" => name, "email" => email})

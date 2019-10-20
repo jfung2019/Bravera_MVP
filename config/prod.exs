@@ -41,7 +41,7 @@ config :omega_bravera, OmegaBravera.Guardian,
   secret_key: System.get_env("GUARDIAN_SECRET_KEY")
 
 # Email config
-config :omega_bravera, OmegaBravera.Mailer,
+config :omega_bravera, OmegaBravera.Mail,
   adapter: Bamboo.SendgridAdapter,
   api_key: System.get_env("SENDGRID_API_KEY")
 

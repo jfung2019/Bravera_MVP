@@ -10,7 +10,7 @@ defmodule OmegaBravera.Donations.Notifier do
 
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
-  alias SendGrid.{Email, Mailer}
+  alias SendGrid.{Email, Mail}
 
   def email_parties(%NGOChal{} = chal, %Donor{} = donor, pledges) do
     challenge = Repo.preload(chal, [:ngo, user: [:subscribed_email_categories]])
@@ -36,7 +36,7 @@ defmodule OmegaBravera.Donations.Notifier do
        ) do
       challenge
       |> participant_email(donor, pledges, template_id)
-      |> Mailer.send()
+      |> Mail.send()
     end
   end
 
@@ -52,12 +52,12 @@ defmodule OmegaBravera.Donations.Notifier do
           donor,
           pre_registration_donor_template_id
         )
-        |> Mailer.send()
+        |> Mail.send()
 
       true ->
         challenge
         |> donor_email(donor, donor_email_template_id)
-        |> Mailer.send()
+        |> Mail.send()
     end
   end
 
@@ -128,7 +128,7 @@ defmodule OmegaBravera.Donations.Notifier do
     donation
     |> Repo.preload([:donor])
     |> donation_charged_email(template_id)
-    |> Mailer.send()
+    |> Mail.send()
   end
 
   def donation_charged_email(%Donation{} = donation, template_id) do
