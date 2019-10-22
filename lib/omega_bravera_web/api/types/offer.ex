@@ -10,6 +10,7 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     field(:image, non_null(:string))
     field(:target, non_null(:integer))
     field(:end_date, non_null(:date))
+    field(:desc, non_null(:string))
     field(:offer_challenges, list_of(:offer_challenge))
   end
 end

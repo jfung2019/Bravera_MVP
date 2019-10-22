@@ -343,6 +343,7 @@ defmodule OmegaBravera.Accounts do
         join: oc in OfferChallenge,
         on: oc.status == ^"complete" and ofr.offer_challenge_id == oc.id,
         where: ofr.user_id == ^user_id and ofr.status == ^"pending",
+        order_by: [desc: :inserted_at],
         preload: [:offer, :offer_challenge]
       )
       |> Repo.all()
@@ -358,7 +359,8 @@ defmodule OmegaBravera.Accounts do
     points_history =
       from(
         p in Point,
-        where: p.user_id == ^user_id
+        where: p.user_id == ^user_id,
+        order_by: [desc: :inserted_at]
       )
       |> Repo.all()
 

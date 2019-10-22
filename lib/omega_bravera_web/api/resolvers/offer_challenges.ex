@@ -20,7 +20,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
 
         OmegaBravera.Offers.Notifier.send_points_reward_email(offer_challenge, user, offer_redeem)
 
-        {:ok, %{offer_challenge: offer_challenge}}
+        {:ok, %{offer_challenge: offer_challenge, user_profile: Accounts.api_user_profile(user_id)}}
 
       {:error, :create_offer_challenge_with_points, changeset, _changes} ->
         Logger.info("Could buy offer, reason: #{inspect(changeset)}")
