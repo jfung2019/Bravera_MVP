@@ -77,6 +77,15 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
           set: [start_date: updated_offer.start_date, end_date: updated_offer.end_date]
         )
 
+        Repo.update_all(
+          from(
+            offer_challenge in OfferChallenge,
+            where:
+              offer_challenge.offer_id == ^updated_offer.id
+          ),
+          set: [distance_target: updated_offer.target]
+        )
+
         conn
         |> put_flash(:info, "Offer updated successfully.")
         |> redirect(to: admin_panel_offer_path(conn, :index))
