@@ -77,14 +77,18 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
           set: [start_date: updated_offer.start_date, end_date: updated_offer.end_date]
         )
 
-        Repo.update_all(
-          from(
-            offer_challenge in OfferChallenge,
-            where:
-              offer_challenge.offer_id == ^updated_offer.id
-          ),
-          set: [distance_target: updated_offer.target]
-        )
+        if(hd(offer.offer_challenge_types) == "BRAVERA_SEGMENT") do
+          Repo.update_all(
+            from(
+              offer_challenge in OfferChallenge,
+              where:
+                offer_challenge.offer_id == ^updated_offer.id and
+                offer_challenge.status == "active" or
+                offer_challenge.status == "pre_registration",
+            ),
+            set: [distance_target: updated_offer.target]
+          )
+        end
 
         conn
         |> put_flash(:info, "Offer updated successfully.")
