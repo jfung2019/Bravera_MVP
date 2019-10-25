@@ -251,7 +251,51 @@ defmodule OmegaBravera.Accounts do
     end
   end
 
+  def api_get_leaderboard_this_week() do
+    now = Timex.now()
+    beginning = Timex.beginning_of_week(now)
+    end_of_week = Timex.end_of_week(now)
+
+    from(
+      u in User,
+      left_join: a in ActivityAccumulator,
+      on: a.user_id == u.id,
+      where: a.inserted_at >= ^beginning and a.inserted_at <= ^end_of_week,
+      where: a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities(),
+      preload: [:strava],
+      select: %{
+        u
+        | total_points_this_week: sum(a.distance) * ^Point.get_points_per_km(),
+          total_kilometers_this_week: sum(a.distance)
+      },
+      group_by: [u.id],
+      order_by: [desc: fragment("? * ?", sum(a.distance), ^Point.get_points_per_km())]
+    )
+    |> Repo.all()
+  end
+
+  def api_get_leaderboard_all_time() do
+    from(
+      u in User,
+      left_join: a in ActivityAccumulator,
+      on: a.user_id == u.id,
+      where: a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities(),
+      preload: [:strava],
+      select: %{
+        u
+        | total_points: sum(a.distance) * ^Point.get_points_per_km(),
+          total_kilometers: sum(a.distance)
+      },
+      group_by: [u.id],
+      order_by: [desc: fragment("? * ?", sum(a.distance), ^Point.get_points_per_km())]
+    )
+    |> Repo.all()
+  end
+
   def api_user_profile(user_id) do
+    # TODO:
+    # position_on_leaderboard =
+
     total_points =
       Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) ||
         Decimal.from_float(0.0)

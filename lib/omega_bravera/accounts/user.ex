@@ -41,8 +41,10 @@ defmodule OmegaBravera.Accounts.User do
 
     # API related
     field(:total_points, :decimal, virtual: true, default: Decimal.new(0))
+    field(:total_points_this_week, :decimal, virtual: true, default: Decimal.new(0))
     field(:total_rewards, :integer, virtual: true, default: 0)
     field(:total_kilometers, :decimal, virtual: true, default: Decimal.new(0))
+    field(:total_kilometers_this_week, :decimal, virtual: true, default: Decimal.new(0))
 
     field(:offer_challenges_map, :map,
       virtual: true,

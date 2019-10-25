@@ -8,6 +8,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:lastname, :string)
     field(:profile_picture, :string)
     field(:strava, :strava)
+    field(:total_points, :decimal)
+    field(:total_points_this_week, :decimal)
+    field(:total_kilometers, :decimal)
+    field(:total_kilometers_this_week, :decimal)
   end
 
   object :strava do
@@ -16,8 +20,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   object :user_profile do
     field(:total_points, non_null(:decimal))
+    field(:total_points_this_week, non_null(:decimal))
     field(:total_rewards, non_null(:integer))
     field(:total_kilometers, non_null(:decimal))
+    field(:total_kilometers_this_week, non_null(:decimal))
     field(:total_challenges, non_null(:integer))
     field(:offer_challenges_map, :offer_challenges_map)
     field(:profile_picture, :string)
@@ -60,6 +66,11 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   # For success reporting
   object :user_session_result do
     field(:user_session, :user_session)
+  end
+
+  object :leaderboard_result do
+    field(:this_week, list_of(:user))
+    field(:all_time, list_of(:user))
   end
 
   object :location do

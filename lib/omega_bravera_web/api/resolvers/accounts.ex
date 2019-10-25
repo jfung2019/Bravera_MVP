@@ -114,4 +114,12 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         }
       ),
       do: {:ok, Accounts.api_user_profile(id)}
+
+  def get_leaderboard(_root, _args, _into),
+    do:
+      {:ok,
+       %{
+         this_week: Accounts.api_get_leaderboard_this_week(),
+         all_time: Accounts.api_get_leaderboard_all_time()
+       }}
 end

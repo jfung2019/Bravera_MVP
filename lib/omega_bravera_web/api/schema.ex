@@ -65,6 +65,11 @@ defmodule OmegaBraveraWeb.Api.Schema do
   end
 
   query do
+    @desc "Get Bravera Leaderboard"
+    field :get_leaderboard, :leaderboard_result do
+      resolve(&Resolvers.Accounts.get_leaderboard/3)
+    end
+
     @desc "Get latest device sync datetime"
     field :latest_device_sync, :device_latest_sync_result do
       middleware(Middleware.Authenticate)
