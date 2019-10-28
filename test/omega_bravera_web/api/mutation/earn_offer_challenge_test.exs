@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
+defmodule OmegaBraveraWeb.Api.Mutation.EarnOfferChallengeTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
   import OmegaBravera.Factory
@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
   @password "strong passowrd"
   @query """
   mutation($offerSlug: String!){
-    buyOfferChallenge(offerSlug: $offerSlug){
+    earnOfferChallenge(offerSlug: $offerSlug){
       offerChallenge{
         id
       }
@@ -33,28 +33,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
     |> Repo.preload(:user)
   end
 
-  test "buy/3 will not allow reward purchase without sufficiant points in user's balance" do
-    credential = credential_fixture()
-    insert(:point, %{value: Decimal.new(150), user_id: credential.user_id, source: "test"})
-    offer = insert(:offer, %{target: 16})
-    {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-
-    conn = build_conn() |> put_req_header("authorization", "Bearer #{auth_token}")
-
-    response = post(conn, "/api", %{query: @query, variables: %{"offerSlug" => offer.slug}})
-
-    assert %{
-             "errors" => [
-               %{
-                 "details" => %{"id" => ["Insufficient points"]}
-               }
-             ]
-           } = json_response(response, 200)
-  end
-
   test "buy/3 can create complete challenge, send reward to use, and deduct points from total balance" do
     credential = credential_fixture()
-    insert(:point, %{value: Decimal.new(150), user_id: credential.user_id, source: "test"})
     offer = insert(:offer, %{target: 15})
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
@@ -64,7 +44,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
 
     assert %{
              "data" => %{
-               "buyOfferChallenge" => %{"offerChallenge" => %{"id" => _id}}
+               "earnOfferChallenge" => %{"offerChallenge" => %{"id" => _id}}
              }
            } = json_response(response, 200)
   end

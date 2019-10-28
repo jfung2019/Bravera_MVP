@@ -36,7 +36,7 @@ defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
     field(:errors, list_of(:input_error))
   end
 
-  object :buy_offer_challenge_result do
+  object :buy_or_create_offer_challenge_result do
     field(:offer_challenge, :offer_challenge)
     field(:user_profile, :user_profile)
   end

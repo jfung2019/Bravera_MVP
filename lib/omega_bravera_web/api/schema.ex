@@ -16,10 +16,17 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
   mutation do
     @desc "Buy an offer using points"
-    field :buy_offer_challenge, :buy_offer_challenge_result do
+    field :buy_offer_challenge, :buy_or_create_offer_challenge_result do
       arg(:offer_slug, non_null(:string))
       middleware(Middleware.Authenticate)
       resolve(&Resolvers.OfferChallenges.buy/3)
+    end
+
+    @desc "Create a challenge"
+    field :earn_offer_challenge, :buy_or_create_offer_challenge_result do
+      arg(:offer_slug, non_null(:string))
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.OfferChallenges.earn/3)
     end
 
     @desc "Create a Bravera referral link."
