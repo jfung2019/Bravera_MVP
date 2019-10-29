@@ -6,6 +6,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:email, :string)
     field(:firstname, :string)
     field(:lastname, :string)
+    field(:email_verified, non_null(:boolean))
     field(:profile_picture, :string)
     field(:strava, :strava)
     field(:total_points, :decimal)
@@ -31,6 +32,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:future_redeems, list_of(:redeem))
     field(:past_redeems, list_of(:redeem))
     field(:points_history, list_of(:point))
+    field(:email_verified, non_null(:boolean))
   end
 
   object :user_session do
