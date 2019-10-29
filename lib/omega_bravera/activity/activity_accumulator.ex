@@ -22,7 +22,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     field(:elapsed_time, :integer, default: 0)
     field(:calories, :decimal, default: 0)
     field(:activity_json, :map)
-    field(:source, :string, default: "strava")
+    field(:source, :string, default: nil)
 
     # App activities only.
     field(:end_date, :utc_datetime)
@@ -87,6 +87,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       elapsed_time: strava_activity.elapsed_time,
       calories: strava_activity.calories,
       activity_json: StravaParser.strava_activity_to_map(strava_activity)
+      source: "strava"
     })
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)
@@ -110,7 +111,8 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       average_speed: strava_activity.average_speed,
       moving_time: strava_activity.moving_time,
       calories: strava_activity.calories,
-      admin_id: admin_user_id
+      admin_id: admin_user_id,
+      source: "admin"
     })
     |> validate_required(@required_attributes_for_admin)
     |> check_constraint(:admin_id, name: :strava_id_or_admin_id_or_device_id_required)
@@ -130,7 +132,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     |> put_change(:user_id, user_id)
     |> put_change(:device_id, device_id)
     |> verify_allowed_source()
-    |> validate_required([:user_id, :device_id])
+    |> validate_required([:user_id, :device_id, :source])
     |> verify_not_duplicate(number_of_activities_at_time)
     |> check_constraint(:admin_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> check_constraint(:strava_id, name: :strava_id_or_admin_id_or_device_id_required)
