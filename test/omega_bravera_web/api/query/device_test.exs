@@ -88,7 +88,7 @@ defmodule OmegaBraveraWeb.Api.Query.DeviceTest do
 
     assert {:ok, activity} =
              OmegaBravera.Activity.Activities.create_app_activity(
-               %{distance: 1.0, start_date: now, end_date: end_date, source: "test"},
+               %{distance: 1.0, start_date: now, end_date: end_date, source: "test", type: "Walk"},
                device.user_id,
                device.id,
                nil
