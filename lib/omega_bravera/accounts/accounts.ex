@@ -260,16 +260,19 @@ defmodule OmegaBravera.Accounts do
       u in User,
       left_join: a in ActivityAccumulator,
       on: a.user_id == u.id,
+      left_join: p in Point,
+      on: a.id == p.activity_id,
       where: a.inserted_at >= ^beginning and a.inserted_at <= ^end_of_week,
       where: a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities(),
+      where: not is_nil(a.device_id) and is_nil(a.strava_id),
       preload: [:strava],
       select: %{
         u
-        | total_points_this_week: sum(a.distance) * ^Point.get_points_per_km(),
+        | total_points_this_week: sum(p.value),
           total_kilometers_this_week: sum(a.distance)
       },
       group_by: [u.id],
-      order_by: [desc: fragment("? * ?", sum(a.distance), ^Point.get_points_per_km())]
+      order_by: [desc: fragment("?", sum(a.distance))]
     )
     |> Repo.all()
   end
@@ -279,15 +282,18 @@ defmodule OmegaBravera.Accounts do
       u in User,
       left_join: a in ActivityAccumulator,
       on: a.user_id == u.id,
+      left_join: p in Point,
+      on: a.id == p.activity_id,
       where: a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities(),
+      where: not is_nil(a.device_id) and is_nil(a.strava_id),
       preload: [:strava],
       select: %{
         u
-        | total_points: sum(a.distance) * ^Point.get_points_per_km(),
+        | total_points: sum(p.value),
           total_kilometers: sum(a.distance)
       },
       group_by: [u.id],
-      order_by: [desc: fragment("? * ?", sum(a.distance), ^Point.get_points_per_km())]
+      order_by: [desc: fragment("?", sum(a.distance))]
     )
     |> Repo.all()
   end
@@ -312,6 +318,7 @@ defmodule OmegaBravera.Accounts do
         from(
           a in ActivityAccumulator,
           where: a.user_id == ^user_id,
+          where: not is_nil(a.device_id) and is_nil(a.strava_id),
           left_join: offer_ac in OfferChallengeActivitiesM2m,
           on: a.id == offer_ac.activity_id
         ),
@@ -322,7 +329,7 @@ defmodule OmegaBravera.Accounts do
     total_kms_offers =
       if is_nil(total_kms_offers),
         do: Decimal.from_float(0.0),
-        else: Decimal.round(total_kms_offers)
+        else: total_kms_offers
 
     live_challenges =
       from(oc in OfferChallenge,

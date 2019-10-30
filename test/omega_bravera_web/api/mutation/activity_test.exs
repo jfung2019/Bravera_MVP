@@ -9,14 +9,15 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
   @query """
-  mutation($distance: Decimal!, $start_date: Date!, $end_date: Date!, $source: String!) {
-   createActivity(input: {distance: $distance, startDate: $start_date, endDate: $end_date, source: $source}) {
+  mutation($distance: Decimal!, $start_date: Date!, $end_date: Date!, $source: String!, $type: String!) {
+   createActivity(input: {distance: $distance, startDate: $start_date, endDate: $end_date, source: $source, type: $type}) {
     	activity{
         id
         distance
         startDate
         endDate
         source
+        type
       }
     }
   }
@@ -60,7 +61,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
             "distance" => "10.7",
             "start_date" => "2019-08-06T14:54:54+00:00",
             "end_date" => "2019-08-06T16:54:54+00:00",
-            "source" => "bravera"
+            "source" => "bravera",
+            "type" => "Walk"
           }
         }
       )
@@ -93,7 +95,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
           "distance" => "10.7",
           "start_date" => "2019-08-06T14:54:54+00:00",
           "end_date" => "2019-08-06T16:54:54+00:00",
-          "source" => "bravera"
+          "source" => "bravera",
+          "type" => "Walk"
         }
       }
     )
@@ -108,7 +111,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
             "distance" => "10.7",
             "start_date" => "2019-08-06T14:54:54+00:00",
             "end_date" => "2019-08-06T16:54:54+00:00",
-            "source" => "bravera"
+            "source" => "bravera",
+            "type" => "Run"
           }
         }
       )
@@ -143,7 +147,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
             "distance" => "10.7",
             "start_date" => "2019-08-06T14:54:54+00:00",
             "end_date" => "2019-08-06T16:54:54+00:00",
-            "source" => "bravera"
+            "source" => "bravera",
+            "type" => "Walk"
           }
         }
       )

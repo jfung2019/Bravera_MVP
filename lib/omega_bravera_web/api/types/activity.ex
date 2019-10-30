@@ -9,6 +9,7 @@ defmodule OmegaBraveraWeb.Api.Types.Activity do
     field(:start_date, :date)
     field(:end_date, :date)
     field(:source, :string)
+    field(:type, :string)
   end
 
   object :save_activity_result do
@@ -20,5 +21,6 @@ defmodule OmegaBraveraWeb.Api.Types.Activity do
     field(:start_date, :date)
     field(:end_date, :date)
     field(:source, :string)
+    field(:type, :string)
   end
 end

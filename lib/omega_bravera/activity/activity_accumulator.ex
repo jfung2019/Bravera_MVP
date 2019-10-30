@@ -128,11 +128,11 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
         number_of_activities_at_time
       ) do
     %__MODULE__{}
-    |> cast(activity_attrs, [:distance, :start_date, :end_date, :source])
+    |> cast(activity_attrs, [:distance, :start_date, :end_date, :source, :type])
     |> put_change(:user_id, user_id)
     |> put_change(:device_id, device_id)
     |> verify_allowed_source()
-    |> validate_required([:user_id, :device_id, :source])
+    |> validate_required([:user_id, :device_id, :source, :type])
     |> verify_not_duplicate(number_of_activities_at_time)
     |> check_constraint(:admin_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> check_constraint(:strava_id, name: :strava_id_or_admin_id_or_device_id_required)
@@ -143,7 +143,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
 
     if not is_nil(source) do
       if !Enum.member?(@banned_sources, source) do
-        changeset
+        put_change(changeset, :source, String.downcase(source))
       else
         add_error(changeset, :source, "#{source} is not allowed.")
       end
