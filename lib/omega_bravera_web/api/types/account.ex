@@ -6,6 +6,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:email, :string)
     field(:firstname, :string)
     field(:lastname, :string)
+    field(:locale, :string)
     field(:email_verified, non_null(:boolean))
     field(:profile_picture, :string)
     field(:strava, :strava)
