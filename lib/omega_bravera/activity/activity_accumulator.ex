@@ -86,7 +86,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       moving_time: strava_activity.moving_time,
       elapsed_time: strava_activity.elapsed_time,
       calories: strava_activity.calories,
-      activity_json: StravaParser.strava_activity_to_map(strava_activity)
+      activity_json: StravaParser.strava_activity_to_map(strava_activity),
       source: "strava"
     })
     |> validate_required(@required_attributes)
