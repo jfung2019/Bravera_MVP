@@ -3,6 +3,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
   require Logger
 
   alias OmegaBravera.Activity.Activities
+  alias OmegaBravera.Offers.OfferAppActivitiesIngestion
   alias OmegaBravera.Points
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
 
@@ -36,6 +37,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
               "API Activity: Could not create points for activity, reason: #{inspect(reason)}"
             )
         end
+
+        OfferAppActivitiesIngestion.start(activity)
 
         {:ok, %{activity: activity}}
 

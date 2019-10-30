@@ -116,6 +116,19 @@ defmodule OmegaBravera.Accounts do
     team_challengers ++ single_challengers
   end
 
+  def get_challengers_for_offers(user_id) do
+    from(u in User,
+      where: u.id == ^user_id,
+      join: oc in OfferChallenge,
+      where: oc.status == "active" and oc.user_id == ^user_id,
+      select: {
+        oc.id,
+        u
+      }
+    )
+    |> Repo.all()
+  end
+
   defp donors_for_challenge_query(challenge) do
     from(donor in Donor,
       join: donation in Donation,
@@ -318,9 +331,7 @@ defmodule OmegaBravera.Accounts do
         from(
           a in ActivityAccumulator,
           where: a.user_id == ^user_id,
-          where: not is_nil(a.device_id) and is_nil(a.strava_id),
-          left_join: offer_ac in OfferChallengeActivitiesM2m,
-          on: a.id == offer_ac.activity_id
+          where: not is_nil(a.device_id) and is_nil(a.strava_id)
         ),
         :sum,
         :distance
