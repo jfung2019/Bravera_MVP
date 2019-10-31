@@ -14,24 +14,16 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
   def start(%ActivityAccumulator{} = activity) do
     Logger.info("Offers:AppActivityIngestion: processing app activity: #{inspect(activity)}")
 
-    IO.inspect activity.user_id, label: :activity_user_id
     activity.user_id
     |> Accounts.get_challengers_for_offers()
-    |> IO.inspect(label: :challengers)
     |> process_challenges(activity)
   end
 
-  def start(activity, _params),
-    do: Logger.info("Offers:AppActivityIngestion: not processed: #{inspect(activity)}")
-
   def process_challenges([{_challenge_id, _user} | _] = challenges, activity) do
-
-
     Logger.info("Offers:AppActivityIngestion: Processing challenges")
     Logger.info("Offers:AppActivityIngestion: Processing activity: #{inspect(activity)}")
 
     Enum.map(challenges, fn {challenge_id, user} ->
-      IO.inspect challenge_id, label: :challenge_id_is
       challenge_id
       |> Offers.get_offer_challenge!()
       |> Repo.preload([:offer])
@@ -96,10 +88,10 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
 
   def create_activity(
         %OfferChallenge{type: "BRAVERA_SEGMENT"} = challenge,
-        activity,
+        %{strava_id: strava_id} = activity,
         _user,
         send_emails
-      ) do
+      ) when not is_nil(strava_id) do
     if valid_activity?(activity, challenge, send_emails) and
          OfferChallenge.has_relevant_segment(challenge, activity) do
       case Offers.create_offer_challenge_activity_m2m(activity, challenge) do
@@ -120,7 +112,7 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
     end
   end
 
-  def create_activity(challenge, activity, _user, send_emails) do
+  def create_activity(%OfferChallenge{type: "PER_KM"} = challenge, activity, _user, send_emails) do
     if valid_activity?(activity, challenge, send_emails) do
       case Offers.create_offer_challenge_activity_m2m(activity, challenge) do
         {:ok, _activity} ->
@@ -138,6 +130,11 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
     else
       {:error, challenge, nil}
     end
+  end
+
+  def create_activity(challenge, _, _, _) do
+    Logger.info("Offers:AppActivityIngestion: did not process for challenge: #{inspect(challenge)}")
+    {:error, challenge, nil}
   end
 
   defp update_challenge({:ok, challenge, activity}) do

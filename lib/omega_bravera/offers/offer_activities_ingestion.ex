@@ -14,9 +14,25 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
   def start(%ActivityAccumulator{} = activity, %{"owner_id" => athlete_id}) do
     Logger.info("Offers:ActivityIngestion: Strava POST webhook processing: #{inspect(activity)}")
 
-    athlete_id
-    |> Accounts.get_strava_challengers_for_offers()
-    |> process_challenges(activity)
+    Logger.info("Offers:ActivityIngestion: Checking if athlete has devices or segment challenges...")
+
+    %{num_of_segment_chals: segment_challenges_count, user_id: uid} = Accounts.get_user_segment_challenges_by_athlete_id(athlete_id)
+
+    if Accounts.user_has_device?(uid) do
+      Logger.info("Offers:ActivityIngestion: User has a device and segment challenge of count #{segment_challenges_count}")
+
+      if segment_challenges_count > 0 do
+        OmegaBravera.Offers.OfferAppActivitiesIngestion.start(activity)
+      else
+        Logger.info("Offers:ActivityIngestion: User has a device, but 0 segment challenges, terminating.")
+      end
+
+    else
+      # User has no devices
+      athlete_id
+      |> Accounts.get_strava_challengers_for_offers()
+      |> process_challenges(activity)
+    end
   end
 
   def start(activity, _params),
