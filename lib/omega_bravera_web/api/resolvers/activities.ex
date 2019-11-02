@@ -2,44 +2,35 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
   import OmegaBraveraWeb.Gettext
   require Logger
 
-  alias OmegaBravera.Activity.Activities
+  alias OmegaBravera.Activity.Queue
   alias OmegaBravera.Offers.OfferAppActivitiesIngestion
-  alias OmegaBravera.Points
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
 
   def create(_root, %{input: activity_params}, %{
-        context: %{current_user: %{id: user_id} = current_user, device: %{id: device_id}}
+        context: %{current_user: %{id: _user_id} = current_user, device: %{id: device_id}}
       })
       when not is_nil(device_id) do
-    # Get the number of activities at specific time.
-    number_of_activities_at_time =
-      Activities.get_user_activities_at_time(activity_params, user_id, device_id)
+    create_params = %{
+      activity_params: activity_params,
+      user: current_user,
+      device_id: device_id
+    }
 
-    case Activities.create_app_activity(
-           activity_params,
-           user_id,
-           device_id,
-           number_of_activities_at_time
-         ) do
+    server_name = Queue.generate_server_name(current_user)
+
+    result =
+      case Queue.start_link([create_params], server_name) do
+        {:ok, _} ->
+          Queue.dequeue(server_name)
+
+        {:error, {:already_started, _}} ->
+          Queue.enqueue(server_name, create_params)
+          Queue.dequeue(server_name)
+      end
+
+    case result do
       {:ok, activity} ->
-
-        user_with_points = OmegaBravera.Accounts.get_user_with_todays_points(current_user)
-
-        # Add reward points if activity is eligible.
-        case Points.create_points_from_activity(activity, user_with_points) do
-          {:ok, _point} ->
-            Logger.info(
-              "API Activity: Successfully created points for activity: #{activity.id}"
-            )
-
-          {:error, reason} ->
-            Logger.warn(
-              "API Activity: Could not create points for activity, reason: #{inspect(reason)}"
-            )
-        end
-
         OfferAppActivitiesIngestion.start(activity)
-
         {:ok, %{activity: activity}}
 
       {:error, changeset} ->
