@@ -170,6 +170,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
          %User{} = user
        )
        when not is_nil(payment_amount) do
+        IO.inspect "Here"
     if Decimal.cmp(payment_amount, Decimal.new(0)) == :gt do
       cast_assoc(changeset, :payment,
         with: &Payment.changeset(&1, offer, user, &2),

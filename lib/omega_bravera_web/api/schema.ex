@@ -63,6 +63,14 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve(&Resolvers.OfferChallenges.create/3)
     end
 
+    @desc "Create segment offer challenge."
+    field :join_segment_challenge, :offer_challenge_create_result do
+      arg(:offer_slug, non_null(:string))
+      arg(:stripe_token, non_null(:string))
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.OfferChallenges.createSegmentChallenge/3)
+    end
+
     @desc "Create activity."
     field :create_activity, :save_activity_result do
       arg(:input, non_null(:save_activity_input))
