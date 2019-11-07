@@ -15,5 +15,7 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     field(:offer_challenges, list_of(:offer_challenge))
     field(:payment_amount, :decimal)
     field(:currency, :string)
+    field(:external_terms_url, :string)
+    field(:accept_terms_text, :string)
   end
 end

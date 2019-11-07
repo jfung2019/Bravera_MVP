@@ -19,11 +19,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
       {:ok, offer_challenge} ->
         OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
 
-        {:ok,
-         %{
-           offer_challenge: offer_challenge,
-           user_profile: Accounts.api_user_profile(current_user.id)
-         }}
+        {:ok, %{offer_challenge: offer_challenge}}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         Logger.info(
@@ -69,11 +65,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
       {:ok, offer_challenge} ->
         OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
 
-        {:ok,
-         %{
-           offer_challenge: offer_challenge,
-           user_profile: Accounts.api_user_profile(current_user.id)
-         }}
+        {:ok, %{offer_challenge: offer_challenge}}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         Logger.info("API: Could not sign up user for offer. Reason: #{inspect(changeset)}")
