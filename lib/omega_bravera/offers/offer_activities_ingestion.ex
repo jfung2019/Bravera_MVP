@@ -16,22 +16,26 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
     Logger.info("Offers:ActivityIngestion: Checking if athlete has devices or segment challenges...")
 
-    %{num_of_segment_chals: segment_challenges_count, user_id: uid} = Accounts.get_user_segment_challenges_by_athlete_id(athlete_id)
+    user = Accounts.get_user_by_athlete_id(athlete_id)
 
-    if Accounts.user_has_device?(uid) do
-      Logger.info("Offers:ActivityIngestion: User has a device and segment challenge of count #{segment_challenges_count}")
+    if not is_nil(user) do
+      segment_challenges_count = Accounts.get_num_of_segment_challenges_by_user_id(user.id)
 
-      if segment_challenges_count > 0 do
-        OmegaBravera.Offers.OfferAppActivitiesIngestion.start(activity)
+      if Accounts.user_has_device?(user.id) do
+        Logger.info("Offers:ActivityIngestion: User has a device and segment challenge of count #{segment_challenges_count}")
+
+        if segment_challenges_count > 0 do
+          OmegaBravera.Offers.OfferAppActivitiesIngestion.start(activity)
+        else
+          Logger.info("Offers:ActivityIngestion: User has a device, but 0 segment challenges, terminating.")
+        end
+
       else
-        Logger.info("Offers:ActivityIngestion: User has a device, but 0 segment challenges, terminating.")
+        # User has no devices
+        athlete_id
+        |> Accounts.get_strava_challengers_for_offers()
+        |> process_challenges(activity)
       end
-
-    else
-      # User has no devices
-      athlete_id
-      |> Accounts.get_strava_challengers_for_offers()
-      |> process_challenges(activity)
     end
   end
 

@@ -147,6 +147,8 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       else
         add_error(changeset, :source, "#{source} is not allowed.")
       end
+    else
+      add_error(changeset, :source, "Empty source is not allowed.")
     end
   end
 

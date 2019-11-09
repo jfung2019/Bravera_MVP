@@ -36,21 +36,26 @@ defmodule OmegaBravera.Accounts do
   end
 
   def user_has_device?(user_id) do
-    devices = from(d in Device, where: d.user_id == ^user_id) |> Repo.all |> length()
+    devices = from(d in Device, where: d.user_id == ^user_id) |> Repo.all() |> length()
     if devices > 0, do: true, else: false
   end
 
-  def get_user_segment_challenges_by_athlete_id(athlete_id) do
+  def get_user_by_athlete_id(athlete_id) do
     from(u in User,
       join: s in Strava,
       on: s.athlete_id == ^athlete_id,
-      where: u.id == s.user_id,
-      join: oc in OfferChallenge,
-      on: u.id == oc.user_id,
+      where: u.id == s.user_id
+    )
+    |> Repo.one()
+  end
+
+  def get_num_of_segment_challenges_by_user_id(user_id) do
+    from(
+      oc in OfferChallenge,
+      where: oc.id == ^user_id,
       where: oc.status == "active",
       where: oc.type == "BRAVERA_SEGMENT",
-      group_by: [u.id],
-      select: %{user_id: u.id, num_of_segment_chals: count(oc.id)}
+      select: count(oc.id)
     )
     |> Repo.one()
   end

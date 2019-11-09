@@ -21,9 +21,11 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
     result =
       case Queue.start_link([create_params], server_name) do
         {:ok, _} ->
+          Logger.info("API: Started Queue successfully..")
           Queue.dequeue(server_name)
 
         {:error, {:already_started, _}} ->
+          Logger.info("API: Queue already started, adding activity..")
           Queue.enqueue(server_name, create_params)
           Queue.dequeue(server_name)
       end
