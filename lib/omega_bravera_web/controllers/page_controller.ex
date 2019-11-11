@@ -70,4 +70,44 @@ defmodule OmegaBraveraWeb.PageController do
     |> put_resp_content_type("text/html")
     |> text("")
   end
+
+  def apple_domain_verification(conn, _) do
+    apple = Application.get_env(:omega_bravera, :app_links_verification)[:apple]
+
+    data = %{
+      applinks: %{
+        apps: [],
+        details: [
+          %{
+            appID: apple[:appID] || "",
+            paths: ["*"]
+          }
+        ]
+      }
+    }
+
+    json(conn, data)
+  end
+
+  def google_domain_verification(conn, _) do
+    google = Application.get_env(:omega_bravera, :app_links_verification)[:google]
+
+    data = [
+      %{
+        relation: [
+          "delegate_permission/common.handle_all_urls"
+        ],
+        target: %{
+          # String
+          namespace: google[:namespace] || "",
+          # String
+          package_name: google[:package_name] || "",
+          # List of strings
+          sha256_cert_fingerprints: google[:sha256_cert_fingerprints] || [""]
+        }
+      }
+    ]
+
+    json(conn, data)
+  end
 end

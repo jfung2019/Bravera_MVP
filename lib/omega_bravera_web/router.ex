@@ -48,6 +48,11 @@ defmodule OmegaBraveraWeb.Router do
 
   scope "/" do
     get("/health-check", OmegaBraveraWeb.PageController, :health_check)
+
+    # App related JSON files for Apple Universal Links and Google App Links.
+    # Note: Apple instructs that we should NOT append .json to its file.
+    get("/.well-known/apple-app-site-association", OmegaBraveraWeb.PageController, :apple_domain_verification)
+    get("/.well-known/assetlinks.json", OmegaBraveraWeb.PageController, :google_domain_verification)
   end
 
   # Bravera user auth
