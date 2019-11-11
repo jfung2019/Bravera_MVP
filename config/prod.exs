@@ -65,3 +65,16 @@ config :ex_aws, :hackney_opts,
 config :omega_bravera,
        :enable_manual_activities,
        not is_nil(System.get_env("ENABLE_MANUAL_ACTIVITIES"))
+
+
+# Mobile App Links Setup
+config :omega_bravera, app_links_verification: [
+  apple: [
+    appID: "testappID"
+  ],
+  google: [
+    namespace: "bravera_namespace",
+    package_name: "com.example.com",
+    sha256_cert_fingerprints: ["FF:XX:ZZ"]
+  ]
+]
