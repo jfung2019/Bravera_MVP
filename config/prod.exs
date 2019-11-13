@@ -70,11 +70,11 @@ config :omega_bravera,
 # Mobile App Links Setup
 config :omega_bravera, app_links_verification: [
   apple: [
-    appID: "testappID"
+    appID: "CULKVWK3RD.co.bravera.braveraMobileApp"
   ],
   google: [
     namespace: "bravera_namespace",
-    package_name: "com.example.com",
+    package_name: "co.bravera.bravera_mobile_app",
     sha256_cert_fingerprints: ["FF:XX:ZZ"]
   ]
 ]
