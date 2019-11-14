@@ -15,6 +15,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Helpers)
 
   mutation do
+    # @desc "Save User Settings"
+    # field :save_user_settings, :save_user_settings_result do
+    #   arg(:input, non_null(:user_settings_input))
+    #   middleware(Middleware.Authenticate)
+    #   resolve(&Resolvers.Accounts.save_settings/3)
+    # end
+
     @desc "Buy an offer using points"
     field :buy_offer_challenge, :buy_or_create_offer_challenge_result do
       arg(:offer_slug, non_null(:string))
@@ -80,6 +87,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
   end
 
   query do
+    @desc "Get User Settings"
+    field :get_user_settings, :user do
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.Accounts.get_user_with_settings/3)
+    end
+
     @desc "Get Bravera Leaderboard"
     field :get_leaderboard, :leaderboard_result do
       resolve(&Resolvers.Accounts.get_leaderboard/3)

@@ -115,11 +115,21 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       ),
       do: {:ok, Accounts.api_user_profile(id)}
 
-  def get_leaderboard(_root, _args, _into),
+  def get_leaderboard(_root, _args, _info),
     do:
       {:ok,
        %{
          this_week: Accounts.api_get_leaderboard_this_week(),
          all_time: Accounts.api_get_leaderboard_all_time()
        }}
+
+  def get_user_with_settings(_root, _args, %{context: %{current_user: %{id: id}}}) do
+    case Accounts.get_user_with_account_settings(id) do
+      nil ->
+        {:error, message: "Could not find user"}
+
+      user_with_settings ->
+        {:ok, user_with_settings}
+    end
+  end
 end

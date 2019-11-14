@@ -669,8 +669,8 @@ defmodule OmegaBravera.Accounts do
   """
   def get_user!(id, preloads \\ []), do: Repo.get!(User, id) |> Repo.preload(preloads)
 
-  def get_user_with_account_settings!(id) do
-    Repo.get!(User, id)
+  def get_user_with_account_settings(id) do
+    Repo.get(User, id)
     |> Repo.preload([
       :credential,
       setting:

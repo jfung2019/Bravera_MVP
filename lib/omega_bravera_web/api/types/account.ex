@@ -14,7 +14,24 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:total_points_this_week, :decimal)
     field(:total_kilometers, :decimal)
     field(:total_kilometers_this_week, :decimal)
+    field(:setting, :setting)
   end
+
+  object :setting do
+    field(:location, :string)
+    field(:weight, :decimal)
+    field(:date_of_birth, :date)
+    field(:gender, :string)
+  end
+
+  # input_object :setting do
+  #   field(:location, :string)
+  #   field(:weight, :decimal, default: nil)
+  #   field(:weight_fraction, :decimal, virtual: true, default: 0)
+  #   field(:weight_whole, :integer, virtual: true, default: 0.0)
+  #   field(:date_of_birth, :date)
+  #   field(:gender, :string, default: nil)
+  # end
 
   object :strava do
     field(:strava_profile_picture, :string)
