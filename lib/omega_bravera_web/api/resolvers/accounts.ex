@@ -132,4 +132,23 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:ok, user_with_settings}
     end
   end
+
+  def save_settings(_, %{input: user_params}, %{context: %{current_user: %{id: id} = current_user}}) do
+    current_user = OmegaBravera.Repo.preload(current_user, [:setting, :credential])
+
+    case Accounts.update_user(current_user, user_params) do
+      {:ok, updated_user} ->
+        if not is_nil(updated_user.email) and
+             updated_user.email_activation_token != current_user.email_activation_token and
+             updated_user.email_verified == false do
+          # TODO: Email was updated. Should display verify your email in app -Sherief
+          Accounts.Notifier.send_user_signup_email(updated_user, "/")
+        end
+
+        {:ok, Accounts.get_user_with_account_settings(id)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:error, message: "Could not save settings", details: Helpers.transform_errors(changeset)}
+    end
+  end
 end

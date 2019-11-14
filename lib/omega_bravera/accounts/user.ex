@@ -59,9 +59,9 @@ defmodule OmegaBravera.Accounts.User do
     field(:position_on_leaderboard, :integer, virtual: true, default: 0)
 
     # associations
-    has_one(:credential, Credential)
+    has_one(:credential, Credential, on_replace: :update)
     has_one(:strava, Strava)
-    has_one(:setting, Setting)
+    has_one(:setting, Setting, on_replace: :update)
     has_many(:ngos, NGO)
     has_many(:ngo_chals, NGOChal)
     has_many(:donations, Donation)
@@ -91,7 +91,7 @@ defmodule OmegaBravera.Accounts.User do
     |> validate_length(:email, max: 254)
     |> unique_constraint(:email)
     |> add_email_activation_token()
-    |> cast_assoc(:setting, with: &Setting.changeset/2)
+    |> cast_assoc(:setting, with: &Setting.changeset/2, required: false)
     |> cast_assoc(:credential, with: &Credential.optional_changeset/2, required: false)
   end
 
