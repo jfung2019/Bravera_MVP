@@ -6,6 +6,7 @@ defmodule OmegaBraveraWeb.PasswordController do
   alias OmegaBravera.Repo
   alias OmegaBravera.Accounts
   alias OmegaBravera.Accounts.{User, Credential, Notifier}
+  alias OmegaBraveraWeb.Auth.Tools
 
   use Timex
 
@@ -36,7 +37,7 @@ defmodule OmegaBraveraWeb.PasswordController do
           user ->
             case Accounts.create_credential_for_existing_strava(%{
                    user_id: user.id,
-                   reset_token: random_string(64),
+                   reset_token: Tools.random_string(64),
                    reset_token_created: Timex.now()
                  }) do
               {:ok, created_credential} ->
@@ -61,7 +62,7 @@ defmodule OmegaBraveraWeb.PasswordController do
         end
 
       credential ->
-        case reset_password_token(credential) do
+        case Tools.reset_password_token(credential) do
           {:ok, updated_credential} ->
             Notifier.send_password_reset_email(updated_credential)
         end
@@ -84,8 +85,8 @@ defmodule OmegaBraveraWeb.PasswordController do
       credential ->
         %{reset_token_created: reset_token_created} = credential
 
-        if expired?(reset_token_created) do
-          nullify_token(credential)
+        if Tools.expired?(reset_token_created) do
+          Tools.nullify_token(credential)
 
           conn
           |> put_flash(:error, "Password reset token expired")
@@ -114,8 +115,8 @@ defmodule OmegaBraveraWeb.PasswordController do
       credential ->
         %{reset_token_created: reset_token_created} = credential
 
-        if expired?(reset_token_created) do
-          nullify_token(credential)
+        if Tools.expired?(reset_token_created) do
+          Tools.nullify_token(credential)
 
           conn
           |> put_flash(:error, "Password reset token expired")
@@ -123,7 +124,7 @@ defmodule OmegaBraveraWeb.PasswordController do
         else
           case Accounts.update_credential(credential, params["credential"]) do
             {:ok, _response} ->
-              nullify_token(credential)
+              Tools.nullify_token(credential)
 
               conn
               |> put_flash(:info, "Password reset successfully!")
@@ -140,29 +141,4 @@ defmodule OmegaBraveraWeb.PasswordController do
         end
     end
   end
-
-  defp nullify_token(credential) do
-    Accounts.update_credential_token(credential, %{
-      reset_token: nil,
-      reset_token_created: nil
-    })
-  end
-
-  # sets the token & sent at in the database for the credential
-  defp reset_password_token(credential) do
-    token = random_string(64)
-    now = DateTime.utc_now()
-
-    credential
-    |> Accounts.update_credential_token(%{reset_token: token, reset_token_created: now})
-  end
-
-  defp random_string(length) do
-    length
-    |> :crypto.strong_rand_bytes()
-    |> Base.url_encode64()
-    |> binary_part(0, length)
-  end
-
-  defp expired?(datetime), do: Timex.after?(Timex.now(), Timex.shift(datetime, days: 1))
 end

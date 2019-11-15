@@ -15,6 +15,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Helpers)
 
   mutation do
+    @desc "Send reset password link"
+    field :send_reset_password_link, :send_reset_password_link_result do
+      arg(:email, non_null(:string))
+      resolve(&Resolvers.Accounts.send_reset_password_link/3)
+    end
+
     @desc "Save User Settings"
     field :save_user_settings, :user do
       arg(:input, non_null(:user_settings_input))

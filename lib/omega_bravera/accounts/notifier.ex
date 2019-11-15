@@ -32,6 +32,30 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.add_to(user.email)
   end
 
+  def send_app_password_reset_email(%Credential{} = credential) do
+    template_id = "ab8b34b3-7d10-40be-b732-e375cc14a8ab"
+    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    credential = Repo.preload(credential, user: [:subscribed_email_categories])
+
+    if user_subscribed_in_category?(
+         credential.user.subscribed_email_categories,
+         sendgrid_email.category.id
+       ) do
+      credential
+      |> app_password_reset_email(template_id)
+      |> Mail.send()
+    end
+  end
+
+  def app_password_reset_email(%Credential{} = credential, template_id) do
+    Email.build()
+    |> Email.put_template(template_id)
+    |> Email.add_substitution("-ResetCode-", credential[:reset_token])
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(credential.user.email)
+  end
+
   def send_password_reset_email(%Credential{} = credential) do
     template_id = "1bfb8b3b-e5fd-4052-baad-55fd4a5f7c2b"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)

@@ -1,9 +1,13 @@
 defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   import OmegaBraveraWeb.Gettext
+  require Logger
 
   alias OmegaBravera.Guardian
-  alias OmegaBravera.{Accounts, Locations, Points}
+  alias OmegaBravera.{Accounts, Locations, Points, Repo}
+  alias OmegaBravera.Accounts.Notifier
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
+  alias OmegaBraveraWeb.Auth.Tools
+  alias OmegaBravera.Accounts.User
 
   def login(root, %{locale: locale} = params, info) do
     case locale do
@@ -133,7 +137,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  def save_settings(_, %{input: user_params}, %{context: %{current_user: %{id: id} = current_user}}) do
+  def save_settings(_, %{input: user_params}, %{
+        context: %{current_user: %{id: id} = current_user}
+      }) do
     current_user = OmegaBravera.Repo.preload(current_user, [:setting, :credential])
 
     case Accounts.update_user(current_user, user_params) do
@@ -149,6 +155,60 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:error, message: "Could not save settings", details: Helpers.transform_errors(changeset)}
+    end
+  end
+
+  def send_reset_password_link(_, %{email: email}, _) do
+    credential =
+      case email do
+        nil ->
+          nil
+
+        email ->
+          Accounts.get_user_credential(email)
+      end
+
+    case credential do
+      nil ->
+        # search for email in users
+        case Repo.get_by(User, email: email) do
+          nil ->
+            {:error, message: "There's no account associated with that email"}
+
+          user ->
+            case Accounts.create_credential_for_existing_strava(%{
+                   user_id: user.id,
+                   reset_token: Tools.random_string(64),
+                   reset_token_created: Timex.now()
+                 }) do
+              {:ok, created_credential} ->
+                Notifier.send_app_password_reset_email(created_credential)
+
+                {:ok,
+                 %{
+                   status:
+                     "You will receive a link in your #{email} inbox soon to set your new password."
+                 }}
+
+              {:error, reason} ->
+                Logger.error(
+                  "API Password Recovery: could not create new credential, reason: #{
+                    inspect(reason)
+                  }"
+                )
+
+                {:error, message: "Something went wrong while trying to reset your password."}
+            end
+        end
+
+      credential ->
+        case Tools.reset_password_token(credential) do
+          {:ok, updated_credential} ->
+            Notifier.send_app_password_reset_email(updated_credential)
+
+            {:ok,
+             %{status: "You will receive a password reset link in your #{email} inbox soon."}}
+        end
     end
   end
 end
