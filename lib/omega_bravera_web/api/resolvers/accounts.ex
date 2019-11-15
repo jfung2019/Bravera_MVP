@@ -158,7 +158,24 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  def send_reset_password_link(_, %{email: email}, _) do
+  def verify_reset_token(_, %{reset_token: reset_token}, _) do
+    case Accounts.get_credential_by_token(reset_token) do
+      nil ->
+        {:error, message: "Code does not exist."}
+
+      credential ->
+        %{reset_token_created: reset_token_created} = credential
+
+        if Tools.expired?(reset_token_created) do
+          Tools.nullify_token(credential)
+          {:error, message: "Password reset code expired"}
+        else
+          {:ok, %{status: "OK"}}
+        end
+    end
+  end
+
+  def send_reset_password_code(_, %{email: email}, _) do
     credential =
       case email do
         nil ->

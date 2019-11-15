@@ -15,10 +15,10 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Helpers)
 
   mutation do
-    @desc "Send reset password link"
-    field :send_reset_password_link, :send_reset_password_link_result do
+    @desc "Send reset password code"
+    field :send_reset_password_code, :send_reset_password_code_result do
       arg(:email, non_null(:string))
-      resolve(&Resolvers.Accounts.send_reset_password_link/3)
+      resolve(&Resolvers.Accounts.send_reset_password_code/3)
     end
 
     @desc "Save User Settings"
@@ -93,6 +93,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
   end
 
   query do
+    @desc "Verfiy reset password code"
+    field :verify_reset_password_code, :verify_reset_password_code_result do
+      arg(:reset_token, non_null(:string))
+      resolve(&Resolvers.Accounts.verify_reset_token/3)
+    end
+
     @desc "Get User Settings"
     field :get_user_settings, :user do
       middleware(Middleware.Authenticate)
