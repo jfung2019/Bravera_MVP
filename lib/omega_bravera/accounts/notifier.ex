@@ -50,7 +50,7 @@ defmodule OmegaBravera.Accounts.Notifier do
   def app_password_reset_email(%Credential{} = credential, template_id) do
     Email.build()
     |> Email.put_template(template_id)
-    |> Email.add_substitution("-ResetCode-", credential[:reset_token])
+    |> Email.add_substitution("-ResetCode-", credential.reset_token)
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(credential.user.email)
