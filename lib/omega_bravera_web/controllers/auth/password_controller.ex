@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.PasswordController do
           user ->
             case Accounts.create_credential_for_existing_strava(%{
                    user_id: user.id,
-                   reset_token: Tools.random_string(64),
+                   reset_token: Tools.random_string(),
                    reset_token_created: Timex.now()
                  }) do
               {:ok, created_credential} ->

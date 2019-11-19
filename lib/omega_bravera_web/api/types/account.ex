@@ -32,6 +32,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :status, :string
   end
 
+  object :forgot_password_change_password_result do
+    field :status, :string
+  end
+
   input_object :user_settings_input do
     field(:email, non_null(:string))
     field(:firstname, non_null(:string))

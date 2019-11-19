@@ -195,7 +195,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
           user ->
             case Accounts.create_credential_for_existing_strava(%{
                    user_id: user.id,
-                   reset_token: Tools.random_string(64),
+                   reset_token: Tools.random_string(),
                    reset_token_created: Timex.now()
                  }) do
               {:ok, created_credential} ->
@@ -225,6 +225,52 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
             {:ok,
              %{status: "You will receive a password reset link in your #{email} inbox soon."}}
+        end
+    end
+  end
+
+  def forgot_password_change_password(
+        _,
+        %{
+          reset_token: reset_token,
+          password: password,
+          password_confirm: password_confirmation
+        },
+        _context
+      ) do
+    credential = Accounts.get_credential_by_token(reset_token)
+
+    case credential do
+      nil ->
+        {:error, message: "Invalid reset code"}
+
+      credential ->
+        %{reset_token_created: reset_token_created} = credential
+
+        if Tools.expired?(reset_token_created) do
+          Tools.nullify_token(credential)
+
+          {:error, message: "Password reset code expired"}
+        else
+          case Accounts.update_credential(credential, %{
+                 password: password,
+                 password_confirmation: password_confirmation
+               }) do
+            {:ok, _response} ->
+              Tools.nullify_token(credential)
+              {:ok, %{status: "Password reset successfully!"}}
+
+            {:error, changeset} ->
+              Logger.error(
+                "API Password Recovery: could not update credential, reason: #{
+                  inspect(changeset.errors)
+                }"
+              )
+
+              {:error,
+               message: "Something went wrong while trying to change your password.",
+               details: Helpers.transform_errors(changeset)}
+          end
         end
     end
   end

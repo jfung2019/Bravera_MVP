@@ -15,6 +15,14 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Helpers)
 
   mutation do
+    @desc "Forgot password: change password"
+    field :forgot_password_change_password, :forgot_password_change_password_result do
+      arg(:reset_token, non_null(:string))
+      arg(:password, non_null(:string))
+      arg(:password_confirm, non_null(:string))
+      resolve(&Resolvers.Accounts.forgot_password_change_password/3)
+    end
+
     @desc "Send reset password code"
     field :send_reset_password_code, :send_reset_password_code_result do
       arg(:email, non_null(:string))
