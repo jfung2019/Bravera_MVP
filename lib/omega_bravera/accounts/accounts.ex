@@ -448,7 +448,9 @@ defmodule OmegaBravera.Accounts do
       from(
         p in Point,
         where: p.user_id == ^user_id,
-        order_by: [desc: :inserted_at]
+        order_by: [desc: fragment("CAST(? AS DATE)", p.inserted_at)],
+        group_by: fragment("CAST(? AS DATE)", p.inserted_at),
+        select: %{value: sum(p.value), inserted_at: fragment("CAST(? AS DATE)", p.inserted_at)}
       )
       |> Repo.all()
 
