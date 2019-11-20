@@ -138,6 +138,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "Get a list of all offers"
     field :all_offers, list_of(non_null(:offer)) do
+      middleware(Middleware.Authenticate)
       resolve(&Resolvers.Offers.all_offers/3)
     end
 
