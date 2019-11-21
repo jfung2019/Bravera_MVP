@@ -21,6 +21,6 @@ defmodule OmegaBravera.Referrals.Referral do
     |> validate_required([:status, :token, :bonus_points])
   end
 
-  defp gen_token(length \\ 6),
-    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
+  defp gen_token(length \\ 4),
+    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length) |> String.replace("_", "9")
 end

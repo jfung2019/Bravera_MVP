@@ -74,7 +74,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   defp do_create_user(_root, %{input: params}, _info) do
     referral =
       if Map.has_key?(params, :referral_token) do
-        OmegaBravera.Referrals.get_referral_by_token(params.referral_token)
+        params.referral_token
+        |> deconstuct_referral()
+        |> OmegaBravera.Referrals.get_referral_by_token()
       else
         nil
       end
@@ -103,6 +105,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:error, message: "Could not signup", details: Helpers.transform_errors(changeset)}
     end
   end
+
+  defp deconstuct_referral(token), do: token |> String.split("_") |> List.last()
 
   def all_locations(_root, _args, _info), do: {:ok, Locations.list_locations()}
 
