@@ -12,7 +12,6 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     "acceptTerms" => true,
     "locationId" => 1,
     "locale" => "en",
-    "referral_token" => nil,
     "credential" => %{
       "password" => "dev123",
       "passwordConfirm" => "dev123"
@@ -87,7 +86,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     response =
       post(build_conn(), "/api", %{
         query: @query,
-        variables: %{"user" => %{@valid_user_input | "referral_token" => referral.token}}
+        variables: %{"user" => Map.put_new(@valid_user_input, "referral_token", referral.token)}
       })
 
     email = @valid_user_input["email"]
