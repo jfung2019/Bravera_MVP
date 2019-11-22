@@ -26,7 +26,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     case Accounts.email_password_auth(email, password) do
       {:ok, user} ->
         {:ok, updated_user} = Accounts.update_user(user, %{locale: locale})
-        {:ok, token, _} = Guardian.encode_and_sign(updated_user, %{})
+        {:ok, token, _} = Guardian.encode_and_sign(updated_user, %{}, [ttl: {52, :weeks}])
 
         {
           :ok,

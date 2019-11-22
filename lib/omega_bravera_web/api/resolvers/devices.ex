@@ -11,6 +11,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
   def register_device(_root, %{input: %{active: active, uuid: uuid}}, %{
         context: %{current_user: %{id: user_id}}
       }) do
+    # TODO: BUG: update or create instead of create since a user can get back to an inactive device.
     case Devices.create_device(%{active: active, uuid: uuid, user_id: user_id}) do
       {:ok, %{create_device: device}} ->
         {:ok,

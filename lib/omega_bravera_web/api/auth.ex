@@ -5,5 +5,5 @@ defmodule OmegaBraveraWeb.Api.Auth do
   def generate_device_token(device_uuid),
     do: Phoenix.Token.sign(@context, @salt, {:device_uuid, device_uuid})
 
-  def decrypt_token(token), do: Phoenix.Token.verify(@context, @salt, token, max_age: 86400)
+  def decrypt_token(token), do: Phoenix.Token.verify(@context, @salt, token, max_age: 3.154e+7)
 end
