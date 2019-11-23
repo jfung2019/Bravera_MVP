@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Offers do
         {:ok, Offers.api_list_offers()}
 
       _ ->
-        {:ok, Offers.api_list_offers_with_segments()}
+        {:ok, Offers.list_offers()}
     end
   end
 

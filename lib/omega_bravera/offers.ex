@@ -71,19 +71,6 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
-  def api_list_offers_with_segments(hidden \\ false, preloads \\ [:offer_challenges]) do
-    now = Timex.now("Asia/Hong_Kong")
-
-    from(
-      offer in Offer,
-      where: offer.hidden == ^hidden and offer.end_date > ^now,
-      where: not is_nil(offer.payment_amount),
-      order_by: [desc: offer.id],
-      preload: ^preloads
-    )
-    |> Repo.all()
-  end
-
   def list_offers(hidden \\ false, preloads \\ [:offer_challenges]) do
     now = Timex.now("Asia/Hong_Kong")
 
