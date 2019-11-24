@@ -16,8 +16,13 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Offers do
   def offer_offer_challenges(_root, %{offer_id: offer_id}, _info),
     do: {:ok, Offers.list_offer_offer_challenges(offer_id)}
 
-  def get_offer(_root, %{id: offer_id}, %{context: %{current_user: _current_user}}),
-    do: {:ok, Offers.get_offer!(offer_id)}
+  def get_offer(_root, %{slug: offer_slug}, _info) do
+    case Offers.get_offer_by_slug(offer_slug) do
+      nil ->
+        {:error, message: "Offer not found"}
 
-  def get_offer(_root, _args, _info), do: {:error, "not_authorized"}
+      offer ->
+        {:ok, offer}
+    end
+  end
 end

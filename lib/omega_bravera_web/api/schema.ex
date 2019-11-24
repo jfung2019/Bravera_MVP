@@ -131,8 +131,8 @@ defmodule OmegaBraveraWeb.Api.Schema do
     end
 
     @desc "Get a single offer by ID"
-    field :offer, :offer do
-      arg(:id, non_null(:id))
+    field :get_offer, :offer do
+      arg(:slug, non_null(:string))
       resolve(&Resolvers.Offers.get_offer/3)
     end
 
