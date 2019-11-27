@@ -12,18 +12,27 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   alias OmegaBravera.Accounts.User
 
   def get_strava_oauth_url(_, _, %{
-        context: %{current_user: %{id: _id} = _current_user}
+        context: %{current_user: %{id: _id} = current_user}
       }) do
-    redirect_url =
-      Routes.strava_url(OmegaBraveraWeb.Endpoint, :connect_strava_callback_mobile_app, %{
-        redirect_to: Routes.page_url(OmegaBraveraWeb.Endpoint, :index) <> "after_strava_connect"
-      })
+    case Guardian.encode_and_sign(current_user) do
+      {:ok, token, _} ->
+        redirect_url =
+          Routes.strava_url(OmegaBraveraWeb.Endpoint, :connect_strava_callback_mobile_app, %{
+            redirect_to:
+              Routes.page_url(OmegaBraveraWeb.Endpoint, :index) <>
+                "after_strava_connect/" <> token
+          })
 
-    {:ok,
-     Strava.Auth.authorize_url!(
-       scope: "activity:read_all,profile:read_all",
-       redirect_uri: redirect_url
-     )}
+        {:ok,
+         Strava.Auth.authorize_url!(
+           scope: "activity:read_all,profile:read_all",
+           redirect_uri: redirect_url
+         )}
+
+      {:error, reason} ->
+        Logger.error("API: could not encode user, reason: #{inspect(reason)}")
+        {:error, message: "Error while connecting to Strava."}
+    end
   end
 
   def login(root, %{locale: locale} = params, info) do

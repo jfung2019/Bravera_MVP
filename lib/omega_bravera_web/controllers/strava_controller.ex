@@ -74,9 +74,19 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   def connect_strava_callback_mobile_app(conn, params) do
+    user_token =
+      Map.get(params, "redirect_to", "/")
+      |> String.split("/")
+      # Gets the user token
+      |> List.last()
+
+    connect_params =
+      Accounts.Strava.login_changeset(params)
+      |> Map.put_new(:user_token, user_token)
+
     conn
-    |> attach_strava_to_user(Accounts.Strava.login_changeset(params))
-    |> redirect(external: Map.get(params, "redirect_to", "/"))
+    |> attach_strava_to_user_mobile_app(connect_params)
+    |> redirect(external: page_url(OmegaBraveraWeb.Endpoint, :index) <> "after_strava_connect")
   end
 
   @doc """
@@ -144,6 +154,33 @@ defmodule OmegaBraveraWeb.StravaController do
             )
         end
     end
+  end
+
+  defp attach_strava_to_user_mobile_app(conn, attrs) do
+    case Guardian.decode_and_verify(attrs[:user_token]) do
+      {:ok, %{"sub" => "user:" <> id}} ->
+        case Accounts.get_user!(id) do
+          nil ->
+            Logger.error("User tried to connect strava but wasn't found")
+
+            conn
+
+          user ->
+            case Trackers.create_strava(user.id, attrs) do
+              {:ok, _} ->
+                conn
+
+              {:error, changeset} ->
+                Logger.error("Could not connect strava account, reason: #{inspect(changeset)}")
+                conn
+            end
+        end
+
+      _ ->
+        :error
+    end
+
+    conn
   end
 
   def logout(conn, _params) do
