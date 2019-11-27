@@ -16,7 +16,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       }) do
     redirect_url =
       Routes.strava_url(OmegaBraveraWeb.Endpoint, :connect_strava_callback, %{
-        redirect_to: Routes.page_url(OmegaBraveraWeb.Endpoint, :index)
+        redirect_to: Routes.page_url(OmegaBraveraWeb.Endpoint, :index) <> "open-app"
       })
 
     {:ok,
