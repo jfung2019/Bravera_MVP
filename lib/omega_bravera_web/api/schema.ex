@@ -107,6 +107,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve(&Resolvers.Accounts.verify_reset_token/3)
     end
 
+    @desc "Get Strava OAUTH url"
+    field :get_strava_oauth_url, :string do
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.Accounts.get_strava_oauth_url/3)
+    end
+
     @desc "Get User Settings"
     field :get_user_settings, :user do
       middleware(Middleware.Authenticate)

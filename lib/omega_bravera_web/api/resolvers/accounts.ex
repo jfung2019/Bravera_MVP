@@ -1,5 +1,7 @@
 defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   import OmegaBraveraWeb.Gettext
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
+
   require Logger
 
   alias OmegaBravera.Guardian
@@ -8,6 +10,21 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   alias OmegaBraveraWeb.Auth.Tools
   alias OmegaBravera.Accounts.User
+
+  def get_strava_oauth_url(_, _, %{
+        context: %{current_user: %{id: _id} = _current_user}
+      }) do
+    redirect_url =
+      Routes.strava_url(OmegaBraveraWeb.Endpoint, :connect_strava_callback, %{
+        redirect_to: Routes.page_url(OmegaBraveraWeb.Endpoint, :index)
+      })
+
+    {:ok,
+     Strava.Auth.authorize_url!(
+       scope: "activity:read_all,profile:read_all",
+       redirect_uri: redirect_url
+     )}
+  end
 
   def login(root, %{locale: locale} = params, info) do
     case locale do
@@ -26,7 +43,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     case Accounts.email_password_auth(email, password) do
       {:ok, user} ->
         {:ok, updated_user} = Accounts.update_user(user, %{locale: locale})
-        {:ok, token, _} = Guardian.encode_and_sign(updated_user, %{}, [ttl: {52, :weeks}])
+        {:ok, token, _} = Guardian.encode_and_sign(updated_user, %{}, ttl: {52, :weeks})
 
         {
           :ok,

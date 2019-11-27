@@ -45,6 +45,10 @@ defmodule OmegaBraveraWeb.StravaController do
     )
   end
 
+  @doc """
+  Endpoint that takes the user to strava auth page, and sets
+  the redirect url.
+  """
   def connect_strava_account(conn, params) do
     redirect_url =
       strava_url(conn, :connect_strava_callback, %{
