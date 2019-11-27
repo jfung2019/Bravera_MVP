@@ -31,6 +31,9 @@ defmodule OmegaBravera.Activity.Queue do
     case result do
       {:ok, activity} ->
         user_with_points = OmegaBravera.Accounts.get_user_with_todays_points(value.user)
+        Logger.info(
+          "Activity Create Queue: Successfully created user_id: #{value.user.id} #{value.user.firstname}'s activity: #{activity}"
+        )
 
         # Add reward points if activity is eligible.
         case Points.create_points_from_activity(activity, user_with_points) do
@@ -47,7 +50,13 @@ defmodule OmegaBravera.Activity.Queue do
             )
         end
 
-      {:error, _} ->
+      {:error, changeset} ->
+        Logger.warn(
+          "Activity Create Queue: Could not create points for activity, reason: #{
+            inspect(changeset)
+          }"
+        )
+
         nil
     end
 

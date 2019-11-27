@@ -696,6 +696,8 @@ defmodule OmegaBravera.Accounts do
     ])
   end
 
+  # TODO: pass in the activity date and shift it to 00:00:00 day, month, year.
+  # this will be equal now to account for limit at each day.
   def get_user_with_todays_points(%User{id: user_id}) do
     now = Timex.now()
 
