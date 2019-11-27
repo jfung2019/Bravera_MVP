@@ -96,6 +96,7 @@ defmodule OmegaBraveraWeb.Router do
     get("/callback", StravaController, :strava_callback)
     get("/connect_strava_account/", StravaController, :connect_strava_account)
     get("/connect_callback", StravaController, :connect_strava_callback)
+    get("/connect_callback_mobile_app", StravaController, :connect_strava_callback_mobile_app)
     get("/logout", StravaController, :logout)
   end
 

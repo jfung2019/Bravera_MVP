@@ -73,6 +73,12 @@ defmodule OmegaBraveraWeb.StravaController do
     |> redirect(to: Map.get(params, "redirect_to", "/"))
   end
 
+  def connect_strava_callback_mobile_app(conn, params) do
+    conn
+    |> attach_strava_to_user(Accounts.Strava.login_changeset(params))
+    |> redirect(external: Map.get(params, "redirect_to", "/"))
+  end
+
   @doc """
   This action is reached via `/auth/callback` and is the the callback URL that Strava will redirect the user back to with a `code` that will be used to request an access token.
   The access token will then be used to access protected resources on behalf of the user.

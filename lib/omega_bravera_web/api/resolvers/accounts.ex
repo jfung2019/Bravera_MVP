@@ -15,7 +15,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         context: %{current_user: %{id: _id} = _current_user}
       }) do
     redirect_url =
-      Routes.strava_url(OmegaBraveraWeb.Endpoint, :connect_strava_callback, %{
+      Routes.strava_url(OmegaBraveraWeb.Endpoint, :connect_strava_callback_mobile_app, %{
         redirect_to: Routes.page_url(OmegaBraveraWeb.Endpoint, :index) <> "after_strava_connect"
       })
 
