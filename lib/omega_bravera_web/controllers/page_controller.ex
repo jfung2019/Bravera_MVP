@@ -80,7 +80,7 @@ defmodule OmegaBraveraWeb.PageController do
         details: [
           %{
             appID: apple[:appID] || "",
-            paths: ["/offers/*", "/open-app"]
+            paths: ["/offers/*", "/open-app", "/after_strava_connect"]
           }
         ]
       }
