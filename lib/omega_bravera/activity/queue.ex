@@ -52,7 +52,7 @@ defmodule OmegaBravera.Activity.Queue do
 
       {:error, changeset} ->
         Logger.warn(
-          "Activity Create Queue: Could not create points for activity, reason: #{
+          "Activity Create Queue: Could not create activity, reason: #{
             inspect(changeset)
           }"
         )
