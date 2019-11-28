@@ -32,7 +32,7 @@ defmodule OmegaBravera.Activity.Queue do
       {:ok, activity} ->
         user_with_points = OmegaBravera.Accounts.get_user_with_todays_points(value.user)
         Logger.info(
-          "Activity Create Queue: Successfully created user_id: #{value.user.id} #{value.user.firstname}'s activity: #{activity}"
+          "Activity Create Queue: Successfully created user_id: #{inspect(value.user.id)} #{inspect(value.user.firstname)}'s activity: #{inspect(activity)}"
         )
 
         # Add reward points if activity is eligible.
