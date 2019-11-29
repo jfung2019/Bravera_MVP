@@ -9,7 +9,16 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
   code_reloader: false
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: :error
+
+config :absinthe, Absinthe.Logger,
+  filter_variables: ["reset_token", "token", "password_hash", "secret"]
+
+config :absinthe,
+  log: true
+
+config :absinthe, Absinthe.Logger,
+  pipeline: true
 
 config :phoenix, :serve_endpoints, true
 

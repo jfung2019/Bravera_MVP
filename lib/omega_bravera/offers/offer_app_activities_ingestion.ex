@@ -135,7 +135,7 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
 
   def create_activity(challenge, _, _, _) do
     Logger.info(
-      "Offers:AppActivityIngestion: did not process for challenge: #{inspect(challenge)}"
+      "Offers:AppActivityIngestion: did not process for challenge: #{inspect(challenge.id)}"
     )
 
     {:error, challenge, nil}
