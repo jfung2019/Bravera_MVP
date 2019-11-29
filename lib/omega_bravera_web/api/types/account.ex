@@ -56,6 +56,8 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :user_profile do
+    field(:id, non_null(:id))
+    field(:email, non_null(:string))
     field(:total_points, non_null(:decimal))
     field(:total_points_this_week, non_null(:decimal))
     field(:total_rewards, non_null(:integer))
