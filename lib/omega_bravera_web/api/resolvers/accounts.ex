@@ -98,41 +98,44 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   end
 
   defp do_create_user(_root, %{input: params}, _info) do
-    referral =
-      if Map.has_key?(params, :referral_token) do
-        params.referral_token
-        |> deconstuct_referral()
-        |> OmegaBravera.Referrals.get_referral_by_token()
-      else
-        nil
+      case Accounts.create_credential_user(params, deconstuct_and_get_referral(params)) do
+        {:ok, user} ->
+          if not is_nil(user.referred_by_id) do
+            Points.create_bonus_points(%{
+              user_id: user.referred_by_id,
+              source: "referral",
+              value: OmegaBravera.Points.Point.get_points_per_km()
+            })
+
+            Points.create_bonus_points(%{
+              user_id: user.id,
+              source: "referral",
+              value: Decimal.div(OmegaBravera.Points.Point.get_points_per_km(), 2)
+            })
+          end
+
+          Accounts.Notifier.send_user_signup_email(user)
+          {:ok, token, _} = Guardian.encode_and_sign(user, %{})
+          {:ok, %{user: user, token: token, user_profile: Accounts.api_user_profile(user.id)}}
+
+        {:error, changeset} ->
+          {:error, message: "Could not signup", details: Helpers.transform_errors(changeset)}
       end
+  end
 
-    case Accounts.create_credential_user(params, referral) do
-      {:ok, user} ->
-        if not is_nil(user.referred_by_id) do
-          Points.create_bonus_points(%{
-            user_id: user.referred_by_id,
-            source: "referral",
-            value: OmegaBravera.Points.Point.get_points_per_km()
-          })
-
-          Points.create_bonus_points(%{
-            user_id: user.id,
-            source: "referral",
-            value: Decimal.div(OmegaBravera.Points.Point.get_points_per_km(), 2)
-          })
-        end
-
-        Accounts.Notifier.send_user_signup_email(user)
-        {:ok, token, _} = Guardian.encode_and_sign(user, %{})
-        {:ok, %{user: user, token: token, user_profile: Accounts.api_user_profile(user.id)}}
-
-      {:error, changeset} ->
-        {:error, message: "Could not signup", details: Helpers.transform_errors(changeset)}
+  defp deconstuct_and_get_referral(%{referral_token: token}) when not is_nil(token) do
+    if String.length(token) > 0 do
+      token
+      |> String.trim()
+      |> String.split("_")
+      |> List.last()
+      |> OmegaBravera.Referrals.get_referral_by_token()
+    else
+      nil
     end
   end
 
-  defp deconstuct_referral(token), do: token |> String.split("_") |> List.last()
+  defp deconstuct_and_get_referral(_), do: nil
 
   def all_locations(_root, _args, _info), do: {:ok, Locations.list_locations()}
 
