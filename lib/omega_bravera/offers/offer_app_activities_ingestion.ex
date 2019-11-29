@@ -91,7 +91,8 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
         %{strava_id: strava_id} = activity,
         _user,
         send_emails
-      ) when not is_nil(strava_id) do
+      )
+      when not is_nil(strava_id) do
     if valid_activity?(activity, challenge, send_emails) and
          OfferChallenge.has_relevant_segment(challenge, activity) do
       case Offers.create_offer_challenge_activity_m2m(activity, challenge) do
@@ -133,7 +134,10 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
   end
 
   def create_activity(challenge, _, _, _) do
-    Logger.info("Offers:AppActivityIngestion: did not process for challenge: #{inspect(challenge)}")
+    Logger.info(
+      "Offers:AppActivityIngestion: did not process for challenge: #{inspect(challenge)}"
+    )
+
     {:error, challenge, nil}
   end
 
@@ -197,13 +201,7 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
   end
 
   defp notify_participant_of_activity(
-         {_status, %OfferChallenge{status: "pre_registration"}, _activity} = params,
-         _
-       ),
-       do: params
-
-  defp notify_participant_of_activity(
-         {_status, %OfferChallenge{status: "expired"}, _activity} = params,
+         {_status, _challenge, _activity} = params,
          _
        ),
        do: params
