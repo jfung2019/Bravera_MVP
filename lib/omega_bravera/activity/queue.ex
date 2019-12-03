@@ -30,7 +30,7 @@ defmodule OmegaBravera.Activity.Queue do
 
     case result do
       {:ok, activity} ->
-        user_with_points = OmegaBravera.Accounts.get_user_with_todays_points(value.user)
+        user_with_points = OmegaBravera.Accounts.get_user_with_todays_points(value.user, activity.start_date)
         Logger.info(
           "Activity Create Queue: Successfully created user_id: #{inspect(value.user.id)} #{inspect(value.user.firstname)}'s activity: #{inspect(activity)}"
         )
