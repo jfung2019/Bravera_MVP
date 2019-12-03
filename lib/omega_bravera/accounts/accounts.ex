@@ -376,6 +376,7 @@ defmodule OmegaBravera.Accounts do
         left_join: ac in ActivityAccumulator,
         on: a.activity_id == ac.id,
         group_by: oc.id,
+        order_by: [desc: :inserted_at],
         preload: [:offer],
         select: %{
           oc
@@ -391,6 +392,7 @@ defmodule OmegaBravera.Accounts do
         on: oc.id == a.offer_challenge_id,
         left_join: ac in ActivityAccumulator,
         on: a.activity_id == ac.id,
+        order_by: [desc: :inserted_at],
         group_by: oc.id,
         preload: [:offer],
         select: %{
@@ -408,6 +410,7 @@ defmodule OmegaBravera.Accounts do
         left_join: ac in ActivityAccumulator,
         on: a.activity_id == ac.id,
         group_by: oc.id,
+        order_by: [desc: :updated_at],
         preload: [:offer],
         select: %{
           oc
