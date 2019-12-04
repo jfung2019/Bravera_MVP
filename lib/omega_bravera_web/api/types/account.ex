@@ -94,6 +94,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:email, non_null(:string))
     field(:referral_token, :string)
     field(:credential, :credential)
+    field(:setting, non_null(:setting_input))
   end
 
   # For success reporting
