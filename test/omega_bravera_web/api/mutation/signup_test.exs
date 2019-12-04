@@ -12,6 +12,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     "acceptTerms" => true,
     "locationId" => 1,
     "locale" => "en",
+    "setting" => %{
+      "dateOfBirth" => "1999-05-05 00:00:00",
+      "gender" => "robot",
+    },
     "credential" => %{
       "password" => "dev123",
       "passwordConfirm" => "dev123"
@@ -28,6 +32,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     "credential" => %{
       "password" => "dev123",
       "passwordConfirm" => "bad confirm"
+    },
+    "setting" => %{
+      "dateOfBirth" => "1999-05-05 00:00:00",
+      "gender" => "",
     }
   }
 
