@@ -24,7 +24,7 @@ defmodule OmegaBravera.Points.PointsTest do
   describe "create points from activity data" do
     test "activity_points_changeset/3 is valid when correct data is given", %{user: user} do
       activity =
-        insert(:activity_accumulator, %{distance: Decimal.new(50), user: nil, user_id: user.id})
+        insert(:activity_accumulator, %{start_date: Timex.now(), distance: Decimal.new(50), user: nil, user_id: user.id})
 
       assert Point.activity_points_changeset(%Point{}, activity, user).valid?
     end
@@ -33,6 +33,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity1 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Ride",
           distance: Decimal.new(50),
           user: nil,
@@ -42,6 +43,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity2 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Cycle",
           distance: Decimal.new(50),
           user: nil,
@@ -51,6 +53,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity3 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "VirtualRide",
           distance: Decimal.new(50),
           user: nil,
@@ -66,7 +69,7 @@ defmodule OmegaBravera.Points.PointsTest do
       user: user
     } do
       activity =
-        insert(:activity_accumulator, %{distance: Decimal.new(50), user: nil, user_id: user.id})
+        insert(:activity_accumulator, %{start_date: Timex.now(), distance: Decimal.new(50), user: nil, user_id: user.id})
 
       changeset = Point.activity_points_changeset(%Point{}, activity, user)
       assert changeset.valid?
@@ -82,6 +85,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity =
         insert(:activity_accumulator, %{
           distance: Decimal.from_float(0.95),
+          start_date: Timex.now(),
           user: nil,
           user_id: user.id
         })
@@ -96,6 +100,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity1 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Run",
           distance: Decimal.new(5),
           user: nil,
@@ -107,6 +112,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity2 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Walk",
           distance: Decimal.new(5),
           user: nil,
@@ -118,6 +124,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity3 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Run",
           distance: Decimal.new(5),
           user: nil,
@@ -138,6 +145,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity1 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Run",
           distance: Decimal.new(10),
           user: nil,
@@ -156,6 +164,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity2 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Walk",
           distance: Decimal.new(10),
           user: nil,
@@ -190,6 +199,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity1 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Run",
           distance: Decimal.new(15),
           user: nil,
@@ -201,6 +211,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity2 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Walk",
           distance: Decimal.new(10),
           user: nil,
