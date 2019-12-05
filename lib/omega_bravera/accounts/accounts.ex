@@ -453,7 +453,11 @@ defmodule OmegaBravera.Accounts do
         where: p.user_id == ^user_id,
         order_by: [desc: fragment("CAST(? AS DATE)", p.inserted_at)],
         group_by: fragment("CAST(? AS DATE)", p.inserted_at),
-        select: %{value: sum(p.value), inserted_at: fragment("CAST(? AS DATE)", p.inserted_at)}
+        select: %{
+          neg_value: fragment("sum(case when ? < 0 then ? else 0 end)", p.value, p.value),
+          pos_value: fragment("sum(case when ? > 0 then ? else 0 end)", p.value, p.value),
+          inserted_at: fragment("CAST(? AS DATE)", p.inserted_at)
+        }
       )
       |> Repo.all()
 
@@ -790,6 +794,14 @@ defmodule OmegaBravera.Accounts do
   def delete_user(%User{} = user) do
     Repo.delete(user)
   end
+
+  # def delete_user_profile_pictures(user_id) do
+  #   from(
+  #     u in User,
+  #     where: u.id == ^user_id,
+
+  #   )
+  # end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking user changes.

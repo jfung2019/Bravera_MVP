@@ -98,29 +98,29 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   end
 
   defp do_create_user(_root, %{input: params}, _info) do
-      case Accounts.create_credential_user(params, deconstuct_and_get_referral(params)) do
-        {:ok, user} ->
-          if not is_nil(user.referred_by_id) do
-            Points.create_bonus_points(%{
-              user_id: user.referred_by_id,
-              source: "referral",
-              value: OmegaBravera.Points.Point.get_points_per_km()
-            })
+    case Accounts.create_credential_user(params, deconstuct_and_get_referral(params)) do
+      {:ok, user} ->
+        if not is_nil(user.referred_by_id) do
+          Points.create_bonus_points(%{
+            user_id: user.referred_by_id,
+            source: "referral",
+            value: OmegaBravera.Points.Point.get_points_per_km()
+          })
 
-            Points.create_bonus_points(%{
-              user_id: user.id,
-              source: "referral",
-              value: Decimal.div(OmegaBravera.Points.Point.get_points_per_km(), 2)
-            })
-          end
+          Points.create_bonus_points(%{
+            user_id: user.id,
+            source: "referral",
+            value: Decimal.div(OmegaBravera.Points.Point.get_points_per_km(), 2)
+          })
+        end
 
-          Accounts.Notifier.send_user_signup_email(user)
-          {:ok, token, _} = Guardian.encode_and_sign(user, %{})
-          {:ok, %{user: user, token: token, user_profile: Accounts.api_user_profile(user.id)}}
+        Accounts.Notifier.send_user_signup_email(user)
+        {:ok, token, _} = Guardian.encode_and_sign(user, %{})
+        {:ok, %{user: user, token: token, user_profile: Accounts.api_user_profile(user.id)}}
 
-        {:error, changeset} ->
-          {:error, message: "Could not signup", details: Helpers.transform_errors(changeset)}
-      end
+      {:error, changeset} ->
+        {:error, message: "Could not signup", details: Helpers.transform_errors(changeset)}
+    end
   end
 
   defp deconstuct_and_get_referral(%{referral_token: token}) when not is_nil(token) do
@@ -307,4 +307,13 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         end
     end
   end
+
+  # def delete_user_pictures(_, _, %{
+  #       context: %{current_user: %{id: user_id} = current_user}
+  #     }) do
+
+  #       case Accounts.delete_user_profile_pictures(user_id) do
+
+  #       end
+  # end
 end

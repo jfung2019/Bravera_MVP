@@ -17,6 +17,8 @@ defmodule OmegaBravera.Points.Point do
   schema "points" do
     # Can be in -ve or +ve.
     field(:value, :decimal)
+    field(:pos_value, :decimal, virtual: true)
+    field(:neg_value, :decimal, virtual: true)
     # Can be redeem, activity, referral, bonus, ...
     field(:source, :string)
 
@@ -31,7 +33,8 @@ defmodule OmegaBravera.Points.Point do
         %ActivityAccumulator{
           id: activity_id,
           type: activity_type,
-          distance: distance
+          distance: distance,
+          start_date: start_date
         },
         %User{id: user_id, daily_points_limit: daily_points_limit, todays_points: todays_points}
       ) do
@@ -40,6 +43,8 @@ defmodule OmegaBravera.Points.Point do
     |> put_change(:activity_id, activity_id)
     |> put_change(:user_id, user_id)
     |> put_change(:source, "activity")
+    # Insert the point by the start date of an activity.
+    |> put_change(:inserted_at, start_date)
     |> validate_activity_type(@allowed_activity_types, activity_type)
     |> add_value_from_distance(distance, daily_points_limit, todays_points)
     |> validate_required(@required_attributes)

@@ -15,6 +15,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Helpers)
 
   mutation do
+    # @desc "Delete user profile picture and strava profile picture"
+    # field :delete_user_profile_picture, :status do
+    #   middleware(Middleware.Authenticate)
+    #   resolve(&Resolvers.Accounts.delete_user_pictures/3)
+    # end
+
     @desc "Forgot password: change password"
     field :forgot_password_change_password, :forgot_password_change_password_result do
       arg(:reset_token, non_null(:string))
