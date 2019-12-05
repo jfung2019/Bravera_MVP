@@ -78,7 +78,7 @@ defmodule OmegaBravera.Factory do
     %OmegaBravera.Activity.ActivityAccumulator{
       strava_id: 1_981_709_368,
       distance: Decimal.from_float(1.74),
-      start_date: Timex.shift(Timex.now(), days: 1),
+      start_date: Timex.now(),
       type: "Run",
       name: "Morning Run",
       manual: false,
