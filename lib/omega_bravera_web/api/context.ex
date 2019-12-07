@@ -1,6 +1,7 @@
 defmodule OmegaBraveraWeb.Api.Context do
   @behaviour Plug
   import Plug.Conn
+  require Logger
 
   alias OmegaBravera.{Guardian, Accounts, Devices}
   alias OmegaBraveraWeb.Api.Auth
@@ -26,7 +27,16 @@ defmodule OmegaBraveraWeb.Api.Context do
   defp get_user_device(token) do
     case Guardian.decode_and_verify(token) do
       {:ok, %{"sub" => "user:" <> id}} ->
-        {:ok, Accounts.get_user!(id), nil}
+        try do
+          {:ok, Accounts.get_user!(id), nil}
+        rescue
+          exception ->
+            Logger.warn(
+              "API Context: Got valid token, but non-existing user in db. #{inspect(exception)}"
+            )
+
+            :error
+        end
 
       _ ->
         case Auth.decrypt_token(token) do
