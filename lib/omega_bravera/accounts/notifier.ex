@@ -20,7 +20,7 @@ defmodule OmegaBravera.Accounts.Notifier do
   def user_signup_email(%User{} = user, redirect_to, template_id) do
     Email.build()
     |> Email.put_template(template_id)
-    |> Email.add_substitution("-fullName-", User.full_name(user))
+    |> Email.add_substitution("-firstName-", User.full_name(user))
     |> Email.add_substitution(
       "-emailVerificationUrl-",
       Routes.user_url(Endpoint, :activate_email, user.email_activation_token, %{
