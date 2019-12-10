@@ -6,7 +6,8 @@ defmodule OmegaBravera.Offers.Notifier do
     Offers.OfferRedeem,
     Offers.OfferVendor,
     Accounts.User,
-    Offers
+    Offers,
+    Points.Point
   }
 
   alias OmegaBravera.Activity.ActivityAccumulator
@@ -237,7 +238,10 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_dynamic_template_data("prevBalance", Decimal.to_string(user.total_points))
     |> Email.add_dynamic_template_data(
       "rewardPrice",
-      Integer.to_string(challenge.distance_target)
+      Decimal.new(challenge.distance_target)
+      |> Decimal.mult(Point.get_points_per_km())
+      |> Decimal.round()
+      |> Decimal.to_string()
     )
     |> Email.add_dynamic_template_data("newBalance", calc_new_balance(challenge, user))
     |> Email.add_dynamic_template_data("firstName", challenge.user.firstname)
