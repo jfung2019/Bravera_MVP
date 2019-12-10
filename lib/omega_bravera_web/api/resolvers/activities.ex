@@ -32,7 +32,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
 
     case result do
       {:ok, activity} ->
-        OfferAppActivitiesIngestion.start(activity)
+        Task.start(OfferAppActivitiesIngestion, :start, [activity])
+
         {:ok, %{activity: activity}}
 
       {:error, changeset} ->
