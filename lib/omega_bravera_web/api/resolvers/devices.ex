@@ -47,10 +47,10 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
   def get_latest_sync_time(_root, _input, %{
         context: %{
           current_user: %{id: user_id},
-          device: %{id: device_id, inserted_at: inserted_at}
+          device: %{id: _device_id, inserted_at: inserted_at}
         }
       }) do
-    case Activities.get_latest_device_activity(user_id, device_id) do
+    case Activities.get_latest_device_activity(user_id) do
       %{end_date: end_date} ->
         {:ok, %{last_sync_at: end_date}}
 

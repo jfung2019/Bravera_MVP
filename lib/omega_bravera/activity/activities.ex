@@ -51,9 +51,9 @@ defmodule OmegaBravera.Activity.Activities do
     |> Repo.one()
   end
 
-  def get_latest_device_activity(user_id, device_id) do
+  def get_latest_device_activity(user_id) do
     from(a in ActivityAccumulator,
-      where: a.user_id == ^user_id and a.device_id == ^device_id,
+      where: a.user_id == ^user_id and not is_nil(a.device_id),
       order_by: [desc: a.end_date],
       limit: 1
     )
