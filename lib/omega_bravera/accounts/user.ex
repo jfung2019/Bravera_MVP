@@ -89,6 +89,7 @@ defmodule OmegaBravera.Accounts.User do
     |> validate_required(@required_attributes)
     |> validate_format(:email, ~r/@/)
     |> validate_length(:email, max: 254)
+    |> lowercase_email()
     |> unique_constraint(:email)
     |> add_email_activation_token()
     |> cast_assoc(:setting, with: &Setting.changeset/2, required: false)
@@ -156,4 +157,13 @@ defmodule OmegaBravera.Accounts.User do
     do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 
   def full_name(%__MODULE__{firstname: first, lastname: last}), do: "#{first} #{last}"
+
+  defp lowercase_email(changeset) do
+    case get_change(changeset, :email) do
+      nil ->
+        changeset
+      email ->
+        put_change(changeset, :email, String.downcase(email))
+    end
+  end
 end

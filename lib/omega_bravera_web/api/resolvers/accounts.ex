@@ -49,7 +49,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   end
 
   defp do_login(_root, %{email: email, password: password, locale: locale}, _info) do
-    case Accounts.email_password_auth(email, password) do
+    case Accounts.email_password_auth(String.downcase(email), password) do
       {:ok, user} ->
         {:ok, updated_user} = Accounts.update_user(user, %{locale: locale})
         {:ok, token, _} = Guardian.encode_and_sign(updated_user, %{}, ttl: {52, :weeks})
