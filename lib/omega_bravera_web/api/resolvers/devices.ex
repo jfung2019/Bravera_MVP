@@ -52,10 +52,10 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
       }) do
     case Activities.get_latest_device_activity(user_id) do
       %{end_date: end_date} ->
-        {:ok, %{last_sync_at: end_date}}
+        {:ok, %{last_sync_at: end_date, utc_now: Timex.now()}}
 
       nil ->
-        {:ok, %{last_sync_at: inserted_at}}
+        {:ok, %{last_sync_at: inserted_at, utc_now: Timex.now()}}
     end
   end
 end

@@ -21,5 +21,6 @@ defmodule OmegaBraveraWeb.Api.Types.Device do
 
   object :device_latest_sync_result do
     field(:last_sync_at, non_null(:date))
+    field(:utc_now, non_null(:date))
   end
 end
