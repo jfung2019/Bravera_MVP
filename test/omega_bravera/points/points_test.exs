@@ -74,8 +74,8 @@ defmodule OmegaBravera.Points.PointsTest do
       changeset = Point.activity_points_changeset(%Point{}, activity, user)
       assert changeset.valid?
 
-      # value is 150 not 500 due to daily_points_limit being equals 15k * Point.@points_per_km (10 points)
-      value = Decimal.new(150)
+      # value is 80 not 500 due to daily_points_limit being equals 8k * Point.@points_per_km (10 points)
+      value = Decimal.new(80)
       assert %{changes: %{value: ^value}} = changeset
     end
 

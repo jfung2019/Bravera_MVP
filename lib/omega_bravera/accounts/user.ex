@@ -32,7 +32,7 @@ defmodule OmegaBravera.Accounts.User do
     field(:lastname, :string)
     field(:locale, :string, default: "en")
     # Represents KMs
-    field(:daily_points_limit, :integer, default: 15)
+    field(:daily_points_limit, :integer, default: 8)
     field(:additional_info, :map, default: %{})
     field(:profile_picture, :string, default: nil)
     field(:accept_terms, :boolean, virtual: true)
