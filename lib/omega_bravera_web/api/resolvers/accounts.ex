@@ -308,12 +308,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  # def delete_user_pictures(_, _, %{
-  #       context: %{current_user: %{id: user_id} = current_user}
-  #     }) do
-
-  #       case Accounts.delete_user_profile_pictures(user_id) do
-
-  #       end
-  # end
+  def delete_user_pictures(_, _, %{context: %{current_user: %{id: _user_id} = current_user}}) do
+    {:ok, %{status: Accounts.delete_user_profile_pictures(current_user)}}
+  end
 end

@@ -301,7 +301,7 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in Point,
       on: a.id == p.activity_id,
-      where: a.inserted_at >= ^beginning and a.inserted_at <= ^end_of_week,
+      where: a.start_date >= ^beginning and a.start_date <= ^end_of_week,
       where: a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities(),
       where: not is_nil(a.device_id) and is_nil(a.strava_id),
       preload: [:strava],
@@ -795,13 +795,33 @@ defmodule OmegaBravera.Accounts do
     Repo.delete(user)
   end
 
-  # def delete_user_profile_pictures(user_id) do
-  #   from(
-  #     u in User,
-  #     where: u.id == ^user_id,
+  def delete_user_profile_pictures(user) do
+    user = Repo.preload(user, :strava)
 
-  #   )
-  # end
+    status =
+      user
+      |> User.delete_profile_picture_changeset()
+      |> Repo.update()
+      |> case  do
+        {:ok, _} -> true
+        {:error, } -> false
+      end
+
+    strava_status =
+      if not is_nil(user.strava) do
+        user.strava
+        |> Strava.delete_strava_profile_picture_changeset()
+        |> Repo.update()
+        |> case  do
+          {:ok, _} -> true
+          {:error, } -> false
+        end
+      else
+        true
+      end
+
+    status and strava_status
+  end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking user changes.

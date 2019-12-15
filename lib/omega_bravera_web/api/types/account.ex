@@ -32,6 +32,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :status, :string
   end
 
+  object :delete_profile_picture_result do
+    field :status, :string
+  end
+
   object :forgot_password_change_password_result do
     field :status, :string
   end

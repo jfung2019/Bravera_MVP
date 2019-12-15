@@ -105,6 +105,12 @@ defmodule OmegaBravera.Accounts.User do
     |> cast_assoc(:credential, with: &Credential.changeset/2, required: true)
   end
 
+  def delete_profile_picture_changeset(user) do
+    user
+    |> cast(%{}, [])
+    |> put_change(:profile_picture, nil)
+  end
+
   def update_changeset(user, attrs) do
     user
     |> changeset(attrs)
