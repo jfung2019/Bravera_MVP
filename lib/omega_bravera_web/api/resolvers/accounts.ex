@@ -114,7 +114,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
           })
         end
 
-        Accounts.Notifier.send_user_signup_email(user)
+        Accounts.Notifier.send_user_signup_email(user, "/open-app")
         {:ok, token, _} = Guardian.encode_and_sign(user, %{})
         {:ok, %{user: user, token: token, user_profile: Accounts.api_user_profile(user.id)}}
 
