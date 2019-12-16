@@ -392,7 +392,7 @@ defmodule OmegaBravera.Accounts do
         on: oc.id == a.offer_challenge_id,
         left_join: ac in ActivityAccumulator,
         on: a.activity_id == ac.id,
-        order_by: [desc: :inserted_at],
+        order_by: [desc: :end_date],
         group_by: oc.id,
         preload: [:offer],
         select: %{
@@ -443,7 +443,8 @@ defmodule OmegaBravera.Accounts do
       from(
         ofr in OfferRedeem,
         where: ofr.user_id == ^user_id and ofr.status == ^"redeemed",
-        preload: [:offer, :offer_challenge]
+        preload: [:offer, :offer_challenge],
+        order_by: [desc: :updated_at]
       )
       |> Repo.all()
 
