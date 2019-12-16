@@ -66,7 +66,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         }
 
       {:error, :invalid_password} ->
-        {:error, message: gettext("Invalid email and password combo.")}
+        {:error, message: gettext("Invalid email and password combination.")}
 
       {:error, :user_does_not_exist} ->
         {:error, message: gettext("Seems you don't have an account, please sign up.")}

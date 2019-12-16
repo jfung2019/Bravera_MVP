@@ -58,7 +58,7 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
           {:noreply,
            assign(socket,
              changeset: changeset,
-             error: gettext("Invalid email and password combo."),
+             error: gettext("Invalid email and password combination."),
              open_modal: true,
              login_button_disabled?: false
            )}

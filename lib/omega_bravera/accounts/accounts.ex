@@ -380,7 +380,7 @@ defmodule OmegaBravera.Accounts do
         preload: [:offer],
         select: %{
           oc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
         }
       )
       |> Repo.all()
@@ -397,7 +397,7 @@ defmodule OmegaBravera.Accounts do
         preload: [:offer],
         select: %{
           oc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
         }
       )
       |> Repo.all()
@@ -414,7 +414,7 @@ defmodule OmegaBravera.Accounts do
         preload: [:offer],
         select: %{
           oc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
         }
       )
       |> Repo.all()
