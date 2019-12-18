@@ -803,9 +803,9 @@ defmodule OmegaBravera.Accounts do
       user
       |> User.delete_profile_picture_changeset()
       |> Repo.update()
-      |> case  do
+      |> case do
         {:ok, _} -> true
-        {:error, } -> false
+        {:error} -> false
       end
 
     strava_status =
@@ -813,9 +813,9 @@ defmodule OmegaBravera.Accounts do
         user.strava
         |> Strava.delete_strava_profile_picture_changeset()
         |> Repo.update()
-        |> case  do
+        |> case do
           {:ok, _} -> true
-          {:error, } -> false
+          {:error} -> false
         end
       else
         true

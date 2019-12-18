@@ -168,6 +168,7 @@ defmodule OmegaBravera.Accounts.User do
     case get_change(changeset, :email) do
       nil ->
         changeset
+
       email ->
         put_change(changeset, :email, String.downcase(email))
     end

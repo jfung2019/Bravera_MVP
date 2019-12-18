@@ -14,7 +14,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     "locale" => "en",
     "setting" => %{
       "dateOfBirth" => "1999-05-05 00:00:00",
-      "gender" => "robot",
+      "gender" => "robot"
     },
     "credential" => %{
       "password" => "dev123",
@@ -35,7 +35,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     },
     "setting" => %{
       "dateOfBirth" => "1999-05-05 00:00:00",
-      "gender" => "",
+      "gender" => ""
     }
   }
 

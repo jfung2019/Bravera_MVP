@@ -25,19 +25,19 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :send_reset_password_code_result do
-    field :status, :string
+    field(:status, :string)
   end
 
   object :verify_reset_password_code_result do
-    field :status, :string
+    field(:status, :string)
   end
 
   object :delete_profile_picture_result do
-    field :status, :string
+    field(:status, :string)
   end
 
   object :forgot_password_change_password_result do
-    field :status, :string
+    field(:status, :string)
   end
 
   input_object :user_settings_input do
@@ -122,5 +122,15 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:id, non_null(:integer))
     field(:name_en, non_null(:string))
     field(:name_zh, non_null(:string))
+  end
+
+  input_object :picture_upload_input do
+    field :name, :string
+    field :mime_type, :string
+  end
+
+  object :upload_token do
+    field :upload_url, :string
+    field :file_url, :string
   end
 end

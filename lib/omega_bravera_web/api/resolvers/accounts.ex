@@ -311,4 +311,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   def delete_user_pictures(_, _, %{context: %{current_user: %{id: _user_id} = current_user}}) do
     {:ok, %{status: Accounts.delete_user_profile_pictures(current_user)}}
   end
+
+  def profile_picture_upload(_, %{picture: %{mime_type: type, name: name}}, _context) do
+    {:ok, upload_url, file_url} = OmegaBravera.UploadManager.presigned_url("profile_pictures", name, type)
+    {:ok, %{upload_url: upload_url, file_url: file_url}}
+  end
 end

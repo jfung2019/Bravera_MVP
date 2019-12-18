@@ -24,7 +24,12 @@ defmodule OmegaBravera.Points.PointsTest do
   describe "create points from activity data" do
     test "activity_points_changeset/3 is valid when correct data is given", %{user: user} do
       activity =
-        insert(:activity_accumulator, %{start_date: Timex.now(), distance: Decimal.new(50), user: nil, user_id: user.id})
+        insert(:activity_accumulator, %{
+          start_date: Timex.now(),
+          distance: Decimal.new(50),
+          user: nil,
+          user_id: user.id
+        })
 
       assert Point.activity_points_changeset(%Point{}, activity, user).valid?
     end
@@ -69,7 +74,12 @@ defmodule OmegaBravera.Points.PointsTest do
       user: user
     } do
       activity =
-        insert(:activity_accumulator, %{start_date: Timex.now(), distance: Decimal.new(50), user: nil, user_id: user.id})
+        insert(:activity_accumulator, %{
+          start_date: Timex.now(),
+          distance: Decimal.new(50),
+          user: nil,
+          user_id: user.id
+        })
 
       changeset = Point.activity_points_changeset(%Point{}, activity, user)
       assert changeset.valid?

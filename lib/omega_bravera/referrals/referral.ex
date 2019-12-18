@@ -22,5 +22,9 @@ defmodule OmegaBravera.Referrals.Referral do
   end
 
   defp gen_token(length \\ 4),
-    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length) |> String.replace("_", "9")
+    do:
+      :crypto.strong_rand_bytes(length)
+      |> Base.url_encode64()
+      |> binary_part(0, length)
+      |> String.replace("_", "9")
 end
