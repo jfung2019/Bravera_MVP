@@ -17,6 +17,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
   mutation do
     @desc "Set profile picture"
     field :set_profile_picture, :user do
+      arg(:picture_url, non_null(:string))
       middleware(Middleware.Authenticate)
       resolve(&Resolvers.Accounts.profile_picture_update/3)
     end
