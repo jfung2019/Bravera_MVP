@@ -24,9 +24,14 @@ defmodule OmegaBraveraWeb.UserController do
 
   def edit(conn, _) do
     %{id: user_id} = Guardian.Plug.current_resource(conn)
-    user = Accounts.get_user_with_account_settings!(user_id)
+    user = Accounts.get_user_with_account_settings(user_id)
     changeset = Accounts.change_user(user)
-    render(conn, "edit.html", user: user, changeset: changeset, locations: Locations.list_locations())
+
+    render(conn, "edit.html",
+      user: user,
+      changeset: changeset,
+      locations: Locations.list_locations()
+    )
   end
 
   def update(conn, %{"user" => user_params}) do
@@ -49,7 +54,11 @@ defmodule OmegaBraveraWeb.UserController do
         end
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", user: user, changeset: changeset, locations: Locations.list_locations())
+        render(conn, "edit.html",
+          user: user,
+          changeset: changeset,
+          locations: Locations.list_locations()
+        )
     end
   end
 

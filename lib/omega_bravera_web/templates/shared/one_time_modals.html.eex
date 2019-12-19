@@ -127,6 +127,10 @@
   <% end %>
 <% end %>
 
+<%= if @conn.assigns[:open_login_or_sign_up_to_join_team_modal] do %>
+  <div id="open_login_or_sign_up_to_join_team_modal"></div>
+<% end %>
+
 <%= if @conn.assigns[:could_not_create_offer_challenge] do %>
   <div class="modal fade" id="challengeCreateErrorModal" tabindex="-1" role="dialog" aria-labelledby="challengeCreateErrorModalLabel">
           

@@ -8,6 +8,7 @@ defmodule OmegaBravera.Accounts.Setting do
   @gender_list ["Male", "Female", "Other"]
 
   schema "settings" do
+    # Useless and should be removed. -Sherief
     field(:location, :string)
     field(:weight, :decimal, default: nil)
     field(:weight_fraction, :decimal, virtual: true, default: 0)

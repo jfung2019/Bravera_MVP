@@ -24,7 +24,12 @@ defmodule OmegaBravera.Points.PointsTest do
   describe "create points from activity data" do
     test "activity_points_changeset/3 is valid when correct data is given", %{user: user} do
       activity =
-        insert(:activity_accumulator, %{distance: Decimal.new(50), user: nil, user_id: user.id})
+        insert(:activity_accumulator, %{
+          start_date: Timex.now(),
+          distance: Decimal.new(50),
+          user: nil,
+          user_id: user.id
+        })
 
       assert Point.activity_points_changeset(%Point{}, activity, user).valid?
     end
@@ -33,6 +38,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity1 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Ride",
           distance: Decimal.new(50),
           user: nil,
@@ -42,6 +48,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity2 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Cycle",
           distance: Decimal.new(50),
           user: nil,
@@ -51,6 +58,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity3 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "VirtualRide",
           distance: Decimal.new(50),
           user: nil,
@@ -66,13 +74,18 @@ defmodule OmegaBravera.Points.PointsTest do
       user: user
     } do
       activity =
-        insert(:activity_accumulator, %{distance: Decimal.new(50), user: nil, user_id: user.id})
+        insert(:activity_accumulator, %{
+          start_date: Timex.now(),
+          distance: Decimal.new(50),
+          user: nil,
+          user_id: user.id
+        })
 
       changeset = Point.activity_points_changeset(%Point{}, activity, user)
       assert changeset.valid?
 
-      # value is 150 not 500 due to daily_points_limit being equals 15k * Point.@points_per_km (10 points)
-      value = Decimal.new(150)
+      # value is 80 not 500 due to daily_points_limit being equals 8k * Point.@points_per_km (10 points)
+      value = Decimal.new(80)
       assert %{changes: %{value: ^value}} = changeset
     end
 
@@ -82,6 +95,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity =
         insert(:activity_accumulator, %{
           distance: Decimal.from_float(0.95),
+          start_date: Timex.now(),
           user: nil,
           user_id: user.id
         })
@@ -96,6 +110,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity1 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Run",
           distance: Decimal.new(5),
           user: nil,
@@ -107,6 +122,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity2 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Walk",
           distance: Decimal.new(5),
           user: nil,
@@ -118,6 +134,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity3 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Run",
           distance: Decimal.new(5),
           user: nil,
@@ -129,7 +146,7 @@ defmodule OmegaBravera.Points.PointsTest do
       updated_user_with_points = Accounts.get_user_with_todays_points(user)
 
       assert updated_user_with_points.todays_points ==
-               Decimal.from_float(150.00) |> Decimal.round(2)
+               Decimal.from_float(80.00) |> Decimal.round(2)
     end
 
     test "get_user_with_todays_points/1 will only count today's points for a user", %{user: user} do
@@ -138,6 +155,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity1 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Run",
           distance: Decimal.new(10),
           user: nil,
@@ -156,6 +174,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity2 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Walk",
           distance: Decimal.new(10),
           user: nil,
@@ -190,6 +209,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity1 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Run",
           distance: Decimal.new(15),
           user: nil,
@@ -201,6 +221,7 @@ defmodule OmegaBravera.Points.PointsTest do
       activity2 =
         insert(:activity_accumulator, %{
           strava_id: Enum.random(10_000_000..20_000_000),
+          start_date: Timex.now(),
           type: "Walk",
           distance: Decimal.new(10),
           user: nil,
@@ -211,7 +232,7 @@ defmodule OmegaBravera.Points.PointsTest do
         Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
 
       updated_user_with_points = Accounts.get_user_with_todays_points(user)
-      assert updated_user_with_points.todays_points == Decimal.new(150)
+      assert updated_user_with_points.todays_points == Decimal.new(80)
       assert %{errors: [_, id: {"User reached max points for today", []}]} = reason
     end
 

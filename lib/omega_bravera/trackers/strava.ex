@@ -32,4 +32,10 @@ defmodule OmegaBravera.Trackers.Strava do
     |> validate_required(@required_attributes)
     |> unique_constraint(:athlete_id)
   end
+
+  def delete_strava_profile_picture_changeset(strava) do
+    strava
+    |> cast(%{}, [])
+    |> put_change(:strava_profile_picture, nil)
+  end
 end

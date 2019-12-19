@@ -104,6 +104,29 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> add_payment(offer, user)
   end
 
+  def buy_offer_challenge_with_points_changeset(
+        offer,
+        user,
+        attrs \\ %{team: %{}, offer_redeems: [%{}], payment: %{}}
+      ) do
+    %__MODULE__{}
+    |> cast(attrs, [])
+    |> put_change(:status, "complete")
+    |> put_change(:user_id, user.id)
+    |> put_change(:offer_id, offer.id)
+    |> put_change(:distance_target, offer.target)
+    |> generate_slug(user)
+    |> add_one_offer_redeem_assoc(offer, user)
+    |> validate_required(:slug)
+    |> unique_constraint(:user_id_offer_id,
+      name: :one_offer_per_user_index,
+      message: "You cannot join an offer more then once."
+    )
+    |> unique_constraint(:slug)
+    |> validate_offer_not_segment(offer)
+    |> validate_user_can_pay(offer, user)
+  end
+
   def create_with_team_changeset(offer_challenge, offer, user, attrs) do
     offer_challenge
     |> create_changeset(offer, user, attrs)
@@ -313,6 +336,27 @@ defmodule OmegaBravera.Offers.OfferChallenge do
        ) do
       changeset
       |> add_error(:offer_id, "Already participating in the challenge.")
+    else
+      changeset
+    end
+  end
+
+  defp validate_user_can_pay(changeset, %Offer{target: target}, %User{total_points: total_points}) do
+    d_target = Decimal.mult(Decimal.new(target), OmegaBravera.Points.Point.get_points_per_km())
+
+    if Decimal.cmp(total_points, d_target) == :lt do
+      add_error(changeset, :id, "Insufficient points")
+    else
+      changeset
+    end
+  end
+
+  defp validate_user_can_pay(changeset, _, _),
+    do: add_error(changeset, :user_id, "Not enough points or points not loaded")
+
+  defp validate_offer_not_segment(changeset, %{offer_challenge_types: types}) do
+    if(Enum.member?(types, "BRAVERA_SEGMENT")) do
+      add_error(changeset, :id, "Only non segment offers can be purchased with points")
     else
       changeset
     end

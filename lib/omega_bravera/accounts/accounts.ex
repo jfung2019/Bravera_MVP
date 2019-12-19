@@ -13,6 +13,7 @@ defmodule OmegaBravera.Accounts do
     Accounts.User,
     Accounts.Credential,
     Accounts.Donor,
+    Devices.Device,
     Money.Donation,
     Trackers,
     Points.Point,
@@ -23,12 +24,40 @@ defmodule OmegaBravera.Accounts do
     Money.Donation,
     Offers.OfferChallenge,
     Offers.OfferChallengeTeam,
-    Offers.OfferChallengeTeamMembers
+    Offers.OfferChallengeTeamMembers,
+    Offers.OfferRedeem,
+    Offers.OfferChallengeActivitiesM2m,
+    Activity.ActivityAccumulator
   }
 
   def get_all_athlete_ids() do
     query = from(s in Strava, select: s.athlete_id)
     query |> Repo.all()
+  end
+
+  def user_has_device?(user_id) do
+    devices = from(d in Device, where: d.user_id == ^user_id) |> Repo.all() |> length()
+    if devices > 0, do: true, else: false
+  end
+
+  def get_user_by_athlete_id(athlete_id) do
+    from(u in User,
+      join: s in Strava,
+      on: s.athlete_id == ^athlete_id,
+      where: u.id == s.user_id
+    )
+    |> Repo.one()
+  end
+
+  def get_num_of_segment_challenges_by_user_id(user_id) do
+    from(
+      oc in OfferChallenge,
+      where: oc.id == ^user_id,
+      where: oc.status == "active",
+      where: oc.type == "BRAVERA_SEGMENT",
+      select: count(oc.id)
+    )
+    |> Repo.one()
   end
 
   def get_strava_by_athlete_id(athlete_id) do
@@ -111,6 +140,19 @@ defmodule OmegaBravera.Accounts do
       |> Repo.all()
 
     team_challengers ++ single_challengers
+  end
+
+  def get_challengers_for_offers(user_id) do
+    from(u in User,
+      where: u.id == ^user_id,
+      join: oc in OfferChallenge,
+      where: oc.status == "active" and oc.user_id == ^user_id,
+      select: {
+        oc.id,
+        u
+      }
+    )
+    |> Repo.all()
   end
 
   defp donors_for_challenge_query(challenge) do
@@ -229,6 +271,218 @@ defmodule OmegaBravera.Accounts do
       offer_teams: [:offer_challenge]
     ])
   end
+
+  def get_user_with_points(user_id) do
+    user =
+      from(u in User,
+        where: u.id == ^user_id,
+        left_join: p in Point,
+        on: p.user_id == u.id,
+        group_by: [u.id],
+        select: %{u | total_points: sum(p.value)}
+      )
+      |> Repo.one()
+
+    if is_nil(user.total_points) do
+      %{user | total_points: Decimal.new(0)}
+    else
+      user
+    end
+  end
+
+  def api_get_leaderboard_this_week() do
+    now = Timex.now()
+    beginning = Timex.beginning_of_week(now)
+    end_of_week = Timex.end_of_week(now)
+
+    from(
+      u in User,
+      left_join: a in ActivityAccumulator,
+      on: a.user_id == u.id,
+      left_join: p in Point,
+      on: a.id == p.activity_id,
+      where: a.start_date >= ^beginning and a.start_date <= ^end_of_week,
+      where: a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities(),
+      where: not is_nil(a.device_id) and is_nil(a.strava_id),
+      preload: [:strava],
+      select: %{
+        u
+        | total_points_this_week: sum(p.value),
+          total_kilometers_this_week: sum(a.distance)
+      },
+      group_by: [u.id],
+      order_by: [desc: fragment("?", sum(a.distance))]
+    )
+    |> Repo.all()
+  end
+
+  def api_get_leaderboard_all_time() do
+    from(
+      u in User,
+      left_join: a in ActivityAccumulator,
+      on: a.user_id == u.id,
+      left_join: p in Point,
+      on: a.id == p.activity_id,
+      where: a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities(),
+      where: not is_nil(a.device_id) and is_nil(a.strava_id),
+      preload: [:strava],
+      select: %{
+        u
+        | total_points: sum(p.value),
+          total_kilometers: sum(a.distance)
+      },
+      group_by: [u.id],
+      order_by: [desc: fragment("?", sum(a.distance))]
+    )
+    |> Repo.all()
+  end
+
+  def api_user_profile(user_id) do
+    # TODO:
+    # position_on_leaderboard =
+
+    total_points =
+      Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) ||
+        Decimal.from_float(0.0)
+
+    total_rewards =
+      Repo.aggregate(
+        from(ofr in OfferRedeem, where: ofr.status == "redeemed" and ofr.user_id == ^user_id),
+        :count,
+        :id
+      )
+
+    total_kms_offers =
+      Repo.aggregate(
+        from(
+          a in ActivityAccumulator,
+          where: a.user_id == ^user_id,
+          where: not is_nil(a.device_id) and is_nil(a.strava_id)
+        ),
+        :sum,
+        :distance
+      )
+
+    total_kms_offers =
+      if is_nil(total_kms_offers),
+        do: Decimal.from_float(0.0),
+        else: total_kms_offers
+
+    live_challenges =
+      from(oc in OfferChallenge,
+        where: oc.status == "active" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        group_by: oc.id,
+        order_by: [desc: :inserted_at],
+        preload: [:offer],
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
+        }
+      )
+      |> Repo.all()
+
+    expired_challenges =
+      from(oc in OfferChallenge,
+        where: oc.status == "expired" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        order_by: [desc: :end_date],
+        group_by: oc.id,
+        preload: [:offer],
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
+        }
+      )
+      |> Repo.all()
+
+    completed_challenges =
+      from(oc in OfferChallenge,
+        where: oc.status == "complete" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        group_by: oc.id,
+        order_by: [desc: :updated_at],
+        preload: [:offer],
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
+        }
+      )
+      |> Repo.all()
+
+    user =
+      from(
+        u in User,
+        where: u.id == ^user_id,
+        preload: [:strava]
+      )
+      |> Repo.one()
+
+    # Complete Challenges and has redeems that are pedning
+    future_redeems =
+      from(
+        ofr in OfferRedeem,
+        join: oc in OfferChallenge,
+        on: oc.status == ^"complete" and ofr.offer_challenge_id == oc.id,
+        where: ofr.user_id == ^user_id and ofr.status == ^"pending",
+        order_by: [desc: :inserted_at],
+        preload: [:offer, :offer_challenge]
+      )
+      |> Repo.all()
+
+    past_redeems =
+      from(
+        ofr in OfferRedeem,
+        where: ofr.user_id == ^user_id and ofr.status == ^"redeemed",
+        preload: [:offer, :offer_challenge],
+        order_by: [desc: :updated_at]
+      )
+      |> Repo.all()
+
+    points_history =
+      from(
+        p in Point,
+        where: p.user_id == ^user_id,
+        order_by: [desc: fragment("CAST(? AS DATE)", p.inserted_at)],
+        group_by: fragment("CAST(? AS DATE)", p.inserted_at),
+        select: %{
+          neg_value: fragment("sum(case when ? < 0 then ? else 0 end)", p.value, p.value),
+          pos_value: fragment("sum(case when ? > 0 then ? else 0 end)", p.value, p.value),
+          inserted_at: fragment("CAST(? AS DATE)", p.inserted_at)
+        }
+      )
+      |> Repo.all()
+
+    %{
+      user
+      | total_points: total_points,
+        total_rewards: total_rewards,
+        total_kilometers: total_kms_offers,
+        future_redeems: future_redeems,
+        past_redeems: past_redeems,
+        points_history: points_history,
+        offer_challenges_map: %{
+          live: live_challenges,
+          expired: expired_challenges,
+          completed: completed_challenges,
+          total:
+            list_length(live_challenges) + list_length(expired_challenges) +
+              list_length(completed_challenges)
+        }
+    }
+  end
+
+  defp list_length(list) when is_nil(list) == true, do: 0
+  defp list_length(list), do: length(list)
 
   def preload_active_offer_challenges(user) do
     user
@@ -425,8 +679,8 @@ defmodule OmegaBravera.Accounts do
   """
   def get_user!(id, preloads \\ []), do: Repo.get!(User, id) |> Repo.preload(preloads)
 
-  def get_user_with_account_settings!(id) do
-    Repo.get!(User, id)
+  def get_user_with_account_settings(id) do
+    Repo.get(User, id)
     |> Repo.preload([
       :credential,
       setting:
@@ -450,8 +704,8 @@ defmodule OmegaBravera.Accounts do
     ])
   end
 
-  def get_user_with_todays_points(%User{id: user_id}) do
-    now = Timex.now()
+  def get_user_with_todays_points(%User{id: user_id}, start_date \\ Timex.now()) do
+    now = start_date
 
     user =
       from(
@@ -491,9 +745,9 @@ defmodule OmegaBravera.Accounts do
     |> Repo.insert()
   end
 
-  def create_credential_user(attrs \\ %{credential: %{}}) do
+  def create_credential_user(attrs \\ %{credential: %{}}, referral \\ nil) do
     %User{}
-    |> User.create_credential_user_changeset(attrs)
+    |> User.create_credential_user_changeset(attrs, referral)
     |> Repo.insert()
   end
 
@@ -540,6 +794,34 @@ defmodule OmegaBravera.Accounts do
   """
   def delete_user(%User{} = user) do
     Repo.delete(user)
+  end
+
+  def delete_user_profile_pictures(user) do
+    user = Repo.preload(user, :strava)
+
+    status =
+      user
+      |> User.delete_profile_picture_changeset()
+      |> Repo.update()
+      |> case do
+        {:ok, _} -> true
+        {:error} -> false
+      end
+
+    strava_status =
+      if not is_nil(user.strava) do
+        user.strava
+        |> Strava.delete_strava_profile_picture_changeset()
+        |> Repo.update()
+        |> case do
+          {:ok, _} -> true
+          {:error} -> false
+        end
+      else
+        true
+      end
+
+    status and strava_status
   end
 
   @doc """

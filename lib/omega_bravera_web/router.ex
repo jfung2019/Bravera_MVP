@@ -29,8 +29,39 @@ defmodule OmegaBraveraWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  pipeline :absinthe_api do
+    plug(Plug.Logger)
+    plug(:accepts, ["json"])
+    plug OmegaBraveraWeb.Api.Context
+  end
+
+  scope "/" do
+    pipe_through :absinthe_api
+
+    forward "/api", Absinthe.Plug, schema: OmegaBraveraWeb.Api.Schema
+
+    forward "/graphiql", Absinthe.Plug.GraphiQL,
+      schema: OmegaBraveraWeb.Api.Schema,
+      socket: OmegaBraveraWeb.UserSocket,
+      context: %{pubsub: OmegaBraveraWeb.Endpoint}
+  end
+
   scope "/" do
     get("/health-check", OmegaBraveraWeb.PageController, :health_check)
+
+    # App related JSON files for Apple Universal Links and Google App Links.
+    # Note: Apple instructs that we should NOT append .json to its file.
+    get(
+      "/.well-known/apple-app-site-association",
+      OmegaBraveraWeb.PageController,
+      :apple_domain_verification
+    )
+
+    get(
+      "/.well-known/assetlinks.json",
+      OmegaBraveraWeb.PageController,
+      :google_domain_verification
+    )
   end
 
   # Bravera user auth
@@ -74,6 +105,7 @@ defmodule OmegaBraveraWeb.Router do
     get("/callback", StravaController, :strava_callback)
     get("/connect_strava_account/", StravaController, :connect_strava_account)
     get("/connect_callback", StravaController, :connect_strava_callback)
+    get("/connect_callback_mobile_app", StravaController, :connect_strava_callback_mobile_app)
     get("/logout", StravaController, :logout)
   end
 

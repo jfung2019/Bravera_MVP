@@ -54,7 +54,7 @@ defmodule OmegaBravera.Offers.Offer do
     field(:offer_challenge_types, {:array, :string})
 
     belongs_to(:vendor, OfferVendor)
-    belongs_to :location, OmegaBravera.Locations.Location
+    belongs_to(:location, OmegaBravera.Locations.Location)
     has_many(:offer_challenges, OfferChallenge)
     has_many(:offer_rewards, OfferReward)
     has_many(:offer_redeems, OfferRedeem)

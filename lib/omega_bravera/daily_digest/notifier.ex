@@ -1,6 +1,6 @@
 defmodule OmegaBravera.DailyDigest.Notifier do
   alias OmegaBravera.DailyDigest.Serializers.{Participant, Donor, Challenge}
-  alias SendGrid.{Mailer, Email}
+  alias SendGrid.{Mail, Email}
 
   @challenge_attachment_types [
     :new_challenges,
@@ -14,7 +14,7 @@ defmodule OmegaBravera.DailyDigest.Notifier do
     result =
       params
       |> signups_digest_email()
-      |> Mailer.send()
+      |> Mail.send()
 
     Map.put(params, :mailer_result, result)
   end

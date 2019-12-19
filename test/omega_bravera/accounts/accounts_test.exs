@@ -6,7 +6,12 @@ defmodule OmegaBravera.AccountsTest do
   alias OmegaBravera.{Accounts, Accounts.User, Repo, Trackers.Strava, Accounts.Credential}
 
   describe "users" do
-    @valid_attrs %{email: "test@test.com", firstname: "some firstname", lastname: "some lastname", location_id: 1}
+    @valid_attrs %{
+      email: "test@test.com",
+      firstname: "some firstname",
+      lastname: "some lastname",
+      location_id: 1
+    }
     @update_attrs %{
       email: "updated_test@test.com",
       firstname: "some updated firstname",

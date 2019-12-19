@@ -45,6 +45,10 @@ defmodule OmegaBraveraWeb.StravaController do
     )
   end
 
+  @doc """
+  Endpoint that takes the user to strava auth page, and sets
+  the redirect url.
+  """
   def connect_strava_account(conn, params) do
     redirect_url =
       strava_url(conn, :connect_strava_callback, %{
@@ -67,6 +71,22 @@ defmodule OmegaBraveraWeb.StravaController do
     conn
     |> attach_strava_to_user(Accounts.Strava.login_changeset(params))
     |> redirect(to: Map.get(params, "redirect_to", "/"))
+  end
+
+  def connect_strava_callback_mobile_app(conn, params) do
+    user_token =
+      Map.get(params, "redirect_to", "/")
+      |> String.split("/")
+      # Gets the user token
+      |> List.last()
+
+    connect_params =
+      Accounts.Strava.login_changeset(params)
+      |> Map.put_new(:user_token, user_token)
+
+    conn
+    |> attach_strava_to_user_mobile_app(connect_params)
+    |> redirect(external: page_url(OmegaBraveraWeb.Endpoint, :index) <> "after_strava_connect")
   end
 
   @doc """
@@ -136,6 +156,33 @@ defmodule OmegaBraveraWeb.StravaController do
     end
   end
 
+  defp attach_strava_to_user_mobile_app(conn, attrs) do
+    case Guardian.decode_and_verify(attrs[:user_token]) do
+      {:ok, %{"sub" => "user:" <> id}} ->
+        case Accounts.get_user!(id) do
+          nil ->
+            Logger.error("User tried to connect strava but wasn't found")
+
+            conn
+
+          user ->
+            case Trackers.create_strava(user.id, attrs) do
+              {:ok, _} ->
+                conn
+
+              {:error, changeset} ->
+                Logger.error("Could not connect strava account, reason: #{inspect(changeset)}")
+                conn
+            end
+        end
+
+      _ ->
+        :error
+    end
+
+    conn
+  end
+
   def logout(conn, _params) do
     conn
     |> Guardian.Plug.sign_out()
@@ -144,6 +191,16 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   defp get_redirect_url(conn) do
+    case get_add_team_member_redirect_uri(conn) do
+      nil ->
+        get_redirect_url_fallback(conn)
+
+      add_team_member_url ->
+        add_team_member_url
+    end
+  end
+
+  defp get_redirect_url_fallback(conn) do
     # Return the user back the very last page he was on (used only for logins in the :ngo/:ngo_chal/new page)
     case get_session(conn, "after_login_redirect") do
       nil ->

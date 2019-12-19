@@ -103,6 +103,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
         conn
         |> open_welcome_modal()
+        |> open_signup_or_login_modal()
         |> render("show.html", Map.merge(render_attrs, get_stats(challenge)))
     end
   end
@@ -229,68 +230,79 @@ defmodule OmegaBraveraWeb.NGOChalController do
         "ngo_chal_slug" => slug,
         "invitation_token" => invitation_token
       }) do
-    current_user = Guardian.Plug.current_resource(conn)
-
-    # Is the user logged in?
-    case current_user do
+    case Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user, :ngo]) do
       nil ->
         conn
         |> put_flash(
           :info,
-          "Please login using Strava first then click the invitation link again from your email."
+          "Challenge not found. Please make sure you clicked the correct link."
         )
-        |> redirect(to: page_path(conn, :login))
+        |> redirect(to: offer_path(conn, :index))
 
-      user ->
-        challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:team, :user, :ngo])
-
-        # Make sure challenge owner cannot invite himself.
-        if challenge.user.id == user.id do
-          conn
-          |> put_flash(
-            :error,
-            "You are the challenge and team leader. You cannot invite yourself."
-          )
-          |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
-        else
-          # Verify if token is related to this team.
-          invitation = Challenges.get_team_member_invitation_by_token(invitation_token)
-
-          if not is_nil(invitation) and challenge.team.id == invitation.team_id and
-               invitation.status == "pending_acceptance" do
-            # Add New TeamMember to Team.
-            case Challenges.add_user_to_team(%{team_id: challenge.team.id, user_id: user.id}) do
-              {:ok, _} ->
-                # Update accepted invitations counter.
-                Challenges.accepted_team_member_invitation(invitation)
-
-                Challenges.Notifier.send_team_owner_member_added_notification(challenge, user)
-
-                conn
-                |> put_flash(
-                  :info,
-                  "You are now part of #{inspect(User.full_name(challenge.user))} team."
-                )
-                |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
-
-              {:error, reason} ->
-                Logger.info(
-                  "NGOChalController: Could not add user to team, reason: #{inspect(reason)}"
-                )
-
-                conn
-                |> put_flash(:error, "Could not add you to team. Please contact admin@bravera.co")
-                |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
-            end
-          else
-            # Invitation token is wrong or someone is being clever.
+      challenge ->
+        case Guardian.Plug.current_resource(conn) do
+          nil ->
             conn
             |> put_flash(
-              :error,
-              "Could not add you to team. Something is wrong with your invitation link!"
+              :info,
+              "Please login using Strava first then click the invitation link again from your email."
             )
+            |> put_session("open_login_or_sign_up_to_join_team_modal", true)
+            |> put_session("add_team_member_url", conn.request_path)
             |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
-          end
+
+          user ->
+            # Make sure challenge owner cannot invite himself.
+            if challenge.user.id == user.id do
+              conn
+              |> put_flash(
+                :error,
+                "You are the challenge and team leader. You cannot invite yourself."
+              )
+              |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+            else
+              # Verify if token is related to this team.
+              invitation = Challenges.get_team_member_invitation_by_token(invitation_token)
+
+              if not is_nil(invitation) and challenge.team.id == invitation.team_id and
+                   invitation.status == "pending_acceptance" do
+                # Add New TeamMember to Team.
+                case Challenges.add_user_to_team(%{team_id: challenge.team.id, user_id: user.id}) do
+                  {:ok, _} ->
+                    # Update accepted invitations counter.
+                    Challenges.accepted_team_member_invitation(invitation)
+
+                    Challenges.Notifier.send_team_owner_member_added_notification(challenge, user)
+
+                    conn
+                    |> put_flash(
+                      :info,
+                      "You are now part of #{inspect(User.full_name(challenge.user))} team."
+                    )
+                    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+
+                  {:error, reason} ->
+                    Logger.info(
+                      "NGOChalController: Could not add user to team, reason: #{inspect(reason)}"
+                    )
+
+                    conn
+                    |> put_flash(
+                      :error,
+                      "Could not add you to team. Please contact admin@bravera.co"
+                    )
+                    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+                end
+              else
+                # Invitation token is wrong or someone is being clever.
+                conn
+                |> put_flash(
+                  :error,
+                  "Could not add you to team. Something is wrong with your invitation link!"
+                )
+                |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+              end
+            end
         end
     end
   end
@@ -333,7 +345,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
         Fundraisers.get_ngo_with_stats(ngo_slug,
           ngo_chals: [user: [:strava], team: [users: [:strava]]]
         ),
-      total_one_off_donations: Challenges.get_challenge_total_one_off_donations(challenge.id),
+      total_one_off_donations: Challenges.get_challenge_total_one_off_donations(challenge.id)
     }
   end
 

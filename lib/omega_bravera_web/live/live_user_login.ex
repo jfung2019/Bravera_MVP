@@ -3,7 +3,14 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
 
   alias OmegaBravera.Accounts
 
-  def mount(%{csrf: csrf, redirect_uri: redirect_uri}, socket) do
+  def mount(
+        %{
+          csrf: csrf,
+          redirect_uri: redirect_uri,
+          add_team_member_redirect_uri: add_team_member_redirect_uri
+        },
+        socket
+      ) do
     {:ok,
      assign(socket, %{
        csrf: csrf,
@@ -12,10 +19,16 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
        error: nil,
        login_button_disabled?: false,
        redirect_uri: redirect_uri,
+       add_team_member_redirect_uri: add_team_member_redirect_uri
      })}
   end
 
-  def mount(%{redirect_uri: redirect_uri}, socket), do: {:stop, redirect(socket, to: redirect_uri)}
+  def mount(%{add_team_member_redirect_uri: add_team_member_redirect_uri}, socket),
+    do: {:stop, redirect(socket, to: add_team_member_redirect_uri)}
+
+  def mount(%{redirect_uri: redirect_uri}, socket),
+    do: {:stop, redirect(socket, to: redirect_uri)}
+
   def mount(_session, socket), do: {:stop, redirect(socket, to: "/")}
 
   def render(assigns), do: OmegaBraveraWeb.UserSessionView.render("login_modal.html", assigns)
@@ -45,7 +58,7 @@ defmodule OmegaBraveraWeb.LiveUserLogin do
           {:noreply,
            assign(socket,
              changeset: changeset,
-             error: gettext("Invalid email and password combo."),
+             error: gettext("Invalid email and password combination."),
              open_modal: true,
              login_button_disabled?: false
            )}

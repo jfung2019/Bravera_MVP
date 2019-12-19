@@ -9,7 +9,15 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
   code_reloader: false
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: :error
+
+config :absinthe, Absinthe.Logger,
+  filter_variables: ["reset_token", "token", "password_hash", "secret"]
+
+config :absinthe,
+  log: true
+
+config :absinthe, Absinthe.Logger, pipeline: true
 
 config :phoenix, :serve_endpoints, true
 
@@ -41,7 +49,7 @@ config :omega_bravera, OmegaBravera.Guardian,
   secret_key: System.get_env("GUARDIAN_SECRET_KEY")
 
 # Email config
-config :omega_bravera, OmegaBravera.Mailer,
+config :omega_bravera, OmegaBravera.Mail,
   adapter: Bamboo.SendgridAdapter,
   api_key: System.get_env("SENDGRID_API_KEY")
 
@@ -65,3 +73,23 @@ config :ex_aws, :hackney_opts,
 config :omega_bravera,
        :enable_manual_activities,
        not is_nil(System.get_env("ENABLE_MANUAL_ACTIVITIES"))
+
+# Mobile App Links Setup
+config :omega_bravera,
+  app_links_verification: [
+    apple: [
+      appID: "CULKVWK3RD.co.bravera.braveraMobileApp"
+    ],
+    google: [
+      namespace: "bravera_namespace",
+      package_name: "co.bravera.bravera_mobile_app",
+      sha256_cert_fingerprints: [
+        # Sherief
+        "3F:64:3B:A2:A8:E2:5E:CE:61:BC:69:C1:34:A7:5E:2C:EA:3B:FD:98:87:73:8F:A7:83:EB:93:69:91:5F:B7:D1",
+        # Allen
+        "45:38:9F:CC:BB:DC:D5:1E:9A:80:4E:BF:C2:97:25:57:F8:8B:82:9B:16:9D:86:DF:BC:F9:6B:99:7D:FB:D6:9F",
+        # Release
+        "DF:6E:65:4C:59:CD:2A:01:83:62:05:7D:CE:40:47:A0:09:EC:5D:32:73:19:37:58:8D:90:75:76:DA:36:D5:86"
+      ]
+    ]
+  ]

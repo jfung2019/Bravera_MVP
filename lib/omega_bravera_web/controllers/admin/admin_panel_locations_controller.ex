@@ -14,6 +14,7 @@ defmodule OmegaBraveraWeb.AdminPanelLocationsController do
     case Locations.create_location(location_params) do
       {:ok, location} ->
         redirect(conn, to: admin_panel_locations_path(conn, :show, location))
+
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -30,9 +31,11 @@ defmodule OmegaBraveraWeb.AdminPanelLocationsController do
 
   def update(conn, %{"id" => id, "location" => location_params}) do
     location = Locations.get_location!(id)
+
     case Locations.update_location(location, location_params) do
       {:ok, location} ->
         redirect(conn, to: admin_panel_locations_path(conn, :show, location))
+
       {:error, changeset} ->
         render(conn, "edit.html", changeset: changeset, location: location)
     end

@@ -22,8 +22,6 @@ defmodule OmegaBravera.Points do
   # end
 
   def create_bonus_points(attrs \\ %{}) do
-    attrs = Map.put(attrs, "source", "admin")
-
     %Point{}
     |> Point.changeset(attrs)
     |> Repo.insert()
@@ -44,5 +42,11 @@ defmodule OmegaBravera.Points do
     else
       points
     end
+  end
+
+  def do_deduct_points_from_user(user, offer) do
+    %Point{}
+    |> Point.deduct_points_changeset(offer, user)
+    |> Repo.insert()
   end
 end

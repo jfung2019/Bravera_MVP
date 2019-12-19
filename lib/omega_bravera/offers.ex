@@ -4,6 +4,8 @@ defmodule OmegaBravera.Offers do
   """
 
   import Ecto.Query, warn: false
+
+  alias Ecto.Multi
   alias OmegaBravera.Repo
 
   alias OmegaBravera.Offers.{
@@ -17,6 +19,8 @@ defmodule OmegaBravera.Offers do
     OfferChallengeActivitiesM2m
   }
 
+  alias OmegaBravera.Points
+
   alias OmegaBravera.Activity.ActivityAccumulator
   alias OmegaBravera.Accounts.User
 
@@ -29,6 +33,22 @@ defmodule OmegaBravera.Offers do
       [%Offer{}, ...]
 
   """
+
+  def buy_offer_with_points(offer, user) do
+    Multi.new()
+    |> Multi.run(:create_offer_challenge_with_points, fn _repo, _changes ->
+      do_create_offer_challenge_with_points(offer, user)
+    end)
+    |> Multi.run(:deduct_points_from_user, fn _repo, _changes ->
+      Points.do_deduct_points_from_user(user, offer)
+    end)
+    |> Repo.transaction()
+  end
+
+  defp do_create_offer_challenge_with_points(offer, user) do
+    OfferChallenge.buy_offer_challenge_with_points_changeset(offer, user)
+    |> Repo.insert()
+  end
 
   def list_offers_all_offers() do
     from(
@@ -332,6 +352,32 @@ defmodule OmegaBravera.Offers do
       select: %{o | unique_participants: count(user.id, :distinct)}
     )
     |> Repo.all()
+  end
+
+  def list_offer_offer_challenges(offer_id) do
+    from(
+      oc in OfferChallenge,
+      left_join: a in OfferChallengeActivitiesM2m,
+      on: oc.id == a.offer_challenge_id,
+      left_join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
+      where: oc.offer_id == ^offer_id,
+      group_by: [oc.id],
+      preload: [user: [:strava]],
+      select: %{
+        oc
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+      }
+    )
+    |> Repo.all()
+  end
+
+  def get_redeem(challenge_id, user_id) do
+    from(
+      redeem in OfferRedeem,
+      where: redeem.offer_challenge_id == ^challenge_id and redeem.user_id == ^user_id
+    )
+    |> Repo.one()
   end
 
   @doc """
