@@ -15,6 +15,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types(Types.Helpers)
 
   mutation do
+    @desc "Set profile picture"
+    field :set_profile_picture, :user do
+      middleware(Middleware.Authenticate)
+      resolve(&Resolvers.Accounts.profile_picture_update/3)
+    end
+
     @desc "Delete user profile picture and strava profile picture"
     field :delete_user_profile_picture, :delete_profile_picture_result do
       middleware(Middleware.Authenticate)

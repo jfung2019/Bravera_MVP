@@ -44,7 +44,6 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field(:email, non_null(:string))
     field(:firstname, non_null(:string))
     field(:lastname, non_null(:string))
-    field :profile_picture, :string
     field(:locale, non_null(:string))
     field(:location_id, non_null(:integer))
     field(:credential, :credential)
