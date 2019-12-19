@@ -313,7 +313,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   end
 
   def profile_picture_upload(_, %{picture: %{mime_type: type, name: name}}, _context) do
-    {:ok, upload_url, file_url} = OmegaBravera.UploadManager.presigned_url("profile_pictures", name, type)
+    file_path = Path.join(["profile_pictures", Ecto.UUID.generate() <> Path.extname(name)])
+    {:ok, upload_url, file_url} = OmegaBravera.UploadManager.presigned_url(file_path, name, type)
     {:ok, %{upload_url: upload_url, file_url: file_url}}
   end
 end
