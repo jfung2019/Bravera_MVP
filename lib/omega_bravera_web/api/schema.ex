@@ -90,6 +90,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve(&Resolvers.Accounts.create_user/3)
     end
 
+    # Is this a duplicate of earn challenge...? -Sherief
     @desc "Create offer challenge."
     field :create_offer_challenge, :offer_challenge_create_result do
       arg(:input, non_null(:offer_challenge_create_input))

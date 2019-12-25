@@ -85,6 +85,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> validate_inclusion(:activity_type, activity_options())
     |> validate_inclusion(:default_currency, currency_options())
     |> validate_inclusion(:type, challenge_type_options())
+    |> validate_user_email_verified(user)
     |> add_start_date(offer)
     |> add_end_date(offer)
     |> add_status(offer)
@@ -115,6 +116,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> put_change(:user_id, user.id)
     |> put_change(:offer_id, offer.id)
     |> put_change(:distance_target, offer.target)
+    |> validate_user_email_verified(user)
     |> generate_slug(user)
     |> add_one_offer_redeem_assoc(offer, user)
     |> validate_required(:slug)
@@ -214,6 +216,14 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     changeset
     |> change(status: status)
   end
+
+  def validate_user_email_verified(changeset, %User{email_verified: email_verified})
+      when email_verified == false,
+      do: add_error(changeset, :user_id, "Please verify your email to complete action")
+
+  def validate_user_email_verified(changeset, %User{email_verified: email_verified})
+      when email_verified == true,
+      do: changeset
 
   def activity_completed_changeset(%__MODULE__{type: "BRAVERA_SEGMENT"} = challenge, activity) do
     if has_relevant_segment(challenge, activity) do
