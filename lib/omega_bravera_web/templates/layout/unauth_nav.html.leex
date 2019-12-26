@@ -20,28 +20,6 @@
       <div class="ml-md-4 mb-3 mt-3">
         <%= link(gettext("About us"), to: "https://www.bravera.fit/how/", target: "_blank", class: "btn btn-bravera") %>
       </div>
-
-      <div class="ml-md-4 mb-3 mt-3">
-        <button type="button" class="btn btn-bravera trigger-modal" data-toggle="modal" data-target="#loginModal">
-          <%= gettext("Sign in") %>
-        </button>
-      </div>
-
-      <div class="ml-md-4 mb-3 mt-3">
-        <button id="signUpBtn" type="button" class="btn btn-bravera trigger-modal" data-toggle="modal" data-target="#signUpModal">
-          <%= gettext("Signup") %>
-        </button>
-      </div>
     </div>
 </nav>
-
-<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserLogin, session: %{
-  csrf: Plug.CSRFProtection.get_csrf_token,
-  redirect_uri: @conn.request_path,
-  add_team_member_redirect_uri: get_add_team_member_redirect_uri(@conn)
-}) %>
-<%= Phoenix.LiveView.live_render(@conn, OmegaBraveraWeb.LiveUserSignup, session: %{
-  redirect_uri: @conn.request_path, 
-  add_team_member_redirect_uri: get_add_team_member_redirect_uri(@conn)
-}) %>
 <%= render OmegaBraveraWeb.SharedView, "one_time_modals.html", conn: @conn %>
