@@ -13,12 +13,13 @@
 
       <ul class="navbar-nav mx-auto">
       </ul>
+
       <div class="ml-md-4 mb-3 mt-3">
-        <%= link(gettext("Partners"), to: "https://bravera.typeform.com/to/CWFDJm", target: "_blank", class: "btn btn-bravera") %>
+        <%= link(gettext("About Bravera"), to: "https://www.bravera.fit/how/", target: "_blank", class: "btn btn-bravera") %>
       </div>
 
       <div class="ml-md-4 mb-3 mt-3">
-        <%= link(gettext("About us"), to: "https://www.bravera.fit/how/", target: "_blank", class: "btn btn-bravera") %>
+        <%= link(gettext("Partners"), to: "https://sites.google.com/bravera.co/partners/home", target: "_blank", class: "btn btn-bravera") %>
       </div>
     </div>
 </nav>
