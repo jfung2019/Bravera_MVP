@@ -83,6 +83,16 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.add_to(credential.user.email)
   end
 
+  def email_three_day_welcome(user) do
+    Email.build()
+    |> Email.put_template("a6f88b25-4d6d-4d0f-9314-4c7c3c72e2e6")
+    |> Email.add_substitution("-firstName-", user.firstname)
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(user.email)
+    |> Mail.send()
+  end
+
   defp user_subscribed_in_category?(user_subscribed_categories, email_category_id) do
     # if user_subscribed_categories is empty, it means that user is subscribed in all email_categories.
     if Enum.empty?(user_subscribed_categories) do

@@ -125,12 +125,12 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   input_object :file_upload_input do
-    field :name, :string
-    field :mime_type, :string
+    field(:name, :string)
+    field(:mime_type, :string)
   end
 
   object :upload_token do
-    field :upload_url, :string
-    field :file_url, :string
+    field(:upload_url, :string)
+    field(:file_url, :string)
   end
 end
