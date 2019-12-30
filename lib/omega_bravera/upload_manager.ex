@@ -12,6 +12,7 @@ defmodule OmegaBravera.UploadManager do
         ]
       )
 
-    {:ok, upload_url, Path.join([Application.get_env(:omega_bravera, :images_cdn_url), file_path])}
+    {:ok, upload_url,
+     Path.join([Application.get_env(:omega_bravera, :images_cdn_url), file_path])}
   end
 end

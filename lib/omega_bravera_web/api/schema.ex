@@ -188,7 +188,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "Get profile picture upload URL"
     field :picture_upload, :upload_token do
-      arg :picture, non_null(:file_upload_input)
+      arg(:picture, non_null(:file_upload_input))
       middleware(Middleware.Authenticate)
       resolve(&Resolvers.Accounts.profile_picture_upload/3)
     end
