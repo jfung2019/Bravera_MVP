@@ -15,7 +15,7 @@
       </ul>
 
       <div class="ml-md-4 mb-3 mt-3">
-        <%= link(gettext("About Bravera"), to: "https://www.bravera.fit/how/", target: "_blank", class: "btn btn-bravera") %>
+        <%= link(gettext("About"), to: "https://www.bravera.fit/how/", target: "_blank", class: "btn btn-bravera") %>
       </div>
 
       <div class="ml-md-4 mb-3 mt-3">
