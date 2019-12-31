@@ -5,16 +5,16 @@
         <div class="col-md-4 col-12 offset-md-1">
           <h2><%= gettext("Move. Get Rewards.") %></h2>
           <p>
-            <%= gettext("Bravera is a platform that converts walk and run activity into points that can then be converted into rewards.") %>
+            <%= gettext("Bravera converts walk and run activity into points and rewards.") %>
           </p>
           <p>
-            <%= gettext("Combining technology and human movement to promote a healthier world and reward people, at the same time.") %>
+            <%= gettext("Combining technology and human movement to promote a healthier world.") %>
           </p>
           <div class="text-center text-md-left">
-            <a href="#">
+            <a href="https://bit.ly/Bravera-iOS">
               <%= img_tag(static_path(@conn, "/images/store/apple/en.svg"), style: "width: 160px; height: 47px;") %>
             </a>
-            <a href="#">
+            <a href="https://bit.ly/Bravera-Android">
               <%= img_tag(static_path(@conn, "/images/store/google/en.png"), style: "width: 160px; height: 70px;") %>
             </a>
           </div>
