@@ -10,7 +10,6 @@ defmodule OmegaBraveraWeb.Router do
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
-    plug(Phoenix.LiveView.Flash)
     plug(Guardian.MaybeAuthPipeline)
     plug(OmegaBraveraWeb.GoogleAnalytics)
   end
@@ -67,9 +66,6 @@ defmodule OmegaBraveraWeb.Router do
   # Bravera user auth
   scope "/user", OmegaBraveraWeb do
     pipe_through(:browser)
-
-    live("/login", LiveUserLogin)
-    live("/signup", LiveUserSignup)
 
     resources("/sessions", UserSessionController, only: [:create])
     get("/profile/email_settings", EmailSettingsController, :edit)

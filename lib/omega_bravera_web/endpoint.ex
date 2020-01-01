@@ -3,7 +3,6 @@ defmodule OmegaBraveraWeb.Endpoint do
   use Absinthe.Phoenix.Endpoint
 
   socket "/socket", OmegaBraveraWeb.UserSocket, websocket: true
-  socket "/live", Phoenix.LiveView.Socket
 
   # Serve at "/" the static files from "priv/static" directory.
   #

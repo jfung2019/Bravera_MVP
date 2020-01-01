@@ -1,146 +1,28 @@
 <div class="page-index">
-	<div class="row">
-  	<div class="col">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-4 col-12 offset-md-1">
-              <h2><%= gettext("Fitness with Impact") %></h2>
-              <p>
-                <%= gettext("Using Bravera, users convert fitness activity data into immediate rewards or social impact. Take solo or team challenges, reach goals, and create impact, automatically.") %>
-              </p>
-              <p>
-                <%= gettext("What would you like to do?") %>
-              </p>
-              <div class="text-center text-md-left">
-                <%= link(gettext("GET REWARDS"), class: "btn btn-bravera mt-lg-3", to: offer_path(@conn, :index)) %>
-                <%= link(gettext("CREATE IMPACT"), class: "btn btn-bravera mt-3 mt-lg-3", to: ngo_path(@conn, :index)) %>
-              </div>
-            </div>
-            <div class="col-md-6 col-12 offset-md-1">
-              <%= img_tag(static_path(@conn, "/images/landing/phone.png"), class: "img-fluid") %>
-            </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4 col-12 offset-md-1">
+          <h2><%= gettext("Move. Get Rewards.") %></h2>
+          <p>
+            <%= gettext("Bravera converts walk and run activity into points and rewards.") %>
+          </p>
+          <p>
+            <%= gettext("Combining technology and human movement to promote a healthier world.") %>
+          </p>
+          <div class="text-center text-md-left">
+            <a href="https://bit.ly/Bravera-iOS">
+              <%= img_tag(static_path(@conn, "/images/store/apple/en.svg"), style: "width: 160px; height: 47px;") %>
+            </a>
+            <a href="https://bit.ly/Bravera-Android">
+              <%= img_tag(static_path(@conn, "/images/store/google/en.png"), style: "width: 160px; height: 70px;") %>
+            </a>
           </div>
         </div>
-        <div class="card-footer">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="row">
-                <div class="col">
-                  <div class="row trackers">
-                    <div>
-                      <%= img_tag(static_path(@conn, "/images/landing/strava.png"), alt: "Strava") %>
-                    </div>
-                    <div>
-	                    <%= img_tag(static_path(@conn, "/images/landing/fitbit.png"), alt: "Fitbit") %>
-                    </div>
-                    <div>
-                      <%= img_tag(static_path(@conn, "/images/landing/garmin.jpg"), alt: "Garmin") %>
-                    </div>
-                    <div>
-                      <%= img_tag(static_path(@conn, "/images/landing/suunto.png"), alt: "Suunto") %>
-                    </div>
-                    <div>
-                      <%= img_tag(static_path(@conn, "/images/landing/polar.jpg"), alt: "Polar") %>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="col-md-6 col-12 offset-md-1">
+          <%= img_tag(static_path(@conn, "/images/bg.jpg"), class: "img-fluid rounded") %>
         </div>
       </div>
-  	</div>
-  </div>
-
-  <div class="row watch-section">
-    <div class="col-8 offset-2 col-md-2 offset-md-3 text-center text-md-left">
-			<%= img_tag(static_path(@conn, "/images/landing/watch.png"), class: "img-fluid") %>
-    </div>
-    <div class="col-12 col-md-6 bravera-explanation">
-      <h2><%= gettext("What is Bravera?") %></h2>
-      <p>
-        <%= gettext("Bravera is a platform that converts activity data into something") %><br class="d-none d-md-block">
-        <%= gettext("meaningful.") %>
-      </p>
-      <h2><%= gettext("Why Bravera?") %></h2>
-      <p>
-        <%= gettext("A healthy lifestyle is a transformative journey, data becomes your ") %> <br class="d-none d-md-block">
-        <%= gettext("‘story’ with high emotional value. Each goal met & personal record") %> <br class="d-none d-md-block">
-        <%= gettext("is a celebration. We take this a step further and add something") %> <br class="d-none d-md-block">
-        <%= gettext("extra!") %>
-      </p>
-      <div class="text-center text-md-left">
-        <%= link(gettext("GET REWARDS"), class: "btn btn-bravera mt-lg-3", to: offer_path(@conn, :index)) %>
-        <%= link(gettext("CREATE IMPACT"), class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index)) %>
-      </div>
-    </div>
-  </div>
-
-  <div class="row get-started">
-    <div class="col">
-      <div class="row">
-        <div class="col text-center">
-					<%= img_tag(static_path(@conn, "/images/landing/explainer_icon_2019.png"), class: "img-fluid") %>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row testimonials">
-    <div class="col">
-      <div class="row">
-        <div class="col text-center">
-          <h2><%= gettext("What people are saying") %></h2>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-8 offset-2 col-md-2 offset-md-3">
-          <%= img_tag(static_path(@conn, "/images/landing/vic.png"), class: "img-fluid") %>
-        </div>
-        <div class="col-12 col-md-6 text-center text-md-left">
-          <blockquote class="blockquote">
-            <p><%= gettext("Bravera definitley motivated me and gave me the drive to put on my") %><br class="d-none d-md-block">
-            <%= gettext("trainers. I was running with real purpose, not just for my own health") %><br class="d-none d-md-block">
-            <%= gettext("but for the charity and the children it supports too.") %></p>
-            <footer class="blockquote-footer"><%= gettext("Victoria, Challenge Participant") %></footer>
-          </blockquote>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-8 offset-2 col-md-2 offset-md-3">
-          <%= img_tag(static_path(@conn, "/images/landing/chris.png"), class: "img-fluid") %>
-        </div>
-        <div class="col-12 col-md-6 text-center text-md-left">
-          <blockquote class="blockquote">
-            <p><%= gettext("As a small non-profit with multiple programmes, Bravera is a great") %> <br class="d-none d-md-block">
-            <%= gettext("way people can connect with our initiatives. With limited resources this") %> <br class="d-none d-md-block">
-            <%= gettext("is a time-saving tool that builds awareness. Making the connection of") %> <br class="d-none d-md-block">
-            <%= gettext("giving and health is building a really committed community that is") %> <br class="d-none d-md-block">
-            <%= gettext("delivering great results!") %></p>
-            <footer class="blockquote-footer"><%= gettext("Chris Geary, Founder, BSD Coding Academy and Fargo Foundation / RefuGeek") %></footer>
-          </blockquote>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row buttons">
-    <div class="col">
-      <div class="text-center text-md-right">
-        <%= link(gettext("GET REWARDS"), class: "btn btn-bravera mt-lg-3", to: offer_path(@conn, :index)) %>
-      </div>
-    </div>
-    <div class="col">
-      <div class="text-center text-md-left">
-        <%= link(gettext("CREATE IMPACT"), class: "btn btn-bravera mt-lg-3", to: ngo_path(@conn, :index)) %>
-      </div>
-    </div>
-    <div class="col">
-      <div class="text-center text-md-left">
-        <%= link(gettext("Partner with us"), class: "btn btn-bravera mt-lg-3", to: "https://bravera.typeform.com/to/CWFDJm") %>
-      </div>
-    </div>
     </div>
   </div>
 </div>

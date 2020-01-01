@@ -63,9 +63,6 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  live_view: [
-    signing_salt: "blablabla"
-  ],
   watchers: [
     node: [
       "node_modules/webpack/bin/webpack.js",

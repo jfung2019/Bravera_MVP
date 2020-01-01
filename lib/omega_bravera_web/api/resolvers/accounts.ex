@@ -318,7 +318,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     {:ok, %{upload_url: upload_url, file_url: file_url}}
   end
 
-  def profile_picture_update(_, %{picture_url: url}, %{context: %{current_user: %{id: user_id} = current_user}}) do
+  def profile_picture_update(_, %{picture_url: url}, %{
+        context: %{current_user: %{id: user_id} = current_user}
+      }) do
     case Accounts.update_user(current_user, %{profile_picture: url}) do
       {:ok, _updated_user} ->
         {:ok, Accounts.get_user_with_account_settings(user_id)}

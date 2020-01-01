@@ -846,6 +846,13 @@ defmodule OmegaBravera.Accounts do
     |> Repo.one()
   end
 
+  def get_users_from_three_days_ago do
+    today = Date.utc_today()
+
+    from(u in User, where: fragment("?::date = ?::date", u.inserted_at, ^today))
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single credential.
 

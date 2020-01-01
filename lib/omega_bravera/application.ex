@@ -19,6 +19,7 @@ defmodule OmegaBravera.Application do
       case Application.get_env(:omega_bravera, :env) do
         :prod ->
           [
+            three_day_email(),
             pre_registration_challenges_activator(),
             signups_worker_spec(),
             inactive_challenges_spec(),
@@ -73,6 +74,15 @@ defmodule OmegaBravera.Application do
       start:
         {SchedEx, :run_every,
          [OmegaBravera.Challenges.ExpirerWorker, :process_expired_challenges, [], "*/1 * * * *"]}
+    }
+  end
+
+  defp three_day_email do
+    %{
+      id: "three_day_email",
+      start:
+        {SchedEx, :run_every,
+         [OmegaBravera.Accounts.ThreeDayWelcome, :process_welcome, [], "0 1 * * *"]}
     }
   end
 end

@@ -10,19 +10,6 @@ import "bootstrap";
 
 import "moment";
 
-import LiveSocket from "phoenix_live_view";
-
-const liveSocket = new LiveSocket("/live");
-liveSocket.connect();
-
-
-// Import local files
-//
-// Local files can be imported directly using relative
-// paths "./socket" or full ones "web/static/js/socket".
-
-// import socket from "./socket"
-
 import "./timezone_stuff";
 import "./challenge_creation";
 import "./team_invitation";
