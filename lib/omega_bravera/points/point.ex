@@ -85,7 +85,11 @@ defmodule OmegaBravera.Points.Point do
   defp add_value_from_distance(changeset, distance, daily_points_limit, todays_points)
        when not is_nil(distance) do
     max_value = Decimal.mult(Decimal.new(daily_points_limit), @points_per_km)
-    remaining_value_today = Decimal.sub(max_value, todays_points)
+    remaining_value_today =
+      case Decimal.cmp(todays_points, max_value) do
+        :lt -> Decimal.sub(max_value, todays_points)
+        _ -> Decimal.new(0)
+      end
 
     points = distance |> Decimal.round(2, :floor) |> Decimal.mult(@points_per_km)
 
