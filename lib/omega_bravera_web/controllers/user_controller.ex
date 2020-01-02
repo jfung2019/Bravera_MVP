@@ -84,17 +84,10 @@ defmodule OmegaBraveraWeb.UserController do
         |> redirect(to: "/")
 
       user ->
-        conn =
-          if is_nil(OmegaBravera.Guardian.Plug.current_resource(conn)) do
-            OmegaBravera.Guardian.Plug.sign_in(conn, user)
-          else
-            conn
-          end
-
         case Accounts.update_user(user, %{email_verified: true}) do
           {:ok, _user} ->
             conn
-            |> Plug.Conn.put_session("welcome_modal", true)
+            |> put_flash(:info, "Email activated!")
             |> redirect(to: redirect_path)
 
           {:error, _} ->
