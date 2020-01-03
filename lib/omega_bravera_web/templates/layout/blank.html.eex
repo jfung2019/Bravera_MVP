@@ -28,18 +28,7 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-                let url = "<%= page_url(@conn, :open_app) %>";
-
-                if(!isSafari) {
-                    window.location.replace(url.replace("https", "unilinks"));
-                } else {                    
-                    element = document.getElementById('safariButton');
-                    element.style.display = "block";
-                    element.onclick = function() {
-                        window.location.replace(url);
-                    };
-                }
+                window.location.replace("braveralink://open-app");
             });
         </script>
     </body>
