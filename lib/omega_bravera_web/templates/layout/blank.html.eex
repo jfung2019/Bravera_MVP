@@ -23,7 +23,7 @@
                 let url = "<%= page_url(@conn, :open_app) %>";
 
                 if(isSafari) {
-                    window.location.replace(url);
+                    window.location.replace(url.replace("www.", ""));
                 } else {                    
                     window.location.replace(url.replace("https", "unilinks"));
                 }
