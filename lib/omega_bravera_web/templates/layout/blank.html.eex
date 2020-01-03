@@ -28,7 +28,14 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                window.location.replace("braveralink://open-app");
+                let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                let url = "<%= page_url(@conn, :open_app) %>";
+
+                if(!isSafari) {
+                    window.location.replace(url.replace("https", "unilinks"));
+                } else {
+                    window.location.replace("braveralink://open-app");
+                }
             });
         </script>
     </body>
