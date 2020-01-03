@@ -847,9 +847,9 @@ defmodule OmegaBravera.Accounts do
   end
 
   def get_users_from_three_days_ago do
-    today = Date.utc_today()
+    three_days_ago = Date.utc_today() |> Date.add(-3)
 
-    from(u in User, where: fragment("?::date = ?::date", u.inserted_at, ^today))
+    from(u in User, where: fragment("?::date = ?::date", u.inserted_at, ^three_days_ago))
     |> Repo.all()
   end
 
