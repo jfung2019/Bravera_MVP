@@ -19,7 +19,14 @@
         <%= render @view_module, @view_template, assigns %>
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                window.location.replace("unilinks://www.bravera.co/open-app");
+                let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                let url = "<%= page_url(@conn, :open_app) %>";
+
+                if(isSafari) {
+                    window.location.replace(url);
+                } else {                    
+                    window.location.replace(url.replace("https", "unilinks"));
+                }
             });
         </script>
     </body>
