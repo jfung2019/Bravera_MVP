@@ -84,7 +84,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
               where:
                 offer_challenge.offer_id == ^updated_offer.id and
                 offer_challenge.status == "active" or
-                offer_challenge.status == "pre_registration",
+                offer_challenge.status == "pre_registration"
             ),
             set: [distance_target: updated_offer.target]
           )

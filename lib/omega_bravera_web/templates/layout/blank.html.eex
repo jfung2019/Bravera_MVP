@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Bravera: Get rewards for moving.">
+    <meta name="author" content="Bravera.co">
+
+    <meta property="og:title" content="Bravera.co | Move. Get Rewards." />
+    <meta property="og:type" content="fitness.rewards" />
+    <meta property="og:url" content="https://www.bravera.co" />
+    <meta property="og:image" content="<%= static_path(@conn, "/images/bravera_stacked_small.jpg") %>" />
+
+    <title>Bravera</title>
+
+    </head>
+    <body>
+        <%= render @view_module, @view_template, assigns %>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                window.location.replace("unilinks://www.bravera.co/open-app");
+            });
+        </script>
+    </body>
+</html>

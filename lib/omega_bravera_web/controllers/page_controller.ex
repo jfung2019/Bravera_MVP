@@ -11,6 +11,10 @@ defmodule OmegaBraveraWeb.PageController do
     |> render("404.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
   end
 
+  def open_app(conn, _) do
+    render(conn, "open_app.html", layout: {OmegaBraveraWeb.LayoutView, "blank.html"})
+  end
+
   def index(conn, _params) do
     case Guardian.Plug.current_resource(conn) do
       %AdminUser{} ->
