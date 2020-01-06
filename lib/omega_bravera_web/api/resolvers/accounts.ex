@@ -221,7 +221,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     case credential do
       nil ->
         # search for email in users
-        case Repo.get_by(User, email: email) do
+        case Repo.get_by(User, email: String.downcase(email)) do
           nil ->
             {:error, message: "There's no account associated with that email"}
 
