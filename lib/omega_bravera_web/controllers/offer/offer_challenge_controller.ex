@@ -13,7 +13,8 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     Fundraisers.NgoOptions,
     Offers.Notifier,
     Repo,
-    Accounts.User
+    Accounts.User,
+    Accounts
   }
 
   alias OmegaBraveraWeb.Offer.OfferChallengeHelper
@@ -145,7 +146,16 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
          ) do
       {:ok, offer_redeem} ->
         offer_redeem = Repo.preload(offer_redeem, :user)
-        Notifier.send_user_reward_redemption_successful(offer_challenge, offer_redeem.user)
+
+        # Give back 10 points.
+        OmegaBravera.Points.create_bonus_points(%{
+          user_id: offer_redeem.user.id,
+          source: "redeem",
+          value: OmegaBravera.Points.Point.get_points_per_km()
+        })
+
+        user_with_points = Accounts.get_user_with_points(offer_redeem.user.id)
+        Notifier.send_user_reward_redemption_successful(offer_challenge, user_with_points)
 
         Notifier.send_reward_vendor_redemption_successful_confirmation(
           offer_challenge,
