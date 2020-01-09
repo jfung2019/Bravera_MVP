@@ -5,6 +5,26 @@ defmodule OmegaBravera.Accounts.Notifier do
 
   alias SendGrid.{Mail, Email}
 
+  def send_bonus_added_to_inviter_email(%User{} = user) do
+    template_id = "bc8d21c3-7d6c-47c4-87c3-191c1cbc772d"
+
+    user
+    |> bonus_added_to_inviter_email(template_id)
+    |> Mail.send()
+  end
+
+  def bonus_added_to_inviter_email(
+        %User{email: user_email, total_points: total_points},
+        template_id
+      ) do
+    Email.build()
+    |> Email.put_template(template_id)
+    |> Email.add_substitution("-newPointsBalance-", Decimal.to_string(total_points))
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(user_email)
+  end
+
   def send_user_signup_email(%User{} = user, redirect_to \\ "/") do
     template_id = "b47d2224-792a-43d8-b4b2-f53b033d2f41"
     sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
