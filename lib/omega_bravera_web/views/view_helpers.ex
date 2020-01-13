@@ -75,6 +75,15 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     end
   end
 
+  def redeemed_date(redeem) do
+    if redeem.status == "redeemed" do
+      render_datetime(redeem.updated_at)
+    else
+      "-"
+    end
+
+  end
+
   def render_date(date_time) do
     formatted_date_time =
       date_time

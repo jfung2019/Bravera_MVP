@@ -190,11 +190,11 @@ defmodule OmegaBravera.Offers do
     from(
       redeem in OfferRedeem,
       where:
-        redeem.offer_id == ^offer.id and redeem.status == "redeemed" and
-          redeem.updated_at >= ^start_date and redeem.updated_at <= ^end_date,
+        redeem.offer_id == ^offer.id and redeem.updated_at >= ^start_date and
+          redeem.updated_at <= ^end_date,
       join: user in assoc(redeem, :user),
       join: oc in assoc(redeem, :offer_challenge),
-      join: reward in assoc(redeem, :offer_reward),
+      left_join: reward in assoc(redeem, :offer_reward),
       order_by: [desc: redeem.updated_at],
       select: [
         oc.slug,
@@ -211,7 +211,8 @@ defmodule OmegaBravera.Offers do
         ),
         oc.has_team,
         fragment(
-          "to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')",
+          "CASE WHEN ? = 'redeemed' THEN to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS') ELSE '-' END",
+          redeem.status,
           redeem.updated_at
         ),
         reward.name
@@ -680,7 +681,6 @@ defmodule OmegaBravera.Offers do
 
     from(
       redeem in OfferRedeem,
-      where: redeem.status == ^"redeemed",
       where: redeem.offer_id == ^offer.id,
       preload: ^preloads,
       order_by: [desc: redeem.updated_at]
