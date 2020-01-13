@@ -104,7 +104,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
           Points.create_bonus_points(%{
             user_id: user.referred_by_id,
             source: "referral",
-            value: OmegaBravera.Points.Point.get_points_per_km()
+            value: OmegaBravera.Points.Point.get_inviter_points()
           })
 
           # Send an email notification to the inviter.
@@ -114,7 +114,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
           Points.create_bonus_points(%{
             user_id: user.id,
             source: "referral",
-            value: Decimal.div(OmegaBravera.Points.Point.get_points_per_km(), 2)
+            value: Decimal.div(OmegaBravera.Points.Point.get_inviter_points(), 2)
           })
         end
 

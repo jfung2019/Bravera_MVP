@@ -109,4 +109,5 @@ defmodule OmegaBravera.Points.Point do
   defp add_value_from_distance(changeset, _, _, _), do: changeset
 
   def get_points_per_km(), do: @points_per_km
+  def get_inviter_points(), do: Decimal.new(30)
 end
