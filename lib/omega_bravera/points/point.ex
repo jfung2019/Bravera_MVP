@@ -110,4 +110,5 @@ defmodule OmegaBravera.Points.Point do
 
   def get_points_per_km(), do: @points_per_km
   def get_inviter_points(), do: Decimal.new(30)
+  def get_redeem_back_points(), do: Decimal.new(25)
 end

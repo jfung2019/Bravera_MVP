@@ -147,11 +147,11 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       {:ok, offer_redeem} ->
         offer_redeem = Repo.preload(offer_redeem, :user)
 
-        # Give back 10 points.
+        # Give back 25 points.
         OmegaBravera.Points.create_bonus_points(%{
           user_id: offer_redeem.user.id,
           source: "redeem",
-          value: OmegaBravera.Points.Point.get_points_per_km()
+          value: OmegaBravera.Points.Point.get_redeem_back_points()
         })
 
         user_with_points = Accounts.get_user_with_points(offer_redeem.user.id)
