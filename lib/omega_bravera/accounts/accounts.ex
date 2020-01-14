@@ -338,9 +338,6 @@ defmodule OmegaBravera.Accounts do
   end
 
   def api_user_profile(user_id) do
-    # TODO:
-    # position_on_leaderboard =
-
     total_points =
       Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) ||
         Decimal.from_float(0.0)

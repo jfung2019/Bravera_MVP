@@ -132,7 +132,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     |> put_change(:user_id, user_id)
     |> put_change(:device_id, device_id)
     |> verify_allowed_source()
-    |> validate_required([:user_id, :device_id, :source, :type])
+    |> validate_required([:user_id, :device_id, :type])
     |> verify_not_duplicate(number_of_activities_at_time)
     |> check_constraint(:admin_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> check_constraint(:strava_id, name: :strava_id_or_admin_id_or_device_id_required)
@@ -148,7 +148,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
         add_error(changeset, :source, "#{source} is not allowed.")
       end
     else
-      add_error(changeset, :source, "Empty source is not allowed.")
+      put_change(changeset, :source, "empty")
     end
   end
 
