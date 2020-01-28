@@ -60,6 +60,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
 
   def earn(_root, %{offer_slug: offer_slug}, %{context: %{current_user: current_user}}) do
     offer = Offers.get_offer_by_slug(offer_slug)
+    current_user = Accounts.get_user_with_active_challenges(current_user.id)
 
     case Offers.create_offer_challenge(offer, current_user) do
       {:ok, offer_challenge} ->
@@ -90,6 +91,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
     do: {:error, "Action Requires Login"}
 
   defp create_challenge(offer, current_user) do
+    # Load user offer challenges.
+    current_user = Accounts.get_user_with_active_challenges(current_user.id)
+
     case Offers.create_offer_challenge(offer, current_user) do
       {:ok, offer_challenge} ->
         OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))

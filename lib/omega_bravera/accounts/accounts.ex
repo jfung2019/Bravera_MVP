@@ -272,6 +272,16 @@ defmodule OmegaBravera.Accounts do
     ])
   end
 
+  def get_user_with_active_challenges(user_id) do
+    from(
+      u in User,
+      where: u.id == ^user_id,
+      left_join: oc in OfferChallenge,
+      on: oc.user_id == u.id and oc.status == ^"active",
+      preload: [offer_challenges: oc]
+    ) |> Repo.one()
+  end
+
   def get_user_with_points(user_id) do
     user =
       from(u in User,

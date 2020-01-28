@@ -86,6 +86,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> validate_inclusion(:default_currency, currency_options())
     |> validate_inclusion(:type, challenge_type_options())
     |> validate_user_email_verified(user)
+    |> validate_max_challenges(user)
     |> add_start_date(offer)
     |> add_end_date(offer)
     |> add_status(offer)
@@ -134,6 +135,15 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> create_changeset(offer, user, attrs)
     |> cast_assoc(:team, with: &OfferChallengeTeam.changeset(&1, offer, user, &2), required: true)
   end
+
+  defp validate_max_challenges(%Ecto.Changeset{} = changeset, %User{
+         offer_challenges: offer_challenges
+       })
+       when length(offer_challenges) >= 3,
+       do:
+         add_error(changeset, :offer_id, "You have reached the maximum allowed live challenges (3).")
+
+  defp validate_max_challenges(%Ecto.Changeset{} = changeset, _user), do: changeset
 
   defp solo_or_team_challenge(
          %Ecto.Changeset{} = changeset,
