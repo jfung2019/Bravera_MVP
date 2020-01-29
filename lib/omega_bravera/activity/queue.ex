@@ -59,7 +59,7 @@ defmodule OmegaBravera.Activity.Queue do
           "Activity Create Queue: Could not create activity, reason: #{inspect(changeset)}"
         )
 
-        nil
+        {:error, changeset}
     end
 
     {:reply, result, state}

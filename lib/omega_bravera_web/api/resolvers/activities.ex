@@ -5,6 +5,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
   alias OmegaBravera.Activity.Queue
   alias OmegaBravera.Offers.OfferAppActivitiesIngestion
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
+  alias OmegaBravera.Activity.ActivityAccumulator
 
   def create(_root, %{input: activity_params}, %{
         context: %{current_user: %{id: _user_id} = current_user, device: %{id: device_id}}
@@ -18,30 +19,30 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
 
     server_name = Queue.generate_server_name(current_user)
 
-    result =
-      case Queue.start_link([create_params], server_name) do
-        {:ok, _} ->
-          Logger.info("API: Started Queue successfully..")
-          Queue.dequeue(server_name)
+    case Queue.start_link([create_params], server_name) do
+      {:error, {:already_started, _}} ->
+        Logger.info("API: Queue already started, adding activity..")
+        Queue.enqueue(server_name, create_params)
+        Queue.dequeue(server_name) |> create_activity_result()
 
-        {:error, {:already_started, _}} ->
-          Logger.info("API: Queue already started, adding activity..")
-          Queue.enqueue(server_name, create_params)
-          Queue.dequeue(server_name)
-      end
-
-    case result do
-      {:ok, activity} ->
-        Task.start(OfferAppActivitiesIngestion, :start, [activity])
-
-        {:ok, %{activity: activity}}
-
-      {:error, changeset} ->
-        {:error,
-         message: "Could not create activity", details: Helpers.transform_errors(changeset)}
+      {:ok, _} ->
+        Logger.info("API: Started Queue successfully..")
+        Queue.dequeue(server_name) |> create_activity_result()
     end
   end
 
-  def create(_root, _params, _info),
-    do: {:error, message: gettext("Device token expired or non-existent")}
+  defp create_activity_result({:ok, %ActivityAccumulator{} = activity}) do
+    Task.start(OfferAppActivitiesIngestion, :start, [activity])
+    {:ok, %{activity: activity}}
+  end
+
+  defp create_activity_result({:error, %Ecto.Changeset{} = changeset}) do
+    {:error, message: "Could not create activity", details: Helpers.transform_errors(changeset)}
+  end
+
+  def create(_root, _params, %{
+        context: %{device: %{id: device_id}}
+      })
+      when is_nil(device_id),
+      do: {:error, message: gettext("Device token expired or non-existent")}
 end
