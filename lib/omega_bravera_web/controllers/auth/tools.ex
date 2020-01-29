@@ -25,5 +25,5 @@ defmodule OmegaBraveraWeb.Auth.Tools do
     |> binary_part(0, @key_length)
   end
 
-  def expired?(datetime), do: Timex.after?(datetime, Timex.shift(datetime, days: 1))
+  def expired?(datetime), do: Timex.after?(Timex.now(), Timex.shift(datetime, days: 1))
 end

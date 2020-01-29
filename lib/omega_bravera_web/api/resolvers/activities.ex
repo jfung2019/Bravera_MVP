@@ -40,9 +40,6 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
     {:error, message: "Could not create activity", details: Helpers.transform_errors(changeset)}
   end
 
-  def create(_root, _params, %{
-        context: %{device: %{id: device_id}}
-      })
-      when is_nil(device_id),
-      do: {:error, message: gettext("Device token expired or non-existent")}
+  def create(_root, _params, _),
+    do: {:error, message: gettext("Device token expired or non-existent")}
 end
