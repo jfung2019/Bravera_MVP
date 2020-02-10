@@ -89,7 +89,8 @@ defmodule OmegaBravera.Offers.Offer do
     :payment_amount,
     :external_terms_url,
     :accept_terms_text,
-    :location_id
+    :location_id,
+    :images
   ]
   @required_attributes [
     :name,

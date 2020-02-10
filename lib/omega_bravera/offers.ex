@@ -63,6 +63,7 @@ defmodule OmegaBravera.Offers do
 
     from(
       offer in Offer,
+      select: %{offer | image: fragment("?[1]", offer.images)},
       where: offer.hidden == ^hidden and offer.end_date > ^now,
       order_by: [desc: offer.id],
       preload: ^preloads
