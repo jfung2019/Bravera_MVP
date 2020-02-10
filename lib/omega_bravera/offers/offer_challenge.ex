@@ -141,7 +141,11 @@ defmodule OmegaBravera.Offers.OfferChallenge do
        })
        when length(offer_challenges) >= 3,
        do:
-         add_error(changeset, :offer_id, "You have reached the maximum allowed live challenges (3).")
+         add_error(
+           changeset,
+           :offer_id,
+           "You have reached the maximum allowed live challenges (3)."
+         )
 
   defp validate_max_challenges(%Ecto.Changeset{} = changeset, _user), do: changeset
 

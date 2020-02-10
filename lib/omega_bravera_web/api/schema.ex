@@ -150,7 +150,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve(&Resolvers.Devices.refresh_device_token/3)
     end
 
-    @desc "Get a single offer by ID"
+    @desc "Get a single offer by slug"
     field :get_offer, :offer do
       arg(:slug, non_null(:string))
       resolve(&Resolvers.Offers.get_offer/3)

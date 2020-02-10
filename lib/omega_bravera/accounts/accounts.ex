@@ -279,7 +279,8 @@ defmodule OmegaBravera.Accounts do
       left_join: oc in OfferChallenge,
       on: oc.user_id == u.id and oc.status == ^"active",
       preload: [offer_challenges: oc]
-    ) |> Repo.one()
+    )
+    |> Repo.one()
   end
 
   def get_user_with_points(user_id) do

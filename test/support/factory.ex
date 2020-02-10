@@ -203,7 +203,7 @@ defmodule OmegaBravera.Factory do
       always: false,
       additional_members: 0,
       logo: "/logo.png",
-      image: "/image.png",
+      images: ["/image.png"],
       url: "http://test.com",
       offer_challenge_types: ["PER_KM"],
       target: 50,

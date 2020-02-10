@@ -81,7 +81,6 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     else
       "-"
     end
-
   end
 
   def render_date(date_time) do
