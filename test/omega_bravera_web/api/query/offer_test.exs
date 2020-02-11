@@ -4,15 +4,22 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
   import OmegaBravera.Factory
 
   alias OmegaBravera.{Repo, Accounts.Credential}
-  alias OmegaBravera.Offers
 
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
-  @images_query """
+  @all_offers_images_query """
   query {
     allOffers {
       image
       images
+    }
+  }
+  """
+  @get_offers_images_query_by_slug """
+  query ($slug: String!){
+    getOffer(slug: $slug) {
+      images
+      image
     }
   }
   """
@@ -40,12 +47,12 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
     {:ok, token: auth_token, offer: offer}
   end
 
-  test "images should be a list of urls and image should be the first image from that url", %{
+  test "images should be a list of urls and image should be the first image from that url in all offers", %{
     token: token,
     offer: offer
   } do
     conn = build_conn() |> put_req_header("authorization", "Bearer #{token}")
-    response = post(conn, "/api", %{query: @images_query})
+    response = post(conn, "/api", %{query: @all_offers_images_query})
 
     assert %{
              "data" => %{
@@ -55,6 +62,25 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
                    "images" => ["url1", "url2"]
                  }
                ]
+             }
+           } = json_response(response, 200)
+  end
+
+  test "images should be a list of urls and image should be the first image from that url in a particular offer", %{
+    token: token,
+    offer: offer
+  } do
+    conn = build_conn() |> put_req_header("authorization", "Bearer #{token}")
+      response = post(conn, "/api", %{query: @get_offers_images_query_by_slug, variables: %{"slug" => offer.slug}})
+
+    assert %{
+             "data" => %{
+               "getOffer" => 
+                 %{
+                  "image" => "url1",
+                  "images" => ["url1", "url2"]
+                 }
+               
              }
            } = json_response(response, 200)
   end

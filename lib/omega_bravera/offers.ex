@@ -99,7 +99,8 @@ defmodule OmegaBravera.Offers do
           o
           | active_offer_challenges: count(offer_challenges.id),
             pre_registration_start_date:
-              fragment("? at time zone 'utc'", o.pre_registration_start_date)
+              fragment("? at time zone 'utc'", o.pre_registration_start_date),
+            image: fragment("?[1]", o.images)
         }
       )
       |> Repo.one()
@@ -237,6 +238,7 @@ defmodule OmegaBravera.Offers do
   def create_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.changeset(attrs)
+    |> validate_length(:images, min: 1)
     |> switch_pre_registration_date_to_utc()
     |> switch_start_date_to_utc()
     |> switch_end_date_to_utc()
@@ -293,6 +295,7 @@ defmodule OmegaBravera.Offers do
   def update_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.changeset(attrs)
+    |> validate_length(:images, min: 1)i have 
     |> switch_pre_registration_date_to_utc()
     |> switch_start_date_to_utc()
     |> switch_end_date_to_utc()
