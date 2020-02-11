@@ -111,6 +111,7 @@ defmodule OmegaBravera.Offers.Offer do
     |> cast(attrs, @allowed_atributes)
     |> validate_required(@required_attributes)
     |> validate_length(:name, max: 77)
+    |> validate_length(:images, min: 1)
     |> generate_slug()
     |> validate_inclusion(:currency, currency_options())
     |> validate_subset(:activities, activity_options())
@@ -127,6 +128,7 @@ defmodule OmegaBravera.Offers.Offer do
   def update_changeset(offer, attrs) do
     offer
     |> changeset(attrs)
+    |> validate_length(:images, min: 1)
     |> validate_pre_registration_start_date_modification(offer)
     |> validate_no_active_challenges(offer)
   end

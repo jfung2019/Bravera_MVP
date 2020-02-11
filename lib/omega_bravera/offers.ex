@@ -238,7 +238,6 @@ defmodule OmegaBravera.Offers do
   def create_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.changeset(attrs)
-    |> validate_length(:images, min: 1)
     |> switch_pre_registration_date_to_utc()
     |> switch_start_date_to_utc()
     |> switch_end_date_to_utc()
@@ -295,7 +294,6 @@ defmodule OmegaBravera.Offers do
   def update_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.changeset(attrs)
-    |> validate_length(:images, min: 1)
     |> switch_pre_registration_date_to_utc()
     |> switch_start_date_to_utc()
     |> switch_end_date_to_utc()
