@@ -48,8 +48,7 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
   end
 
   test "images should be a list of urls and image should be the first image from that url in all offers", %{
-    token: token,
-    offer: offer
+    token: token
   } do
     conn = build_conn() |> put_req_header("authorization", "Bearer #{token}")
     response = post(conn, "/api", %{query: @all_offers_images_query})
