@@ -11,7 +11,8 @@ defmodule OmegaBravera.Offers.Offer do
     field(:desc, :string)
     field(:full_desc, :string)
     field(:ga_id, :string)
-    field(:image, :string)
+    field(:image, :string, virtual: true)
+    field(:images, {:array, :string}, default: [])
     field(:logo, :string)
     field(:name, :string)
     field(:offer_challenge_desc, :string)
@@ -88,7 +89,8 @@ defmodule OmegaBravera.Offers.Offer do
     :payment_amount,
     :external_terms_url,
     :accept_terms_text,
-    :location_id
+    :location_id,
+    :images
   ]
   @required_attributes [
     :name,
@@ -109,6 +111,7 @@ defmodule OmegaBravera.Offers.Offer do
     |> cast(attrs, @allowed_atributes)
     |> validate_required(@required_attributes)
     |> validate_length(:name, max: 77)
+    |> validate_length(:images, min: 1)
     |> generate_slug()
     |> validate_inclusion(:currency, currency_options())
     |> validate_subset(:activities, activity_options())
@@ -125,6 +128,7 @@ defmodule OmegaBravera.Offers.Offer do
   def update_changeset(offer, attrs) do
     offer
     |> changeset(attrs)
+    |> validate_length(:images, min: 1)
     |> validate_pre_registration_start_date_modification(offer)
     |> validate_no_active_challenges(offer)
   end

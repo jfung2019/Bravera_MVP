@@ -214,6 +214,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def send_reset_password_code(_, %{email: email}, _) do
     email = String.downcase(email)
+
     credential =
       case email do
         nil ->
