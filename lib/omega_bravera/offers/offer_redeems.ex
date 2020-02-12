@@ -148,9 +148,10 @@ defmodule OmegaBravera.Offers.OfferRedeem do
          %Ecto.Changeset{} = changeset,
          %OfferChallenge{has_team: true} = offer_challenge
        ) do
-    offer_challenge = Repo.preload(offer_challenge, [:team])
-
-    put_change(changeset, :team_id, offer_challenge.team.id)
+#    offer_challenge = Repo.preload(offer_challenge, [:team])
+    # TODO: look into what this should really do
+#    put_change(changeset, :team_id, offer_challenge.team.id)
+    changeset
   end
 
   defp validate_previously_redeemed(

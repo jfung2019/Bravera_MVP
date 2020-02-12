@@ -246,7 +246,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       |> change(%{
         last_activity_received: DateTime.truncate(Timex.now(), :second),
         participant_notified_of_inactivity: false,
-        donor_notified_of_inactivity: false,
         status: "complete"
       })
     else
@@ -260,7 +259,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> change(%{
       last_activity_received: DateTime.truncate(Timex.now(), :second),
       participant_notified_of_inactivity: false,
-      donor_notified_of_inactivity: false
     })
     |> update_challenge_status(challenge)
   end

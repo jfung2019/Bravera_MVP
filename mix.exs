@@ -33,16 +33,16 @@ defmodule OmegaBravera.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.6"},
+      {:phoenix, "~> 1.4.12"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"},
+      {:postgrex, "~> 0.15.0"},
       {:phoenix_html, "~> 2.13.1"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:plug_cowboy, "~> 2.0"},
-      {:plug, "~> 1.7"},
+      {:plug, "~> 1.8"},
       {:jason, "~> 1.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 4.0"},
