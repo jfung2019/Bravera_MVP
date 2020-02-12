@@ -4,8 +4,7 @@
         <div class="row">
             <div class="col-md-6 offset-md-3">
             <div class="card mt-3 chal-header">
-                <img class="card-img-top chal-image" src="<%= @offer.image %>" alt=<%= @offer.name %> />
-                <div class="card-img-overlay text-white card-img-text-shadow">
+                <div class="card-header text-white card-img-text-shadow">
                 <div class="row">
                     <div class="col-4 col-sm-3">
                     <div class="mb-0 mt-2 mt-sm-1 mt-md-3 mt-lg-4 mt-xl-4">
@@ -16,7 +15,7 @@
                     </div>
 
                     <div class="col-8 col-sm-9">
-                    <h3 class="mb-0 mt-4 mt-sm-4 mt-md-2 mt-lg-4 mt-xl-5"><%= @offer.name %></h5>
+                      <h3 class="mb-0 mt-4 mt-sm-4 mt-md-2 mt-lg-4 mt-xl-5"><%= @offer.name %></h3>
                     </div>
                 </div>
                 </div>
