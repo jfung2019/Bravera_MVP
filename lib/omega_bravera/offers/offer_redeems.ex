@@ -4,7 +4,6 @@ defmodule OmegaBravera.Offers.OfferRedeem do
 
   alias OmegaBravera.Offers.{Offer, OfferChallenge, OfferReward, OfferVendor}
   alias OmegaBravera.Accounts.User
-  alias OmegaBravera.Repo
 
   schema "offer_redeems" do
     field(:token, :string)
@@ -65,7 +64,6 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> put_change(:offer_id, offer_id)
     |> put_change(:token, gen_token())
     |> validate_required([:vendor_id, :token])
-    |> add_team_id(offer_challenge)
     |> add_user_id(challenge_owner_id, team_user)
     |> unique_constraint(:id,
       name: :offer_redeems_offer_challenge_id_user_id_index,
@@ -140,18 +138,6 @@ defmodule OmegaBravera.Offers.OfferRedeem do
       changeset
       |> add_error(:vendor_id, "This vendor ID is not applicable for this offer.")
     end
-  end
-
-  defp add_team_id(%Ecto.Changeset{} = changeset, %OfferChallenge{has_team: false}), do: changeset
-
-  defp add_team_id(
-         %Ecto.Changeset{} = changeset,
-         %OfferChallenge{has_team: true} = offer_challenge
-       ) do
-#    offer_challenge = Repo.preload(offer_challenge, [:team])
-    # TODO: look into what this should really do
-#    put_change(changeset, :team_id, offer_challenge.team.id)
-    changeset
   end
 
   defp validate_previously_redeemed(
