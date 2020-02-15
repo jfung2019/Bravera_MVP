@@ -31,7 +31,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
   end
 
   def update_profile_picture(conn, %{"user" => %{"profile_picture" => image_params}}) do
-    file_uuid = UUID.uuid4(:hex)
+    file_uuid = Ecto.UUID.generate()
     unique_filename = "#{file_uuid}-#{Path.extname(image_params.filename)}"
     user = Guardian.Plug.current_resource(conn)
 

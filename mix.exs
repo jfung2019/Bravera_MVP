@@ -67,7 +67,6 @@ defmodule OmegaBravera.Mixfile do
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.15.1"},
       {:sweet_xml, "~> 0.6"},
-      {:uuid, "~> 1.1"},
       {:mogrify, "~> 0.7.0"},
       {:eqrcode, "~> 0.1.6"},
       {:absinthe, "~> 1.4.0"},

@@ -27,7 +27,7 @@ config :omega_bravera, OmegaBravera.Repo,
   username: "postgres",
   password: "postgres",
   database: "omega_bravera_test",
-  hostname: System.get_env("DB_HOST") || "localhost",
+  hostname: System.get_env("DB_HOST", "localhost"),
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :strava,

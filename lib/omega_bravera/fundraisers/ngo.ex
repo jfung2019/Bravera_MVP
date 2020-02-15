@@ -118,7 +118,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
   defp upload_image(%Ecto.Changeset{} = changeset, %{"image" => image_params}) do
     image_path = get_field(changeset, :image)
 
-    file_uuid = UUID.uuid4(:hex)
+    file_uuid = Ecto.UUID.generate()
     unique_filename = "#{file_uuid}-#{Path.extname(image_params.filename)}"
     bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
 
@@ -144,7 +144,7 @@ defmodule OmegaBravera.Fundraisers.NGO do
   defp upload_logo(%Ecto.Changeset{} = changeset, %{"logo" => logo_params}) do
     logo_path = get_field(changeset, :logo)
 
-    file_uuid = UUID.uuid4(:hex)
+    file_uuid = Ecto.UUID.generate()
     unique_filename = "#{file_uuid}-#{Path.extname(logo_params.filename)}"
     bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
 
