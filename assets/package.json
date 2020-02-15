@@ -10,6 +10,7 @@
     "font-awesome": "^4.7.0",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
+    "phoenix_live_view": "file:../deps/phoenix_live_view",
     "trumbowyg": "^2.18.0",
     "chosen-js": "^1.8.7"
   },

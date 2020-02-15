@@ -33,12 +33,12 @@ defmodule OmegaBravera.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.12"},
+      {:phoenix, "~> 1.4.13"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, "~> 0.15.0"},
-      {:phoenix_html, "~> 2.13.1"},
+      {:phoenix_html, "~> 2.14"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:plug_cowboy, "~> 2.0"},
@@ -73,7 +73,9 @@ defmodule OmegaBravera.Mixfile do
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4.0"},
       {:absinthe_phoenix, "~> 1.4.0"},
-      {:benchee, "~> 1.0", only: :dev}
+      {:benchee, "~> 1.0", only: :dev},
+      {:floki, ">= 0.0.0", only: :test},
+      {:phoenix_live_view, "~> 0.7.1"}
     ]
   end
 

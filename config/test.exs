@@ -23,13 +23,11 @@ config :logger, level: :warn
 #   level: :debug
 
 # Configure your database
-host = System.get_env("DB_HOST") || "localhost"
-
 config :omega_bravera, OmegaBravera.Repo,
   username: "postgres",
   password: "postgres",
   database: "omega_bravera_test",
-  hostname: host,
+  hostname: System.get_env("DB_HOST") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :strava,
@@ -48,5 +46,7 @@ config :stripy,
 
 config :bcrypt_elixir, :log_rounds, 1
 
-# Manual activities
-config :omega_bravera, :enable_manual_activities, false
+config :omega_bravera,
+  # Manual activities
+  enable_manual_activities: false,
+  upload_manager: OmegaBravera.UploadManagerMock

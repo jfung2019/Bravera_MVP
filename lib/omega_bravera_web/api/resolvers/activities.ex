@@ -32,7 +32,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
   end
 
   def create(_root, _params, _),
-      do: {:error, message: gettext("Device token expired or non-existent")}
+    do: {:error, message: gettext("Device token expired or non-existent")}
 
   defp create_activity_result({:ok, %ActivityAccumulator{} = activity}) do
     Task.start(OfferAppActivitiesIngestion, :start, [activity])

@@ -7,58 +7,58 @@ defmodule OmegaBravera.Offers.Offer do
 
   @derive {Phoenix.Param, key: :slug}
   schema "offers" do
-    field(:currency, :string, default: "hkd")
-    field(:desc, :string)
-    field(:full_desc, :string)
-    field(:ga_id, :string)
-    field(:image, :string, virtual: true)
-    field(:images, {:array, :string}, default: [])
-    field(:logo, :string)
-    field(:name, :string)
-    field(:offer_challenge_desc, :string)
-    field(:external_terms_url, :string)
-    field(:accept_terms_text, :string, default: "I accept the waiver & release of liability")
-    field(:offer_percent, :float)
-    field(:hidden, :boolean, default: false)
+    field :currency, :string, default: "hkd"
+    field :desc, :string
+    field :full_desc, :string
+    field :ga_id, :string
+    field :image, :string, virtual: true
+    field :images, {:array, :string}, default: []
+    field :logo, :string
+    field :name, :string
+    field :offer_challenge_desc, :string
+    field :external_terms_url, :string
+    field :accept_terms_text, :string, default: "I accept the waiver & release of liability"
+    field :offer_percent, :float
+    field :hidden, :boolean, default: false
 
-    field(:pre_registration_start_date, :utc_datetime)
+    field :pre_registration_start_date, :utc_datetime
     # When true, pre_registration_start_date, will be ignored.
     # When false, challenges will be in pre_registration mode
-    field(:open_registration, :boolean, default: true)
+    field :open_registration, :boolean, default: true
 
     # Does not affect anything... as requested by Alyn in 1119.
-    field(:start_date, :utc_datetime)
-    field(:end_date, :utc_datetime)
+    field :start_date, :utc_datetime
+    field :end_date, :utc_datetime
 
     # NO LOGIC IMPLEMENTED YET.
     # When true, all challenges will ignore the end_date.
-    field(:always, :boolean, default: false)
+    field :always, :boolean, default: false
 
-    field(:payment_amount, :decimal, default: nil)
+    field :payment_amount, :decimal, default: nil
 
     # When more than 0, all challenges will have a single team.
-    field(:additional_members, :integer, default: 0)
+    field :additional_members, :integer, default: 0
 
-    field(:slug, :string)
-    field(:toc, :string)
-    field(:url, :string)
-    field(:time_limit, :integer, default: 0)
+    field :slug, :string
+    field :toc, :string
+    field :url, :string
+    field :time_limit, :integer, default: 0
 
-    field(:active_offer_challenges, :integer, default: 0, virtual: true)
-    field(:num_of_challenges, :decimal, default: 0, virtual: true)
-    field(:total_distance_covered, :decimal, default: 0, virtual: true)
-    field(:total_calories, :decimal, default: 0, virtual: true)
-    field(:unique_participants, :integer, default: 0, virtual: true)
+    field :active_offer_challenges, :integer, default: 0, virtual: true
+    field :num_of_challenges, :decimal, default: 0, virtual: true
+    field :total_distance_covered, :decimal, default: 0, virtual: true
+    field :total_calories, :decimal, default: 0, virtual: true
+    field :unique_participants, :integer, default: 0, virtual: true
 
-    field(:activities, {:array, :string})
-    field(:target, :integer)
-    field(:offer_challenge_types, {:array, :string})
+    field :activities, {:array, :string}
+    field :target, :integer
+    field :offer_challenge_types, {:array, :string}
 
-    belongs_to(:vendor, OfferVendor)
-    belongs_to(:location, OmegaBravera.Locations.Location)
-    has_many(:offer_challenges, OfferChallenge)
-    has_many(:offer_rewards, OfferReward)
-    has_many(:offer_redeems, OfferRedeem)
+    belongs_to :vendor, OfferVendor
+    belongs_to :location, OmegaBravera.Locations.Location
+    has_many :offer_challenges, OfferChallenge
+    has_many :offer_rewards, OfferReward
+    has_many :offer_redeems, OfferRedeem
 
     timestamps(type: :utc_datetime)
   end
@@ -111,7 +111,6 @@ defmodule OmegaBravera.Offers.Offer do
     |> cast(attrs, @allowed_atributes)
     |> validate_required(@required_attributes)
     |> validate_length(:name, max: 77)
-    |> validate_length(:images, min: 1)
     |> generate_slug()
     |> validate_inclusion(:currency, currency_options())
     |> validate_subset(:activities, activity_options())
@@ -121,7 +120,6 @@ defmodule OmegaBravera.Offers.Offer do
     |> validate_pre_registration_start_date()
     |> validate_required(:slug)
     |> unique_constraint(:slug)
-    |> upload_image(attrs)
     |> upload_logo(attrs)
   end
 

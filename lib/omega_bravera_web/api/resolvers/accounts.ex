@@ -1,6 +1,7 @@
 defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   import OmegaBraveraWeb.Gettext
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
+  @upload_manager OmegaBravera.UploadManager
 
   require Logger
 
@@ -320,7 +321,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def profile_picture_upload(_, %{picture: %{mime_type: type, name: name}}, _context) do
     file_path = Path.join(["profile_pictures", Ecto.UUID.generate() <> Path.extname(name)])
-    {:ok, upload_url, file_url} = OmegaBravera.UploadManager.presigned_url(file_path, name, type)
+    {:ok, upload_url, file_url} = @upload_manager.presigned_url(file_path, name, type)
     {:ok, %{upload_url: upload_url, file_url: file_url}}
   end
 

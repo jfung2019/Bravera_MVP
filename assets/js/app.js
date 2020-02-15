@@ -5,10 +5,12 @@ import css from '../css/app.css.scss';
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
 import "phoenix_html";
-
 import "bootstrap";
-
 import "moment";
+import $ from "jquery";
+import "chosen-js";
+import {Socket} from "phoenix";
+import LiveSocket from "phoenix_live_view";
 
 import "./timezone_stuff";
 import "./challenge_creation";
@@ -24,8 +26,9 @@ import "./init_html_editor";
 import "./donations";
 import "./payments";
 
-import $ from "jquery";
-import "chosen-js";
+let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}});
+liveSocket.connect();
 
 $(() => {
   $('select.chosen').chosen();

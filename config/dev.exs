@@ -121,8 +121,6 @@ config :omega_bravera, OmegaBravera.Repo,
   hostname: "localhost",
   pool_size: 10
 
-config :omega_bravera, :app_base_url, "http://localhost:4000"
-
 # Manual activities
 config :omega_bravera,
        :enable_manual_activities,

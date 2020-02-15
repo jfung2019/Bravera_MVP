@@ -12,6 +12,7 @@ $bravera-red: #F5274B;
 $fa-font-path : '../node_modules/font-awesome/fonts';
 @import "~font-awesome/scss/font-awesome";
 @import "~trumbowyg/dist/ui/sass/trumbowyg.scss";
+@import "~phoenix_live_view/assets/css/live_view.css";
 
 // NavBar styling
 .navbar.navbar-light, .navbar {

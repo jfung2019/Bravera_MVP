@@ -258,7 +258,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> change(distance_covered: Decimal.add(challenge.distance_covered, distance))
     |> change(%{
       last_activity_received: DateTime.truncate(Timex.now(), :second),
-      participant_notified_of_inactivity: false,
+      participant_notified_of_inactivity: false
     })
     |> update_challenge_status(challenge)
   end

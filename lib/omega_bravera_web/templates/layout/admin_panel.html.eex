@@ -11,6 +11,7 @@
     <meta property="og:type" content="fitness.fundraising" />
     <meta property="og:url" content="https://www.bravera.co" />
     <meta property="og:image" content="<%= static_path(@conn, "/images/bravera_stacked_small.jpg") %>" />
+    <%= csrf_meta_tag() %>
 
     <title>Bravera - Admin</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
