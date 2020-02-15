@@ -42,7 +42,7 @@ defmodule OmegaBraveraWeb.Router do
       post "/webhook-callback", StravaController, :post_webhook_callback
     end
 
-    get "/api/presign", OmegaBraveraWeb.ApiController, :presign
+    get "/api/v1/picture-upload-presign", OmegaBraveraWeb.ApiController, :presign
 
     scope "/" do
       pipe_through :absinthe_api

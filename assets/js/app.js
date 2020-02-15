@@ -11,6 +11,7 @@ import $ from "jquery";
 import "chosen-js";
 import {Socket} from "phoenix";
 import LiveSocket from "phoenix_live_view";
+import Dropzone from "dropzone";
 
 import "./timezone_stuff";
 import "./challenge_creation";
@@ -26,8 +27,44 @@ import "./init_html_editor";
 import "./donations";
 import "./payments";
 
+Dropzone.autoDiscover = false;
+const Hooks = {
+  dropzone: {
+    mounted() {
+      const {pushEvent, el} = this;
+      const d = new Dropzone(el, {
+        headers: {'X-Amz-Acl': 'public-read'},
+        method: 'put',
+        url: '/',
+        maxFilesize: 3,
+        acceptedFiles: 'image/*',
+        sending: (file, xhr) => {
+          let _send = xhr.send;
+          xhr.send = () => {
+            _send.call(xhr, file)
+          }
+        },
+        accept: (file, done) => {
+          // get signed URL
+          $.getJSON('/api/v1/picture-upload-presign', {filename: file.name, mimetype: file.type, token: this.el.dataset.dropzone},({uploadURL, fileURL, originalFilename}) => {
+            file.uploadURL = uploadURL;
+            file.fileURL = fileURL;
+            file.originalFilename = originalFilename;
+            done();
+          });
+        },
+        success: (file) => {
+          const data = {'originalFilename': file.originalFilename};
+          data[el.dataset.dropzoneField] = file.fileURL;
+          pushEvent(el.dataset.event, data);
+        }});
+      d.on('processing', (file) => d.options.url = file.uploadURL );
+    }
+  }
+};
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}});
+let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: Hooks});
 liveSocket.connect();
 
 $(() => {

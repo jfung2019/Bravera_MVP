@@ -15,7 +15,8 @@
     "chosen-js": "^1.8.7",
     "bootstrap": "^4.4.1",
     "jquery": "^3.4.1",
-    "popper.js": "^1.14.7"
+    "popper.js": "^1.14.7",
+    "dropzone": "^5.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

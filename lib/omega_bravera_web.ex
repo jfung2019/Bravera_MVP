@@ -47,6 +47,13 @@ defmodule OmegaBraveraWeb do
     end
   end
 
+  def live_view do
+    quote do
+      use Phoenix.LiveView
+      alias OmegaBraveraWeb.Router.Helpers, as: Routes
+    end
+  end
+
   @doc """
   When used, dispatch to the appropriate controller/view/etc.
   """

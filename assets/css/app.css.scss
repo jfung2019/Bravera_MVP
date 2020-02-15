@@ -855,3 +855,27 @@ div.team-form {
     margin-top: 8%;
   }
 }
+
+@import "~dropzone/dist/dropzone.css";
+.dropzone {
+  border: 2px dashed #dedede;
+  border-radius: 5px;
+  background: #f5f5f5;
+}
+
+.dropzone i {
+  font-size: 5rem;
+}
+
+.dropzone .dz-message {
+  color: rgba(0, 0, 0, .54);
+  font-weight: 500;
+  font-size: initial;
+}
+
+.img-preview .card-image {
+  height: 200px;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
