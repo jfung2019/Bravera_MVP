@@ -12,18 +12,19 @@
     "phoenix_html": "file:../deps/phoenix_html",
     "phoenix_live_view": "file:../deps/phoenix_live_view",
     "trumbowyg": "^2.18.0",
-    "chosen-js": "^1.8.7"
+    "chosen-js": "^1.8.7",
+    "bootstrap": "^4.4.1",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.14.7"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
     "babel-loader": "^8.0.0",
-    "bootstrap": "^4.3.1",
     "brunch": "^2.10.17",
     "copy-webpack-plugin": "^4.5.0",
     "css-loader": "^0.28.11",
     "expose-loader": "^0.7.5",
-    "jquery": "^3.4.1",
     "mini-css-extract-plugin": "^0.4.0",
     "moment": "^2.22.1",
     "node-sass": "^4.13.1",
