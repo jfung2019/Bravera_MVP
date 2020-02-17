@@ -31,15 +31,15 @@ Dropzone.autoDiscover = false;
 const Hooks = {
   dropzone: {
     mounted() {
-      const {pushEvent, el} = this;
-      const d = new Dropzone(el, {
-        headers: {'X-Amz-Acl': 'public-read'},
+      const _this = this;
+      const d = new Dropzone(_this.el, {
         method: 'put',
         url: '/',
         maxFilesize: 3,
         acceptedFiles: 'image/*',
         sending: (file, xhr) => {
           let _send = xhr.send;
+          console.log(xhr);
           xhr.send = () => {
             _send.call(xhr, file)
           }
@@ -55,8 +55,8 @@ const Hooks = {
         },
         success: (file) => {
           const data = {'originalFilename': file.originalFilename};
-          data[el.dataset.dropzoneField] = file.fileURL;
-          pushEvent(el.dataset.event, data);
+          data[_this.el.dataset.dropzoneField] = file.fileURL;
+          _this.pushEvent(_this.el.dataset.event, data);
         }});
       d.on('processing', (file) => d.options.url = file.uploadURL );
     }

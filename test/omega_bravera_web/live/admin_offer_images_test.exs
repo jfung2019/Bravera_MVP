@@ -19,7 +19,7 @@ defmodule OmegaBraveraWeb.AdminOfferImagesTest do
 
   test "can append and save new image url", %{conn: conn, offer: %{id: offer_id} = offer} do
     {:ok, view, _html} = live(conn, Routes.live_path(conn, @view, offer))
-    assert render_hook(view, "append-image", %{"image" => "url2"}) =~ "url2"
+    assert render_hook(view, "append-image", %{"images" => "url2"}) =~ "url2"
     render_click(view, "save-images")
     redirected_url = Routes.admin_panel_offer_path(conn, :show, offer)
     assert_redirect(view, ^redirected_url)

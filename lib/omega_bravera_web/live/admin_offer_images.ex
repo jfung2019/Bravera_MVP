@@ -12,7 +12,7 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
     {:ok, assign(socket, offer: offer, images: offer.images, upload_token: token)}
   end
 
-  def handle_event("append-image", %{"image" => image_url}, %{assigns: %{images: images}} = socket), do: {:noreply, assign(socket, images: images ++ [image_url])}
+  def handle_event("append-image", %{"images" => image_url}, %{assigns: %{images: images}} = socket), do: {:noreply, assign(socket, images: images ++ [image_url])}
 
   def handle_event("save-images", _, %{assigns: %{images: images, offer: offer}} = socket) do
     case Offers.update_offer(offer, %{images: images}) do
