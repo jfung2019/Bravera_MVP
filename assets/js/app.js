@@ -39,7 +39,6 @@ const Hooks = {
         acceptedFiles: 'image/*',
         sending: (file, xhr) => {
           let _send = xhr.send;
-          console.log(xhr);
           xhr.send = () => {
             _send.call(xhr, file)
           }
