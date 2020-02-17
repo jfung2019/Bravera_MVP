@@ -3,8 +3,8 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
 
   alias OmegaBravera.Accounts
 
-  @create_attrs %{email: "some email", password: "pass1234"}
-  @update_attrs %{email: "some updated email", password: "notpass1234"}
+  @create_attrs %{email: "some@email.com", password: "pass1234"}
+  @update_attrs %{email: "some.updated@email.com", password: "notpass1234"}
   @invalid_attrs %{email: nil, password: nil}
 
   def fixture(:admin_user) do
@@ -64,7 +64,7 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
       assert redirected_to(conn) == admin_user_path(conn, :show, admin_user)
 
       admin_user = Accounts.get_admin_user!(admin_user.id)
-      assert admin_user.email == "some updated email"
+      assert admin_user.email == "some.updated@email.com"
     end
 
     test "renders errors when data is invalid", %{conn: conn, admin_user: admin_user} do

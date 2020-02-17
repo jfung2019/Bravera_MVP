@@ -87,7 +87,7 @@ defmodule OmegaBravera.Accounts.User do
     user
     |> cast(attrs, allowed_attrs)
     |> validate_required(@required_attributes)
-    |> validate_format(:email, ~r/@/)
+    |> validate_format(:email, ~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i)
     |> validate_length(:email, max: 254)
     |> lowercase_email()
     |> unique_constraint(:email)
