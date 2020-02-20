@@ -8,7 +8,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   alias OmegaBravera.Offers.OfferChallengeActivitiesM2m
   alias OmegaBravera.Challenges.NgoChallengeActivitiesM2m
 
-  @banned_sources ["garmin"]
+  @banned_sources ["garmin", "connect"]
 
   schema "activities_accumulator" do
     field(:strava_id, :integer)

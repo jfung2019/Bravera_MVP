@@ -75,7 +75,7 @@ defmodule OmegaBravera.Offers.OfferChallengeTeamInvitation do
       add_error(
         changeset,
         :updated_at,
-        "Action not allowed. Please wait until invidation is resendable again."
+        "Action not allowed. Please wait until invitation is resendable again."
       )
     end
   end
