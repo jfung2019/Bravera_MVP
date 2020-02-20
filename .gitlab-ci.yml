@@ -12,6 +12,9 @@ test:
   variables:
     MIX_ENV: "test"
     DB_HOST: postgres
+    POSTGRES_DB: omega_bravera_test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
   script:
     - cd assets && npm install && cd .. # cache NPM modules for future
     - mix do deps.get, test --exclude skip
