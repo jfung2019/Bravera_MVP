@@ -6,6 +6,7 @@ defmodule OmegaBraveraWeb do
       import OmegaBraveraWeb.Router.Helpers
       import OmegaBraveraWeb.Gettext
       import OmegaBraveraWeb.Controllers.Helpers
+      import Phoenix.LiveView.Controller
     end
   end
 
@@ -22,9 +23,11 @@ defmodule OmegaBraveraWeb do
       use Phoenix.HTML
 
       import OmegaBraveraWeb.Router.Helpers
+      alias OmegaBraveraWeb.Router.Helpers, as: Routes
       import OmegaBraveraWeb.ErrorHelpers
       import OmegaBraveraWeb.Gettext
       import OmegaBraveraWeb.ViewHelpers
+      import Phoenix.LiveView.Helpers
     end
   end
 
@@ -33,6 +36,7 @@ defmodule OmegaBraveraWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
+      import Phoenix.LiveView.Router
     end
   end
 
@@ -40,6 +44,13 @@ defmodule OmegaBraveraWeb do
     quote do
       use Phoenix.Channel
       import OmegaBraveraWeb.Gettext
+    end
+  end
+
+  def live_view do
+    quote do
+      use Phoenix.LiveView
+      alias OmegaBraveraWeb.Router.Helpers, as: Routes
     end
   end
 

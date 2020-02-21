@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.AdminUserSessionControllerTest do
 
   alias OmegaBravera.Accounts
 
-  @create_attrs %{email: "some email", password: "pass1234"}
+  @create_attrs %{email: "some@email.com", password: "pass1234"}
 
   def fixture(:admin_user) do
     {:ok, admin_user} = Accounts.create_admin_user(@create_attrs)

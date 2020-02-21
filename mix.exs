@@ -33,16 +33,16 @@ defmodule OmegaBravera.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.6"},
+      {:phoenix, "~> 1.4.13"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.13.1"},
+      {:postgrex, "~> 0.15.0"},
+      {:phoenix_html, "~> 2.14"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:plug_cowboy, "~> 2.0"},
-      {:plug, "~> 1.7"},
+      {:plug, "~> 1.8"},
       {:jason, "~> 1.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 4.0"},
@@ -67,13 +67,14 @@ defmodule OmegaBravera.Mixfile do
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.15.1"},
       {:sweet_xml, "~> 0.6"},
-      {:uuid, "~> 1.1"},
       {:mogrify, "~> 0.7.0"},
       {:eqrcode, "~> 0.1.6"},
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4.0"},
       {:absinthe_phoenix, "~> 1.4.0"},
-      {:benchee, "~> 1.0", only: :dev}
+      {:benchee, "~> 1.0", only: :dev},
+      {:floki, ">= 0.0.0", only: :test},
+      {:phoenix_live_view, "~> 0.7.1"}
     ]
   end
 

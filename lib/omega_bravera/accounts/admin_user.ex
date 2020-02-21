@@ -17,6 +17,7 @@ defmodule OmegaBravera.Accounts.AdminUser do
     |> validate_required([:email, :password])
     |> validate_length(:password, min: 6, max: 100)
     |> unique_constraint(:email)
+    |> validate_format(:email, ~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i)
     |> put_pass_hash()
   end
 

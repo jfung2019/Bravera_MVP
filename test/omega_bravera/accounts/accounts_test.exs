@@ -313,8 +313,8 @@ defmodule OmegaBravera.AccountsTest do
   describe "admin_users" do
     alias OmegaBravera.Accounts.AdminUser
 
-    @valid_attrs %{email: "some email", password: "pass1234"}
-    @update_attrs %{email: "some updated email", password_hash: "nopass1234"}
+    @valid_attrs %{email: "some@email.com", password: "pass1234"}
+    @update_attrs %{email: "some.updated@email.com", password_hash: "nopass1234"}
     @invalid_attrs %{email: nil, password_hash: nil}
 
     def admin_user_fixture(attrs \\ %{}) do
@@ -338,7 +338,7 @@ defmodule OmegaBravera.AccountsTest do
 
     test "create_admin_user/1 with valid data creates a admin_user" do
       assert {:ok, %AdminUser{} = admin_user} = Accounts.create_admin_user(@valid_attrs)
-      assert admin_user.email == "some email"
+      assert admin_user.email == "some@email.com"
     end
 
     test "create_admin_user/1 with invalid data returns error changeset" do
@@ -349,7 +349,7 @@ defmodule OmegaBravera.AccountsTest do
       admin_user = admin_user_fixture()
       assert {:ok, admin_user} = Accounts.update_admin_user(admin_user, @update_attrs)
       assert %AdminUser{} = admin_user
-      assert admin_user.email == "some updated email"
+      assert admin_user.email == "some.updated@email.com"
     end
 
     test "update_admin_user/2 with invalid data returns error changeset" do
@@ -371,7 +371,7 @@ defmodule OmegaBravera.AccountsTest do
   end
 
   describe "authenticat_admin_user_by_email_and_pass/2" do
-    @email "user@localhost"
+    @email "user@localhost.com"
     @pass "123456"
 
     alias OmegaBravera.Accounts.AdminUser

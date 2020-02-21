@@ -21,6 +21,7 @@ defmodule OmegaBraveraWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       import OmegaBraveraWeb.Router.Helpers
+      alias OmegaBraveraWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
       @endpoint OmegaBraveraWeb.Endpoint

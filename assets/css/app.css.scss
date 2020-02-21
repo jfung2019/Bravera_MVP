@@ -12,6 +12,7 @@ $bravera-red: #F5274B;
 $fa-font-path : '../node_modules/font-awesome/fonts';
 @import "~font-awesome/scss/font-awesome";
 @import "~trumbowyg/dist/ui/sass/trumbowyg.scss";
+@import "~phoenix_live_view/assets/css/live_view.css";
 
 // NavBar styling
 .navbar.navbar-light, .navbar {
@@ -853,4 +854,28 @@ div.team-form {
   .card {
     margin-top: 8%;
   }
+}
+
+@import "~dropzone/dist/dropzone.css";
+.dropzone {
+  border: 2px dashed #dedede;
+  border-radius: 5px;
+  background: #f5f5f5;
+}
+
+.dropzone i {
+  font-size: 5rem;
+}
+
+.dropzone .dz-message {
+  color: rgba(0, 0, 0, .54);
+  font-weight: 500;
+  font-size: initial;
+}
+
+.img-preview .card-image {
+  height: 200px;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
 }

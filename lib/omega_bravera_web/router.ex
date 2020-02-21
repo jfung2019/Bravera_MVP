@@ -4,40 +4,51 @@ defmodule OmegaBraveraWeb.Router do
   alias OmegaBravera.Guardian
 
   pipeline :browser do
-    plug(Plug.Logger)
-    plug(:accepts, ["html"])
-    plug(:fetch_session)
-    plug(:fetch_flash)
-    plug(:protect_from_forgery)
-    plug(:put_secure_browser_headers)
-    plug(Guardian.MaybeAuthPipeline)
-    plug(OmegaBraveraWeb.GoogleAnalytics)
+    plug Plug.Logger
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_flash
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug Guardian.MaybeAuthPipeline
+    plug OmegaBraveraWeb.GoogleAnalytics
+    plug Phoenix.LiveView.Flash
   end
 
   pipeline :user_authenticated do
-    plug(Guardian.AuthPipeline)
+    plug Guardian.AuthPipeline
   end
 
   pipeline :admin_authenticated do
-    plug(Guardian.AuthPipeline)
-    plug(OmegaBraveraWeb.AdminLoggedIn)
+    plug Guardian.AuthPipeline
+    plug OmegaBraveraWeb.AdminLoggedIn
   end
 
   pipeline :api do
-    plug(Plug.Logger)
-    plug(:accepts, ["json"])
+    plug Plug.Logger
+    plug :accepts, ["json"]
   end
 
   pipeline :absinthe_api do
-    plug(Plug.Logger)
-    plug(:accepts, ["json"])
     plug OmegaBraveraWeb.Api.Context
   end
 
   scope "/" do
-    pipe_through :absinthe_api
+    pipe_through :api
 
-    forward "/api", Absinthe.Plug, schema: OmegaBraveraWeb.Api.Schema
+    # Strava API Endpoints for Webhooks
+    scope "/strava", OmegaBraveraWeb do
+      get "/webhook-callback", StravaController, :get_webhook_callback
+      post "/webhook-callback", StravaController, :post_webhook_callback
+    end
+
+    get "/api/v1/picture-upload-presign", OmegaBraveraWeb.ApiController, :presign
+
+    scope "/" do
+      pipe_through :absinthe_api
+
+      forward "/api", Absinthe.Plug, schema: OmegaBraveraWeb.Api.Schema
+    end
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: OmegaBraveraWeb.Api.Schema,
@@ -46,28 +57,24 @@ defmodule OmegaBraveraWeb.Router do
   end
 
   scope "/" do
-    get("/health-check", OmegaBraveraWeb.PageController, :health_check)
+    get "/health-check", OmegaBraveraWeb.PageController, :health_check
 
-    get("/open-app", OmegaBraveraWeb.PageController, :open_app)
+    get "/open-app", OmegaBraveraWeb.PageController, :open_app
 
     # App related JSON files for Apple Universal Links and Google App Links.
     # Note: Apple instructs that we should NOT append .json to its file.
-    get(
-      "/.well-known/apple-app-site-association",
-      OmegaBraveraWeb.PageController,
-      :apple_domain_verification
-    )
+    get "/.well-known/apple-app-site-association",
+        OmegaBraveraWeb.PageController,
+        :apple_domain_verification
 
-    get(
-      "/.well-known/assetlinks.json",
-      OmegaBraveraWeb.PageController,
-      :google_domain_verification
-    )
+    get "/.well-known/assetlinks.json",
+        OmegaBraveraWeb.PageController,
+        :google_domain_verification
   end
 
   # Bravera user auth
   scope "/user", OmegaBraveraWeb do
-    pipe_through(:browser)
+    pipe_through :browser
 
     resources("/sessions", UserSessionController, only: [:create])
     get("/profile/email_settings", EmailSettingsController, :edit)
@@ -96,7 +103,7 @@ defmodule OmegaBraveraWeb.Router do
 
   # Strava OAuth Routes
   scope "/strava", OmegaBraveraWeb do
-    pipe_through(:browser)
+    pipe_through :browser
 
     get("/login/", StravaController, :authenticate)
     get("/login/:team_invitation", StravaController, :authenticate)
@@ -107,32 +114,24 @@ defmodule OmegaBraveraWeb.Router do
     get("/logout", StravaController, :logout)
   end
 
-  # Strava API Endpoints for Webhooks
-  scope "/strava", OmegaBraveraWeb do
-    pipe_through(:api)
-
-    get("/webhook-callback", StravaController, :get_webhook_callback)
-    post("/webhook-callback", StravaController, :post_webhook_callback)
-  end
-
   pipeline :admin_section do
-    plug(:browser)
-    plug(:put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel})
+    plug :browser
+    plug :put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
   scope "/admin", OmegaBraveraWeb do
-    pipe_through([:admin_section])
-    resources("/sessions", AdminUserSessionController, only: [:new, :create])
-    get("/logout", AdminUserSessionController, :logout)
+    pipe_through [:admin_section]
+    resources "/sessions", AdminUserSessionController, only: [:new, :create]
+    get "/logout", AdminUserSessionController, :logout
 
     scope "/" do
       pipe_through(:admin_authenticated)
-      get("/", AdminUserPageController, :index)
+      get "/", AdminUserPageController, :index
       resources "/locations", AdminPanelLocationsController
-      resources("/admin-users", AdminUserController)
-      resources("/users", AdminPanelUserController, only: [:index, :show, :edit])
-      put("/users/:id/edit", AdminPanelUserController, :update)
-      resources("/activities", AdminPanelActivityController, only: [:new, :create])
+      resources "/admin-users", AdminUserController
+      resources "/users", AdminPanelUserController, only: [:index, :show, :edit]
+      put "/users/:id/edit", AdminPanelUserController, :update
+      resources "/activities", AdminPanelActivityController, only: [:new, :create]
 
       resources("/offer-activities", AdminPanelOfferChallengeActivityController,
         only: [:new, :create]
@@ -173,27 +172,17 @@ defmodule OmegaBraveraWeb.Router do
         )
       end
 
-      get("/ngos/:slug", AdminPanelNGOController, :show)
-      get("/ngos/:slug/edit", AdminPanelNGOController, :edit)
-      put("/ngos/:slug", AdminPanelNGOController, :update)
-      get("/ngo/:slug/statement", AdminPanelNGOController, :statement)
-      get("/ngo/:slug/statement/monthly/", AdminPanelNGOController, :export_statement)
-      get("/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list)
-
-      resources("/offers", AdminPanelOfferController, only: [:index, :new, :create])
-      resources("/points", AdminPanelPointsController, only: [:new, :create])
-
-      get("/offers/:slug", AdminPanelOfferController, :show)
-      get("/offers/:slug/edit", AdminPanelOfferController, :edit)
-      put("/offers/:slug", AdminPanelOfferController, :update)
-      get("/offers/:slug/statement", AdminPanelOfferController, :statement)
-      get("/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement)
-    end
-
-    scope "/api" do
-      pipe_through([:admin_authenticated, :api])
-
-      get("/challenge_dates", AdminPanelActivityController, :get_challenge_dates)
+      get "/ngos/:slug", AdminPanelNGOController, :show
+      get "/ngos/:slug/edit", AdminPanelNGOController, :edit
+      put "/ngos/:slug", AdminPanelNGOController, :update
+      get "/ngo/:slug/statement", AdminPanelNGOController, :statement
+      get "/ngo/:slug/statement/monthly/", AdminPanelNGOController, :export_statement
+      get "/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list
+      resources "/points", AdminPanelPointsController, only: [:new, :create]
+      resources "/offers", AdminPanelOfferController, param: "slug"
+      get "/offers/:slug/statement", AdminPanelOfferController, :statement
+      get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
+      live "/offers/:slug/images", AdminOfferImages
     end
   end
 

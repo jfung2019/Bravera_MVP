@@ -6,12 +6,15 @@ cache:
     - assets/node_modules/
 
 test:
-  image: plangora/alpine-elixir-phoenix:otp-22.0.7-elixir-1.9.1
+  image: plangora/alpine-elixir-phoenix:otp-22.2.6-elixir-1.10.1
   services:
   - postgres:latest
   variables:
     MIX_ENV: "test"
     DB_HOST: postgres
+    POSTGRES_DB: omega_bravera_test
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
   script:
     - cd assets && npm install && cd .. # cache NPM modules for future
     - mix do deps.get, test --exclude skip
@@ -19,7 +22,7 @@ test:
 staging:
   stage: deploy
   environment: staging
-  image: plangora/alpine-elixir-phoenix:otp-22.0.7-elixir-1.9.1
+  image: plangora/alpine-elixir-phoenix:otp-22.2.6-elixir-1.10.1
   variables:
     MIX_ENV: "dev"
     REFSPEC: staging
@@ -43,7 +46,7 @@ staging:
 production:
   stage: deploy
   environment: production
-  image: plangora/alpine-elixir-phoenix:otp-22.0.7-elixir-1.9.1
+  image: plangora/alpine-elixir-phoenix:otp-22.2.6-elixir-1.10.1
   variables:
     MIX_ENV: "dev"
     REFSPEC: master

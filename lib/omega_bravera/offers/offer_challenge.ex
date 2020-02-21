@@ -141,7 +141,11 @@ defmodule OmegaBravera.Offers.OfferChallenge do
        })
        when length(offer_challenges) >= 3,
        do:
-         add_error(changeset, :offer_id, "You have reached the maximum allowed live challenges (3).")
+         add_error(
+           changeset,
+           :offer_id,
+           "You have reached the maximum allowed live challenges (3)."
+         )
 
   defp validate_max_challenges(%Ecto.Changeset{} = changeset, _user), do: changeset
 
@@ -242,7 +246,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
       |> change(%{
         last_activity_received: DateTime.truncate(Timex.now(), :second),
         participant_notified_of_inactivity: false,
-        donor_notified_of_inactivity: false,
         status: "complete"
       })
     else
@@ -255,8 +258,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> change(distance_covered: Decimal.add(challenge.distance_covered, distance))
     |> change(%{
       last_activity_received: DateTime.truncate(Timex.now(), :second),
-      participant_notified_of_inactivity: false,
-      donor_notified_of_inactivity: false
+      participant_notified_of_inactivity: false
     })
     |> update_challenge_status(challenge)
   end

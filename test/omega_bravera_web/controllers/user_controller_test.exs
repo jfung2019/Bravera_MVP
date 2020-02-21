@@ -20,6 +20,7 @@ defmodule OmegaBraveraWeb.UserControllerTest do
     }
   }
   @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
+
   #  field(:location, :string)
   #  field(:weight, :decimal, default: nil)
   #  field(:date_of_birth, :date)
