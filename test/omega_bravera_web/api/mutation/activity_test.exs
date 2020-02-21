@@ -79,6 +79,39 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
            } = json_response(response, 200)
   end
 
+  test "api/create_activity will not accept banned sources", %{token: token} do
+    conn =
+      build_conn()
+      |> put_req_header("authorization", "Bearer #{token}")
+
+    response =
+      post(
+        conn,
+        "/api",
+        %{
+          query: @query,
+          variables: %{
+            "distance" => "10.7",
+            "start_date" => "2019-08-06T14:54:54+00:00",
+            "end_date" => "2019-08-06T16:54:54+00:00",
+            "source" => "Connect",
+            "type" => "Walk"
+          }
+        }
+      )
+
+    assert %{
+             "data" => %{
+               "createActivity" => %{
+                 "activity" => %{
+                   "distance" => 10.7,
+                   "source" => "bravera"
+                 }
+               }
+             }
+           } = json_response(response, 200)
+  end
+
   test "api/create_activity will refuse duplicate activities based on start and end dates", %{
     token: token
   } do

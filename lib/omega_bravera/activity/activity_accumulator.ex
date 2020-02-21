@@ -142,8 +142,10 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     source = get_field(changeset, :source)
 
     if not is_nil(source) do
+      source = String.downcase(source)
+
       if !Enum.member?(@banned_sources, source) do
-        put_change(changeset, :source, String.downcase(source))
+        put_change(changeset, :source, source)
       else
         add_error(changeset, :source, "#{source} is not allowed.")
       end
