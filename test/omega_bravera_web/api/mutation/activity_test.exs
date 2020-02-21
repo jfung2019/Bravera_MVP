@@ -101,14 +101,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
       )
 
     assert %{
-             "data" => %{
-               "createActivity" => %{
-                 "activity" => %{
-                   "distance" => 10.7,
-                   "source" => "bravera"
-                 }
-               }
-             }
+             "data" => %{"createActivity" => nil},
+              "errors" => [%{"details" => %{"source" => ["connect is not allowed."]}, "locations" => [%{"column" => 0, "line" => 2}], "message" => "Could not create activity", "path" => ["createActivity"]}]
            } = json_response(response, 200)
   end
 
