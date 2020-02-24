@@ -28,4 +28,16 @@ defmodule OmegaBraveraWeb.AdminOfferImagesTest do
     assert_redirect(view, ^redirected_url)
     assert %{images: ["url1", "url2"]} = Offers.get_offer!(offer_id)
   end
+
+  test "can remove url from images list and save", %{conn: conn, offer: %{id: offer_id} = offer} do
+    {:ok, view, _html} = live(conn, Routes.live_path(conn, @view, offer))
+    assert render_hook(view, "append-image", %{"images" => "url2"}) =~ "url2"
+    html = render_click(view, "remove-image", %{"index" => "0"})
+    refute html =~ "url1"
+    assert html =~ "url2"
+    render_click(view, "save-images")
+    redirected_url = Routes.admin_panel_offer_path(conn, :show, offer)
+    assert_redirect(view, ^redirected_url)
+    assert %{images: ["url2"]} = Offers.get_offer!(offer_id)
+  end
 end

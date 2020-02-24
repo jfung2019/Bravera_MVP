@@ -19,6 +19,16 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
       ),
       do: {:noreply, assign(socket, images: images ++ [image_url])}
 
+  def handle_event(
+        "remove-image",
+        %{"index" => string_index},
+        %{assigns: %{images: images}} = socket
+      ) do
+    index = String.to_integer(string_index)
+    images = List.delete_at(images, index)
+    {:noreply, assign(socket, images: images)}
+  end
+
   def handle_event("save-images", _, %{assigns: %{images: images, offer: offer}} = socket) do
     case Offers.update_offer(offer, %{images: images}) do
       {:ok, offer} ->

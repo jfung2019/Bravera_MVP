@@ -63,7 +63,6 @@ defmodule OmegaBravera.Offers do
 
     from(
       offer in Offer,
-      select: %{offer | image: fragment("?[1]", offer.images)},
       where: offer.hidden == ^hidden and offer.end_date > ^now,
       order_by: [desc: offer.id],
       preload: ^preloads
@@ -99,8 +98,7 @@ defmodule OmegaBravera.Offers do
           o
           | active_offer_challenges: count(offer_challenges.id),
             pre_registration_start_date:
-              fragment("? at time zone 'utc'", o.pre_registration_start_date),
-            image: fragment("?[1]", o.images)
+              fragment("? at time zone 'utc'", o.pre_registration_start_date)
         }
       )
       |> Repo.one()

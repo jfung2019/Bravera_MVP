@@ -42,7 +42,7 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
 
   setup do
     credential = credential_fixture()
-    offer = insert(:offer, %{target: 15, images: ["url1", "url2"]})
+    offer = insert(:offer, %{target: 15, images: ["url1", "url2"], image: "url3"})
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
     {:ok, token: auth_token, offer: offer}
   end
@@ -58,7 +58,7 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
              "data" => %{
                "allOffers" => [
                  %{
-                   "image" => "url1",
+                   "image" => "url3",
                    "images" => ["url1", "url2"]
                  }
                ]
@@ -82,7 +82,7 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
     assert %{
              "data" => %{
                "getOffer" => %{
-                 "image" => "url1",
+                 "image" => "url3",
                  "images" => ["url1", "url2"]
                }
              }

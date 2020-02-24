@@ -2,8 +2,8 @@
 <h2><%= @offer.name %></h2>
 
 <div class="row">
-    <%= for url <- @images do %>
-        <div class="col-2 mt-2">
+    <%= for {url, index} <- Enum.with_index(@images) do %>
+        <div class="col-2 mt-2" phx-click="remove-image" phx-value-index="<%= index %>">
             <%= img_tag(url, class: "img-fluid") %>
         </div>
     <% end %>

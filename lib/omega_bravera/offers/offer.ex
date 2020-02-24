@@ -11,7 +11,7 @@ defmodule OmegaBravera.Offers.Offer do
     field :desc, :string
     field :full_desc, :string
     field :ga_id, :string
-    field :image, :string, virtual: true
+    field :image, :string
     field :images, {:array, :string}, default: []
     field :logo, :string
     field :name, :string
