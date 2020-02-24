@@ -8,7 +8,10 @@ defmodule OmegaBraveraWeb.AdminOfferImagesTest do
     with {:ok, admin_user} <-
            OmegaBravera.Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(admin_user, %{}),
-         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token), offer: insert(:offer, %{images: ["url1"], location_id: 1})}
+         do:
+           {:ok,
+            conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token),
+            offer: insert(:offer, %{images: ["url1"], location_id: 1})}
   end
 
   test "can see offer name and existing photos to verify offer", %{conn: conn, offer: offer} do

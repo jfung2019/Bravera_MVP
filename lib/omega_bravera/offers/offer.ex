@@ -147,32 +147,6 @@ defmodule OmegaBravera.Offers.Offer do
     end
   end
 
-  defp upload_image(%Ecto.Changeset{} = changeset, %{"image" => image_params}) do
-    image_path = get_field(changeset, :image)
-
-    file_uuid = Ecto.UUID.generate()
-    unique_filename = "#{file_uuid}-#{Path.extname(image_params.filename)}"
-    bucket_name = Application.get_env(:omega_bravera, :images_bucket_name)
-
-    if not is_nil(image_path) and image_path =~ "amazonaws" do
-      filepath = URI.parse(image_path).path
-
-      bucket_name
-      |> ExAws.S3.delete_object(filepath)
-      |> ExAws.request()
-    end
-
-    image_params.path
-    |> ExAws.S3.Upload.stream_file()
-    |> ExAws.S3.upload(bucket_name, "offer_images/#{unique_filename}", acl: :public_read)
-    |> ExAws.request()
-
-    changeset
-    |> change(image: "https://#{bucket_name}.s3.amazonaws.com/offer_images/#{unique_filename}")
-  end
-
-  defp upload_image(%Ecto.Changeset{} = changeset, _), do: changeset
-
   defp upload_logo(%Ecto.Changeset{} = changeset, %{"logo" => logo_params}) do
     logo_path = get_field(changeset, :logo)
 
