@@ -13,14 +13,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Devices do
       }) do
     # TODO: BUG: update or create instead of create since a user can get back to an inactive device.
     case Devices.create_device(%{active: active, uuid: uuid, user_id: user_id}) do
-      {:ok, %{create_device: device}} ->
+      {:ok, %{create_or_update_device: device}} ->
         {:ok,
          %{
            token: Auth.generate_device_token(device.uuid),
            expires_at: Timex.shift(Timex.now(), days: 1)
          }}
 
-      {:error, :create_device, changeset, _changes} ->
+      {:error, :create_or_update_device, changeset, _changes} ->
         Logger.info("Could not register device, reason: #{inspect(changeset)}")
 
         {:error,

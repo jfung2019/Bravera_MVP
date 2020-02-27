@@ -32,11 +32,37 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
     |> Repo.preload(:user)
   end
 
-  test "register_device/3 can register device and return its token" do
+  setup %{conn: conn} do
     credential = credential_fixture()
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
+    conn = conn |> put_req_header("authorization", "Bearer #{auth_token}")
+    {:ok, conn: conn}
+  end
 
-    conn = build_conn() |> put_req_header("authorization", "Bearer #{auth_token}")
+  test "register_device/3 can register device and return its token more than once", %{conn: conn} do
+    response =
+      post(
+        conn,
+        "/api",
+        %{
+          query: @query,
+          variables: %{
+            "uuid" => "aasas1231",
+            "active" => true
+          }
+        }
+      )
+
+    assert %{
+             "data" => %{
+               "registerDevice" => %{
+                 "expiresAt" => _expires_at,
+                 "token" => token
+               }
+             }
+           } = json_response(response, 200)
+
+    assert {:ok, {:device_uuid, "aasas1231"}} == OmegaBraveraWeb.Api.Auth.decrypt_token(token)
 
     response =
       post(

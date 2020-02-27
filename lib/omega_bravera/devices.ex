@@ -67,10 +67,17 @@ defmodule OmegaBravera.Devices do
 
   """
 
-  def create_device(%{active: true, user_id: user_id} = attrs) do
+  def create_device(%{active: true, user_id: user_id, uuid: uuid} = attrs) do
     Multi.new()
-    |> Multi.run(:deactivate_devices, fn _repo, _changes -> deactivate_all_devices(user_id) end)
-    |> Multi.run(:create_device, fn _repo, _changes -> do_create_device(attrs) end)
+    |> Multi.run(:deactivate_devices, fn repo, _changes -> deactivate_all_devices(user_id, repo) end)
+    |> Multi.run(:create_or_update_device, fn repo, _changes ->
+      case find_device(user_id, uuid, repo) do
+        %Device{} = device ->
+          update_device(device, attrs, repo)
+        nil ->
+          do_create_device(attrs, repo)
+      end
+    end)
     |> Repo.transaction()
   end
 
@@ -80,18 +87,18 @@ defmodule OmegaBravera.Devices do
     |> Repo.transaction()
   end
 
-  def deactivate_all_devices(user_id) do
+  def deactivate_all_devices(user_id, repo \\ Repo) do
     {count, nil} =
       from(d in Device, where: d.user_id == ^user_id)
-      |> Repo.update_all(set: [active: false])
+      |> repo.update_all(set: [active: false])
 
     {:ok, count}
   end
 
-  defp do_create_device(attrs) do
+  defp do_create_device(attrs, repo \\ Repo) do
     %Device{}
     |> Device.changeset(attrs)
-    |> Repo.insert()
+    |> repo.insert()
   end
 
   @doc """
@@ -106,10 +113,10 @@ defmodule OmegaBravera.Devices do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_device(%Device{} = device, attrs) do
+  def update_device(%Device{} = device, attrs, repo \\ Repo) do
     device
     |> Device.changeset(attrs)
-    |> Repo.update()
+    |> repo.update()
   end
 
   @doc """
@@ -139,5 +146,10 @@ defmodule OmegaBravera.Devices do
   """
   def change_device(%Device{} = device) do
     Device.changeset(device, %{})
+  end
+
+  def find_device(user_id, uuid, repo \\ Repo) do
+    from(d in Device, where: d.user_id == ^user_id and d.uuid == ^uuid)
+    |> repo.one()
   end
 end
