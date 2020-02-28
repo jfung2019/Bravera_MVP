@@ -6,7 +6,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
   alias OmegaBraveraWeb.Offer.OfferChallengeHelper
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
 
-  def createSegmentChallenge(_root, %{offer_slug: offer_slug, stripe_token: stripe_token}, %{
+  def create_segment_challenge(_root, %{offer_slug: offer_slug, stripe_token: stripe_token}, %{
         context: %{current_user: %{id: _} = current_user}
       }) do
     offer = Offers.get_offer_by_slug(offer_slug)
@@ -107,7 +107,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
     end
   end
 
-  def getChallengeRedeem(_root, %{challenge_id: challenge_id}, %{
+  def get_challenge_redeem(_root, %{challenge_id: challenge_id}, %{
         context: %{current_user: %{id: user_id}}
       }) do
     case Offers.get_redeem(challenge_id, user_id) do
