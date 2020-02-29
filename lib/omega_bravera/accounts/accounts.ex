@@ -142,7 +142,7 @@ defmodule OmegaBravera.Accounts do
     team_challengers ++ single_challengers
   end
 
-  def get_challengers_for_offers(user_id) do
+  def get_challenges_for_offers(user_id) do
     from(u in User,
       where: u.id == ^user_id,
       join: oc in OfferChallenge,

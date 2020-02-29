@@ -135,4 +135,8 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :upload_url, :string
     field :file_url, :string
   end
+
+  object :refresh_auth_token do
+    field :token, :string
+  end
 end

@@ -15,7 +15,7 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
     Logger.info("Offers:AppActivityIngestion: processing app activity: #{inspect(activity)}")
 
     activity.user_id
-    |> Accounts.get_challengers_for_offers()
+    |> Accounts.get_challenges_for_offers()
     |> process_challenges(activity)
   end
 
@@ -32,7 +32,7 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
   end
 
   def process_challenges([], _activity) do
-    Logger.info("Offers:AppActivityIngestion: No challengers found")
+    Logger.info("Offers:AppActivityIngestion: No challenges found")
     {:error, :no_challengers_found}
   end
 
@@ -56,7 +56,7 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
     {status, _challenge, _activity} =
       challenge
       |> create_activity(activity, user, send_emails)
-      |> update_challenge
+      |> update_challenge()
       |> notify_participant_of_activity(send_emails)
 
     Logger.info(

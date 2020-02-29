@@ -336,4 +336,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:error, message: "Could not save settings", details: Helpers.transform_errors(changeset)}
     end
   end
+
+  def refresh_auth_token(_root, _args, %{context: %{current_user: %{id: _id} = current_user}}) do
+    case Guardian.encode_and_sign(current_user) do
+      {:ok, token, _} ->
+        {:ok, %{token: token}}
+
+      _ ->
+        {:error, message: "Unable to create a refresh token"}
+    end
+  end
 end

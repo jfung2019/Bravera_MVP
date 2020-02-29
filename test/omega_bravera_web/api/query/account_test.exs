@@ -19,6 +19,14 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   }
   """
 
+  @refresh_token_query """
+  query {
+    refreshAuthToken {
+      token
+    }
+  }
+  """
+
   def credential_fixture() do
     user = insert(:user, %{email: @email})
 
@@ -43,9 +51,10 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
 
   test "user_profile can get all of the users info", %{
     token: token,
+    conn: conn,
     user: %{firstname: first_name, lastname: last_name}
   } do
-    conn = build_conn() |> put_req_header("authorization", "Bearer #{token}")
+    conn = conn |> put_req_header("authorization", "Bearer #{token}")
     response = post(conn, "/api", %{query: @query})
 
     assert %{
@@ -53,6 +62,25 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
                "userProfile" => %{
                  "firstname" => ^first_name,
                  "lastname" => ^last_name
+               }
+             }
+           } = json_response(response, 200)
+  end
+
+  test "can refresh token", %{conn: conn, token: token, user: %{firstname: first_name}} do
+    conn = conn |> put_req_header("authorization", "Bearer #{token}")
+    response = post(conn, "/api", %{query: @refresh_token_query})
+
+    assert %{"data" => %{"refreshAuthToken" => %{"token" => new_token}}} =
+             json_response(response, 200)
+
+    conn = build_conn() |> put_req_header("authorization", "Bearer #{new_token}")
+    response = post(conn, "/api", %{query: @query})
+
+    assert %{
+             "data" => %{
+               "userProfile" => %{
+                 "firstname" => ^first_name
                }
              }
            } = json_response(response, 200)

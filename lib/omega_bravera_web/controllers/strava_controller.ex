@@ -142,7 +142,7 @@ defmodule OmegaBraveraWeb.StravaController do
             )
 
           {:error, changeset} ->
-            Logger.error("Could not connect strava account, reason: #{inspect(changeset)}")
+            Logger.warn("Could not connect strava account, reason: #{inspect(changeset)}")
 
             # TODO: deal with other possible cases, bust just consider account is already being used
             conn

@@ -69,11 +69,14 @@ defmodule OmegaBravera.Devices do
 
   def create_device(%{active: true, user_id: user_id, uuid: uuid} = attrs) do
     Multi.new()
-    |> Multi.run(:deactivate_devices, fn repo, _changes -> deactivate_all_devices(user_id, repo) end)
+    |> Multi.run(:deactivate_devices, fn repo, _changes ->
+      deactivate_all_devices(user_id, repo)
+    end)
     |> Multi.run(:create_or_update_device, fn repo, _changes ->
       case find_device(user_id, uuid, repo) do
         %Device{} = device ->
           update_device(device, attrs, repo)
+
         nil ->
           do_create_device(attrs, repo)
       end
