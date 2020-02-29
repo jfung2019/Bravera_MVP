@@ -77,6 +77,7 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
 
     test "redirects to index when activity data is refused by AcivityIngestion with an error flash",
          %{conn: conn, challenge: challenge} do
+      past_time = Timex.now("Asia/Hong_Kong") |> Timex.shift(years: -2)
       conn =
         post(
           conn,
@@ -86,11 +87,11 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
             | "type" => challenge.activity_type,
               "start_date" => %{
                 # Must be in the furture so that ActivityIngestion doesn't refuse it
-                "hour" => Integer.to_string(Timex.now("Asia/Hong_Kong").hour),
+                "hour" => Integer.to_string(past_time.hour),
                 "minute" => "00",
-                "year" => Integer.to_string(Timex.now("Asia/Hong_Kong").year - 2),
-                "month" => Integer.to_string(Timex.now("Asia/Hong_Kong").month),
-                "day" => Integer.to_string(Timex.now("Asia/Hong_Kong").day)
+                "year" => Integer.to_string(past_time.year),
+                "month" => Integer.to_string(past_time.month),
+                "day" => Integer.to_string(past_time.day)
               }
           },
           challenge_id: challenge.id
