@@ -27,6 +27,14 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   }
   """
 
+  @user_live_challenges_query """
+  query {
+    userLiveChallenges {
+      id
+    }
+  }
+  """
+
   def credential_fixture() do
     user = insert(:user, %{email: @email})
 
@@ -84,5 +92,14 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
                }
              }
            } = json_response(response, 200)
+  end
+
+  test "can get live challenges from a user", %{conn: conn, token: token, user: user} do
+    %{id: challenge_id} = insert(:offer_challenge, user: user, status: "active")
+    conn = conn |> put_req_header("authorization", "Bearer #{token}")
+    response = post(conn, "/api", %{query: @user_live_challenges_query})
+
+    assert %{"data" => %{"userLiveChallenges" => [%{"id" => ^challenge_id}]}} =
+             json_response(response, 200)
   end
 end

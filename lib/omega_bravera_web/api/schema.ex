@@ -17,9 +17,9 @@ defmodule OmegaBraveraWeb.Api.Schema do
   mutation do
     @desc "Set profile picture"
     field :set_profile_picture, :user do
-      arg(:picture_url, non_null(:string))
-      middleware(Middleware.Authenticate)
-      resolve(&Resolvers.Accounts.profile_picture_update/3)
+      arg :picture_url, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.profile_picture_update/3
     end
 
     @desc "Delete user profile picture and strava profile picture"
@@ -182,21 +182,27 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "Get logged in user profile"
     field :user_profile, :user_profile do
-      middleware(Middleware.Authenticate)
-      resolve(&Resolvers.Accounts.user_profile/3)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.user_profile/3
     end
 
     @desc "Get profile picture upload URL"
     field :picture_upload, :upload_token do
-      arg(:picture, non_null(:file_upload_input))
-      middleware(Middleware.Authenticate)
-      resolve(&Resolvers.Accounts.profile_picture_upload/3)
+      arg :picture, non_null(:file_upload_input)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.profile_picture_upload/3
     end
 
     @desc "Get refresh token for auth"
     field :refresh_auth_token, :refresh_auth_token do
-      middleware(Middleware.Authenticate)
-      resolve(&Resolvers.Accounts.refresh_auth_token/3)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.refresh_auth_token/3
+    end
+
+    @desc "Gets latest live challenges for user"
+    field :user_live_challenges, list_of(:offer_challenge) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.latest_live_challenges/3
     end
   end
 end

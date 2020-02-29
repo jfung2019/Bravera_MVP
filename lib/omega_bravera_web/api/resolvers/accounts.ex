@@ -346,4 +346,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:error, message: "Unable to create a refresh token"}
     end
   end
+
+  def latest_live_challenges(_root, _args, %{context: %{current_user: %{id: user_id}}}),
+    do: {:ok, Accounts.user_live_challenges(user_id)}
 end

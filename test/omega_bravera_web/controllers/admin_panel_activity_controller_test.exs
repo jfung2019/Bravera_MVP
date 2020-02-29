@@ -78,6 +78,7 @@ defmodule OmegaBraveraWeb.Admin.ActivityControllerTest do
     test "redirects to index when activity data is refused by AcivityIngestion with an error flash",
          %{conn: conn, challenge: challenge} do
       past_time = Timex.now("Asia/Hong_Kong") |> Timex.shift(years: -2)
+
       conn =
         post(
           conn,
