@@ -205,4 +205,16 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.latest_live_challenges/3
     end
   end
+
+  subscription do
+    field :live_challenges, list_of(:offer_challenge) do
+      config fn
+        _args, %{context: %{current_user: %{id: user_id}}} ->
+          {:ok, topic: "#{user_id}"}
+
+        _args, _context ->
+          {:error, "unauthorized"}
+      end
+    end
+  end
 end

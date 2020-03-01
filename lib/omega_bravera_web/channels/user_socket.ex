@@ -1,6 +1,6 @@
 defmodule OmegaBraveraWeb.UserSocket do
   use Phoenix.Socket
-  use Absinthe.Phoenix.Socket, schema: OmegaBraveraWeb.Schema
+  use Absinthe.Phoenix.Socket, schema: OmegaBraveraWeb.Api.Schema
 
   ## Channels
   # channel "room:*", OmegaBraveraWeb.RoomChannel

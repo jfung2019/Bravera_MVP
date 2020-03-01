@@ -19,7 +19,7 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
     |> process_challenges(activity)
   end
 
-  def process_challenges([{_challenge_id, _user} | _] = challenges, activity) do
+  def process_challenges([{_challenge_id, user} | _] = challenges, activity) do
     Logger.info("Offers:AppActivityIngestion: Processing challenges")
     Logger.info("Offers:AppActivityIngestion: Processing activity: #{inspect(activity)}")
 
@@ -29,6 +29,12 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
       |> Repo.preload([:offer])
       |> process_challenge(activity, user, true)
     end)
+
+    Absinthe.Subscription.publish(
+      OmegaBraveraWeb.Endpoint,
+      OmegaBravera.Accounts.user_live_challenges(user.id),
+      live_challenges: user.id
+    )
   end
 
   def process_challenges([], _activity) do
