@@ -4,7 +4,7 @@ defmodule OmegaBravera.Guardian.MaybeAuthPipeline do
     module: OmegaBravera.Guardian,
     error_handler: OmegaBravera.AuthErrorHandler
 
-  plug(Guardian.Plug.VerifySession, claims: %{"typ" => "access"})
-  plug(Guardian.Plug.VerifyHeader, realm: "Bearer")
-  plug(Guardian.Plug.LoadResource, allow_blank: true)
+  plug Guardian.Plug.VerifySession, claims: %{"typ" => "access"}
+  plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+  plug Guardian.Plug.LoadResource, allow_blank: true
 end
