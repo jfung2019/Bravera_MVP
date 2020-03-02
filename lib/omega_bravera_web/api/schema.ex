@@ -215,6 +215,14 @@ defmodule OmegaBraveraWeb.Api.Schema do
         _args, _context ->
           {:error, "unauthorized"}
       end
+
+      #      trigger :earn_offer_challenge, topic: fn
+      #        %{user_id: user_id}, _ -> [user_id]
+      #        _, _ -> []
+      #      end
+      #      resolve fn [%{user_id: user_id}], _, _ ->
+      #        {:ok, OmegaBravera.Accounts.user_live_challenges(user_id)}
+      #      end
     end
   end
 end

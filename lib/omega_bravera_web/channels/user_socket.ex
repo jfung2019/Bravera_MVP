@@ -11,7 +11,11 @@ defmodule OmegaBraveraWeb.UserSocket do
   def connect(%{"authToken" => token}, socket) do
     case auth_socket(token) do
       {:ok, user, device} ->
-        {:ok, Absinthe.Phoenix.Socket.put_options(socket, context: %{current_user: user, device: device})}
+        {:ok,
+         Absinthe.Phoenix.Socket.put_options(socket,
+           context: %{current_user: user, device: device}
+         )}
+
       _ ->
         :error
     end

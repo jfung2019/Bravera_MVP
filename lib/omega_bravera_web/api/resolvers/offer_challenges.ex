@@ -65,6 +65,12 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
     case Offers.create_offer_challenge(offer, current_user) do
       {:ok, offer_challenge} ->
         OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
+        # TODO: Find a way to make this a trigger
+        Absinthe.Subscription.publish(
+          OmegaBraveraWeb.Endpoint,
+          OmegaBravera.Accounts.user_live_challenges(current_user.id),
+          live_challenges: current_user.id
+        )
 
         {:ok, %{offer_challenge: offer_challenge}}
 

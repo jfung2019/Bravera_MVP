@@ -24,6 +24,15 @@ defmodule OmegaBraveraWeb.Api.Subscription.OfferChallengeTest do
     }
   }
   """
+  @join_challenge_mutation """
+  mutation($offerSlug: String!){
+    earnOfferChallenge(offerSlug: $offerSlug){
+      offerChallenge{
+        id
+      }
+    }
+  }
+  """
 
   test "new activities can update live challenges", %{socket: socket} do
     challenge = insert(:offer_challenge)
@@ -71,6 +80,39 @@ defmodule OmegaBraveraWeb.Api.Subscription.OfferChallengeTest do
     }
 
     assert_push "subscription:data", push
+    assert expected == push
+  end
+
+  test "can create challenge and be notified of new challenge", %{socket: socket} do
+    offer = insert(:offer)
+    user = insert(:user)
+
+    socket =
+      Absinthe.Phoenix.Socket.put_options(socket,
+        context: %{current_user: user, device: nil}
+      )
+
+    {:ok, socket} = Absinthe.Phoenix.SubscriptionTest.join_absinthe(socket)
+    # setup a subscription
+    ref = push_doc(socket, @subscription)
+    assert_reply ref, :ok, %{subscriptionId: subscription_id}
+
+    ref = push_doc(socket, @join_challenge_mutation, variables: %{"offerSlug" => offer.slug})
+
+    assert_reply ref, :ok, reply
+
+    assert %{data: %{"earnOfferChallenge" => %{"offerChallenge" => %{"id" => challenge_id}}}} =
+             reply
+
+    # check to see if we got subscription data
+    expected = %{
+      result: %{
+        data: %{"liveChallenges" => [%{"id" => challenge_id, "distance_covered" => 0.0}]}
+      },
+      subscriptionId: subscription_id
+    }
+
+    assert_push "subscription:data", push, 9999
     assert expected == push
   end
 end
