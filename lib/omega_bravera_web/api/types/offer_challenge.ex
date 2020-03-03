@@ -2,28 +2,29 @@ defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
   use Absinthe.Schema.Notation
 
   object :offer_challenge do
-    field(:id, :integer)
-    field(:activity_type, :string)
-    field(:default_currency, :string)
-    field(:distance_target, :integer)
-    field(:distance_covered, :decimal)
-    field(:end_date, :date)
-    field(:has_team, :boolean)
-    field(:slug, :string)
-    field(:start_date, :date)
-    field(:status, :string)
-    field(:type, :string)
-    field(:offer_id, :integer)
-    field(:inserted_at, :date)
-    field(:updated_at, :date)
-    field(:user, :user)
-    field(:offer, :offer)
+    field :id, :integer
+    field :activity_type, :string
+    field :default_currency, :string
+    field :distance_target, :integer
+    field :distance_covered, :decimal
+    field :end_date, :date
+    field :has_team, :boolean
+    field :slug, :string
+    field :start_date, :date
+    field :status, :string
+    field :type, :string
+    field :offer_id, :integer
+    field :inserted_at, :date
+    field :updated_at, :date
+    field :user, :user
+    field :offer, :offer
   end
 
   object :offer_challenges_map do
-    field(:live, list_of(:offer_challenge))
-    field(:expired, list_of(:offer_challenge))
-    field(:completed, list_of(:offer_challenge))
+    field :total, :integer
+    field :live, list_of(:offer_challenge)
+    field :expired, list_of(:offer_challenge)
+    field :completed, list_of(:offer_challenge)
   end
 
   input_object :offer_challenge_create_input do
