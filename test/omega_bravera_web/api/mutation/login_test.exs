@@ -93,7 +93,12 @@ defmodule OmegaBraveraWeb.Api.Mutation.LoginTest do
     assert {:ok, %{"sub" => ^guardian_sub}} = OmegaBravera.Guardian.decode_and_verify(token)
 
     assert %{
-             "offerChallengesMap" => %{"completed" => [], "expired" => [], "live" => [], "total" => 0},
+             "offerChallengesMap" => %{
+               "completed" => [],
+               "expired" => [],
+               "live" => [],
+               "total" => 0
+             },
              "totalChallenges" => 0,
              "totalKilometers" => 0.0,
              "totalPoints" => 0.0,

@@ -35,6 +35,21 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   }
   """
 
+  @points_balance_query """
+    query {
+      userPointsHistory {
+        balance
+        history {
+          posValue
+          negValue
+          source
+          insertedAt
+          updatedAt
+        }
+      }
+    }
+  """
+
   def credential_fixture() do
     user = insert(:user, %{email: @email})
 
@@ -100,6 +115,16 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
     response = post(conn, "/api", %{query: @user_live_challenges_query})
 
     assert %{"data" => %{"userLiveChallenges" => [%{"id" => ^challenge_id}]}} =
+             json_response(response, 200)
+  end
+
+  test "can get points balance from current user", %{conn: conn, token: token} do
+    response =
+      conn
+      |> put_req_header("authorization", "Bearer #{token}")
+      |> post("/api", %{query: @points_balance_query})
+
+    assert %{"data" => %{"userPointsHistory" => %{"balance" => 0.0, "history" => []}}} =
              json_response(response, 200)
   end
 end

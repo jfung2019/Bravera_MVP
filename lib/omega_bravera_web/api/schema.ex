@@ -204,6 +204,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.latest_live_challenges/3
     end
+
+    @desc "Gets latest points and points history for user"
+    field :user_points_history, non_null(:user_points_with_history) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.latest_points_with_history/3
+    end
   end
 
   subscription do
@@ -223,6 +229,15 @@ defmodule OmegaBraveraWeb.Api.Schema do
       #      resolve fn [%{user_id: user_id}], _, _ ->
       #        {:ok, OmegaBravera.Accounts.user_live_challenges(user_id)}
       #      end
+    end
+
+    field :live_points, non_null(:user_points_with_history) do
+      config fn
+        _args, %{context: %{current_user: %{id: user_id}}} ->
+          {:ok, topic: "#{user_id}"}
+        _args, _context ->
+          {:error, "unauthorized"}
+      end
     end
   end
 end

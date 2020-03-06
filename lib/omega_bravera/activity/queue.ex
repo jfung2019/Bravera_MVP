@@ -1,7 +1,7 @@
 defmodule OmegaBravera.Activity.Queue do
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Activity.Activities
-  alias OmegaBravera.Points
+  alias OmegaBravera.{Accounts, Points}
   use GenServer
 
   require Logger
@@ -44,6 +44,13 @@ defmodule OmegaBravera.Activity.Queue do
           {:ok, _point} ->
             Logger.info(
               "Activity Create Queue: Successfully created points for activity: #{activity.id}"
+            )
+            user_id = value.user.id
+            # TODO: Find a way to make this a trigger
+            Absinthe.Subscription.publish(
+              OmegaBraveraWeb.Endpoint,
+              %{balance: Accounts.total_points(user_id), history: Accounts.user_points_history(user_id)},
+              live_points: user_id
             )
 
           {:error, reason} ->

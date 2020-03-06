@@ -366,10 +366,31 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  def user_points_history(user_id) do
+    from(
+      p in Point,
+      where: p.user_id == ^user_id,
+      order_by: [desc: fragment("CAST(? AS DATE)", p.inserted_at)],
+      group_by: fragment("CAST(? AS DATE)", p.inserted_at),
+      select: %{
+        neg_value: fragment("sum(case when ? < 0 then ? else 0 end)", p.value, p.value),
+        pos_value: fragment("sum(case when ? > 0 then ? else 0 end)", p.value, p.value),
+        inserted_at: fragment("CAST(? AS DATE)", p.inserted_at)
+      }
+    )
+    |> Repo.all()
+  end
+
+  def total_points(user_id),
+    do:
+      Repo.aggregate(
+        from(p in Point, where: p.user_id == ^user_id, select: coalesce(p.value, 0.0)),
+        :sum,
+        :value
+      ) || Decimal.from_float(0.0)
+
   def api_user_profile(user_id) do
-    total_points =
-      Repo.aggregate(from(p in Point, where: p.user_id == ^user_id), :sum, :value) ||
-        Decimal.from_float(0.0)
+    total_points = total_points(user_id)
 
     total_rewards =
       Repo.aggregate(
@@ -459,19 +480,7 @@ defmodule OmegaBravera.Accounts do
       )
       |> Repo.all()
 
-    points_history =
-      from(
-        p in Point,
-        where: p.user_id == ^user_id,
-        order_by: [desc: fragment("CAST(? AS DATE)", p.inserted_at)],
-        group_by: fragment("CAST(? AS DATE)", p.inserted_at),
-        select: %{
-          neg_value: fragment("sum(case when ? < 0 then ? else 0 end)", p.value, p.value),
-          pos_value: fragment("sum(case when ? > 0 then ? else 0 end)", p.value, p.value),
-          inserted_at: fragment("CAST(? AS DATE)", p.inserted_at)
-        }
-      )
-      |> Repo.all()
+    points_history = user_points_history(user_id)
 
     %{
       user

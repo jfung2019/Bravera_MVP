@@ -79,6 +79,11 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :email_verified, non_null(:boolean)
   end
 
+  object :user_points_with_history do
+    field :balance, non_null(:decimal)
+    field :history, non_null(list_of(:point))
+  end
+
   object :user_session do
     field :token, :string
     field :user, :user
