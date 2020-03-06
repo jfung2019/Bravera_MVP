@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Api.Subscription.OfferChallengeTest do
+defmodule OmegaBraveraWeb.Api.Subscription.PointsTest do
   use OmegaBraveraWeb.SubscriptionCase
   import OmegaBravera.Factory
 
