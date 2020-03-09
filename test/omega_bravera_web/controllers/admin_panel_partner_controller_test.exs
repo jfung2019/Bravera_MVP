@@ -22,12 +22,6 @@ defmodule OmegaBraveraWeb.Admin.PartnerControllerTest do
       assert html_response(conn, 200) =~ "Edit Partner"
     end
 
-    test "can add location to partner", %{partner: partner, conn: conn} do
-      conn = put(conn, Routes.admin_panel_partner_path(conn, :update, partner), %{partner: %{location: %{address: "123", longitude: "123.4", latitude: "456.7"}}})
-      assert get_flash(conn, :info) =~ "Partner updated successfully"
-      assert redirected_to(conn) == Routes.admin_panel_partner_path(conn, :show, partner)
-    end
-
     test "can re-render form if bad editing", %{partner: partner, conn: conn} do
       conn = put(conn, Routes.admin_panel_partner_path(conn, :update, partner), %{partner: %{name: nil}})
       assert get_flash(conn, :error) =~ "Partner was not updated"

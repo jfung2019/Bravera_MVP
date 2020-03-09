@@ -12,6 +12,7 @@
 				  <tr>
 				  	<td><%= partner.name %></td>
 				  	<td>
+				  		<%= link "Show", to: Routes.admin_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
 				  		<%= link "Edit", to: Routes.admin_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
 					</td>
 				  </tr>

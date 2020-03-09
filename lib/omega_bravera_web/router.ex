@@ -104,13 +104,13 @@ defmodule OmegaBraveraWeb.Router do
   scope "/strava", OmegaBraveraWeb do
     pipe_through :browser
 
-    get("/login/", StravaController, :authenticate)
-    get("/login/:team_invitation", StravaController, :authenticate)
-    get("/callback", StravaController, :strava_callback)
-    get("/connect_strava_account/", StravaController, :connect_strava_account)
-    get("/connect_callback", StravaController, :connect_strava_callback)
-    get("/connect_callback_mobile_app", StravaController, :connect_strava_callback_mobile_app)
-    get("/logout", StravaController, :logout)
+    get "/login/", StravaController, :authenticate
+    get "/login/:team_invitation", StravaController, :authenticate
+    get "/callback", StravaController, :strava_callback
+    get "/connect_strava_account/", StravaController, :connect_strava_account
+    get "/connect_callback", StravaController, :connect_strava_callback
+    get "/connect_callback_mobile_app", StravaController, :connect_strava_callback_mobile_app
+    get "/logout", StravaController, :logout
   end
 
   pipeline :admin_section do
@@ -146,7 +146,9 @@ defmodule OmegaBraveraWeb.Router do
 
       resources "/emails", AdminPanelEmailsController, except: [:delete]
       get "/challenges", AdminPanelChallengesController, :index
-      resources "/partners", AdminPanelPartnerController, except: [:delete]
+      resources "/partners", AdminPanelPartnerController, except: [:delete] do
+        resources "/locations", AdminPanelPartnerLocationController, except: [:index]
+      end
 
       resources "/ngos", AdminPanelNGOController, only: [:index, :new, :create] do
         resources "/challenges", AdminPanelChallengesController,
@@ -170,40 +172,20 @@ defmodule OmegaBraveraWeb.Router do
 
   # Offers
   scope "/offers", OmegaBraveraWeb do
-    pipe_through(:browser)
+    pipe_through [:browser]
 
     resources "/", Offer.OfferController, only: [:index], param: "slug" do
       resources "/", Offer.OfferChallengeController, only: [:show, :new, :create], param: "slug" do
-        get("/activities", Offer.OfferChallengeActivityController, :index)
-        get("/:redeem_token", Offer.OfferChallengeController, :send_qr_code)
-        get("/redeem/:redeem_token", Offer.OfferChallengeController, :new_redeem)
-        post("/:redeem_token", Offer.OfferChallengeController, :save_redeem)
-        put("/:redeem_token", Offer.OfferChallengeController, :save_redeem)
-        post("/invite/team_members", Offer.OfferChallengeController, :invite_team_members)
-
-        get(
-          "/add_team_member/:invitation_token",
-          Offer.OfferChallengeController,
-          :add_team_member
-        )
-
-        get(
-          "/resend_invitation/:invitation_token",
-          Offer.OfferChallengeController,
-          :resend_invitation
-        )
-
-        get(
-          "/cancel_invitation/:invitation_token",
-          Offer.OfferChallengeController,
-          :cancel_invitation
-        )
-
-        post(
-          "/kick_team_member/:user_id",
-          Offer.OfferChallengeController,
-          :kick_team_member
-        )
+        get "/activities", Offer.OfferChallengeActivityController, :index
+        get "/:redeem_token", Offer.OfferChallengeController, :send_qr_code
+        get "/redeem/:redeem_token", Offer.OfferChallengeController, :new_redeem
+        post "/:redeem_token", Offer.OfferChallengeController, :save_redeem
+        put "/:redeem_token", Offer.OfferChallengeController, :save_redeem
+        post "/invite/team_members", Offer.OfferChallengeController, :invite_team_members
+        get "/add_team_member/:invitation_token", Offer.OfferChallengeController, :add_team_member
+        get "/resend_invitation/:invitation_token", Offer.OfferChallengeController, :resend_invitation
+        get "/cancel_invitation/:invitation_token", Offer.OfferChallengeController, :cancel_invitation
+        post "/kick_team_member/:user_id", Offer.OfferChallengeController, :kick_team_member
       end
     end
   end
