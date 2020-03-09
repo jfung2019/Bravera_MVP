@@ -50,6 +50,40 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
     }
   """
 
+  @future_rewards_query """
+  query {
+    futureRedeems {
+      insertedAt
+      offer {
+        name
+      }
+      offerChallenge {
+        id
+      }
+      status
+      token
+      updatedAt
+    }
+  }
+  """
+
+  @past_rewards_query """
+  query {
+    pastRedeems {
+      insertedAt
+      offer {
+        name
+      }
+      offerChallenge {
+        id
+      }
+      status
+      token
+      updatedAt
+    }
+  }
+  """
+
   def credential_fixture() do
     user = insert(:user, %{email: @email})
 
@@ -66,18 +100,18 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
     |> Repo.preload(:user)
   end
 
-  setup do
+  setup %{conn: conn} do
     credential = credential_fixture()
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-    {:ok, token: auth_token, user: credential.user}
+
+    {:ok,
+     user: credential.user, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}
   end
 
   test "user_profile can get all of the users info", %{
-    token: token,
     conn: conn,
     user: %{firstname: first_name, lastname: last_name}
   } do
-    conn = conn |> put_req_header("authorization", "Bearer #{token}")
     response = post(conn, "/api", %{query: @query})
 
     assert %{
@@ -90,8 +124,7 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
            } = json_response(response, 200)
   end
 
-  test "can refresh token", %{conn: conn, token: token, user: %{firstname: first_name}} do
-    conn = conn |> put_req_header("authorization", "Bearer #{token}")
+  test "can refresh token", %{conn: conn, user: %{firstname: first_name}} do
     response = post(conn, "/api", %{query: @refresh_token_query})
 
     assert %{"data" => %{"refreshAuthToken" => %{"token" => new_token}}} =
@@ -109,22 +142,28 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
            } = json_response(response, 200)
   end
 
-  test "can get live challenges from a user", %{conn: conn, token: token, user: user} do
+  test "can get live challenges from a user", %{conn: conn, user: user} do
     %{id: challenge_id} = insert(:offer_challenge, user: user, status: "active")
-    conn = conn |> put_req_header("authorization", "Bearer #{token}")
     response = post(conn, "/api", %{query: @user_live_challenges_query})
 
     assert %{"data" => %{"userLiveChallenges" => [%{"id" => ^challenge_id}]}} =
              json_response(response, 200)
   end
 
-  test "can get points balance from current user", %{conn: conn, token: token} do
-    response =
-      conn
-      |> put_req_header("authorization", "Bearer #{token}")
-      |> post("/api", %{query: @points_balance_query})
+  test "can get points balance from current user", %{conn: conn} do
+    response = post(conn, "/api", %{query: @points_balance_query})
 
     assert %{"data" => %{"userPointsHistory" => %{"balance" => 0.0, "history" => []}}} =
              json_response(response, 200)
+  end
+
+  test "can get future rewards", %{conn: conn} do
+    response = post(conn, "/api", %{query: @future_rewards_query})
+    %{"data" => %{"futureRedeems" => []}} = json_response(response, 200)
+  end
+
+  test "can get past rewards", %{conn: conn} do
+    response = post(conn, "/api", %{query: @past_rewards_query})
+    %{"data" => %{"pastRedeems" => []}} = json_response(response, 200)
   end
 end

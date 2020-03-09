@@ -120,7 +120,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
         Accounts.Notifier.send_user_signup_email(user, "/open-app")
         {:ok, token, _} = Guardian.encode_and_sign(user, %{})
-        {:ok, %{user: user, token: token, user_profile: Accounts.api_user_profile(user.id)}}
+        {:ok, %{user: user, token: token}}
 
       {:error, changeset} ->
         {:error, message: "Could not signup", details: Helpers.transform_errors(changeset)}
@@ -353,4 +353,10 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     do:
       {:ok,
        %{balance: Accounts.total_points(user_id), history: Accounts.user_points_history(user_id)}}
+
+  def latest_future_redeems(_root, _args, %{context: %{current_user: %{id: user_id}}}),
+    do: {:ok, Accounts.future_redeems(user_id)}
+
+  def latest_past_redeems(_root, _args, %{context: %{current_user: %{id: user_id}}}),
+    do: {:ok, Accounts.future_redeems(user_id)}
 end

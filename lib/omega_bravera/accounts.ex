@@ -389,9 +389,27 @@ defmodule OmegaBravera.Accounts do
         :value
       ) || Decimal.from_float(0.0)
 
-  def api_user_profile(user_id) do
-    total_points = total_points(user_id)
+  def future_redeems(user_id),
+    do:
+      from(
+        ofr in OfferRedeem,
+        join: oc in OfferChallenge,
+        on: oc.status == ^"complete" and ofr.offer_challenge_id == oc.id,
+        where: ofr.user_id == ^user_id and ofr.status == ^"pending",
+        order_by: [desc: :inserted_at]
+      )
+      |> Repo.all()
 
+  def past_redeems(user_id),
+    do:
+      from(
+        ofr in OfferRedeem,
+        where: ofr.user_id == ^user_id and ofr.status == ^"redeemed",
+        order_by: [desc: :updated_at]
+      )
+      |> Repo.all()
+
+  def api_user_profile(user_id) do
     total_rewards =
       Repo.aggregate(
         from(ofr in OfferRedeem, where: ofr.status == "redeemed" and ofr.user_id == ^user_id),
@@ -426,7 +444,6 @@ defmodule OmegaBravera.Accounts do
         on: a.activity_id == ac.id,
         order_by: [desc: :end_date],
         group_by: oc.id,
-        preload: [:offer],
         select: %{
           oc
           | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
@@ -443,7 +460,6 @@ defmodule OmegaBravera.Accounts do
         on: a.activity_id == ac.id,
         group_by: oc.id,
         order_by: [desc: :updated_at],
-        preload: [:offer],
         select: %{
           oc
           | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
@@ -459,37 +475,10 @@ defmodule OmegaBravera.Accounts do
       )
       |> Repo.one()
 
-    # Complete Challenges and has redeems that are pending
-    future_redeems =
-      from(
-        ofr in OfferRedeem,
-        join: oc in OfferChallenge,
-        on: oc.status == ^"complete" and ofr.offer_challenge_id == oc.id,
-        where: ofr.user_id == ^user_id and ofr.status == ^"pending",
-        order_by: [desc: :inserted_at],
-        preload: [:offer, :offer_challenge]
-      )
-      |> Repo.all()
-
-    past_redeems =
-      from(
-        ofr in OfferRedeem,
-        where: ofr.user_id == ^user_id and ofr.status == ^"redeemed",
-        preload: [:offer, :offer_challenge],
-        order_by: [desc: :updated_at]
-      )
-      |> Repo.all()
-
-    points_history = user_points_history(user_id)
-
     %{
       user
-      | total_points: total_points,
-        total_rewards: total_rewards,
+      | total_rewards: total_rewards,
         total_kilometers: total_kms_offers,
-        future_redeems: future_redeems,
-        past_redeems: past_redeems,
-        points_history: points_history,
         offer_challenges_map: %{
           live: live_challenges,
           expired: expired_challenges,

@@ -65,7 +65,9 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :email, non_null(:string)
     field :firstname, :string
     field :lastname, :string
-    field :total_points, non_null(:decimal)
+    field :total_points, non_null(:decimal), resolve: fn _parent, %{source: %{id: user_id}} ->
+     {:ok, Accounts.total_points(user_id)}
+    end
     field :total_points_this_week, non_null(:decimal)
     field :total_rewards, non_null(:integer)
     field :total_kilometers, non_null(:decimal)
@@ -74,9 +76,15 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :offer_challenges_map, :offer_challenges_map
     field :profile_picture, :string
     field :strava, :strava
-    field :future_redeems, list_of(:redeem)
-    field :past_redeems, list_of(:redeem)
-    field :points_history, list_of(:point)
+    field :future_redeems, list_of(:redeem), resolve: fn _parent, %{source: %{id: user_id}} ->
+      {:ok, Accounts.future_redeems(user_id)}
+    end
+    field :past_redeems, list_of(:redeem), resolve: fn _parent, %{source: %{id: user_id}} ->
+      {:ok, Accounts.past_redeems(user_id)}
+    end
+    field :points_history, list_of(:point), resolve: fn _parent, %{source: %{id: user_id}} ->
+      {:ok, Accounts.user_points_history(user_id)}
+    end
     field :email_verified, non_null(:boolean)
   end
 
@@ -88,10 +96,12 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :user_session do
     field :token, :string
     field :user, :user
-    field :user_profile, :user_profile, resolve: fn _parent, %{source: %{user: %{id: user_id}}} ->
-      # TODO: probably don't inline this for the future
-      {:ok, Accounts.api_user_profile(user_id)}
-    end
+
+    field :user_profile, :user_profile,
+      resolve: fn _parent, %{source: %{user: %{id: user_id}}} ->
+        # TODO: probably don't inline this for the future
+        {:ok, Accounts.api_user_profile(user_id)}
+      end
   end
 
   input_object :credential do
@@ -116,7 +126,12 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :user_signup_result do
     field :token, non_null(:string)
     field :user, non_null(:user)
-    field :user_profile, non_null(:user_profile)
+
+    field :user_profile, non_null(:user_profile),
+      resolve: fn _parent, %{source: %{user: %{id: user_id}}} ->
+        # TODO: probably don't inline this for the future
+        {:ok, Accounts.api_user_profile(user_id)}
+      end
   end
 
   # For success reporting

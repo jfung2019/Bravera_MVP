@@ -1,6 +1,5 @@
 defmodule OmegaBraveraWeb.Api.Schema do
   use Absinthe.Schema
-
   alias OmegaBraveraWeb.Api.{Resolvers, Types, Middleware}
 
   import_types(Types.Offer)
@@ -210,6 +209,18 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.latest_points_with_history/3
     end
+
+    @desc "Gets latest future redeems for user"
+    field :future_redeems, non_null(list_of(non_null(:redeem))) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.latest_future_redeems/3
+    end
+
+    @desc "Gets latest past redeems for user"
+    field :past_redeems, non_null(list_of(non_null(:redeem))) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.latest_past_redeems/3
+    end
   end
 
   subscription do
@@ -241,4 +252,16 @@ defmodule OmegaBraveraWeb.Api.Schema do
       end
     end
   end
+
+  def context(ctx) do
+    source = Dataloader.Ecto.new(OmegaBravera.Repo)
+
+    loader =
+      Dataloader.new()
+      |> Dataloader.add_source(OmegaBravera.Offers, source)
+
+    Map.put(ctx, :loader, loader)
+  end
+
+  def plugins, do: [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
 end
