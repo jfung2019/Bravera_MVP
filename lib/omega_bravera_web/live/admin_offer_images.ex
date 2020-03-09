@@ -32,7 +32,7 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
   def handle_event("save-images", _, %{assigns: %{images: images, offer: offer}} = socket) do
     case Offers.update_offer(offer, %{images: images}) do
       {:ok, offer} ->
-        {:stop, redirect(socket, to: Routes.admin_panel_offer_path(socket, :show, offer))}
+        {:noreply, redirect(socket, to: Routes.admin_panel_offer_path(socket, :show, offer))}
     end
   end
 end

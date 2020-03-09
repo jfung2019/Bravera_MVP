@@ -38,7 +38,7 @@ defmodule OmegaBravera.PartnersTest do
     end
 
     test "get_partner!/1 returns the partner with given id", %{partner: partner} do
-      assert Partners.get_partner!(partner.id) == partner
+      assert Partners.get_partner!(partner.id).id == partner.id
     end
 
     test "update_partner/2 with valid data updates the partner", %{partner: partner} do
@@ -65,7 +65,7 @@ defmodule OmegaBravera.PartnersTest do
                  opening_times: nil
                })
 
-      assert partner == Partners.get_partner!(partner.id)
+      assert partner.updated_at == Partners.get_partner!(partner.id).updated_at
     end
 
     test "delete_partner/1 deletes the partner", %{partner: partner} do
