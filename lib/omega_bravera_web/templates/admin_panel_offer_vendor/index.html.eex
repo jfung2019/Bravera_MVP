@@ -2,7 +2,7 @@
   <div class="col-6 offset-2">
     <h2>Listing Offer Rewards</h2>
 
-    <span><%= link "Create Offer Vendor", to: admin_panel_offer_vendor_path(@conn, :new) %></span>
+    <span><%= link "Create Offer Vendor", to: Routes.admin_panel_offer_vendor_path(@conn, :new) %></span>
     <table class="table">
       <thead>
         <tr>
@@ -17,7 +17,7 @@
           <td><%= offer_vendor.vendor_id %></td>
           <td><%= offer_vendor.email %></td>
           <td class="text-right">
-            <span><%= link "Edit", to: admin_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-default btn-xs"%> </span>
+            <span><%= link "Edit", to: Routes.admin_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-default btn-xs"%> </span>
           </td>
         </tr>
     <% end %>

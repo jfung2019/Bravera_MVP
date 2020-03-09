@@ -10,7 +10,7 @@ defmodule OmegaBraveraWeb.Offer.OfferController do
           nil
 
         %AdminUser{} ->
-          redirect(conn, to: admin_user_page_path(conn, :index))
+          redirect(conn, to: Routes.admin_user_page_path(conn, :index))
 
         user ->
           Accounts.preload_active_offer_challenges(user)

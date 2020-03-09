@@ -9,7 +9,7 @@
             <%= gettext("Donors") %>
           </h2>
           <%= render("_donation.html", assigns) %>
-          <%= link("Back to challenge", to: ngo_ngo_chal_path(@conn, :show, @challenge.ngo.slug, @challenge.slug)) %>
+          <%= link("Back to challenge", to: Routes.ngo_ngo_chal_path(@conn, :show, @challenge.ngo.slug, @challenge.slug)) %>
         </div>
       </div>
     </div>

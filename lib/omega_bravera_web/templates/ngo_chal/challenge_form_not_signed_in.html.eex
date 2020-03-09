@@ -12,17 +12,17 @@
 
         <p><%= gettext("Using Bravera is easy! Just follow the steps below.") %></p>
         <p><%= gettext("1. Connect with a fitness Tracker") %></p>
-        <%= img_tag(static_path(@conn, "/images/connect-icon.png"))%>
+        <%= img_tag(Routes.static_path(@conn, "/images/connect-icon.png"))%>
 
         <%= if pre_registration_ngo?(@ngo) do %>
           <p><%= gettext("2. Configure your challenge") %></p>
         <% end %>
     
-        <%= img_tag(static_path(@conn, "/images/accept-icon.png"))%>
+        <%= img_tag(Routes.static_path(@conn, "/images/accept-icon.png"))%>
         <p><%= gettext("3. Get friends and family involved") %></p>
-        <%= img_tag(static_path(@conn, "/images/invite-icon.png"))%>
+        <%= img_tag(Routes.static_path(@conn, "/images/invite-icon.png"))%>
         <p><%= gettext("4. Use your activity Tracker app and turn activities into automatic fundraising.") %></p>
-        <%= img_tag(static_path(@conn, "/images/continue-icon.png"))%>
+        <%= img_tag(Routes.static_path(@conn, "/images/continue-icon.png"))%>
         <p><%= gettext("Bravera currently works with STRAVA  activity data to convert activities into fundraising.") %></p>
         <div class="form-button">
           <button type="button" class="btn btn-bravera btn-lg btn-block form-button" data-toggle="modal" data-target="#signUpModal">

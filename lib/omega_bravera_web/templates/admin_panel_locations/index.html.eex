@@ -2,7 +2,7 @@
   <div class="col-6 offset-2">
     <h2>Listing Locations</h2>
 
-    <span><%= link "Create New Location", to: admin_panel_locations_path(@conn, :new) %></span>
+    <span><%= link "Create New Location", to: Routes.admin_panel_locations_path(@conn, :new) %></span>
     <table class="table">
       <thead>
         <tr>
@@ -17,13 +17,13 @@
           <td><%= location.name_en %></td>
           <td><%= location.name_zh %></td>
           <td class="text-right">
-            <span><%= link "Show", to: admin_panel_locations_path(@conn, :show, location), class: "btn btn-primary btn-xs"%> </span>
+            <span><%= link "Show", to: Routes.admin_panel_locations_path(@conn, :show, location), class: "btn btn-primary btn-xs"%> </span>
           </td>
           <td class="text-right">
-            <span><%= link "Edit", to: admin_panel_locations_path(@conn, :edit, location), class: "btn btn-warning btn-xs"%> </span>
+            <span><%= link "Edit", to: Routes.admin_panel_locations_path(@conn, :edit, location), class: "btn btn-warning btn-xs"%> </span>
           </td>
           <td class="text-right">
-            <span><%= link "Delete", to: admin_panel_locations_path(@conn, :delete, location), class: "btn btn-danger btn-xs", method: :delete %> </span>
+            <span><%= link "Delete", to: Routes.admin_panel_locations_path(@conn, :delete, location), class: "btn btn-danger btn-xs", method: :delete %> </span>
           </td>
 
 

@@ -10,11 +10,11 @@
     <meta property="og:title" content="Bravera.co | Fitness with Impact" />
     <meta property="og:type" content="fitness.fundraising" />
     <meta property="og:url" content="https://www.bravera.co" />
-    <meta property="og:image" content="<%= static_path(@conn, "/images/bravera_stacked_small.jpg") %>" />
+    <meta property="og:image" content="<%= Routes.static_path(@conn, "/images/bravera_stacked_small.jpg") %>" />
     <%= csrf_meta_tag() %>
 
     <title>Bravera</title>
-    <link rel="stylesheet" type="text/css" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link rel="stylesheet" type="text/css" href="<%= Routes.static_path(@conn, "/css/app.css") %>">
   </head>
 
 

@@ -19,7 +19,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
       {:ok, _offer_vendor} ->
         conn
         |> put_flash(:info, "Offer vendor created successfully.")
-        |> redirect(to: admin_panel_offer_vendor_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_offer_vendor_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -39,7 +39,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
       {:ok, _offer_vendor} ->
         conn
         |> put_flash(:info, "Offer vendor updated successfully.")
-        |> redirect(to: admin_panel_offer_vendor_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_offer_vendor_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", offer_vendor: offer_vendor, changeset: changeset)

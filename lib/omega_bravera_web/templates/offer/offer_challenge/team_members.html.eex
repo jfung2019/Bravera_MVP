@@ -6,7 +6,7 @@
       <div class="col-4 mx-auto text-center team-member">
         <%= if user.strava != nil do %>
 	        <%= link to: "https://www.strava.com/athletes/#{user.strava.athlete_id}", target: "_blank" do %>
-	          <%= img_tag(profile_picture_or_default(user, static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
+	          <%= img_tag(profile_picture_or_default(user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border") %>
 	        <% end %>
         <% end %>
         <%= user.firstname%>

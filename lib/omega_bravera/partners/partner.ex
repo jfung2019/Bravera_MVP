@@ -20,20 +20,5 @@ defmodule OmegaBravera.Partners.Partner do
     |> validate_length(:introduction, max: 255)
     |> validate_length(:name, max: 255)
     |> validate_required([:name, :introduction, :opening_times, :images])
-    |> put_blank_location()
-  end
-
-  def change_changeset(partner, attrs) do
-    partner
-    |> cast(attrs, [])
-  end
-
-  defp put_blank_location(changeset) do
-    case get_field(changeset, :location) do
-      nil ->
-        put_assoc(changeset, :location, nil)
-      _ ->
-        cast_assoc(changeset, :location, required: false)
-    end
   end
 end

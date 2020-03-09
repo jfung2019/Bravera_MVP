@@ -9,7 +9,7 @@
             <%= gettext("Activities") %>
           </h2>
           <%= render("_activities.html", assigns) %>
-          <%= link("Back to challenge", to: offer_offer_challenge_path(@conn, :show, @challenge.offer.slug, @challenge.slug)) %>
+          <%= link("Back to challenge", to: Routes.offer_offer_challenge_path(@conn, :show, @challenge.offer.slug, @challenge.slug)) %>
         </div>
       </div>
     </div>

@@ -40,7 +40,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
       {:ok, offer} ->
         conn
         |> put_flash(:info, "Offer created successfully.")
-        |> redirect(to: admin_panel_offer_path(conn, :show, offer))
+        |> redirect(to: Routes.admin_panel_offer_path(conn, :show, offer))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         vendors = Offers.list_offer_vendors()
@@ -92,7 +92,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
         conn
         |> put_flash(:info, "Offer updated successfully.")
-        |> redirect(to: admin_panel_offer_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_offer_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         vendors = Offers.list_offer_vendors()

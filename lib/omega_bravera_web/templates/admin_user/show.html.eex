@@ -16,6 +16,6 @@
 
 		</ul>
 
-		<span><%= link "Back", to: admin_user_path(@conn, :index) %></span>
+		<span><%= link "Back", to: Routes.admin_user_path(@conn, :index) %></span>
 	</div>
 </div>

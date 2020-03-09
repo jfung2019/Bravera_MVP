@@ -11,7 +11,7 @@ defmodule BraveraWeb.AuthController do
     cond do
       Guardian.Plug.current_resource(conn) ->
         conn
-        |> redirect(to: user_path(conn, :dashboard))
+        |> redirect(to: Routes.user_path(conn, :dashboard))
 
       true ->
         changeset = Accounts.change_user(%User{})

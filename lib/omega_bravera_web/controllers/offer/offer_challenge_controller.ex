@@ -101,7 +101,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
       offer_redeem.offer_challenge_id == offer_challenge.id ->
         qr_code_png =
-          offer_offer_challenge_offer_challenge_url(
+          Routes.offer_offer_challenge_offer_challenge_url(
             conn,
             :new_redeem,
             offer_slug,
@@ -226,7 +226,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             |> put_flash(:info, gettext("Success! You have registered for this offer!"))
             |> put_session("created_offer_challenge", true)
             |> redirect(
-              to: offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug)
+              to: Routes.offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug)
             )
 
           {:error, %Ecto.Changeset{} = changeset} ->
@@ -234,7 +234,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
             conn
             |> put_session("could_not_create_offer_challenge", true)
-            |> redirect(to: offer_path(conn, :index))
+            |> redirect(to: Routes.offer_path(conn, :index))
         end
     end
   end
@@ -276,7 +276,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           :error,
           "Invalid operation. Please make sure you are using the correct account."
         )
-        |> redirect(to: page_path(conn, :login))
+        |> redirect(to: Routes.page_path(conn, :login))
 
       logged_in_challenge_owner ->
         challenge = Offers.get_offer_chal_by_slugs(offer_slug, slug, [:user, team: [:users]])
@@ -286,14 +286,14 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           {:ok, _struct} ->
             conn
             |> put_flash(:info, "Removed team member sucessfully!")
-            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+            |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
 
           {:error, reason} ->
             Logger.error("Could not remove team member, reason: #{inspect(reason)}")
 
             conn
             |> put_flash(:error, "Could not remove team member.")
-            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+            |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
         end
     end
   end
@@ -310,7 +310,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           :info,
           "Challenge not found. Please make sure you clicked the correct link."
         )
-        |> redirect(to: ngo_path(conn, :index))
+        |> redirect(to: Routes.ngo_path(conn, :index))
 
       challenge ->
         case Guardian.Plug.current_resource(conn) do
@@ -322,7 +322,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             )
             |> put_session("open_login_or_sign_up_to_join_team_modal", true)
             |> put_session("add_team_member_url", conn.request_path)
-            |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+            |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
 
           user ->
             # TODO: allow to fail gracefully when not found and passed to changeset. -Sherief
@@ -353,7 +353,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
                   :info,
                   "You are now part of #{inspect(User.full_name(challenge.user))} team."
                 )
-                |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+                |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
 
               {:error, reason} ->
                 Logger.info(
@@ -367,7 +367,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
                   :error,
                   "Something went wrong, please make sure you are logged in and clicked your link in your invitation email."
                 )
-                |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+                |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
             end
         end
     end
@@ -396,7 +396,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
     # Maybe show errors to users instead of logging them only. -Sherief
     conn
     |> put_flash(:info, "Sucessfully invited your team member(s)!")
-    |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+    |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
   end
 
   def resend_invitation(conn, %{
@@ -414,7 +414,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
         conn
         |> put_flash(:info, "Resent invite to #{updated_invitation.invitee_name}!")
-        |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+        |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
 
       {:error, reason} ->
         Logger.info(
@@ -423,7 +423,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
         conn
         |> put_flash(:error, "Action not allowed.")
-        |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+        |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
     end
   end
 
@@ -440,7 +440,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       {:ok, _updated_invitation} ->
         conn
         |> put_flash(:info, "Invitation canceled.")
-        |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+        |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
 
       {:error, reason} ->
         Logger.info(
@@ -449,7 +449,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
         conn
         |> put_flash(:error, "Action not allowed.")
-        |> redirect(to: offer_offer_challenge_path(conn, :show, offer_slug, slug))
+        |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
     end
   end
 

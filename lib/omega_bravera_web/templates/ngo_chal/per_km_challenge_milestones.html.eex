@@ -79,7 +79,7 @@
 
   <div class="card-footer border-top text-center mb-0 pb-0">
     <div class=" img-fluid margin-auto mb-3">
-      <%= img_tag(static_path(@conn, "/images/strava/powered-by.png"), alt: "#{gettext("Fitness Data Powered by Strava")}") %>
+      <%= img_tag(Routes.static_path(@conn, "/images/strava/powered-by.png"), alt: "#{gettext("Fitness Data Powered by Strava")}") %>
     </div>
   </div>
 </div>  <!-- End of top card -->

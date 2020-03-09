@@ -1,6 +1,6 @@
 <div class="row mt-2 mb-2 mx-auto">
       <div class="col-4">
-    <%= form_for @conn, admin_panel_ngo_path(@conn, :export_statement, @ngo.slug), [as: :start_date, method: :get], fn _f -> %>
+    <%= form_for @conn, Routes.admin_panel_ngo_path(@conn, :export_statement, @ngo.slug), [as: :start_date, method: :get], fn _f -> %>
       <select class="custom-select mb-2" name="month" required>
         <option value="">Month</option>
         <option value='1'>January</option>
@@ -58,7 +58,7 @@
           <td data-title="Transaction Reference"><%= donation.charge_id %></td>
           <td data-title="Payment Date"><%= render_datetime(donation.charged_at) %></td>
           <td data-title="Participant"><%= donation.ngo_chal.user.firstname <> " " <> donation.ngo_chal.user.lastname %></td>
-          <td data-title="Challenge URL"><%= link("URL", to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, donation.ngo_chal.slug ), target: "_blank") %></td>
+          <td data-title="Challenge URL"><%= link("URL", to: Routes.ngo_ngo_chal_path(@conn, :show, @ngo.slug, donation.ngo_chal.slug ), target: "_blank") %></td>
           <td data-title="Supporter Name"><%= donation.donor.firstname <> " " <> donation.donor.lastname %></td>
           <td data-title="Supporter Email"><%= donation.donor.email %></td>
           <td data-title="Milestone"><%= render_kickstarter(donation.milestone) %></td>
@@ -77,5 +77,5 @@
 </section>
 
 <div class="col-1">
-  <span><%= link "Back", to: admin_panel_ngo_path(@conn, :index), class: "btn btn-success mt-3" %></span>
+  <span><%= link "Back", to: Routes.admin_panel_ngo_path(@conn, :index), class: "btn btn-success mt-3" %></span>
 </div>

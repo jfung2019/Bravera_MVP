@@ -66,7 +66,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
       {:ok, _upload} ->
         conn
         |> put_flash(:info, "Profile picture uploaded successfully!")
-        |> redirect(to: user_profile_path(conn, :show))
+        |> redirect(to: Routes.user_profile_path(conn, :show))
 
       {:error, changeset} ->
         render(conn, "show.html", changeset: changeset)

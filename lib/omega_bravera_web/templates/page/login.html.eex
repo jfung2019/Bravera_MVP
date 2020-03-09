@@ -1,5 +1,5 @@
 <div class="signin mx-auto">
-  <%= form_for @conn, user_session_path(@conn, :create), [class: "form-signin text-center", as: :session], fn f -> %>
+  <%= form_for @conn, Routes.user_session_path(@conn, :create), [class: "form-signin text-center", as: :session], fn f -> %>
     <img class="circle-logo" src="/images/bravera-logo-circle.png" alt="Bravera">
     <h1 class="my-3">
       <%= gettext("Log in") %>
@@ -9,11 +9,11 @@
 
     <div class="mb-3">
       <%= if is_nil(@team_invitation) do %>
-        <%= link(to: strava_path(@conn, :authenticate), class: "mb-1") do %>
+        <%= link(to: Routes.strava_path(@conn, :authenticate), class: "mb-1") do %>
           <img src="/images/strava/btn_strava_connect-orange.png" alt="Connect with Strava"/>
         <% end %>
       <% else %>
-        <%= link(to: strava_path(@conn, :authenticate, team_invitation: @team_invitation), class: "mb-1") do %>
+        <%= link(to: Routes.strava_path(@conn, :authenticate, team_invitation: @team_invitation), class: "mb-1") do %>
           <img src="/images/strava/btn_strava_connect-orange.png" alt="Connect with Strava"/>
         <% end %>
       <% end %>

@@ -3,7 +3,6 @@ defmodule OmegaBraveraWeb do
     quote do
       use Phoenix.Controller, namespace: OmegaBraveraWeb
       import Plug.Conn
-      import OmegaBraveraWeb.Router.Helpers
       alias OmegaBraveraWeb.Router.Helpers, as: Routes
       import OmegaBraveraWeb.Gettext
       import OmegaBraveraWeb.Controllers.Helpers
@@ -23,7 +22,6 @@ defmodule OmegaBraveraWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import OmegaBraveraWeb.Router.Helpers
       alias OmegaBraveraWeb.Router.Helpers, as: Routes
       import OmegaBraveraWeb.ErrorHelpers
       import OmegaBraveraWeb.Gettext

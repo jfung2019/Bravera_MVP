@@ -10,13 +10,13 @@
     <meta property="og:title" content="Bravera.co | Fitness with Impact" />
     <meta property="og:type" content="fitness.fundraising" />
     <meta property="og:url" content="https://www.bravera.co" />
-    <meta property="og:image" content="<%= static_path(@conn, "/images/bravera_stacked_small.jpg") %>" />
+    <meta property="og:image" content="<%= Routes.static_path(@conn, "/images/bravera_stacked_small.jpg") %>" />
     <%= csrf_meta_tag() %>
 
     <title>Bravera - Admin</title>
-    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.css">
-    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <script src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
 
   <body class="gray-background">

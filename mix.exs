@@ -33,7 +33,7 @@ defmodule OmegaBravera.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.13"},
+      {:phoenix, "~> 1.4.15"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.0"},
@@ -74,7 +74,7 @@ defmodule OmegaBravera.Mixfile do
       {:absinthe_phoenix, "~> 1.4.0"},
       {:benchee, "~> 1.0", only: :dev},
       {:floki, ">= 0.0.0", only: :test},
-      {:phoenix_live_view, "~> 0.7.1"},
+      {:phoenix_live_view, "~> 0.9.0"},
       {:dataloader, "~> 1.0.7"},
       {:turbo_ecto, "~> 0.5.0"},
       {:turbo_html, "~> 0.2.0"}

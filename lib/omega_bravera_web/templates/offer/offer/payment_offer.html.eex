@@ -12,7 +12,7 @@
               <span class="big-logo mb-3 mx-auto"></span>
             </div>
 
-          <%= form_for @offer_challenge_changeset, offer_offer_challenge_path(@conn, :create, @offer.slug), [id: 'offer-payment-form-#{@offer.id}', class: 'offer-payment-form'], fn f -> %>
+          <%= form_for @offer_challenge_changeset, Routes.offer_offer_challenge_path(@conn, :create, @offer.slug), [id: 'offer-payment-form-#{@offer.id}', class: 'offer-payment-form'], fn f -> %>
               <div class="card-body border-top">
                 <div class="text-center">
                     <h5><%= gettext("Payment") %></h5>
@@ -68,7 +68,7 @@
                   </div>
                   <div class="row">
                     <div class="col-md-12">
-                      <%= img_tag static_path(@conn, "/images/powered_by_stripe.svg"), class: "mx-auto" %>
+                      <%= img_tag Routes.static_path(@conn, "/images/powered_by_stripe.svg"), class: "mx-auto" %>
                     </div>
                 </div>
               </div>
@@ -80,5 +80,5 @@
     </div>
 
 <% else %>
-    <%= link("View Your Progress", to: offer_offer_challenge_path(@conn, :show, @offer.slug, user_challenge_slug(@offer, @current_user)), class: "btn btn-bravera sign-up") %>
+    <%= link("View Your Progress", to: Routes.offer_offer_challenge_path(@conn, :show, @offer.slug, user_challenge_slug(@offer, @current_user)), class: "btn btn-bravera sign-up") %>
 <% end %>

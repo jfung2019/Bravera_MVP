@@ -6,7 +6,7 @@
         <h5 class="modal-title" id="exampleModalLongTitle"><%= gettext("Email Verification Needed") %></h5>
       </div>
       <div class="modal-body">
-      <%= form_for @conn, user_path(@conn, :update), [as: :user], fn f -> %>
+      <%= form_for @conn, Routes.user_path(@conn, :update), [as: :user], fn f -> %>
         <p>We need you to verify your email address before we activate your account. Please confirm your email address (check your spam folder too). If you still did not receive any verifcation emails from us, then input your email and try again.</p>
         <div class="form-group">
           <label for="email" class="col-form-label">Email:</label>

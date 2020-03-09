@@ -3,7 +3,7 @@
     <div class="col-sm-8">
       <h2 class="mt-4"><%= gettext("Password reset") %></h2>
       <p><%= gettext("Please enter a new password for your account.") %></p>
-      <%= form_for @changeset, password_path(@conn, :update, @token), [method: "put"], fn f -> %>
+      <%= form_for @changeset, Routes.password_path(@conn, :update, @token), [method: "put"], fn f -> %>
         <div class="form-group">
           <p>Account: <strong><%= @credential.user.email %></strong> </p>
           <%= label f, :password, gettext("New password"), class: "control-label" %>

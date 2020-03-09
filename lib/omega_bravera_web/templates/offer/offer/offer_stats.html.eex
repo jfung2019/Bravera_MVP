@@ -5,7 +5,7 @@
          <div class="row">
             <%= for challenge <- Enum.take(@offer.offer_challenges, 5) do %>
                <div class="col-4 mx-auto text-center participant-container">
-                  <%= img_tag(profile_picture_or_default(challenge.user, static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
+                  <%= img_tag(profile_picture_or_default(challenge.user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
                </div>
             <% end %>
          </div>
@@ -60,8 +60,8 @@
             <%= for challenge <- @offer.offer_challenges do %>
          <div class="row">
                <div class="col-4 mx-auto text-center participant-container">
-               <%= link to: offer_offer_challenge_path(@conn, :show, @offer.slug, challenge.slug) do %>
-                  <%= img_tag(profile_picture_or_default(challenge.user, static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
+               <%= link to: Routes.offer_offer_challenge_path(@conn, :show, @offer.slug, challenge.slug) do %>
+                  <%= img_tag(profile_picture_or_default(challenge.user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
                <% end %>
                </div>
          </div>

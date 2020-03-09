@@ -13,7 +13,7 @@ defmodule OmegaBraveraWeb.AdminPanelLocationsController do
   def create(conn, %{"location" => location_params}) do
     case Locations.create_location(location_params) do
       {:ok, location} ->
-        redirect(conn, to: admin_panel_locations_path(conn, :show, location))
+        redirect(conn, to: Routes.admin_panel_locations_path(conn, :show, location))
 
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -34,7 +34,7 @@ defmodule OmegaBraveraWeb.AdminPanelLocationsController do
 
     case Locations.update_location(location, location_params) do
       {:ok, location} ->
-        redirect(conn, to: admin_panel_locations_path(conn, :show, location))
+        redirect(conn, to: Routes.admin_panel_locations_path(conn, :show, location))
 
       {:error, changeset} ->
         render(conn, "edit.html", changeset: changeset, location: location)
@@ -47,6 +47,6 @@ defmodule OmegaBraveraWeb.AdminPanelLocationsController do
 
     conn
     |> put_flash(:info, "Location deleted successfully.")
-    |> redirect(to: admin_panel_locations_path(conn, :index))
+    |> redirect(to: Routes.admin_panel_locations_path(conn, :index))
   end
 end

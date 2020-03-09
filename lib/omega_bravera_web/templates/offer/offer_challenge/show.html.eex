@@ -19,10 +19,10 @@
         <div class="card mt-2 mb-2 d-block d-md-none">
           <div class="card-footer text-center">
             <%= if is_own_challenge?(@challenge, @current_user) do %>
-              <%= link(gettext("View Offers"), to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View Offers"), to: Routes.offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% else %>
-              <%= link(gettext("Join the Challenge"), to: offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
-              <%= link(gettext("View All Challenges"), to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("Join the Challenge"), to: Routes.offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View All Challenges"), to: Routes.offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% end %>
           </div>
         </div>
@@ -41,7 +41,7 @@
             
             <%= if length(@activities) > 0 do %>
               <%= render(OmegaBraveraWeb.Offer.OfferChallengeActivityView, "_activities.html", assigns) %>
-              <%= link("View all", to: offer_offer_challenge_offer_challenge_activity_path(@conn, :index, @challenge.offer.slug, @challenge.slug)) %>
+              <%= link("View all", to: Routes.offer_offer_challenge_offer_challenge_activity_path(@conn, :index, @challenge.offer.slug, @challenge.slug)) %>
             <% else %>
 
               <%= if @challenge.has_team == true do %>
@@ -62,10 +62,10 @@
           </div>
           <div class="card-footer text-center">
             <%= if is_own_challenge?(@challenge, @current_user) do %>
-              <%= link(gettext("View Offers"), to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View Offers"), to: Routes.offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% else %>
-              <%= link(gettext("Join the Challenge"), to: offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
-              <%= link(gettext("View All Challenges"), to: offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("Join the Challenge"), to: Routes.offer_offer_challenge_path(@conn, :new, @offer.slug), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View All Challenges"), to: Routes.offer_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% end %>
           </div>
         </div>

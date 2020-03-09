@@ -8,10 +8,10 @@ defmodule OmegaBraveraWeb.AdminUserSessionController do
   def new(conn, _) do
     case Guardian.Plug.current_resource(conn) do
       %User{} ->
-        redirect(conn, to: page_path(conn, :index))
+        redirect(conn, to: Routes.page_path(conn, :index))
 
       %AdminUser{} ->
-        redirect(conn, to: admin_user_page_path(conn, :index))
+        redirect(conn, to: Routes.admin_user_page_path(conn, :index))
 
       _ ->
         render(conn, "new.html")
@@ -23,7 +23,7 @@ defmodule OmegaBraveraWeb.AdminUserSessionController do
       {:ok, conn} ->
         conn
         |> put_flash(:info, "Welcome back!")
-        |> redirect(to: admin_user_page_path(conn, :index))
+        |> redirect(to: Routes.admin_user_page_path(conn, :index))
 
       {:error, _reason, conn} ->
         conn

@@ -12,7 +12,7 @@ defmodule OmegaBraveraWeb.PasswordController do
 
   def new(conn, _params) do
     changeset = Accounts.change_user(%User{})
-    render(conn, "new.html", changeset: changeset, action: password_path(conn, :create))
+    render(conn, "new.html", changeset: changeset, action: Routes.password_path(conn, :create))
   end
 
   def create(conn, %{"user" => %{"email" => email}}) do
@@ -32,7 +32,7 @@ defmodule OmegaBraveraWeb.PasswordController do
           nil ->
             conn
             |> put_flash(:error, "There's no account associated with that email")
-            |> redirect(to: password_path(conn, :new))
+            |> redirect(to: Routes.password_path(conn, :new))
 
           user ->
             case Accounts.create_credential_for_existing_strava(%{
@@ -48,7 +48,7 @@ defmodule OmegaBraveraWeb.PasswordController do
                   :info,
                   "You will receive a link in your #{email} inbox soon to set your new password."
                 )
-                |> redirect(to: page_path(conn, :index))
+                |> redirect(to: Routes.page_path(conn, :index))
 
               {:error, reason} ->
                 Logger.error(
@@ -57,7 +57,7 @@ defmodule OmegaBraveraWeb.PasswordController do
 
                 conn
                 |> put_flash(:error, "Something went wrong while trying to reset your password.")
-                |> redirect(to: password_path(conn, :new))
+                |> redirect(to: Routes.password_path(conn, :new))
             end
         end
 
@@ -69,7 +69,7 @@ defmodule OmegaBraveraWeb.PasswordController do
 
         conn
         |> put_flash(:info, "You will receive a password reset link in your #{email} inbox soon.")
-        |> redirect(to: page_path(conn, :index))
+        |> redirect(to: Routes.page_path(conn, :index))
     end
   end
 
@@ -80,7 +80,7 @@ defmodule OmegaBraveraWeb.PasswordController do
       nil ->
         conn
         |> put_flash(:error, "Invalid reset token")
-        |> redirect(to: password_path(conn, :new))
+        |> redirect(to: Routes.password_path(conn, :new))
 
       credential ->
         %{reset_token_created: reset_token_created} = credential
@@ -90,7 +90,7 @@ defmodule OmegaBraveraWeb.PasswordController do
 
           conn
           |> put_flash(:error, "Password reset token expired")
-          |> redirect(to: password_path(conn, :new))
+          |> redirect(to: Routes.password_path(conn, :new))
         else
           changeset = Accounts.change_credential(%Credential{})
 
@@ -110,7 +110,7 @@ defmodule OmegaBraveraWeb.PasswordController do
       nil ->
         conn
         |> put_flash(:error, "Invalid reset token")
-        |> redirect(to: password_path(conn, :new))
+        |> redirect(to: Routes.password_path(conn, :new))
 
       credential ->
         %{reset_token_created: reset_token_created} = credential
@@ -120,7 +120,7 @@ defmodule OmegaBraveraWeb.PasswordController do
 
           conn
           |> put_flash(:error, "Password reset token expired")
-          |> redirect(to: password_path(conn, :new))
+          |> redirect(to: Routes.password_path(conn, :new))
         else
           case Accounts.update_credential(credential, params["credential"]) do
             {:ok, _response} ->
@@ -128,7 +128,7 @@ defmodule OmegaBraveraWeb.PasswordController do
 
               conn
               |> put_flash(:info, "Password reset successfully!")
-              |> redirect(to: page_path(conn, :index))
+              |> redirect(to: Routes.page_path(conn, :index))
 
             {:error, changeset} ->
               conn

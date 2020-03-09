@@ -2,7 +2,7 @@
   <div class="col-6 offset-2">
     <h2>Listing Activities Created by Admin</h2>
 
-    <span><%= link "Create New Activity", to: admin_panel_offer_challenge_activity_path(@conn, :new) %></span>
+    <span><%= link "Create New Activity", to: Routes.admin_panel_offer_challenge_activity_path(@conn, :new) %></span>
     <table class="table">
       <thead>
         <tr>
@@ -17,7 +17,7 @@
           <tr>
             <td><%= activity.id %></td>
             <td><%= activity.admin_id %></td>
-            <td><%= link("URL", to: offer_offer_challenge_path(@conn, :show, activity.offer_challenge.offer, activity.offer_challenge),  target: "_blank") %></td>
+            <td><%= link("URL", to: Routes.offer_offer_challenge_path(@conn, :show, activity.offer_challenge.offer, activity.offer_challenge),  target: "_blank") %></td>
             <td><%= "#{activity.user.firstname} #{activity.user.lastname} (#{activity.user.email})" %></td>
           </tr>
         <% end %>

@@ -28,14 +28,14 @@ defmodule OmegaBraveraWeb.AdminPanelUserController do
       {:ok, _user} ->
         conn
         |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: admin_panel_user_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_user_path(conn, :index))
 
       {:error, reason} ->
         Logger.warn("AdminPanelUserController: Failed to update user, reason: #{inspect(reason)}")
 
         conn
         |> put_flash(:error, "Failed to update user.")
-        |> redirect(to: admin_panel_user_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_user_path(conn, :index))
     end
   end
 end

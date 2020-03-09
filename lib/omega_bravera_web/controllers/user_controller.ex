@@ -19,7 +19,7 @@ defmodule OmegaBraveraWeb.UserController do
     do:
       render(conn, "trackers.html",
         user: Guardian.Plug.current_resource(conn),
-        redirect_to: user_path(conn, :show_trackers)
+        redirect_to: Routes.user_path(conn, :show_trackers)
       )
 
   def edit(conn, _) do
@@ -46,11 +46,11 @@ defmodule OmegaBraveraWeb.UserController do
 
           conn
           |> put_flash(:info, gettext("Email updated. Please check your inbox now!"))
-          |> redirect(to: user_path(conn, :edit, %{}))
+          |> redirect(to: Routes.user_path(conn, :edit, %{}))
         else
           conn
           |> put_flash(:info, gettext("Updated account settings successfully."))
-          |> redirect(to: user_path(conn, :edit, %{}))
+          |> redirect(to: Routes.user_path(conn, :edit, %{}))
         end
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -106,7 +106,7 @@ defmodule OmegaBraveraWeb.UserController do
 
     case after_email_verify do
       nil ->
-        page_path(conn, :index)
+        Routes.page_path(conn, :index)
 
       path ->
         path

@@ -25,7 +25,7 @@
       <%= if has_tracker?(@conn) do %>
 
             <div class="text-center">
-              <%= link("Join the Challenge", to: ngo_ngo_chal_path(@conn, :new, @ngo.slug), class: "btn btn-green sign-up") %>
+              <%= link("Join the Challenge", to: Routes.ngo_ngo_chal_path(@conn, :new, @ngo.slug), class: "btn btn-green sign-up") %>
             </div>
           </div>
 

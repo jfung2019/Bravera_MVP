@@ -98,8 +98,8 @@ defmodule OmegaBravera.Partners do
       %Ecto.Changeset{source: %Partner{}}
 
   """
-  def change_partner(%Partner{} = partner) do
-    Partner.change_changeset(partner, %{})
+  def change_partner(%Partner{} = partner, attrs \\ %{}) do
+    Partner.changeset(partner, attrs)
   end
 
   alias OmegaBravera.Partners.PartnerLocation

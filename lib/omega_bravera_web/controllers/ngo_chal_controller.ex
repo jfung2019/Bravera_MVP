@@ -69,7 +69,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
         conn
         |> put_flash(:info, "Success! You have registered for the challenge!")
-        |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo.slug, challenge.slug))
+        |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo.slug, challenge.slug))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
@@ -116,7 +116,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
     challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, :ngo])
 
     Challenges.Notifier.send_buddies_invite_email(challenge, Map.values(buddies))
-    redirect(conn, to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+    redirect(conn, to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
   end
 
   def invite_team_members(conn, %{
@@ -139,7 +139,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
     conn
     |> put_flash(:info, "Sucessfully invited your team member(s)!")
-    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+    |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
   end
 
   def resend_invitation(conn, %{
@@ -161,11 +161,11 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
       conn
       |> put_flash(:info, "Resent invite to #{invitation.invitee_name}!")
-      |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+      |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
     else
       conn
       |> put_flash(:error, "Action not allowed.")
-      |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+      |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
     end
   end
 
@@ -183,11 +183,11 @@ defmodule OmegaBraveraWeb.NGOChalController do
 
       conn
       |> put_flash(:info, "Invitation canceled.")
-      |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+      |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
     else
       conn
       |> put_flash(:error, "Action not allowed.")
-      |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+      |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
     end
   end
 
@@ -203,7 +203,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
           :error,
           "Invalid operation. Please make sure you are using the correct account."
         )
-        |> redirect(to: page_path(conn, :login))
+        |> redirect(to: Routes.page_path(conn, :login))
 
       logged_in_challenge_owner ->
         challenge = Challenges.get_ngo_chal_by_slugs(ngo_slug, slug, [:user, team: [:users]])
@@ -213,14 +213,14 @@ defmodule OmegaBraveraWeb.NGOChalController do
           {:ok, _struct} ->
             conn
             |> put_flash(:info, "Removed team member sucessfully!")
-            |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+            |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
 
           {:error, reason} ->
             Logger.error("Could not remove team member, reason: #{inspect(reason)}")
 
             conn
             |> put_flash(:error, "Could not remove team member.")
-            |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+            |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
         end
     end
   end
@@ -237,7 +237,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
           :info,
           "Challenge not found. Please make sure you clicked the correct link."
         )
-        |> redirect(to: offer_path(conn, :index))
+        |> redirect(to: Routes.offer_path(conn, :index))
 
       challenge ->
         case Guardian.Plug.current_resource(conn) do
@@ -249,7 +249,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
             )
             |> put_session("open_login_or_sign_up_to_join_team_modal", true)
             |> put_session("add_team_member_url", conn.request_path)
-            |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+            |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
 
           user ->
             # Make sure challenge owner cannot invite himself.
@@ -259,7 +259,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
                 :error,
                 "You are the challenge and team leader. You cannot invite yourself."
               )
-              |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+              |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
             else
               # Verify if token is related to this team.
               invitation = Challenges.get_team_member_invitation_by_token(invitation_token)
@@ -279,7 +279,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
                       :info,
                       "You are now part of #{inspect(User.full_name(challenge.user))} team."
                     )
-                    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+                    |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
 
                   {:error, reason} ->
                     Logger.info(
@@ -291,7 +291,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
                       :error,
                       "Could not add you to team. Please contact admin@bravera.co"
                     )
-                    |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+                    |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
                 end
               else
                 # Invitation token is wrong or someone is being clever.
@@ -300,7 +300,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
                   :error,
                   "Could not add you to team. Something is wrong with your invitation link!"
                 )
-                |> redirect(to: ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
+                |> redirect(to: Routes.ngo_ngo_chal_path(conn, :show, ngo_slug, slug))
               end
             end
         end

@@ -17,7 +17,7 @@ defmodule OmegaBraveraWeb.UserSessionController do
       {:error, _} ->
         conn
         |> put_flash(:error, "Invalid email/password combination")
-        |> redirect(to: page_path(conn, :login))
+        |> redirect(to: Routes.page_path(conn, :login))
     end
   end
 
@@ -35,7 +35,7 @@ defmodule OmegaBraveraWeb.UserSessionController do
       {:error, _} ->
         conn
         |> put_flash(:error, "Invalid email/password combination")
-        |> redirect(to: page_path(conn, :login))
+        |> redirect(to: Routes.page_path(conn, :login))
     end
   end
 
@@ -50,7 +50,7 @@ defmodule OmegaBraveraWeb.UserSessionController do
       {:error, _} ->
         conn
         |> put_flash(:error, "Invalid email/password combination")
-        |> redirect(to: page_path(conn, :login))
+        |> redirect(to: Routes.page_path(conn, :login))
     end
   end
 
@@ -63,7 +63,7 @@ defmodule OmegaBraveraWeb.UserSessionController do
 
   defp redirect_path(conn) do
     case get_session(conn, "after_login_redirect") do
-      nil -> user_profile_path(conn, :show)
+      nil -> Routes.user_profile_path(conn, :show)
       path -> path
     end
   end

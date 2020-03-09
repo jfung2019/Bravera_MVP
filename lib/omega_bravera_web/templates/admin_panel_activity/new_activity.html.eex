@@ -2,7 +2,7 @@
   <h2>New NGO Activity</h2>
   <h6 class="text-danger">Warning: creating an activity will trigger emails and donations</h6>
   
-  <%= render "new_activity_form.html", Map.put(assigns, :action, admin_panel_activity_path(@conn, :create)) %>
+  <%= render "new_activity_form.html", Map.put(assigns, :action, Routes.admin_panel_activity_path(@conn, :create)) %>
   
-  <span><%= link "Back", to: admin_user_page_path(@conn, :index) %></span>
+  <span><%= link "Back", to: Routes.admin_user_page_path(@conn, :index) %></span>
 </div>

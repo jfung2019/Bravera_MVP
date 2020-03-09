@@ -14,7 +14,7 @@
           <div class="row">
             <div class="col-4 col-sm-3">
               <div class="mb-0 mt-2 mt-sm-1 mt-md-3 mt-lg-4 mt-xl-4">
-                <a href="<%= ngo_ngo_chal_path(@conn, :new, ngo.slug) %>">
+                <a href="<%= Routes.ngo_ngo_chal_path(@conn, :new, ngo.slug) %>">
                   <%= img_tag(ngo.logo, class: "img-thumbnail img-fluid cause-thumb", alt: ngo.name) %>
                 </a>
               </div>
@@ -35,8 +35,8 @@
         </div>
         <div class="card-footer">
           <div class="text-center">
-            <%= link(gettext("Join the Challenge"), to: ngo_ngo_chal_path(@conn, :new, ngo.slug), class: "btn btn-green sign-up") %>
-            <%= link(gettext("View Leaderboard"), to: ngo_ngo_path(@conn, :leaderboard, ngo.slug), class: "btn btn-green sign-up") %>
+            <%= link(gettext("Join the Challenge"), to: Routes.ngo_ngo_chal_path(@conn, :new, ngo.slug), class: "btn btn-green sign-up") %>
+            <%= link(gettext("View Leaderboard"), to: Routes.ngo_ngo_path(@conn, :leaderboard, ngo.slug), class: "btn btn-green sign-up") %>
           </div>
         </div> <!-- end of foot -->
       </div>  <!-- end of card -->
