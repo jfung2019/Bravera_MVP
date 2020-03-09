@@ -133,43 +133,26 @@ defmodule OmegaBraveraWeb.Router do
       put "/users/:id/edit", AdminPanelUserController, :update
       resources "/activities", AdminPanelActivityController, only: [:new, :create]
 
-      resources("/offer-activities", AdminPanelOfferChallengeActivityController,
+      resources "/offer-activities", AdminPanelOfferChallengeActivityController,
         only: [:new, :create]
-      )
 
-      resources("/offer-rewards", AdminPanelOfferRewardController,
-        only: [:index, :new, :create, :edit, :update]
-      )
+      resources "/offer-rewards", AdminPanelOfferRewardController, except: [:delete]
+      resources "/offer-vendors", AdminPanelOfferVendorController, except: [:delete]
 
-      resources("/offer-vendors", AdminPanelOfferVendorController,
-        only: [:index, :new, :create, :edit, :update]
-      )
+      post "/activities/create_imported_strava_activity",
+           AdminPanelActivityController,
+           :create_imported_strava_activity
 
-      # get(
-      #   "/activities/import_activity_from_strava",
-      #   AdminPanelActivityController,
-      #   :new_import_activity_from_strava
-      # )
+      resources "/sync_activities", AdminPanelActivitiesSyncerController, only: [:index]
 
-      post(
-        "/activities/create_imported_strava_activity",
-        AdminPanelActivityController,
-        :create_imported_strava_activity
-      )
+      resources "/emails", AdminPanelEmailsController, except: [:delete]
+      get "/challenges", AdminPanelChallengesController, :index
+      resources "/partners", AdminPanelPartnerController, except: [:delete]
 
-      resources("/sync_activities", AdminPanelActivitiesSyncerController, only: [:index])
-
-      resources("/emails", AdminPanelEmailsController,
-        only: [:index, :new, :create, :edit, :update]
-      )
-
-      get("/challenges", AdminPanelChallengesController, :index)
-
-      resources("/ngos", AdminPanelNGOController, only: [:index, :new, :create]) do
-        resources("/challenges", AdminPanelChallengesController,
+      resources "/ngos", AdminPanelNGOController, only: [:index, :new, :create] do
+        resources "/challenges", AdminPanelChallengesController,
           only: [:show, :edit, :update],
           param: "slug"
-        )
       end
 
       get "/ngos/:slug", AdminPanelNGOController, :show

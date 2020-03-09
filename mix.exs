@@ -75,7 +75,9 @@ defmodule OmegaBravera.Mixfile do
       {:benchee, "~> 1.0", only: :dev},
       {:floki, ">= 0.0.0", only: :test},
       {:phoenix_live_view, "~> 0.7.1"},
-      {:dataloader, "~> 1.0.7"}
+      {:dataloader, "~> 1.0.7"},
+      {:turbo_ecto, "~> 0.5.0"},
+      {:turbo_html, "~> 0.2.0"}
     ]
   end
 

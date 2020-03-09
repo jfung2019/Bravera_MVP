@@ -1,0 +1,35 @@
+<div class="row">
+	<div class="col-6 offset-3">
+		<h1><%= @partner.name %></h1>
+		<table class="table">
+			<tbody>
+				<tr>
+					<td>Intro</td>
+					<td><%= @partner.introduction %></td>
+				</tr>
+				<tr>
+					<td>Opening Times</td>
+					<td><%= @partner.opening_times %></td>
+				</tr>
+			</tbody>
+		</table>
+		<%= if @partner.location do %>
+		  <table class="table">
+		  	<tbody>
+		  		<tr>
+		  			<td>Address</td>
+		  			<td><%= @partner.location.address %></td>
+				</tr>
+				<tr>
+					<td>Latitude</td>
+					<td><%= @partner.location.latitude %></td>
+				</tr>
+				<tr>
+					<td>Longitude</td>
+					<td><%= @partner.location.longitude %></td>
+				</tr>
+			</tbody>
+		  </table>
+		<% end %>
+	</div>
+</div>

@@ -4,6 +4,7 @@ defmodule OmegaBraveraWeb do
       use Phoenix.Controller, namespace: OmegaBraveraWeb
       import Plug.Conn
       import OmegaBraveraWeb.Router.Helpers
+      alias OmegaBraveraWeb.Router.Helpers, as: Routes
       import OmegaBraveraWeb.Gettext
       import OmegaBraveraWeb.Controllers.Helpers
       import Phoenix.LiveView.Controller
@@ -28,6 +29,7 @@ defmodule OmegaBraveraWeb do
       import OmegaBraveraWeb.Gettext
       import OmegaBraveraWeb.ViewHelpers
       import Phoenix.LiveView.Helpers
+      import Turbo.HTML
     end
   end
 

@@ -42,6 +42,9 @@ config :logger, :info,
 config :phoenix, :json_library, Jason
 config :postgrex, :json_library, Jason
 
+# Turbo pagination
+config :turbo_ecto, Turbo.Ecto, repo: OmegaBravera.Repo, per_page: 20
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
