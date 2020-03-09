@@ -359,4 +359,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def latest_past_redeems(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Accounts.future_redeems(user_id)}
+
+  def latest_expired_challenges(_root, _args, %{context: %{current_user: %{id: user_id}}}),
+    do: {:ok, Accounts.expired_challenges(user_id)}
 end

@@ -409,6 +409,23 @@ defmodule OmegaBravera.Accounts do
       )
       |> Repo.all()
 
+  def expired_challenges(user_id),
+    do:
+      from(oc in OfferChallenge,
+        where: oc.status == "expired" and oc.user_id == ^user_id,
+        left_join: a in OfferChallengeActivitiesM2m,
+        on: oc.id == a.offer_challenge_id,
+        left_join: ac in ActivityAccumulator,
+        on: a.activity_id == ac.id,
+        order_by: [desc: :end_date],
+        group_by: oc.id,
+        select: %{
+          oc
+          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
+        }
+      )
+      |> Repo.all()
+
   def api_user_profile(user_id) do
     total_rewards =
       Repo.aggregate(
@@ -435,21 +452,7 @@ defmodule OmegaBravera.Accounts do
 
     live_challenges = user_live_challenges(user_id)
 
-    expired_challenges =
-      from(oc in OfferChallenge,
-        where: oc.status == "expired" and oc.user_id == ^user_id,
-        left_join: a in OfferChallengeActivitiesM2m,
-        on: oc.id == a.offer_challenge_id,
-        left_join: ac in ActivityAccumulator,
-        on: a.activity_id == ac.id,
-        order_by: [desc: :end_date],
-        group_by: oc.id,
-        select: %{
-          oc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
-        }
-      )
-      |> Repo.all()
+    expired_challenges = expired_challenges(user_id)
 
     completed_challenges =
       from(oc in OfferChallenge,

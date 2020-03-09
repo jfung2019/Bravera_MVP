@@ -65,9 +65,12 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :email, non_null(:string)
     field :firstname, :string
     field :lastname, :string
-    field :total_points, non_null(:decimal), resolve: fn _parent, %{source: %{id: user_id}} ->
-     {:ok, Accounts.total_points(user_id)}
-    end
+
+    field :total_points, non_null(:decimal),
+      resolve: fn _parent, %{source: %{id: user_id}} ->
+        {:ok, Accounts.total_points(user_id)}
+      end
+
     field :total_points_this_week, non_null(:decimal)
     field :total_rewards, non_null(:integer)
     field :total_kilometers, non_null(:decimal)
@@ -76,15 +79,22 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :offer_challenges_map, :offer_challenges_map
     field :profile_picture, :string
     field :strava, :strava
-    field :future_redeems, list_of(:redeem), resolve: fn _parent, %{source: %{id: user_id}} ->
-      {:ok, Accounts.future_redeems(user_id)}
-    end
-    field :past_redeems, list_of(:redeem), resolve: fn _parent, %{source: %{id: user_id}} ->
-      {:ok, Accounts.past_redeems(user_id)}
-    end
-    field :points_history, list_of(:point), resolve: fn _parent, %{source: %{id: user_id}} ->
-      {:ok, Accounts.user_points_history(user_id)}
-    end
+
+    field :future_redeems, list_of(:redeem),
+      resolve: fn _parent, %{source: %{id: user_id}} ->
+        {:ok, Accounts.future_redeems(user_id)}
+      end
+
+    field :past_redeems, list_of(:redeem),
+      resolve: fn _parent, %{source: %{id: user_id}} ->
+        {:ok, Accounts.past_redeems(user_id)}
+      end
+
+    field :points_history, list_of(:point),
+      resolve: fn _parent, %{source: %{id: user_id}} ->
+        {:ok, Accounts.user_points_history(user_id)}
+      end
+
     field :email_verified, non_null(:boolean)
   end
 
