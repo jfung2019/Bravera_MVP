@@ -48,12 +48,12 @@ defmodule OmegaBraveraWeb.Router do
       pipe_through :absinthe_api
 
       forward "/api", Absinthe.Plug, schema: OmegaBraveraWeb.Api.Schema
-    end
 
-    forward "/graphiql", Absinthe.Plug.GraphiQL,
-      schema: OmegaBraveraWeb.Api.Schema,
-      socket: OmegaBraveraWeb.UserSocket,
-      context: %{pubsub: OmegaBraveraWeb.Endpoint}
+      forward "/graphiql", Absinthe.Plug.GraphiQL,
+        schema: OmegaBraveraWeb.Api.Schema,
+        socket: OmegaBraveraWeb.UserSocket,
+        context: %{pubsub: OmegaBraveraWeb.Endpoint}
+    end
   end
 
   scope "/" do

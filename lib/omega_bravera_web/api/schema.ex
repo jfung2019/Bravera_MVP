@@ -235,6 +235,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
       config fn
         _args, %{context: %{current_user: %{id: user_id}}} ->
           {:ok, topic: "#{user_id}"}
+
         _args, _context ->
           {:error, "unauthorized"}
       end

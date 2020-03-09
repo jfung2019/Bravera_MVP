@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.Api.Types.Account do
   use Absinthe.Schema.Notation
+  alias OmegaBravera.Accounts
 
   object :user do
     field :id, non_null(:id)
@@ -87,7 +88,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :user_session do
     field :token, :string
     field :user, :user
-    field :user_profile, :user_profile
+    field :user_profile, :user_profile, resolve: fn _parent, %{source: %{user: %{id: user_id}}} ->
+      # TODO: probably don't inline this for the future
+      {:ok, Accounts.api_user_profile(user_id)}
+    end
   end
 
   input_object :credential do

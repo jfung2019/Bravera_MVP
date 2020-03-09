@@ -60,8 +60,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
           %{
             user_session: %{
               token: token,
-              user: updated_user,
-              user_profile: Accounts.api_user_profile(updated_user.id)
+              user: updated_user
             }
           }
         }

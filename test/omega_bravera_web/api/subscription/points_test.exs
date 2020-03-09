@@ -75,5 +75,4 @@ defmodule OmegaBraveraWeb.Api.Subscription.PointsTest do
     assert_push "subscription:data", push
     assert expected == push
   end
-
 end

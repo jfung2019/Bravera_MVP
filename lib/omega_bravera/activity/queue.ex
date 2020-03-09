@@ -45,11 +45,15 @@ defmodule OmegaBravera.Activity.Queue do
             Logger.info(
               "Activity Create Queue: Successfully created points for activity: #{activity.id}"
             )
+
             user_id = value.user.id
             # TODO: Find a way to make this a trigger
             Absinthe.Subscription.publish(
               OmegaBraveraWeb.Endpoint,
-              %{balance: Accounts.total_points(user_id), history: Accounts.user_points_history(user_id)},
+              %{
+                balance: Accounts.total_points(user_id),
+                history: Accounts.user_points_history(user_id)
+              },
               live_points: user_id
             )
 
