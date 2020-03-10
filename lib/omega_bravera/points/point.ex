@@ -92,7 +92,8 @@ defmodule OmegaBravera.Points.Point do
         _ -> Decimal.new(0)
       end
 
-    points = distance |> Decimal.round(2, :floor) |> Decimal.mult(@points_per_km)
+    # we should round up when evaluating an activity distance # 0.398 -> 0.400
+    points = distance |> Decimal.round(2) |> Decimal.mult(@points_per_km)
 
     cond do
       remaining_value_today == Decimal.new(0) or remaining_value_today == Decimal.from_float(0.00) ->
