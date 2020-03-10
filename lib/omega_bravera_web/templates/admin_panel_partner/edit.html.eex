@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-6 offset-3">
 		<h1>Edit Partner</h1>
-		<%= render "_form.html", Map.put(assigns, :action, Routes.admin_panel_partner_path(@conn, :edit, @partner)) %>
+		<%= render "_form.html", Map.put(assigns, :action, Routes.admin_panel_partner_path(@conn, :update, @partner)) %>
 	</div>
 </div>
