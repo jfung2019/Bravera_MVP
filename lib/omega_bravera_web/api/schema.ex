@@ -2,16 +2,17 @@ defmodule OmegaBraveraWeb.Api.Schema do
   use Absinthe.Schema
   alias OmegaBraveraWeb.Api.{Resolvers, Types, Middleware}
 
-  import_types(Types.Offer)
-  import_types(Types.OfferChallenge)
-  import_types(Types.Account)
-  import_types(Types.Device)
-  import_types(Types.Activity)
-  import_types(Types.Referral)
-  import_types(Types.Reward)
-  import_types(Types.Redeem)
-  import_types(Types.Point)
-  import_types(Types.Helpers)
+  import_types Types.Offer
+  import_types Types.OfferChallenge
+  import_types Types.Account
+  import_types Types.Device
+  import_types Types.Activity
+  import_types Types.Referral
+  import_types Types.Reward
+  import_types Types.Redeem
+  import_types Types.Point
+  import_types Types.Helpers
+  import_types Types.Partners
 
   mutation do
     @desc "Set profile picture"
@@ -227,6 +228,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.latest_expired_challenges/3
     end
+
+    @desc "Gets all partner locations"
+    field :partner_locations, non_null(list_of(non_null(:partner_location))) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Partners.latest_partner_locations/3
+    end
   end
 
   subscription do
@@ -265,6 +272,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     loader =
       Dataloader.new()
       |> Dataloader.add_source(OmegaBravera.Offers, source)
+      |> Dataloader.add_source(OmegaBravera.Partners, source)
 
     Map.put(ctx, :loader, loader)
   end

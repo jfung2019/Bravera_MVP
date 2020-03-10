@@ -59,6 +59,7 @@ defmodule OmegaBravera.Offers.Offer do
     has_many :offer_challenges, OfferChallenge
     has_many :offer_rewards, OfferReward
     has_many :offer_redeems, OfferRedeem
+    belongs_to :partner, OmegaBravera.Partners.Partner
 
     timestamps(type: :utc_datetime)
   end
@@ -90,7 +91,8 @@ defmodule OmegaBravera.Offers.Offer do
     :external_terms_url,
     :accept_terms_text,
     :location_id,
-    :images
+    :images,
+    :partner_id
   ]
   @required_attributes [
     :name,

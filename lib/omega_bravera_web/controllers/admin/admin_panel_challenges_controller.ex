@@ -34,7 +34,13 @@ defmodule OmegaBraveraWeb.AdminPanelChallengesController do
         conn
         |> put_flash(:info, "Challenge updated successfully.")
         |> redirect(
-          to: Routes.admin_panel_ngo_admin_panel_challenges_path(conn, :show, ngo_chal.ngo, ngo_chal)
+          to:
+            Routes.admin_panel_ngo_admin_panel_challenges_path(
+              conn,
+              :show,
+              ngo_chal.ngo,
+              ngo_chal
+            )
         )
 
       {:error, %Ecto.Changeset{} = changeset} ->

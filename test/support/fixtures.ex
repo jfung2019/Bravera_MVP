@@ -1,5 +1,6 @@
 defmodule OmegaBravera.Fixtures do
-  alias OmegaBravera.Partners
+  alias OmegaBravera.{Repo, Partners}
+  alias OmegaBravera.Accounts.Credential
 
   def partner_fixture(attrs \\ %{}) do
     {:ok, partner} =
@@ -22,5 +23,19 @@ defmodule OmegaBravera.Fixtures do
       |> Partners.create_partner_location()
 
     partner_location
+  end
+
+  def credential_fixture(user_id) do
+    credential_attrs = %{
+      password: "testies123",
+      password_confirmation: "testies123"
+    }
+
+    {:ok, credential} =
+      Credential.changeset(%Credential{user_id: user_id}, credential_attrs)
+      |> Repo.insert()
+
+    credential
+    |> Repo.preload(:user)
   end
 end

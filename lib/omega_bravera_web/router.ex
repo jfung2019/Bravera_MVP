@@ -146,6 +146,7 @@ defmodule OmegaBraveraWeb.Router do
 
       resources "/emails", AdminPanelEmailsController, except: [:delete]
       get "/challenges", AdminPanelChallengesController, :index
+
       resources "/partners", AdminPanelPartnerController, except: [:delete] do
         resources "/locations", AdminPanelPartnerLocationController, except: [:index]
       end
@@ -183,8 +184,15 @@ defmodule OmegaBraveraWeb.Router do
         put "/:redeem_token", Offer.OfferChallengeController, :save_redeem
         post "/invite/team_members", Offer.OfferChallengeController, :invite_team_members
         get "/add_team_member/:invitation_token", Offer.OfferChallengeController, :add_team_member
-        get "/resend_invitation/:invitation_token", Offer.OfferChallengeController, :resend_invitation
-        get "/cancel_invitation/:invitation_token", Offer.OfferChallengeController, :cancel_invitation
+
+        get "/resend_invitation/:invitation_token",
+            Offer.OfferChallengeController,
+            :resend_invitation
+
+        get "/cancel_invitation/:invitation_token",
+            Offer.OfferChallengeController,
+            :cancel_invitation
+
         post "/kick_team_member/:user_id", Offer.OfferChallengeController, :kick_team_member
       end
     end

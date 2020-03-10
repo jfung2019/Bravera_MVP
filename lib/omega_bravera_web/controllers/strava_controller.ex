@@ -34,7 +34,8 @@ defmodule OmegaBraveraWeb.StravaController do
   end
 
   def authenticate(conn, _params) do
-    redirect_url = Routes.strava_url(conn, :strava_callback, %{redirect_to: get_redirect_url(conn)})
+    redirect_url =
+      Routes.strava_url(conn, :strava_callback, %{redirect_to: get_redirect_url(conn)})
 
     redirect(conn,
       external:
@@ -86,7 +87,9 @@ defmodule OmegaBraveraWeb.StravaController do
 
     conn
     |> attach_strava_to_user_mobile_app(connect_params)
-    |> redirect(external: Routes.page_url(OmegaBraveraWeb.Endpoint, :index) <> "after_strava_connect")
+    |> redirect(
+      external: Routes.page_url(OmegaBraveraWeb.Endpoint, :index) <> "after_strava_connect"
+    )
   end
 
   @doc """

@@ -9,6 +9,7 @@ defmodule OmegaBravera.Partners.Partner do
     field :name, :string
     field :opening_times, :string
     has_one :location, PartnerLocation
+    has_many :offers, OmegaBravera.Offers.Offer
 
     timestamps()
   end

@@ -18,7 +18,8 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
     render(conn, partner: partner, changeset: Partners.change_partner(partner))
   end
 
-  def new(conn, _params), do: render(conn, "new.html", changeset: Partners.change_partner(%Partners.Partner{}))
+  def new(conn, _params),
+    do: render(conn, "new.html", changeset: Partners.change_partner(%Partners.Partner{}))
 
   def create(conn, %{"partner" => partner_params}) do
     case Partners.create_partner(partner_params) do
@@ -26,6 +27,7 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
         conn
         |> put_flash(:info, "Partner created successfully")
         |> redirect(to: Routes.admin_panel_partner_path(conn, :show, partner))
+
       {:error, changeset} ->
         conn
         |> put_flash(:error, "Partner wasn't created")
@@ -35,11 +37,13 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
 
   def update(conn, %{"partner" => partner_params, "id" => id}) do
     partner = Partners.get_partner!(id)
+
     case Partners.update_partner(partner, partner_params) do
       {:ok, partner} ->
         conn
         |> put_flash(:info, "Partner updated successfully")
         |> redirect(to: Routes.admin_panel_partner_path(conn, :show, partner))
+
       {:error, changeset} ->
         conn
         |> put_flash(:error, "Partner was not updated")

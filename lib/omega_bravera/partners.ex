@@ -22,6 +22,13 @@ defmodule OmegaBravera.Partners do
   end
 
   @doc """
+  Returns tuple of partners ready for dropdown list.
+  """
+  def partner_options do
+    from(p in Partner, select: {p.name, p.id}) |> Repo.all()
+  end
+
+  @doc """
   Gets a single partner.
 
   Raises `Ecto.NoResultsError` if the Partner does not exist.
@@ -35,7 +42,7 @@ defmodule OmegaBravera.Partners do
       ** (Ecto.NoResultsError)
 
   """
-  def get_partner!(id), do: Repo.get!(Partner, id) |> Repo.preload([:location])
+  def get_partner!(id), do: Repo.get!(Partner, id) |> Repo.preload([:location, :offers])
 
   @doc """
   Creates a partner.

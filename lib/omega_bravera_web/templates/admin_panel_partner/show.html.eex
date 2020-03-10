@@ -14,7 +14,8 @@
 			</tbody>
 		</table>
 		<%= if @partner.location do %>
-		  <%= link "Edit", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :edit, @partner, @partner.location) %>
+		  <%= link "Edit Location", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :edit, @partner, @partner.location), class: "btn btn-warning" %>
+		  <%= link "Delete Location", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :delete, @partner, @partner.location), method: :delete, class: "ml-2 btn btn-danger" %>
 		  <table class="table">
 		  	<tbody>
 		  		<tr>
@@ -34,5 +35,18 @@
 		<% else %>
 		  <%= link "Add Location", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :new, @partner) %>
 		<% end %>
+		<%= if length(@partner.offers) > 0 do %>
+		  <table class="table">
+		  	<tbody>
+		  		<%= for offer <- @partner.offers do %>
+		  		  <tr>
+		  		  	<td><%= offer.name %> <%= link "Edit Offer", to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning" %></td>
+				  </tr>
+		  		<% end %>
+			</tbody>
+		  </table>
+		  <% else %>
+		    <%= link "Choose offer to attach", to: Routes.admin_panel_offer_path(@conn, :index) %>
+		 <% end %>
 	</div>
 </div>

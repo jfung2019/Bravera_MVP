@@ -179,6 +179,12 @@
   </div>
 
   <div class="form-group">
+  	<%= label f, :partner_id, "Partner" %>
+  	<%= select f, :partner_id, @available_partners, class: "form-control", prompt: "Choose partner" %>
+  	<%= error_tag f, :partner_id %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Save", class: "btn btn-primary" %>
   </div>
 <% end %>

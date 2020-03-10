@@ -23,7 +23,11 @@ defmodule OmegaBraveraWeb.Admin.PartnerControllerTest do
     end
 
     test "can re-render form if bad editing", %{partner: partner, conn: conn} do
-      conn = put(conn, Routes.admin_panel_partner_path(conn, :update, partner), %{partner: %{name: nil}})
+      conn =
+        put(conn, Routes.admin_panel_partner_path(conn, :update, partner), %{
+          partner: %{name: nil}
+        })
+
       assert get_flash(conn, :error) =~ "Partner was not updated"
       assert html_response(conn, 200)
     end
@@ -40,7 +44,11 @@ defmodule OmegaBraveraWeb.Admin.PartnerControllerTest do
   end
 
   test "can create new partner", %{conn: conn} do
-    conn = post(conn, Routes.admin_panel_partner_path(conn, :create), %{partner: %{name: "Test", introduction: "Some intro", opening_times: "Test"}})
+    conn =
+      post(conn, Routes.admin_panel_partner_path(conn, :create), %{
+        partner: %{name: "Test", introduction: "Some intro", opening_times: "Test"}
+      })
+
     assert %{id: partner_id} = redirected_params(conn)
     assert redirected_to(conn) == Routes.admin_panel_partner_path(conn, :show, partner_id)
     assert get_flash(conn, :info) =~ "Partner created successfully"
