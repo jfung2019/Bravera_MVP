@@ -12,6 +12,7 @@ defmodule OmegaBraveraWeb.Router do
     plug :put_secure_browser_headers
     plug Guardian.MaybeAuthPipeline
     plug OmegaBraveraWeb.GoogleAnalytics
+    plug :put_live_layout, {OmegaBraveraWeb.LayoutView, :app}
   end
 
   pipeline :user_authenticated do
@@ -97,7 +98,7 @@ defmodule OmegaBraveraWeb.Router do
       post("/account", UserController, :update)
     end
 
-    get("/account/activate/:email_activation_token", UserController, :activate_email)
+    get "/account/activate/:email_activation_token", UserController, :activate_email
   end
 
   # Strava OAuth Routes
@@ -118,13 +119,18 @@ defmodule OmegaBraveraWeb.Router do
     plug :put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
+  scope "/admin" do
+    pipe_through [:admin_section, :admin_authenticated]
+    live "/jobs", ObanWeb.DashboardLive, layout: {ObanWeb.LayoutView, "app.html"}
+  end
+
   scope "/admin", OmegaBraveraWeb do
     pipe_through [:admin_section]
     resources "/sessions", AdminUserSessionController, only: [:new, :create]
     get "/logout", AdminUserSessionController, :logout
 
     scope "/" do
-      pipe_through(:admin_authenticated)
+      pipe_through [:admin_authenticated]
       get "/", AdminUserPageController, :index
       resources "/locations", AdminPanelLocationsController
       resources "/admin-users", AdminUserController
@@ -223,19 +229,19 @@ defmodule OmegaBraveraWeb.Router do
       get("/leaderboard", NGOController, :leaderboard, param: "slug")
 
       resources "/", NGOChalController, only: [:show, :new, :create], param: "slug" do
-        resources("/donations", DonationController, only: [:create])
-        post("/follow_on_donation", DonationController, :create_and_charge_follow_on_donation)
-        get("/donors", DonationController, :index)
-        get("/activities", ActivityController, :index)
-        post("/invite_buddies", NGOChalController, :invite_buddies)
-        post("/invite_team_members", NGOChalController, :invite_team_members)
-        get("/add_team_member/:invitation_token", NGOChalController, :add_team_member)
-        get("/resend_invitation/:invitation_token", NGOChalController, :resend_invitation)
-        get("/cancel_invitation/:invitation_token", NGOChalController, :cancel_invitation)
-        post("/kick_team_member/:user_id", NGOChalController, :kick_team_member)
+        resources "/donations", DonationController, only: [:create]
+        post "/follow_on_donation", DonationController, :create_and_charge_follow_on_donation
+        get "/donors", DonationController, :index
+        get "/activities", ActivityController, :index
+        post "/invite_buddies", NGOChalController, :invite_buddies
+        post "/invite_team_members", NGOChalController, :invite_team_members
+        get "/add_team_member/:invitation_token", NGOChalController, :add_team_member
+        get "/resend_invitation/:invitation_token", NGOChalController, :resend_invitation
+        get "/cancel_invitation/:invitation_token", NGOChalController, :cancel_invitation
+        post "/kick_team_member/:user_id", NGOChalController, :kick_team_member
       end
     end
 
-    get("/*path", PageController, :not_found)
+    get "/*path", PageController, :not_found
   end
 end

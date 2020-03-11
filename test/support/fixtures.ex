@@ -1,5 +1,5 @@
 defmodule OmegaBravera.Fixtures do
-  alias OmegaBravera.{Repo, Partners}
+  alias OmegaBravera.{Accounts, Repo, Partners}
   alias OmegaBravera.Accounts.Credential
 
   def partner_fixture(attrs \\ %{}) do
@@ -37,5 +37,19 @@ defmodule OmegaBravera.Fixtures do
 
     credential
     |> Repo.preload(:user)
+  end
+
+  def user_fixture(attrs \\ %{}) do
+    {:ok, user} =
+      attrs
+      |> Enum.into(%{
+        email: "test@test.com",
+        firstname: "some firstname",
+        lastname: "some lastname",
+        location_id: 1
+      })
+      |> Accounts.create_user()
+
+    user
   end
 end

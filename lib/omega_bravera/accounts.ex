@@ -6,6 +6,7 @@ defmodule OmegaBravera.Accounts do
   import Ecto.Query, warn: false
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias Ecto.Multi
+  alias OmegaBravera.Accounts.Jobs
 
   alias OmegaBravera.{
     Repo,
@@ -784,6 +785,21 @@ defmodule OmegaBravera.Accounts do
     user
     |> User.update_changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+
+  """
+  def activate_user_email(%User{} = user) do
+    case update_user(user, %{email_verified: true}) do
+      {:ok, _user} = return_tuple ->
+        %{id: user.id}
+        |> Jobs.AfterEmailVerify.new()
+        |> Oban.insert()
+        return_tuple
+      other ->
+        other
+    end
   end
 
   def update_user_by_admin(%User{} = user, attrs) do

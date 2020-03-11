@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.UserController do
   use OmegaBraveraWeb, :controller
 
   alias OmegaBravera.{Accounts, Locations}
-  plug(:assign_options when action in [:edit, :new, :update])
+  plug :assign_options when action in [:edit, :new, :update]
 
   def dashboard(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
@@ -84,7 +84,7 @@ defmodule OmegaBraveraWeb.UserController do
         |> redirect(to: "/")
 
       user ->
-        case Accounts.update_user(user, %{email_verified: true}) do
+        case Accounts.activate_user_email(user) do
           {:ok, _user} ->
             conn
             |> put_flash(:info, "Email activated!")

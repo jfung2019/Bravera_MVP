@@ -77,7 +77,9 @@ defmodule OmegaBravera.Mixfile do
       {:phoenix_live_view, "~> 0.9.0"},
       {:dataloader, "~> 1.0.7"},
       {:turbo_ecto, "~> 0.5.0"},
-      {:turbo_html, "~> 0.2.0"}
+      {:turbo_html, "~> 0.2.0"},
+      {:oban, "~> 1.2"},
+      {:oban_web, "~> 1.3", organization: "oban"}
     ]
   end
 

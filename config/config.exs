@@ -45,6 +45,15 @@ config :postgrex, :json_library, Jason
 # Turbo pagination
 config :turbo_ecto, Turbo.Ecto, repo: OmegaBravera.Repo, per_page: 20
 
+config :omega_bravera, Oban,
+  repo: OmegaBravera.Repo,
+  prune: {:maxlen, 10_000},
+  queues: [default: 10, email: 10]
+
+config :omega_bravera, ObanWeb,
+  repo: OmegaBravera.Repo,
+  stats: true
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

@@ -12,7 +12,9 @@ defmodule OmegaBravera.Application do
       OmegaBraveraWeb.Endpoint,
       OmegaBravera.IngestionSupervisor,
       {Absinthe.Subscription, [OmegaBraveraWeb.Endpoint]},
-      {Task.Supervisor, name: OmegaBravera.TaskSupervisor}
+      {Task.Supervisor, name: OmegaBravera.TaskSupervisor},
+      {Oban, Application.get_env(:omega_bravera, Oban)},
+      {ObanWeb, Application.get_env(:omega_bravera, ObanWeb)}
     ]
 
     children =

@@ -3,31 +3,9 @@ defmodule OmegaBravera.AccountsTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts, Accounts.User, Repo, Trackers.Strava, Accounts.Credential}
+  alias OmegaBravera.{Accounts, Accounts.User, Fixtures, Repo, Trackers.Strava, Accounts.Credential}
 
   describe "users" do
-    @valid_attrs %{
-      email: "test@test.com",
-      firstname: "some firstname",
-      lastname: "some lastname",
-      location_id: 1
-    }
-    @update_attrs %{
-      email: "updated_test@test.com",
-      firstname: "some updated firstname",
-      lastname: "some updated lastname"
-    }
-    @invalid_attrs %{email: nil, firstname: nil, lastname: nil}
-
-    def user_fixture(attrs \\ %{}) do
-      {:ok, user} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Accounts.create_user()
-
-      user
-    end
-
     test "donors_for_challenge/1 returns all donors for a challenge" do
       user = insert(:user)
       ngo = insert(:ngo, %{slug: "swcc-1"})
@@ -110,69 +88,75 @@ defmodule OmegaBravera.AccountsTest do
       assert user.strava.token == "87318aaded9cdeb99a1a3c20c6af26ccf059de30"
     end
 
-    test "list_users/0 returns all users" do
-      user = user_fixture()
-      assert Accounts.list_users() == [user]
-    end
-
-    test "get_user!/1 returns the user with given id" do
-      user = user_fixture()
-      assert Accounts.get_user!(user.id) == user
-    end
-
     test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
+      assert {:ok, %User{} = user} = Accounts.create_user(%{
+               email: "test@test.com",
+               firstname: "some firstname",
+               lastname: "some lastname",
+               location_id: 1
+             })
       assert user.email == "test@test.com"
       assert user.firstname == "some firstname"
       assert user.lastname == "some lastname"
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(%{email: nil, firstname: nil, lastname: nil})
+    end
+  end
+
+  describe "user created" do
+    setup do: {:ok, user: Fixtures.user_fixture()}
+
+    test "list_users/0 returns all users", %{user: user} do
+      assert Accounts.list_users() == [user]
     end
 
-    test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
-      assert {:ok, user} = Accounts.update_user(user, @update_attrs)
+    test "get_user!/1 returns the user with given id", %{user: user} do
+      assert Accounts.get_user!(user.id) == user
+    end
+
+    test "update_user/2 with valid data updates the user", %{user: user} do
+      assert {:ok, user} = Accounts.update_user(user, %{
+               email: "updated_test@test.com",
+               firstname: "some updated firstname",
+               lastname: "some updated lastname"
+             })
       assert %User{} = user
       assert user.email == "updated_test@test.com"
       assert user.firstname == "some updated firstname"
       assert user.lastname == "some updated lastname"
     end
 
-    test "update_user/2 with invalid data returns error changeset" do
-      user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
+    test "update_user/2 with invalid data returns error changeset", %{user: user} do
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, %{email: nil, firstname: nil, lastname: nil})
       assert user == Accounts.get_user!(user.id)
     end
 
-    test "delete_user/1 deletes the user" do
-      user = user_fixture()
+    test "delete_user/1 deletes the user", %{user: user} do
       assert {:ok, %User{}} = Accounts.delete_user(user)
       assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
     end
 
-    test "change_user/1 returns a user changeset" do
-      user = user_fixture()
+    test "change_user/1 returns a user changeset", %{user: user} do
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
 
-    test "can get preloaded offer challenges that are active or haven't been redeemed" do
-      user = user_fixture()
+    test "can get preloaded offer challenges that are active or haven't been redeemed", %{user: user} do
       vendor = insert(:vendor)
       offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
       offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer.id})
 
       %{id: completed_id} =
         completed_challenge =
-        insert(:offer_challenge, %{
-          offer_id: offer.id,
-          offer: nil,
-          user: user,
-          has_team: false,
-          status: "complete",
-          slug: "complete"
-        })
+          insert(:offer_challenge, %{
+            offer_id: offer.id,
+            offer: nil,
+            user: user,
+            has_team: false,
+            status: "complete",
+            slug: "complete"
+          })
 
       redeem_params = %{
         status: "redeemed",
@@ -187,19 +171,19 @@ defmodule OmegaBravera.AccountsTest do
 
       %{id: completed_not_redeemed_id} =
         completed_not_redeemed_challenge =
-        insert(:offer_challenge, %{
-          offer_id: offer.id,
-          offer: nil,
-          user: user,
-          has_team: false,
-          status: "complete",
-          slug: "complete_no_redeem"
-        })
+          insert(:offer_challenge, %{
+            offer_id: offer.id,
+            offer: nil,
+            user: user,
+            has_team: false,
+            status: "complete",
+            slug: "complete_no_redeem"
+          })
 
       insert(:offer_redeem_with_args, %{
         redeem_params
-        | offer_challenge: completed_not_redeemed_challenge,
-          status: "pending"
+      | offer_challenge: completed_not_redeemed_challenge,
+        status: "pending"
       })
 
       %{id: pre_reg_id} =
@@ -227,6 +211,11 @@ defmodule OmegaBravera.AccountsTest do
       assert pre_reg_id in chal_ids
       assert completed_not_redeemed_id in chal_ids
       refute completed_id in chal_ids
+    end
+
+    test "verifying a users email will enqueue a job to send an email 3 days later", %{user: user} do
+      assert {:ok, user} = Accounts.activate_user_email(user)
+      assert_enqueued worker: Accounts.Jobs.AfterEmailVerify, queue: :email
     end
   end
 
