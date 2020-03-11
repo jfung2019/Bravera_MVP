@@ -25,19 +25,19 @@ defmodule OmegaBravera.Accounts.User do
   ]
 
   schema "users" do
-    field(:email, :string)
-    field(:email_verified, :boolean, default: false)
-    field(:email_activation_token, :string)
-    field(:firstname, :string)
-    field(:lastname, :string)
-    field(:locale, :string, default: "en")
+    field :email, :string
+    field :email_verified, :boolean, default: false
+    field :email_activation_token, :string
+    field :firstname, :string
+    field :lastname, :string
+    field :locale, :string, default: "en"
     # Represents KMs
-    field(:daily_points_limit, :integer, default: 8)
-    field(:additional_info, :map, default: %{})
-    field(:profile_picture, :string, default: nil)
-    field(:accept_terms, :boolean, virtual: true)
-    field(:todays_points, :integer, virtual: true)
-    field(:referred_by_id, :id, default: nil)
+    field :daily_points_limit, :integer, default: 8
+    field :additional_info, :map, default: %{}
+    field :profile_picture, :string, default: nil
+    field :accept_terms, :boolean, virtual: true
+    field :todays_points, :integer, virtual: true
+    field :referred_by_id, :id, default: nil
 
     # API related
     field(:total_points, :decimal, virtual: true, default: Decimal.new(0))

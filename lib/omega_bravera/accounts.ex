@@ -763,25 +763,32 @@ defmodule OmegaBravera.Accounts do
       %User{}
       |> User.create_credential_user_changeset(attrs, referral)
       |> Repo.insert()
+
     case result do
       {:ok, %{id: user_id}} = result ->
         now_hk = Timex.now("Asia/Hong_Kong")
+
         next_day =
           now_hk
           |> Timex.shift(days: 1)
           |> Timex.set(hour: 8, minute: 0, second: 0)
           |> Timex.Timezone.convert(:utc)
+
         seven_days =
           now_hk
           |> Timex.shift(days: 7)
           |> Timex.Timezone.convert(:utc)
+
         %{user_id: user_id}
         |> Jobs.NoActivityAfterSignup.new(scheduled_at: next_day)
         |> Oban.insert()
+
         %{user_id: user_id}
         |> Jobs.OneWeekNoActivityAfterSignup.new(scheduled_at: seven_days)
         |> Oban.insert()
+
         result
+
       result ->
         result
     end
@@ -897,6 +904,18 @@ defmodule OmegaBravera.Accounts do
   def amount_of_current_users() do
     from(u in User, where: not is_nil(u.additional_info), select: count(u.id))
     |> Repo.one()
+  end
+
+  def number_of_referrals_over_week(user_id) do
+    today = Timex.now()
+    one_week_ago = today |> Timex.shift(days: -7)
+
+    from(u in User,
+      where:
+        u.referred_by_id == ^user_id and
+          fragment("? BETWEEN ? and ?", u.inserted_at, ^today, ^one_week_ago)
+    )
+    |> Repo.aggregate(:count, :id)
   end
 
   @doc """

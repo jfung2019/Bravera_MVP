@@ -3,12 +3,12 @@ defmodule OmegaBravera.Referrals.Referral do
   import Ecto.Changeset
 
   schema "referrals" do
-    field(:bonus_points, :integer, default: 10)
+    field :bonus_points, :integer, default: 10
     # should be removed
-    field(:status, :string, default: "pending_acceptance")
-    field(:token, :string)
+    field :status, :string, default: "pending_acceptance"
+    field :token, :string
 
-    belongs_to(:user, OmegaBravera.Accounts.User)
+    belongs_to :user, OmegaBravera.Accounts.User
 
     timestamps(type: :utc_datetime)
   end

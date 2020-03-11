@@ -124,6 +124,7 @@ defmodule OmegaBravera.AccountsTest do
                  accept_terms: true,
                  credential: %{password: "testtest", password_confirmation: "testtest"}
                })
+
       assert_enqueued(worker: Accounts.Jobs.NoActivityAfterSignup, queue: :email)
       assert_enqueued(worker: Accounts.Jobs.OneWeekNoActivityAfterSignup, queue: :email)
     end

@@ -16,7 +16,7 @@ defmodule OmegaBravera.Application do
       {Oban, Application.get_env(:omega_bravera, Oban)},
       {ObanWeb, Application.get_env(:omega_bravera, ObanWeb)}
     ]
-
+    :ok = Oban.Telemetry.attach_default_logger()
     children =
       case Application.get_env(:omega_bravera, :env) do
         :prod ->

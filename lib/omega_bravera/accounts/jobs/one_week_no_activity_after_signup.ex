@@ -4,16 +4,16 @@ defmodule OmegaBravera.Accounts.Jobs.OneWeekNoActivityAfterSignup do
   require Logger
 
   @impl Oban.Worker
-  def perform(%{"id" => user_id}, _job) do
+  def perform(%{"user_id" => user_id}, _job) do
     case Devices.get_active_device_by_user_id(user_id) do
       nil ->
         user_id
         |> Accounts.get_user!()
         |> OmegaBravera.Accounts.Notifier.no_activity_after_one_week()
+
       _ ->
         :ok
     end
-
   end
 
   def perform(args, _job) do

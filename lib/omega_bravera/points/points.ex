@@ -44,6 +44,24 @@ defmodule OmegaBravera.Points do
     end
   end
 
+  def get_user_points_one_week(user_id) do
+    today = Timex.now() |> DateTime.to_date()
+    one_week_ago = today |> Timex.shift(days: -7)
+
+    from(p in Point,
+      where:
+        fragment("cast(? as date) BETWEEN ? and ?", p.inserted_at, ^today, ^one_week_ago) and
+          p.user_id == ^user_id,
+      select: %{value: sum(p.value), day: fragment("cast(inserted_at as date) as day")},
+      group_by: fragment("day")
+    )
+    |> Repo.all()
+  end
+
+  # select sum(value), cast(inserted_at as date) as day
+  # from points where user_id = 40 and value > 0 and
+  # inserted_at between '2020-03-04' and '2020-03-11' group by day;
+
   def do_deduct_points_from_user(user, offer) do
     %Point{}
     |> Point.deduct_points_changeset(offer, user)

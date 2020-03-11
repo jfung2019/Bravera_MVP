@@ -6,15 +6,15 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   alias OmegaBravera.Accounts.User
 
   schema "offer_redeems" do
-    field(:token, :string)
+    field :token, :string
     # Can be pending or redeemed
-    field(:status, :string, default: "pending")
+    field :status, :string, default: "pending"
 
-    belongs_to(:offer_reward, OfferReward)
-    belongs_to(:offer_challenge, OfferChallenge)
-    belongs_to(:offer, Offer)
-    belongs_to(:user, User)
-    belongs_to(:vendor, OfferVendor)
+    belongs_to :offer_reward, OfferReward
+    belongs_to :offer_challenge, OfferChallenge
+    belongs_to :offer, Offer
+    belongs_to :user, User
+    belongs_to :vendor, OfferVendor
 
     timestamps(type: :utc_datetime)
   end

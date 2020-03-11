@@ -133,6 +133,31 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Mail.send()
   end
 
+  def weekly_summary(
+        user,
+        total_points,
+        last_week_total_points,
+        completed_challenges,
+        rewards_redeemed,
+        friend_referrals,
+        daily_goal_reached
+      ) do
+    Email.build()
+    |> Email.put_template("a09d7fb8-cd4d-4b9c-9dc1-bb8bed829fff")
+    |> Email.add_substitution("-firstName-", user.firstname)
+    |> Email.add_substitution("-totalPoints-", total_points)
+    |> Email.add_substitution("-lastWeekTotal-", last_week_total_points)
+    |> Email.add_substitution("-challengesCompleted-", completed_challenges)
+    |> Email.add_substitution("-rewardsRedeemed-", rewards_redeemed)
+    |> Email.add_substitution("-friendReferralCount-", friend_referrals)
+    |> Email.add_substitution("-daysHitLimit-", daily_goal_reached)
+    |> Email.add_substitution("-dailyLimit-", user.daily_points_limit)
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(user.email)
+    |> Mail.send()
+  end
+
   defp user_subscribed_in_category?(user_subscribed_categories, email_category_id) do
     # if user_subscribed_categories is empty, it means that user is subscribed in all email_categories.
     if Enum.empty?(user_subscribed_categories) do

@@ -1031,4 +1031,28 @@ defmodule OmegaBravera.Offers do
         %OfferChallenge{} = challenge
       ),
       do: OfferChallengeActivitiesM2m.changeset(activity, challenge) |> Repo.insert()
+
+  def number_of_completed_challenges_over_week(user_id) do
+    today = Timex.now()
+    one_week_ago = today |> Timex.shift(days: -7)
+
+    from(o in OfferChallenge,
+      where:
+        o.status == "complete" and o.user_id == ^user_id and
+          fragment("? BETWEEN ? and ?", o.updated_at, ^today, ^one_week_ago)
+    )
+    |> Repo.aggregate(:count, :id)
+  end
+
+  def number_of_rewards_redeemed_over_week(user_id) do
+    today = Timex.now()
+    one_week_ago = today |> Timex.shift(days: -7)
+
+    from(r in OfferRedeem,
+      where:
+        r.status == "redeemed" and r.user_id == ^user_id and
+          fragment("? BETWEEN ? and ?", r.updated_at, ^today, ^one_week_ago)
+    )
+    |> Repo.aggregate(:count, :id)
+  end
 end
