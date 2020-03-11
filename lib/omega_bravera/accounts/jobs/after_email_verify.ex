@@ -7,7 +7,6 @@ defmodule OmegaBravera.Accounts.Jobs.AfterEmailVerify do
   def perform(%{"user_id" => user_id}, _job) do
     user = Accounts.get_user!(user_id)
     OmegaBravera.Accounts.Notifier.email_three_day_welcome(user)
-    :ok
   end
 
   def perform(args, _job) do

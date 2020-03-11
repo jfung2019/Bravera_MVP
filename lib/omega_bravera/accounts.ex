@@ -759,9 +759,32 @@ defmodule OmegaBravera.Accounts do
   end
 
   def create_credential_user(attrs \\ %{credential: %{}}, referral \\ nil) do
-    %User{}
-    |> User.create_credential_user_changeset(attrs, referral)
-    |> Repo.insert()
+    result =
+      %User{}
+      |> User.create_credential_user_changeset(attrs, referral)
+      |> Repo.insert()
+    case result do
+      {:ok, %{id: user_id}} = result ->
+        now_hk = Timex.now("Asia/Hong_Kong")
+        next_day =
+          now_hk
+          |> Timex.shift(days: 1)
+          |> Timex.set(hour: 8, minute: 0, second: 0)
+          |> Timex.Timezone.convert(:utc)
+        seven_days =
+          now_hk
+          |> Timex.shift(days: 7)
+          |> Timex.Timezone.convert(:utc)
+        %{user_id: user_id}
+        |> Jobs.NoActivityAfterSignup.new(scheduled_at: next_day)
+        |> Oban.insert()
+        %{user_id: user_id}
+        |> Jobs.OneWeekNoActivityAfterSignup.new(scheduled_at: seven_days)
+        |> Oban.insert()
+        result
+      result ->
+        result
+    end
   end
 
   def create_credential_for_existing_strava(attrs \\ %{}) do
@@ -793,10 +816,12 @@ defmodule OmegaBravera.Accounts do
   def activate_user_email(%User{} = user) do
     case update_user(user, %{email_verified: true}) do
       {:ok, _user} = return_tuple ->
-        %{id: user.id}
+        %{user_id: user.id}
         |> Jobs.AfterEmailVerify.new()
         |> Oban.insert()
+
         return_tuple
+
       other ->
         other
     end
@@ -872,13 +897,6 @@ defmodule OmegaBravera.Accounts do
   def amount_of_current_users() do
     from(u in User, where: not is_nil(u.additional_info), select: count(u.id))
     |> Repo.one()
-  end
-
-  def get_users_from_three_days_ago do
-    three_days_ago = Date.utc_today() |> Date.add(-3)
-
-    from(u in User, where: fragment("?::date = ?::date", u.inserted_at, ^three_days_ago))
-    |> Repo.all()
   end
 
   @doc """

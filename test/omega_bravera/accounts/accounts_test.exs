@@ -3,7 +3,14 @@ defmodule OmegaBravera.AccountsTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts, Accounts.User, Fixtures, Repo, Trackers.Strava, Accounts.Credential}
+  alias OmegaBravera.{
+    Accounts,
+    Accounts.User,
+    Fixtures,
+    Repo,
+    Trackers.Strava,
+    Accounts.Credential
+  }
 
   describe "users" do
     test "donors_for_challenge/1 returns all donors for a challenge" do
@@ -89,19 +96,36 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} = Accounts.create_user(%{
-               email: "test@test.com",
-               firstname: "some firstname",
-               lastname: "some lastname",
-               location_id: 1
-             })
+      assert {:ok, %User{} = user} =
+               Accounts.create_user(%{
+                 email: "test@test.com",
+                 firstname: "some firstname",
+                 lastname: "some lastname",
+                 location_id: 1
+               })
+
       assert user.email == "test@test.com"
       assert user.firstname == "some firstname"
       assert user.lastname == "some lastname"
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(%{email: nil, firstname: nil, lastname: nil})
+      assert {:error, %Ecto.Changeset{}} =
+               Accounts.create_user(%{email: nil, firstname: nil, lastname: nil})
+    end
+
+    test "create credential user will enqueue 2 jobs to check and email if need to" do
+      assert {:ok, %{id: user_id}} =
+               Accounts.create_credential_user(%{
+                 email: "test@test.com",
+                 firstname: "some firstname",
+                 lastname: "some lastname",
+                 location_id: 1,
+                 accept_terms: true,
+                 credential: %{password: "testtest", password_confirmation: "testtest"}
+               })
+      assert_enqueued(worker: Accounts.Jobs.NoActivityAfterSignup, queue: :email)
+      assert_enqueued(worker: Accounts.Jobs.OneWeekNoActivityAfterSignup, queue: :email)
     end
   end
 
@@ -117,11 +141,13 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "update_user/2 with valid data updates the user", %{user: user} do
-      assert {:ok, user} = Accounts.update_user(user, %{
-               email: "updated_test@test.com",
-               firstname: "some updated firstname",
-               lastname: "some updated lastname"
-             })
+      assert {:ok, user} =
+               Accounts.update_user(user, %{
+                 email: "updated_test@test.com",
+                 firstname: "some updated firstname",
+                 lastname: "some updated lastname"
+               })
+
       assert %User{} = user
       assert user.email == "updated_test@test.com"
       assert user.firstname == "some updated firstname"
@@ -129,7 +155,9 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "update_user/2 with invalid data returns error changeset", %{user: user} do
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, %{email: nil, firstname: nil, lastname: nil})
+      assert {:error, %Ecto.Changeset{}} =
+               Accounts.update_user(user, %{email: nil, firstname: nil, lastname: nil})
+
       assert user == Accounts.get_user!(user.id)
     end
 
@@ -142,21 +170,23 @@ defmodule OmegaBravera.AccountsTest do
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
 
-    test "can get preloaded offer challenges that are active or haven't been redeemed", %{user: user} do
+    test "can get preloaded offer challenges that are active or haven't been redeemed", %{
+      user: user
+    } do
       vendor = insert(:vendor)
       offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id})
       offer_reward = insert(:offer_reward, %{offer: nil, offer_id: offer.id})
 
       %{id: completed_id} =
         completed_challenge =
-          insert(:offer_challenge, %{
-            offer_id: offer.id,
-            offer: nil,
-            user: user,
-            has_team: false,
-            status: "complete",
-            slug: "complete"
-          })
+        insert(:offer_challenge, %{
+          offer_id: offer.id,
+          offer: nil,
+          user: user,
+          has_team: false,
+          status: "complete",
+          slug: "complete"
+        })
 
       redeem_params = %{
         status: "redeemed",
@@ -171,19 +201,19 @@ defmodule OmegaBravera.AccountsTest do
 
       %{id: completed_not_redeemed_id} =
         completed_not_redeemed_challenge =
-          insert(:offer_challenge, %{
-            offer_id: offer.id,
-            offer: nil,
-            user: user,
-            has_team: false,
-            status: "complete",
-            slug: "complete_no_redeem"
-          })
+        insert(:offer_challenge, %{
+          offer_id: offer.id,
+          offer: nil,
+          user: user,
+          has_team: false,
+          status: "complete",
+          slug: "complete_no_redeem"
+        })
 
       insert(:offer_redeem_with_args, %{
         redeem_params
-      | offer_challenge: completed_not_redeemed_challenge,
-        status: "pending"
+        | offer_challenge: completed_not_redeemed_challenge,
+          status: "pending"
       })
 
       %{id: pre_reg_id} =
@@ -215,7 +245,7 @@ defmodule OmegaBravera.AccountsTest do
 
     test "verifying a users email will enqueue a job to send an email 3 days later", %{user: user} do
       assert {:ok, user} = Accounts.activate_user_email(user)
-      assert_enqueued worker: Accounts.Jobs.AfterEmailVerify, queue: :email
+      assert_enqueued(worker: Accounts.Jobs.AfterEmailVerify, queue: :email)
     end
   end
 
