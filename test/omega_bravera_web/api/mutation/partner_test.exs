@@ -21,7 +21,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.PartnerTest do
     {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"), partner: partner}
   end
 
-  test "can get partner locations, partner and their offers", %{conn: conn, partner: %{id: partner_id}} do
+  test "can vote for partner to have offers", %{conn: conn, partner: %{id: partner_id}} do
     response = post(conn, "/api", %{query: @mutation, variables: %{"partnerId" => partner_id}})
     assert %{"data" => %{"votePartner" => [_location]}} = json_response(response, 200)
   end

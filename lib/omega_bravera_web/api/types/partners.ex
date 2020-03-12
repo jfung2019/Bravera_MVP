@@ -4,6 +4,7 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
   alias OmegaBravera.{Partners, Offers}
 
   object :partner do
+    field :id, :id
     field :images, non_null(list_of(:string))
     field :introduction, non_null(:string)
     field :name, non_null(:string)
