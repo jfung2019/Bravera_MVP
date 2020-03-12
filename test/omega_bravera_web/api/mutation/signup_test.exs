@@ -104,9 +104,9 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
 
     invited_user = Repo.get_by(OmegaBravera.Accounts.User, email: email)
 
-    assert Decimal.cmp(OmegaBravera.Points.get_user_points(inviter.id), Decimal.new(30)) == :eq
+    assert Decimal.cmp(OmegaBravera.Points.total_points(inviter.id), Decimal.new(30)) == :eq
 
-    assert Decimal.cmp(OmegaBravera.Points.get_user_points(invited_user.id), Decimal.new(15)) ==
+    assert Decimal.cmp(OmegaBravera.Points.total_points(invited_user.id), Decimal.new(15)) ==
              :eq
   end
 end
