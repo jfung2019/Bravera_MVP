@@ -215,7 +215,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     @desc "Gets latest points and points history for user"
     field :user_points_history, non_null(:user_points_with_history) do
       middleware Middleware.Authenticate
-      resolve &Resolvers.Accounts.latest_points_with_history/3
+      resolve &Resolvers.Points.latest_points_with_history/3
     end
 
     @desc "Gets latest future redeems for user"
@@ -240,6 +240,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :partner_locations, non_null(list_of(non_null(:partner_location))) do
       middleware Middleware.Authenticate
       resolve &Resolvers.Partners.latest_partner_locations/3
+    end
+
+    @desc "Gets a breakdown of points from a day"
+    field :user_point_day_breakdown, non_null(list_of(non_null(:point))) do
+      middleware Middleware.Authenticate
+      arg :day, :day
+      resolve &Resolvers.Points.point_breakdown_by_day/3
     end
   end
 

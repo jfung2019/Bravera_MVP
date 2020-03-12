@@ -23,6 +23,12 @@ defmodule OmegaBraveraWeb.Api.Types.Helpers do
     serialize(fn converted_date -> converted_date end)
   end
 
+  scalar :day do
+    description "Day in ISO 8601 format"
+    parse fn %{value: value} -> Date.from_iso8601(value) end
+    serialize &Date.to_iso8601/1
+  end
+
   scalar :decimal do
     parse(fn
       %{value: value}, _ ->

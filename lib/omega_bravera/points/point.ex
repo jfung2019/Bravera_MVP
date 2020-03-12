@@ -16,16 +16,16 @@ defmodule OmegaBravera.Points.Point do
 
   schema "points" do
     # Can be in -ve or +ve.
-    field(:value, :decimal)
-    field(:pos_value, :decimal, virtual: true)
-    field(:neg_value, :decimal, virtual: true)
+    field :value, :decimal
+    field :pos_value, :decimal, virtual: true
+    field :neg_value, :decimal, virtual: true
     # Can be redeem, activity, referral, bonus, ...
-    field(:source, :string)
+    field :source, :string
 
     timestamps(type: :utc_datetime)
 
-    belongs_to(:user, User)
-    belongs_to(:activity, ActivityAccumulator)
+    belongs_to :user, User
+    belongs_to :activity, ActivityAccumulator
   end
 
   def activity_points_changeset(

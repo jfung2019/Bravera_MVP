@@ -15,7 +15,7 @@ defmodule OmegaBravera.Accounts.Jobs.WeeklySummaryForUser do
     daily_goal_reached =
       Enum.filter(points_over_week, fn %{value: v} -> v >= 80 end) |> Enum.count()
 
-    total_points = Points.get_user_points(user_id)
+    total_points = Points.total_points(user_id)
 
     OmegaBravera.Accounts.Notifier.weekly_summary(
       user,

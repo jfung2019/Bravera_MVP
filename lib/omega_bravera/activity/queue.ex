@@ -31,7 +31,7 @@ defmodule OmegaBravera.Activity.Queue do
     case result do
       {:ok, activity} ->
         user_with_points =
-          OmegaBravera.Accounts.get_user_with_todays_points(value.user, activity.start_date)
+          Accounts.get_user_with_todays_points(value.user, activity.start_date)
 
         Logger.info(
           "Activity Create Queue: Successfully created user_id: #{inspect(value.user.id)} #{
@@ -51,8 +51,8 @@ defmodule OmegaBravera.Activity.Queue do
             Absinthe.Subscription.publish(
               OmegaBraveraWeb.Endpoint,
               %{
-                balance: Accounts.total_points(user_id),
-                history: Accounts.user_points_history(user_id)
+                balance: Points.total_points(user_id),
+                history: Points.user_points_history_summary(user_id)
               },
               live_points: user_id
             )

@@ -35,21 +35,6 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   }
   """
 
-  @points_balance_query """
-    query {
-      userPointsHistory {
-        balance
-        history {
-          posValue
-          negValue
-          source
-          insertedAt
-          updatedAt
-        }
-      }
-    }
-  """
-
   @future_rewards_query """
   query {
     futureRedeems {
@@ -147,13 +132,6 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
     response = post(conn, "/api", %{query: @user_live_challenges_query})
 
     assert %{"data" => %{"userLiveChallenges" => [%{"id" => ^challenge_id}]}} =
-             json_response(response, 200)
-  end
-
-  test "can get points balance from current user", %{conn: conn} do
-    response = post(conn, "/api", %{query: @points_balance_query})
-
-    assert %{"data" => %{"userPointsHistory" => %{"balance" => 0.0, "history" => []}}} =
              json_response(response, 200)
   end
 
