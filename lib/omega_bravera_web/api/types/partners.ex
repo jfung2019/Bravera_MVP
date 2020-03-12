@@ -18,4 +18,13 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
     field :longitude, non_null(:decimal)
     field :partner, non_null(:partner), resolve: dataloader(Partners)
   end
+
+  object :partner_vote do
+    field :user, non_null(:voter), resolve: dataloader(Partners)
+    field :partner, non_null(:partner), resolve: dataloader(Partners)
+  end
+
+  object :voter do
+    field :profile_picture, :string
+  end
 end

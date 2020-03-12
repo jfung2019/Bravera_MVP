@@ -1,7 +1,7 @@
 defmodule OmegaBravera.PartnersTest do
   use OmegaBravera.DataCase, async: true
   alias OmegaBravera.{Fixtures, Partners}
-  alias OmegaBravera.Partners.{Partner, PartnerLocation}
+  alias OmegaBravera.Partners.{Partner, PartnerLocation, PartnerVote}
 
   describe "partner" do
     test "create_partner/1 with valid data creates a partner" do
@@ -162,6 +162,52 @@ defmodule OmegaBravera.PartnersTest do
       assert %Ecto.Changeset{} = Partners.change_partner_location(partner_location)
     end
   end
+
+  describe "partner_votes" do
+    setup [:create_user, :create_partner]
+
+    test "create_partner_vote/1 with valid data creates a partner_vote", %{
+      user: %{id: user_id},
+      partner: %{id: partner_id}
+    } do
+      assert {:ok, %PartnerVote{} = partner_vote} =
+               Partners.create_partner_vote(%{user_id: user_id, partner_id: partner_id})
+    end
+
+    test "create_partner_vote/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Partners.create_partner_vote(%{})
+    end
+  end
+
+  describe "partner_votes created" do
+    setup [:create_user, :create_partner, :create_partner_vote]
+
+    test "list_partner_votes/0 returns all partner_votes", %{vote: partner_vote} do
+      assert Partners.list_partner_votes() == [partner_vote]
+    end
+
+    test "get_partner_vote!/1 returns the partner_vote with given id", %{vote: partner_vote} do
+      assert Partners.get_partner_vote!(partner_vote.id) == partner_vote
+    end
+
+    test "delete_partner_vote/1 deletes the partner_vote", %{vote: partner_vote} do
+      assert {:ok, %PartnerVote{}} = Partners.delete_partner_vote(partner_vote)
+      assert_raise Ecto.NoResultsError, fn -> Partners.get_partner_vote!(partner_vote.id) end
+    end
+
+    test "change_partner_vote/1 returns a partner_vote changeset", %{vote: partner_vote} do
+      assert %Ecto.Changeset{} = Partners.change_partner_vote(partner_vote)
+    end
+
+    test "cannot create double votes for same user for same partner", %{vote:  %{user_id: user_id, partner_id: partner_id}} do
+      assert {:error, %Ecto.Changeset{}} = Partners.create_partner_vote(%{user_id: user_id, partner_id: partner_id})
+    end
+  end
+
+  defp create_user(_), do: {:ok, user: Fixtures.user_fixture()}
+
+  defp create_partner_vote(%{partner: %{id: partner_id}, user: %{id: user_id}}),
+    do: {:ok, vote: Fixtures.partner_vote_fixture(%{user_id: user_id, partner_id: partner_id})}
 
   defp create_partner(_), do: {:ok, partner: Fixtures.partner_fixture()}
 

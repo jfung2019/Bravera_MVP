@@ -52,4 +52,9 @@ defmodule OmegaBravera.Fixtures do
 
     user
   end
+
+  def partner_vote_fixture(attrs) do
+    {:ok, vote} = Partners.create_partner_vote(attrs)
+    vote
+  end
 end

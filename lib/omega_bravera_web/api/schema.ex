@@ -108,9 +108,16 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "Create activity."
     field :create_activity, :save_activity_result do
-      arg(:input, non_null(:save_activity_input))
-      middleware(Middleware.Authenticate)
-      resolve(&Resolvers.Activity.create/3)
+      arg :input, non_null(:save_activity_input)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Activity.create/3
+    end
+
+    @desc "Vote for a partner"
+    field :vote_partner, list_of(non_null(:partner_vote)) do
+      arg :partner_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Partners.vote_partner/3
     end
   end
 
