@@ -6,6 +6,8 @@ defmodule OmegaBraveraWeb.ApiController do
     case OmegaBraveraWeb.Api.UploadAuth.decrypt_token(token) do
       {:ok, {:offer_id, offer_id}} ->
         render_upload_response(conn, "offer_images", offer_id, mime_type, filename)
+      {:ok, {:partner_id, partner_id}} ->
+        render_upload_response(conn, "partner_images", partner_id, mime_type, filename)
     end
   end
 

@@ -33,7 +33,7 @@
 			</tbody>
 		  </table>
 		<% else %>
-		  <%= link "Add Location", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :new, @partner) %>
+		  <%= link "Add Location", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :new, @partner) %><br>
 		<% end %>
 		<%= if length(@partner.offers) > 0 do %>
 		  <table class="table">
@@ -46,7 +46,8 @@
 			</tbody>
 		  </table>
 		  <% else %>
-		    <%= link "Choose offer to attach", to: Routes.admin_panel_offer_path(@conn, :index) %>
+		    <%= link "Choose offer to attach", to: Routes.admin_panel_offer_path(@conn, :index) %><br>
 		 <% end %>
+		 <%= link "Add/Edit partner images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, @partner) %>
 	</div>
 </div>

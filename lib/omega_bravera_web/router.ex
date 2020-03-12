@@ -22,6 +22,7 @@ defmodule OmegaBraveraWeb.Router do
   pipeline :admin_authenticated do
     plug Guardian.AuthPipeline
     plug OmegaBraveraWeb.AdminLoggedIn
+    plug :put_live_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
   pipeline :api do
@@ -76,26 +77,26 @@ defmodule OmegaBraveraWeb.Router do
   scope "/user", OmegaBraveraWeb do
     pipe_through :browser
 
-    resources("/sessions", UserSessionController, only: [:create])
-    get("/profile/email_settings", EmailSettingsController, :edit)
-    post("/profile/email_settings", EmailSettingsController, :update)
+    resources "/sessions", UserSessionController, only: [:create]
+    get "/profile/email_settings", EmailSettingsController, :edit
+    post "/profile/email_settings", EmailSettingsController, :update
 
-    get("/profile", UserProfileController, :show)
-    put("/profile/upload_profile_picture", UserProfileController, :update_profile_picture)
+    get "/profile", UserProfileController, :show
+    put "/profile/upload_profile_picture", UserProfileController, :update_profile_picture
 
     scope "/password_reset" do
-      resources("/", PasswordController, only: [:new, :create])
+      resources "/", PasswordController, only: [:new, :create]
 
-      get("/:reset_token/edit", PasswordController, :edit)
-      put("/:reset_token", PasswordController, :update)
+      get "/:reset_token/edit", PasswordController, :edit
+      put "/:reset_token", PasswordController, :update
     end
 
     scope "/" do
       pipe_through :user_authenticated
-      get("/account/trackers", UserController, :show_trackers)
-      get("/account/edit", UserController, :edit)
-      put("/account", UserController, :update)
-      post("/account", UserController, :update)
+      get "/account/trackers", UserController, :show_trackers
+      get "/account/edit", UserController, :edit
+      put "/account", UserController, :update
+      post "/account", UserController, :update
     end
 
     get "/account/activate/:email_activation_token", UserController, :activate_email
@@ -153,6 +154,8 @@ defmodule OmegaBraveraWeb.Router do
       resources "/emails", AdminPanelEmailsController, except: [:delete]
       get "/challenges", AdminPanelChallengesController, :index
 
+      live "/partners/:id/images", AdminPartnerImages
+
       resources "/partners", AdminPanelPartnerController, except: [:delete] do
         resources "/locations", AdminPanelPartnerLocationController, except: [:index]
       end
@@ -205,28 +208,21 @@ defmodule OmegaBraveraWeb.Router do
   end
 
   scope "/", OmegaBraveraWeb do
-    pipe_through(:browser)
+    pipe_through :browser
 
-    get("/signup", PageController, :signup)
-
-    get("/login", PageController, :login)
-    get("/login/:team_invitation", PageController, :login)
-
-    get("/404", PageController, :not_found)
-    get("/500", PageController, :not_found)
-
-    resources("/email-signup", UserController, only: [:new, :create])
-
-    resources("/teams", TeamController, only: [:new, :create, :show])
-
-    resources("/tips", TipController, only: [:new, :create, :show])
-
-    get("/", PageController, :index)
-
-    get("/ngos", NGOController, :index)
+    get "/signup", PageController, :signup
+    get "/login", PageController, :login
+    get "/login/:team_invitation", PageController, :login
+    get "/404", PageController, :not_found
+    get "/500", PageController, :not_found
+    resources "/email-signup", UserController, only: [:new, :create]
+    resources "/teams", TeamController, only: [:new, :create, :show]
+    resources "/tips", TipController, only: [:new, :create, :show]
+    get "/", PageController, :index
+    get "/ngos", NGOController, :index
 
     resources "/", NGOController, only: [:show], param: "slug" do
-      get("/leaderboard", NGOController, :leaderboard, param: "slug")
+      get "/leaderboard", NGOController, :leaderboard, param: "slug"
 
       resources "/", NGOChalController, only: [:show, :new, :create], param: "slug" do
         resources "/donations", DonationController, only: [:create]

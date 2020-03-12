@@ -5,10 +5,13 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   alias OmegaBravera.Offers.{Offer, OfferChallenge, OfferReward, OfferVendor}
   alias OmegaBravera.Accounts.User
 
+  @pending_status "pending"
+  @redeemed_status "redeemed"
+
   schema "offer_redeems" do
     field :token, :string
     # Can be pending or redeemed
-    field :status, :string, default: "pending"
+    field :status, :string, default: @pending_status
 
     belongs_to :offer_reward, OfferReward
     belongs_to :offer_challenge, OfferChallenge
@@ -115,7 +118,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
       equal_to: challenge_id,
       message: "Offer Challenge has no such redeem token."
     )
-    |> put_change(:status, "redeemed")
+    |> put_change(:status, @redeemed_status)
     |> validate_vendor(offer_vendor_id, input_vendor_id)
     |> validate_previously_redeemed(offer_redeem)
   end
@@ -144,7 +147,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
          %Ecto.Changeset{} = changeset,
          %__MODULE__{status: status}
        )
-       when status == "redeemed" do
+       when status == @redeemed_status do
     add_error(changeset, :status, "Reward previously redeemed.")
   end
 

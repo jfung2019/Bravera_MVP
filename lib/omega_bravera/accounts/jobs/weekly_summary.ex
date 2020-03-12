@@ -25,7 +25,8 @@ defmodule OmegaBravera.Accounts.Jobs.WeeklySummaryForUser do
       rewards_redeemed,
       friend_referrals,
       daily_goal_reached
-    ) |> IO.inspect()
+    )
+    |> IO.inspect()
   end
 
   def perform(args, _job) do
