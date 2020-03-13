@@ -14,6 +14,7 @@ defmodule OmegaBraveraWeb.Api.Query.PartnerLocationTest do
         introduction
         votes {
           user {
+            id
             profilePicture
           }
         }

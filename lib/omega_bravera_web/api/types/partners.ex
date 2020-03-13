@@ -27,6 +27,7 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
   end
 
   object :voter do
+    field :id, :id
     field :profile_picture, :string
   end
 end
