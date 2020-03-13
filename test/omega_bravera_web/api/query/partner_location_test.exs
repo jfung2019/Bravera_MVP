@@ -12,6 +12,11 @@ defmodule OmegaBraveraWeb.Api.Query.PartnerLocationTest do
       partner {
         name
         introduction
+        votes {
+          user {
+            profilePicture
+          }
+        }
         offers {
           name
         }

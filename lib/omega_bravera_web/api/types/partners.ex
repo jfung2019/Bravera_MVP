@@ -11,6 +11,7 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
     field :opening_times, non_null(:string)
     field :location, :partner_location, resolve: dataloader(Partners)
     field :offers, list_of(non_null(:offer)), resolve: dataloader(Offers)
+    field :votes, list_of(non_null(:partner_vote)), resolve: dataloader(Partners)
   end
 
   object :partner_location do
