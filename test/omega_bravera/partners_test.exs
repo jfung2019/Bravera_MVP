@@ -199,8 +199,11 @@ defmodule OmegaBravera.PartnersTest do
       assert %Ecto.Changeset{} = Partners.change_partner_vote(partner_vote)
     end
 
-    test "cannot create double votes for same user for same partner", %{vote:  %{user_id: user_id, partner_id: partner_id}} do
-      assert {:error, %Ecto.Changeset{}} = Partners.create_partner_vote(%{user_id: user_id, partner_id: partner_id})
+    test "cannot create double votes for same user for same partner", %{
+      vote: %{user_id: user_id, partner_id: partner_id}
+    } do
+      assert {:error, %Ecto.Changeset{}} =
+               Partners.create_partner_vote(%{user_id: user_id, partner_id: partner_id})
     end
   end
 

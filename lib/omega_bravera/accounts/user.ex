@@ -71,7 +71,9 @@ defmodule OmegaBravera.Accounts.User do
 
     many_to_many :teams, Team, join_through: "team_members"
 
-    many_to_many :offer_teams,OfferChallengeTeam, join_through: "offer_team_members", join_keys: [user_id: :id, team_id: :id]
+    many_to_many :offer_teams, OfferChallengeTeam,
+      join_through: "offer_team_members",
+      join_keys: [user_id: :id, team_id: :id]
 
     timestamps(type: :utc_datetime)
   end

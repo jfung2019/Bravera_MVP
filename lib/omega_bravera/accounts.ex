@@ -41,6 +41,11 @@ defmodule OmegaBravera.Accounts do
     if devices > 0, do: true, else: false
   end
 
+  def get_all_user_ids do
+    from(u in User, select: u.id)
+    |> Repo.all()
+  end
+
   def get_user_by_athlete_id(athlete_id) do
     from(u in User,
       join: s in Strava,

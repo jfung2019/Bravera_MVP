@@ -11,8 +11,10 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Partners do
       {:ok, _vote} ->
         votes = Partners.get_partner_votes(partner_id)
         {:ok, votes}
+
       {:error, changeset} ->
-        {:error, message: "Could not vote for partner", details: Helpers.transform_errors(changeset)}
+        {:error,
+         message: "Could not vote for partner", details: Helpers.transform_errors(changeset)}
     end
   end
 end

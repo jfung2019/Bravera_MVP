@@ -29,7 +29,9 @@ defmodule OmegaBravera.Points do
   Get a breakdown of all points in a certain day by a user.
   """
   def point_breakdown_by_day(day, user_id) do
-    from(p in Point, where: p.user_id == ^user_id and fragment("cast(? as date)", p.inserted_at) == ^day)
+    from(p in Point,
+      where: p.user_id == ^user_id and fragment("cast(? as date)", p.inserted_at) == ^day
+    )
     |> Repo.all()
   end
 
@@ -37,12 +39,12 @@ defmodule OmegaBravera.Points do
   Gets total points for user minus any spent points.
   """
   def total_points(user_id),
-      do:
-        Repo.aggregate(
-          from(p in Point, where: p.user_id == ^user_id, select: coalesce(p.value, 0.0)),
-          :sum,
-          :value
-        ) || Decimal.from_float(0.0)
+    do:
+      Repo.aggregate(
+        from(p in Point, where: p.user_id == ^user_id, select: coalesce(p.value, 0.0)),
+        :sum,
+        :value
+      ) || Decimal.from_float(0.0)
 
   @doc """
   Gets summary by day of user points with the points separated out.

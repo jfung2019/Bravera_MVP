@@ -180,7 +180,7 @@
 
   <div class="form-group">
   	<%= label f, :partner_id, "Partner" %>
-  	<%= select f, :partner_id, @available_partners, class: "form-control", prompt: "Choose partner" %>
+  	<%= select f, :partner_id, @available_partners, class: "form-control", prompt: "No partner" %>
   	<%= error_tag f, :partner_id %>
   </div>
 

@@ -18,7 +18,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.PartnerTest do
     credential = Fixtures.credential_fixture(user.id)
     partner = Fixtures.partner_fixture()
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-    {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"), partner: partner}
+
+    {:ok,
+     conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"),
+     partner: partner}
   end
 
   test "can vote for partner to have offers", %{conn: conn, partner: %{id: partner_id}} do

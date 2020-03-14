@@ -53,7 +53,7 @@ defmodule OmegaBraveraWeb.Api.Query.PointsTest do
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
     {:ok,
-      user: credential.user, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}
+     user: credential.user, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}
   end
 
   test "can get points balance from current user", %{conn: conn} do
@@ -64,7 +64,9 @@ defmodule OmegaBraveraWeb.Api.Query.PointsTest do
   end
 
   test "can get points breakdown from a day", %{conn: conn} do
-    response = post(conn, "/api", %{query: @points_breakdown_query, variables: %{"day" => "2020-03-09"}})
+    response =
+      post(conn, "/api", %{query: @points_breakdown_query, variables: %{"day" => "2020-03-09"}})
+
     assert %{"data" => %{"userPointDayBreakdown" => []}} = json_response(response, 200)
   end
 end
