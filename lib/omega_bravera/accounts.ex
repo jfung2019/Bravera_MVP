@@ -895,7 +895,7 @@ defmodule OmegaBravera.Accounts do
     from(u in User,
       where:
         u.referred_by_id == ^user_id and
-          fragment("? BETWEEN ? and ?", u.inserted_at, ^today, ^one_week_ago)
+          fragment("? BETWEEN ? and ?", u.inserted_at, ^one_week_ago, ^today)
     )
     |> Repo.aggregate(:count, :id)
   end

@@ -70,7 +70,7 @@ defmodule OmegaBravera.Points do
 
     from(p in Point,
       where:
-        fragment("cast(? as date) BETWEEN ? and ?", p.inserted_at, ^today, ^one_week_ago) and
+        fragment("cast(? as date) BETWEEN ? and ?", p.inserted_at, ^one_week_ago, ^today) and
           p.user_id == ^user_id,
       select: %{value: sum(p.value), day: fragment("cast(inserted_at as date) as day")},
       group_by: fragment("day")

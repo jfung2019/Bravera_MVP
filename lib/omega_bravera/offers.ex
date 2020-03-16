@@ -1039,7 +1039,7 @@ defmodule OmegaBravera.Offers do
     from(o in OfferChallenge,
       where:
         o.status == "complete" and o.user_id == ^user_id and
-          fragment("? BETWEEN ? and ?", o.updated_at, ^today, ^one_week_ago)
+          fragment("? BETWEEN ? and ?", o.updated_at, ^one_week_ago, ^today)
     )
     |> Repo.aggregate(:count, :id)
   end
@@ -1051,7 +1051,7 @@ defmodule OmegaBravera.Offers do
     from(r in OfferRedeem,
       where:
         r.status == "redeemed" and r.user_id == ^user_id and
-          fragment("? BETWEEN ? and ?", r.updated_at, ^today, ^one_week_ago)
+          fragment("? BETWEEN ? and ?", r.updated_at, ^one_week_ago, ^today)
     )
     |> Repo.aggregate(:count, :id)
   end
