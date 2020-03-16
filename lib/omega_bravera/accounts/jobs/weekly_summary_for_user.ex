@@ -12,7 +12,8 @@ defmodule OmegaBravera.Accounts.Jobs.WeeklySummaryForUser do
     points_over_week = Points.get_user_points_one_week(user_id)
     last_week_total_points = Enum.reduce(points_over_week, Decimal.new(0), fn %{value: v}, acc -> Decimal.add(v, acc) end)
 
-    max = Decimal.new(80)
+    # max is daily point limit of user (in km) * 10
+    max = Decimal.new(user.daily_points_limit * 10)
     daily_goal_reached =
       Enum.filter(points_over_week, fn %{value: v} -> Decimal.cmp(v, max) != :lt end) |> Enum.count()
 
