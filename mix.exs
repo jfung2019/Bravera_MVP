@@ -78,8 +78,8 @@ defmodule OmegaBravera.Mixfile do
       {:dataloader, "~> 1.0.7"},
       {:turbo_ecto, "~> 0.5.0"},
       {:turbo_html, "~> 0.2.0"},
-      {:oban, "~> 1.2"},
-      {:oban_web, "~> 1.3", organization: "oban"}
+      {:oban, github: "sorentwo/oban", ref: "f0124f323ee5740471fa4f855f731727ff6ef0bd", override: true},
+      {:oban_web, "~> 1.3", organization: "oban", override: true}
     ]
   end
 
