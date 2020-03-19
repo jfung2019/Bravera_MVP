@@ -17,7 +17,12 @@ defmodule OmegaBravera.Application do
       {ObanWeb, Application.get_env(:omega_bravera, ObanWeb)}
     ]
 
-    :ok = Oban.Telemetry.attach_default_logger()
+    :telemetry.attach_many(
+      "oban-logger",
+      [[:oban, :started], [:oban, :success], [:oban, :failure]],
+      &OmegaBravera.ObanLogger.handle_event/4,
+      []
+    )
 
     children =
       case Application.get_env(:omega_bravera, :env) do
