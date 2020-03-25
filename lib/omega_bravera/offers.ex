@@ -1055,4 +1055,17 @@ defmodule OmegaBravera.Offers do
     )
     |> Repo.aggregate(:count, :id)
   end
+
+  def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
+
+  def query(Offer, %{scope: :public_available}) do
+    now = Timex.now("Asia/Hong_Kong")
+    from(
+      offer in Offer,
+      where: offer.hidden == false and offer.end_date > ^now,
+      order_by: [desc: offer.id],
+    )
+  end
+
+  def query(queryable, _), do: queryable
 end

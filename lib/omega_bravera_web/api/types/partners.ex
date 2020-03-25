@@ -1,6 +1,6 @@
 defmodule OmegaBraveraWeb.Api.Types.Partners do
   use Absinthe.Schema.Notation
-  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
   alias OmegaBravera.{Partners, Offers}
 
   object :partner do
@@ -10,7 +10,7 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
     field :name, non_null(:string)
     field :opening_times, non_null(:string)
     field :location, :partner_location, resolve: dataloader(Partners)
-    field :offers, list_of(non_null(:offer)), resolve: dataloader(Offers)
+    field :offers, list_of(non_null(:offer)), resolve: dataloader(Offers, :offers, args: %{scope: :public_available})
     field :votes, list_of(non_null(:partner_vote)), resolve: dataloader(Partners)
   end
 

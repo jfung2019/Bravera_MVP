@@ -292,7 +292,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     loader =
       Dataloader.new()
-      |> Dataloader.add_source(OmegaBravera.Offers, source)
+      |> Dataloader.add_source(OmegaBravera.Offers, OmegaBravera.Offers.datasource())
       |> Dataloader.add_source(OmegaBravera.Partners, source)
 
     Map.put(ctx, :loader, loader)
