@@ -75,6 +75,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :total_rewards, non_null(:integer)
     field :total_kilometers, non_null(:decimal)
     field :total_kilometers_this_week, non_null(:decimal)
+    field :daily_points_limit, non_null(:integer)
     field :total_challenges, non_null(:integer)
     field :offer_challenges_map, :offer_challenges_map
     field :profile_picture, :string
