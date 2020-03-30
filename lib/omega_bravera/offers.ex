@@ -1063,7 +1063,7 @@ defmodule OmegaBravera.Offers do
     from(
       offer in Offer,
       where: offer.hidden == false and offer.end_date > ^now,
-      order_by: [desc: offer.id],
+      order_by: [desc: offer.id]
     )
   end
 

@@ -9,7 +9,7 @@
 				</tr>
 				<tr>
 					<td>Opening Times</td>
-					<td><%= @partner.opening_times %></td>
+					<td><%= {:safe, @partner.opening_times} %></td>
 				</tr>
 			</tbody>
 		</table>
