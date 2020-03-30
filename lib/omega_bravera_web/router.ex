@@ -120,11 +120,6 @@ defmodule OmegaBraveraWeb.Router do
     plug :put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
-  scope "/admin" do
-    pipe_through [:admin_section, :admin_authenticated]
-    live "/jobs", ObanWeb.DashboardLive, layout: {ObanWeb.LayoutView, "app.html"}
-  end
-
   scope "/admin", OmegaBraveraWeb do
     pipe_through [:admin_section]
     resources "/sessions", AdminUserSessionController, only: [:new, :create]

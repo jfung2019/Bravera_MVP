@@ -52,4 +52,3 @@ config :omega_bravera,
   upload_manager: OmegaBravera.UploadManagerMock
 
 config :omega_bravera, Oban, crontab: false, queues: false, prune: :disabled
-config :omega_bravera, ObanWeb, stats: false

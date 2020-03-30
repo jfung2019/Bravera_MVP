@@ -50,10 +50,6 @@ config :omega_bravera, Oban,
   prune: {:maxlen, 10_000},
   queues: [default: 10, email: 10]
 
-config :omega_bravera, ObanWeb,
-  repo: OmegaBravera.Repo,
-  stats: true
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
