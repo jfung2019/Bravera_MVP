@@ -19,7 +19,6 @@ defmodule OmegaBravera.Partners.Partner do
   def changeset(partner, attrs) do
     partner
     |> cast(attrs, [:name, :introduction, :opening_times, :images])
-    |> validate_length(:introduction, max: 255)
     |> validate_length(:name, max: 255)
     |> validate_required([:name, :introduction, :opening_times, :images])
   end

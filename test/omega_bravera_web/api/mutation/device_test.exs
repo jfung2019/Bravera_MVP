@@ -89,6 +89,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
     device_uuid = "aasas1231"
     user = insert(:user, %{email: "other_user@email.com"})
     OmegaBravera.Devices.create_device(%{active: true, user_id: user.id, uuid: device_uuid})
+
     response =
       post(
         conn,

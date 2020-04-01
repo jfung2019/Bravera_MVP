@@ -5,7 +5,7 @@
 			<tbody>
 				<tr>
 					<td>Intro</td>
-					<td><%= @partner.introduction %></td>
+					<td><%= {:safe, @partner.introduction} %></td>
 				</tr>
 				<tr>
 					<td>Opening Times</td>
