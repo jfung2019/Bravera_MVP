@@ -26,29 +26,29 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :send_reset_password_code_result do
-    field(:status, :string)
+    field :status, :string
   end
 
   object :verify_reset_password_code_result do
-    field(:status, :string)
+    field :status, :string
   end
 
   object :delete_profile_picture_result do
-    field(:status, :string)
+    field :status, :string
   end
 
   object :forgot_password_change_password_result do
-    field(:status, :string)
+    field :status, :string
   end
 
   input_object :user_settings_input do
-    field(:email, non_null(:string))
-    field(:firstname, non_null(:string))
-    field(:lastname, non_null(:string))
-    field(:locale, non_null(:string))
-    field(:location_id, non_null(:integer))
-    field(:credential, :credential)
-    field(:setting, non_null(:setting_input))
+    field :email, non_null(:string)
+    field :firstname, non_null(:string)
+    field :lastname, non_null(:string)
+    field :locale, non_null(:string)
+    field :location_id, non_null(:integer)
+    field :credential, :credential
+    field :setting, non_null(:setting_input)
   end
 
   input_object :setting_input do
@@ -57,7 +57,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :strava do
-    field(:strava_profile_picture, :string)
+    field :strava_profile_picture, :string
   end
 
   object :user_profile do

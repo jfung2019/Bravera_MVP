@@ -16,6 +16,6 @@ defmodule OmegaBravera.Devices.Device do
     device
     |> cast(attrs, [:uuid, :active, :user_id])
     |> validate_required([:uuid, :active, :user_id])
-    |> unique_constraint(:uuid, name: :device_exists_in_db)
+    |> unique_constraint(:uuid, name: :device_exists_for_user)
   end
 end

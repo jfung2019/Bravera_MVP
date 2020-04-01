@@ -71,9 +71,9 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "Register a new user device."
     field :register_device, :register_device_result do
-      arg(:input, non_null(:register_device_input))
-      middleware(Middleware.Authenticate)
-      resolve(&Resolvers.Devices.register_device/3)
+      arg :input, non_null(:register_device_input)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Devices.register_device/3
     end
 
     @desc "Authenticate and receive an authorization token and a user."

@@ -1060,6 +1060,7 @@ defmodule OmegaBravera.Offers do
 
   def query(Offer, %{scope: :public_available}) do
     now = Timex.now("Asia/Hong_Kong")
+
     from(
       offer in Offer,
       where: offer.hidden == false and offer.end_date > ^now,
