@@ -1,6 +1,6 @@
 defmodule OmegaBraveraWeb.Api.Types.Account do
   use Absinthe.Schema.Notation
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.{Accounts, Points}
 
   object :user do
     field :id, non_null(:id)
@@ -26,29 +26,29 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :send_reset_password_code_result do
-    field(:status, :string)
+    field :status, :string
   end
 
   object :verify_reset_password_code_result do
-    field(:status, :string)
+    field :status, :string
   end
 
   object :delete_profile_picture_result do
-    field(:status, :string)
+    field :status, :string
   end
 
   object :forgot_password_change_password_result do
-    field(:status, :string)
+    field :status, :string
   end
 
   input_object :user_settings_input do
-    field(:email, non_null(:string))
-    field(:firstname, non_null(:string))
-    field(:lastname, non_null(:string))
-    field(:locale, non_null(:string))
-    field(:location_id, non_null(:integer))
-    field(:credential, :credential)
-    field(:setting, non_null(:setting_input))
+    field :email, non_null(:string)
+    field :firstname, non_null(:string)
+    field :lastname, non_null(:string)
+    field :locale, non_null(:string)
+    field :location_id, non_null(:integer)
+    field :credential, :credential
+    field :setting, non_null(:setting_input)
   end
 
   input_object :setting_input do
@@ -57,7 +57,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :strava do
-    field(:strava_profile_picture, :string)
+    field :strava_profile_picture, :string
   end
 
   object :user_profile do
@@ -68,7 +68,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
     field :total_points, non_null(:decimal),
       resolve: fn _parent, %{source: %{id: user_id}} ->
-        {:ok, Accounts.total_points(user_id)}
+        {:ok, Points.total_points(user_id)}
       end
 
     field :total_points_this_week, non_null(:decimal)
@@ -91,9 +91,9 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
         {:ok, Accounts.past_redeems(user_id)}
       end
 
-    field :points_history, list_of(:point),
+    field :points_history, list_of(:point_summary),
       resolve: fn _parent, %{source: %{id: user_id}} ->
-        {:ok, Accounts.user_points_history(user_id)}
+        {:ok, Points.user_points_history_summary(user_id)}
       end
 
     field :email_verified, non_null(:boolean)
@@ -101,7 +101,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   object :user_points_with_history do
     field :balance, non_null(:decimal)
-    field :history, non_null(list_of(:point))
+    field :history, non_null(list_of(:point_summary))
   end
 
   object :user_session do

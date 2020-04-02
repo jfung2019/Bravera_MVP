@@ -6,7 +6,7 @@
 
     <div class="col-sm-8">
         <%= if is_nil(@user.strava) do %>
-            <%= gettext("We currently support Strava.") %> <%= link(gettext("Connect Strava Account"), to: strava_path(@conn, :connect_strava_account, %{"redirect_to" => @redirect_to}), class: "btn btn-bravera mx-auto", role: "button") %>
+            <%= gettext("We currently support Strava.") %> <%= link(gettext("Connect Strava Account"), to: Routes.strava_path(@conn, :connect_strava_account, %{"redirect_to" => @redirect_to}), class: "btn btn-bravera mx-auto", role: "button") %>
         <% else %>
             <%= gettext("Your Strava Account is connected!") %>
         <% end %>

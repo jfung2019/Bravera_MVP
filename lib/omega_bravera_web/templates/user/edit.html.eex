@@ -3,7 +3,7 @@
     <div class="col-sm-8">
       <h2><%= gettext("Edit Account") %></h2>
 
-      <%= render "form.html", Map.put(assigns, :action, user_path(@conn, :update)) %>
+      <%= render "form.html", Map.put(assigns, :action, Routes.user_path(@conn, :update)) %>
     </div>
   </div>
 </div>

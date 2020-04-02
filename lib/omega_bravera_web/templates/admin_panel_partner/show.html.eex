@@ -1,0 +1,53 @@
+<div class="row">
+	<div class="col-6 offset-3">
+		<h1><%= @partner.name %></h1>
+		<table class="table">
+			<tbody>
+				<tr>
+					<td>Intro</td>
+					<td><%= {:safe, @partner.introduction} %></td>
+				</tr>
+				<tr>
+					<td>Opening Times</td>
+					<td><%= {:safe, @partner.opening_times} %></td>
+				</tr>
+			</tbody>
+		</table>
+		<%= if @partner.location do %>
+		  <%= link "Edit Location", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :edit, @partner, @partner.location), class: "btn btn-warning" %>
+		  <%= link "Delete Location", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :delete, @partner, @partner.location), method: :delete, class: "ml-2 btn btn-danger" %>
+		  <table class="table">
+		  	<tbody>
+		  		<tr>
+		  			<td>Address</td>
+		  			<td><%= @partner.location.address %></td>
+				</tr>
+				<tr>
+					<td>Latitude</td>
+					<td><%= @partner.location.latitude %></td>
+				</tr>
+				<tr>
+					<td>Longitude</td>
+					<td><%= @partner.location.longitude %></td>
+				</tr>
+			</tbody>
+		  </table>
+		<% else %>
+		  <%= link "Add Location", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :new, @partner) %><br>
+		<% end %>
+		<%= if length(@partner.offers) > 0 do %>
+		  <table class="table">
+		  	<tbody>
+		  		<%= for offer <- @partner.offers do %>
+		  		  <tr>
+		  		  	<td><%= offer.name %> <%= link "Edit Offer", to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning" %></td>
+				  </tr>
+		  		<% end %>
+			</tbody>
+		  </table>
+		  <% else %>
+		    <%= link "Choose offer to attach", to: Routes.admin_panel_offer_path(@conn, :index) %><br>
+		 <% end %>
+		 <%= link "Add/Edit partner images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, @partner) %>
+	</div>
+</div>

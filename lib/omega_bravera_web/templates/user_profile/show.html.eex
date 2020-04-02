@@ -1,13 +1,13 @@
 <div class="container user-profile">
   <div class="row">
     <div class="col-6 col-sm-3 float-right profile-pic-padding">
-      <%= img_tag(profile_picture_or_default(@user, static_path(@conn, "/images/profile_default.jpeg")), class: "img-thumbnail") %>
+      <%= img_tag(profile_picture_or_default(@user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: "img-thumbnail") %>
     </div>
   </div>
 
   <div class="row">
     <div class="col col-sm-4 mt-3">
-        <%= form_for @changeset, user_profile_path(@conn, :update_profile_picture), [multipart: true], fn f -> %>
+        <%= form_for @changeset, Routes.user_profile_path(@conn, :update_profile_picture), [multipart: true], fn f -> %>
         <div class="input-group">
           <div class="input-group-prepend">
             <span class="input-group-text"><%= gettext("Change") %></span>
@@ -45,12 +45,12 @@
 <div class="row">
   <div class="col-5"><h5><%= gettext("Offer Challenges") %>:</h5></div>
   <div class="col-7 mt-1">
-    <%= img_tag(static_path(@conn, "/images/icons/if_ic_screen_rotation_48px.png")) %>
+    <%= img_tag(Routes.static_path(@conn, "/images/icons/if_ic_screen_rotation_48px.png")) %>
     <span class="small"><%= gettext("Turn your mobile screen for better view.") %></span>
   </div>
 </div>
 <div class="row">
-  <div class="col-5 ml-1"><%= link(gettext("Take another offer challenge"), to: offer_path(@conn, :index)) %></div>
+  <div class="col-5 ml-1"><%= link(gettext("Take another offer challenge"), to: Routes.offer_path(@conn, :index)) %></div>
 </div>
 <br />
 
@@ -111,7 +111,7 @@
 <% else %>
 
   <p><%= gettext("You did not join any teams yet!") %>
-    <%= link(gettext("here!"), to: offer_path(@conn, :index)) %>
+    <%= link(gettext("here!"), to: Routes.offer_path(@conn, :index)) %>
   </p>
 <% end %>
 
@@ -120,7 +120,7 @@
 
   <div class="row">
     <div class="col-5"><h5><%= gettext("Solo Charity Challenges") %>:</h5></div>
-    <div class="col-5 ml-1"><%= link(gettext("Take another challenge"), to: ngo_path(@conn, :index)) %></div>
+    <div class="col-5 ml-1"><%= link(gettext("Take another challenge"), to: Routes.ngo_path(@conn, :index)) %></div>
   </div>
   <br />
 
@@ -168,7 +168,7 @@
               <%= challenge.distance_covered %> KM
             </div>
             <div class="col-sm-2">
-              <%= link("View", to: ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>
+              <%= link("View", to: Routes.ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>
             </div>
           </div>
         </div>
@@ -181,7 +181,7 @@
 <% else %>
 
   <p><%= gettext("You have no challenges yet. You can go and create you own") %>
-  <%= link("here!", to: ngo_path(@conn, :index)) %>
+  <%= link("here!", to: Routes.ngo_path(@conn, :index)) %>
   </p>
 
 <% end %>
@@ -236,7 +236,7 @@
               <%= challenge.distance_covered %> KM
             </div>
             <div class="col-sm-2">
-              <%= link("View", to: ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>
+              <%= link("View", to: Routes.ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug)) %>
             </div>
           </div>
         </div>
@@ -249,7 +249,7 @@
 <% else %>
 
   <p><%= gettext("You have no challenges yet. You can go and create you own") %>
-  <%= link(gettext("here!"), to: ngo_path(@conn, :index)) %>
+  <%= link(gettext("here!"), to: Routes.ngo_path(@conn, :index)) %>
   </p>
 
 <% end %>
@@ -304,7 +304,7 @@
               <%= team_membership.team.challenge.distance_covered %> KM
             </div>
             <div class="col-sm-2">
-              <%= link(gettext("View"), to: ngo_ngo_chal_path(@conn, :show, team_membership.team.challenge.ngo.slug, team_membership.team.challenge.slug)) %>
+              <%= link(gettext("View"), to: Routes.ngo_ngo_chal_path(@conn, :show, team_membership.team.challenge.ngo.slug, team_membership.team.challenge.slug)) %>
             </div>
           </div>
         </div>
@@ -317,7 +317,7 @@
 <% else %>
 
   <p><%= gettext("You did not join any teams yet!") %>
-    <%= link(gettext("here!"), to: ngo_path(@conn, :index)) %>
+    <%= link(gettext("here!"), to: Routes.ngo_path(@conn, :index)) %>
   </p>
 <% end %>
 

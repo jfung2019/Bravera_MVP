@@ -18,13 +18,13 @@
       <td><%= user.lastname %></td>
 
       <td class="text-right">
-        <span><%= link gettext("Show"), to: user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
-        <span><%= link gettext("Edit"), to: user_path(@conn, :edit, user), class: "btn btn-default btn-xs" %></span>
-        <span><%= link gettext("Delete"), to: user_path(@conn, :delete, user), method: :delete, data: [confirm: gettext("Are you sure?")], class: "btn btn-danger btn-xs" %></span>
+        <span><%= link gettext("Show"), to: Routes.user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
+        <span><%= link gettext("Edit"), to: Routes.user_path(@conn, :edit, user), class: "btn btn-default btn-xs" %></span>
+        <span><%= link gettext("Delete"), to: Routes.user_path(@conn, :delete, user), method: :delete, data: [confirm: gettext("Are you sure?")], class: "btn btn-danger btn-xs" %></span>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<span><%= link "New User", to: user_path(@conn, :new) %></span>
+<span><%= link "New User", to: Routes.user_path(@conn, :new) %></span>

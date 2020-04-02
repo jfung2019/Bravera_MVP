@@ -50,3 +50,5 @@ config :omega_bravera,
   # Manual activities
   enable_manual_activities: false,
   upload_manager: OmegaBravera.UploadManagerMock
+
+config :omega_bravera, Oban, crontab: false, queues: false, prune: :disabled

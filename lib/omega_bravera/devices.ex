@@ -151,6 +151,9 @@ defmodule OmegaBravera.Devices do
     Device.changeset(device, %{})
   end
 
+  @doc """
+  Finds a device by both user and the UUID of their device.
+  """
   def find_device(user_id, uuid, repo \\ Repo) do
     from(d in Device, where: d.user_id == ^user_id and d.uuid == ^uuid)
     |> repo.one()

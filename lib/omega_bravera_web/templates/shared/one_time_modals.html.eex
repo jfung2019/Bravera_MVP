@@ -18,7 +18,7 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse2.png"), alt: "#{gettext("Welcome to Bravera!")}", class: "mx-auto") %>
+            <%= img_tag(Routes.static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse2.png"), alt: "#{gettext("Welcome to Bravera!")}", class: "mx-auto") %>
           </div>
 
         </div>
@@ -47,7 +47,7 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse3.png"), alt: "#{gettext("Raise money for your chosen NGO.")}", class: "mx-auto") %>
+            <%= img_tag(Routes.static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse3.png"), alt: "#{gettext("Raise money for your chosen NGO.")}", class: "mx-auto") %>
           </div>
 
         </div>
@@ -76,7 +76,7 @@
           </div>
 
           <div class="row mx-auto align-items-center">
-            <%= img_tag(static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse4.png"), alt: "#{gettext("Get rewards from our partnets")}", class: "mx-auto") %>
+            <%= img_tag(Routes.static_path(OmegaBraveraWeb.Endpoint, "/images/modals/ellipse4.png"), alt: "#{gettext("Get rewards from our partnets")}", class: "mx-auto") %>
           </div>
 
         </div>
@@ -105,11 +105,11 @@
             </div>
 
             <div class="row mx-auto align-items-center">
-              <%= img_tag(static_path(@conn, "/images/modals/ellipse5.png"), alt: "#{gettext("Connect your Strava account and get started!")}", class: "mx-auto") %>
+              <%= img_tag(Routes.static_path(@conn, "/images/modals/ellipse5.png"), alt: "#{gettext("Connect your Strava account and get started!")}", class: "mx-auto") %>
             </div>
 
             <div class="row mx-auto align-items-center mt-3 mb-3">
-              <%= link("Connect Strava Account", to: strava_path(@conn, :connect_strava_account), class: "btn btn-bravera mx-auto", role: "button") %>
+              <%= link("Connect Strava Account", to: Routes.strava_path(@conn, :connect_strava_account), class: "btn btn-bravera mx-auto", role: "button") %>
             </div>
 
             <div class="row mx-auto align-items-center">

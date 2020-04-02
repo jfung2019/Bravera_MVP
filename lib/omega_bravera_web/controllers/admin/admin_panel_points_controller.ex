@@ -14,7 +14,7 @@ defmodule OmegaBraveraWeb.AdminPanelPointsController do
       {:ok, _point} ->
         conn
         |> put_flash(:info, "Successfully created point!")
-        |> redirect(to: admin_user_page_path(conn, :index))
+        |> redirect(to: Routes.admin_user_page_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         users = Accounts.list_users()

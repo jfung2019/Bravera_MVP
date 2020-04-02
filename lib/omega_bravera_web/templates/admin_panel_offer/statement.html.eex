@@ -1,6 +1,6 @@
 <div class="row mt-2 mb-2 mx-auto">
       <div class="col-4">
-    <%= form_for @conn, admin_panel_offer_path(@conn, :export_statement, @offer_slug), [as: :start_date, method: :get], fn _f -> %>
+    <%= form_for @conn, Routes.admin_panel_offer_path(@conn, :export_statement, @offer_slug), [as: :start_date, method: :get], fn _f -> %>
       <select class="custom-select mb-2" name="month" required>
         <option value="">Month</option>
         <option value='1'>January</option>
@@ -66,5 +66,5 @@
 </section>
 
 <div class="col-1">
-  <span><%= link "Back", to: admin_panel_ngo_path(@conn, :index), class: "btn btn-success mt-3" %></span>
+  <span><%= link "Back", to: Routes.admin_panel_ngo_path(@conn, :index), class: "btn btn-success mt-3" %></span>
 </div>

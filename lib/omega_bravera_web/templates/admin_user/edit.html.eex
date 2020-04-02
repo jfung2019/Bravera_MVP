@@ -2,8 +2,8 @@
 	<div class="col-6 offset-3">
 		<h2>Edit Admin User</h2>
 
-		<%= render "form.html", Map.put(assigns, :action, admin_user_path(@conn, :update, @admin_user)) %>
+		<%= render "form.html", Map.put(assigns, :action, Routes.admin_user_path(@conn, :update, @admin_user)) %>
 
-		<span><%= link "Back", to: admin_user_path(@conn, :index) %></span>
+		<span><%= link "Back", to: Routes.admin_user_path(@conn, :index) %></span>
 	</div>
 </div>

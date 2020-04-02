@@ -12,15 +12,15 @@
           </p>
           <div class="text-center text-md-left">
             <a href="https://bit.ly/Bravera-iOS">
-              <%= img_tag(static_path(@conn, "/images/store/apple/en.svg"), style: "width: 160px; height: 47px;") %>
+              <%= img_tag(Routes.static_path(@conn, "/images/store/apple/en.svg"), style: "width: 160px; height: 47px;") %>
             </a>
             <a href="https://bit.ly/Bravera-Android">
-              <%= img_tag(static_path(@conn, "/images/store/google/en.png"), style: "width: 160px; height: 70px;") %>
+              <%= img_tag(Routes.static_path(@conn, "/images/store/google/en.png"), style: "width: 160px; height: 70px;") %>
             </a>
           </div>
         </div>
         <div class="col-md-6 col-12 offset-md-1">
-          <%= img_tag(static_path(@conn, "/images/bg.jpg"), class: "img-fluid rounded") %>
+          <%= img_tag(Routes.static_path(@conn, "/images/bg.jpg"), class: "img-fluid rounded") %>
         </div>
       </div>
     </div>

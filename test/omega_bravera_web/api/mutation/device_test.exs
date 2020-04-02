@@ -8,8 +8,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
   @query """
-  mutation($uuid: String!, $active: Boolean!){
-    registerDevice(input: {uuid: $uuid, active: $active}) {
+  mutation($input: RegisterDeviceInput!){
+    registerDevice(input: $input) {
       token
       expiresAt
     }
@@ -40,16 +40,15 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
   end
 
   test "register_device/3 can register device and return its token more than once", %{conn: conn} do
+    device_uuid = "aasas1231"
+
     response =
       post(
         conn,
         "/api",
         %{
           query: @query,
-          variables: %{
-            "uuid" => "aasas1231",
-            "active" => true
-          }
+          variables: %{"input" => %{"uuid" => device_uuid, "active" => true}}
         }
       )
 
@@ -62,7 +61,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
              }
            } = json_response(response, 200)
 
-    assert {:ok, {:device_uuid, "aasas1231"}} == OmegaBraveraWeb.Api.Auth.decrypt_token(token)
+    assert {:ok, {:device_uuid, ^device_uuid}} = OmegaBraveraWeb.Api.Auth.decrypt_token(token)
 
     response =
       post(
@@ -70,10 +69,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
         "/api",
         %{
           query: @query,
-          variables: %{
-            "uuid" => "aasas1231",
-            "active" => true
-          }
+          variables: %{"input" => %{"uuid" => device_uuid, "active" => true}}
         }
       )
 
@@ -86,6 +82,31 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
              }
            } = json_response(response, 200)
 
-    assert {:ok, {:device_uuid, "aasas1231"}} == OmegaBraveraWeb.Api.Auth.decrypt_token(token)
+    assert {:ok, {:device_uuid, ^device_uuid}} = OmegaBraveraWeb.Api.Auth.decrypt_token(token)
+  end
+
+  test "register_device/3 will let a device be registered to more than one user", %{conn: conn} do
+    device_uuid = "aasas1231"
+    user = insert(:user, %{email: "other_user@email.com"})
+    OmegaBravera.Devices.create_device(%{active: true, user_id: user.id, uuid: device_uuid})
+
+    response =
+      post(
+        conn,
+        "/api",
+        %{
+          query: @query,
+          variables: %{"input" => %{"uuid" => device_uuid, "active" => true}}
+        }
+      )
+
+    assert %{
+             "data" => %{
+               "registerDevice" => %{
+                 "expiresAt" => _expires_at,
+                 "token" => token
+               }
+             }
+           } = json_response(response, 200)
   end
 end

@@ -21,23 +21,23 @@
 
         <%= if immediate_donation?(@challenge) do %>
           <div id="donation-form" class="donation-form mt-4">
-            <%= render "follow_on_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create_and_charge_follow_on_donation, @challenge.ngo.slug, @challenge.slug)) %>
+            <%= render "follow_on_donation_form.html", Map.put(assigns, :action, Routes.ngo_ngo_chal_donation_path(@conn, :create_and_charge_follow_on_donation, @challenge.ngo.slug, @challenge.slug)) %>
           </div>
         <% else %>
 
           <%= if active_challenge?(@challenge) or pre_registration_challenge?(@challenge) do %>
             <div id="donation-form" class="donation-form mt-4">
               <%= if @challenge.type == "PER_MILESTONE" do %>
-                <%= render "milestone_challenge_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
+                <%= render "milestone_challenge_donation_form.html", Map.put(assigns, :action, Routes.ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
               <% end %>
 
               <%= if @challenge.type == "PER_KM" do %>
-                <%= render "km_challenge_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
+                <%= render "km_challenge_donation_form.html", Map.put(assigns, :action, Routes.ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
               <% end %>
             </div>
           <% else %>
               <div id="donation-form" class="donation-form mt-4">
-                <%= render "follow_on_donation_form.html", Map.put(assigns, :action, ngo_ngo_chal_donation_path(@conn, :create_and_charge_follow_on_donation, @challenge.ngo.slug, @challenge.slug)) %>
+                <%= render "follow_on_donation_form.html", Map.put(assigns, :action, Routes.ngo_ngo_chal_donation_path(@conn, :create_and_charge_follow_on_donation, @challenge.ngo.slug, @challenge.slug)) %>
               </div>
           <% end %>
 
@@ -49,7 +49,7 @@
             <h4><%= gettext("Latest Supporters") %></h4>
             <%= if length(@donors) > 0 do %>
               <%= render(OmegaBraveraWeb.DonationView, "_donation.html", assigns) %>
-              <%= link("View all", to: ngo_ngo_chal_donation_path(@conn, :index, @challenge.ngo.slug, @challenge.slug)) %>
+              <%= link("View all", to: Routes.ngo_ngo_chal_donation_path(@conn, :index, @challenge.ngo.slug, @challenge.slug)) %>
             <% else %>
               <div>
                 <a href="#donation-form">
@@ -62,7 +62,7 @@
             <h4> <%= gettext("%{firstname}'s Latest Activities", firstname: user_firstname_or_team_name(@challenge)) %></h4>
             <%= if length(@activities) > 0 do %>
               <%= render(OmegaBraveraWeb.ActivityView, "_activity.html", assigns) %>
-              <%= link("View all", to: ngo_ngo_chal_activity_path(@conn, :index, @challenge.ngo.slug, @challenge.slug)) %>
+              <%= link("View all", to: Routes.ngo_ngo_chal_activity_path(@conn, :index, @challenge.ngo.slug, @challenge.slug)) %>
             <% else %>
 
               <%= if @challenge.has_team == true do %>
@@ -74,7 +74,7 @@
             <% end %>
           </div>
           <div class="card-body text-center mx-3 pb-2">
-            <h6><%= link("View Leaderboard", to: ngo_ngo_path(@conn, :leaderboard, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %></h6>
+            <h6><%= link("View Leaderboard", to: Routes.ngo_ngo_path(@conn, :leaderboard, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %></h6>
           </div>
         </div>
 
@@ -86,10 +86,10 @@
           </div>
           <div class="card-footer text-center">
             <%= if is_own_challenge?(@challenge, @current_user) do %>
-              <%= link(gettext("View Challenges"), to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View Challenges"), to: Routes.ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% else %>
-              <%= link(gettext("Join the Challenge"), to: ngo_ngo_chal_path(@conn, :new, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %>
-              <%= link(gettext("View Challenges"), to: ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("Join the Challenge"), to: Routes.ngo_ngo_chal_path(@conn, :new, @challenge.ngo.slug), class: "btn btn-bravera mb-2") %>
+              <%= link(gettext("View Challenges"), to: Routes.ngo_path(@conn, :index), class: "btn btn-bravera mb-2") %>
             <% end %>
           </div>
         </div>

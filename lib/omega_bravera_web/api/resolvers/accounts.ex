@@ -349,11 +349,6 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   def latest_live_challenges(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Accounts.user_live_challenges(user_id)}
 
-  def latest_points_with_history(_root, _args, %{context: %{current_user: %{id: user_id}}}),
-    do:
-      {:ok,
-       %{balance: Accounts.total_points(user_id), history: Accounts.user_points_history(user_id)}}
-
   def latest_future_redeems(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Accounts.future_redeems(user_id)}
 

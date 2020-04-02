@@ -25,19 +25,19 @@ defmodule OmegaBravera.Accounts.User do
   ]
 
   schema "users" do
-    field(:email, :string)
-    field(:email_verified, :boolean, default: false)
-    field(:email_activation_token, :string)
-    field(:firstname, :string)
-    field(:lastname, :string)
-    field(:locale, :string, default: "en")
+    field :email, :string
+    field :email_verified, :boolean, default: false
+    field :email_activation_token, :string
+    field :firstname, :string
+    field :lastname, :string
+    field :locale, :string, default: "en"
     # Represents KMs
-    field(:daily_points_limit, :integer, default: 8)
-    field(:additional_info, :map, default: %{})
-    field(:profile_picture, :string, default: nil)
-    field(:accept_terms, :boolean, virtual: true)
-    field(:todays_points, :integer, virtual: true)
-    field(:referred_by_id, :id, default: nil)
+    field :daily_points_limit, :integer, default: 8
+    field :additional_info, :map, default: %{}
+    field :profile_picture, :string, default: nil
+    field :accept_terms, :boolean, virtual: true
+    field :todays_points, :integer, virtual: true
+    field :referred_by_id, :id, default: nil
 
     # API related
     field(:total_points, :decimal, virtual: true, default: Decimal.new(0))
@@ -51,33 +51,29 @@ defmodule OmegaBravera.Accounts.User do
       default: %{live: [], expired: [], completed: [], total: 0}
     )
 
-    field(:future_redeems, {:array, :map}, virtual: true, default: [])
-    field(:past_redeems, {:array, :map}, virtual: true, default: [])
-    field(:points_history, {:array, :map}, virtual: true, default: [])
-
-    field(:total_challenges, :integer, virtual: true, default: 0)
-    field(:position_on_leaderboard, :integer, virtual: true, default: 0)
+    field :future_redeems, {:array, :map}, virtual: true, default: []
+    field :past_redeems, {:array, :map}, virtual: true, default: []
+    field :points_history, {:array, :map}, virtual: true, default: []
+    field :total_challenges, :integer, virtual: true, default: 0
+    field :position_on_leaderboard, :integer, virtual: true, default: 0
 
     # associations
-    has_one(:credential, Credential, on_replace: :update)
-    has_one(:strava, Strava)
-    has_one(:setting, Setting, on_replace: :update)
-    has_many(:ngos, NGO)
-    has_many(:ngo_chals, NGOChal)
-    has_many(:donations, Donation)
-    has_many(:str_customers, StrCustomer)
-    has_many(:subscribed_email_categories, OmegaBravera.Emails.UserEmailCategories)
-    has_many(:offer_challenges, OfferChallenge)
-    belongs_to(:location, OmegaBravera.Locations.Location)
+    has_one :credential, Credential, on_replace: :update
+    has_one :strava, Strava
+    has_one :setting, Setting, on_replace: :update
+    has_many :ngos, NGO
+    has_many :ngo_chals, NGOChal
+    has_many :donations, Donation
+    has_many :str_customers, StrCustomer
+    has_many :subscribed_email_categories, OmegaBravera.Emails.UserEmailCategories
+    has_many :offer_challenges, OfferChallenge
+    belongs_to :location, OmegaBravera.Locations.Location
 
-    many_to_many(:teams, Team, join_through: "team_members")
+    many_to_many :teams, Team, join_through: "team_members"
 
-    many_to_many(
-      :offer_teams,
-      OfferChallengeTeam,
+    many_to_many :offer_teams, OfferChallengeTeam,
       join_through: "offer_team_members",
       join_keys: [user_id: :id, team_id: :id]
-    )
 
     timestamps(type: :utc_datetime)
   end

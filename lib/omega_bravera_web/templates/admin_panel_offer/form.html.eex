@@ -85,25 +85,25 @@
 
   <div class="form-group">
     <%= label f, :toc, "Terms and Conditions", class: "control-label" %>
-    <%= textarea f, :toc, class: "form-control", rows: 3 %>
+    <%= textarea f, :toc, class: "form-control", rows: 3, data: [html: true] %>
     <%= error_tag f, :toc %>
   </div>
 
   <div class="form-group">
     <%= label f, "Description (displayed on /offers)", class: "control-label" %>
-    <%= textarea f, :desc, class: "form-control", rows: 3 %>
+    <%= textarea f, :desc, class: "form-control", rows: 3, data: [html: true] %>
     <%= error_tag f, :desc %>
   </div>
 
   <div class="form-group">
     <%= label f, "Full description (displayed on /offer/new)", class: "control-label" %>
-    <%= textarea f, :full_desc, class: "form-control", rows: 3 %>
+    <%= textarea f, :full_desc, class: "form-control", rows: 3, data: [html: true] %>
     <%= error_tag f, :full_desc %>
   </div>
 
   <div class="form-group">
     <%= label f, "Offer Challenge description (displayed on /offer/offer_challenge)", class: "control-label" %>
-    <%= textarea f, :offer_challenge_desc, class: "form-control", rows: 3 %>
+    <%= textarea f, :offer_challenge_desc, class: "form-control", rows: 3, data: [html: true] %>
     <%= error_tag f, :offer_challenge_desc %>
   </div>
 
@@ -176,6 +176,12 @@
     <%= label f, :location_id, "Location" %>
     <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control" %>
     <%= error_tag f, :location_id %>
+  </div>
+
+  <div class="form-group">
+  	<%= label f, :partner_id, "Partner" %>
+  	<%= select f, :partner_id, @available_partners, class: "form-control", prompt: "No partner" %>
+  	<%= error_tag f, :partner_id %>
   </div>
 
   <div class="form-group">

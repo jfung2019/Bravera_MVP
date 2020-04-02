@@ -3,12 +3,12 @@
 		<h2>Show Challenge</h2>
 
 		<ul>
-          <li>User ID:  <%= link @ngo_chal.user_id, to: admin_panel_user_path(@conn, :show, @ngo_chal.user) %> </li>
+          <li>User ID:  <%= link @ngo_chal.user_id, to: Routes.admin_panel_user_path(@conn, :show, @ngo_chal.user) %> </li>
           <li>User First Name:  <%= @ngo_chal.user.firstname %> </li>
           <li>User Last Name:  <%= @ngo_chal.user.lastname %> </li>
           <li>Gender: <%= @ngo_chal.user.additional_info["sex"]%> </li>
           <li>User Email:  <%= @ngo_chal.user.email %> </li>
-          <li>Challenge URL:  <%= link("URL", to: ngo_ngo_chal_path(@conn, :show, @ngo_chal.ngo.slug, @ngo_chal.slug),  target: "_blank") %> </li>
+          <li>Challenge URL:  <%= link("URL", to: Routes.ngo_ngo_chal_path(@conn, :show, @ngo_chal.ngo.slug, @ngo_chal.slug),  target: "_blank") %> </li>
           <li>Challenge type:  <%= @ngo_chal.type %> </li>
           <li>Slug:  <%= @ngo_chal.slug %> </li>
           <li>Activity Type:  <%= @ngo_chal.activity_type %> </li>
@@ -21,10 +21,10 @@
           <li>Status:  <%= @ngo_chal.status %> </li>
           <li>Total Milestones:  <%= @ngo_chal.milestones %> </li>
           <li>Default Currency:  <%= @ngo_chal.default_currency %> </li>
-          <li>NGO:  <%= link @ngo_chal.ngo_id, to: admin_panel_ngo_path(@conn, :show, @ngo_chal.ngo) %> </li>
+          <li>NGO:  <%= link @ngo_chal.ngo_id, to: Routes.admin_panel_ngo_path(@conn, :show, @ngo_chal.ngo) %> </li>
           <li>Self Donated:  <%= @ngo_chal.self_donated %> </li>
 		</ul>
-    <%= link "Edit", to: admin_panel_ngo_admin_panel_challenges_path(@conn, :edit, @ngo_chal.ngo, @ngo_chal) %></span>
-    <%= link "Back", to: admin_panel_challenges_path(@conn, :index) %></span>
+    <span><%= link "Edit", to: Routes.admin_panel_ngo_admin_panel_challenges_path(@conn, :edit, @ngo_chal.ngo, @ngo_chal) %></span>
+    <span><%= link "Back", to: Routes.admin_panel_challenges_path(@conn, :index) %></span>
 	</div>
 </div>

@@ -43,7 +43,7 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
   def generate_offer_challenge_link(conn, nil, offer),
     do:
       link(gettext("Join the challenge"),
-        to: offer_offer_challenge_path(conn, :new, offer),
+        to: Routes.offer_offer_challenge_path(conn, :new, offer),
         class: "btn btn-green sign-up text-capitalize"
       )
 
@@ -59,13 +59,13 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
         cond do
           challenge.status == "complete" and is_nil(redeemed_found) ->
             link(gettext("Get Reward"),
-              to: offer_offer_challenge_path(conn, :show, offer, challenge),
+              to: Routes.offer_offer_challenge_path(conn, :show, offer, challenge),
               class: "btn btn-bravera sign-up text-capitalize"
             )
 
           challenge.status == "pre_registration" or challenge.status == "active" ->
             link(gettext("View your progress"),
-              to: offer_offer_challenge_path(conn, :show, offer, challenge),
+              to: Routes.offer_offer_challenge_path(conn, :show, offer, challenge),
               class: "btn btn-bravera sign-up text-capitalize"
             )
 
@@ -93,13 +93,13 @@ defmodule OmegaBraveraWeb.Offer.OfferView do
     cond do
       challenge.status == "complete" ->
         link(gettext("Get Team's Reward"),
-          to: offer_offer_challenge_path(conn, :show, offer, challenge),
+          to: Routes.offer_offer_challenge_path(conn, :show, offer, challenge),
           class: "btn btn-bravera sign-up text-capitalize"
         )
 
       challenge.status == "pre_registration" or challenge.status == "active" ->
         link(gettext("View your Team's progress"),
-          to: offer_offer_challenge_path(conn, :show, offer, challenge),
+          to: Routes.offer_offer_challenge_path(conn, :show, offer, challenge),
           class: "btn btn-bravera sign-up text-capitalize"
         )
 

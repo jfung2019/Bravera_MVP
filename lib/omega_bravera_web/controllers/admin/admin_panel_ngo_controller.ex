@@ -29,7 +29,7 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
       {:ok, ngo} ->
         conn
         |> put_flash(:info, "NGO created successfully.")
-        |> redirect(to: admin_panel_ngo_path(conn, :show, ngo))
+        |> redirect(to: Routes.admin_panel_ngo_path(conn, :show, ngo))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         users = Accounts.list_users()
@@ -66,7 +66,7 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
 
         conn
         |> put_flash(:info, "NGO updated successfully.")
-        |> redirect(to: admin_panel_ngo_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_ngo_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         users = Accounts.list_users()

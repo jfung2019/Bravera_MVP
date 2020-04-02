@@ -7,7 +7,7 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
 
   @activity_create_attrs %{
     "start_date" => %{
-      # Must be in the furture so that ActivityIngestion doesn't refuse it
+      # Must be in the future so that ActivityIngestion doesn't refuse it
       "hour" => Integer.to_string(Timex.shift(Timex.now("Asia/Hong_Kong"), hours: 5).hour),
       "minute" => Integer.to_string(Timex.shift(Timex.now("Asia/Hong_Kong"), hours: 5).minute),
       "year" => Integer.to_string(Timex.shift(Timex.now("Asia/Hong_Kong"), hours: 5).year),

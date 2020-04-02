@@ -13,7 +13,7 @@
                 <span><%= user.email %></span>
               </div>
               <div class="form-group col-4 mb-0 pl-1">
-              <%= form_tag(offer_offer_challenge_offer_challenge_path(@conn, :kick_team_member, @challenge.offer.slug, @challenge.slug, user.id)) do %>
+              <%= form_tag(Routes.offer_offer_challenge_offer_challenge_path(@conn, :kick_team_member, @challenge.offer.slug, @challenge.slug, user.id)) do %>
                   <button type="submit" class="btn btn-danger btn-sm mb-1" data-confirm="Note: when you remove a team member, all of their activities will be removed from your team challenge. Do you wish to proceed?" ><%= gettext("Remove") %></button>
               <% end %>
               </div>

@@ -18,7 +18,7 @@ defmodule OmegaBraveraWeb.PageController do
   def index(conn, _params) do
     case Guardian.Plug.current_resource(conn) do
       %AdminUser{} ->
-        redirect(conn, to: admin_user_page_path(conn, :index))
+        redirect(conn, to: Routes.admin_user_page_path(conn, :index))
 
       _ ->
         conn
@@ -33,14 +33,14 @@ defmodule OmegaBraveraWeb.PageController do
         render(conn, "signup.html", layout: {OmegaBraveraWeb.LayoutView, "no-nav.html"})
 
       _ ->
-        redirect(conn, to: user_profile_path(conn, :show))
+        redirect(conn, to: Routes.user_profile_path(conn, :show))
     end
   end
 
   def login(conn, %{"team_invitation" => team_invitation}) do
     case Guardian.Plug.current_resource(conn) do
       %AdminUser{} ->
-        redirect(conn, to: admin_user_page_path(conn, :index))
+        redirect(conn, to: Routes.admin_user_page_path(conn, :index))
 
       %User{} ->
         redirect(conn, to: team_invitation)
@@ -56,10 +56,10 @@ defmodule OmegaBraveraWeb.PageController do
   def login(conn, _params) do
     case Guardian.Plug.current_resource(conn) do
       %AdminUser{} ->
-        redirect(conn, to: admin_user_page_path(conn, :index))
+        redirect(conn, to: Routes.admin_user_page_path(conn, :index))
 
       %User{} ->
-        redirect(conn, to: user_profile_path(conn, :show))
+        redirect(conn, to: Routes.user_profile_path(conn, :show))
 
       _ ->
         render(conn, "login.html",

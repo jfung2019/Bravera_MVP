@@ -1,4 +1,4 @@
-<li><%= link(gettext("Account Settings"), to: user_path(@conn, :edit), class: "dropdown-item") %></li>
-<li><%= link(gettext("Profile and Rewards"), to: user_profile_path(@conn, :show), class: "dropdown-item") %></li>
-<li><%= link(gettext("Connected Apps"), to: user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
-<li><%= link(gettext("Email Preferences"), to: email_settings_path(@conn, :edit), class: "dropdown-item") %></li>
+<li><%= link(gettext("Account Settings"), to: Routes.user_path(@conn, :edit), class: "dropdown-item") %></li>
+<li><%= link(gettext("Profile and Rewards"), to: Routes.user_profile_path(@conn, :show), class: "dropdown-item") %></li>
+<li><%= link(gettext("Connected Apps"), to: Routes.user_path(@conn, :show_trackers), class: "dropdown-item") %></li>
+<li><%= link(gettext("Email Preferences"), to: Routes.email_settings_path(@conn, :edit), class: "dropdown-item") %></li>

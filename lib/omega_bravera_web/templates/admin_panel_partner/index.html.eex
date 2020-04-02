@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-8 offset-2">
+    	<table class="table">
+    		<thead>
+    			<tr>
+                   <th>Name</th>
+                   <th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<%= for partner <- @partners do %>
+				  <tr>
+				  	<td><%= partner.name %></td>
+				  	<td>
+				  		<%= link "Show", to: Routes.admin_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
+				  		<%= link "Edit", to: Routes.admin_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
+					</td>
+				  </tr>
+				<% end %>
+			</tbody>
+		</table>
+		<%= if @paginate.total_pages > 1 do %>
+              <%= turbo_pagination_links(@conn, @paginate) %>
+		<% end %>
+	</div>
+</div>

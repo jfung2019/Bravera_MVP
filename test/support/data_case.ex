@@ -22,6 +22,7 @@ defmodule OmegaBravera.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import OmegaBravera.DataCase
+      use Oban.Testing, repo: OmegaBravera.Repo
     end
   end
 

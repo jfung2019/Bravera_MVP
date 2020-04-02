@@ -6,6 +6,7 @@ defmodule OmegaBravera.Accounts do
   import Ecto.Query, warn: false
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias Ecto.Multi
+  alias OmegaBravera.Accounts.Jobs
 
   alias OmegaBravera.{
     Repo,
@@ -38,6 +39,11 @@ defmodule OmegaBravera.Accounts do
   def user_has_device?(user_id) do
     devices = from(d in Device, where: d.user_id == ^user_id) |> Repo.all() |> length()
     if devices > 0, do: true, else: false
+  end
+
+  def get_all_user_ids do
+    from(u in User, select: u.id)
+    |> Repo.all()
   end
 
   def get_user_by_athlete_id(athlete_id) do
@@ -365,29 +371,6 @@ defmodule OmegaBravera.Accounts do
     )
     |> Repo.all()
   end
-
-  def user_points_history(user_id) do
-    from(
-      p in Point,
-      where: p.user_id == ^user_id,
-      order_by: [desc: fragment("CAST(? AS DATE)", p.inserted_at)],
-      group_by: fragment("CAST(? AS DATE)", p.inserted_at),
-      select: %{
-        neg_value: fragment("sum(case when ? < 0 then ? else 0 end)", p.value, p.value),
-        pos_value: fragment("sum(case when ? > 0 then ? else 0 end)", p.value, p.value),
-        inserted_at: fragment("CAST(? AS DATE)", p.inserted_at)
-      }
-    )
-    |> Repo.all()
-  end
-
-  def total_points(user_id),
-    do:
-      Repo.aggregate(
-        from(p in Point, where: p.user_id == ^user_id, select: coalesce(p.value, 0.0)),
-        :sum,
-        :value
-      ) || Decimal.from_float(0.0)
 
   def future_redeems(user_id),
     do:
@@ -758,9 +741,39 @@ defmodule OmegaBravera.Accounts do
   end
 
   def create_credential_user(attrs \\ %{credential: %{}}, referral \\ nil) do
-    %User{}
-    |> User.create_credential_user_changeset(attrs, referral)
-    |> Repo.insert()
+    result =
+      %User{}
+      |> User.create_credential_user_changeset(attrs, referral)
+      |> Repo.insert()
+
+    case result do
+      {:ok, %{id: user_id}} = result ->
+        now_hk = Timex.now("Asia/Hong_Kong")
+
+        next_day =
+          now_hk
+          |> Timex.shift(days: 1)
+          |> Timex.set(hour: 8, minute: 0, second: 0)
+          |> Timex.Timezone.convert(:utc)
+
+        seven_days =
+          now_hk
+          |> Timex.shift(days: 7)
+          |> Timex.Timezone.convert(:utc)
+
+        %{user_id: user_id}
+        |> Jobs.NoActivityAfterSignup.new(scheduled_at: next_day)
+        |> Oban.insert()
+
+        %{user_id: user_id}
+        |> Jobs.OneWeekNoActivityAfterSignup.new(scheduled_at: seven_days)
+        |> Oban.insert()
+
+        result
+
+      result ->
+        result
+    end
   end
 
   def create_credential_for_existing_strava(attrs \\ %{}) do
@@ -784,6 +797,23 @@ defmodule OmegaBravera.Accounts do
     user
     |> User.update_changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+
+  """
+  def activate_user_email(%User{} = user) do
+    case update_user(user, %{email_verified: true}) do
+      {:ok, _user} = return_tuple ->
+        %{user_id: user.id}
+        |> Jobs.AfterEmailVerify.new()
+        |> Oban.insert()
+
+        return_tuple
+
+      other ->
+        other
+    end
   end
 
   def update_user_by_admin(%User{} = user, attrs) do
@@ -858,11 +888,16 @@ defmodule OmegaBravera.Accounts do
     |> Repo.one()
   end
 
-  def get_users_from_three_days_ago do
-    three_days_ago = Date.utc_today() |> Date.add(-3)
+  def number_of_referrals_over_week(user_id) do
+    today = Timex.now()
+    one_week_ago = today |> Timex.shift(days: -7)
 
-    from(u in User, where: fragment("?::date = ?::date", u.inserted_at, ^three_days_ago))
-    |> Repo.all()
+    from(u in User,
+      where:
+        u.referred_by_id == ^user_id and
+          fragment("? BETWEEN ? and ?", u.inserted_at, ^one_week_ago, ^today)
+    )
+    |> Repo.aggregate(:count, :id)
   end
 
   @doc """

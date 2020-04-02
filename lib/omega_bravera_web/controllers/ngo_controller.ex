@@ -6,7 +6,7 @@ defmodule OmegaBraveraWeb.NGOController do
   def index(conn, _params) do
     case Guardian.Plug.current_resource(conn) do
       %AdminUser{} ->
-        redirect(conn, to: admin_user_page_path(conn, :index))
+        redirect(conn, to: Routes.admin_user_page_path(conn, :index))
 
       _ ->
         render(conn, "index.html",

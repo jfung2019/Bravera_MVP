@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-4 col-sm-3">
                     <div class="mb-0 mt-2 mt-sm-1 mt-md-3 mt-lg-4 mt-xl-4">
-                        <a href="<%= ngo_ngo_chal_path(@conn, :new, @offer.slug) %>">
+                        <a href="<%= Routes.ngo_ngo_chal_path(@conn, :new, @offer.slug) %>">
                         <%= img_tag(@offer.logo, class: "img-thumbnail img-fluid cause-thumb", alt: @offer.name) %>
                         </a>
                     </div>

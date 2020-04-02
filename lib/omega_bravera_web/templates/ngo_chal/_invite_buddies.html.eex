@@ -2,7 +2,7 @@
   <div class="card-body">
     <p><%= gettext("Invite others to join your challenge!") %></p>
 
-    <%= form_tag(ngo_ngo_chal_ngo_chal_path(@conn, :invite_buddies, @challenge.ngo.slug, @challenge.slug)) do %>
+    <%= form_tag(Routes.ngo_ngo_chal_ngo_chal_path(@conn, :invite_buddies, @challenge.ngo.slug, @challenge.slug)) do %>
       <div id="buddies-container" class="mb-3">
         <div class="form-group row buddy mb-1">
           <div class="form-group col-4 mb-0 pr-0">

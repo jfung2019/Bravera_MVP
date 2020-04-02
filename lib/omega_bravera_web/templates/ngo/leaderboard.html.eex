@@ -49,14 +49,14 @@
 	                            <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
 	                              <%= img_tag(profile_picture_or_default(
 	                                challenge.user,
-	                                static_path(@conn, "/images/profile_default.jpeg")),
+	                                Routes.static_path(@conn, "/images/profile_default.jpeg")),
 	                                class: "thumbnail img-fluid rounded-circle border"
 	                              ) %>
 	                            <% end %>
                             <% end %>
                           </div>
                         </td>
-                        <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                        <td><%= link(user_full_name(challenge.user), to: Routes.ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
                         <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
                         <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
                       </tr>
@@ -67,13 +67,13 @@
                           <div class="avatars mx-auto">
                             <%= img_tag(profile_picture_or_default(
                               challenge.user,
-                              static_path(@conn, "/images/profile_default.jpeg")),
+                              Routes.static_path(@conn, "/images/profile_default.jpeg")),
                               class: "thumbnail img-fluid rounded-circle border"
                             ) %>
                           </div>
                           <span class="team-members-count"><%= Enum.count(challenge.team.users) + 1%></span>
                         </td>
-                        <td><%= link(challenge.team.name, to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                        <td><%= link(challenge.team.name, to: Routes.ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
                         <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
                         <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
                       </tr>
@@ -107,14 +107,14 @@
 	                          <%= link to: "https://www.strava.com/athletes/#{challenge.user.strava.athlete_id}", target: "_blank" do %>
 	                            <%= img_tag(profile_picture_or_default(
 	                              challenge.user,
-	                              static_path(@conn, "/images/profile_default.jpeg")),
+	                              Routes.static_path(@conn, "/images/profile_default.jpeg")),
 	                              class: "thumbnail img-fluid rounded-circle border"
 	                            ) %>
 	                          <% end %>
                           <% end %>
                         </div>
                       </td>
-                      <td><%= link(user_full_name(challenge.user), to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                      <td><%= link(user_full_name(challenge.user), to: Routes.ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
                       <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
                       <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
                     </tr>
@@ -125,13 +125,13 @@
                         <div class="avatars mx-auto">
                           <%= img_tag(profile_picture_or_default(
                             challenge.user,
-                            static_path(@conn, "/images/profile_default.jpeg")),
+                            Routes.static_path(@conn, "/images/profile_default.jpeg")),
                             class: "thumbnail img-fluid rounded-circle border"
                           ) %>
                         </div>
                         <span class="team-members-count"><%= Enum.count(challenge.team.users) + 1%></span>
                       </td>
-                      <td><%= link(challenge.team.name, to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
+                      <td><%= link(challenge.team.name, to: Routes.ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug)) %></td>
                       <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_pledged}" %></td>
                       <td><%= "#{currency_to_symbol(challenge.default_currency)}#{challenge.total_secured}" %></td>
                     </tr>
@@ -142,8 +142,8 @@
           </div>
         </div>
 
-          <%= link(gettext("Join the Challenge"), to: ngo_ngo_chal_path(@conn, :new, @ngo.slug), class: "btn btn-green sign-up") %>
-          <%= link(gettext("View all Challenges"), to: ngo_path(@conn, :index), class: "btn btn-green sign-up") %>
+          <%= link(gettext("Join the Challenge"), to: Routes.ngo_ngo_chal_path(@conn, :new, @ngo.slug), class: "btn btn-green sign-up") %>
+          <%= link(gettext("View all Challenges"), to: Routes.ngo_path(@conn, :index), class: "btn btn-green sign-up") %>
         </div>
       </div>  <!-- end of card -->
     </div> <!-- end col -->

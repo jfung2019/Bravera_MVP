@@ -1031,4 +1031,42 @@ defmodule OmegaBravera.Offers do
         %OfferChallenge{} = challenge
       ),
       do: OfferChallengeActivitiesM2m.changeset(activity, challenge) |> Repo.insert()
+
+  def number_of_completed_challenges_over_week(user_id) do
+    today = Timex.now()
+    one_week_ago = today |> Timex.shift(days: -7)
+
+    from(o in OfferChallenge,
+      where:
+        o.status == "complete" and o.user_id == ^user_id and
+          fragment("? BETWEEN ? and ?", o.updated_at, ^one_week_ago, ^today)
+    )
+    |> Repo.aggregate(:count, :id)
+  end
+
+  def number_of_rewards_redeemed_over_week(user_id) do
+    today = Timex.now()
+    one_week_ago = today |> Timex.shift(days: -7)
+
+    from(r in OfferRedeem,
+      where:
+        r.status == "redeemed" and r.user_id == ^user_id and
+          fragment("? BETWEEN ? and ?", r.updated_at, ^one_week_ago, ^today)
+    )
+    |> Repo.aggregate(:count, :id)
+  end
+
+  def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
+
+  def query(Offer, %{scope: :public_available}) do
+    now = Timex.now("Asia/Hong_Kong")
+
+    from(
+      offer in Offer,
+      where: offer.hidden == false and offer.end_date > ^now,
+      order_by: [desc: offer.id]
+    )
+  end
+
+  def query(queryable, _), do: queryable
 end

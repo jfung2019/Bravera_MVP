@@ -4,7 +4,7 @@
           <div class="row">
             <%= for challenge <- Enum.take(@ngo.ngo_chals, 5) do %>
                <div class="col-4 mx-auto text-center participant-container">
-                  <%= img_tag(profile_picture_or_default(challenge.user, static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
+                  <%= img_tag(profile_picture_or_default(challenge.user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
                </div>
             <% end %>
          </div>
@@ -75,8 +75,8 @@
             <%= for challenge <- @ngo.ngo_chals do %>
          <div class="row">
                <div class="col-4 mx-auto text-center participant-container">
-               <%= link to: ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug) do %>
-                  <%= img_tag(profile_picture_or_default(challenge.user, static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
+               <%= link to: Routes.ngo_ngo_chal_path(@conn, :show, @ngo.slug, challenge.slug) do %>
+                  <%= img_tag(profile_picture_or_default(challenge.user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: " thumbnail img-fluid rounded-circle border") %>
                <% end %>
                </div>
          </div>

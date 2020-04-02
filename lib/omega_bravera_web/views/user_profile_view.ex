@@ -16,13 +16,13 @@ defmodule OmegaBraveraWeb.UserProfileView do
     cond do
       is_nil(redeem) ->
         link("GET REWARD!",
-          to: offer_offer_challenge_path(conn, :show, offer_slug, slug),
+          to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug),
           class: "text-danger"
         )
 
       true ->
         link("REWARD REDEEMED",
-          to: offer_offer_challenge_path(conn, :show, offer_slug, slug),
+          to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug),
           class: "text-secondary"
         )
     end
@@ -35,7 +35,7 @@ defmodule OmegaBraveraWeb.UserProfileView do
       }),
       do:
         link("LIVE",
-          to: offer_offer_challenge_path(conn, :show, offer_slug, slug),
+          to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug),
           class: "text-success"
         )
 
@@ -46,7 +46,7 @@ defmodule OmegaBraveraWeb.UserProfileView do
       }),
       do:
         link("EXPIRED",
-          to: offer_offer_challenge_path(conn, :show, offer_slug, slug),
+          to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug),
           class: "text-secondary"
         )
 
@@ -57,7 +57,7 @@ defmodule OmegaBraveraWeb.UserProfileView do
       }),
       do:
         link("Pre Registration",
-          to: offer_offer_challenge_path(conn, :show, offer_slug, slug),
+          to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug),
           class: "text-info"
         )
 end

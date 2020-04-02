@@ -22,7 +22,7 @@ defmodule OmegaBraveraWeb.AdminPanelEmailsController do
       {:ok, _sendgrid_email} ->
         conn
         |> put_flash(:info, "Sendgrid Email created successfully.")
-        |> redirect(to: admin_panel_emails_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_emails_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         categories = Emails.list_email_categories()
@@ -49,7 +49,7 @@ defmodule OmegaBraveraWeb.AdminPanelEmailsController do
       {:ok, _created_sendgrid_email} ->
         conn
         |> put_flash(:info, "Sendgrid Email updated successfully.")
-        |> redirect(to: admin_panel_emails_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_emails_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         categories = Emails.list_email_categories()

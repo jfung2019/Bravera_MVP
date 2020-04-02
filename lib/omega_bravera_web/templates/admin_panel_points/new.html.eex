@@ -1,6 +1,6 @@
 <div class="container">
     <h2><%= gettext("Add/Subtract points for user") %></h2>
-    <%= render "form.html", Map.put(assigns, :action, admin_panel_points_path(@conn, :create)) %>
-    <span><%= link gettext("Back"), to: admin_user_page_path(@conn, :index) %></span>
+    <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_points_path(@conn, :create)) %>
+    <span><%= link gettext("Back"), to: Routes.admin_user_page_path(@conn, :index) %></span>
 </div>
 

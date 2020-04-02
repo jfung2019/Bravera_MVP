@@ -7,12 +7,12 @@ defmodule OmegaBraveraWeb.Router do
     plug Plug.Logger
     plug :accepts, ["html"]
     plug :fetch_session
-    plug :fetch_flash
+    plug :fetch_live_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Guardian.MaybeAuthPipeline
     plug OmegaBraveraWeb.GoogleAnalytics
-    plug Phoenix.LiveView.Flash
+    plug :put_live_layout, {OmegaBraveraWeb.LayoutView, :app}
   end
 
   pipeline :user_authenticated do
@@ -22,6 +22,7 @@ defmodule OmegaBraveraWeb.Router do
   pipeline :admin_authenticated do
     plug Guardian.AuthPipeline
     plug OmegaBraveraWeb.AdminLoggedIn
+    plug :put_live_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
   pipeline :api do
@@ -76,42 +77,42 @@ defmodule OmegaBraveraWeb.Router do
   scope "/user", OmegaBraveraWeb do
     pipe_through :browser
 
-    resources("/sessions", UserSessionController, only: [:create])
-    get("/profile/email_settings", EmailSettingsController, :edit)
-    post("/profile/email_settings", EmailSettingsController, :update)
+    resources "/sessions", UserSessionController, only: [:create]
+    get "/profile/email_settings", EmailSettingsController, :edit
+    post "/profile/email_settings", EmailSettingsController, :update
 
-    get("/profile", UserProfileController, :show)
-    put("/profile/upload_profile_picture", UserProfileController, :update_profile_picture)
+    get "/profile", UserProfileController, :show
+    put "/profile/upload_profile_picture", UserProfileController, :update_profile_picture
 
     scope "/password_reset" do
-      resources("/", PasswordController, only: [:new, :create])
+      resources "/", PasswordController, only: [:new, :create]
 
-      get("/:reset_token/edit", PasswordController, :edit)
-      put("/:reset_token", PasswordController, :update)
+      get "/:reset_token/edit", PasswordController, :edit
+      put "/:reset_token", PasswordController, :update
     end
 
     scope "/" do
       pipe_through :user_authenticated
-      get("/account/trackers", UserController, :show_trackers)
-      get("/account/edit", UserController, :edit)
-      put("/account", UserController, :update)
-      post("/account", UserController, :update)
+      get "/account/trackers", UserController, :show_trackers
+      get "/account/edit", UserController, :edit
+      put "/account", UserController, :update
+      post "/account", UserController, :update
     end
 
-    get("/account/activate/:email_activation_token", UserController, :activate_email)
+    get "/account/activate/:email_activation_token", UserController, :activate_email
   end
 
   # Strava OAuth Routes
   scope "/strava", OmegaBraveraWeb do
     pipe_through :browser
 
-    get("/login/", StravaController, :authenticate)
-    get("/login/:team_invitation", StravaController, :authenticate)
-    get("/callback", StravaController, :strava_callback)
-    get("/connect_strava_account/", StravaController, :connect_strava_account)
-    get("/connect_callback", StravaController, :connect_strava_callback)
-    get("/connect_callback_mobile_app", StravaController, :connect_strava_callback_mobile_app)
-    get("/logout", StravaController, :logout)
+    get "/login/", StravaController, :authenticate
+    get "/login/:team_invitation", StravaController, :authenticate
+    get "/callback", StravaController, :strava_callback
+    get "/connect_strava_account/", StravaController, :connect_strava_account
+    get "/connect_callback", StravaController, :connect_strava_callback
+    get "/connect_callback_mobile_app", StravaController, :connect_strava_callback_mobile_app
+    get "/logout", StravaController, :logout
   end
 
   pipeline :admin_section do
@@ -125,7 +126,7 @@ defmodule OmegaBraveraWeb.Router do
     get "/logout", AdminUserSessionController, :logout
 
     scope "/" do
-      pipe_through(:admin_authenticated)
+      pipe_through [:admin_authenticated]
       get "/", AdminUserPageController, :index
       resources "/locations", AdminPanelLocationsController
       resources "/admin-users", AdminUserController
@@ -133,43 +134,31 @@ defmodule OmegaBraveraWeb.Router do
       put "/users/:id/edit", AdminPanelUserController, :update
       resources "/activities", AdminPanelActivityController, only: [:new, :create]
 
-      resources("/offer-activities", AdminPanelOfferChallengeActivityController,
+      resources "/offer-activities", AdminPanelOfferChallengeActivityController,
         only: [:new, :create]
-      )
 
-      resources("/offer-rewards", AdminPanelOfferRewardController,
-        only: [:index, :new, :create, :edit, :update]
-      )
+      resources "/offer-rewards", AdminPanelOfferRewardController, except: [:delete]
+      resources "/offer-vendors", AdminPanelOfferVendorController, except: [:delete]
 
-      resources("/offer-vendors", AdminPanelOfferVendorController,
-        only: [:index, :new, :create, :edit, :update]
-      )
+      post "/activities/create_imported_strava_activity",
+           AdminPanelActivityController,
+           :create_imported_strava_activity
 
-      # get(
-      #   "/activities/import_activity_from_strava",
-      #   AdminPanelActivityController,
-      #   :new_import_activity_from_strava
-      # )
+      resources "/sync_activities", AdminPanelActivitiesSyncerController, only: [:index]
 
-      post(
-        "/activities/create_imported_strava_activity",
-        AdminPanelActivityController,
-        :create_imported_strava_activity
-      )
+      resources "/emails", AdminPanelEmailsController, except: [:delete]
+      get "/challenges", AdminPanelChallengesController, :index
 
-      resources("/sync_activities", AdminPanelActivitiesSyncerController, only: [:index])
+      live "/partners/:id/images", AdminPartnerImages
 
-      resources("/emails", AdminPanelEmailsController,
-        only: [:index, :new, :create, :edit, :update]
-      )
+      resources "/partners", AdminPanelPartnerController, except: [:delete] do
+        resources "/locations", AdminPanelPartnerLocationController, except: [:index]
+      end
 
-      get("/challenges", AdminPanelChallengesController, :index)
-
-      resources("/ngos", AdminPanelNGOController, only: [:index, :new, :create]) do
-        resources("/challenges", AdminPanelChallengesController,
+      resources "/ngos", AdminPanelNGOController, only: [:index, :new, :create] do
+        resources "/challenges", AdminPanelChallengesController,
           only: [:show, :edit, :update],
           param: "slug"
-        )
       end
 
       get "/ngos/:slug", AdminPanelNGOController, :show
@@ -188,82 +177,62 @@ defmodule OmegaBraveraWeb.Router do
 
   # Offers
   scope "/offers", OmegaBraveraWeb do
-    pipe_through(:browser)
+    pipe_through [:browser]
 
     resources "/", Offer.OfferController, only: [:index], param: "slug" do
       resources "/", Offer.OfferChallengeController, only: [:show, :new, :create], param: "slug" do
-        get("/activities", Offer.OfferChallengeActivityController, :index)
-        get("/:redeem_token", Offer.OfferChallengeController, :send_qr_code)
-        get("/redeem/:redeem_token", Offer.OfferChallengeController, :new_redeem)
-        post("/:redeem_token", Offer.OfferChallengeController, :save_redeem)
-        put("/:redeem_token", Offer.OfferChallengeController, :save_redeem)
-        post("/invite/team_members", Offer.OfferChallengeController, :invite_team_members)
+        get "/activities", Offer.OfferChallengeActivityController, :index
+        get "/:redeem_token", Offer.OfferChallengeController, :send_qr_code
+        get "/redeem/:redeem_token", Offer.OfferChallengeController, :new_redeem
+        post "/:redeem_token", Offer.OfferChallengeController, :save_redeem
+        put "/:redeem_token", Offer.OfferChallengeController, :save_redeem
+        post "/invite/team_members", Offer.OfferChallengeController, :invite_team_members
+        get "/add_team_member/:invitation_token", Offer.OfferChallengeController, :add_team_member
 
-        get(
-          "/add_team_member/:invitation_token",
-          Offer.OfferChallengeController,
-          :add_team_member
-        )
+        get "/resend_invitation/:invitation_token",
+            Offer.OfferChallengeController,
+            :resend_invitation
 
-        get(
-          "/resend_invitation/:invitation_token",
-          Offer.OfferChallengeController,
-          :resend_invitation
-        )
+        get "/cancel_invitation/:invitation_token",
+            Offer.OfferChallengeController,
+            :cancel_invitation
 
-        get(
-          "/cancel_invitation/:invitation_token",
-          Offer.OfferChallengeController,
-          :cancel_invitation
-        )
-
-        post(
-          "/kick_team_member/:user_id",
-          Offer.OfferChallengeController,
-          :kick_team_member
-        )
+        post "/kick_team_member/:user_id", Offer.OfferChallengeController, :kick_team_member
       end
     end
   end
 
   scope "/", OmegaBraveraWeb do
-    pipe_through(:browser)
+    pipe_through :browser
 
-    get("/signup", PageController, :signup)
-
-    get("/login", PageController, :login)
-    get("/login/:team_invitation", PageController, :login)
-
-    get("/404", PageController, :not_found)
-    get("/500", PageController, :not_found)
-
-    resources("/email-signup", UserController, only: [:new, :create])
-
-    resources("/teams", TeamController, only: [:new, :create, :show])
-
-    resources("/tips", TipController, only: [:new, :create, :show])
-
-    get("/", PageController, :index)
-
-    get("/ngos", NGOController, :index)
+    get "/signup", PageController, :signup
+    get "/login", PageController, :login
+    get "/login/:team_invitation", PageController, :login
+    get "/404", PageController, :not_found
+    get "/500", PageController, :not_found
+    resources "/email-signup", UserController, only: [:new, :create]
+    resources "/teams", TeamController, only: [:new, :create, :show]
+    resources "/tips", TipController, only: [:new, :create, :show]
+    get "/", PageController, :index
+    get "/ngos", NGOController, :index
 
     resources "/", NGOController, only: [:show], param: "slug" do
-      get("/leaderboard", NGOController, :leaderboard, param: "slug")
+      get "/leaderboard", NGOController, :leaderboard, param: "slug"
 
       resources "/", NGOChalController, only: [:show, :new, :create], param: "slug" do
-        resources("/donations", DonationController, only: [:create])
-        post("/follow_on_donation", DonationController, :create_and_charge_follow_on_donation)
-        get("/donors", DonationController, :index)
-        get("/activities", ActivityController, :index)
-        post("/invite_buddies", NGOChalController, :invite_buddies)
-        post("/invite_team_members", NGOChalController, :invite_team_members)
-        get("/add_team_member/:invitation_token", NGOChalController, :add_team_member)
-        get("/resend_invitation/:invitation_token", NGOChalController, :resend_invitation)
-        get("/cancel_invitation/:invitation_token", NGOChalController, :cancel_invitation)
-        post("/kick_team_member/:user_id", NGOChalController, :kick_team_member)
+        resources "/donations", DonationController, only: [:create]
+        post "/follow_on_donation", DonationController, :create_and_charge_follow_on_donation
+        get "/donors", DonationController, :index
+        get "/activities", ActivityController, :index
+        post "/invite_buddies", NGOChalController, :invite_buddies
+        post "/invite_team_members", NGOChalController, :invite_team_members
+        get "/add_team_member/:invitation_token", NGOChalController, :add_team_member
+        get "/resend_invitation/:invitation_token", NGOChalController, :resend_invitation
+        get "/cancel_invitation/:invitation_token", NGOChalController, :cancel_invitation
+        post "/kick_team_member/:user_id", NGOChalController, :kick_team_member
       end
     end
 
-    get("/*path", PageController, :not_found)
+    get "/*path", PageController, :not_found
   end
 end

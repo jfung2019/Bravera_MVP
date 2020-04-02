@@ -12,7 +12,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
 
       user ->
         distance = Challenges.get_total_distance_by_user(user.id)
-        points = Points.get_user_points(user.id)
+        points = Points.total_points(user.id)
 
         render(
           conn,
@@ -66,7 +66,7 @@ defmodule OmegaBraveraWeb.UserProfileController do
       {:ok, _upload} ->
         conn
         |> put_flash(:info, "Profile picture uploaded successfully!")
-        |> redirect(to: user_profile_path(conn, :show))
+        |> redirect(to: Routes.user_profile_path(conn, :show))
 
       {:error, changeset} ->
         render(conn, "show.html", changeset: changeset)

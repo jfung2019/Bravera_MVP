@@ -22,7 +22,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
       {:ok, _sendgrid_email} ->
         conn
         |> put_flash(:info, "Reward created successfully!")
-        |> redirect(to: admin_panel_offer_reward_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_offer_reward_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         offers = Offers.list_offers_all_offers()
@@ -49,7 +49,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
       {:ok, _created_sendgrid_email} ->
         conn
         |> put_flash(:info, "Reward updated successfully!")
-        |> redirect(to: admin_panel_offer_reward_path(conn, :index))
+        |> redirect(to: Routes.admin_panel_offer_reward_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         offers = Offers.list_offers_all_offers()

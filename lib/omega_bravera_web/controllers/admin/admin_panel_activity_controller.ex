@@ -109,14 +109,14 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
           {:ok, :challenge_updated} ->
             conn
             |> put_flash(:info, "Activity created successfully.")
-            |> redirect(to: admin_user_page_path(conn, :index))
+            |> redirect(to: Routes.admin_user_page_path(conn, :index))
 
           {:error, :activity_not_processed} ->
             Repo.delete(saved_activity)
 
             conn
             |> put_flash(:error, "Activity not processed. Please check the logs.")
-            |> redirect(to: admin_user_page_path(conn, :index))
+            |> redirect(to: Routes.admin_user_page_path(conn, :index))
         end
 
       {:error, reason} ->

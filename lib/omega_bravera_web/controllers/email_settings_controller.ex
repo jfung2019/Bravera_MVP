@@ -39,7 +39,7 @@ defmodule OmegaBraveraWeb.EmailSettingsController do
 
       conn
       |> put_flash(:info, "Updated email settings sucessfully.")
-      |> redirect(to: email_settings_path(conn, :edit))
+      |> redirect(to: Routes.email_settings_path(conn, :edit))
     else
       # To protect vs removing the hidden element for the main category.
       conn
@@ -47,7 +47,7 @@ defmodule OmegaBraveraWeb.EmailSettingsController do
         :error,
         "Cannot unsubscribe from platform notification. Please request account termination from admin@bravera.co"
       )
-      |> redirect(to: email_settings_path(conn, :edit))
+      |> redirect(to: Routes.email_settings_path(conn, :edit))
     end
   end
 

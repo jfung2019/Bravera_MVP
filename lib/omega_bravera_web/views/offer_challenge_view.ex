@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
         "Reward Redeemed on #{render_datetime(redeem.updated_at)}."
 
       redeem.status == "pending" ->
-        offer_offer_challenge_offer_challenge_url(
+        Routes.offer_offer_challenge_offer_challenge_url(
           conn,
           :new_redeem,
           offer_slug,

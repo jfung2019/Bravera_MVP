@@ -22,10 +22,10 @@
 		      <td><%= user.additional_info["location"] %></td>
 		      <td><%= user.additional_info["sex"] %></td>
 		      <td class="text-right">
-		        <span><%= link "Show", to: admin_panel_user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
+		        <span><%= link "Show", to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
 		      </td>
           <td class="text-right">
-            <span><%= link "Edit", to: admin_panel_user_path(@conn, :edit, user), class: "btn btn-default btn-xs"%> </span>
+            <span><%= link "Edit", to: Routes.admin_panel_user_path(@conn, :edit, user), class: "btn btn-default btn-xs"%> </span>
           </td>
 		    </tr>
 		<% end %>
