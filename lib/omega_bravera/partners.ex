@@ -290,4 +290,17 @@ defmodule OmegaBravera.Partners do
   def change_partner_vote(%PartnerVote{} = partner_vote) do
     PartnerVote.changeset(partner_vote, %{})
   end
+
+  @doc """
+  Define dataloader for ecto.
+  """
+  def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
+
+  def query(Partner, %{scope: :partner_type}) do
+    from(p in Partner,
+      left_join: o in assoc(p, :offers),
+      select: %{p | type: fragment("CASE WHEN ? is null then ? else ? end", o.id, "suggested_partner", "bravera_partner")})
+  end
+
+  def query(queryable, _), do: queryable
 end

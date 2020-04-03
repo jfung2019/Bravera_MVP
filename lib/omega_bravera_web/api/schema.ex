@@ -288,12 +288,10 @@ defmodule OmegaBraveraWeb.Api.Schema do
   end
 
   def context(ctx) do
-    source = Dataloader.Ecto.new(OmegaBravera.Repo)
-
     loader =
       Dataloader.new()
       |> Dataloader.add_source(OmegaBravera.Offers, OmegaBravera.Offers.datasource())
-      |> Dataloader.add_source(OmegaBravera.Partners, source)
+      |> Dataloader.add_source(OmegaBravera.Partners, OmegaBravera.Partners.datasource())
 
     Map.put(ctx, :loader, loader)
   end
