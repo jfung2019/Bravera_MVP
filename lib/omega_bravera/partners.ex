@@ -42,7 +42,12 @@ defmodule OmegaBravera.Partners do
       ** (Ecto.NoResultsError)
 
   """
-  def get_partner!(id), do: Repo.get!(Partner, id) |> Repo.preload([:location, :offers])
+  def get_partner!(id) do
+    partner_with_type_query()
+    |> where(id: ^id)
+    |> Repo.one!()
+    |> Repo.preload([:location, :offers])
+  end
 
   @doc """
   Creates a partner.
@@ -296,11 +301,13 @@ defmodule OmegaBravera.Partners do
   """
   def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
 
-  def query(Partner, %{scope: :partner_type}) do
-    from(p in Partner,
-      left_join: o in assoc(p, :offers),
-      select: %{p | type: fragment("CASE WHEN ? is null then ? else ? end", o.id, "suggested_partner", "bravera_partner")})
-  end
+  def query(Partner, %{scope: :partner_type}), do: partner_with_type_query()
 
   def query(queryable, _), do: queryable
+
+  defp partner_with_type_query do
+      from(p in Partner,
+        left_join: o in assoc(p, :offers),
+        select: %{p | type: fragment("CASE WHEN ? is null then ? else ? end", o.id, "suggested_partner", "bravera_partner")})
+  end
 end
