@@ -8,6 +8,7 @@ defmodule OmegaBravera.Partners.Partner do
     field :introduction, :string
     field :name, :string
     field :opening_times, :string
+    field :type, :string, virtual: true
     has_one :location, PartnerLocation
     has_many :offers, OmegaBravera.Offers.Offer
     has_many :votes, PartnerVote
