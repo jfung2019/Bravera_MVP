@@ -306,7 +306,7 @@ defmodule OmegaBravera.Partners do
   def query(queryable, _), do: queryable
 
   defp partner_with_type_query do
-      from(p in Partner,
+      from(p in Partner, distinct: true,
         left_join: o in assoc(p, :offers),
         select: %{p | type: fragment("CASE WHEN ? is null then ? else ? end", o.id, "suggested_partner", "bravera_partner")})
   end
