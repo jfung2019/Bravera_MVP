@@ -11,6 +11,7 @@ defmodule OmegaBravera.Donations.Notifier do
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mail}
+  import OmegaBravera.Emails, only: [user_subscribed_in_category?: 2]
 
   def email_parties(%NGOChal{} = chal, %Donor{} = donor, pledges) do
     challenge = Repo.preload(chal, [:ngo, user: [:subscribed_email_categories]])
@@ -161,16 +162,4 @@ defmodule OmegaBravera.Donations.Notifier do
       Enum.reduce(pledges, Decimal.new(0), fn pledge, acc -> Decimal.add(acc, pledge.amount) end)
 
   defp pledged_amount(%Donation{amount: amount}), do: Decimal.new(amount)
-
-  defp user_subscribed_in_category?(user_subscribed_categories, email_category_id) do
-    # if user_subscribed_categories is empty, it means that user is subscribed in all email_categories.
-    if Enum.empty?(user_subscribed_categories) do
-      true
-    else
-      # User actually choose specific categories of emails.
-      user_subscribed_categories
-      |> Enum.map(& &1.category_id)
-      |> Enum.member?(email_category_id)
-    end
-  end
 end

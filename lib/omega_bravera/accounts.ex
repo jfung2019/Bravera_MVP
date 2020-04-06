@@ -42,7 +42,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   def get_all_user_ids do
-    from(u in User, select: u.id)
+    from(u in User, select: u.id, where: not is_nil(u.email))
     |> Repo.all()
   end
 

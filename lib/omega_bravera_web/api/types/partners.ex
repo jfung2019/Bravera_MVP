@@ -6,7 +6,10 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
   @desc "Partner type according to if they have offers"
   enum :partner_type do
     value :bravera_partner, as: "bravera_partner", description: "Bravera official partner"
-    value :suggested_partner, as: "suggested_partner", description: "Suggested partner for Bravera"
+
+    value :suggested_partner,
+      as: "suggested_partner",
+      description: "Suggested partner for Bravera"
   end
 
   object :partner do
@@ -28,7 +31,9 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
     field :address, non_null(:string)
     field :latitude, non_null(:decimal)
     field :longitude, non_null(:decimal)
-    field :partner, non_null(:partner), resolve: dataloader(Partners, :partner, args: %{scope: :partner_type})
+
+    field :partner, non_null(:partner),
+      resolve: dataloader(Partners, :partner, args: %{scope: :partner_type})
   end
 
   object :partner_vote do

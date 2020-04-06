@@ -2,8 +2,8 @@ defmodule OmegaBravera.Accounts.Notifier do
   alias OmegaBravera.{Repo, Emails, Accounts.User, Accounts.Credential}
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
-
   alias SendGrid.{Mail, Email}
+  import OmegaBravera.Emails, only: [user_subscribed_in_category?: 2]
 
   def send_bonus_added_to_inviter_email(%User{} = user) do
     template_id = "bc8d21c3-7d6c-47c4-87c3-191c1cbc772d"
@@ -157,17 +157,5 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(user.email)
     |> Mail.send()
-  end
-
-  defp user_subscribed_in_category?(user_subscribed_categories, email_category_id) do
-    # if user_subscribed_categories is empty, it means that user is subscribed in all email_categories.
-    if Enum.empty?(user_subscribed_categories) do
-      true
-    else
-      # User actually choose specific categories of emails.
-      user_subscribed_categories
-      |> Enum.map(& &1.category_id)
-      |> Enum.member?(email_category_id)
-    end
   end
 end

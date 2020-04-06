@@ -5,11 +5,9 @@ defmodule OmegaBravera.Emails.UserEmailCategories do
   alias OmegaBravera.Emails.EmailCategory
 
   schema "user_email_categories" do
-    field(:user_id, :id)
-
-    belongs_to(:category, EmailCategory)
-
-    timestamps(type: :utc_datetime)
+    field :user_id, :id
+    belongs_to :category, EmailCategory
+    timestamps type: :utc_datetime
   end
 
   @doc false
