@@ -16,7 +16,6 @@ test:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
   script:
-    - mix hex.organization auth oban --key $ORG_KEY
     - mix do deps.get, test --exclude skip
 
 staging:
@@ -36,7 +35,6 @@ staging:
     - cp .deliver/ssh_config_staging /root/.ssh/config
     - mv -f .deliver/config_staging .deliver/config
     - chmod -R 700 /root/.ssh
-    - mix hex.organization auth oban --key $ORG_KEY
     - mix do deps.get, deps.compile
     - git branch -f staging HEAD
   script:
@@ -60,7 +58,6 @@ production:
     - mkdir -p /root/.ssh
     - cp .deliver/ssh_config /root/.ssh/config
     - chmod -R 700 /root/.ssh
-    - mix hex.organization auth oban --key $ORG_KEY
     - mix do deps.get, deps.compile
     - git branch -f master HEAD
   script:
