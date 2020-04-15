@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
-  use OmegaBraveraWeb.ConnCase, async: true
+  use OmegaBraveraWeb.ConnCase, async: false
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
   import OmegaBravera.Factory
