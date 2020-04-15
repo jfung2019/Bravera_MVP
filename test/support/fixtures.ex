@@ -57,4 +57,13 @@ defmodule OmegaBravera.Fixtures do
     {:ok, vote} = Partners.create_partner_vote(attrs)
     vote
   end
+
+  def admin_user_fixture(attrs \\ %{}) do
+    {:ok, admin_user} =
+      attrs
+      |> Enum.into(%{email: "some@email.com", password: "pass1234"})
+      |> Accounts.create_admin_user()
+
+    admin_user
+  end
 end

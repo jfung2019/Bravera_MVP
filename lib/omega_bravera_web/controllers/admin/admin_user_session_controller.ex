@@ -10,6 +10,9 @@ defmodule OmegaBraveraWeb.AdminUserSessionController do
       %User{} ->
         redirect(conn, to: Routes.page_path(conn, :index))
 
+      %AdminUser{role: "super"} ->
+        redirect(conn, to: Routes.admin_panel_partner_path(conn, :index))
+
       %AdminUser{} ->
         redirect(conn, to: Routes.admin_user_page_path(conn, :index))
 
@@ -20,10 +23,15 @@ defmodule OmegaBraveraWeb.AdminUserSessionController do
 
   def create(conn, %{"session" => %{"email" => email, "password" => pass}}) do
     case AdminLoggedIn.login_by_email_and_pass(conn, email, pass) do
-      {:ok, conn} ->
+      {:ok, %AdminUser{role: "super"}, conn} ->
         conn
         |> put_flash(:info, "Welcome back!")
         |> redirect(to: Routes.admin_user_page_path(conn, :index))
+
+      {:ok, %AdminUser{}, conn} ->
+        conn
+        |> put_flash(:info, "Welcome back!")
+        |> redirect(to: Routes.admin_panel_partner_path(conn, :index))
 
       {:error, _reason, conn} ->
         conn

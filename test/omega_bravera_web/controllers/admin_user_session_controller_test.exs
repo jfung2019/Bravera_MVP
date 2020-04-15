@@ -1,14 +1,9 @@
 defmodule OmegaBraveraWeb.AdminUserSessionControllerTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.Fixtures
 
   @create_attrs %{email: "some@email.com", password: "pass1234"}
-
-  def fixture(:admin_user) do
-    {:ok, admin_user} = Accounts.create_admin_user(@create_attrs)
-    admin_user
-  end
 
   describe "new admin_user" do
     test "renders form", %{conn: conn} do
@@ -17,9 +12,9 @@ defmodule OmegaBraveraWeb.AdminUserSessionControllerTest do
     end
   end
 
-  describe "user logging in" do
+  describe "super admin logging in" do
     setup do
-      {:ok, user: fixture(:admin_user)}
+      {:ok, user: Fixtures.admin_user_fixture(@create_attrs)}
     end
 
     test "admin user can login", %{conn: conn} do
@@ -46,9 +41,20 @@ defmodule OmegaBraveraWeb.AdminUserSessionControllerTest do
     end
   end
 
+  describe "partner admin logging in" do
+    setup do
+      {:ok, user: Fixtures.admin_user_fixture(Map.put(@create_attrs, :role, "partner"))}
+    end
+
+    test "can login and redirected to partner section", %{conn: conn} do
+      conn = post(conn, admin_user_session_path(conn, :create), %{"session" => @create_attrs})
+      assert redirected_to(conn) == Routes.admin_panel_partner_path(conn, :index)
+    end
+  end
+
   describe "admin user logout" do
     setup %{conn: conn} do
-      user = fixture(:admin_user)
+      user = Fixtures.admin_user_fixture(@create_attrs)
       {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(user, %{})
 
       {:ok,

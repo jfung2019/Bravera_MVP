@@ -9,6 +9,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Offers,
     Points.Point
   }
+
   alias OmegaBravera.Activity.ActivityAccumulator
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint

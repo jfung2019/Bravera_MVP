@@ -25,6 +25,12 @@ defmodule OmegaBraveraWeb.Router do
     plug :put_live_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
+  pipeline :super_admin_authenticated do
+    plug Guardian.AuthPipeline
+    plug OmegaBraveraWeb.SuperAdminAuth
+    plug :put_live_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
+  end
+
   pipeline :api do
     plug Plug.Logger
     plug :accepts, ["json"]
@@ -126,7 +132,7 @@ defmodule OmegaBraveraWeb.Router do
     get "/logout", AdminUserSessionController, :logout
 
     scope "/" do
-      pipe_through [:admin_authenticated]
+      pipe_through [:super_admin_authenticated]
       get "/", AdminUserPageController, :index
       resources "/locations", AdminPanelLocationsController
       resources "/admin-users", AdminUserController
@@ -149,12 +155,6 @@ defmodule OmegaBraveraWeb.Router do
       resources "/emails", AdminPanelEmailsController, except: [:delete]
       get "/challenges", AdminPanelChallengesController, :index
 
-      live "/partners/:id/images", AdminPartnerImages
-
-      resources "/partners", AdminPanelPartnerController, except: [:delete] do
-        resources "/locations", AdminPanelPartnerLocationController, except: [:index]
-      end
-
       resources "/ngos", AdminPanelNGOController, only: [:index, :new, :create] do
         resources "/challenges", AdminPanelChallengesController,
           only: [:show, :edit, :update],
@@ -172,6 +172,15 @@ defmodule OmegaBraveraWeb.Router do
       get "/offers/:slug/statement", AdminPanelOfferController, :statement
       get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
       live "/offers/:slug/images", AdminOfferImages
+    end
+
+    scope "/" do
+      pipe_through [:admin_authenticated]
+      live "/partners/:id/images", AdminPartnerImages
+
+      resources "/partners", AdminPanelPartnerController, except: [:delete] do
+        resources "/locations", AdminPanelPartnerLocationController, except: [:index]
+      end
     end
   end
 

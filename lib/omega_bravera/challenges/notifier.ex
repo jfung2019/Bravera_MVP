@@ -7,6 +7,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     Accounts.Donor,
     Emails
   }
+
   alias OmegaBravera.Activity.ActivityAccumulator
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint

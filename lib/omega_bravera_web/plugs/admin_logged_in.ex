@@ -18,7 +18,7 @@ defmodule OmegaBraveraWeb.AdminLoggedIn do
 
   def login_by_email_and_pass(conn, email, pass) do
     case Accounts.authenticate_admin_user_by_email_and_pass(email, pass) do
-      {:ok, user} -> {:ok, OmegaBravera.Guardian.Plug.sign_in(conn, user)}
+      {:ok, user} -> {:ok, user, OmegaBravera.Guardian.Plug.sign_in(conn, user)}
       {:error, :unauthorized} -> {:error, :unauthorized, conn}
       {:error, :not_found} -> {:error, :not_found, conn}
     end
