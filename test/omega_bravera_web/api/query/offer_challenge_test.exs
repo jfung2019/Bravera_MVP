@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Api.Mutation.OfferChallengeTest do
+defmodule OmegaBraveraWeb.Api.Query.OfferChallengeTest do
   use OmegaBraveraWeb.ConnCase, async: false
 
   import OmegaBravera.Factory
