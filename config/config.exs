@@ -50,6 +50,10 @@ config :omega_bravera, Oban,
   prune: {:maxlen, 10_000},
   queues: [default: 10, email: 10]
 
+config :omega_bravera, OmegaBravera.Guardian,
+       allowed_drift: 3.154e+10,
+       ttl: {52, :weeks}, max_age: {78, :weeks}
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
