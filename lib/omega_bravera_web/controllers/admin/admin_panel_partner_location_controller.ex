@@ -26,7 +26,7 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerLocationController do
       {:error, changeset} ->
         conn
         |> put_flash(:error, "")
-        |> render(changeset: changeset, partner: partner)
+        |> render("new.html", changeset: changeset, partner: partner)
     end
   end
 
@@ -58,7 +58,7 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerLocationController do
       {:error, changeset} ->
         conn
         |> put_flash(:error, "")
-        |> render(changeset: changeset, partner: partner)
+        |> render("edit.html", changeset: changeset, partner: partner)
     end
   end
 
