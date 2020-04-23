@@ -51,7 +51,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         post(
           conn,
-          offer_offer_challenge_path(conn, :create, offer.slug)
+          Routes.offer_offer_challenge_path(conn, :create, offer.slug)
         )
 
       assert get_session(conn, :could_not_create_offer_challenge) == true
@@ -77,7 +77,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         post(
           conn,
-          offer_offer_challenge_path(conn, :create, offer.slug)
+          Routes.offer_offer_challenge_path(conn, :create, offer.slug)
         )
 
       assert %{slug: slug} = redirected_params(conn)
@@ -109,7 +109,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         post(
           conn,
-          offer_offer_challenge_path(conn, :create, offer.slug)
+          Routes.offer_offer_challenge_path(conn, :create, offer.slug)
         )
 
       assert %{slug: slug} = redirected_params(conn)
@@ -131,12 +131,12 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         post(
           conn,
-          offer_offer_challenge_path(conn, :create, offer.slug)
+          Routes.offer_offer_challenge_path(conn, :create, offer.slug)
         )
 
       assert get_flash(conn, :info) == "Success! You have registered for this offer!"
       assert [challenge] = Offers.list_offer_challenges()
-      assert redirected_to(conn) == offer_offer_challenge_path(conn, :show, offer, challenge)
+      assert redirected_to(conn) == Routes.offer_offer_challenge_path(conn, :show, offer, challenge)
     end
 
     test "create/2 redirects to paid offer challenge when data is valid", %{
@@ -157,7 +157,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         conn =
           post(
             conn,
-            offer_offer_challenge_path(conn, :create, offer.slug),
+            Routes.offer_offer_challenge_path(conn, :create, offer.slug),
             offer_challenge: %{
               "team" => %{},
               "offer_redeems" => [%{}],
@@ -167,7 +167,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
         assert get_flash(conn, :info) == "Success! You have registered for this offer!"
         assert [challenge] = Offers.list_offer_challenges()
-        assert redirected_to(conn) == offer_offer_challenge_path(conn, :show, offer, challenge)
+        assert redirected_to(conn) == Routes.offer_offer_challenge_path(conn, :show, offer, challenge)
 
         challenge = Repo.preload(challenge, :payment)
         assert Decimal.round(challenge.payment.charged_amount) == offer.payment_amount
@@ -195,7 +195,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         conn =
           post(
             conn,
-            offer_offer_challenge_path(conn, :create, offer.slug),
+            Routes.offer_offer_challenge_path(conn, :create, offer.slug),
             offer_challenge: %{
               "team" => %{},
               "offer_redeems" => [%{}],
@@ -205,7 +205,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
         assert get_flash(conn, :info) == "Success! You have registered for this offer!"
         assert [challenge] = Offers.list_offer_challenges()
-        assert redirected_to(conn) == offer_offer_challenge_path(conn, :show, offer, challenge)
+        assert redirected_to(conn) == Routes.offer_offer_challenge_path(conn, :show, offer, challenge)
 
         challenge = Repo.preload(challenge, :payment)
         assert Decimal.round(challenge.payment.charged_amount) == offer.payment_amount
@@ -219,7 +219,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
        %{conn: conn, current_user: _user} do
     offer = insert(:offer, %{slug: "sherief-1"})
 
-    conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
+    conn = get(conn, Routes.offer_offer_challenge_path(conn, :new, offer))
     assert html_response(conn, 200) =~ "verify your email address"
 
     after_email_verify =
@@ -227,7 +227,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       |> Map.get(:cookies)
       |> Map.get("after_email_verify")
 
-    assert after_email_verify == offer_offer_challenge_path(conn, :new, offer)
+    assert after_email_verify == Routes.offer_offer_challenge_path(conn, :new, offer)
   end
 
   test "when a user changes their email, email_verified will be set to false and email_activation_token will change too",
@@ -244,14 +244,14 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
     assert updated_user2.email_activation_token != updated_user.email_activation_token
     refute updated_user2.email_verified
 
-    conn = get(conn, offer_offer_challenge_path(conn, :new, offer))
+    conn = get(conn, Routes.offer_offer_challenge_path(conn, :new, offer))
 
     after_email_verify =
       Plug.Conn.fetch_cookies(conn)
       |> Map.get(:cookies)
       |> Map.get("after_email_verify")
 
-    assert after_email_verify == offer_offer_challenge_path(conn, :new, offer)
+    assert after_email_verify == Routes.offer_offer_challenge_path(conn, :new, offer)
   end
 
   test "created challenge should first show a success modal", %{conn: conn, current_user: user} do
@@ -277,7 +277,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         get(
           conn,
-          offer_offer_challenge_offer_challenge_path(
+          Routes.offer_offer_challenge_offer_challenge_path(
             conn,
             :new_redeem,
             offer_redeem.offer.slug,
@@ -287,6 +287,25 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         )
 
       assert html_response(conn, 200) =~ "New Redemption"
+    end
+
+    test "new_redeem/2 will not show form for vendor as it is expired", %{conn: conn} do
+      offer_redeem = insert(:offer_redeem, status: "expired")
+
+      conn =
+        get(
+          conn,
+          Routes.offer_offer_challenge_offer_challenge_path(
+            conn,
+            :new_redeem,
+            offer_redeem.offer.slug,
+            offer_redeem.offer_challenge.slug,
+            offer_redeem.token
+          )
+        )
+
+      assert html_response(conn, 200) =~ "Redemption Expired"
+
     end
 
     test "save_redeem/2 updates a redeem when valid data is given", %{conn: conn} do
@@ -300,7 +319,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         post(
           conn,
-          offer_offer_challenge_offer_challenge_path(
+          Routes.offer_offer_challenge_offer_challenge_path(
             conn,
             :save_redeem,
             offer_redeem.offer.slug,
@@ -318,6 +337,34 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       assert offer_redeemed_.status == "redeemed"
     end
 
+    test "save_redeem/2 will not update a redeem when valid data is given but redeem is expired", %{conn: conn} do
+      offer_redeem = insert(:offer_redeem, %{status: "expired"})
+
+      params = %{
+        vendor_id: offer_redeem.vendor.vendor_id,
+        offer_reward_id: offer_redeem.offer_reward.id
+      }
+
+      conn =
+        post(
+          conn,
+          Routes.offer_offer_challenge_offer_challenge_path(
+            conn,
+            :save_redeem,
+            offer_redeem.offer.slug,
+            offer_redeem.offer_challenge.slug,
+            offer_redeem.token
+          ),
+          offer_redeem: params
+        )
+
+      assert html = html_response(conn, 200)
+      assert html =~ "Redemption Expired"
+
+      offer_redeemed_ = Offers.get_offer_redeems!(offer_redeem.id)
+      assert offer_redeemed_.status == "expired"
+    end
+
     test "save_redeem/2 renders errors when invalid data is given", %{conn: conn} do
       offer_redeem = insert(:offer_redeem)
 
@@ -326,7 +373,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         post(
           conn,
-          offer_offer_challenge_offer_challenge_path(
+          Routes.offer_offer_challenge_offer_challenge_path(
             conn,
             :save_redeem,
             offer_redeem.offer.slug,
@@ -358,7 +405,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         get(
           conn,
-          offer_offer_challenge_offer_challenge_path(
+          Routes.offer_offer_challenge_offer_challenge_path(
             conn,
             :add_team_member,
             team.offer_challenge.offer.slug,
@@ -403,7 +450,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
     #   conn =
     #     get(
     #       conn,
-    #       offer_offer_challenge_offer_challenge_path(
+    #       Routes.offer_offer_challenge_offer_challenge_path(
     #         conn,
     #         :add_team_member,
     #         team.offer_challenge.offer.slug,
@@ -453,7 +500,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         post(
           conn,
-          offer_offer_challenge_offer_challenge_path(
+          Routes.offer_offer_challenge_offer_challenge_path(
             conn,
             :kick_team_member,
             offer_challenge.offer.slug,
@@ -491,7 +538,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         post(
           conn,
-          offer_offer_challenge_offer_challenge_path(
+          Routes.offer_offer_challenge_offer_challenge_path(
             conn,
             :kick_team_member,
             offer_challenge.offer.slug,
@@ -528,7 +575,7 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       conn =
         post(
           conn,
-          offer_offer_challenge_offer_challenge_path(
+          Routes.offer_offer_challenge_offer_challenge_path(
             conn,
             :kick_team_member,
             offer_challenge.offer.slug,

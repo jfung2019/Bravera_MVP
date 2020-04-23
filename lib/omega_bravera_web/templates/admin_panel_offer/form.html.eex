@@ -185,6 +185,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :redemption_days, "How many days can redeem after completion of challenge" %>
+    <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
+    <%= error_tag f, :redemption_days %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Save", class: "btn btn-primary" %>
   </div>
 <% end %>

@@ -21,7 +21,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
   plug :put_layout, false when action in [:qr_code]
 
-  plug(:assign_available_options when action in [:create])
+  plug :assign_available_options when action in [:create]
   plug OmegaBraveraWeb.ConnectTracker when action in [:create, :new, :add_team_member]
   plug OmegaBraveraWeb.UserEmailVerified when action in [:create, :new, :add_team_member]
 

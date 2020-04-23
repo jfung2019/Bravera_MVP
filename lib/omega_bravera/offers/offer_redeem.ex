@@ -7,11 +7,15 @@ defmodule OmegaBravera.Offers.OfferRedeem do
 
   @pending_status "pending"
   @redeemed_status "redeemed"
+  @expired_status "expired"
+
+  @valid_statuses [@pending_status, @redeemed_status, @expired_status]
 
   schema "offer_redeems" do
     field :token, :string
-    # Can be pending or redeemed
+    # Can be pending, redeemed, expired
     field :status, :string, default: @pending_status
+    field :expired_at, :utc_datetime
 
     belongs_to :offer_reward, OfferReward
     belongs_to :offer_challenge, OfferChallenge
@@ -29,6 +33,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   def changeset(%__MODULE__{} = offer_redeems, attrs \\ %{}) do
     offer_redeems
     |> cast(attrs, @allowed_atributes)
+    |> validate_inclusion(:status, @valid_statuses)
   end
 
   def offer_challenge_assoc_changeset(
@@ -48,7 +53,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
 
   def create_changeset(offer_redeems, offer_challenge, vendor, attrs \\ %{}, team_user \\ %User{})
 
-  def create_changeset(_, _, vendor, attrs, _) when is_nil(vendor) == true do
+  def create_changeset(_, _, vendor, attrs, _) when is_nil(vendor) do
     %__MODULE__{}
     |> changeset(attrs)
     |> add_error(:vendor_id, "Invalid Vendor ID.")
@@ -102,6 +107,12 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     %__MODULE__{}
     |> cast(%{}, [])
     |> add_error(:id, "Vendor not found in database.")
+  end
+
+  def redeem_reward_changeset(%__MODULE__{status: "expired"}, _, _, _, _) do
+    %__MODULE__{}
+    |> cast(%{}, [])
+    |> add_error(:id, "Redemption Expired")
   end
 
   def redeem_reward_changeset(

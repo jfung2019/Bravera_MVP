@@ -792,6 +792,15 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
+  Expires any offer redeems that have an expired_at field filled in and expired.
+  """
+  def expire_expired_offer_redeems do
+    now = Timex.now()
+    from(o in OfferRedeem, where: not is_nil(o.expired_at) and o.expired_at <= ^now)
+    |> Repo.update_all(set: [status: "expired"])
+  end
+
+  @doc """
   Returns the list of offer_vendors.
 
   ## Examples

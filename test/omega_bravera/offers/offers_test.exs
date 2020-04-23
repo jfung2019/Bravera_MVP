@@ -525,6 +525,29 @@ defmodule OmegaBravera.OffersTest do
                  attrs
                )
     end
+
+    test "expire_offer_redeems will set offer_redeem expired if in the past" do
+      expired_at = Timex.now() |> Timex.shift(minutes: -1)
+      user = insert(:user)
+      offer =
+        insert(:offer, %{
+          time_limit: 10,
+          end_date: Timex.shift(Timex.now(), days: 5)
+        })
+      offer_challenge =
+        insert(:offer_challenge, %{
+          offer: nil,
+          offer_id: offer.id,
+          user: nil,
+          user_id: user.id,
+          has_team: false
+        })
+      %{id: expired_offer_id} = insert(:offer_redeem_with_args, %{status: "pending", expired_at: expired_at, offer: offer, offer_challenge_id: offer_challenge.id, offer_challenge: nil})
+      %{id: unexpired_offer_id} = insert(:offer_redeem_with_args, %{status: "pending", expired_at: nil, offer: offer, offer_challenge_id: offer_challenge.id, offer_challenge: nil})
+      Offers.expire_expired_offer_redeems()
+      assert %{status: "expired"} = Offers.get_offer_redeems!(expired_offer_id)
+      assert %{status: "pending"} = Offers.get_offer_redeems!(unexpired_offer_id)
+    end
   end
 
   describe "offer_vendors" do
