@@ -27,7 +27,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   end
 
   # Should remove vendor_id?, token, and status.
-  @allowed_atributes [:offer_reward_id, :vendor_id, :token, :status]
+  @allowed_atributes [:offer_reward_id, :vendor_id, :token, :status, :expired_at]
 
   @doc false
   def changeset(%__MODULE__{} = offer_redeems, attrs \\ %{}) do

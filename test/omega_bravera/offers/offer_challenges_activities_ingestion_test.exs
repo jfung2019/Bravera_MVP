@@ -372,6 +372,24 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       assert updated_challenge.status == "complete"
     end
 
+    test "updates offer redeem with expired_at if offer has expiration days" do
+      offer = insert(:offer, %{redemption_days: 1})
+      challenge = insert(:offer_challenge, %{distance_target: 50, offer: offer, offer_id: offer.id})
+
+      assert {:ok, %{id: redeem_id, status: "pending", expired_at: nil}} = Offers.create_offer_redeems(challenge, challenge.offer.vendor)
+
+      activity =
+        insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
+
+      {:ok, :challenge_updated} =
+        OfferActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)
+
+      updated_challenge = Repo.get!(OfferChallenge, challenge.id)
+
+      assert updated_challenge.status == "complete"
+      assert %{expired_at: %DateTime{}} = Offers.get_offer_redeems!(redeem_id)
+    end
+
     test "updates a km challenge status if the covered distance is greater than the target distance" do
       challenge = insert(:offer_challenge, %{distance_target: 50, type: "PER_KM"})
 

@@ -756,6 +756,14 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
+  def update_offer_redeems(offer_redeem, attrs) do
+    OfferRedeem.changeset(offer_redeem, attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Updates an offer redeem when updating for redemption purposes.
+  """
   def update_offer_redeems(offer_redeems, offer_challenge, offer, vendor, attrs) do
     offer_redeems
     |> OfferRedeem.redeem_reward_changeset(offer_challenge, offer, vendor, attrs)
@@ -796,7 +804,7 @@ defmodule OmegaBravera.Offers do
   """
   def expire_expired_offer_redeems do
     now = Timex.now()
-    from(o in OfferRedeem, where: not is_nil(o.expired_at) and o.expired_at <= ^now)
+    from(o in OfferRedeem, where: not is_nil(o.expired_at) and o.expired_at <= ^now and o.status == "pending")
     |> Repo.update_all(set: [status: "expired"])
   end
 

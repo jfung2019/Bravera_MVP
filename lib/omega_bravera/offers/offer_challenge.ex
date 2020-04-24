@@ -339,6 +339,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     end
   end
 
+  @spec update_challenge_status(Ecto.Changeset.t(), any()) :: Ecto.Changeset.t()
   defp update_challenge_status(%Ecto.Changeset{} = changeset, challenge) do
     distance_covered = get_change(changeset, :distance_covered, Decimal.new(0))
 

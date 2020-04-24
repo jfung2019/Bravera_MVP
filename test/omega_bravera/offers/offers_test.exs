@@ -544,9 +544,11 @@ defmodule OmegaBravera.OffersTest do
         })
       %{id: expired_offer_id} = insert(:offer_redeem_with_args, %{status: "pending", expired_at: expired_at, offer: offer, offer_challenge_id: offer_challenge.id, offer_challenge: nil})
       %{id: unexpired_offer_id} = insert(:offer_redeem_with_args, %{status: "pending", expired_at: nil, offer: offer, offer_challenge_id: offer_challenge.id, offer_challenge: nil})
+      %{id: unexpired_redeemed_offer_id} = insert(:offer_redeem_with_args, %{status: "redeemed", expired_at: expired_at, offer: offer, offer_challenge_id: offer_challenge.id, offer_challenge: nil})
       Offers.expire_expired_offer_redeems()
       assert %{status: "expired"} = Offers.get_offer_redeems!(expired_offer_id)
       assert %{status: "pending"} = Offers.get_offer_redeems!(unexpired_offer_id)
+      assert %{status: "redeemed"} = Offers.get_offer_redeems!(unexpired_redeemed_offer_id)
     end
   end
 
