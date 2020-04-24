@@ -11,6 +11,6 @@ defmodule OmegaBraveraWeb.Api.Types.Redeem do
     field :offer_challenge, :offer_challenge, resolve: dataloader(Offers)
     field :inserted_at, non_null(:date)
     field :updated_at, non_null(:date)
-    field :expired_at, non_null(:date)
+    field :expired_at, :date
   end
 end
