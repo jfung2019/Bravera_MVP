@@ -1,13 +1,14 @@
 defmodule OmegaBraveraWeb.AdminLoggedIn do
   alias OmegaBravera.Accounts
   alias OmegaBravera.Accounts.AdminUser
+  import Plug.Conn, only: [assign: 3]
 
   def init(opts), do: opts
 
   def call(conn, _opts) do
     case OmegaBravera.Guardian.Plug.current_resource(conn) do
-      %AdminUser{} ->
-        conn
+      %AdminUser{} = admin ->
+        assign(conn, :current_admin, admin)
 
       _ ->
         conn

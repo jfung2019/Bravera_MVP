@@ -126,7 +126,8 @@ defmodule OmegaBravera.Partners do
 
   """
   def list_partner_locations do
-    Repo.all(PartnerLocation)
+    from(l in PartnerLocation, left_join: p in assoc(l, :partner), where: p.live == true)
+    |> Repo.all()
   end
 
   @doc """

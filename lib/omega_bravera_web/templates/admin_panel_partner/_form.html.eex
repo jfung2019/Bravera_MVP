@@ -14,5 +14,19 @@
   	<%= textarea f, :opening_times, class: "form-control", data: [html: true] %>
   	<%= error_tag f, :opening_times %>
   </div>
+
+  <div class="form-group">
+    <%= label f, :opening_times %>
+    <%= textarea f, :opening_times, class: "form-control", data: [html: true] %>
+    <%= error_tag f, :opening_times %>
+  </div>
+
+  <%= if @current_admin.role == "super" do %>
+    <div class="form-check mb-3">
+      <%= checkbox f, :live, class: "form-check-input" %>
+      <%= label f, :live, "Live Partner", class: "form-check-label" %>
+    </div>
+  <% end %>
+
   <%= submit "Submit", class: "btn btn-primary" %>
 <% end %>
