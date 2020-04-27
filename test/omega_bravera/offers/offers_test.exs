@@ -125,7 +125,9 @@ defmodule OmegaBravera.OffersTest do
     end
 
     test "create_offer/1 with offer_type should be invalid without the online_url and online_code" do
-      assert {:error, %Ecto.Changeset{errors: errors}} = create_offer(%{@valid_attrs | offer_type: "online"})
+      assert {:error, %Ecto.Changeset{errors: errors}} =
+               create_offer(%{@valid_attrs | offer_type: "online"})
+
       assert Keyword.get(errors, :online_url) == {"can't be blank", [validation: :required]}
       assert Keyword.get(errors, :online_code) == {"can't be blank", [validation: :required]}
     end
@@ -536,11 +538,13 @@ defmodule OmegaBravera.OffersTest do
     test "expire_offer_redeems will set offer_redeem expired if in the past" do
       expired_at = Timex.now() |> Timex.shift(minutes: -1)
       user = insert(:user)
+
       offer =
         insert(:offer, %{
           time_limit: 10,
           end_date: Timex.shift(Timex.now(), days: 5)
         })
+
       offer_challenge =
         insert(:offer_challenge, %{
           offer: nil,
@@ -549,9 +553,34 @@ defmodule OmegaBravera.OffersTest do
           user_id: user.id,
           has_team: false
         })
-      %{id: expired_offer_id} = insert(:offer_redeem_with_args, %{status: "pending", expired_at: expired_at, offer: offer, offer_challenge_id: offer_challenge.id, offer_challenge: nil})
-      %{id: unexpired_offer_id} = insert(:offer_redeem_with_args, %{status: "pending", expired_at: nil, offer: offer, offer_challenge_id: offer_challenge.id, offer_challenge: nil})
-      %{id: unexpired_redeemed_offer_id} = insert(:offer_redeem_with_args, %{status: "redeemed", expired_at: expired_at, offer: offer, offer_challenge_id: offer_challenge.id, offer_challenge: nil})
+
+      %{id: expired_offer_id} =
+        insert(:offer_redeem_with_args, %{
+          status: "pending",
+          expired_at: expired_at,
+          offer: offer,
+          offer_challenge_id: offer_challenge.id,
+          offer_challenge: nil
+        })
+
+      %{id: unexpired_offer_id} =
+        insert(:offer_redeem_with_args, %{
+          status: "pending",
+          expired_at: nil,
+          offer: offer,
+          offer_challenge_id: offer_challenge.id,
+          offer_challenge: nil
+        })
+
+      %{id: unexpired_redeemed_offer_id} =
+        insert(:offer_redeem_with_args, %{
+          status: "redeemed",
+          expired_at: expired_at,
+          offer: offer,
+          offer_challenge_id: offer_challenge.id,
+          offer_challenge: nil
+        })
+
       Offers.expire_expired_offer_redeems()
       assert %{status: "expired"} = Offers.get_offer_redeems!(expired_offer_id)
       assert %{status: "pending"} = Offers.get_offer_redeems!(unexpired_offer_id)

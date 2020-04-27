@@ -136,7 +136,9 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
       assert get_flash(conn, :info) == "Success! You have registered for this offer!"
       assert [challenge] = Offers.list_offer_challenges()
-      assert redirected_to(conn) == Routes.offer_offer_challenge_path(conn, :show, offer, challenge)
+
+      assert redirected_to(conn) ==
+               Routes.offer_offer_challenge_path(conn, :show, offer, challenge)
     end
 
     test "create/2 redirects to paid offer challenge when data is valid", %{
@@ -167,7 +169,9 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
         assert get_flash(conn, :info) == "Success! You have registered for this offer!"
         assert [challenge] = Offers.list_offer_challenges()
-        assert redirected_to(conn) == Routes.offer_offer_challenge_path(conn, :show, offer, challenge)
+
+        assert redirected_to(conn) ==
+                 Routes.offer_offer_challenge_path(conn, :show, offer, challenge)
 
         challenge = Repo.preload(challenge, :payment)
         assert Decimal.round(challenge.payment.charged_amount) == offer.payment_amount
@@ -205,7 +209,9 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
 
         assert get_flash(conn, :info) == "Success! You have registered for this offer!"
         assert [challenge] = Offers.list_offer_challenges()
-        assert redirected_to(conn) == Routes.offer_offer_challenge_path(conn, :show, offer, challenge)
+
+        assert redirected_to(conn) ==
+                 Routes.offer_offer_challenge_path(conn, :show, offer, challenge)
 
         challenge = Repo.preload(challenge, :payment)
         assert Decimal.round(challenge.payment.charged_amount) == offer.payment_amount
@@ -305,7 +311,6 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
         )
 
       assert html_response(conn, 200) =~ "Redemption Expired"
-
     end
 
     test "save_redeem/2 updates a redeem when valid data is given", %{conn: conn} do
@@ -337,7 +342,8 @@ defmodule OmegaBraveraWeb.OfferChallengeControllerTest do
       assert offer_redeemed_.status == "redeemed"
     end
 
-    test "save_redeem/2 will not update a redeem when valid data is given but redeem is expired", %{conn: conn} do
+    test "save_redeem/2 will not update a redeem when valid data is given but redeem is expired",
+         %{conn: conn} do
       offer_redeem = insert(:offer_redeem, %{status: "expired"})
 
       params = %{

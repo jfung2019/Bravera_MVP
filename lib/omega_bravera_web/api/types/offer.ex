@@ -6,8 +6,8 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     value :in_store, as: "in_store", description: "In store offer that uses a QR code"
 
     value :online,
-          as: "online",
-          description: "Online offer that can be redeemed from partner's website"
+      as: "online",
+      description: "Online offer that can be redeemed from partner's website"
   end
 
   object :offer do

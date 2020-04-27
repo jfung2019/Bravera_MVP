@@ -230,6 +230,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.latest_past_redeems/3
     end
 
+    @desc "Gets latest expired redeems for user"
+    field :expired_redeems, non_null(list_of(non_null(:redeem))) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.OfferRedeems.latest_expired_redeems/3
+    end
+
     @desc "Gets latest expired challenges for user"
     field :expired_challenges, non_null(list_of(non_null(:offer_challenge))) do
       middleware Middleware.Authenticate

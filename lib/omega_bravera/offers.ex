@@ -676,7 +676,17 @@ defmodule OmegaBravera.Offers do
       [%OfferRedeem{}, ...]
 
   """
+  def list_offer_redeems(preloads \\ []) do
+    from(
+      redeem in OfferRedeem,
+      preload: ^preloads
+    )
+    |> Repo.all()
+  end
 
+  @doc """
+  Lists offer_redeems used in offer statement.
+  """
   def list_offer_redeems_for_offer_statement(slug, preloads \\ []) do
     offer = get_offer_by_slug(slug)
 
@@ -689,10 +699,13 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
-  def list_offer_redeems(preloads \\ []) do
+  @doc """
+  Lists all expired offer redeems for a user
+  """
+  def list_expired_offer_redeems(user_id) do
     from(
-      redeem in OfferRedeem,
-      preload: ^preloads
+      r in OfferRedeem,
+      where: r.user_id == ^user_id and r.status == "expired"
     )
     |> Repo.all()
   end
@@ -805,7 +818,10 @@ defmodule OmegaBravera.Offers do
   """
   def expire_expired_offer_redeems do
     now = Timex.now()
-    from(o in OfferRedeem, where: not is_nil(o.expired_at) and o.expired_at <= ^now and o.status == "pending")
+
+    from(o in OfferRedeem,
+      where: not is_nil(o.expired_at) and o.expired_at <= ^now and o.status == "pending"
+    )
     |> Repo.update_all(set: [status: "expired"])
   end
 

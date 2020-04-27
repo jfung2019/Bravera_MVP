@@ -381,7 +381,17 @@ defmodule OmegaBravera.Accounts do
         left_join: o in assoc(oc, :offer),
         where: ofr.user_id == ^user_id and ofr.status == ^"pending",
         order_by: [desc: :inserted_at],
-        select: %{ofr | online_url: o.online_url, token: fragment("CASE WHEN ? = 'online' THEN ? ELSE ? END", o.offer_type, o.online_code, ofr.token)}
+        select: %{
+          ofr
+          | online_url: o.online_url,
+            token:
+              fragment(
+                "CASE WHEN ? = 'online' THEN ? ELSE ? END",
+                o.offer_type,
+                o.online_code,
+                ofr.token
+              )
+        }
       )
       |> Repo.all()
 

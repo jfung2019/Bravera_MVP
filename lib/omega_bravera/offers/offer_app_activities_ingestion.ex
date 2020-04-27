@@ -147,7 +147,12 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
     {:error, challenge, nil}
   end
 
-  @spec update_challenge({:ok, OfferChallenge.t(), Offers.OfferChallengeActivitiesM2m.t()} | {:error, any(), any()}) :: {:ok, OfferChallenge.t(), Offers.OfferChallengeActivitiesM2m.t()} | {:error, any(), any()}
+  @spec update_challenge(
+          {:ok, OfferChallenge.t(), Offers.OfferChallengeActivitiesM2m.t()}
+          | {:error, any(), any()}
+        ) ::
+          {:ok, OfferChallenge.t(), Offers.OfferChallengeActivitiesM2m.t()}
+          | {:error, any(), any()}
   defp update_challenge({:ok, challenge, activity}) do
     updated =
       challenge
@@ -158,8 +163,10 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
     # update the reward to the right time
     if updated.status == "complete" and challenge.offer.redemption_days != nil do
       expired_at = Timex.now() |> Timex.shift(days: challenge.offer.redemption_days)
+
       offer_redeem =
         Repo.get_by(OfferRedeem, offer_challenge_id: challenge.id, user_id: challenge.user_id)
+
       Offers.update_offer_redeems(offer_redeem, %{expired_at: expired_at})
     end
 

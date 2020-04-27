@@ -10,7 +10,7 @@ defmodule OmegaBravera.Fixtures do
         introduction: "some introduction",
         name: "some name",
         opening_times: "some opening_times",
-        live: true,
+        live: true
       })
       |> Partners.create_partner()
 

@@ -374,9 +374,12 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
 
     test "updates offer redeem with expired_at if offer has expiration days" do
       offer = insert(:offer, %{redemption_days: 1})
-      challenge = insert(:offer_challenge, %{distance_target: 50, offer: offer, offer_id: offer.id})
 
-      assert {:ok, %{id: redeem_id, status: "pending", expired_at: nil}} = Offers.create_offer_redeems(challenge, challenge.offer.vendor)
+      challenge =
+        insert(:offer_challenge, %{distance_target: 50, offer: offer, offer_id: offer.id})
+
+      assert {:ok, %{id: redeem_id, status: "pending", expired_at: nil}} =
+               Offers.create_offer_redeems(challenge, challenge.offer.vendor)
 
       activity =
         insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
