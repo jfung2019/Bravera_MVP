@@ -5,6 +5,9 @@ defmodule OmegaBravera.Offers.Offer do
 
   alias OmegaBravera.Offers.{OfferChallenge, OfferReward, OfferVendor, OfferRedeem}
 
+  @in_store "in_store"
+  @online "online"
+
   @derive {Phoenix.Param, key: :slug}
   schema "offers" do
     field :currency, :string, default: "hkd"
@@ -21,6 +24,9 @@ defmodule OmegaBravera.Offers.Offer do
     field :offer_percent, :float
     field :hidden, :boolean, default: false
     field :redemption_days, :integer
+    field :offer_type, :string, default: @in_store
+    field :online_url, :string
+    field :online_code, :string
 
     field :pre_registration_start_date, :utc_datetime
     # When true, pre_registration_start_date, will be ignored.
@@ -94,7 +100,10 @@ defmodule OmegaBravera.Offers.Offer do
     :location_id,
     :images,
     :partner_id,
-    :redemption_days
+    :redemption_days,
+    :offer_type,
+    :online_url,
+    :online_code
   ]
   @required_attributes [
     :name,
@@ -106,7 +115,8 @@ defmodule OmegaBravera.Offers.Offer do
     :end_date,
     :toc,
     :vendor_id,
-    :location_id
+    :location_id,
+    :offer_type
   ]
 
   @doc false
@@ -119,12 +129,14 @@ defmodule OmegaBravera.Offers.Offer do
     |> validate_inclusion(:currency, currency_options())
     |> validate_subset(:activities, activity_options())
     |> validate_subset(:offer_challenge_types, challenge_type_options())
+    |> validate_inclusion(:offer_type, available_offer_types())
     |> validate_format(:url, ~r/^(https|http):\/\/\w+/)
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
     |> validate_required(:slug)
     |> unique_constraint(:slug)
     |> upload_logo(attrs)
+    |> validate_offer_type()
   end
 
   def update_changeset(offer, attrs) do
@@ -150,6 +162,8 @@ defmodule OmegaBravera.Offers.Offer do
         changeset
     end
   end
+
+  def available_offer_types, do: [@in_store, @online]
 
   defp upload_logo(%Ecto.Changeset{} = changeset, %{"logo" => logo_params}) do
     logo_path = get_field(changeset, :logo)
@@ -226,26 +240,6 @@ defmodule OmegaBravera.Offers.Offer do
 
   defp validate_open_registration(%Ecto.Changeset{} = changeset), do: changeset
 
-  # defp validate_launch_date(
-  #        %Ecto.Changeset{valid?: true, changes: %{launch_date: launch_date}} = changeset
-  #      ) do
-  #   open_registration = get_field(changeset, :open_registration)
-
-  #   case open_registration == false and Timex.before?(launch_date, Timex.now()) do
-  #     true ->
-  #       add_error(
-  #         changeset,
-  #         :launch_date,
-  #         "Launch date cannot be less than today's date."
-  #       )
-
-  #     _ ->
-  #       changeset
-  #   end
-  # end
-
-  # defp validate_launch_date(%Ecto.Changeset{} = changeset), do: changeset
-
   defp validate_pre_registration_start_date_modification(
          %Ecto.Changeset{
            valid?: true,
@@ -318,4 +312,13 @@ defmodule OmegaBravera.Offers.Offer do
   end
 
   defp changeset_to_hk_date(%Ecto.Changeset{} = changeset), do: changeset
+
+  defp validate_offer_type(changeset) do
+    type = get_field(changeset, :offer_type)
+    case type do
+      @online ->
+        validate_required(changeset, [:online_url, :online_code])
+      _ -> changeset
+    end
+  end
 end

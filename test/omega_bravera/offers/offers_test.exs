@@ -29,6 +29,7 @@ defmodule OmegaBravera.OffersTest do
       start_date: Timex.now(),
       end_date: Timex.shift(Timex.now(), days: 5),
       payment_amount: Decimal.new(0),
+      offer_type: "in_store",
       location_id: 1
     }
     @update_attrs %{
@@ -121,6 +122,12 @@ defmodule OmegaBravera.OffersTest do
       assert offer.slug == "some slug"
       assert offer.toc == "some toc"
       assert offer.url == "https://bravera.co"
+    end
+
+    test "create_offer/1 with offer_type should be invalid without the online_url and online_code" do
+      assert {:error, %Ecto.Changeset{errors: errors}} = create_offer(%{@valid_attrs | offer_type: "online"})
+      assert Keyword.get(errors, :online_url) == {"can't be blank", [validation: :required]}
+      assert Keyword.get(errors, :online_code) == {"can't be blank", [validation: :required]}
     end
 
     test "create_offer/1 with invalid data returns error changeset" do

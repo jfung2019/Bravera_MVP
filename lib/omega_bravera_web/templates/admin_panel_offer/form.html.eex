@@ -191,6 +191,25 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :offer_type, "Offer Type" %>
+    <%= select f, :offer_type, @available_offer_types, class: "form-control" %>
+    <%= error_tag f, :offer_type %>
+  </div>
+
+
+  <div class="form-group">
+    <%= label f, "Online URL", class: "control-label" %>
+    <%= text_input f, :online_url, class: "form-control" %>
+    <%= error_tag f, :online_url %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, "Online Code", class: "control-label" %>
+    <%= text_input f, :online_code, class: "form-control" %>
+    <%= error_tag f, :online_code %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Save", class: "btn btn-primary" %>
   </div>
 <% end %>
