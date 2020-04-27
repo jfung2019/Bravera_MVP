@@ -8,7 +8,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Activity.ActivityAccumulator
 
-  plug(:assign_available_options when action in [:create, :new])
+  plug :assign_available_options when action in [:create, :new]
 
   def new(conn, _) do
     current_admin_user = Guardian.Plug.current_resource(conn)

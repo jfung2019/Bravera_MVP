@@ -14,7 +14,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
   use Timex
 
-  plug(:assign_available_options when action in [:edit, :new])
+  plug :assign_available_options when action in [:edit, :new]
 
   def index(conn, _params) do
     offers =

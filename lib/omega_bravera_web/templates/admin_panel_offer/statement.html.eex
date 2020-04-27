@@ -54,8 +54,8 @@
           <td data-title="Firstname"><%= redeem.user.firstname %></td>
           <td data-title="Lastname"><%= redeem.user.lastname %></td>
           <td data-title="Email"><%= redeem.user.email %></td>
-          <td data-title="Challenge Creation"><%= render_datetime(redeem.offer_challenge.start_date) %></td>
-          <td data-title="Challenge Completed Date"><%= render_datetime(redeem.offer_challenge.updated_at) %></td>
+          <td data-title="Challenge Creation"><%= render_datetime(redeem.offer_challenge.inserted_at) %></td>
+          <td data-title="Challenge Completed Date"><%= if redeem.offer_challenge.status == "complete", do: render_datetime(redeem.offer_challenge.updated_at), else: "" %></td>
           <td data-title="Has Team"><%= redeem.offer_challenge.has_team %></td>
           <td data-title="Redeemed Date"><%= redeemed_date(redeem) %></td>
           <td data-title="Name"><%= if redeem.offer_reward, do: redeem.offer_reward.name %></td>
