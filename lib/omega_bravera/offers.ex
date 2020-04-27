@@ -206,7 +206,8 @@ defmodule OmegaBravera.Offers do
           oc.inserted_at
         ),
         fragment(
-          "to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS')",
+          "CASE WHEN ? = 'complete' THEN to_char(timezone('Asia/Hong_Kong', ?), 'YYYY-mm-dd HH24:MI:SS') ELSE '' END",
+          oc.status,
           oc.updated_at
         ),
         oc.has_team,
