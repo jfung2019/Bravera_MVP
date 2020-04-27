@@ -9,7 +9,8 @@ defmodule OmegaBravera.Fixtures do
         images: [],
         introduction: "some introduction",
         name: "some name",
-        opening_times: "some opening_times"
+        opening_times: "some opening_times",
+        live: true,
       })
       |> Partners.create_partner()
 
