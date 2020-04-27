@@ -16,6 +16,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     # Can be pending, redeemed, expired
     field :status, :string, default: @pending_status
     field :expired_at, :utc_datetime
+    field :online_url, :string, virtual: true
 
     belongs_to :offer_reward, OfferReward
     belongs_to :offer_challenge, OfferChallenge

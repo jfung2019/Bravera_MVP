@@ -376,10 +376,12 @@ defmodule OmegaBravera.Accounts do
     do:
       from(
         ofr in OfferRedeem,
-        join: oc in OfferChallenge,
+        left_join: oc in OfferChallenge,
         on: oc.status == ^"complete" and ofr.offer_challenge_id == oc.id,
+        left_join: o in assoc(oc, :offer),
         where: ofr.user_id == ^user_id and ofr.status == ^"pending",
-        order_by: [desc: :inserted_at]
+        order_by: [desc: :inserted_at],
+        select: %{ofr | online_url: o.online_url, token: fragment("CASE WHEN ? = 'online' THEN ? ELSE ? END", o.offer_type, o.online_code, ofr.token)}
       )
       |> Repo.all()
 

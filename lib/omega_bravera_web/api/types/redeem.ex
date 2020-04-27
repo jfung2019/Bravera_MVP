@@ -12,5 +12,6 @@ defmodule OmegaBraveraWeb.Api.Types.Redeem do
     field :inserted_at, non_null(:date)
     field :updated_at, non_null(:date)
     field :expired_at, :date
+    field :online_url, :string
   end
 end

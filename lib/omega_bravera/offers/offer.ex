@@ -7,6 +7,7 @@ defmodule OmegaBravera.Offers.Offer do
 
   @in_store "in_store"
   @online "online"
+  @url_regex ~r/^(https|http):\/\/\w+/
 
   @derive {Phoenix.Param, key: :slug}
   schema "offers" do
@@ -130,7 +131,8 @@ defmodule OmegaBravera.Offers.Offer do
     |> validate_subset(:activities, activity_options())
     |> validate_subset(:offer_challenge_types, challenge_type_options())
     |> validate_inclusion(:offer_type, available_offer_types())
-    |> validate_format(:url, ~r/^(https|http):\/\/\w+/)
+    |> validate_format(:url, @url_regex)
+    |> validate_format(:online_url, @url_regex)
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
     |> validate_required(:slug)
