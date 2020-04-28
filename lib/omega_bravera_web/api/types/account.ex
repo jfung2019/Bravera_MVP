@@ -19,6 +19,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :setting, :setting
   end
 
+  object :notification_token do
+    field :token, non_null(:string)
+  end
+
   object :setting do
     field :weight, :decimal
     field :date_of_birth, :date

@@ -1,5 +1,5 @@
 defmodule OmegaBravera.Fixtures do
-  alias OmegaBravera.{Accounts, Repo, Partners}
+  alias OmegaBravera.{Accounts, Repo, Partners, Notifications}
   alias OmegaBravera.Accounts.Credential
 
   def partner_fixture(attrs \\ %{}) do
@@ -66,5 +66,14 @@ defmodule OmegaBravera.Fixtures do
       |> Accounts.create_admin_user()
 
     admin_user
+  end
+
+  def notification_device_fixture(attrs \\ %{}) do
+    {:ok, device} =
+      attrs
+      |> Enum.into(%{token: "token"})
+      |> Notifications.create_device()
+
+    device
   end
 end

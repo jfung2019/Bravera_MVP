@@ -2,6 +2,7 @@ defmodule OmegaBravera.NotificationsTest do
   use OmegaBravera.DataCase
 
   alias OmegaBravera.{Notifications, Accounts}
+  alias Notifications.Device
 
   @user_create_attrs %{
     email: "sherief@plangora.com",
@@ -14,6 +15,10 @@ defmodule OmegaBravera.NotificationsTest do
     {:ok, user} = Accounts.create_user(@user_create_attrs)
 
     {:ok, user: user}
+  end
+
+  def device_fixture(%{user: %{id: user_id}}) do
+    {:ok, device: OmegaBravera.Fixtures.notification_device_fixture(%{user_id: user_id})}
   end
 
   def email_category_fixture(attrs \\ %{}) do
@@ -51,7 +56,9 @@ defmodule OmegaBravera.NotificationsTest do
     end
 
     test "create_email_category/1 with valid data creates a email_category" do
-      assert {:ok, %EmailCategory{} = email_category} = Notifications.create_email_category(@valid_attrs)
+      assert {:ok, %EmailCategory{} = email_category} =
+               Notifications.create_email_category(@valid_attrs)
+
       assert email_category.description == "some description"
       assert email_category.title == "some title"
     end
@@ -81,7 +88,10 @@ defmodule OmegaBravera.NotificationsTest do
 
     test "delete_email_category/1 deletes the email_category", %{email_category: email_category} do
       assert {:ok, %EmailCategory{}} = Notifications.delete_email_category(email_category)
-      assert_raise Ecto.NoResultsError, fn -> Notifications.get_email_category!(email_category.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Notifications.get_email_category!(email_category.id)
+      end
     end
 
     test "change_email_category/1 returns a email_category changeset", %{
@@ -157,7 +167,10 @@ defmodule OmegaBravera.NotificationsTest do
     test "delete_sendgrid_email/1 deletes the sendgrid_email", %{email_category: email_category} do
       sendgrid_email = sendgrid_email_fixture(%{category_id: email_category.id})
       assert {:ok, %SendgridEmail{}} = Notifications.delete_sendgrid_email(sendgrid_email)
-      assert_raise Ecto.NoResultsError, fn -> Notifications.get_sendgrid_email!(sendgrid_email.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Notifications.get_sendgrid_email!(sendgrid_email.id)
+      end
     end
 
     test "change_sendgrid_email/1 returns a sendgrid_email changeset", %{
@@ -203,7 +216,8 @@ defmodule OmegaBravera.NotificationsTest do
       user_email_categories =
         user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
 
-      assert Notifications.get_user_email_categories!(user_email_categories.id) == user_email_categories
+      assert Notifications.get_user_email_categories!(user_email_categories.id) ==
+               user_email_categories
     end
 
     test "create_user_email_categories/1 with valid data creates a user_email_categories", %{
@@ -218,7 +232,8 @@ defmodule OmegaBravera.NotificationsTest do
     end
 
     test "create_user_email_categories/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Notifications.create_user_email_categories(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Notifications.create_user_email_categories(@invalid_attrs)
     end
 
     test "update_user_email_categories/2 with valid data updates the user_email_categories", %{
@@ -242,7 +257,8 @@ defmodule OmegaBravera.NotificationsTest do
       assert {:error, %Ecto.Changeset{}} =
                Notifications.update_user_email_categories(user_email_categories, @invalid_attrs)
 
-      assert user_email_categories == Notifications.get_user_email_categories!(user_email_categories.id)
+      assert user_email_categories ==
+               Notifications.get_user_email_categories!(user_email_categories.id)
     end
 
     test "delete_user_email_categories/1 deletes the user_email_categories", %{
@@ -268,6 +284,54 @@ defmodule OmegaBravera.NotificationsTest do
         user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
 
       assert %Ecto.Changeset{} = Notifications.change_user_email_categories(user_email_categories)
+    end
+  end
+
+  describe "notification_devices" do
+    setup [:user_fixture]
+
+    test "create_device/1 with valid data creates a device", %{user: %{id: user_id}} do
+      assert {:ok, %Device{} = device} =
+               Notifications.create_device(%{token: "123", user_id: user_id})
+
+      assert device.token == "123"
+    end
+
+    test "create_device/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Notifications.create_device(%{token: nil})
+    end
+  end
+
+  describe "notification_device created" do
+    setup [:user_fixture, :device_fixture]
+
+    test "list_notification_devices/0 returns all notification_devices", %{device: device} do
+      assert Notifications.list_notification_devices() == [device]
+    end
+
+    test "get_device!/1 returns the device with given id", %{device: device} do
+      assert Notifications.get_device!(device.id) == device
+    end
+
+    test "update_device/2 with valid data updates the device", %{device: device} do
+      assert {:ok, %Device{} = device} =
+               Notifications.update_device(device, %{token: "updatedtoken"})
+
+      assert device.token == "updatedtoken"
+    end
+
+    test "update_device/2 with invalid data returns error changeset", %{device: device} do
+      assert {:error, %Ecto.Changeset{}} = Notifications.update_device(device, %{token: nil})
+      assert device == Notifications.get_device!(device.id)
+    end
+
+    test "delete_device/1 deletes the device", %{device: device} do
+      assert {:ok, %Device{}} = Notifications.delete_device(device)
+      assert_raise Ecto.NoResultsError, fn -> Notifications.get_device!(device.id) end
+    end
+
+    test "change_device/1 returns a device changeset", %{device: device} do
+      assert %Ecto.Changeset{} = Notifications.change_device(device)
     end
   end
 end

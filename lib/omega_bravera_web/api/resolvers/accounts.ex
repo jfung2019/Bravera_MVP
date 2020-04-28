@@ -6,7 +6,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   require Logger
 
   alias OmegaBravera.Guardian
-  alias OmegaBravera.{Accounts, Locations, Points, Repo}
+  alias OmegaBravera.{Accounts, Locations, Points, Repo, Notifications}
   alias OmegaBravera.Accounts.Notifier
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   alias OmegaBraveraWeb.Auth.Tools
@@ -345,6 +345,11 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:error, message: "Unable to create a refresh token"}
     end
   end
+
+  def register_notification_token(_root, %{token: token}, %{
+        context: %{current_user: %{id: user_id}}
+      }),
+      do: Notifications.create_device(%{user_id: user_id, token: token})
 
   def latest_live_challenges(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Accounts.user_live_challenges(user_id)}

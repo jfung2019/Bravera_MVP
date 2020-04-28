@@ -119,6 +119,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Partners.vote_partner/3
     end
+
+    @desc "Register device notification token"
+    field :register_notification_token, non_null(:notification_token) do
+      middleware Middleware.Authenticate
+      arg :token, :string
+      resolve &Resolvers.Accounts.register_notification_token/3
+    end
   end
 
   query do
