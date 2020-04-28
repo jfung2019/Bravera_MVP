@@ -1,7 +1,7 @@
 defmodule OmegaBravera.Repo.Migrations.CreateEmailCategories do
   use Ecto.Migration
 
-  alias OmegaBravera.{Repo, Emails.EmailCategory}
+  alias OmegaBravera.{Repo, Notifications.EmailCategory}
 
   def change do
     create table(:email_categories) do
