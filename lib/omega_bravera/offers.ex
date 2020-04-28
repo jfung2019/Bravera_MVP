@@ -24,16 +24,6 @@ defmodule OmegaBravera.Offers do
   alias OmegaBravera.Activity.ActivityAccumulator
   alias OmegaBravera.Accounts.User
 
-  @doc """
-  Returns the list of offers.
-
-  ## Examples
-
-      iex> list_offers()
-      [%Offer{}, ...]
-
-  """
-
   def buy_offer_with_points(offer, user) do
     Multi.new()
     |> Multi.run(:create_offer_challenge_with_points, fn _repo, _changes ->
@@ -41,6 +31,15 @@ defmodule OmegaBravera.Offers do
     end)
     |> Multi.run(:deduct_points_from_user, fn _repo, _changes ->
       Points.do_deduct_points_from_user(user, offer)
+    end)
+    |> Multi.run(:add_expired_at, fn _repo, %{create_offer_challenge_with_points: %{offer_redeems: [r]}} ->
+      case offer.redemption_days do
+        nil ->
+          {:ok, r}
+        days ->
+          expired_at = Timex.now() |> Timex.shift(days: days)
+          update_offer_redeems(r, %{expired_at: expired_at})
+      end
     end)
     |> Repo.transaction()
   end
@@ -58,6 +57,16 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
+
+  @doc """
+  Returns the list of offers.
+
+  ## Examples
+
+      iex> list_offers()
+      [%Offer{}, ...]
+
+  """
   def list_offers(hidden \\ false, preloads \\ [:offer_challenges]) do
     now = Timex.now("Asia/Hong_Kong")
 

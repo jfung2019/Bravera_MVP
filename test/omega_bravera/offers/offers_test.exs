@@ -373,6 +373,23 @@ defmodule OmegaBravera.OffersTest do
       offer_challenge = offer_challenge_fixture()
       assert %Ecto.Changeset{} = Offers.change_offer_challenge(offer_challenge)
     end
+
+    test "buy_offer_with_points/2 returns a bought offer_challenge with the offer_redeem updated" do
+      offer =
+        insert(:offer, %{
+          vendor: nil,
+          vendor_id: insert(:vendor).id,
+          time_limit: 10,
+          target: 0,
+          redemption_days: 1,
+          end_date: Timex.shift(Timex.now(), days: 5)
+        })
+
+      insert(:offer_reward, %{offer: nil, offer_id: offer.id})
+      user = insert(:user)
+      assert {:ok, %{create_offer_challenge_with_points: %{offer_redeems: [%{id: offer_redeem_id}]}}} = Offers.buy_offer_with_points(offer, user)
+      assert %{expired_at: %DateTime{}} = Offers.get_offer_redeems!(offer_redeem_id)
+    end
   end
 
   describe "offer_rewards" do
