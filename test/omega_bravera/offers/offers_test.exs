@@ -387,7 +387,11 @@ defmodule OmegaBravera.OffersTest do
 
       insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = insert(:user)
-      assert {:ok, %{create_offer_challenge_with_points: %{offer_redeems: [%{id: offer_redeem_id}]}}} = Offers.buy_offer_with_points(offer, user)
+
+      assert {:ok,
+              %{create_offer_challenge_with_points: %{offer_redeems: [%{id: offer_redeem_id}]}}} =
+               Offers.buy_offer_with_points(offer, user)
+
       assert %{expired_at: %DateTime{}} = Offers.get_offer_redeems!(offer_redeem_id)
     end
   end

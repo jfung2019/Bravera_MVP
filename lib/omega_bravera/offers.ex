@@ -32,10 +32,12 @@ defmodule OmegaBravera.Offers do
     |> Multi.run(:deduct_points_from_user, fn _repo, _changes ->
       Points.do_deduct_points_from_user(user, offer)
     end)
-    |> Multi.run(:add_expired_at, fn _repo, %{create_offer_challenge_with_points: %{offer_redeems: [r]}} ->
+    |> Multi.run(:add_expired_at, fn _repo,
+                                     %{create_offer_challenge_with_points: %{offer_redeems: [r]}} ->
       case offer.redemption_days do
         nil ->
           {:ok, r}
+
         days ->
           expired_at = Timex.now() |> Timex.shift(days: days)
           update_offer_redeems(r, %{expired_at: expired_at})
@@ -56,7 +58,6 @@ defmodule OmegaBravera.Offers do
     )
     |> Repo.all()
   end
-
 
   @doc """
   Returns the list of offers.

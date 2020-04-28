@@ -55,6 +55,12 @@ config :omega_bravera, OmegaBravera.Guardian,
   ttl: {52, :weeks},
   max_age: {78, :weeks}
 
+config :pigeon, :fcm,
+  fcm_default: %{
+    key:
+      "AAAARgqNKow:APA91bGW6f0F7RGp-TqPDbpKIUutW6JkSX6R9R-yemb8vjRvODB6ZwM-0O2FwiuGaXcMomkY1PgwesMaRISrYU5gI01Fto8H67_p2hXSyglB0LJShvRnQEto-PCrYsq0Uz8M2ps8P9eK"
+  }
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
