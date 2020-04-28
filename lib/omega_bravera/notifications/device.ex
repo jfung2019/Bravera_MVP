@@ -14,5 +14,6 @@ defmodule OmegaBravera.Notifications.Device do
     device
     |> cast(attrs, [:token, :user_id])
     |> validate_required([:token, :user_id])
+    |> unique_constraint(:token, name: :notification_devices_token_user_id_index)
   end
 end
