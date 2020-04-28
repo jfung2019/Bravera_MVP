@@ -14,7 +14,7 @@ defmodule OmegaBraveraWeb.AdminPanelActivityController do
 
   alias OmegaBravera.Activity.ActivityAccumulator
 
-  plug(:assign_available_options when action in [:create, :new])
+  plug :assign_available_options when action in [:create, :new]
 
   # def new_import_activity_from_strava(conn, _) do
   #   current_admin_user = Guardian.Plug.current_resource(conn)
