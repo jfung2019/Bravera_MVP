@@ -1,9 +1,9 @@
 defmodule OmegaBravera.Accounts.Notifier do
-  alias OmegaBravera.{Repo, Emails, Accounts.User, Accounts.Credential}
+  alias OmegaBravera.{Repo, Notifications, Accounts.User, Accounts.Credential}
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Mail, Email}
-  import OmegaBravera.Emails, only: [user_subscribed_in_category?: 2]
+  import OmegaBravera.Notifications, only: [user_subscribed_in_category?: 2]
 
   def send_bonus_added_to_inviter_email(%User{} = user) do
     template_id = "bc8d21c3-7d6c-47c4-87c3-191c1cbc772d"
@@ -27,7 +27,7 @@ defmodule OmegaBravera.Accounts.Notifier do
 
   def send_user_signup_email(%User{} = user, redirect_to \\ "/") do
     template_id = "b47d2224-792a-43d8-b4b2-f53b033d2f41"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     user = Repo.preload(user, [:subscribed_email_categories])
 
     if user_subscribed_in_category?(user.subscribed_email_categories, sendgrid_email.category.id) do
@@ -54,7 +54,7 @@ defmodule OmegaBravera.Accounts.Notifier do
 
   def send_app_password_reset_email(%Credential{} = credential) do
     template_id = "ab8b34b3-7d10-40be-b732-e375cc14a8ab"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     credential = Repo.preload(credential, user: [:subscribed_email_categories])
 
     if user_subscribed_in_category?(
@@ -78,7 +78,7 @@ defmodule OmegaBravera.Accounts.Notifier do
 
   def send_password_reset_email(%Credential{} = credential) do
     template_id = "1bfb8b3b-e5fd-4052-baad-55fd4a5f7c2b"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     credential = Repo.preload(credential, user: [:subscribed_email_categories])
 
     if user_subscribed_in_category?(

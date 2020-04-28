@@ -5,18 +5,18 @@ defmodule OmegaBravera.Challenges.Notifier do
     Money.Donation,
     Accounts.User,
     Accounts.Donor,
-    Emails
+    Notifications
   }
 
   alias OmegaBravera.Activity.ActivityAccumulator
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mail}
-  import OmegaBravera.Emails, only: [user_subscribed_in_category?: 2]
+  import OmegaBravera.Notifications, only: [user_subscribed_in_category?: 2]
 
   def send_manual_activity_blocked_email(%NGOChal{} = challenge) do
     template_id = "fcd40945-8a55-4459-94b9-401a995246fb"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
     if user_subscribed_in_category?(
@@ -41,7 +41,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_challenge_activated_email(%NGOChal{} = challenge) do
     template_id = "75516ad9-3ce8-4742-bd70-1227ce3cba1d"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
     if user_subscribed_in_category?(
@@ -66,7 +66,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_pre_registration_challenge_sign_up_email(%NGOChal{} = challenge) do
     template_id = "0e8a21f6-234f-4293-b5cf-fc9805042d82"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
     if user_subscribed_in_category?(
@@ -104,7 +104,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_challenge_signup_email(%NGOChal{} = challenge) do
     template_id = "e5402f0b-a2c2-4786-955b-21d1cac6211d"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
     if user_subscribed_in_category?(
@@ -143,7 +143,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_activity_completed_email(%NGOChal{} = challenge, %ActivityAccumulator{} = activity) do
     template_id = "d92b0884-818d-4f54-926a-a529e5caa7d8"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
     if user_subscribed_in_category?(
@@ -199,7 +199,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_participant_milestone_email(%NGOChal{} = challenge) do
     template_id = "e4c626a0-ad9a-4479-8228-6c02e7318789"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
     if user_subscribed_in_category?(
@@ -223,7 +223,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_participant_inactivity_email(%NGOChal{} = challenge) do
     template_id = "1395a042-ef5a-48a5-b890-c6340dd8eeff"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:ngo, user: [:subscribed_email_categories]])
 
     if user_subscribed_in_category?(
@@ -269,7 +269,7 @@ defmodule OmegaBravera.Challenges.Notifier do
   def send_team_members_invite_email(%NGOChal{} = challenge, team_member) do
     # TODO: allow a team invitee to stop team owners from emailing him. -Sherief
     template_id = "e1869afd-8cd1-4789-b444-dabff9b7f3f1"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:team, :ngo, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and
@@ -308,7 +308,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
   def send_team_owner_member_added_notification(%NGOChal{} = challenge, %User{} = user) do
     template_id = "0f853118-211f-429f-8975-12f88c937855"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, user: [:subscribed_email_categories])
 
     if user_subscribed_in_category?(

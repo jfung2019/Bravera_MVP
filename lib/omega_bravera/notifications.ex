@@ -1,13 +1,13 @@
-defmodule OmegaBravera.Emails do
+defmodule OmegaBravera.Notifications do
   @moduledoc """
-  The Emails context.
+  The Notifications context.
   """
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
   alias Ecto.Multi
 
-  alias OmegaBravera.Emails.EmailCategory
+  alias OmegaBravera.Notifications.EmailCategory
 
   @doc """
   Returns the list of email_categories.
@@ -111,7 +111,7 @@ defmodule OmegaBravera.Emails do
     EmailCategory.changeset(email_category, %{})
   end
 
-  alias OmegaBravera.Emails.SendgridEmail
+  alias OmegaBravera.Notifications.SendgridEmail
 
   @doc """
   Returns the list of sendgrid_emails.
@@ -216,7 +216,7 @@ defmodule OmegaBravera.Emails do
     SendgridEmail.changeset(sendgrid_email, %{})
   end
 
-  alias OmegaBravera.Emails.UserEmailCategories
+  alias OmegaBravera.Notifications.UserEmailCategories
 
   @doc """
   Returns the list of user_email_categories.

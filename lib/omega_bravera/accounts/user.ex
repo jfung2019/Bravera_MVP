@@ -65,7 +65,7 @@ defmodule OmegaBravera.Accounts.User do
     has_many :ngo_chals, NGOChal
     has_many :donations, Donation
     has_many :str_customers, StrCustomer
-    has_many :subscribed_email_categories, OmegaBravera.Emails.UserEmailCategories
+    has_many :subscribed_email_categories, OmegaBravera.Notifications.UserEmailCategories
     has_many :offer_challenges, OfferChallenge
     belongs_to :location, OmegaBravera.Locations.Location
 

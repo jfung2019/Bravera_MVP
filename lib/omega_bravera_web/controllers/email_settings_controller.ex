@@ -1,17 +1,17 @@
 defmodule OmegaBraveraWeb.EmailSettingsController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Emails}
+  alias OmegaBravera.{Notifications}
 
   def edit(conn, _) do
     current_user = Guardian.Plug.current_resource(conn)
-    all_categories = Emails.list_email_categories()
+    all_categories = Notifications.list_email_categories()
 
     user_categories =
-      Emails.get_user_subscribed_email_categories(current_user.id)
+      Notifications.get_user_subscribed_email_categories(current_user.id)
       |> Enum.map(& &1.category.id)
 
-    changeset = Emails.change_email_category(%Emails.EmailCategory{})
+    changeset = Notifications.change_email_category(%Notifications.EmailCategory{})
 
     render(conn, "edit.html",
       user_categories: user_categories,
@@ -35,7 +35,7 @@ defmodule OmegaBraveraWeb.EmailSettingsController do
       |> to_integers()
 
     if require_main_category(subscribed_categories) do
-      Emails.delete_and_update_user_email_categories(subscribed_categories, current_user)
+      Notifications.delete_and_update_user_email_categories(subscribed_categories, current_user)
 
       conn
       |> put_flash(:info, "Updated email settings sucessfully.")
@@ -54,7 +54,7 @@ defmodule OmegaBraveraWeb.EmailSettingsController do
   defp to_integers(list), do: Enum.map(list, &String.to_integer/1)
 
   defp require_main_category(subscribed_categories) do
-    main_category = Emails.get_email_category_by_title("Platform Notifications")
+    main_category = Notifications.get_email_category_by_title("Platform Notifications")
 
     Enum.member?(subscribed_categories, main_category.id)
   end

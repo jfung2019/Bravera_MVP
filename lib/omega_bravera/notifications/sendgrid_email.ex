@@ -1,8 +1,8 @@
-defmodule OmegaBravera.Emails.SendgridEmail do
+defmodule OmegaBravera.Notifications.SendgridEmail do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.Emails.EmailCategory
+  alias OmegaBravera.Notifications.EmailCategory
 
   schema "sendgrid_emails" do
     field :sendgrid_id, :string

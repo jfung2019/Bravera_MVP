@@ -2,7 +2,7 @@ defmodule OmegaBravera.Offers.Notifier do
   alias OmegaBravera.{
     Offers.OfferChallenge,
     Repo,
-    Emails,
+    Notifications,
     Offers.OfferRedeem,
     Offers.OfferVendor,
     Accounts.User,
@@ -14,11 +14,11 @@ defmodule OmegaBravera.Offers.Notifier do
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mail}
-  import OmegaBravera.Emails, only: [user_subscribed_in_category?: 2]
+  import OmegaBravera.Notifications, only: [user_subscribed_in_category?: 2]
 
   def send_challenge_activated_email(%OfferChallenge{} = challenge) do
     template_id = "75516ad9-3ce8-4742-bd70-1227ce3cba1d"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and
@@ -44,7 +44,7 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def send_team_owner_member_added_notification(%OfferChallenge{} = challenge, %User{} = user) do
     template_id = "4726b363-9a6a-4953-bfac-942cae457053"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, user: [:subscribed_email_categories])
 
     if not is_nil(sendgrid_email) and
@@ -87,7 +87,7 @@ defmodule OmegaBravera.Offers.Notifier do
   def send_team_members_invite_email(%OfferChallenge{} = challenge, team_member) do
     # TODO: allow a team invitee to stop team owners from emailing him. -Sherief
     template_id = "e1869afd-8cd1-4789-b444-dabff9b7f3f1"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:team, :offer, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and
@@ -128,7 +128,7 @@ defmodule OmegaBravera.Offers.Notifier do
         %OfferRedeem{} = redeem
       ) do
     template_id = "0fd2f256-354f-480a-9b3e-502300da6366"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
     redeem = Repo.preload(redeem, [:offer_reward, :vendor])
     redeems_count = Offers.get_offer_completed_redeems_count_by_offer_id(challenge.offer_id)
@@ -174,7 +174,7 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def send_user_reward_redemption_successful(%OfferChallenge{} = challenge, %User{} = user) do
     template_id = "ea31089b-9507-4b79-a10e-3e763a1b0757"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and
@@ -210,7 +210,7 @@ defmodule OmegaBravera.Offers.Notifier do
         %OfferRedeem{} = offer_redeem
       ) do
     template_id = "d-2b845e5863eb4365a6ef98b2225573be"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and
@@ -260,7 +260,7 @@ defmodule OmegaBravera.Offers.Notifier do
         %OfferRedeem{} = offer_redeem
       ) do
     template_id = "42873800-965d-4e0d-bcea-4c59a1934d80"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and
@@ -297,7 +297,7 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def send_pre_registration_challenge_sign_up_email(%OfferChallenge{} = challenge) do
     template_id = "75c0cbaa-5f00-410f-b0cc-4167c895d381"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and
@@ -337,7 +337,7 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def send_team_challenge_signup_email(%OfferChallenge{} = challenge, %User{} = user) do
     template_id = "491c1bf7-1b32-4f90-969c-5147d8fddeea"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and
@@ -377,7 +377,7 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def send_challenge_signup_email(%OfferChallenge{} = challenge, %User{} = user) do
     template_id = "34c53203-5dd3-4de3-8ae9-4a6abd52be9d"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and
@@ -421,7 +421,7 @@ defmodule OmegaBravera.Offers.Notifier do
         %User{} = user
       ) do
     template_id = "d19178ae-5d36-4405-a5d7-d5862478356d"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if not is_nil(sendgrid_email) and sendgrid_email != nil &&
@@ -459,7 +459,7 @@ defmodule OmegaBravera.Offers.Notifier do
         %ActivityAccumulator{} = activity
       ) do
     template_id = "3364ef25-3318-4958-a3c3-4cb97f85dc7d"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
 
     if sendgrid_email != nil &&
@@ -499,7 +499,7 @@ defmodule OmegaBravera.Offers.Notifier do
 
   def send_challenge_failed_email(%OfferChallenge{} = challenge) do
     template_id = "52c97f2f-7c27-43eb-a9cf-655603eeb7cf"
-    sendgrid_email = Emails.get_sendgrid_email_by_sendgrid_id(template_id)
+    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
     challenge = Repo.preload(challenge, user: [:subscribed_email_categories])
 
     if user_subscribed_in_category?(

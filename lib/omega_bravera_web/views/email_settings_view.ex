@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.EmailSettingsView do
   use OmegaBraveraWeb, :view
 
-  alias OmegaBravera.Emails.EmailCategory
+  alias OmegaBravera.Notifications.EmailCategory
 
   def subscribed?(category_id, user_categories) do
     if Enum.member?(user_categories, category_id) do
