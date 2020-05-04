@@ -123,8 +123,15 @@ defmodule OmegaBraveraWeb.Api.Schema do
     @desc "Register device notification token"
     field :register_notification_token, non_null(:notification_token) do
       middleware Middleware.Authenticate
-      arg :token, :string
+      arg :token, non_null(:string)
       resolve &Resolvers.Accounts.register_notification_token/3
+    end
+
+    @desc "Enables/Disables push notifications from server to all registered devices"
+    field :enable_push_notifications, non_null(:user) do
+      middleware Middleware.Authenticate
+      arg :enable, non_null(:boolean)
+      resolve &Resolvers.Accounts.enable_push_notifications/3
     end
   end
 

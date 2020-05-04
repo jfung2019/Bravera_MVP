@@ -351,6 +351,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       }),
       do: Notifications.create_device(%{user_id: user_id, token: token})
 
+  def enable_push_notifications(_root, %{enable: enabled}, %{context: %{current_user: user}}),
+    do: Accounts.enable_push_notifications(user, %{push_notifications: enabled})
+
   def latest_live_challenges(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Accounts.user_live_challenges(user_id)}
 

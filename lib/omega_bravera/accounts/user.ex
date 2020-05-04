@@ -38,18 +38,18 @@ defmodule OmegaBravera.Accounts.User do
     field :accept_terms, :boolean, virtual: true
     field :todays_points, :integer, virtual: true
     field :referred_by_id, :id, default: nil
+    field :push_notifications, :boolean, default: false
 
     # API related
-    field(:total_points, :decimal, virtual: true, default: Decimal.new(0))
-    field(:total_points_this_week, :decimal, virtual: true, default: Decimal.new(0))
-    field(:total_rewards, :integer, virtual: true, default: 0)
-    field(:total_kilometers, :decimal, virtual: true, default: Decimal.new(0))
-    field(:total_kilometers_this_week, :decimal, virtual: true, default: Decimal.new(0))
+    field :total_points, :decimal, virtual: true, default: Decimal.new(0)
+    field :total_points_this_week, :decimal, virtual: true, default: Decimal.new(0)
+    field :total_rewards, :integer, virtual: true, default: 0
+    field :total_kilometers, :decimal, virtual: true, default: Decimal.new(0)
+    field :total_kilometers_this_week, :decimal, virtual: true, default: Decimal.new(0)
 
-    field(:offer_challenges_map, :map,
+    field :offer_challenges_map, :map,
       virtual: true,
       default: %{live: [], expired: [], completed: [], total: 0}
-    )
 
     field :future_redeems, {:array, :map}, virtual: true, default: []
     field :past_redeems, {:array, :map}, virtual: true, default: []
@@ -111,6 +111,12 @@ defmodule OmegaBravera.Accounts.User do
     user
     |> changeset(attrs)
     |> email_changed(user)
+  end
+
+  def push_notifications_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:push_notifications])
+    |> validate_required([:push_notifications])
   end
 
   def admin_update_changeset(user, attrs) do

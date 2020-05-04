@@ -306,7 +306,8 @@ defmodule OmegaBravera.NotificationsTest do
     setup [:user_fixture, :device_fixture]
 
     test "cannot create same device for same user", %{device: device} do
-      assert {:error, %Ecto.Changeset{}} = Notifications.create_device(%{token: device.token, user_id: device.user_id})
+      assert {:error, %Ecto.Changeset{}} =
+               Notifications.create_device(%{token: device.token, user_id: device.user_id})
     end
 
     test "list_notification_devices/0 returns all notification_devices", %{device: device} do

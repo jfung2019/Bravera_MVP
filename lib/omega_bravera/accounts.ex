@@ -812,7 +812,16 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
+  Enables/disables global push notifications to all of the user's registered devices.
+  """
+  def enable_push_notifications(%User{} = user, attrs) do
+    user
+    |> User.push_notifications_changeset(attrs)
+    |> Repo.update()
+  end
 
+  @doc """
+  Activates a user's account by setting the user's `email_verified` field to true.
   """
   def activate_user_email(%User{} = user) do
     case update_user(user, %{email_verified: true}) do

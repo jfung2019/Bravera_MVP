@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   object :user do
     field :id, non_null(:id)
-    field :email, :string
+    field :email, non_null(:string)
     field :firstname, :string
     field :lastname, :string
     field :locale, :string
@@ -17,6 +17,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :total_kilometers_this_week, :decimal
     field :location_id, :integer
     field :setting, :setting
+    field :push_notifications, non_null(:boolean)
   end
 
   object :notification_token do
