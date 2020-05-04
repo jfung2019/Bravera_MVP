@@ -37,6 +37,16 @@ defmodule OmegaBraveraWeb.Api.Mutation.NotificationDeviceTest do
              json_response(response, 200)
   end
 
+  test "can render proper push notification error when registering 2x for same token", %{conn: conn} do
+    token = "123"
+    response = post(conn, "/api", %{query: @register_mutation, variables: %{"token" => token}})
+
+    assert %{"data" => %{"registerNotificationToken" => %{"token" => ^token}}} =
+             json_response(response, 200)
+    response = post(conn, "/api", %{query: @register_mutation, variables: %{"token" => token}})
+    assert %{"errors" => _errors} = json_response(response, 200)
+  end
+
   test "can enable push notifications from server", %{
     conn: conn,
     user: %{email: email, push_notifications: false, id: user_id}

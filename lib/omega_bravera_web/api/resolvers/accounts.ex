@@ -348,8 +348,13 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def register_notification_token(_root, %{token: token}, %{
         context: %{current_user: %{id: user_id}}
-      }),
-      do: Notifications.create_device(%{user_id: user_id, token: token})
+      }) do
+    case Notifications.create_device(%{user_id: user_id, token: token}) do
+      {:ok, _device} = tuple -> tuple
+      {:error, changeset} ->
+        {:error, message: gettext("Could not register device"), details: Helpers.transform_errors(changeset)}
+    end
+  end
 
   def enable_push_notifications(_root, %{enable: enabled}, %{context: %{current_user: user}}),
     do: Accounts.enable_push_notifications(user, %{push_notifications: enabled})
