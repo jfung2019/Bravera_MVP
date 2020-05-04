@@ -11,37 +11,35 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   @banned_sources ["garmin", "connect"]
 
   schema "activities_accumulator" do
-    field(:strava_id, :integer)
-    field(:name, :string)
-    field(:distance, :decimal, default: 0)
-    field(:start_date, :utc_datetime)
-    field(:manual, :boolean)
-    field(:type, :string)
-    field(:average_speed, :decimal, default: 0)
-    field(:moving_time, :integer, default: 0)
-    field(:elapsed_time, :integer, default: 0)
-    field(:calories, :decimal, default: 0)
-    field(:activity_json, :map)
-    field(:source, :string, default: nil)
+    field :strava_id, :integer
+    field :name, :string
+    field :distance, :decimal, default: 0
+    field :start_date, :utc_datetime
+    field :manual, :boolean
+    field :type, :string
+    field :average_speed, :decimal, default: 0
+    field :moving_time, :integer, default: 0
+    field :elapsed_time, :integer, default: 0
+    field :calories, :decimal, default: 0
+    field :activity_json, :map
+    field :source, :string, default: nil
 
     # App activities only.
-    field(:end_date, :utc_datetime)
+    field :end_date, :utc_datetime
     # Only used for to record which admin created the activity
-    field(:admin_id, :integer)
+    field :admin_id, :integer
 
-    belongs_to(:user, User)
+    belongs_to :user, User
     # App activities related
-    belongs_to(:device, Device)
+    belongs_to :device, Device
 
-    many_to_many(:offer_activities, OfferChallengeActivitiesM2m,
+    many_to_many :offer_activities, OfferChallengeActivitiesM2m,
       join_through: "offer_challenge_activities_m2m",
       join_keys: [activity_id: :id, offer_challenge_id: :id]
-    )
 
-    many_to_many(:ngo_activities, NgoChallengeActivitiesM2m,
+    many_to_many :ngo_activities, NgoChallengeActivitiesM2m,
       join_through: "ngo_challenge_activities_m2m",
       join_keys: [activity_id: :id, challenge_id: :id]
-    )
 
     timestamps(type: :utc_datetime)
   end
