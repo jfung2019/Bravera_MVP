@@ -691,6 +691,35 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
+  Prepares a list of current users with settings and extra fields ready in admin panel.
+  """
+  def list_users_for_admin do
+    today = Timex.today()
+    before = today |> Timex.shift(days: -30)
+
+    from(u in User,
+      order_by: [desc: u.inserted_at],
+      preload: [:setting, :location],
+      left_join: a in assoc(u, :activities),
+      on: fragment("?::date BETWEEN ? AND ?", a.start_date, ^before, ^today),
+      left_join: d in assoc(u, :devices),
+      on: d.active == true,
+      select: %{
+        u
+        | active: fragment("? > 0", count(a.id)),
+          device_type:
+            fragment(
+              "CASE WHEN ? ILIKE '%-%' THEN 'iOS' WHEN ? IS NOT NULL THEN 'Android' ELSE '' END",
+              d.uuid,
+              d.uuid
+            )
+      },
+      group_by: [u.id, d.uuid]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single user.
 
   Raises `Ecto.NoResultsError` if the User does not exist.

@@ -10,7 +10,12 @@
 		      <th>Email</th>
 		      <th>Location</th>
 		      <th>Sex</th>
-					<th></th>
+		      <th>DOB</th>
+		      <th>Sign Up Date</th>
+		      <th>Email Verified</th>
+		      <th>OS</th>
+		      <th>Active</th>
+			  <th></th>
 		    </tr>
 		  </thead>
 		  <tbody>
@@ -19,8 +24,13 @@
 		      <td><%= user.firstname %></td>
 		      <td><%= user.lastname %></td>
 		      <td><%= user.email %></td>
-		      <td><%= user.additional_info["location"] %></td>
-		      <td><%= user.additional_info["sex"] %></td>
+		      <td><%= if user.location, do: user.location.name_en %></td>
+		      <td><%= if user.setting != nil, do: user.setting.gender %></td>
+		      <td><%= if user.setting != nil, do: Timex.format!(user.setting.date_of_birth, "{D}/{0M}/{YYYY}") %></td>
+		      <td><%= Timex.format!(user.inserted_at, "{D}/{0M}/{YY}") %></td>
+		      <td><%= user.email_verified %></td>
+		      <td><%= user.device_type %></td>
+		      <td><%= user.active %></td>
 		      <td class="text-right">
 		        <span><%= link "Show", to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
 		      </td>

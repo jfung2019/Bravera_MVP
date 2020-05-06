@@ -6,7 +6,7 @@ defmodule OmegaBraveraWeb.AdminPanelUserController do
   alias OmegaBravera.{Accounts, Repo}
 
   def index(conn, _params) do
-    users = Accounts.list_users()
+    users = Accounts.list_users_for_admin()
     render(conn, "index.html", users: users)
   end
 
