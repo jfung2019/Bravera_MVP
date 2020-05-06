@@ -111,11 +111,14 @@ defmodule OmegaBravera.Locations do
     |> Enum.each(fn c ->
       attrs =
         case c.geo do
-          %{latitude: latitude, longitude: longitude} when is_number(latitude) and is_number(longitude) ->
+          %{latitude: latitude, longitude: longitude}
+          when is_number(latitude) and is_number(longitude) ->
             %{name_en: c.name, name_zh: "N/A", latitude: latitude, longitude: longitude}
+
           _ ->
             %{name_en: c.name, name_zh: "N/A"}
         end
+
       create_location(attrs)
     end)
   end
