@@ -49,20 +49,20 @@ defmodule OmegaBraveraWeb.Api.Mutation.NotificationDeviceTest do
 
   test "can enable push notifications from server", %{
     conn: conn,
-    user: %{email: email, push_notifications: false, id: user_id}
+    user: %{email: email, push_notifications: true, id: user_id}
   } do
     response =
       post(conn, "/api", %{
         query: @enable_push_notifications_mutation,
-        variables: %{"enable" => true}
+        variables: %{"enable" => false}
       })
 
     assert %{
              "data" => %{
-               "enablePushNotifications" => %{"pushNotifications" => true, "email" => ^email}
+               "enablePushNotifications" => %{"pushNotifications" => false, "email" => ^email}
              }
            } = json_response(response, 200)
 
-    assert %{push_notifications: true} = Accounts.get_user!(user_id)
+    assert %{push_notifications: false} = Accounts.get_user!(user_id)
   end
 end
