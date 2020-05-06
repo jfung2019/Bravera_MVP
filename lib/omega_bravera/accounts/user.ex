@@ -38,7 +38,7 @@ defmodule OmegaBravera.Accounts.User do
     field :accept_terms, :boolean, virtual: true
     field :todays_points, :integer, virtual: true
     field :referred_by_id, :id, default: nil
-    field :push_notifications, :boolean, default: false
+    field :push_notifications, :boolean, default: true
 
     # API related
     field :total_points, :decimal, virtual: true, default: Decimal.new(0)
