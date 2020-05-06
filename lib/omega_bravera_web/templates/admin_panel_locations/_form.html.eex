@@ -18,6 +18,18 @@
   </div>
 
   <div class="form-group">
+    <%= label f, "Longitude", class: "control-label" %>
+    <%= number_input f, :longitude, class: "form-control" %>
+    <%= error_tag f, :longitude %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, "Latitude", class: "control-label" %>
+    <%= number_input f, :latitude, class: "form-control" %>
+    <%= error_tag f, :latitude %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>
