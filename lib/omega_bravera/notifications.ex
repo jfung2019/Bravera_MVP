@@ -467,14 +467,26 @@ defmodule OmegaBravera.Notifications do
   """
   @spec list_notification_devices_with_last_activity_from(integer()) :: list(String.t())
   def list_notification_devices_with_last_activity_from(days_ago) do
-    # select nd.token
-    # from notification_devices nd
-    # left join users u on nd.user_id = u.id
-    # left join activities_accumulator a on a.user_id = u.id
-    # where u.push_notifications = true
-    # group by nd.user_id, nd.token
-    # having cast(max(a.start_date) as date) = (now() - INTERVAL '4 DAYS')::date
     date = Timex.now() |> Timex.shift(days: days_ago) |> Timex.to_date()
+
+    from(nd in Device,
+      left_join: u in assoc(nd, :user),
+      on: u.push_notifications == true,
+      left_join: a in assoc(u, :activities),
+      group_by: nd.token,
+      having: fragment("MAX(?)::DATE = ?", a.start_date, ^date),
+      select: nd.token
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets push tokens of users who have an offer that will expire within X days.
+  """
+  @spec list_notification_devices_with_expiring_offer_redeem(integer()) :: list(String.t())
+  def list_notification_devices_with_expiring_offer_redeem(days_ago) do
+    now = Timex.now()
+    date = now |> Timex.shift(days: days_ago) |> Timex.to_date()
 
     from(nd in Device,
       left_join: u in assoc(nd, :user),
