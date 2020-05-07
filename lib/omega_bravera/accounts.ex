@@ -396,10 +396,9 @@ defmodule OmegaBravera.Accounts do
     do:
       from(
         ofr in OfferRedeem,
-        left_join: oc in OfferChallenge,
-        on: oc.status == ^"complete" and ofr.offer_challenge_id == oc.id,
+        left_join: oc in assoc(ofr, :offer_challenge),
         left_join: o in assoc(oc, :offer),
-        where: ofr.user_id == ^user_id and ofr.status == ^"pending",
+        where: ofr.user_id == ^user_id and ofr.status == ^"pending" and oc.status == ^"complete",
         order_by: [desc: :inserted_at],
         select: %{
           ofr
