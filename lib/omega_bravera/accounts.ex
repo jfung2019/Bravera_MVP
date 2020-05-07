@@ -697,6 +697,20 @@ defmodule OmegaBravera.Accounts do
     today = Timex.today()
     before = today |> Timex.shift(days: -30)
 
+    rewards_query =
+      from(r in OmegaBravera.Offers.OfferRedeem,
+        group_by: r.user_id,
+        left_join: oc in assoc(r, :offer_challenge),
+        on: oc.status == ^"complete",
+        select: %{user_id: r.user_id, count: count(r.id)}
+      )
+    rewards_redeemed_query =
+      from(r in OmegaBravera.Offers.OfferRedeem,
+        group_by: r.user_id,
+        where: r.status == "redeemed",
+        select: %{user_id: r.user_id, count: count(r.id)}
+      )
+
     from(u in User,
       order_by: [desc: u.inserted_at],
       preload: [:setting, :location],
@@ -704,6 +718,10 @@ defmodule OmegaBravera.Accounts do
       on: fragment("?::date BETWEEN ? AND ?", a.start_date, ^before, ^today),
       left_join: d in assoc(u, :devices),
       on: d.active == true,
+      left_join: cr in subquery(rewards_redeemed_query),
+      on: cr.user_id == u.id,
+      left_join: r in subquery(rewards_query),
+      on: r.user_id == u.id,
       select: %{
         u
         | active: fragment("? > 0", count(a.id)),
@@ -712,9 +730,11 @@ defmodule OmegaBravera.Accounts do
               "CASE WHEN ? ILIKE '%-%' THEN 'iOS' WHEN ? IS NOT NULL THEN 'Android' ELSE '' END",
               d.uuid,
               d.uuid
-            )
+            ),
+          number_of_claimed_rewards: coalesce(cr.count, 0),
+          number_of_rewards: coalesce(r.count, 0)
       },
-      group_by: [u.id, d.uuid]
+      group_by: [u.id, d.uuid, r.count, cr.count]
     )
     |> Repo.all()
   end

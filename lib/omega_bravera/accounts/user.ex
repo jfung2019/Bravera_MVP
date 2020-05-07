@@ -35,6 +35,8 @@ defmodule OmegaBravera.Accounts.User do
     # Admin section fields
     field :active, :boolean, virtual: true
     field :device_type, :string, virtual: true
+    field :number_of_rewards, :integer, virtual: true
+    field :number_of_claimed_rewards, :integer, virtual: true
 
     # Represents KMs
     field :daily_points_limit, :integer, default: 8
