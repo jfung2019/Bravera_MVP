@@ -1,8 +1,7 @@
-defmodule OmegaBravera.Notifications.Jobs.NotifyDaysNoActivity do
+defmodule OmegaBravera.Notifications.Jobs.NotifyExpiringReward do
   @moduledoc """
-  Checks for latest activity of each user who has allowed us
-  to send push notifications to, and sends a push that they need
-  to sync up their data.
+  Checks for any expiring rewards within the next 3 days and
+  sends a push notification to them.
   """
   use Oban.Worker, queue: :default, max_attempts: 1
   alias OmegaBravera.Notifications
@@ -10,13 +9,12 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyDaysNoActivity do
 
   @impl Oban.Worker
   def perform(_args, _job) do
-    -4
-    |> Notifications.list_notification_devices_with_last_activity_from()
+    -3
+    |> Notifications.list_notification_devices_with_expiring_offer_redeem()
     |> Enum.each(fn token ->
       token
       |> Notification.new(%{
-        "body" =>
-          "You could be converting walking into points! Don't miss out! Open Bravera and check your progress now.",
+        "body" => "A reward you 'own' expires soon! The clock is ticking ... claim it quick!",
         "title" => "Bravera",
         "sound" => "default",
         "badge" => "1"
