@@ -486,14 +486,15 @@ defmodule OmegaBravera.Notifications do
   @spec list_notification_devices_with_expiring_offer_redeem(integer()) :: list(String.t())
   def list_notification_devices_with_expiring_offer_redeem(days_ago) do
     now = Timex.now()
-    date = now |> Timex.shift(days: days_ago) |> Timex.to_date()
+    date = now |> Timex.shift(days: days_ago)
 
     from(nd in Device,
       left_join: u in assoc(nd, :user),
       on: u.push_notifications == true,
-      left_join: a in assoc(u, :activities),
+      left_join: r in assoc(u, :offer_redeems),
+      on: r.status == "pending" and not is_nil(r.expired_at) and fragment("? BETWEEN ? AND ?", r.expired_at, ^date, ^now),
       group_by: nd.token,
-      having: fragment("MAX(?)::DATE = ?", a.start_date, ^date),
+      having: count(r.id) > 0,
       select: nd.token
     )
     |> Repo.all()
