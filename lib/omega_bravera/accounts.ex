@@ -703,6 +703,7 @@ defmodule OmegaBravera.Accounts do
         on: oc.status == ^"complete",
         select: %{user_id: r.user_id, count: count(r.id)}
       )
+
     rewards_redeemed_query =
       from(r in OmegaBravera.Offers.OfferRedeem,
         group_by: r.user_id,
