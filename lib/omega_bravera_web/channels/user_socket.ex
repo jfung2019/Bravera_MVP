@@ -6,7 +6,7 @@ defmodule OmegaBraveraWeb.UserSocket do
   require Logger
 
   ## Channels
-  channel "user:lobby", OmegaBraveraWeb.UserChannel
+  channel "user:*", OmegaBraveraWeb.UserChannel
 
   def connect(%{"authToken" => token}, socket) do
     case auth_socket(token) do
