@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")
-    assert html_response(conn, 200) =~ "Bravera"
+    assert redirected_to(conn) =~ "https://www.bravera.fit"
   end
 
   test "GET really long URL returns 404", %{conn: conn} do

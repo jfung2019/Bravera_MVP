@@ -22,8 +22,7 @@ defmodule OmegaBraveraWeb.PageController do
 
       _ ->
         conn
-        |> open_welcome_modal()
-        |> render("index.html")
+        |> redirect(external: "https://www.bravera.fit")
     end
   end
 
