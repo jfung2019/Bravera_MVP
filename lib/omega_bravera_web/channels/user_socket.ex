@@ -6,15 +6,17 @@ defmodule OmegaBraveraWeb.UserSocket do
   require Logger
 
   ## Channels
-  # channel "room:*", OmegaBraveraWeb.RoomChannel
+  channel "user:*", OmegaBraveraWeb.UserChannel
 
   def connect(%{"authToken" => token}, socket) do
     case auth_socket(token) do
       {:ok, user, device} ->
-        {:ok,
-         Absinthe.Phoenix.Socket.put_options(socket,
-           context: %{current_user: user, device: device}
-         )}
+        socket =
+          socket
+          |> assign(:current_user, user)
+          |> Absinthe.Phoenix.Socket.put_options(context: %{current_user: user, device: device})
+
+        {:ok, socket}
 
       _ ->
         :error
@@ -56,5 +58,6 @@ defmodule OmegaBraveraWeb.UserSocket do
     end
   end
 
+  def id(%{assigns: %{current_user: %{id: user_id}}}), do: "#{user_id}"
   def id(_socket), do: nil
 end

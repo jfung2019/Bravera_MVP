@@ -18,7 +18,8 @@ defmodule OmegaBravera.Locations do
 
   """
   def list_locations do
-    Repo.all(Location)
+    from(l in Location, order_by: [asc: l.name_en])
+    |> Repo.all()
   end
 
   @doc """
@@ -100,5 +101,26 @@ defmodule OmegaBravera.Locations do
   """
   def change_location(%Location{} = location) do
     Location.changeset(location, %{})
+  end
+
+  @doc """
+  Used to load all countries into DB without Hong Kong
+  """
+  def import do
+    Countries.all()
+    |> Enum.reject(fn c -> String.contains?(c.name, "Hong Kong") end)
+    |> Enum.each(fn c ->
+      attrs =
+        case c.geo do
+          %{latitude: latitude, longitude: longitude}
+          when is_number(latitude) and is_number(longitude) ->
+            %{name_en: c.name, name_zh: "N/A", latitude: latitude, longitude: longitude}
+
+          _ ->
+            %{name_en: c.name, name_zh: "N/A"}
+        end
+
+      create_location(attrs)
+    end)
   end
 end

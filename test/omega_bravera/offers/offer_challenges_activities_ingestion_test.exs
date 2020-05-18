@@ -375,7 +375,8 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
     test "updates offer redeem with expired_at if offer has expiration days" do
       offer = insert(:offer, %{redemption_days: 1})
 
-      challenge =
+      %{id: challenge_id} =
+        challenge =
         insert(:offer_challenge, %{distance_target: 50, offer: offer, offer_id: offer.id})
 
       assert {:ok, %{id: redeem_id, status: "pending", expired_at: nil}} =
@@ -384,10 +385,17 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       activity =
         insert(:activity_accumulator, %{type: challenge.activity_type, distance: 50500, id: 1})
 
+      Phoenix.PubSub.subscribe(OmegaBravera.PubSub, "user:#{challenge.user_id}")
+
       {:ok, :challenge_updated} =
         OfferActivitiesIngestion.process_challenge(challenge, activity, challenge.user, true)
 
       updated_challenge = Repo.get!(OfferChallenge, challenge.id)
+
+      assert_receive %{
+        event: "offer_challenge_completed",
+        payload: %{challenge_id: ^challenge_id}
+      }
 
       assert updated_challenge.status == "complete"
       assert %{expired_at: %DateTime{}} = Offers.get_offer_redeems!(redeem_id)

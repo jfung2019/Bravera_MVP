@@ -159,17 +159,7 @@ defmodule OmegaBravera.Offers.OfferAppActivitiesIngestion do
       |> OfferChallenge.activity_completed_changeset(activity)
       |> Repo.update!()
       |> Repo.preload([:offer])
-
-    # if challenge was completed and offer has expiration_days
-    # update the reward to the right time
-    if updated.status == "complete" and updated.offer.redemption_days != nil do
-      expired_at = Timex.now() |> Timex.shift(days: updated.offer.redemption_days)
-
-      offer_redeem =
-        Repo.get_by(OfferRedeem, offer_challenge_id: updated.id, user_id: updated.user_id)
-
-      Offers.update_offer_redeems(offer_redeem, %{expired_at: expired_at})
-    end
+      |> OmegaBravera.Offers.ActivityIngestionShared.process_completed_offer_challenge()
 
     {:ok, updated, activity}
   end

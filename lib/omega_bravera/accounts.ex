@@ -312,44 +312,64 @@ defmodule OmegaBravera.Accounts do
     beginning = Timex.beginning_of_week(now)
     end_of_week = Timex.end_of_week(now)
 
+    point_query =
+      from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
+
+    activity_query =
+      from(a in ActivityAccumulator,
+        select: %{distance: sum(a.distance), user_id: a.user_id},
+        group_by: a.user_id,
+        where:
+          a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+            not is_nil(a.device_id) and is_nil(a.strava_id) and a.start_date >= ^beginning and
+            a.start_date <= ^end_of_week
+      )
+
     from(
       u in User,
-      left_join: a in ActivityAccumulator,
+      left_join: a in subquery(activity_query),
       on: a.user_id == u.id,
-      left_join: p in Point,
-      on: a.id == p.activity_id,
-      where: a.start_date >= ^beginning and a.start_date <= ^end_of_week,
-      where: a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities(),
-      where: not is_nil(a.device_id) and is_nil(a.strava_id),
+      left_join: p in subquery(point_query),
+      on: p.user_id == u.id,
       preload: [:strava],
       select: %{
         u
-        | total_points_this_week: sum(p.value),
-          total_kilometers_this_week: sum(a.distance)
+        | total_points_this_week: coalesce(p.value, 0),
+          total_kilometers_this_week: coalesce(a.distance, 0)
       },
-      group_by: [u.id],
-      order_by: [desc: fragment("?", sum(a.distance))]
+      group_by: [u.id, p.value, a.distance],
+      order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
   end
 
   def api_get_leaderboard_all_time() do
+    point_query =
+      from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
+
+    activity_query =
+      from(a in ActivityAccumulator,
+        select: %{distance: sum(a.distance), user_id: a.user_id},
+        group_by: a.user_id,
+        where:
+          a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+            not is_nil(a.device_id) and is_nil(a.strava_id)
+      )
+
     from(
       u in User,
-      left_join: a in ActivityAccumulator,
+      left_join: a in subquery(activity_query),
       on: a.user_id == u.id,
-      left_join: p in Point,
-      on: a.id == p.activity_id,
-      where: a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities(),
-      where: not is_nil(a.device_id) and is_nil(a.strava_id),
+      left_join: p in subquery(point_query),
+      on: p.user_id == u.id,
       preload: [:strava],
       select: %{
         u
-        | total_points: sum(p.value),
-          total_kilometers: sum(a.distance)
+        | total_points: coalesce(p.value, 0),
+          total_kilometers: coalesce(a.distance, 0)
       },
-      group_by: [u.id],
-      order_by: [desc: fragment("?", sum(a.distance))]
+      group_by: [u.id, p.value, a.distance],
+      order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
   end
@@ -666,6 +686,56 @@ defmodule OmegaBravera.Accounts do
   """
   def list_users do
     from(u in User, order_by: [desc: :inserted_at])
+    |> Repo.all()
+  end
+
+  @doc """
+  Prepares a list of current users with settings and extra fields ready in admin panel.
+  """
+  def list_users_for_admin do
+    today = Timex.today()
+    before = today |> Timex.shift(days: -30)
+
+    rewards_query =
+      from(r in OmegaBravera.Offers.OfferRedeem,
+        group_by: r.user_id,
+        left_join: oc in assoc(r, :offer_challenge),
+        on: oc.status == ^"complete",
+        select: %{user_id: r.user_id, count: count(r.id)}
+      )
+
+    rewards_redeemed_query =
+      from(r in OmegaBravera.Offers.OfferRedeem,
+        group_by: r.user_id,
+        where: r.status == "redeemed",
+        select: %{user_id: r.user_id, count: count(r.id)}
+      )
+
+    from(u in User,
+      order_by: [desc: u.inserted_at],
+      preload: [:setting, :location],
+      left_join: a in assoc(u, :activities),
+      on: fragment("?::date BETWEEN ? AND ?", a.start_date, ^before, ^today),
+      left_join: d in assoc(u, :devices),
+      on: d.active == true,
+      left_join: cr in subquery(rewards_redeemed_query),
+      on: cr.user_id == u.id,
+      left_join: r in subquery(rewards_query),
+      on: r.user_id == u.id,
+      select: %{
+        u
+        | active: fragment("? > 0", count(a.id)),
+          device_type:
+            fragment(
+              "CASE WHEN ? ILIKE '%-%' THEN 'iOS' WHEN ? IS NOT NULL THEN 'Android' ELSE '' END",
+              d.uuid,
+              d.uuid
+            ),
+          number_of_claimed_rewards: coalesce(cr.count, 0),
+          number_of_rewards: coalesce(r.count, 0)
+      },
+      group_by: [u.id, d.uuid, r.count, cr.count]
+    )
     |> Repo.all()
   end
 

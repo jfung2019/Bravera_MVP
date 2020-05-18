@@ -9,6 +9,8 @@ defmodule OmegaBraveraWeb.UserSocketTest do
     {:ok, socket} =
       Phoenix.ChannelTest.connect(OmegaBraveraWeb.UserSocket, %{"authToken" => token})
 
-    assert %{assigns: %{absinthe: %{opts: [context: %{current_user: user}]}}} = socket
+    assert %{
+             assigns: %{absinthe: %{opts: [context: %{current_user: ^user}]}, current_user: ^user}
+           } = socket
   end
 end

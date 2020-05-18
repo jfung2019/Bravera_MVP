@@ -5,6 +5,8 @@ defmodule OmegaBravera.Locations.Location do
   schema "locations" do
     field :name_en, :string
     field :name_zh, :string
+    field :latitude, :decimal
+    field :longitude, :decimal
 
     timestamps()
   end
@@ -12,13 +14,7 @@ defmodule OmegaBravera.Locations.Location do
   @doc false
   def changeset(location, attrs) do
     location
-    |> cast(attrs, [:name_en, :name_zh])
+    |> cast(attrs, [:name_en, :name_zh, :latitude, :longitude])
     |> validate_required([:name_en, :name_zh])
-  end
-
-  def import do
-    Countries.all()
-    |> Enum.map(fn c -> c.name end)
-    |> Enum.map(fn c -> changeset(c, "香港") end)
   end
 end

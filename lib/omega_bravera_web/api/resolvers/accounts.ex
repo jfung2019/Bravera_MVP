@@ -350,9 +350,13 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         context: %{current_user: %{id: user_id}}
       }) do
     case Notifications.create_device(%{user_id: user_id, token: token}) do
-      {:ok, _device} = tuple -> tuple
+      {:ok, _device} = tuple ->
+        tuple
+
       {:error, changeset} ->
-        {:error, message: gettext("Could not register device"), details: Helpers.transform_errors(changeset)}
+        {:error,
+         message: gettext("Could not register device"),
+         details: Helpers.transform_errors(changeset)}
     end
   end
 

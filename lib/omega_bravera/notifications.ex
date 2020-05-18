@@ -492,7 +492,9 @@ defmodule OmegaBravera.Notifications do
       left_join: u in assoc(nd, :user),
       on: u.push_notifications == true,
       left_join: r in assoc(u, :offer_redeems),
-      on: r.status == "pending" and not is_nil(r.expired_at) and fragment("? BETWEEN ? AND ?", r.expired_at, ^date, ^now),
+      on:
+        r.status == "pending" and not is_nil(r.expired_at) and
+          fragment("? BETWEEN ? AND ?", r.expired_at, ^date, ^now),
       group_by: nd.token,
       having: count(r.id) > 0,
       select: nd.token

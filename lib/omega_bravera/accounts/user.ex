@@ -31,6 +31,13 @@ defmodule OmegaBravera.Accounts.User do
     field :firstname, :string
     field :lastname, :string
     field :locale, :string, default: "en"
+
+    # Admin section fields
+    field :active, :boolean, virtual: true
+    field :device_type, :string, virtual: true
+    field :number_of_rewards, :integer, virtual: true
+    field :number_of_claimed_rewards, :integer, virtual: true
+
     # Represents KMs
     field :daily_points_limit, :integer, default: 8
     field :additional_info, :map, default: %{}
@@ -68,6 +75,7 @@ defmodule OmegaBravera.Accounts.User do
     has_many :subscribed_email_categories, OmegaBravera.Notifications.UserEmailCategories
     has_many :offer_challenges, OfferChallenge
     has_many :activities, OmegaBravera.Activity.ActivityAccumulator
+    has_many :devices, OmegaBravera.Devices.Device
     has_many :offer_redeems, OmegaBravera.Offers.OfferRedeem
     belongs_to :location, OmegaBravera.Locations.Location
 
