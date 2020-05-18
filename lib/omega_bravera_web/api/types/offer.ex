@@ -24,6 +24,7 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     field :offer_type, non_null(:offer_type)
     field :offer_challenge_types, non_null(list_of(:string))
     field :offer_challenges, list_of(:offer_challenge)
+    field :take_challenge, non_null(:boolean)
     field :payment_amount, :decimal
     field :currency, :string
     field :external_terms_url, :string

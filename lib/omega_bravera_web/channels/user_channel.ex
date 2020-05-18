@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.UserChannel do
   use OmegaBraveraWeb, :channel
+
   @moduledoc """
   This channel is used to send notifications when users are connected
   over websocket.

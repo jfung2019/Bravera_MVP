@@ -10,6 +10,7 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
   @all_offers_images_query """
   query {
     allOffers {
+      takeChallenge
       image
       images
     }
@@ -18,6 +19,7 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
   @get_offers_images_query_by_slug """
   query ($slug: String!){
     getOffer(slug: $slug) {
+      takeChallenge
       images
       image
     }

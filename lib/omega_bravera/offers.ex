@@ -450,16 +450,7 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
-  Creates a offer_challenge.
-
-  ## Examples
-
-      iex> create_offer_challenge(%{field: value})
-      {:ok, %OfferChallenge{}}
-
-      iex> create_offer_challenge(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
+  Creates a offer_challenge by using the offer and user.
   """
   def create_offer_challenge(
         %Offer{} = offer,

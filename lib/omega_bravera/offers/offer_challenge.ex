@@ -71,7 +71,15 @@ defmodule OmegaBravera.Offers.OfferChallenge do
         offer,
         user,
         attrs \\ %{team: %{}, offer_redeems: [%{}], payment: %{}}
-      ) do
+      )
+
+  def create_changeset(offer_challenge, %{take_challenge: false} = _offer, _user, attrs) do
+    offer_challenge
+    |> changeset(attrs)
+    |> add_error(:offer_id, "Cannot take challenge that doesn't allow you to earn to reward.")
+  end
+
+  def create_changeset(offer_challenge, offer, user, attrs) do
     offer_challenge
     |> changeset(attrs)
     |> change(%{
