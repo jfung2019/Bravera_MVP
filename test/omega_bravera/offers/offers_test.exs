@@ -274,6 +274,14 @@ defmodule OmegaBravera.OffersTest do
                Offers.create_offer_challenge(offer, user)
     end
 
+    test "create_offer_challenge/2 will fail to create an offer challenge if the offer doesn't allow taking the challenge" do
+      vendor = insert(:vendor)
+      offer = insert(:offer, %{vendor: nil, vendor_id: vendor.id, take_challenge: false})
+      insert(:offer_reward, %{offer: nil, offer_id: offer.id})
+      user = insert(:user)
+      assert {:error, %Ecto.Changeset{}} = Offers.create_offer_challenge(offer, user)
+    end
+
     test "create_offer_challenge/2 can create offer_challenge with payment but only using a valid stripe token" do
       vendor = insert(:vendor)
 

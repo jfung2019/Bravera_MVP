@@ -5,8 +5,8 @@ defmodule OmegaBravera.Offers.Offer do
 
   alias OmegaBravera.Offers.{OfferChallenge, OfferReward, OfferVendor, OfferRedeem}
 
-  @in_store "in_store"
-  @online "online"
+  @in_store_offer_type "in_store"
+  @online_offer_type "online"
   @url_regex ~r/^(https|http):\/\/\w+/
 
   @derive {Phoenix.Param, key: :slug}
@@ -25,7 +25,8 @@ defmodule OmegaBravera.Offers.Offer do
     field :offer_percent, :float
     field :hidden, :boolean, default: false
     field :redemption_days, :integer
-    field :offer_type, :string, default: @in_store
+    field :offer_type, :string, default: @in_store_offer_type
+    field :take_challenge, :boolean, default: true
     field :online_url, :string
     field :online_code, :string
 
@@ -103,6 +104,7 @@ defmodule OmegaBravera.Offers.Offer do
     :partner_id,
     :redemption_days,
     :offer_type,
+    :take_challenge,
     :online_url,
     :online_code
   ]
@@ -117,6 +119,7 @@ defmodule OmegaBravera.Offers.Offer do
     :toc,
     :vendor_id,
     :location_id,
+    :take_challenge,
     :offer_type
   ]
 
@@ -165,7 +168,7 @@ defmodule OmegaBravera.Offers.Offer do
     end
   end
 
-  def available_offer_types, do: [@in_store, @online]
+  def available_offer_types, do: [@in_store_offer_type, @online_offer_type]
 
   defp upload_logo(%Ecto.Changeset{} = changeset, %{"logo" => logo_params}) do
     logo_path = get_field(changeset, :logo)
@@ -319,7 +322,7 @@ defmodule OmegaBravera.Offers.Offer do
     type = get_field(changeset, :offer_type)
 
     case type do
-      @online ->
+      @online_offer_type ->
         validate_required(changeset, [:online_url, :online_code])
 
       _ ->
