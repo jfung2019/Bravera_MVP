@@ -115,7 +115,7 @@ defmodule OmegaBravera.Accounts.Notifier do
 
   def no_activity_after_signup(user) do
     Email.build()
-    |> Email.put_template("a6f88b25-4d6d-4d0f-9314-4c7c3c72e2e6")
+    |> Email.put_template("029cdf2b-13bf-4671-8b98-062cfe4de891")
     |> Email.add_substitution("-firstName-", user.firstname)
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
