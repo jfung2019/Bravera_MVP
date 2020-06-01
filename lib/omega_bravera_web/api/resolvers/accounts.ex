@@ -98,7 +98,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   end
 
   defp do_create_user(_root, %{input: params}, _info) do
-    case Accounts.create_credential_user(params, deconstuct_and_get_referral(params)) do
+    case Accounts.create_credential_user(params, deconstruct_and_get_referral(params)) do
       {:ok, user} ->
         if not is_nil(user.referred_by_id) do
           Points.create_bonus_points(%{
@@ -127,7 +127,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  defp deconstuct_and_get_referral(%{referral_token: token}) when not is_nil(token) do
+  defp deconstruct_and_get_referral(%{referral_token: token}) when not is_nil(token) do
     if String.length(token) > 0 do
       token
       |> String.trim()
@@ -139,7 +139,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  defp deconstuct_and_get_referral(_), do: nil
+  defp deconstruct_and_get_referral(_), do: nil
 
   def all_locations(_root, _args, _info), do: {:ok, Locations.list_locations()}
 
@@ -362,6 +362,11 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def enable_push_notifications(_root, %{enable: enabled}, %{context: %{current_user: user}}),
     do: Accounts.enable_push_notifications(user, %{push_notifications: enabled})
+
+  def resend_welcome_email(_root, _args, %{context: %{current_user: user}}) do
+    Accounts.Notifier.send_user_signup_email(user, "/open-app")
+    {:ok, user}
+  end
 
   def latest_live_challenges(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Accounts.user_live_challenges(user_id)}

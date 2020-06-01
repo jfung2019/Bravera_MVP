@@ -244,7 +244,9 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "verifying a users email will enqueue a job to send an email 3 days later", %{user: user} do
-      assert {:ok, %{email_verified: false} = user} = Accounts.update_user(user, %{email_verified: false})
+      assert {:ok, %{email_verified: false} = user} =
+               Accounts.update_user(user, %{email_verified: false})
+
       assert {:ok, %{email_verified: true}} = Accounts.activate_user_email(user)
       assert_enqueued(worker: Accounts.Jobs.AfterEmailVerify, queue: :email)
     end
