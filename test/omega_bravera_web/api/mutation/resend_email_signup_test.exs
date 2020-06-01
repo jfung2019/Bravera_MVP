@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Api.Mutation.EarnOfferChallengeTest do
+defmodule OmegaBraveraWeb.Api.Mutation.ResendEmailSignupTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
   import OmegaBravera.Factory
@@ -7,18 +7,16 @@ defmodule OmegaBraveraWeb.Api.Mutation.EarnOfferChallengeTest do
 
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
-  @query """
-  mutation($offerSlug: String!){
-    earnOfferChallenge(offerSlug: $offerSlug){
-      offerChallenge{
-        id
-      }
+  @mutation """
+  mutation {
+    resendWelcomeEmail {
+      firstname
+      lastname
     }
   }
   """
-
   def credential_fixture() do
-    user = insert(:user, %{email: @email})
+    user = insert(:user, %{email: @email, email_activation_token: "test123"})
 
     credential_attrs = %{
       password: @password,
@@ -33,20 +31,21 @@ defmodule OmegaBraveraWeb.Api.Mutation.EarnOfferChallengeTest do
     |> Repo.preload(:user)
   end
 
-  test "buy/3 can create complete challenge, send reward to use, and deduct points from total balance",
-       %{conn: conn} do
-    credential = credential_fixture()
-    offer = insert(:offer, %{target: 15})
-    {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
+  test "resend welcome email", %{conn: conn} do
+    %{user: %{firstname: first_name, lastname: last_name} = user} = credential_fixture()
+    {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(user)
 
     response =
       conn
       |> put_req_header("authorization", "Bearer #{auth_token}")
-      |> post("/api", %{query: @query, variables: %{"offerSlug" => offer.slug}})
+      |> post("/api", %{query: @mutation})
 
     assert %{
              "data" => %{
-               "earnOfferChallenge" => %{"offerChallenge" => %{"id" => _id}}
+               "resendWelcomeEmail" => %{
+                 "firstname" => ^first_name,
+                 "lastname" => ^last_name
+               }
              }
            } = json_response(response, 200)
   end
