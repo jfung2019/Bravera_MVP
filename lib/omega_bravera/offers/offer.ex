@@ -52,6 +52,7 @@ defmodule OmegaBravera.Offers.Offer do
     field :toc, :string
     field :url, :string
     field :time_limit, :integer, default: 0
+    field :form_url, :string
 
     field :active_offer_challenges, :integer, default: 0, virtual: true
     field :num_of_challenges, :decimal, default: 0, virtual: true
@@ -106,7 +107,8 @@ defmodule OmegaBravera.Offers.Offer do
     :offer_type,
     :take_challenge,
     :online_url,
-    :online_code
+    :online_code,
+    :form_url
   ]
   @required_attributes [
     :name,
@@ -136,6 +138,7 @@ defmodule OmegaBravera.Offers.Offer do
     |> validate_inclusion(:offer_type, available_offer_types())
     |> validate_format(:url, @url_regex)
     |> validate_format(:online_url, @url_regex)
+    |> validate_format(:form_url, @url_regex)
     |> validate_open_registration()
     |> validate_pre_registration_start_date()
     |> validate_required(:slug)

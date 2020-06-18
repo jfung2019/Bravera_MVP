@@ -29,5 +29,6 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     field :currency, :string
     field :external_terms_url, :string
     field :accept_terms_text, :string
+    field :form_url, :string
   end
 end
