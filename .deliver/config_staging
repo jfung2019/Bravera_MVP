@@ -1,10 +1,10 @@
 APP="omega_bravera"
 
-BUILD_HOST="app.staging.corp.bravera.co"
+BUILD_HOST="172.30.1.140"
 BUILD_USER="ubuntu"
 BUILD_AT="/home/ubuntu/omega_bravera/builds"
 
-STAGING_HOSTS="app.staging.corp.bravera.co"
+STAGING_HOSTS="172.30.1.140"
 STAGING_USER="ubuntu"
 
 DELIVER_TO="/home/ubuntu"

@@ -34,3 +34,10 @@ If a command is freezing or not working properly, adding `--verbose` should give
 ```bash
 mix edeliver build release ---verbose
 ```
+
+
+### Server setup
+```bash
+sudo apt-get install -y build-essential git wget libssl-dev libreadline-dev libncurses5-dev zlib1g-dev m4 curl wx-common libwxgtk3.0-dev autoconf
+sudo apt-get install -y libxml2-utils xsltproc fop unixodbc unixodbc-bin unixodbc-dev
+```
