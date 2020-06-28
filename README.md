@@ -37,7 +37,23 @@ mix edeliver build release ---verbose
 
 
 ### Server setup
+
+#### Install Elixir/Erlang Dependencies
 ```bash
 sudo apt-get install -y build-essential git wget libssl-dev libreadline-dev libncurses5-dev zlib1g-dev m4 curl wx-common libwxgtk3.0-dev autoconf
 sudo apt-get install -y libxml2-utils xsltproc fop unixodbc unixodbc-bin unixodbc-dev
 ```
+#### Install ASDF
+[https://asdf-vm.com/#/core-manage-asdf-vm](https://asdf-vm.com/#/core-manage-asdf-vm)
+
+#### Choosing Erlang/Elixir Version
+Check the `.tool-versions` file for current versions of erlang/elixir to install with asdf.
+Make sure to set each elixir/erlang as global
+Prepare Elixir with `mix local.hex` and `mix.local.rebar`.
+
+#### Prepare Config Files
+Need to be sure there's a `prod.exs` and `prod.secret.exs` within the home directory
+and inside of a folder called `app_config`.
+
+#### Install Outside Deps
+Make sure `imagemagick` is installed with `apt-get install imagemagick`.
