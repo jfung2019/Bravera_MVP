@@ -58,11 +58,21 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
     end
   end
 
-  def earn(_root, %{offer_slug: offer_slug}, %{context: %{current_user: current_user}}) do
+  def earn(_root, %{offer_slug: offer_slug} = args, %{
+        context: %{current_user: current_user}
+      }) do
     offer = Offers.get_offer_by_slug(offer_slug)
     current_user = Accounts.get_user_with_active_challenges(current_user.id)
 
-    case Offers.create_offer_challenge(offer, current_user) do
+    attrs =
+      if Map.has_key?(args, :stripe_token),
+        do: %{
+          "payment" => %{"stripe_token" => Map.get(args, :stripe_token)},
+          "team" => %{},
+          "offer_redeems" => [%{}]
+        },
+        else: %{}
+    case Offers.create_offer_challenge(offer, current_user, attrs) do
       {:ok, offer_challenge} ->
         OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
         # TODO: Find a way to make this a trigger

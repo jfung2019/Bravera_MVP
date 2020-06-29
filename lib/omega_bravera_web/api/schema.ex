@@ -59,6 +59,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     @desc "Create a challenge"
     field :earn_offer_challenge, :buy_or_create_offer_challenge_result do
       arg :offer_slug, non_null(:string)
+      arg :stripe_token, :string
       middleware Middleware.Authenticate
       resolve &Resolvers.OfferChallenges.earn/3
     end
