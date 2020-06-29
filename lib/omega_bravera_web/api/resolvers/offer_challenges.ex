@@ -71,7 +71,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
           "team" => %{},
           "offer_redeems" => [%{}]
         },
-        else: %{}
+        else: %{team: %{}, offer_redeems: [%{}], payment: %{}}
     case Offers.create_offer_challenge(offer, current_user, attrs) do
       {:ok, offer_challenge} ->
         OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
