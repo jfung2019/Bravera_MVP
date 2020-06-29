@@ -61,7 +61,7 @@ defmodule OmegaBravera.Money.Payment do
       "amount" => total_amount(amount),
       "currency" => "hkd",
       "source" => stripe_token,
-      "description" => "Subcription fee for " <> slug <> " via Bravera.co",
+      "description" => "Payment for " <> slug <> " via Bravera.co",
       "receipt_email" => email,
       "expand[]" => "balance_transaction"
     }
