@@ -484,9 +484,9 @@ defmodule OmegaBravera.Notifications do
   Gets push tokens of users who have an offer that will expire within X days.
   """
   @spec list_notification_devices_with_expiring_offer_redeem(integer()) :: list(String.t())
-  def list_notification_devices_with_expiring_offer_redeem(days_ago) do
+  def list_notification_devices_with_expiring_offer_redeem(shift_days) do
     now = Timex.now()
-    date = now |> Timex.shift(days: days_ago)
+    future = now |> Timex.shift(days: shift_days)
 
     from(nd in Device,
       left_join: u in assoc(nd, :user),
@@ -494,7 +494,7 @@ defmodule OmegaBravera.Notifications do
       left_join: r in assoc(u, :offer_redeems),
       on:
         r.status == "pending" and not is_nil(r.expired_at) and
-          fragment("? BETWEEN ? AND ?", r.expired_at, ^date, ^now),
+          fragment("? BETWEEN ? AND ?", r.expired_at, ^now, ^future),
       group_by: nd.token,
       having: count(r.id) > 0,
       select: nd.token

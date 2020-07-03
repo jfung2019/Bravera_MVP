@@ -9,7 +9,7 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyExpiringReward do
 
   @impl Oban.Worker
   def perform(_args, _job) do
-    -3
+    3
     |> Notifications.list_notification_devices_with_expiring_offer_redeem()
     |> Enum.each(fn token ->
       token
