@@ -61,7 +61,6 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
   def earn(_root, %{offer_slug: offer_slug} = args, %{
         context: %{current_user: current_user}
       }) do
-    offer = Offers.get_offer_by_slug(offer_slug)
     current_user = Accounts.get_user_with_active_challenges(current_user.id)
 
     attrs =

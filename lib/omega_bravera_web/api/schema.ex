@@ -314,14 +314,11 @@ defmodule OmegaBraveraWeb.Api.Schema do
     end
   end
 
-  def context(%{current_user: current_user} = ctx) do
+  def context(ctx) do
     loader =
       Dataloader.new()
       |> Dataloader.add_source(OmegaBravera.Offers, OmegaBravera.Offers.datasource())
-      |> Dataloader.add_source(
-        OmegaBravera.Partners,
-        OmegaBravera.Partners.datasource(%{current_user: current_user})
-      )
+      |> Dataloader.add_source(OmegaBravera.Partners, OmegaBravera.Partners.datasource(ctx))
 
     Map.put(ctx, :loader, loader)
   end
