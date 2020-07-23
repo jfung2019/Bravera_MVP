@@ -73,9 +73,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
         },
         else: %{team: %{}, offer_redeems: [%{}], payment: %{}}
 
-
     with %{} = offer <- Offers.get_allowed_offer_by_slug_and_user_id(offer_slug, current_user.id),
- {:ok, offer_challenge} <- Offers.create_offer_challenge(offer, current_user, attrs) do
+         {:ok, offer_challenge} <- Offers.create_offer_challenge(offer, current_user, attrs) do
       OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
       # TODO: Find a way to make this a trigger
       Absinthe.Subscription.publish(
@@ -88,12 +87,13 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
     else
       :not_authorized ->
         {:error, message: gettext("Please join partner to join challenge")}
+
       {:error, %Ecto.Changeset{} = changeset} ->
         Logger.info("API: Could not sign up user for offer. Reason: #{inspect(changeset)}")
 
         {:error,
-          message: gettext("Could not create offer challenge."),
-          details: Helpers.transform_errors(changeset)}
+         message: gettext("Could not create offer challenge."),
+         details: Helpers.transform_errors(changeset)}
     end
   end
 

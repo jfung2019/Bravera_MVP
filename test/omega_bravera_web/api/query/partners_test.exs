@@ -12,6 +12,7 @@ defmodule OmegaBraveraWeb.Api.Query.PartnersTest do
       partner {
         name
         introduction
+        isMember
         votes {
           user {
             id
@@ -31,6 +32,7 @@ defmodule OmegaBraveraWeb.Api.Query.PartnersTest do
     getPartner(partnerId: $partnerId) {
       name
       introduction
+      isMember
       votes {
         user {
           id
@@ -66,6 +68,7 @@ defmodule OmegaBraveraWeb.Api.Query.PartnersTest do
     response =
       post(conn, "/api", %{query: @partner_query, variables: %{"partnerId" => partner_id}})
 
-    assert %{"data" => %{"getPartner" => %{"name" => ^name}}} = json_response(response, 200)
+    assert %{"data" => %{"getPartner" => %{"name" => ^name, "isMember" => false}}} =
+             json_response(response, 200)
   end
 end

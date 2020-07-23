@@ -5,7 +5,9 @@ defmodule OmegaBravera.Repo.Migrations.CreatePartnerMembers do
     create table(:partner_members, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :user_id, references(:users, on_delete: :delete_all, type: :bigserial), null: false
-      add :partner_id, references(:partners, on_delete: :delete_all, type: :bigserial), null: false
+
+      add :partner_id, references(:partners, on_delete: :delete_all, type: :bigserial),
+        null: false
 
       timestamps()
     end

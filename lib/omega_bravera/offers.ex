@@ -121,28 +121,43 @@ defmodule OmegaBravera.Offers do
   Gets an offer if it's allowed by the user, or else return `:not_authorized`.
   """
   def get_allowed_offer_by_slug_and_user_id(slug, user_id) do
-    return_value = from(o in Offer,
-      where: o.slug == ^slug,
-      left_join: offer_challenges in assoc(o, :offer_challenges),
-      on: offer_challenges.offer_id == o.id and offer_challenges.status == ^"active",
-      preload: [:offer_challenges],
-      left_join: p in assoc(o, :partner),
-      left_join: m in assoc(p, :members), on: m.user_id == ^user_id,
-      group_by: [o.id, p.id, m.id],
-      select: %{can_join: fragment("CASE WHEN ? THEN ? WHEN ? IS NOT NULL THEN ? ELSE ? END", is_nil(p.id), true, m.id, true, false), offer: %{
-        o
-      | active_offer_challenges: count(offer_challenges.id),
-        pre_registration_start_date:
-          fragment("? at time zone 'utc'", o.pre_registration_start_date)
-      }}
-    )
-    |> Repo.one()
+    return_value =
+      from(o in Offer,
+        where: o.slug == ^slug,
+        left_join: offer_challenges in assoc(o, :offer_challenges),
+        on: offer_challenges.offer_id == o.id and offer_challenges.status == ^"active",
+        preload: [:offer_challenges],
+        left_join: p in assoc(o, :partner),
+        left_join: m in assoc(p, :members),
+        on: m.user_id == ^user_id,
+        group_by: [o.id, p.id, m.id],
+        select: %{
+          can_join:
+            fragment(
+              "CASE WHEN ? THEN ? WHEN ? IS NOT NULL THEN ? ELSE ? END",
+              is_nil(p.id),
+              true,
+              m.id,
+              true,
+              false
+            ),
+          offer: %{
+            o
+            | active_offer_challenges: count(offer_challenges.id),
+              pre_registration_start_date:
+                fragment("? at time zone 'utc'", o.pre_registration_start_date)
+          }
+        }
+      )
+      |> Repo.one()
 
     case return_value do
       %{can_join: true, offer: offer} ->
         prepare_offer(offer)
+
       %{can_join: false} ->
         :not_authorized
+
       %{offer: offer} ->
         offer
     end

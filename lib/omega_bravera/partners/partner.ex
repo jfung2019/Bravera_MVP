@@ -10,6 +10,7 @@ defmodule OmegaBravera.Partners.Partner do
     field :opening_times, :string
     field :live, :boolean, default: false
     field :type, :string, virtual: true
+    field :is_member, :boolean, virtual: true
     has_one :location, PartnerLocation
     has_many :offers, OmegaBravera.Offers.Offer
     has_many :votes, PartnerVote

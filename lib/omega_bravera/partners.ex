@@ -43,10 +43,49 @@ defmodule OmegaBravera.Partners do
 
   """
   def get_partner!(id) do
-    partner_with_type_query()
-    |> where(id: ^id)
+    from(p in Partner,
+      distinct: true,
+      left_join: o in assoc(p, :offers),
+      where: p.id == ^id,
+      select: %{
+        p
+        | type:
+            fragment(
+              "CASE WHEN ? is null then ? else ? end",
+              o.id,
+              "suggested_partner",
+              "bravera_partner"
+            )
+      }
+    )
     |> Repo.one!()
     |> Repo.preload([:location, :offers])
+  end
+
+  @doc """
+  Get partners a partner and shows whether that user is a member
+  of that partner.
+  """
+  def get_partner_with_membership!(id, user_id) do
+    from(p in Partner,
+      distinct: true,
+      left_join: o in assoc(p, :offers),
+      left_join: m in assoc(p, :members),
+      on: m.user_id == ^user_id,
+      where: p.id == ^id,
+      select: %{
+        p
+        | type:
+            fragment(
+              "CASE WHEN ? is null then ? else ? end",
+              o.id,
+              "suggested_partner",
+              "bravera_partner"
+            ),
+          is_member: fragment("CASE WHEN ? THEN ? ELSE ? END", is_nil(m.id), false, true)
+      }
+    )
+    |> Repo.one!()
   end
 
   @doc """
@@ -97,9 +136,7 @@ defmodule OmegaBravera.Partners do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_partner(%Partner{} = partner) do
-    Repo.delete(partner)
-  end
+  def delete_partner(%Partner{} = partner), do: Repo.delete(partner)
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking partner changes.
@@ -110,9 +147,7 @@ defmodule OmegaBravera.Partners do
       %Ecto.Changeset{source: %Partner{}}
 
   """
-  def change_partner(%Partner{} = partner, attrs \\ %{}) do
-    Partner.changeset(partner, attrs)
-  end
+  def change_partner(%Partner{} = partner, attrs \\ %{}), do: Partner.changeset(partner, attrs)
 
   alias OmegaBravera.Partners.PartnerLocation
 
@@ -300,16 +335,15 @@ defmodule OmegaBravera.Partners do
   @doc """
   Define dataloader for ecto.
   """
-  def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
+  def datasource(default_params),
+    do: Dataloader.Ecto.new(Repo, query: &query/2, default_params: default_params)
 
-  def query(Partner, %{scope: :partner_type}), do: partner_with_type_query()
-
-  def query(queryable, _), do: queryable
-
-  defp partner_with_type_query do
+  def query(Partner, %{scope: :partner_type, current_user: %{id: user_id}}) do
     from(p in Partner,
       distinct: true,
       left_join: o in assoc(p, :offers),
+      left_join: m in assoc(p, :members),
+      on: m.user_id == ^user_id,
       select: %{
         p
         | type:
@@ -318,8 +352,11 @@ defmodule OmegaBravera.Partners do
               o.id,
               "suggested_partner",
               "bravera_partner"
-            )
+            ),
+          is_member: fragment("CASE WHEN ? THEN ? ELSE ? END", is_nil(m.id), false, true)
       }
     )
   end
+
+  def query(queryable, _), do: queryable
 end
