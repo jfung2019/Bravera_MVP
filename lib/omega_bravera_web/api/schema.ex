@@ -140,6 +140,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.resend_welcome_email/3
     end
+
+    @desc "Joins a partner"
+    field :join_partner, :partner do
+      middleware Middleware.Authenticate
+      arg :partner_id, non_null(:id)
+      resolve &Resolvers.Partners.join_partner/3
+    end
   end
 
   query do

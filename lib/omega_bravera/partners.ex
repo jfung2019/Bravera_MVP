@@ -6,7 +6,7 @@ defmodule OmegaBravera.Partners do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Partners.Partner
+  alias OmegaBravera.Partners.{Partner, Member}
 
   @doc """
   Returns the list of partner.
@@ -328,8 +328,15 @@ defmodule OmegaBravera.Partners do
       %Ecto.Changeset{source: %PartnerVote{}}
 
   """
-  def change_partner_vote(%PartnerVote{} = partner_vote) do
-    PartnerVote.changeset(partner_vote, %{})
+  def change_partner_vote(%PartnerVote{} = partner_vote), do: PartnerVote.changeset(partner_vote, %{})
+
+  @doc """
+  Allows a user to join a partner to be a member.
+  """
+  def join_partner(partner_id, user_id) do
+    %Member{}
+    |> Member.changeset(%{user_id: user_id, partner_id: partner_id})
+    |> Repo.insert()
   end
 
   @doc """
