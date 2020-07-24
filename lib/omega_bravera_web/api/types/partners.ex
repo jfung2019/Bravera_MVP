@@ -20,6 +20,9 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
     field :opening_times, non_null(:string)
     field :type, non_null(:partner_type)
     field :is_member, non_null(:boolean)
+    field :is_private, non_null(:boolean), resolve: fn _parent, %{source: %{join_password: pass}} ->
+      {:ok, pass != nil}
+    end
     field :location, :partner_location, resolve: dataloader(Partners)
 
     field :offers, list_of(non_null(:offer)),
