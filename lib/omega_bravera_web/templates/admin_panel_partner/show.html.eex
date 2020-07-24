@@ -11,6 +11,18 @@
 					<td>Opening Times</td>
 					<td><%= {:safe, @partner.opening_times} %></td>
 				</tr>
+				<tr>
+          <td>Email</td>
+          <td><%= @partner.email %></td>
+        </tr>
+        <tr>
+          <td>Website</td>
+          <td><%= @partner.website %></td>
+        </tr>
+        <tr>
+          <td>Phone</td>
+          <td><%= @partner.phone %></td>
+        </tr>
 			</tbody>
 		</table>
 		<%= if @partner.location do %>
