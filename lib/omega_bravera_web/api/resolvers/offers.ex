@@ -2,9 +2,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Offers do
   alias OmegaBravera.Offers
 
   def all_offers(_root, _args, %{
-        context: %{current_user: %{id: _}}
+        context: %{current_user: %{id: user_id}}
       }) do
-    {:ok, Offers.list_offers()}
+    {:ok, Offers.list_offers_for_user(user_id)}
   end
 
   def offer_offer_challenges(_root, %{offer_id: offer_id}, _info),

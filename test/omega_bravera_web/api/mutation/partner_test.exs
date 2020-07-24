@@ -33,13 +33,19 @@ defmodule OmegaBraveraWeb.Api.Mutation.PartnerTest do
   end
 
   test "can vote for partner to have offers", %{conn: conn, partner: %{id: partner_id}} do
-    response = post(conn, "/api", %{query: @vote_partner_mutation, variables: %{"partnerId" => partner_id}})
+    response =
+      post(conn, "/api", %{query: @vote_partner_mutation, variables: %{"partnerId" => partner_id}})
+
     assert %{"data" => %{"votePartner" => [_location]}} = json_response(response, 200)
   end
 
   test "can join partner", %{conn: conn, partner: %{id: partner_id}} do
-    response = post(conn, "/api", %{query: @join_partner_mutation, variables: %{"partnerId" => partner_id}})
+    response =
+      post(conn, "/api", %{query: @join_partner_mutation, variables: %{"partnerId" => partner_id}})
+
     string_partner_id = to_string(partner_id)
-    assert %{"data" => %{"joinPartner" => %{"id" => ^string_partner_id}}} = json_response(response, 200)
+
+    assert %{"data" => %{"joinPartner" => %{"id" => ^string_partner_id}}} =
+             json_response(response, 200)
   end
 end

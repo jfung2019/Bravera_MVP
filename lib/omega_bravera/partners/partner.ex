@@ -1,7 +1,7 @@
 defmodule OmegaBravera.Partners.Partner do
   use Ecto.Schema
   import Ecto.Changeset
-  alias OmegaBravera.Partners.{PartnerLocation, PartnerVote, Member}
+  alias OmegaBravera.Partners.{PartnerLocation, PartnerVote, Member, OfferPartner}
 
   schema "partners" do
     field :images, {:array, :string}, default: []
@@ -12,7 +12,8 @@ defmodule OmegaBravera.Partners.Partner do
     field :type, :string, virtual: true
     field :is_member, :boolean, virtual: true
     has_one :location, PartnerLocation
-    has_many :offers, OmegaBravera.Offers.Offer
+    has_many :offer_partners, OfferPartner
+    has_many :offers, through: [:offer_partners, :offer]
     has_many :votes, PartnerVote
     has_many :members, Member
 

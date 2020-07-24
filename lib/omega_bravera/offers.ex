@@ -81,6 +81,27 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
+  Only shows offers that don't have a partner
+  or if the user is a member of a partner, then the offer will be shown.
+  """
+  def list_offers_for_user(user_id) do
+    now = Timex.now("Asia/Hong_Kong")
+
+    from(
+      offer in Offer,
+      left_join: p in assoc(offer, :partners),
+      left_join: m in assoc(p, :members),
+      on: m.user_id == ^user_id,
+      where:
+        offer.hidden == ^false and offer.end_date > ^now and
+          (is_nil(p.id) or (not is_nil(p.id) and not is_nil(m.id))),
+      order_by: [desc_nulls_last: m.inserted_at, desc: offer.id],
+      preload: [:offer_challenges]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single offer.
 
   Raises `Ecto.NoResultsError` if the Offer does not exist.
@@ -127,7 +148,7 @@ defmodule OmegaBravera.Offers do
         left_join: offer_challenges in assoc(o, :offer_challenges),
         on: offer_challenges.offer_id == o.id and offer_challenges.status == ^"active",
         preload: [:offer_challenges],
-        left_join: p in assoc(o, :partner),
+        left_join: p in assoc(o, :partners),
         left_join: m in assoc(p, :members),
         on: m.user_id == ^user_id,
         group_by: [o.id, p.id, m.id],

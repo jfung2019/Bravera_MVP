@@ -51,7 +51,8 @@ defmodule OmegaBraveraWeb.Api.Query.PartnersTest do
     credential = Fixtures.credential_fixture(user.id)
     partner = Fixtures.partner_fixture()
     Fixtures.partner_location_fixture(%{partner_id: partner.id})
-    insert(:offer, %{partner_id: partner.id})
+    %{id: offer_id} = insert(:offer)
+    OmegaBravera.Partners.create_offer_partner(%{partner_id: partner.id, offer_id: offer_id})
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
     {:ok,

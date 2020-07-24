@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential}
+  alias OmegaBravera.{Accounts.Credential, Fixtures, Repo}
 
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
@@ -42,19 +42,21 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
     |> Repo.preload(:user)
   end
 
-  setup do
+  setup %{conn: conn} do
     credential = credential_fixture()
     offer = insert(:offer, %{target: 15, images: ["url1", "url2"], image: "url3"})
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-    {:ok, token: auth_token, offer: offer}
+    {:ok, offer: offer, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}
   end
 
   test "images should be a list of urls and image should be the first image from that url in all offers",
        %{
-         token: token
+         conn: conn
        } do
-    conn = build_conn() |> put_req_header("authorization", "Bearer #{token}")
     response = post(conn, "/api", %{query: @all_offers_images_query})
+    %{id: offer_id} = insert(:offer, %{target: 15, images: ["url1", "url2"], image: "url3"})
+    %{id: partner_id} = Fixtures.partner_fixture()
+    OmegaBravera.Partners.create_offer_partner(%{partner_id: partner_id, offer_id: offer_id})
 
     assert %{
              "data" => %{
@@ -70,11 +72,9 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
 
   test "images should be a list of urls and image should be the first image from that url in a particular offer",
        %{
-         token: token,
+         conn: conn,
          offer: offer
        } do
-    conn = build_conn() |> put_req_header("authorization", "Bearer #{token}")
-
     response =
       post(conn, "/api", %{
         query: @get_offers_images_query_by_slug,

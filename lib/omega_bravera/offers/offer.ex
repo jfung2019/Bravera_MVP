@@ -4,6 +4,7 @@ defmodule OmegaBravera.Offers.Offer do
   import OmegaBravera.Fundraisers.NgoOptions
 
   alias OmegaBravera.Offers.{OfferChallenge, OfferReward, OfferVendor, OfferRedeem}
+  alias OmegaBravera.Partners.OfferPartner
 
   @in_store_offer_type "in_store"
   @online_offer_type "online"
@@ -69,7 +70,8 @@ defmodule OmegaBravera.Offers.Offer do
     has_many :offer_challenges, OfferChallenge
     has_many :offer_rewards, OfferReward
     has_many :offer_redeems, OfferRedeem
-    belongs_to :partner, OmegaBravera.Partners.Partner
+    has_many :partner_offers, OfferPartner
+    has_many :partners, through: [:partner_offers, :partner]
 
     timestamps(type: :utc_datetime)
   end
@@ -102,7 +104,6 @@ defmodule OmegaBravera.Offers.Offer do
     :accept_terms_text,
     :location_id,
     :images,
-    :partner_id,
     :redemption_days,
     :offer_type,
     :take_challenge,
