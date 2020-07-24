@@ -20,10 +20,18 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Partners do
   def get_partner(_root, %{partner_id: partner_id}, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Partners.get_partner_with_membership!(partner_id, user_id)}
 
-  def join_partner(_root, %{partner_id: partner_id}, %{context: %{current_user: %{id: user_id}}}) do
-    case Partners.join_partner(partner_id, user_id) do
-      {:ok, _} ->
-        {:ok, Partners.get_partner_with_membership!(partner_id, user_id)}
+  def join_partner(_root, %{partner_id: partner_id} = args, %{
+        context: %{current_user: %{id: user_id}}
+      }) do
+    int_partner_id = String.to_integer(partner_id)
+
+    with %{id: ^int_partner_id} <-
+           Partners.get_partner_with_password(int_partner_id, Map.get(args, :password)),
+         {:ok, _} <- Partners.join_partner(partner_id, user_id) do
+      {:ok, Partners.get_partner_with_membership!(partner_id, user_id)}
+    else
+      nil ->
+        {:error, message: "Password incorrect."}
     end
   end
 end

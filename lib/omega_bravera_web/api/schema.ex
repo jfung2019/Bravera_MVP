@@ -145,6 +145,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :join_partner, :partner do
       middleware Middleware.Authenticate
       arg :partner_id, non_null(:id)
+      arg :password, :string, default_value: nil
       resolve &Resolvers.Partners.join_partner/3
     end
   end

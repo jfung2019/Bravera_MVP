@@ -21,6 +21,14 @@ defmodule OmegaBraveraWeb.Api.Mutation.PartnerTest do
   }
   """
 
+  @join_private_partner_mutation """
+  mutation($partnerId: ID!, $password: String) {
+    joinPartner(partnerId: $partnerId, password: $password) {
+      id
+    }
+  }
+  """
+
   setup %{conn: conn} do
     user = insert(:user)
     credential = Fixtures.credential_fixture(user.id)
@@ -44,6 +52,21 @@ defmodule OmegaBraveraWeb.Api.Mutation.PartnerTest do
       post(conn, "/api", %{query: @join_partner_mutation, variables: %{"partnerId" => partner_id}})
 
     string_partner_id = to_string(partner_id)
+
+    assert %{"data" => %{"joinPartner" => %{"id" => ^string_partner_id}}} =
+             json_response(response, 200)
+  end
+
+  test "can join a private partner", %{conn: conn, partner: partner} do
+    {:ok, _partner} = OmegaBravera.Partners.update_partner(partner, %{join_password: "pass"})
+
+    response =
+      post(conn, "/api", %{
+        query: @join_private_partner_mutation,
+        variables: %{"partnerId" => partner.id, "password" => "pass"}
+      })
+
+    string_partner_id = to_string(partner.id)
 
     assert %{"data" => %{"joinPartner" => %{"id" => ^string_partner_id}}} =
              json_response(response, 200)

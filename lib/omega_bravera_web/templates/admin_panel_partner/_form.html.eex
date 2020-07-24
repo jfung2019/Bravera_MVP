@@ -14,6 +14,11 @@
   	<%= textarea f, :opening_times, class: "form-control", data: [html: true] %>
   	<%= error_tag f, :opening_times %>
   </div>
+  <div class="form-group">
+    <%= label f, :join_password, "Password to Join (leave blank to have open)" %>
+    <%= text_input f, :join_password, class: "form-control" %>
+    <%= error_tag f, :join_password %>
+  </div>
 
   <%= if @current_admin.role == "super" do %>
     <div class="form-check mb-3">

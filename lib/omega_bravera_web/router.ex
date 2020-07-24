@@ -169,6 +169,7 @@ defmodule OmegaBraveraWeb.Router do
       get "/ngo/:slug/opt-in/", AdminPanelNGOController, :export_ngo_opt_in_mailing_list
       resources "/points", AdminPanelPointsController, only: [:new, :create]
       resources "/offers", AdminPanelOfferController, param: "slug"
+      resources "/offer-partners", AdminPanelOfferPartnerController, only: [:create, :delete]
       get "/offers/:slug/statement", AdminPanelOfferController, :statement
       get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
       live "/offers/:slug/images", AdminOfferImages

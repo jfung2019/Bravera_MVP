@@ -8,6 +8,7 @@ defmodule OmegaBravera.Partners.Partner do
     field :introduction, :string
     field :name, :string
     field :opening_times, :string
+    field :join_password, :string
     field :live, :boolean, default: false
     field :type, :string, virtual: true
     field :is_member, :boolean, virtual: true
@@ -23,8 +24,9 @@ defmodule OmegaBravera.Partners.Partner do
   @doc false
   def changeset(partner, attrs) do
     partner
-    |> cast(attrs, [:name, :introduction, :opening_times, :images, :live])
+    |> cast(attrs, [:name, :introduction, :opening_times, :images, :live, :join_password])
     |> validate_length(:name, max: 255)
+    |> validate_length(:join_password, max: 255, min: 4)
     |> validate_required([:name, :introduction, :opening_times, :images])
   end
 end

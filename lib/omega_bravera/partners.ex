@@ -341,6 +341,19 @@ defmodule OmegaBravera.Partners do
   end
 
   @doc """
+  Gets a partner from the ID plus the password.
+  """
+  def get_partner_with_password(partner_id, nil) do
+    from(p in Partner, where: p.id == ^partner_id and is_nil(p.join_password))
+    |> Repo.one()
+  end
+
+  def get_partner_with_password(partner_id, password) do
+    from(p in Partner, where: p.id == ^partner_id and p.join_password == ^password)
+    |> Repo.one()
+  end
+
+  @doc """
   Allows a partner to be joined to an offer.
   """
   def create_offer_partner(attrs) do
@@ -348,6 +361,16 @@ defmodule OmegaBravera.Partners do
     |> OfferPartner.changeset(attrs)
     |> Repo.insert()
   end
+
+  @doc """
+  Gets an offer partner by ID.
+  """
+  def get_offer_partner!(id), do: Repo.get!(OfferPartner, id)
+
+  @doc """
+  Deletes an offer partner.
+  """
+  def delete_offer_partner(offer_partner), do: Repo.delete(offer_partner)
 
   @doc """
   Define dataloader for ecto.

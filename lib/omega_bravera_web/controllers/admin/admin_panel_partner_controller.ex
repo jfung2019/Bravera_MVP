@@ -9,7 +9,11 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
 
   def show(conn, %{"id" => partner_id}) do
     partner = Partners.get_partner!(partner_id)
-    render(conn, "show.html", partner: partner)
+
+    render(conn, "show.html",
+      partner: partner,
+      offers: OmegaBravera.Offers.list_offers_all_offers()
+    )
   end
 
   def edit(conn, %{"id" => partner_id}) do

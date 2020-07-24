@@ -38,16 +38,29 @@
 		<%= if length(@partner.offers) > 0 do %>
 		  <table class="table">
 		  	<tbody>
-		  		<%= for offer <- @partner.offers do %>
+		  		<%= for offer_partner <- @partner.offer_partners do %>
 		  		  <tr>
-		  		  	<td><%= offer.name %> <%= link "Edit Offer", to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning" %></td>
+		  		  	<td><%= offer_partner.offer.name %>
+		  		  	  <%= link "Edit Offer", to: Routes.admin_panel_offer_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
+		  		  	  <%= link "Unlink Offer", to: Routes.admin_panel_offer_partner_path(@conn, :delete, offer_partner), method: :delete, class: "btn btn-danger" %>
+              </td>
 				  </tr>
 		  		<% end %>
 			</tbody>
 		  </table>
-		  <% else %>
-		    <%= link "Choose offer to attach", to: Routes.admin_panel_offer_path(@conn, :index) %><br>
 		 <% end %>
+		 <div class="row">
+		  <%= form_for @conn, Routes.admin_panel_offer_partner_path(@conn, :create), fn f -> %>
+		    <%= hidden_input f, :partner_id, value: @partner.id %>
+       <div class="col">
+          <%= select f, :offer_id, Enum.map(@offers, fn o -> {o.name, o.id} end), class: "form-control" %>
+        </div>
+        <div class="col">
+          <%= submit "Attach", class: "btn btn-primary" %>
+        </div>
+        <% end %>
+      </div>
+
 		 <%= link "Add/Edit partner images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, @partner) %>
 	</div>
 </div>
