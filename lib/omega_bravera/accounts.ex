@@ -695,20 +695,49 @@ defmodule OmegaBravera.Accounts do
   def list_users_for_admin do
     today = Timex.today()
     before = today |> Timex.shift(days: -30)
+    beginning_of_week = Timex.beginning_of_week(today)
+    end_of_week = Timex.end_of_week(today)
 
     rewards_query =
-      from(r in OmegaBravera.Offers.OfferRedeem,
-        group_by: r.user_id,
+      from(u in User,
+        left_join: r in OmegaBravera.Offers.OfferRedeem,
+        on: u.id == r.user_id,
+        group_by: u.id,
         left_join: oc in assoc(r, :offer_challenge),
         on: oc.status == ^"complete",
-        select: %{user_id: r.user_id, count: count(r.id)}
+        select: %{user_id: u.id, count: coalesce(count(r.id), 0)}
       )
 
     rewards_redeemed_query =
-      from(r in OmegaBravera.Offers.OfferRedeem,
-        group_by: r.user_id,
-        where: r.status == "redeemed",
-        select: %{user_id: r.user_id, count: count(r.id)}
+      from(u in User,
+        left_join: r in OmegaBravera.Offers.OfferRedeem,
+        on: u.id == r.user_id and r.status == "redeemed",
+        group_by: u.id,
+        select: %{user_id: u.id, count: coalesce(count(r.id), 0)}
+      )
+
+    total_distance_query =
+      from(a in OmegaBravera.Activity.ActivityAccumulator,
+        group_by: a.user_id,
+        select: %{user_id: a.user_id, sum: coalesce(sum(a.distance), 0.0)}
+      )
+
+    weekly_distance_query =
+      from(u in User,
+        group_by: u.id,
+        left_join: a in OmegaBravera.Activity.ActivityAccumulator,
+        on:
+          u.id == a.user_id and
+            fragment("?::DATE BETWEEN ? AND ?", a.start_date, ^beginning_of_week, ^end_of_week),
+        select: %{user_id: u.id, sum: coalesce(sum(a.distance), 0.0)}
+      )
+
+    friend_referrals_query =
+      from(u in User,
+        left_join: r in User,
+        on: u.id == r.referred_by_id,
+        group_by: u.id,
+        select: %{user_id: u.id, count: coalesce(count(r.id), 0)}
       )
 
     from(u in User,
@@ -722,6 +751,12 @@ defmodule OmegaBravera.Accounts do
       on: cr.user_id == u.id,
       left_join: r in subquery(rewards_query),
       on: r.user_id == u.id,
+      left_join: td in subquery(total_distance_query),
+      on: td.user_id == u.id,
+      left_join: wtd in subquery(weekly_distance_query),
+      on: wtd.user_id == u.id,
+      left_join: fr in subquery(friend_referrals_query),
+      on: fr.user_id == u.id,
       select: %{
         u
         | active: fragment("? > 0", count(a.id)),
@@ -731,10 +766,13 @@ defmodule OmegaBravera.Accounts do
               d.uuid,
               d.uuid
             ),
-          number_of_claimed_rewards: coalesce(cr.count, 0),
-          number_of_rewards: coalesce(r.count, 0)
+          number_of_claimed_rewards: cr.count,
+          number_of_rewards: r.count,
+          total_kilometers: td.sum,
+          total_kilometers_this_week: wtd.sum,
+          friend_referrals: fr.count
       },
-      group_by: [u.id, d.uuid, r.count, cr.count]
+      group_by: [u.id, d.uuid, r.count, cr.count, td.sum, wtd.sum, fr.count]
     )
     |> Repo.all()
   end

@@ -63,6 +63,7 @@ defmodule OmegaBravera.Accounts.User do
     field :points_history, {:array, :map}, virtual: true, default: []
     field :total_challenges, :integer, virtual: true, default: 0
     field :position_on_leaderboard, :integer, virtual: true, default: 0
+    field :friend_referrals, :integer, virtual: true
 
     # associations
     has_one :credential, Credential, on_replace: :update

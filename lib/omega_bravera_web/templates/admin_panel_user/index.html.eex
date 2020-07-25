@@ -1,5 +1,5 @@
 <div class="row">
-	<div class="col-6 offset-2">
+	<div class="col-12">
 		<h2>Listing Users</h2>
 
 		<table class="table table-bordered table-hover">
@@ -17,6 +17,9 @@
 		      <th>Active</th>
 		      <th>Rewards</th>
 		      <th>Claimed</th>
+		      <th>Total Distance</th>
+		      <th>Distance This Week</th>
+		      <th>Friend Referrals</th>
 			  <th></th>
 		    </tr>
 		  </thead>
@@ -35,6 +38,9 @@
 		      <td><%= user.active %></td>
 		      <td><%= user.number_of_rewards %></td>
 		      <td><%= user.number_of_claimed_rewards %></td>
+		      <td><%= user.total_kilometers %></td>
+		      <td><%= user.total_kilometers_this_week %></td>
+		      <td><%= user.friend_referrals %></td>
 		      <td class="text-right">
 		        <span><%= link "Show", to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
 		      </td>
