@@ -87,17 +87,25 @@ defmodule OmegaBravera.Offers do
   def list_offers_for_user(user_id) do
     now = Timex.now("Asia/Hong_Kong")
 
-    from(
-      offer in Offer,
-      left_join: p in assoc(offer, :partners),
-      left_join: m in assoc(p, :members),
-      on: m.user_id == ^user_id,
-      where:
-        offer.hidden == ^false and offer.end_date > ^now and
-          (is_nil(p.id) or (not is_nil(p.id) and not is_nil(m.id))),
-      order_by: [desc_nulls_last: m.inserted_at, desc: offer.id],
-      preload: [:offer_challenges]
-    )
+    open_offers_query =
+      from(
+        offer in Offer,
+        left_join: op in assoc(offer, :offer_partners),
+        where: offer.hidden == ^false and offer.end_date > ^now and is_nil(op.id)
+      )
+
+    closed_offers_query =
+      from(
+        offer in Offer,
+        right_join: p in assoc(offer, :partners),
+        right_join: m in assoc(p, :members),
+        on: m.user_id == ^user_id,
+        where: offer.end_date > ^now and not is_nil(m.id)
+      )
+
+    unioned_query = union(open_offers_query, ^closed_offers_query)
+
+    from(o in subquery(unioned_query), order_by: [o.id])
     |> Repo.all()
   end
 

@@ -70,8 +70,8 @@ defmodule OmegaBravera.Offers.Offer do
     has_many :offer_challenges, OfferChallenge
     has_many :offer_rewards, OfferReward
     has_many :offer_redeems, OfferRedeem
-    has_many :partner_offers, OfferPartner
-    has_many :partners, through: [:partner_offers, :partner]
+    has_many :offer_partners, OfferPartner
+    has_many :partners, through: [:offer_partners, :partner]
 
     timestamps(type: :utc_datetime)
   end
