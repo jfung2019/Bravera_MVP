@@ -15,7 +15,7 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     field :name, non_null(:string)
     field :slug, non_null(:string)
     field :toc, non_null(:string)
-    field :logo, non_null(:string)
+    field :logo, :string
     field :image, non_null(:string)
     field :images, non_null(list_of(:string))
     field :target, non_null(:integer)
