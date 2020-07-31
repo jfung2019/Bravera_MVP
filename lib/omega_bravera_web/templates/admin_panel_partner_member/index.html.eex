@@ -1,0 +1,16 @@
+<h1>Members</h1>
+
+<%= if Enum.empty?(@members) do %>
+  No members
+<% else %>
+  <table class="table">
+    <tbody>
+      <%= for member <- @members do %>
+      <tr>
+        <td><%= member.user.email %></td>
+        <td><%= link "Remove member", to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :delete, @partner_id, member), method: :delete, class: "btn btn-danger", data_confirm: "Are you sure?" %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

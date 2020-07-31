@@ -341,6 +341,24 @@ defmodule OmegaBravera.Partners do
   end
 
   @doc """
+  Lists all members from a partner ID.
+  """
+  def list_partner_members(partner_id) do
+    from(m in Member, where: m.partner_id == ^partner_id, preload: [:user])
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a partner member by their ID.
+  """
+  def get_partner_member!(member_id), do: Repo.get!(Member, member_id)
+
+  @doc """
+  Delete partner member.
+  """
+  def delete_partner_member(member), do: Repo.delete(member)
+
+  @doc """
   Gets a partner from the ID plus the password.
   """
   def get_partner_with_password(partner_id, nil) do

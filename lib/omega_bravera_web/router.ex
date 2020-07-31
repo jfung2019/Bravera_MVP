@@ -181,6 +181,7 @@ defmodule OmegaBraveraWeb.Router do
 
       resources "/partners", AdminPanelPartnerController, except: [:delete] do
         resources "/locations", AdminPanelPartnerLocationController, except: [:index]
+        resources "/members", AdminPanelPartnerMemberController, only: [:index, :delete]
       end
     end
   end

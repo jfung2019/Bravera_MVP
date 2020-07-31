@@ -47,6 +47,7 @@
 		<% else %>
 		  <%= link "Add Location", to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :new, @partner) %><br>
 		<% end %>
+		<h2>Offers</h2>
 		<%= if length(@partner.offers) > 0 do %>
 		  <table class="table">
 		  	<tbody>
@@ -61,6 +62,8 @@
 			</tbody>
 		  </table>
 		 <% end %>
+		 <hr>
+		 <h3>Attach an Offer</h3>
 		 <div class="row">
 		  <%= form_for @conn, Routes.admin_panel_offer_partner_path(@conn, :create), fn f -> %>
 		    <%= hidden_input f, :partner_id, value: @partner.id %>
@@ -68,11 +71,12 @@
           <%= select f, :offer_id, Enum.map(@offers, fn o -> {o.name, o.id} end), class: "form-control" %>
         </div>
         <div class="col">
-          <%= submit "Attach", class: "btn btn-primary" %>
+          <%= submit "Attach", class: "btn btn-primary my-3" %>
         </div>
         <% end %>
       </div>
-
+      <hr>
+    <h2>Partner Images</h2>
 		 <%= link "Add/Edit partner images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, @partner) %>
 	</div>
 </div>
