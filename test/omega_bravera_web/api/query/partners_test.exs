@@ -27,6 +27,25 @@ defmodule OmegaBraveraWeb.Api.Query.PartnersTest do
   }
   """
 
+  @partners_query """
+  query {
+    getPartners {
+      name
+      introduction
+      isMember
+      votes {
+        user {
+          id
+          profilePicture
+        }
+      }
+      offers {
+        name
+      }
+    }
+  }
+  """
+
   @partner_query """
   query($partnerId: ID!) {
     getPartner(partnerId: $partnerId) {
@@ -70,6 +89,13 @@ defmodule OmegaBraveraWeb.Api.Query.PartnersTest do
       post(conn, "/api", %{query: @partner_query, variables: %{"partnerId" => partner_id}})
 
     assert %{"data" => %{"getPartner" => %{"name" => ^name, "isMember" => false}}} =
+             json_response(response, 200)
+  end
+
+  test "can list all live partners", %{conn: conn, partner: %{name: name}} do
+    response = post(conn, "/api", %{query: @partners_query})
+
+    assert %{"data" => %{"getPartners" => [%{"name" => ^name, "isMember" => false}]}} =
              json_response(response, 200)
   end
 end

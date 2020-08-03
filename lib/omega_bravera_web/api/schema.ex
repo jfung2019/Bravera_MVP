@@ -284,6 +284,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Partners.get_partner/3
     end
 
+    @desc "Gets all partners"
+    field :get_partners, non_null(list_of(:partner)) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Partners.get_partners/3
+    end
+
     @desc "Gets a breakdown of points from a day"
     field :user_point_day_breakdown, non_null(list_of(non_null(:point))) do
       middleware Middleware.Authenticate

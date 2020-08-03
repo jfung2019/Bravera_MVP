@@ -88,6 +88,28 @@ defmodule OmegaBravera.Partners do
     |> Repo.one!()
   end
 
+  def list_partners_with_membership(user_id) do
+    from(p in Partner,
+      distinct: true,
+      left_join: o in assoc(p, :offers),
+      left_join: m in assoc(p, :members),
+      on: m.user_id == ^user_id,
+      where: p.live == true,
+      select: %{
+        p
+        | type:
+            fragment(
+              "CASE WHEN ? is null then ? else ? end",
+              o.id,
+              "suggested_partner",
+              "bravera_partner"
+            ),
+          is_member: fragment("CASE WHEN ? THEN ? ELSE ? END", is_nil(m.id), false, true)
+      }
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Creates a partner.
 
