@@ -3,9 +3,10 @@
     	<table class="table">
     		<thead>
     			<tr>
-                   <th>Name</th>
-                   <th>Actions</th>
-				</tr>
+							 <th>Name</th>
+							 <th>Actions</th>
+						   <th>Live?</th>
+				  </tr>
 			</thead>
 			<tbody>
 				<%= for partner <- @partners do %>
@@ -15,7 +16,14 @@
 				  	  <%= link "Members", to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
 				  		<%= link "Show", to: Routes.admin_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
 				  		<%= link "Edit", to: Routes.admin_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
-					</td>
+						</td>
+						<td>
+							<%= if partner.live do %>
+								<button class="btn btn-danger">Live</button>
+							<% else %>
+								<button class="btn btn-secondary">Not Live</button>
+							<% end %>
+						</td>
 				  </tr>
 				<% end %>
 			</tbody>

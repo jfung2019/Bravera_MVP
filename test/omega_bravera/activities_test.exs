@@ -11,14 +11,64 @@ defmodule OmegaBravera.ActivitiesTest do
     {:ok, start_date: start_date, end_date: end_date, user: user, device: device}
   end
 
-  test "can not have overlapping activities", %{start_date: start_date, end_date: end_date, user: user, device: device} do
-    assert {:ok, _} = Activities.create_app_activity(%{"start_date" => start_date, "end_date" => end_date, "type" => "Walk"}, user.id, device.id, 0)
-    assert {:error, _} = Activities.create_app_activity(%{"start_date" => start_date, "end_date" => end_date, "type" => "Walk"}, user.id, device.id, 0)
-    assert {:error, _} = Activities.create_app_activity(%{"start_date" => Timex.shift(start_date, minutes: 1), "end_date" => Timex.shift(end_date, minutes: 1), "type" => "Walk"}, user.id, device.id, 0)
-    assert {:ok, _} = Activities.create_app_activity(%{"start_date" => end_date, "end_date" => Timex.shift(end_date, minutes: 1), "type" => "Walk"}, user.id, device.id, 0)
+  test "can not have overlapping activities", %{
+    start_date: start_date,
+    end_date: end_date,
+    user: user,
+    device: device
+  } do
+    assert {:ok, _} =
+             Activities.create_app_activity(
+               %{"start_date" => start_date, "end_date" => end_date, "type" => "Walk"},
+               user.id,
+               device.id,
+               0
+             )
+
+    assert {:error, _} =
+             Activities.create_app_activity(
+               %{"start_date" => start_date, "end_date" => end_date, "type" => "Walk"},
+               user.id,
+               device.id,
+               0
+             )
+
+    assert {:error, _} =
+             Activities.create_app_activity(
+               %{
+                 "start_date" => Timex.shift(start_date, minutes: 1),
+                 "end_date" => Timex.shift(end_date, minutes: 1),
+                 "type" => "Walk"
+               },
+               user.id,
+               device.id,
+               0
+             )
+
+    assert {:ok, _} =
+             Activities.create_app_activity(
+               %{
+                 "start_date" => end_date,
+                 "end_date" => Timex.shift(end_date, minutes: 1),
+                 "type" => "Walk"
+               },
+               user.id,
+               device.id,
+               0
+             )
   end
 
-  test "activities with a start_date but no end_date will use start_date as the end_date", %{start_date: start_date, user: user, device: device} do
-    assert {:ok, %{end_date: ^start_date}} = Activities.create_app_activity(%{"start_date" => start_date, "type" => "Walk"}, user.id, device.id, 0)
+  test "activities with a start_date but no end_date will use start_date as the end_date", %{
+    start_date: start_date,
+    user: user,
+    device: device
+  } do
+    assert {:ok, %{end_date: ^start_date}} =
+             Activities.create_app_activity(
+               %{"start_date" => start_date, "type" => "Walk"},
+               user.id,
+               device.id,
+               0
+             )
   end
 end

@@ -187,6 +187,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
 
   defp use_start_date_for_end_date(changeset) do
     start_date = get_field(changeset, :start_date)
+
     if get_field(changeset, :end_date) == nil and start_date != nil do
       put_change(changeset, :end_date, start_date)
     else
