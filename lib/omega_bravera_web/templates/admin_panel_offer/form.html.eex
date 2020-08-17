@@ -167,14 +167,14 @@
   <div class="form-group">
   <%= label f, "User", class: "control-label" %>
     <%= select(f, :vendor_id, Enum.map(@vendors, &{&1.vendor_id, &1.id}),
-          class: "form-control", prompt: "Who is the Offer vendor?")
+          class: "form-control chosen", prompt: "Who is the Offer vendor?")
     %>
     <%= error_tag f, :vendor_id %>
   </div>
 
   <div class="form-group">
     <%= label f, :location_id, "Location" %>
-    <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control" %>
+    <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control chosen" %>
     <%= error_tag f, :location_id %>
   </div>
 

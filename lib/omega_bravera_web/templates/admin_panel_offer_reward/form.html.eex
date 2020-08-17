@@ -19,7 +19,7 @@
 
   <div class="form-group">
     <%= label f, :offer, class: "control-label" %>
-    <%= select(f, :offer_id, generate_offers_list(@offers), class: "form-control") %>
+    <%= select(f, :offer_id, generate_offers_list(@offers), class: "form-control chosen") %>
     <%= error_tag f, :offer_id %>
   </div>
 
