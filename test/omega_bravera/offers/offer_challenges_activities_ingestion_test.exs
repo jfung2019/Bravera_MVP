@@ -295,7 +295,8 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
       activity =
         insert(:activity_accumulator, %{
           type: challenge.activity_type,
-          start_date: Timex.shift(Timex.now(), days: 6)
+          start_date: Timex.shift(Timex.now(), days: 6),
+          end_date: Timex.shift(Timex.now(), days: 6)
         })
 
       assert OfferActivitiesIngestion.process_challenge(

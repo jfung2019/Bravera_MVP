@@ -49,12 +49,14 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   @required_attributes [
     :distance,
     :start_date,
+    :end_date,
     :type,
     :user_id
   ]
 
   @required_attributes_for_admin [
     :start_date,
+    :end_date,
     :distance,
     :average_speed,
     :calories,
@@ -87,12 +89,14 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       activity_json: StravaParser.strava_activity_to_map(strava_activity),
       source: "strava"
     })
+    |> use_start_date_for_end_date()
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:challenge_id)
     |> unique_constraint(:strava_id)
     |> unique_constraint(:challenge_id)
     |> unique_constraint(:strava_id_challenge_id)
+    |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap)
   end
 
   def create_activity_by_admin_changeset(
@@ -112,11 +116,13 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       admin_id: admin_user_id,
       source: "admin"
     })
+    |> use_start_date_for_end_date()
     |> validate_required(@required_attributes_for_admin)
     |> check_constraint(:admin_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> check_constraint(:strava_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:challenge_id)
+    |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap)
   end
 
   def create_bravera_app_activity(
@@ -127,6 +133,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       ) do
     %__MODULE__{}
     |> cast(activity_attrs, [:distance, :start_date, :end_date, :source, :type])
+    |> use_start_date_for_end_date()
     |> put_change(:user_id, user_id)
     |> put_change(:device_id, device_id)
     |> verify_allowed_source()
@@ -134,6 +141,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     |> verify_not_duplicate(number_of_activities_at_time)
     |> check_constraint(:admin_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> check_constraint(:strava_id, name: :strava_id_or_admin_id_or_device_id_required)
+    |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap)
   end
 
   def verify_allowed_source(changeset) do
@@ -176,4 +184,14 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
 
   defp strava_attributes(%Strava.DetailedActivity{} = strava_activity),
     do: Map.take(strava_activity, @allowed_attributes)
+
+  defp use_start_date_for_end_date(changeset) do
+    start_date = get_field(changeset, :start_date)
+
+    if get_field(changeset, :end_date) == nil and start_date != nil do
+      put_change(changeset, :end_date, start_date)
+    else
+      changeset
+    end
+  end
 end

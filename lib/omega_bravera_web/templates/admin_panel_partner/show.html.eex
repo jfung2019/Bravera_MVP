@@ -68,7 +68,7 @@
 		  <%= form_for @conn, Routes.admin_panel_offer_partner_path(@conn, :create), fn f -> %>
 		    <%= hidden_input f, :partner_id, value: @partner.id %>
        <div class="col">
-          <%= select f, :offer_id, Enum.map(@offers, fn o -> {o.name, o.id} end), class: "form-control" %>
+          <%= select f, :offer_id, Enum.map(@offers, fn o -> {o.name, o.id} end), class: "form-control chosen" %>
         </div>
         <div class="col">
           <%= submit "Attach", class: "btn btn-primary my-3" %>

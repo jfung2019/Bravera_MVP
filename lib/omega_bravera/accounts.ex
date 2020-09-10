@@ -376,7 +376,8 @@ defmodule OmegaBravera.Accounts do
 
   def user_live_challenges(user_id) do
     from(oc in OfferChallenge,
-      where: oc.status == "active" and oc.user_id == ^user_id,
+      where:
+        (oc.status == "active" or oc.status == "pre_registration") and oc.user_id == ^user_id,
       left_join: a in OfferChallengeActivitiesM2m,
       on: oc.id == a.offer_challenge_id,
       left_join: ac in ActivityAccumulator,
