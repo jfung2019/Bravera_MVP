@@ -160,7 +160,15 @@ defmodule OmegaBravera.Offers do
         left_join: m in assoc(p, :members),
         on: m.user_id == ^user_id,
         group_by: [o.id, p.id, m.id],
-        order_by: fragment("(CASE WHEN ? THEN ? WHEN ? IS NOT NULL THEN ? ELSE ? END) DESC", is_nil(p.id), true, m.id, true, false),
+        order_by:
+          fragment(
+            "(CASE WHEN ? THEN ? WHEN ? IS NOT NULL THEN ? ELSE ? END) DESC",
+            is_nil(p.id),
+            true,
+            m.id,
+            true,
+            false
+          ),
         limit: 1,
         select: %{
           can_join:

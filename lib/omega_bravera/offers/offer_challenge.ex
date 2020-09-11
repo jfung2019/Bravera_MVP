@@ -94,7 +94,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> validate_inclusion(:default_currency, currency_options())
     |> validate_inclusion(:type, challenge_type_options())
     |> validate_user_email_verified(user)
-    |> validate_max_challenges(user)
+    |> validate_max_challenges(user, offer)
     |> add_start_date(offer)
     |> add_end_date(offer)
     |> add_status(offer)
@@ -104,10 +104,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> validate_required([:start_date, :end_date])
     |> validate_user_has_no_active_offer_challenges(user)
     |> validate_required(:slug)
-    |> unique_constraint(:user_id_offer_id,
-      name: :one_offer_per_user_index,
-      message: "You cannot join an offer more then once."
-    )
     |> unique_constraint(:slug)
     |> solo_or_team_challenge(offer, user)
     |> add_one_offer_redeem_assoc(offer, user)
@@ -129,10 +125,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> generate_slug(user)
     |> add_one_offer_redeem_assoc(offer, user)
     |> validate_required(:slug)
-    |> unique_constraint(:user_id_offer_id,
-      name: :one_offer_per_user_index,
-      message: "You cannot join an offer more then once."
-    )
     |> unique_constraint(:slug)
     |> validate_offer_not_segment(offer)
     |> validate_user_can_pay(offer, user)
@@ -144,9 +136,13 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> cast_assoc(:team, with: &OfferChallengeTeam.changeset(&1, offer, user, &2), required: true)
   end
 
-  defp validate_max_challenges(%Ecto.Changeset{} = changeset, %User{
-         offer_challenges: offer_challenges
-       })
+  defp validate_max_challenges(
+         %Ecto.Changeset{} = changeset,
+         %User{
+           offer_challenges: offer_challenges
+         },
+         %{payment_amount: nil}
+       )
        when length(offer_challenges) >= 3,
        do:
          add_error(
@@ -155,7 +151,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
            "You have reached the maximum allowed live challenges (3)."
          )
 
-  defp validate_max_challenges(%Ecto.Changeset{} = changeset, _user), do: changeset
+  defp validate_max_challenges(%Ecto.Changeset{} = changeset, _user, _offer), do: changeset
 
   defp solo_or_team_challenge(
          %Ecto.Changeset{} = changeset,

@@ -64,9 +64,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
     current_user = Accounts.get_user_with_active_challenges(current_user.id)
 
     attrs =
-      if Map.has_key?(args, :stripe_token),
+      if stripe_token = Map.has_key?(args, :stripe_token),
         do: %{
-          "payment" => %{"stripe_token" => Map.get(args, :stripe_token)},
+          "payment" => %{"stripe_token" => stripe_token},
           "team" => %{},
           "offer_redeems" => [%{}]
         },
