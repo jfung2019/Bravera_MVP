@@ -152,6 +152,7 @@ defmodule OmegaBravera.Offers do
   def get_allowed_offer_by_slug_and_user_id(slug, user_id) do
     return_value =
       from(o in Offer,
+        distinct: true,
         where: o.slug == ^slug,
         left_join: offer_challenges in assoc(o, :offer_challenges),
         on: offer_challenges.offer_id == o.id and offer_challenges.status == ^"active",
