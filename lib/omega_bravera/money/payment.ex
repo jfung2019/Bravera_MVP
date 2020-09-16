@@ -98,9 +98,15 @@ defmodule OmegaBravera.Money.Payment do
     end
   end
 
-  def do_stripe_charge(%Ecto.Changeset{} = changeset, _, _, _),
-    do:
-      add_error(changeset, :id, "do_stripe_charge: bad params, ensure map has strings not atoms.")
+  def do_stripe_charge(%Ecto.Changeset{} = changeset, offer, user, token_params) do
+    Logger.warning(
+      "Changeset: #{inspect(changeset)} offer: #{inspect(offer)} user: #{inspect(user)} token_params: #{
+        inspect(token_params)
+      }"
+    )
+
+    add_error(changeset, :id, "do_stripe_charge: bad params, ensure map has strings not atoms.")
+  end
 
   defp charged_attributes_changeset(
          %Ecto.Changeset{} = changeset,
