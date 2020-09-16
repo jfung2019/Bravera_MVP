@@ -99,7 +99,7 @@ defmodule OmegaBravera.Money.Payment do
   end
 
   def do_stripe_charge(%Ecto.Changeset{} = changeset, offer, user, token_params) do
-    Logger.warning(
+    Logger.warn(
       "Changeset: #{inspect(changeset)} offer: #{inspect(offer)} user: #{inspect(user)} token_params: #{
         inspect(token_params)
       }"
