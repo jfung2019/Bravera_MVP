@@ -13,8 +13,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :strava, :strava
     field :total_points, :decimal
     field :total_points_this_week, :decimal
+    field :total_points_this_month, :decimal
     field :total_kilometers, :decimal
     field :total_kilometers_this_week, :decimal
+    field :total_kilometers_this_month, :decimal
     field :location_id, :integer
     field :setting, :setting
     field :push_notifications, non_null(:boolean)
@@ -157,6 +159,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   object :leaderboard_result do
     field :this_week, list_of(:user)
+    field :this_month, list_of(:user)
     field :all_time, list_of(:user)
   end
 

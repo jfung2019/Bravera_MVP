@@ -161,8 +161,18 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       {:ok,
        %{
          this_week: Accounts.api_get_leaderboard_this_week(),
+         this_month: Accounts.api_get_leaderboard_this_month(),
          all_time: Accounts.api_get_leaderboard_all_time()
        }}
+
+  def get_partner_leaderboard(_root, %{partner_id: partner_id}, _info),
+      do:
+        {:ok,
+        %{
+          this_week: Accounts.api_get_leaderboard_of_partner_this_week(partner_id),
+          this_month: Accounts.api_get_leaderboard_of_partner_this_month(partner_id),
+          all_time: Accounts.api_get_leaderboard_of_partner_all_time(partner_id)
+        }}
 
   def get_user_with_settings(_root, _args, %{context: %{current_user: %{id: id}}}) do
     case Accounts.get_user_with_account_settings(id) do

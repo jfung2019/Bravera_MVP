@@ -28,7 +28,8 @@ defmodule OmegaBravera.Accounts do
     Offers.OfferChallengeTeamMembers,
     Offers.OfferRedeem,
     Offers.OfferChallengeActivitiesM2m,
-    Activity.ActivityAccumulator
+    Activity.ActivityAccumulator,
+    Partners.Member
   }
 
   def get_all_athlete_ids() do
@@ -343,6 +344,42 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  def api_get_leaderboard_this_month() do
+    now = Timex.now()
+    beginning = Timex.beginning_of_month(now)
+    end_of_month = Timex.end_of_month(now)
+
+    point_query =
+      from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
+
+    activity_query =
+      from(a in ActivityAccumulator,
+        select: %{distance: sum(a.distance), user_id: a.user_id},
+        group_by: a.user_id,
+        where:
+          a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+          not is_nil(a.device_id) and is_nil(a.strava_id) and a.start_date >= ^beginning and
+          a.start_date <= ^end_of_month
+      )
+
+    from(
+      u in User,
+      left_join: a in subquery(activity_query),
+      on: a.user_id == u.id,
+      left_join: p in subquery(point_query),
+      on: p.user_id == u.id,
+      preload: [:strava],
+      select: %{
+        u
+      | total_points_this_month: coalesce(p.value, 0),
+        total_kilometers_this_month: coalesce(a.distance, 0)
+      },
+      group_by: [u.id, p.value, a.distance],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
   def api_get_leaderboard_all_time() do
     point_query =
       from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
@@ -367,6 +404,124 @@ defmodule OmegaBravera.Accounts do
         u
         | total_points: coalesce(p.value, 0),
           total_kilometers: coalesce(a.distance, 0)
+      },
+      group_by: [u.id, p.value, a.distance],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  def api_get_leaderboard_of_partner_this_week(partner_id) do
+    now = Timex.now()
+    beginning = Timex.beginning_of_week(now)
+    end_of_week = Timex.end_of_week(now)
+
+    point_query =
+      from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
+
+    activity_query =
+      from(a in ActivityAccumulator,
+        select: %{distance: sum(a.distance), user_id: a.user_id},
+        group_by: a.user_id,
+        where:
+          a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+          not is_nil(a.device_id) and is_nil(a.strava_id) and a.start_date >= ^beginning and
+          a.start_date <= ^end_of_week
+      )
+
+    members =
+      from(m in Member, where: m.partner_id == ^partner_id, select: m.user_id)
+      |> Repo.all()
+
+    from(
+      u in User,
+      left_join: a in subquery(activity_query),
+      on: a.user_id == u.id,
+      left_join: p in subquery(point_query),
+      on: p.user_id == u.id,
+      preload: [:strava],
+      where: u.id in ^members,
+      select: %{
+        u
+      | total_points: coalesce(p.value, 0),
+        total_kilometers: coalesce(a.distance, 0)
+      },
+      group_by: [u.id, p.value, a.distance],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  def api_get_leaderboard_of_partner_this_month(partner_id) do
+    now = Timex.now()
+    beginning = Timex.beginning_of_month(now)
+    end_of_month = Timex.end_of_month(now)
+
+    point_query =
+      from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
+
+    activity_query =
+      from(a in ActivityAccumulator,
+        select: %{distance: sum(a.distance), user_id: a.user_id},
+        group_by: a.user_id,
+        where:
+          a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+          not is_nil(a.device_id) and is_nil(a.strava_id) and a.start_date >= ^beginning and
+          a.start_date <= ^end_of_month
+      )
+
+    members =
+      from(m in Member, where: m.partner_id == ^partner_id, select: m.user_id)
+      |> Repo.all()
+
+    from(
+      u in User,
+      left_join: a in subquery(activity_query),
+      on: a.user_id == u.id,
+      left_join: p in subquery(point_query),
+      on: p.user_id == u.id,
+      preload: [:strava],
+      where: u.id in ^members,
+      select: %{
+        u
+      | total_points: coalesce(p.value, 0),
+        total_kilometers: coalesce(a.distance, 0)
+      },
+      group_by: [u.id, p.value, a.distance],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  def api_get_leaderboard_of_partner_all_time(partner_id) do
+    point_query =
+      from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
+
+    activity_query =
+      from(a in ActivityAccumulator,
+        select: %{distance: sum(a.distance), user_id: a.user_id},
+        group_by: a.user_id,
+        where:
+          a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+          not is_nil(a.device_id) and is_nil(a.strava_id)
+      )
+
+    members =
+      from(m in Member, where: m.partner_id == ^partner_id, select: m.user_id)
+      |> Repo.all()
+
+    from(
+      u in User,
+      left_join: a in subquery(activity_query),
+      on: a.user_id == u.id,
+      left_join: p in subquery(point_query),
+      on: p.user_id == u.id,
+      preload: [:strava],
+      where: u.id in ^members,
+      select: %{
+        u
+      | total_points: coalesce(p.value, 0),
+        total_kilometers: coalesce(a.distance, 0)
       },
       group_by: [u.id, p.value, a.distance],
       order_by: [desc_nulls_last: a.distance]

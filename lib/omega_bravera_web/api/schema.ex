@@ -174,6 +174,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.get_leaderboard/3
     end
 
+    @desc "Get Bravera Leaderboard"
+    field :get_partner_leaderboard, :leaderboard_result do
+      arg :partner_id, non_null(:id)
+      resolve &Resolvers.Accounts.get_partner_leaderboard/3
+    end
+
     @desc "Get latest device sync datetime"
     field :latest_device_sync, :device_latest_sync_result do
       middleware Middleware.Authenticate
@@ -288,6 +294,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :get_partners, non_null(list_of(:partner)) do
       middleware Middleware.Authenticate
       resolve &Resolvers.Partners.get_partners/3
+    end
+
+    @desc "Gets all joined partners"
+    field :list_joined_partners, non_null(list_of(:partner)) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Partners.list_joined_partners/3
     end
 
     @desc "Gets a breakdown of points from a day"

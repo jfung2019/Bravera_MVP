@@ -23,6 +23,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Partners do
   def get_partners(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Partners.list_partners_with_membership(user_id)}
 
+  def list_joined_partners(_root, _args, %{context: %{current_user: %{id: user_id}}}),
+    do: {:ok, Partners.list_joined_partners(user_id)}
+
   def join_partner(_root, %{partner_id: partner_id} = args, %{
         context: %{current_user: %{id: user_id}}
       }) do
