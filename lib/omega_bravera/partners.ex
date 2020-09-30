@@ -397,7 +397,10 @@ defmodule OmegaBravera.Partners do
   Get the partners joined by the user.
   """
   def list_joined_partners(user_id) do
-    from(p in Partner, left_join: m in assoc(p, :members), where: m.user_id == ^user_id and p.live == true)
+    from(p in Partner,
+      left_join: m in assoc(p, :members),
+      where: m.user_id == ^user_id and p.live == true
+    )
     |> Repo.all()
   end
 
