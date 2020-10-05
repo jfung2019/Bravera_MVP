@@ -20,10 +20,12 @@ defmodule OmegaBraveraWeb.Api.Mutation.EarnOfferChallengeTest do
     {:ok, user: user, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}
   end
 
-  test "buy/3 can create complete challenge, send reward to use, and deduct points from total balance",
-       %{conn: conn} do
+  test "earn/3 can create challenge",
+       %{conn: conn, user: user} do
     offer = insert(:offer, %{target: 15})
-
+    insert(:device, %{uuid: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
+      active: true,
+      user_id: user.id})
     response = post(conn, "/api", %{query: @query, variables: %{"offerSlug" => offer.slug}})
 
     assert %{
@@ -33,8 +35,25 @@ defmodule OmegaBraveraWeb.Api.Mutation.EarnOfferChallengeTest do
            } = json_response(response, 200)
   end
 
+  test "can't earn offer if user does not have a device linked",
+       %{conn: conn} do
+    offer = insert(:offer, %{target: 15})
+
+    response = post(conn, "/api", %{query: @query, variables: %{"offerSlug" => offer.slug}})
+
+    assert %{
+             "data" => %{
+               "earnOfferChallenge" => nil
+             },
+             "errors" => [%{"message" => "Please connect Google Fit / Apple Health to bravera"}]
+           } = json_response(response, 200)
+  end
+
   describe "offer with partner" do
-    setup do
+    setup %{user: user} do
+      insert(:device, %{uuid: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
+        active: true,
+        user_id: user.id})
       partner = Fixtures.partner_fixture()
       offer = insert(:offer, %{target: 15})
       OmegaBravera.Partners.create_offer_partner(%{partner_id: partner.id, offer_id: offer.id})

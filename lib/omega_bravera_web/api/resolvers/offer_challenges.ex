@@ -87,6 +87,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.OfferChallenges do
       :not_authorized ->
         {:error, message: gettext("Please join partner to join challenge")}
 
+      :no_active_device ->
+        {:error, message: gettext("Please connect Google Fit / Apple Health to bravera")}
+
       {:error, %Ecto.Changeset{} = changeset} ->
         Logger.info("API: Could not sign up user for offer. Reason: #{inspect(changeset)}")
 

@@ -163,7 +163,9 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
 
   test "can get partner's leaderboard", %{
     conn: conn,
-    partner: %{id: partner_id}, user1: %{id: user1_id}, user2: %{id: user2_id}
+    partner: %{id: partner_id},
+    user1: %{id: user1_id},
+    user2: %{id: user2_id}
   } do
     conn =
       post(conn, "/api", %{
