@@ -10,13 +10,13 @@ defmodule OmegaBravera.PartnersTest do
                  images: [],
                  introduction: "some introduction",
                  name: "some name",
-                 opening_times: "some opening_times"
+                 short_description: "some opening_times"
                })
 
       assert partner.images == []
       assert partner.introduction == "some introduction"
       assert partner.name == "some name"
-      assert partner.opening_times == "some opening_times"
+      assert partner.short_description == "some opening_times"
     end
 
     test "create_partner/1 with invalid data returns error changeset" do
@@ -25,7 +25,7 @@ defmodule OmegaBravera.PartnersTest do
                  images: nil,
                  introduction: nil,
                  name: nil,
-                 opening_times: nil
+                 short_description: nil
                })
     end
   end
@@ -47,13 +47,13 @@ defmodule OmegaBravera.PartnersTest do
                  images: [],
                  introduction: "some updated introduction",
                  name: "some updated name",
-                 opening_times: "some updated opening_times"
+                 short_description: "some updated opening_times"
                })
 
       assert partner.images == []
       assert partner.introduction == "some updated introduction"
       assert partner.name == "some updated name"
-      assert partner.opening_times == "some updated opening_times"
+      assert partner.short_description == "some updated opening_times"
     end
 
     test "update_partner/2 with invalid data returns error changeset", %{partner: partner} do

@@ -11,6 +11,8 @@ defmodule OmegaBravera.Accounts.Jobs.OneWeekNoActivityAfterSignup do
         |> Accounts.get_user!()
         |> OmegaBravera.Accounts.Notifier.no_activity_after_one_week()
 
+        :ok
+
       _ ->
         :ok
     end

@@ -8,8 +8,8 @@
 					<td><%= {:safe, @partner.introduction} %></td>
 				</tr>
 				<tr>
-					<td>Opening Times</td>
-					<td><%= {:safe, @partner.opening_times} %></td>
+					<td>Short Description</td>
+					<td><%= {:safe, @partner.short_description} %></td>
 				</tr>
 				<tr>
           <td>Email</td>

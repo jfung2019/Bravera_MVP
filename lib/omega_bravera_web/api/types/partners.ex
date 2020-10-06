@@ -17,7 +17,13 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
     field :images, non_null(list_of(:string))
     field :introduction, non_null(:string)
     field :name, non_null(:string)
-    field :opening_times, non_null(:string)
+
+    field :opening_times, non_null(:string),
+      resolve: fn _parent, %{source: %{short_description: description}} ->
+        {:ok, description}
+      end
+
+    field :short_description, non_null(:string)
     field :type, non_null(:partner_type)
     field :email, :string
     field :website, :string

@@ -5,14 +5,14 @@
     <%= error_tag f, :name %>
   </div>
   <div class="form-group">
+    <%= label f, :short_description %>
+    <%= textarea f, :short_description, class: "form-control", data: [html: true] %>
+    <%= error_tag f, :short_description %>
+  </div>
+  <div class="form-group">
   	<%= label f, :introduction %>
   	<%= textarea f, :introduction, class: "form-control", data: [html: true] %>
   	<%= error_tag f, :introduction %>
-  </div>
-  <div class="form-group">
-  	<%= label f, :opening_times %>
-  	<%= textarea f, :opening_times, class: "form-control", data: [html: true] %>
-  	<%= error_tag f, :opening_times %>
   </div>
   <div class="form-group">
     <%= label f, :join_password, "Password to Join (leave blank to have open)" %>

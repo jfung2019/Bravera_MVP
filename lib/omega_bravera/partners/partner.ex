@@ -7,7 +7,7 @@ defmodule OmegaBravera.Partners.Partner do
     field :images, {:array, :string}, default: []
     field :introduction, :string
     field :name, :string
-    field :opening_times, :string
+    field :short_description, :string
     field :join_password, :string
     field :email, :string
     field :website, :string
@@ -30,7 +30,7 @@ defmodule OmegaBravera.Partners.Partner do
     |> cast(attrs, [
       :name,
       :introduction,
-      :opening_times,
+      :short_description,
       :images,
       :live,
       :join_password,
@@ -44,6 +44,6 @@ defmodule OmegaBravera.Partners.Partner do
     |> validate_length(:phone, max: 255)
     |> validate_length(:join_password, max: 255, min: 4)
     |> validate_format(:website, ~r/^(https|http):\/\/\w+/)
-    |> validate_required([:name, :introduction, :opening_times, :images])
+    |> validate_required([:name, :introduction, :short_description, :images])
   end
 end

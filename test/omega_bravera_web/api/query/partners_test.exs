@@ -13,6 +13,8 @@ defmodule OmegaBraveraWeb.Api.Query.PartnersTest do
         name
         introduction
         isMember
+        shortDescription
+        openingTimes
         votes {
           user {
             id
