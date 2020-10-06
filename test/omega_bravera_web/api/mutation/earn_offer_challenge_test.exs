@@ -23,9 +23,13 @@ defmodule OmegaBraveraWeb.Api.Mutation.EarnOfferChallengeTest do
   test "earn/3 can create challenge",
        %{conn: conn, user: user} do
     offer = insert(:offer, %{target: 15})
-    insert(:device, %{uuid: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
+
+    insert(:device, %{
+      uuid: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
       active: true,
-      user_id: user.id})
+      user_id: user.id
+    })
+
     response = post(conn, "/api", %{query: @query, variables: %{"offerSlug" => offer.slug}})
 
     assert %{
@@ -51,9 +55,12 @@ defmodule OmegaBraveraWeb.Api.Mutation.EarnOfferChallengeTest do
 
   describe "offer with partner" do
     setup %{user: user} do
-      insert(:device, %{uuid: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
+      insert(:device, %{
+        uuid: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
         active: true,
-        user_id: user.id})
+        user_id: user.id
+      })
+
       partner = Fixtures.partner_fixture()
       offer = insert(:offer, %{target: 15})
       OmegaBravera.Partners.create_offer_partner(%{partner_id: partner.id, offer_id: offer.id})

@@ -194,9 +194,9 @@ defmodule OmegaBravera.Offers do
               ),
             offer: %{
               o
-            | active_offer_challenges: count(offer_challenges.id),
-              pre_registration_start_date:
-                fragment("? at time zone 'utc'", o.pre_registration_start_date)
+              | active_offer_challenges: count(offer_challenges.id),
+                pre_registration_start_date:
+                  fragment("? at time zone 'utc'", o.pre_registration_start_date)
             }
           }
         )

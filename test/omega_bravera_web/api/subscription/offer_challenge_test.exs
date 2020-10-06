@@ -87,6 +87,12 @@ defmodule OmegaBraveraWeb.Api.Subscription.OfferChallengeTest do
     offer = insert(:offer)
     user = insert(:user)
 
+    insert(:device, %{
+      uuid: Enum.random(10_000_000..20_000_000) |> Integer.to_string(),
+      active: true,
+      user_id: user.id
+    })
+
     socket =
       Absinthe.Phoenix.Socket.put_options(socket,
         context: %{current_user: user, device: nil}
