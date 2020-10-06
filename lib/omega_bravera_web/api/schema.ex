@@ -22,6 +22,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.profile_picture_update/3
     end
 
+    @desc "Set username"
+    field :set_username, :user do
+      arg :username, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.username_update/3
+    end
+
     @desc "Delete user profile picture and strava profile picture"
     field :delete_user_profile_picture, :delete_profile_picture_result do
       middleware Middleware.Authenticate

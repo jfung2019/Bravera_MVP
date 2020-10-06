@@ -7,6 +7,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :email, non_null(:string)
     field :firstname, :string
     field :lastname, :string
+    field :username, :string
     field :locale, :string
     field :email_verified, non_null(:boolean)
     field :profile_picture, :string
@@ -72,6 +73,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :email, non_null(:string)
     field :firstname, :string
     field :lastname, :string
+    field :username, :string
 
     field :total_points, non_null(:decimal),
       resolve: fn _parent, %{source: %{id: user_id}} ->

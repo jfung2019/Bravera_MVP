@@ -15,6 +15,7 @@ defmodule OmegaBravera.Accounts.User do
     :email,
     :firstname,
     :lastname,
+    :username,
     :additional_info,
     :email_verified,
     :profile_picture,
@@ -30,6 +31,7 @@ defmodule OmegaBravera.Accounts.User do
     field :email_activation_token, :string
     field :firstname, :string
     field :lastname, :string
+    field :username, :string
     field :locale, :string, default: "en"
 
     # Admin section fields
@@ -108,7 +110,8 @@ defmodule OmegaBravera.Accounts.User do
   def create_credential_user_changeset(user, attrs \\ %{credential: %{}}, referral \\ nil) do
     user
     |> changeset(attrs)
-    |> validate_required([:email, :accept_terms])
+    |> put_username()
+    |> validate_required([:email, :accept_terms, :username])
     |> validate_acceptance(:accept_terms)
     |> add_referred_by(referral)
     |> cast_assoc(:credential, with: &Credential.changeset/2, required: true)
@@ -187,5 +190,10 @@ defmodule OmegaBravera.Accounts.User do
       email ->
         put_change(changeset, :email, String.downcase(email))
     end
+  end
+
+  defp put_username(changeset) do
+    %{changes: %{firstname: firstname, lastname: lastname}} = changeset
+    put_change(changeset, :username, "#{firstname} #{lastname}")
   end
 end
