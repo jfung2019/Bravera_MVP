@@ -5,7 +5,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
 
   def index(conn, _params) do
     offer_rewards =
-      Offers.list_offer_rewards()
+      Offers.admin_list_offer_rewards()
       |> Repo.preload(:offer)
 
     render(conn, "index.html", offer_rewards: offer_rewards)

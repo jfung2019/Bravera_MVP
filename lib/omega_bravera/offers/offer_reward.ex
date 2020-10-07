@@ -7,14 +7,15 @@ defmodule OmegaBravera.Offers.OfferReward do
   schema "offer_rewards" do
     field :name, :string
     field :value, :integer
+    field :hide, :boolean, default: false
 
     belongs_to :offer, Offer
 
     timestamps(type: :utc_datetime)
   end
 
-  @allowed_atributes [:name, :value, :offer_id]
-  @required_attributes [:name, :value, :offer_id]
+  @allowed_atributes [:name, :value, :hide, :offer_id]
+  @required_attributes [:name, :value, :hide, :offer_id]
 
   @doc false
   def changeset(offer_reward, attrs) do

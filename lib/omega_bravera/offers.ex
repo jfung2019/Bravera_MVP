@@ -685,7 +685,18 @@ defmodule OmegaBravera.Offers do
 
   """
   def list_offer_rewards do
+    from(o in OfferReward, where: o.hide == false)
+    |> Repo.all()
+  end
+
+  def admin_list_offer_rewards do
     Repo.all(OfferReward)
+  end
+
+  @doc "Get offer rewards of the given offer id"
+  def list_offer_rewards_by_offer_id(offer_id) do
+    from(o in OfferReward, where: o.offer_id == ^offer_id and o.hide == false)
+    |> Repo.all()
   end
 
   @doc """

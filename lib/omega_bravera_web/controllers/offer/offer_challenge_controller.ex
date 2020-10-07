@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
       Offers.get_offer_chal_by_slugs(offer_slug, slug, [
         :offer_redeems,
         :user,
-        [:team, :offer_redeems, offer: [:offer_rewards, :offer_redeems]]
+        [:team, :offer_redeems, offer: [:offer_redeems]]
       ])
 
     offer_redeem = Repo.get_by(OfferRedeem, token: redeem_token)
@@ -55,6 +55,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
       offer_redeem.offer_challenge_id == offer_challenge.id ->
         changeset = Offers.change_offer_redeems(%OfferRedeem{})
+
+        offer_rewards = Offers.list_offer_rewards_by_offer_id(offer_challenge.offer.id)
+        offer_challenge = Map.put(offer_challenge, :offer, Map.put(offer_challenge.offer, :offer_rewards, offer_rewards))
 
         render(conn, "new_redeem.html",
           offer_challenge: offer_challenge,

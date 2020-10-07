@@ -9,6 +9,7 @@
           <th>Name</th>
           <th>Value/Price</th>
           <th>Offer</th>
+          <th>Hidden</th>
         </tr>
       </thead>
       <tbody>
@@ -17,6 +18,7 @@
           <td><%= offer_reward.name %></td>
           <td><%= offer_reward.value %></td>
           <td><%= offer_reward.offer.name %></td>
+          <td><%= offer_reward.hide %></td>
           <td class="text-right">
             <span><%= link "Edit", to: Routes.admin_panel_offer_reward_path(@conn, :edit, offer_reward), class: "btn btn-default btn-xs"%> </span>
           </td>
