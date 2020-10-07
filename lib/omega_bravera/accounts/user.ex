@@ -10,7 +10,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Stripe.StrCustomer
   alias OmegaBravera.Offers.{OfferChallenge, OfferChallengeTeam}
 
-  @required_attributes [:firstname, :lastname, :location_id, :locale]
+  @required_attributes [:firstname, :lastname, :username, :location_id, :locale]
   @allowed_attributes [
     :email,
     :firstname,
@@ -97,6 +97,7 @@ defmodule OmegaBravera.Accounts.User do
   def changeset(user, attrs, allowed_attrs \\ @allowed_attributes) do
     user
     |> cast(attrs, allowed_attrs)
+    |> put_username(user)
     |> validate_required(@required_attributes)
     |> validate_format(:email, ~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i)
     |> validate_length(:email, max: 254)
@@ -110,8 +111,7 @@ defmodule OmegaBravera.Accounts.User do
   def create_credential_user_changeset(user, attrs \\ %{credential: %{}}, referral \\ nil) do
     user
     |> changeset(attrs)
-    |> put_username()
-    |> validate_required([:email, :accept_terms, :username])
+    |> validate_required([:email, :accept_terms])
     |> validate_acceptance(:accept_terms)
     |> add_referred_by(referral)
     |> cast_assoc(:credential, with: &Credential.changeset/2, required: true)
@@ -192,8 +192,30 @@ defmodule OmegaBravera.Accounts.User do
     end
   end
 
-  defp put_username(changeset) do
-    %{changes: %{firstname: firstname, lastname: lastname}} = changeset
-    put_change(changeset, :username, "#{firstname} #{lastname}")
+  defp put_username(changeset, user) do
+    case changeset do
+      %{changes: %{username: _username}} ->
+        changeset
+
+      _ ->
+        cond do
+          user.username != nil ->
+            changeset
+
+          true ->
+            chars =
+              Enum.map(Enum.to_list(?0..?9), fn n -> <<n>> end) ++
+                Enum.map(Enum.to_list(?A..?Z), fn n -> <<n>> end) ++
+                Enum.map(Enum.to_list(?a..?z), fn n -> <<n>> end)
+
+            random_string =
+              Enum.reduce(1..32, [], fn _i, acc ->
+                [Enum.random(chars) | acc]
+              end)
+              |> Enum.join("")
+
+            put_change(changeset, :username, random_string)
+        end
+    end
   end
 end

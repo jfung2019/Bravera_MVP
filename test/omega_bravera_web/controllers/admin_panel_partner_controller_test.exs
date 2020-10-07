@@ -46,7 +46,7 @@ defmodule OmegaBraveraWeb.Admin.PartnerControllerTest do
   test "can create new partner", %{conn: conn} do
     conn =
       post(conn, Routes.admin_panel_partner_path(conn, :create), %{
-        partner: %{name: "Test", introduction: "Some intro", opening_times: "Test"}
+        partner: %{name: "Test", introduction: "Some intro", short_description: "Test"}
       })
 
     assert %{id: partner_id} = redirected_params(conn)

@@ -61,7 +61,7 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
       Partners.create_partner(%{
         name: "partner1",
         introduction: "intro",
-        opening_times: "times",
+        short_description: "times",
         images: ["img"]
       })
 
