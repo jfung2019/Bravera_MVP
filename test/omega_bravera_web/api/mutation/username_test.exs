@@ -40,9 +40,9 @@ defmodule OmegaBraveraWeb.Api.Mutation.UsernaneTest do
   end
 
   test "can update username", %{conn: conn, user: user} do
-    {:ok, %{username: username}} = Accounts.update_user(user, %{username: "name1"})
+    {:ok, %{username: "name1"} = user} = Accounts.update_user(user, %{username: "name1"})
 
-    assert username = "name1"
+    {:ok, %{username: "name1"}} = Accounts.update_user(user, %{firstname: "first"})
 
     conn = post(conn, "/api", %{query: @set_username, variables: %{"username" => "new username"}})
 
