@@ -80,6 +80,11 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   end
 
   def create_changeset(offer_challenge, offer, user, attrs) do
+    bare_changeset_without_payment(offer_challenge, offer, user, attrs)
+    |> add_payment(offer, user)
+  end
+
+  def bare_changeset_without_payment(offer_challenge, offer, user, attrs) do
     offer_challenge
     |> changeset(attrs)
     |> change(%{
@@ -107,7 +112,6 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> unique_constraint(:slug)
     |> solo_or_team_challenge(offer, user)
     |> add_one_offer_redeem_assoc(offer, user)
-    |> add_payment(offer, user)
   end
 
   def buy_offer_challenge_with_points_changeset(
