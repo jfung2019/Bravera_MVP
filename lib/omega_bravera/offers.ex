@@ -565,6 +565,19 @@ defmodule OmegaBravera.Offers do
     |> Repo.insert()
   end
 
+  @doc """
+  Override creation of offer challenge to create challenges for users
+  by bypassing payments, etc.
+  """
+  def create_offer_challenge_with_bypass(%Offer{} = offer, %User{} = user) do
+    {:ok, offer_challenge} =
+      %OfferChallenge{}
+      |> OfferChallenge.bare_changeset_without_payment(offer, user, %{team: %{}, offer_redeems: [%{}], payment: %{}})
+      |> Repo.insert()
+
+    OmegaBraveraWeb.Offer.OfferChallengeHelper.send_emails(Repo.preload(offer_challenge, :user))
+  end
+
   def create_offer_challenge_with_team(
         %OfferChallenge{} = offer_challenge,
         %Offer{} = offer,
