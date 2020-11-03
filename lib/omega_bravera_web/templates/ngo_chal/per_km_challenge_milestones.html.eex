@@ -72,9 +72,6 @@
       <strong><%= currency_to_symbol(@challenge.default_currency) %><%= @challenge.money_target %></strong>
       <strong class="text-green">(<%= render_percentage_exceed(total_pledges(@total_pledges_per_km, @challenge.distance_target), @challenge.money_target) %>%)</strong>
     </h5>
-    <div class="mb-3 text-center mx-auto">
-      <a id="support-now" class="btn btn-lg btn-bravera donate-btn btn-block mx-auto"  name="button" href="#donation-form"><%= gettext("Support Now") %></a>
-    </div>
   </div>
 
   <div class="card-footer border-top text-center mb-0 pb-0">
