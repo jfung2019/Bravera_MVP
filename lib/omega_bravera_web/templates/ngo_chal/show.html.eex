@@ -35,10 +35,6 @@
                 <%= render "km_challenge_donation_form.html", Map.put(assigns, :action, Routes.ngo_ngo_chal_donation_path(@conn, :create, @challenge.ngo.slug, @challenge.slug)) %>
               <% end %>
             </div>
-          <% else %>
-              <div id="donation-form" class="donation-form mt-4">
-                <%= render "follow_on_donation_form.html", Map.put(assigns, :action, Routes.ngo_ngo_chal_donation_path(@conn, :create_and_charge_follow_on_donation, @challenge.ngo.slug, @challenge.slug)) %>
-              </div>
           <% end %>
 
         <% end %>
