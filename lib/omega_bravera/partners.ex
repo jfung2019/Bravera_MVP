@@ -73,6 +73,7 @@ defmodule OmegaBravera.Partners do
       left_join: m in assoc(p, :members),
       on: m.user_id == ^user_id,
       where: p.id == ^id,
+      order_by: [desc: p.inserted_at],
       select: %{
         p
         | type:

@@ -105,7 +105,7 @@ defmodule OmegaBravera.Offers do
 
     unioned_query = union(open_offers_query, ^closed_offers_query)
 
-    from(o in subquery(unioned_query), order_by: [o.id])
+    from(o in subquery(unioned_query), order_by: [desc: o.inserted_at])
     |> Repo.all()
   end
 

@@ -39,7 +39,7 @@
         </li>
         <li class="nav-item dropdown">
            <a class="nav-link dropdown-toggle" href="#" id="drop-offers" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Partners
+            Groups
             </a>
          <div class="dropdown-menu" aria-labelledby="drop-offers">
             <%= link(gettext("List"), to: Routes.admin_panel_partner_path(@conn, :index), class: "dropdown-item") %>
