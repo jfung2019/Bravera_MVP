@@ -20,7 +20,7 @@
 
   <body>
     <%= if logged_in?(@conn) && is_admin?(@conn) do %>
-      <%= render @view_module, @view_template, assigns %>
+      <%= @inner_content %>
     <% end %>
   </body>
 </html>

@@ -28,7 +28,7 @@
       <script src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
 
       <main role="main">
-        <%= render @view_module, @view_template, assigns %>
+        <%= @inner_content %>
       </main>
 
     </section> <!-- /container -->

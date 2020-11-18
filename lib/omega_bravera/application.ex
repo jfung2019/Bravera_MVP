@@ -9,6 +9,7 @@ defmodule OmegaBravera.Application do
       # Start the Ecto repository
       OmegaBravera.Repo,
       # Start the endpoint when the application starts
+      {Phoenix.PubSub, name: OmegaBravera.PubSub},
       OmegaBraveraWeb.Endpoint,
       OmegaBravera.IngestionSupervisor,
       {Absinthe.Subscription, [OmegaBraveraWeb.Endpoint]},

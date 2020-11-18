@@ -31,7 +31,7 @@
     </div>
 
     <section class="container-fluid flex-grow px-0 px-sm-3">
-      <%= render @view_module, @view_template, assigns %>
+      <%= @inner_content %>
     </section>
 
     <footer class="footer">

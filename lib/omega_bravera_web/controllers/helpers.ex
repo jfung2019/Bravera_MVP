@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.Controllers.Helpers do
   alias OmegaBravera.{Challenges, Challenges.NGOChal, Money}
+  require Decimal
 
   def render_404(conn) do
     conn
@@ -108,7 +109,7 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
     total = %{"total" => %{"charged" => 0, "pending" => 0}}
 
     total =
-      if Decimal.decimal?(total_secured) do
+      if Decimal.is_decimal(total_secured) do
         put_in(
           total,
           ["total", "charged"],
@@ -119,7 +120,7 @@ defmodule OmegaBraveraWeb.Controllers.Helpers do
       end
 
     total =
-      if Decimal.decimal?(total_km_pledges) do
+      if Decimal.is_decimal(total_km_pledges) do
         put_in(
           total,
           ["total", "pending"],

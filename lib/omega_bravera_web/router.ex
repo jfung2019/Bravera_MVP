@@ -12,7 +12,7 @@ defmodule OmegaBraveraWeb.Router do
     plug :put_secure_browser_headers
     plug Guardian.MaybeAuthPipeline
     plug OmegaBraveraWeb.GoogleAnalytics
-    plug :put_live_layout, {OmegaBraveraWeb.LayoutView, :app}
+    plug :put_root_layout, {OmegaBraveraWeb.LayoutView, :root}
   end
 
   pipeline :user_authenticated do
@@ -22,13 +22,11 @@ defmodule OmegaBraveraWeb.Router do
   pipeline :admin_authenticated do
     plug Guardian.AuthPipeline
     plug OmegaBraveraWeb.AdminLoggedIn
-    plug :put_live_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
   pipeline :super_admin_authenticated do
     plug Guardian.AuthPipeline
     plug OmegaBraveraWeb.SuperAdminAuth
-    plug :put_live_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
   pipeline :api do
@@ -123,7 +121,7 @@ defmodule OmegaBraveraWeb.Router do
 
   pipeline :admin_section do
     plug :browser
-    plug :put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
+    plug :put_root_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
   scope "/admin", OmegaBraveraWeb do

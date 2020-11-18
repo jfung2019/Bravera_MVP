@@ -13,14 +13,14 @@ defmodule OmegaBraveraWeb.Api.Types.Helpers do
       end
     end)
 
-    converted_date =
-      try do
-        DateTime.to_iso8601(date)
-      catch
-        Date.to_iso8601(date)
-      end
-
-    serialize(fn converted_date -> converted_date end)
+    serialize(fn date ->
+        try do
+          DateTime.to_iso8601(date)
+        catch
+          _ ->
+            Date.to_iso8601(date)
+        end
+      end)
   end
 
   scalar :day do
