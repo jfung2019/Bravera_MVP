@@ -25,7 +25,7 @@ defmodule OmegaBraveraWeb.AdminOfferImagesTest do
     assert render_hook(view, "append-image", %{"images" => "url2"}) =~ "url2"
     render_click(view, "save-images")
     redirected_url = Routes.admin_panel_offer_path(conn, :show, offer)
-    assert_redirect(view, ^redirected_url)
+    assert_redirect(view, redirected_url)
     assert %{images: ["url1", "url2"]} = Offers.get_offer!(offer_id)
   end
 
@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.AdminOfferImagesTest do
     assert html =~ "url2"
     render_click(view, "save-images")
     redirected_url = Routes.admin_panel_offer_path(conn, :show, offer)
-    assert_redirect(view, ^redirected_url)
+    assert_redirect(view, redirected_url)
     assert %{images: ["url2"]} = Offers.get_offer!(offer_id)
   end
 end

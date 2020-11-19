@@ -3,7 +3,8 @@ defmodule OmegaBraveraWeb.LiveViewCase do
 
   using do
     quote do
-      use Phoenix.ConnTest
+      import Plug.Conn
+      import Phoenix.ConnTest
       import Phoenix.LiveViewTest
       alias OmegaBraveraWeb.Router.Helpers, as: Routes
 

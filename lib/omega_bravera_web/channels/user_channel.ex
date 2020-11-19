@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.UserChannel do
   use OmegaBraveraWeb, :channel
+  alias OmegaBravera.Groups
 
   @moduledoc """
   This channel is used to send notifications when users are connected
@@ -16,6 +17,11 @@ defmodule OmegaBraveraWeb.UserChannel do
     else
       {:error, %{reason: "unauthorized"}}
     end
+  end
+
+  def handle_in("joined_groups", _payload, %{assigns: %{current_user: %{id: user_id}}} = socket) do
+    groups = Groups.list_joined_partners(user_id)
+    {:reply, {:ok, %{groups: groups}}, socket}
   end
 
   # Add authorization logic here as required.

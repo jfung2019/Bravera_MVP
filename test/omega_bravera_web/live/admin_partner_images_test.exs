@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.AdminPartnerImagesTest do
   use OmegaBraveraWeb.LiveViewCase, async: true
   @view OmegaBraveraWeb.AdminPartnerImages
-  alias OmegaBravera.{Fixtures, Partners}
+  alias OmegaBravera.{Fixtures, Groups}
 
   setup %{conn: conn} do
     with {:ok, admin_user} <-
@@ -27,7 +27,7 @@ defmodule OmegaBraveraWeb.AdminPartnerImagesTest do
     assert render_hook(view, "append-image", %{"images" => "url2"}) =~ "url2"
     render_click(view, "save-images")
     redirected_url = Routes.admin_panel_partner_path(conn, :show, partner)
-    assert_redirect(view, ^redirected_url)
+    assert_redirect(view, redirected_url)
     assert %{images: ["url1", "url2"]} = Groups.get_partner!(partner_id)
   end
 
@@ -42,7 +42,7 @@ defmodule OmegaBraveraWeb.AdminPartnerImagesTest do
     assert html =~ "url2"
     render_click(view, "save-images")
     redirected_url = Routes.admin_panel_partner_path(conn, :show, partner)
-    assert_redirect(view, ^redirected_url)
+    assert_redirect(view, redirected_url)
     assert %{images: ["url2"]} = Groups.get_partner!(partner_id)
   end
 end
