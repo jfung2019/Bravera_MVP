@@ -1,4 +1,4 @@
-defmodule OmegaBravera.Partners.PartnerLocation do
+defmodule OmegaBravera.Groups.PartnerLocation do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -6,7 +6,7 @@ defmodule OmegaBravera.Partners.PartnerLocation do
     field :address, :string
     field :latitude, :decimal
     field :longitude, :decimal
-    belongs_to :partner, OmegaBravera.Partners.Partner
+    belongs_to :partner, OmegaBravera.Groups.Partner
 
     timestamps()
   end

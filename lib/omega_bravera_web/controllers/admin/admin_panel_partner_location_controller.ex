@@ -1,12 +1,12 @@
 defmodule OmegaBraveraWeb.AdminPanelPartnerLocationController do
   use OmegaBraveraWeb, :controller
-  alias OmegaBravera.Partners
+  alias OmegaBravera.Groups
 
   def new(conn, %{"admin_panel_partner_id" => partner_id}) do
-    partner = Partners.get_partner!(partner_id)
+    partner = Groups.get_partner!(partner_id)
 
     render(conn, "new.html",
-      changeset: Partners.change_partner_location(%Partners.PartnerLocation{}),
+      changeset: Groups.change_partner_location(%Groups.PartnerLocation{}),
       partner: partner
     )
   end
@@ -15,9 +15,9 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerLocationController do
         "admin_panel_partner_id" => partner_id,
         "partner_location" => location_params
       }) do
-    partner = Partners.get_partner!(partner_id)
+    partner = Groups.get_partner!(partner_id)
 
-    case Partners.create_partner_location(Map.put(location_params, "partner_id", partner.id)) do
+    case Groups.create_partner_location(Map.put(location_params, "partner_id", partner.id)) do
       {:ok, _location} ->
         conn
         |> put_flash(:info, "Partner location created")
@@ -31,13 +31,13 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerLocationController do
   end
 
   def edit(conn, %{"admin_panel_partner_id" => partner_id, "id" => id}) do
-    partner = Partners.get_partner!(partner_id)
-    location = Partners.get_partner_location!(id)
+    partner = Groups.get_partner!(partner_id)
+    location = Groups.get_partner_location!(id)
 
     render(conn, "edit.html",
       partner: partner,
       location: location,
-      changeset: Partners.change_partner_location(location)
+      changeset: Groups.change_partner_location(location)
     )
   end
 
@@ -46,10 +46,10 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerLocationController do
         "id" => id,
         "partner_location" => location_params
       }) do
-    partner = Partners.get_partner!(partner_id)
-    location = Partners.get_partner_location!(id)
+    partner = Groups.get_partner!(partner_id)
+    location = Groups.get_partner_location!(id)
 
-    case Partners.update_partner_location(location, location_params) do
+    case Groups.update_partner_location(location, location_params) do
       {:ok, _location} ->
         conn
         |> put_flash(:info, "Partner location updated")
@@ -63,9 +63,9 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerLocationController do
   end
 
   def delete(conn, %{"admin_panel_partner_id" => partner_id, "id" => id}) do
-    partner = Partners.get_partner!(partner_id)
-    location = Partners.get_partner_location!(id)
-    Partners.delete_partner_location(location)
+    partner = Groups.get_partner!(partner_id)
+    location = Groups.get_partner_location!(id)
+    Groups.delete_partner_location(location)
 
     conn
     |> put_flash(:info, "Partner location deleted")

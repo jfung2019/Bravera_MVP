@@ -1,13 +1,13 @@
 defmodule OmegaBraveraWeb.AdminPartnerImages do
   use OmegaBraveraWeb, :live_view
-  alias OmegaBravera.Partners
+  alias OmegaBravera.Groups
   alias OmegaBraveraWeb.Api.UploadAuth
 
   def render(assigns),
     do: OmegaBraveraWeb.AdminPanelPartnerView.render("partner_images.html", assigns)
 
   def mount(%{"id" => partner_id}, _session, socket) do
-    partner = Partners.get_partner!(partner_id)
+    partner = Groups.get_partner!(partner_id)
     token = UploadAuth.generate_partner_token(partner.id)
     {:ok, assign(socket, partner: partner, images: partner.images, upload_token: token)}
   end
@@ -30,7 +30,7 @@ defmodule OmegaBraveraWeb.AdminPartnerImages do
   end
 
   def handle_event("save-images", _, %{assigns: %{images: images, partner: partner}} = socket) do
-    case Partners.update_partner(partner, %{images: images}) do
+    case Groups.update_partner(partner, %{images: images}) do
       {:ok, partner} ->
         {:noreply, redirect(socket, to: Routes.admin_panel_partner_path(socket, :show, partner))}
     end

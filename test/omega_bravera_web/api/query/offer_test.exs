@@ -56,7 +56,7 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
     response = post(conn, "/api", %{query: @all_offers_images_query})
     %{id: offer_id} = insert(:offer, %{target: 15, images: ["url1", "url2"], image: "url3"})
     %{id: partner_id} = Fixtures.partner_fixture()
-    OmegaBravera.Partners.create_offer_partner(%{partner_id: partner_id, offer_id: offer_id})
+    OmegaBravera.Groups.create_offer_partner(%{partner_id: partner_id, offer_id: offer_id})
 
     assert %{
              "data" => %{

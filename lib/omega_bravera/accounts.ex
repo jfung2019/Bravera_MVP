@@ -29,7 +29,7 @@ defmodule OmegaBravera.Accounts do
     Offers.OfferRedeem,
     Offers.OfferChallengeActivitiesM2m,
     Activity.ActivityAccumulator,
-    Partners.Member
+    Groups.Member
   }
 
   def get_all_athlete_ids() do

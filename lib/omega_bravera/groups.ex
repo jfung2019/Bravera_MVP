@@ -1,4 +1,4 @@
-defmodule OmegaBravera.Partners do
+defmodule OmegaBravera.Groups do
   @moduledoc """
   The Partners context.
   """
@@ -6,7 +6,7 @@ defmodule OmegaBravera.Partners do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Partners.{Partner, Member, OfferPartner}
+  alias OmegaBravera.Groups.{Partner, Member, OfferPartner}
 
   @doc """
   Returns the list of partner.
@@ -172,7 +172,7 @@ defmodule OmegaBravera.Partners do
   """
   def change_partner(%Partner{} = partner, attrs \\ %{}), do: Partner.changeset(partner, attrs)
 
-  alias OmegaBravera.Partners.PartnerLocation
+  alias OmegaBravera.Groups.PartnerLocation
 
   @doc """
   Returns the list of partner_locations.
@@ -269,7 +269,7 @@ defmodule OmegaBravera.Partners do
     PartnerLocation.changeset(partner_location, %{})
   end
 
-  alias OmegaBravera.Partners.PartnerVote
+  alias OmegaBravera.Groups.PartnerVote
 
   @doc """
   Returns the list of partner_votes.

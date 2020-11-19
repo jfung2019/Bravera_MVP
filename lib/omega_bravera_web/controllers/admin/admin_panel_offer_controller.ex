@@ -160,7 +160,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     |> assign(:available_activities, NgoOptions.activity_options())
     |> assign(:available_challenge_type_options, NgoOptions.challenge_type_options_human())
     |> assign(:available_locations, OmegaBravera.Locations.list_locations())
-    |> assign(:available_partners, OmegaBravera.Partners.partner_options())
+    |> assign(:available_partners, OmegaBravera.Groups.partner_options())
     |> assign(:available_offer_types, [{"In Store", "in_store"}, {"Online", "online"}])
   end
 end

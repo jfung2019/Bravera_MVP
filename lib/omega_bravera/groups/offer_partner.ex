@@ -1,11 +1,11 @@
-defmodule OmegaBravera.Partners.OfferPartner do
+defmodule OmegaBravera.Groups.OfferPartner do
   use Ecto.Schema
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "offer_partners" do
     belongs_to :offer, OmegaBravera.Offers.Offer
-    belongs_to :partner, OmegaBravera.Partners.Partner
+    belongs_to :partner, OmegaBravera.Groups.Partner
 
     timestamps()
   end

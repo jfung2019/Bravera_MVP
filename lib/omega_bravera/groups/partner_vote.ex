@@ -1,10 +1,10 @@
-defmodule OmegaBravera.Partners.PartnerVote do
+defmodule OmegaBravera.Groups.PartnerVote do
   use Ecto.Schema
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "partner_votes" do
-    belongs_to :partner, OmegaBravera.Partners.Partner
+    belongs_to :partner, OmegaBravera.Groups.Partner
     belongs_to :user, OmegaBravera.Accounts.User
     timestamps()
   end

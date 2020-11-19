@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Api.Query.PartnersTest do
+defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
   use OmegaBraveraWeb.ConnCase, async: true
   alias OmegaBravera.Fixtures
   import OmegaBravera.Factory

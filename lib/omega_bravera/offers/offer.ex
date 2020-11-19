@@ -4,7 +4,7 @@ defmodule OmegaBravera.Offers.Offer do
   import OmegaBravera.Fundraisers.NgoOptions
 
   alias OmegaBravera.Offers.{OfferChallenge, OfferReward, OfferVendor, OfferRedeem}
-  alias OmegaBravera.Partners.OfferPartner
+  alias OmegaBravera.Groups.OfferPartner
 
   @in_store_offer_type "in_store"
   @online_offer_type "online"

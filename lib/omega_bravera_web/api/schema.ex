@@ -125,7 +125,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :vote_partner, list_of(non_null(:partner_vote)) do
       arg :partner_id, non_null(:id)
       middleware Middleware.Authenticate
-      resolve &Resolvers.Partners.vote_partner/3
+      resolve &Resolvers.Groups.vote_partner/3
     end
 
     @desc "Register device notification token"
@@ -153,7 +153,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       arg :partner_id, non_null(:id)
       arg :password, :string, default_value: nil
-      resolve &Resolvers.Partners.join_partner/3
+      resolve &Resolvers.Groups.join_partner/3
     end
   end
 
@@ -287,26 +287,26 @@ defmodule OmegaBraveraWeb.Api.Schema do
     @desc "Gets all partner locations"
     field :partner_locations, non_null(list_of(non_null(:partner_location))) do
       middleware Middleware.Authenticate
-      resolve &Resolvers.Partners.latest_partner_locations/3
+      resolve &Resolvers.Groups.latest_partner_locations/3
     end
 
     @desc "Gets a partner by their ID"
     field :get_partner, non_null(:partner) do
       arg :partner_id, non_null(:id)
       middleware Middleware.Authenticate
-      resolve &Resolvers.Partners.get_partner/3
+      resolve &Resolvers.Groups.get_partner/3
     end
 
     @desc "Gets all partners"
     field :get_partners, non_null(list_of(:partner)) do
       middleware Middleware.Authenticate
-      resolve &Resolvers.Partners.get_partners/3
+      resolve &Resolvers.Groups.get_partners/3
     end
 
     @desc "Gets all joined partners"
     field :list_joined_partners, non_null(list_of(:partner)) do
       middleware Middleware.Authenticate
-      resolve &Resolvers.Partners.list_joined_partners/3
+      resolve &Resolvers.Groups.list_joined_partners/3
     end
 
     @desc "Gets a breakdown of points from a day"
@@ -351,7 +351,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     loader =
       Dataloader.new()
       |> Dataloader.add_source(OmegaBravera.Offers, OmegaBravera.Offers.datasource())
-      |> Dataloader.add_source(OmegaBravera.Partners, OmegaBravera.Partners.datasource(ctx))
+      |> Dataloader.add_source(OmegaBravera.Groups, OmegaBravera.Groups.datasource(ctx))
 
     Map.put(ctx, :loader, loader)
   end
