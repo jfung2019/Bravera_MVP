@@ -7,7 +7,7 @@ defmodule OmegaBraveraWeb.UserChannelTest do
   end
 
   test "can join successfully", %{user: user} do
-    assert {:ok, _, socket} =
+    assert {:ok, _, _socket} =
              socket(OmegaBraveraWeb.UserSocket, user.id, %{current_user: user})
              |> subscribe_and_join(OmegaBraveraWeb.UserChannel, "user:#{user.id}")
   end

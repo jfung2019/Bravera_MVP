@@ -105,7 +105,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
              "errors" => [
                %{
                  "details" => %{"source" => ["connect is not allowed."]},
-                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "locations" => [%{"column" => _, "line" => _}],
                  "message" => "Could not create activity",
                  "path" => ["createActivity"]
                }
@@ -156,7 +156,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
              "errors" => [
                %{
                  "details" => %{"id" => ["Duplicate activity"]},
-                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "locations" => [%{"column" => _, "line" => _}],
                  "message" => "Could not create activity",
                  "path" => ["createActivity"]
                }
@@ -191,7 +191,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
              "data" => %{"createActivity" => nil},
              "errors" => [
                %{
-                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "locations" => [%{"column" => _, "line" => _}],
                  "message" => "Device token expired or non-existent",
                  "path" => ["createActivity"]
                }
