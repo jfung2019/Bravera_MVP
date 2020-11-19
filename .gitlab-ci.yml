@@ -1,8 +1,6 @@
 cache:
   key: bravera
   paths:
-    - deps/
-    - _build/
     - assets/node_modules/
 
 test:
@@ -16,6 +14,7 @@ test:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
   script:
+    - mix clean
     - mix do deps.get, test --exclude skip
 
 staging:
