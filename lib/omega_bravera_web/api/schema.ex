@@ -12,7 +12,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
   import_types Types.Redeem
   import_types Types.Point
   import_types Types.Helpers
-  import_types Types.Partners
+  import_types Types.Groups
 
   mutation do
     @desc "Set profile picture"

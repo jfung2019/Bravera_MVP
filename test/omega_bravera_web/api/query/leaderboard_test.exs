@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
-  alias OmegaBravera.{Accounts, Activity.Activities, Points, Devices, Locations, Partners}
+  alias OmegaBravera.{Accounts, Activity.Activities, Points, Devices, Locations, Groups}
 
   @get_partner_leaderboard """
   query($partnerId: ID!){

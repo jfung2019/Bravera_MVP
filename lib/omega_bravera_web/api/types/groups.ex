@@ -1,7 +1,7 @@
-defmodule OmegaBraveraWeb.Api.Types.Partners do
+defmodule OmegaBraveraWeb.Api.Types.Groups do
   use Absinthe.Schema.Notation
   import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
-  alias OmegaBravera.{Partners, Offers}
+  alias OmegaBravera.{Groups, Offers}
 
   @desc "Partner type according to if they have offers"
   enum :partner_type do
@@ -35,12 +35,12 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
         {:ok, pass != nil}
       end
 
-    field :location, :partner_location, resolve: dataloader(Partners)
+    field :location, :partner_location, resolve: dataloader(Groups)
 
     field :offers, list_of(non_null(:offer)),
       resolve: dataloader(Offers, :offers, args: %{scope: :public_available})
 
-    field :votes, list_of(non_null(:partner_vote)), resolve: dataloader(Partners)
+    field :votes, list_of(non_null(:partner_vote)), resolve: dataloader(Groups)
   end
 
   object :partner_location do
@@ -49,12 +49,12 @@ defmodule OmegaBraveraWeb.Api.Types.Partners do
     field :longitude, non_null(:decimal)
 
     field :partner, non_null(:partner),
-      resolve: dataloader(Partners, :partner, args: %{scope: :partner_type})
+      resolve: dataloader(Groups, :partner, args: %{scope: :partner_type})
   end
 
   object :partner_vote do
-    field :user, non_null(:voter), resolve: dataloader(Partners)
-    field :partner, non_null(:partner), resolve: dataloader(Partners)
+    field :user, non_null(:voter), resolve: dataloader(Groups)
+    field :partner, non_null(:partner), resolve: dataloader(Groups)
   end
 
   object :voter do

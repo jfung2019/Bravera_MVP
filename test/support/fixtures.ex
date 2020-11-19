@@ -76,4 +76,13 @@ defmodule OmegaBravera.Fixtures do
 
     device
   end
+
+  def group_chat_message_fixture(attrs \\ %{}) do
+    {:ok, chat_message} =
+      attrs
+      |> Enum.into(%{message: "some message", meta_data: %{}})
+      |> Groups.create_chat_message()
+
+    chat_message
+  end
 end

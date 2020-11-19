@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.NotificationDeviceTest do
   import OmegaBravera.Factory
 
   @register_mutation """
-  mutation($token: ID!) {
+  mutation($token: String!) {
     registerNotificationToken(token: $token) {
       token
     }

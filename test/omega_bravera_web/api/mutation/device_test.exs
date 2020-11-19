@@ -104,7 +104,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.DeviceTest do
              "data" => %{
                "registerDevice" => %{
                  "expiresAt" => _expires_at,
-                 "token" => token
+                 "token" => _token
                }
              }
            } = json_response(response, 200)

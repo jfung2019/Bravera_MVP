@@ -44,16 +44,16 @@ defmodule OmegaBraveraWeb.Api.Mutation.OfferChallengeTest do
         variables: %{"offer_challenge" => %{"offerSlug" => offer.slug}}
       })
 
-    assert json_response(conn, 200) == %{
+    assert %{
              "data" => %{"createOfferChallenge" => nil},
              "errors" => [
                %{
-                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "locations" => [%{"column" => _, "line" => _}],
                  "message" => "not_authorized",
                  "path" => ["createOfferChallenge"]
                }
              ]
-           }
+           } = json_response(conn, 200)
   end
 
   test "create/3 requires correct params to create offer challenge" do

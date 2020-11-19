@@ -1,7 +1,7 @@
 defmodule OmegaBravera.GroupsTest do
   use OmegaBravera.DataCase, async: true
   alias OmegaBravera.{Fixtures, Groups}
-  alias OmegaBravera.Groups.{Partner, PartnerLocation, PartnerVote}
+  alias Groups.{Partner, PartnerLocation, PartnerVote, ChatMessage}
 
   describe "partner" do
     test "create_partner/1 with valid data creates a partner" do
@@ -207,13 +207,59 @@ defmodule OmegaBravera.GroupsTest do
     end
   end
 
+  describe "group_chat_message created" do
+    setup [:create_user, :create_partner, :create_chat_message]
+
+    test "list_group_chat_messages/0 returns all group_chat_messages", %{chat_message: chat_message} do
+      assert Groups.list_group_chat_messages() == [chat_message]
+    end
+
+    test "get_chat_message!/1 returns the chat_message with given id", %{chat_message: chat_message} do
+      assert Groups.get_chat_message!(chat_message.id) == chat_message
+    end
+
+    test "update_chat_message/2 with valid data updates the chat_message", %{chat_message: chat_message} do
+      assert {:ok, %ChatMessage{} = chat_message} = Groups.update_chat_message(chat_message, %{meta_data: %{"foo" => "bar"}})
+      assert chat_message.meta_data == %{"foo" => "bar"}
+    end
+
+    test "update_chat_message/2 with invalid data returns error changeset", %{chat_message: chat_message} do
+      assert {:error, %Ecto.Changeset{}} = Groups.update_chat_message(chat_message, %{message: nil, meta_data: nil})
+      assert chat_message == Groups.get_chat_message!(chat_message.id)
+    end
+
+    test "delete_chat_message/1 deletes the chat_message", %{chat_message: chat_message} do
+      assert {:ok, %ChatMessage{}} = Groups.delete_chat_message(chat_message)
+      assert_raise Ecto.NoResultsError, fn -> Groups.get_chat_message!(chat_message.id) end
+    end
+
+    test "change_chat_message/1 returns a chat_message changeset", %{chat_message: chat_message} do
+      assert %Ecto.Changeset{} = Groups.change_chat_message(chat_message)
+    end
+  end
+
+  describe "group_chat_message" do
+    setup [:create_user, :create_partner]
+
+    test "create_chat_message/1 with valid data creates a chat_message", %{partner: %{id: partner_id}, user: %{id: user_id}} do
+      assert {:ok, %ChatMessage{} = chat_message} = Groups.create_chat_message(%{message: "some message", group_id: partner_id, user_id: user_id})
+      assert chat_message.message == "some message"
+      assert chat_message.meta_data == %{}
+    end
+
+    test "create_chat_message/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Groups.create_chat_message(%{message: nil, meta_data: nil})
+    end
+  end
+
   defp create_user(_), do: {:ok, user: Fixtures.user_fixture()}
 
   defp create_partner_vote(%{partner: %{id: partner_id}, user: %{id: user_id}}),
-    do: {:ok, vote: Fixtures.partner_vote_fixture(%{user_id: user_id, partner_id: partner_id})}
+       do: {:ok, vote: Fixtures.partner_vote_fixture(%{user_id: user_id, partner_id: partner_id})}
 
   defp create_partner(_), do: {:ok, partner: Fixtures.partner_fixture()}
 
   defp create_partner_location(%{partner: partner}),
-    do: {:ok, partner_location: Fixtures.partner_location_fixture(%{partner_id: partner.id})}
+       do: {:ok, partner_location: Fixtures.partner_location_fixture(%{partner_id: partner.id})}
+  defp create_chat_message(%{user: %{id: user_id}, partner: %{id: partner_id}}), do: {:ok, chat_message: Fixtures.group_chat_message_fixture(%{group_id: partner_id, user_id: user_id})}
 end

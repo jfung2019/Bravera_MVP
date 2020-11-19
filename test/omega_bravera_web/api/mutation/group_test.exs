@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Api.Mutation.PartnerTest do
+defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
   use OmegaBraveraWeb.ConnCase, async: true
   alias OmegaBravera.Fixtures
   import OmegaBravera.Factory
