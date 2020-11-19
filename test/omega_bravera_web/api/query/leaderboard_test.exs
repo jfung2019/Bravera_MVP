@@ -58,15 +58,15 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
       Devices.create_device(%{active: true, user_id: user2.id, uuid: "2"})
 
     {:ok, partner} =
-      Partners.create_partner(%{
+      Groups.create_partner(%{
         name: "partner1",
         introduction: "intro",
         short_description: "times",
         images: ["img"]
       })
 
-    Partners.join_partner(partner.id, user1.id)
-    Partners.join_partner(partner.id, user2.id)
+    Groups.join_partner(partner.id, user1.id)
+    Groups.join_partner(partner.id, user2.id)
 
     {:ok, activity1} =
       Activities.create_app_activity(

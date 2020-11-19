@@ -63,7 +63,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.EarnOfferChallengeTest do
 
       partner = Fixtures.partner_fixture()
       offer = insert(:offer, %{target: 15})
-      OmegaBravera.Partners.create_offer_partner(%{partner_id: partner.id, offer_id: offer.id})
+      OmegaBravera.Groups.create_offer_partner(%{partner_id: partner.id, offer_id: offer.id})
       {:ok, offer: offer}
     end
 

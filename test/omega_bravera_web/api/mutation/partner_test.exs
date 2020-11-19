@@ -58,7 +58,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.PartnerTest do
   end
 
   test "can join a private partner", %{conn: conn, partner: partner} do
-    {:ok, _partner} = OmegaBravera.Partners.update_partner(partner, %{join_password: "pass"})
+    {:ok, _partner} = OmegaBravera.Groups.update_partner(partner, %{join_password: "pass"})
 
     response =
       post(conn, "/api", %{

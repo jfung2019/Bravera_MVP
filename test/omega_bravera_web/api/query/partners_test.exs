@@ -73,7 +73,7 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
     partner = Fixtures.partner_fixture()
     Fixtures.partner_location_fixture(%{partner_id: partner.id})
     %{id: offer_id} = insert(:offer)
-    OmegaBravera.Partners.create_offer_partner(%{partner_id: partner.id, offer_id: offer_id})
+    OmegaBravera.Groups.create_offer_partner(%{partner_id: partner.id, offer_id: offer_id})
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
     {:ok,

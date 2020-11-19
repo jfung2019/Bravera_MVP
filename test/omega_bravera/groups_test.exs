@@ -1,12 +1,12 @@
-defmodule OmegaBravera.PartnersTest do
+defmodule OmegaBravera.GroupsTest do
   use OmegaBravera.DataCase, async: true
-  alias OmegaBravera.{Fixtures, Partners}
-  alias OmegaBravera.Partners.{Partner, PartnerLocation, PartnerVote}
+  alias OmegaBravera.{Fixtures, Groups}
+  alias OmegaBravera.Groups.{Partner, PartnerLocation, PartnerVote}
 
   describe "partner" do
     test "create_partner/1 with valid data creates a partner" do
       assert {:ok, %Partner{} = partner} =
-               Partners.create_partner(%{
+               Groups.create_partner(%{
                  images: [],
                  introduction: "some introduction",
                  name: "some name",
@@ -21,7 +21,7 @@ defmodule OmegaBravera.PartnersTest do
 
     test "create_partner/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
-               Partners.create_partner(%{
+               Groups.create_partner(%{
                  images: nil,
                  introduction: nil,
                  name: nil,
@@ -34,16 +34,16 @@ defmodule OmegaBravera.PartnersTest do
     setup [:create_partner]
 
     test "list_partner/0 returns all partner", %{partner: %{id: partner_id}} do
-      assert [%{id: ^partner_id}] = Partners.list_partner()
+      assert [%{id: ^partner_id}] = Groups.list_partner()
     end
 
     test "get_partner!/1 returns the partner with given id", %{partner: partner} do
-      assert Partners.get_partner!(partner.id).id == partner.id
+      assert Groups.get_partner!(partner.id).id == partner.id
     end
 
     test "update_partner/2 with valid data updates the partner", %{partner: partner} do
       assert {:ok, %Partner{} = partner} =
-               Partners.update_partner(partner, %{
+               Groups.update_partner(partner, %{
                  images: [],
                  introduction: "some updated introduction",
                  name: "some updated name",
@@ -58,23 +58,23 @@ defmodule OmegaBravera.PartnersTest do
 
     test "update_partner/2 with invalid data returns error changeset", %{partner: partner} do
       assert {:error, %Ecto.Changeset{}} =
-               Partners.update_partner(partner, %{
+               Groups.update_partner(partner, %{
                  images: nil,
                  introduction: nil,
                  name: nil,
                  opening_times: nil
                })
 
-      assert partner.updated_at == Partners.get_partner!(partner.id).updated_at
+      assert partner.updated_at == Groups.get_partner!(partner.id).updated_at
     end
 
     test "delete_partner/1 deletes the partner", %{partner: partner} do
-      assert {:ok, %Partner{}} = Partners.delete_partner(partner)
-      assert_raise Ecto.NoResultsError, fn -> Partners.get_partner!(partner.id) end
+      assert {:ok, %Partner{}} = Groups.delete_partner(partner)
+      assert_raise Ecto.NoResultsError, fn -> Groups.get_partner!(partner.id) end
     end
 
     test "change_partner/1 returns a partner changeset", %{partner: partner} do
-      assert %Ecto.Changeset{} = Partners.change_partner(partner)
+      assert %Ecto.Changeset{} = Groups.change_partner(partner)
     end
   end
 
@@ -85,7 +85,7 @@ defmodule OmegaBravera.PartnersTest do
       partner: partner
     } do
       assert {:ok, %PartnerLocation{} = partner_location} =
-               Partners.create_partner_location(%{
+               Groups.create_partner_location(%{
                  address: "some address",
                  latitude: "120.5",
                  longitude: "120.5",
@@ -99,7 +99,7 @@ defmodule OmegaBravera.PartnersTest do
 
     test "create_partner_location/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
-               Partners.create_partner_location(%{address: nil, latitude: nil, longitude: nil})
+               Groups.create_partner_location(%{address: nil, latitude: nil, longitude: nil})
     end
   end
 
@@ -109,20 +109,20 @@ defmodule OmegaBravera.PartnersTest do
     test "list_partner_locations/0 returns all partner_locations", %{
       partner_location: partner_location
     } do
-      assert Partners.list_partner_locations() == [partner_location]
+      assert Groups.list_partner_locations() == [partner_location]
     end
 
     test "get_partner_location!/1 returns the partner_location with given id", %{
       partner_location: partner_location
     } do
-      assert Partners.get_partner_location!(partner_location.id) == partner_location
+      assert Groups.get_partner_location!(partner_location.id) == partner_location
     end
 
     test "update_partner_location/2 with valid data updates the partner_location", %{
       partner_location: partner_location
     } do
       assert {:ok, %PartnerLocation{} = partner_location} =
-               Partners.update_partner_location(partner_location, %{
+               Groups.update_partner_location(partner_location, %{
                  address: "some updated address",
                  latitude: "456.7",
                  longitude: "456.7"
@@ -137,29 +137,29 @@ defmodule OmegaBravera.PartnersTest do
       partner_location: partner_location
     } do
       assert {:error, %Ecto.Changeset{}} =
-               Partners.update_partner_location(partner_location, %{
+               Groups.update_partner_location(partner_location, %{
                  address: nil,
                  latitude: nil,
                  longitude: nil
                })
 
-      assert partner_location == Partners.get_partner_location!(partner_location.id)
+      assert partner_location == Groups.get_partner_location!(partner_location.id)
     end
 
     test "delete_partner_location/1 deletes the partner_location", %{
       partner_location: partner_location
     } do
-      assert {:ok, %PartnerLocation{}} = Partners.delete_partner_location(partner_location)
+      assert {:ok, %PartnerLocation{}} = Groups.delete_partner_location(partner_location)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Partners.get_partner_location!(partner_location.id)
+        Groups.get_partner_location!(partner_location.id)
       end
     end
 
     test "change_partner_location/1 returns a partner_location changeset", %{
       partner_location: partner_location
     } do
-      assert %Ecto.Changeset{} = Partners.change_partner_location(partner_location)
+      assert %Ecto.Changeset{} = Groups.change_partner_location(partner_location)
     end
   end
 
@@ -170,12 +170,12 @@ defmodule OmegaBravera.PartnersTest do
       user: %{id: user_id},
       partner: %{id: partner_id}
     } do
-      assert {:ok, %PartnerVote{} = partner_vote} =
-               Partners.create_partner_vote(%{user_id: user_id, partner_id: partner_id})
+      assert {:ok, %PartnerVote{}} =
+               Groups.create_partner_vote(%{user_id: user_id, partner_id: partner_id})
     end
 
     test "create_partner_vote/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Partners.create_partner_vote(%{})
+      assert {:error, %Ecto.Changeset{}} = Groups.create_partner_vote(%{})
     end
   end
 
@@ -183,27 +183,27 @@ defmodule OmegaBravera.PartnersTest do
     setup [:create_user, :create_partner, :create_partner_vote]
 
     test "list_partner_votes/0 returns all partner_votes", %{vote: partner_vote} do
-      assert Partners.list_partner_votes() == [partner_vote]
+      assert Groups.list_partner_votes() == [partner_vote]
     end
 
     test "get_partner_vote!/1 returns the partner_vote with given id", %{vote: partner_vote} do
-      assert Partners.get_partner_vote!(partner_vote.id) == partner_vote
+      assert Groups.get_partner_vote!(partner_vote.id) == partner_vote
     end
 
     test "delete_partner_vote/1 deletes the partner_vote", %{vote: partner_vote} do
-      assert {:ok, %PartnerVote{}} = Partners.delete_partner_vote(partner_vote)
-      assert_raise Ecto.NoResultsError, fn -> Partners.get_partner_vote!(partner_vote.id) end
+      assert {:ok, %PartnerVote{}} = Groups.delete_partner_vote(partner_vote)
+      assert_raise Ecto.NoResultsError, fn -> Groups.get_partner_vote!(partner_vote.id) end
     end
 
     test "change_partner_vote/1 returns a partner_vote changeset", %{vote: partner_vote} do
-      assert %Ecto.Changeset{} = Partners.change_partner_vote(partner_vote)
+      assert %Ecto.Changeset{} = Groups.change_partner_vote(partner_vote)
     end
 
     test "cannot create double votes for same user for same partner", %{
       vote: %{user_id: user_id, partner_id: partner_id}
     } do
       assert {:error, %Ecto.Changeset{}} =
-               Partners.create_partner_vote(%{user_id: user_id, partner_id: partner_id})
+               Groups.create_partner_vote(%{user_id: user_id, partner_id: partner_id})
     end
   end
 

@@ -28,7 +28,7 @@ defmodule OmegaBraveraWeb.AdminPartnerImagesTest do
     render_click(view, "save-images")
     redirected_url = Routes.admin_panel_partner_path(conn, :show, partner)
     assert_redirect(view, ^redirected_url)
-    assert %{images: ["url1", "url2"]} = Partners.get_partner!(partner_id)
+    assert %{images: ["url1", "url2"]} = Groups.get_partner!(partner_id)
   end
 
   test "can remove url from images list and save", %{
@@ -43,6 +43,6 @@ defmodule OmegaBraveraWeb.AdminPartnerImagesTest do
     render_click(view, "save-images")
     redirected_url = Routes.admin_panel_partner_path(conn, :show, partner)
     assert_redirect(view, ^redirected_url)
-    assert %{images: ["url2"]} = Partners.get_partner!(partner_id)
+    assert %{images: ["url2"]} = Groups.get_partner!(partner_id)
   end
 end

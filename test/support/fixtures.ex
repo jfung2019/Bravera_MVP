@@ -1,5 +1,5 @@
 defmodule OmegaBravera.Fixtures do
-  alias OmegaBravera.{Accounts, Repo, Partners, Notifications}
+  alias OmegaBravera.{Accounts, Repo, Groups, Notifications}
   alias OmegaBravera.Accounts.Credential
 
   def partner_fixture(attrs \\ %{}) do
@@ -12,7 +12,7 @@ defmodule OmegaBravera.Fixtures do
         short_description: "some opening_times",
         live: true
       })
-      |> Partners.create_partner()
+      |> Groups.create_partner()
 
     partner
   end
@@ -21,7 +21,7 @@ defmodule OmegaBravera.Fixtures do
     {:ok, partner_location} =
       attrs
       |> Enum.into(%{address: "some address", latitude: "120.5", longitude: "120.5"})
-      |> Partners.create_partner_location()
+      |> Groups.create_partner_location()
 
     partner_location
   end
@@ -55,7 +55,7 @@ defmodule OmegaBravera.Fixtures do
   end
 
   def partner_vote_fixture(attrs) do
-    {:ok, vote} = Partners.create_partner_vote(attrs)
+    {:ok, vote} = Groups.create_partner_vote(attrs)
     vote
   end
 
