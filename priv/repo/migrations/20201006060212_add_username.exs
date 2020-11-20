@@ -5,7 +5,9 @@ defmodule OmegaBravera.Repo.Migrations.AddUsername do
     execute "CREATE EXTENSION citext", "DROP EXTENSION citext"
 
     alter table(:users) do
-      add :username, :citext, null: false, default: fragment("substring(md5(random()::text) from 1 for 8)")
+      add :username, :citext,
+        null: false,
+        default: fragment("substring(md5(random()::text) from 1 for 8)")
     end
 
     create unique_index(:users, [:username])

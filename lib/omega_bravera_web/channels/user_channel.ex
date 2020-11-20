@@ -25,6 +25,7 @@ defmodule OmegaBraveraWeb.UserChannel do
     for %{id: group_id} <- Groups.list_joined_partners(user_id) do
       :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
     end
+
     {:noreply, socket}
   end
 
@@ -38,11 +39,19 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:reply, {:ok, %{groups: groups}}, socket}
   end
 
-  def handle_in("create_message", %{"message_params" => message_params}, %{assigns: %{current_user: %{id: user_id}}} = socket) do
+  def handle_in(
+        "create_message",
+        %{"message_params" => message_params},
+        %{assigns: %{current_user: %{id: user_id}}} = socket
+      ) do
     case Groups.create_chat_message(Map.put(message_params, "user_id", user_id)) do
       {:ok, message} ->
-        socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "new_message", %{message: message})
+        socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "new_message", %{
+          message: message
+        })
+
         {:noreply, socket}
+
       {:error, changeset} ->
         {:reply, {:error, %{errors: changeset}}, socket}
     end

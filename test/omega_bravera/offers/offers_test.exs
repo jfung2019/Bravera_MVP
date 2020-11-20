@@ -270,8 +270,7 @@ defmodule OmegaBravera.OffersTest do
       insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = insert(:user)
 
-      assert {:ok, %OfferChallenge{}} =
-               Offers.create_offer_challenge(offer, user)
+      assert {:ok, %OfferChallenge{}} = Offers.create_offer_challenge(offer, user)
     end
 
     test "create_offer_challenge/2 will fail to create an offer challenge if the offer doesn't allow taking the challenge" do

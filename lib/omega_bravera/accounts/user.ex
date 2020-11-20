@@ -202,8 +202,8 @@ defmodule OmegaBravera.Accounts.User do
           %{username: nil} ->
             chars =
               Enum.map(Enum.to_list(?0..?9), fn n -> <<n>> end) ++
-              Enum.map(Enum.to_list(?A..?Z), fn n -> <<n>> end) ++
-              Enum.map(Enum.to_list(?a..?z), fn n -> <<n>> end)
+                Enum.map(Enum.to_list(?A..?Z), fn n -> <<n>> end) ++
+                Enum.map(Enum.to_list(?a..?z), fn n -> <<n>> end)
 
             random_string =
               Enum.reduce(1..8, [], fn _i, acc ->
@@ -213,7 +213,8 @@ defmodule OmegaBravera.Accounts.User do
 
             put_change(changeset, :username, random_string)
 
-            _ -> changeset
+          _ ->
+            changeset
         end
     end
   end

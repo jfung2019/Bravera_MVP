@@ -4,7 +4,6 @@ defmodule OmegaBravera.Groups.ChatMessageMetaData do
 
   @primary_key false
   embedded_schema do
-
   end
 
   def changeset(meta, attrs) do

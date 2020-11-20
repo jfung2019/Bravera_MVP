@@ -6,7 +6,10 @@ defmodule OmegaBravera.Repo.Migrations.CreateGroupChatMessages do
       add :id, :binary_id, primary_key: true
       add :message, :text, null: false
       add :meta_data, :map, null: false, default: %{}
-      add :reply_to_message_id, references(:group_chat_messages, on_delete: :delete_all, type: :binary_id)
+
+      add :reply_to_message_id,
+          references(:group_chat_messages, on_delete: :delete_all, type: :binary_id)
+
       add :user_id, references(:users, on_delete: :delete_all), null: false
       add :group_id, references(:partners, on_delete: :delete_all), null: false
 

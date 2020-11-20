@@ -57,7 +57,13 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         changeset = Offers.change_offer_redeems(%OfferRedeem{})
 
         offer_rewards = Offers.list_offer_rewards_by_offer_id(offer_challenge.offer.id)
-        offer_challenge = Map.put(offer_challenge, :offer, Map.put(offer_challenge.offer, :offer_rewards, offer_rewards))
+
+        offer_challenge =
+          Map.put(
+            offer_challenge,
+            :offer,
+            Map.put(offer_challenge.offer, :offer_rewards, offer_rewards)
+          )
 
         render(conn, "new_redeem.html",
           offer_challenge: offer_challenge,
