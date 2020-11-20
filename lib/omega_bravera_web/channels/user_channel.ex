@@ -22,10 +22,11 @@ defmodule OmegaBraveraWeb.UserChannel do
   end
 
   def handle_info(:after_join, %{assigns: %{current_user: %{id: user_id}}} = socket) do
-    for %{id: group_id} <- Groups.list_joined_partners(user_id) do
+    groups = Groups.list_joined_partners(user_id)
+    for %{id: group_id} <- groups do
       :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
     end
-
+    push(socket, "joined_groups", %{groups: groups})
     {:noreply, socket}
   end
 
