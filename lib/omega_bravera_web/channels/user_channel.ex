@@ -2,6 +2,8 @@ defmodule OmegaBraveraWeb.UserChannel do
   use OmegaBraveraWeb, :channel
   alias OmegaBravera.Groups
   @group_channel_prefix "group_channel:"
+  @view OmegaBraveraWeb.GroupView
+  import Phoenix.View, only: [render_many: 3]
 
   @moduledoc """
   This channel is used to send notifications when users are connected
@@ -22,11 +24,16 @@ defmodule OmegaBraveraWeb.UserChannel do
   end
 
   def handle_info(:after_join, %{assigns: %{current_user: %{id: user_id}}} = socket) do
-    groups = Groups.list_joined_partners(user_id)
+    groups = Groups.list_joined_partners_with_chat_messages(user_id)
+
     for %{id: group_id} <- groups do
       :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
     end
-    push(socket, "joined_groups", %{groups: groups})
+
+    push(socket, "joined_groups", %{
+      groups: render_many(groups, @view, "show_group_with_messages.json")
+    })
+
     {:noreply, socket}
   end
 
@@ -37,18 +44,19 @@ defmodule OmegaBraveraWeb.UserChannel do
 
   def handle_in("joined_groups", _payload, %{assigns: %{current_user: %{id: user_id}}} = socket) do
     groups = Groups.list_joined_partners(user_id)
-    {:reply, {:ok, %{groups: groups}}, socket}
+    {:reply, {:ok, %{groups: render_many(groups, @view, "show_group.json")}}, socket}
   end
 
   def handle_in(
         "create_message",
         %{"message_params" => message_params},
-        %{assigns: %{current_user: %{id: user_id}}} = socket
+        %{assigns: %{current_user: user}} = socket
       ) do
-    case Groups.create_chat_message(Map.put(message_params, "user_id", user_id)) do
+    # TODO: look into preloading user instead of this hack.
+    case Groups.create_chat_message(Map.put(message_params, "user_id", user.id)) do
       {:ok, message} ->
         socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "new_message", %{
-          message: message
+          message: @view.render("show_message.json", message: %{message | user: user})
         })
 
         {:noreply, socket}

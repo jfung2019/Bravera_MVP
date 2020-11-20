@@ -6,7 +6,7 @@ defmodule OmegaBravera.Groups do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Groups.{Partner, Member, OfferPartner}
+  alias OmegaBravera.Groups.{Partner, Member, OfferPartner, ChatMessage}
 
   @doc """
   Returns the list of partner.
@@ -406,6 +406,30 @@ defmodule OmegaBravera.Groups do
   end
 
   @doc """
+  Get the partners joined by the user, along with the latest 10 messages.
+  """
+  def list_joined_partners_with_chat_messages(user_id, message_count \\ 10) do
+    from(p in Partner,
+      as: :group,
+      left_join: m in assoc(p, :members),
+      left_join: me in assoc(p, :chat_messages),
+      left_lateral_join:
+        last_messages in subquery(
+          from(ChatMessage,
+            where: [group_id: parent_as(:group).id],
+            order_by: [desc: :inserted_at],
+            limit: ^message_count,
+            select: [:id]
+          )
+        ),
+      on: last_messages.id == me.id,
+      where: m.user_id == ^user_id and p.live == true,
+      preload: [chat_messages: {me, [:user]}]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Allows a partner to be joined to an offer.
   """
   def create_offer_partner(attrs) do
@@ -451,8 +475,6 @@ defmodule OmegaBravera.Groups do
   end
 
   def query(queryable, _), do: queryable
-
-  alias OmegaBravera.Groups.ChatMessage
 
   @doc """
   Returns the list of group_chat_messages.

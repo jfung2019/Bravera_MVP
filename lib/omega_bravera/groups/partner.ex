@@ -1,9 +1,8 @@
 defmodule OmegaBravera.Groups.Partner do
   use Ecto.Schema
   import Ecto.Changeset
-  alias OmegaBravera.Groups.{PartnerLocation, PartnerVote, Member, OfferPartner}
+  alias OmegaBravera.Groups.{PartnerLocation, PartnerVote, Member, OfferPartner, ChatMessage}
 
-  @derive {Jason.Encoder, only: [:name, :id]}
   schema "partners" do
     field :images, {:array, :string}, default: []
     field :introduction, :string
@@ -21,6 +20,7 @@ defmodule OmegaBravera.Groups.Partner do
     has_many :offers, through: [:offer_partners, :offer]
     has_many :votes, PartnerVote
     has_many :members, Member
+    has_many :chat_messages, ChatMessage, foreign_key: :group_id, references: :id
 
     timestamps()
   end

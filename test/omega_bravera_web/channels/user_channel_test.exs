@@ -50,10 +50,10 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       })
 
       assert_broadcast "new_message", %{
-        message: %OmegaBravera.Groups.ChatMessage{message: ^message}
+        message: %{message: ^message}
       }
 
-      assert_push "new_message", %{message: %OmegaBravera.Groups.ChatMessage{message: ^message}}
+      assert_push "new_message", %{message: %{message: ^message}}
     end
 
     test "can send back reply if bad data was sent", %{
