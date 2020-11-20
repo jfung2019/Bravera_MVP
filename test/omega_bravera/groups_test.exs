@@ -219,8 +219,8 @@ defmodule OmegaBravera.GroupsTest do
     end
 
     test "update_chat_message/2 with valid data updates the chat_message", %{chat_message: chat_message} do
-      assert {:ok, %ChatMessage{} = chat_message} = Groups.update_chat_message(chat_message, %{meta_data: %{"foo" => "bar"}})
-      assert chat_message.meta_data == %{"foo" => "bar"}
+      assert {:ok, %ChatMessage{} = chat_message} = Groups.update_chat_message(chat_message, %{meta_data: %{}})
+      assert chat_message.meta_data == %OmegaBravera.Groups.ChatMessageMetaData{}
     end
 
     test "update_chat_message/2 with invalid data returns error changeset", %{chat_message: chat_message} do
@@ -242,9 +242,9 @@ defmodule OmegaBravera.GroupsTest do
     setup [:create_user, :create_partner]
 
     test "create_chat_message/1 with valid data creates a chat_message", %{partner: %{id: partner_id}, user: %{id: user_id}} do
-      assert {:ok, %ChatMessage{} = chat_message} = Groups.create_chat_message(%{message: "some message", group_id: partner_id, user_id: user_id})
+      assert {:ok, %ChatMessage{} = chat_message} = Groups.create_chat_message(%{message: "some message", group_id: partner_id, user_id: user_id, meta_data: %{}})
       assert chat_message.message == "some message"
-      assert chat_message.meta_data == %{}
+      assert chat_message.meta_data == %OmegaBravera.Groups.ChatMessageMetaData{}
     end
 
     test "create_chat_message/1 with invalid data returns error changeset" do

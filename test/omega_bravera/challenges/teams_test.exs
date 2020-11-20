@@ -53,7 +53,7 @@ defmodule OmegaBravera.TeamsTest do
     test "create_team/1 refuses team if slug exist in db" do
       challenge = insert(:ngo_challenge)
       attrs = %{@valid_attrs | challenge_id: challenge.id, user_id: challenge.user_id}
-      assert {:ok, %Team{} = team} = Challenges.create_team(attrs)
+      assert {:ok, %Team{}} = Challenges.create_team(attrs)
       assert {:error, %Ecto.Changeset{}} = Challenges.create_team(attrs)
     end
 

@@ -4,7 +4,6 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeView do
   alias OmegaBravera.{
     Offers.OfferChallenge,
     Accounts.User,
-    Offers.Offer,
     Offers.OfferChallengeTeamInvitation
   }
 

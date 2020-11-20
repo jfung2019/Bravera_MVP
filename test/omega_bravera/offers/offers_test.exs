@@ -270,7 +270,7 @@ defmodule OmegaBravera.OffersTest do
       insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = insert(:user)
 
-      assert {:ok, %OfferChallenge{} = offer_challenge} =
+      assert {:ok, %OfferChallenge{}} =
                Offers.create_offer_challenge(offer, user)
     end
 
@@ -291,7 +291,7 @@ defmodule OmegaBravera.OffersTest do
       insert(:offer_reward, %{offer: nil, offer_id: offer.id})
       user = insert(:user)
 
-      assert {:error, reason} =
+      assert {:error, _reason} =
                Offers.create_offer_challenge(offer, user, %{
                  team: %{},
                  offer_redeems: [%{}],
@@ -501,7 +501,7 @@ defmodule OmegaBravera.OffersTest do
           has_team: false
         })
 
-      assert {:ok, %OfferRedeem{} = offer_redeems} =
+      assert {:ok, %OfferRedeem{}} =
                Offers.create_offer_redeems(offer_challenge, vendor, %{
                  offer_reward_id: offer_reward.id
                })
@@ -545,7 +545,7 @@ defmodule OmegaBravera.OffersTest do
         "offer_reward_id" => offer_reward.id
       }
 
-      assert %Ecto.Changeset{errors: errors} =
+      assert %Ecto.Changeset{errors: _errors} =
                OfferRedeem.redeem_reward_changeset(
                  offer_redeem1,
                  offer_challenge1,

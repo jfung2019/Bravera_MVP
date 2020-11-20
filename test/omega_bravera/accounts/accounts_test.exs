@@ -114,7 +114,7 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "create credential user will enqueue 2 jobs to check and email if need to" do
-      assert {:ok, %{id: user_id}} =
+      assert {:ok, %{id: _user_id}} =
                Accounts.create_credential_user(%{
                  email: "test@test.com",
                  firstname: "some firstname",

@@ -224,7 +224,7 @@ defmodule OmegaBravera.NotificationsTest do
       email_category: email_category,
       user: user
     } do
-      assert {:ok, %UserEmailCategories{} = user_email_categories} =
+      assert {:ok, %UserEmailCategories{}} =
                Notifications.create_user_email_categories(%{
                  category_id: email_category.id,
                  user_id: user.id
@@ -243,7 +243,7 @@ defmodule OmegaBravera.NotificationsTest do
       user_email_categories =
         user_email_categories_fixture(%{category_id: email_category.id, user_id: user.id})
 
-      assert {:ok, %UserEmailCategories{} = user_email_categories} =
+      assert {:ok, %UserEmailCategories{}} =
                Notifications.update_user_email_categories(user_email_categories, @update_attrs)
     end
 
