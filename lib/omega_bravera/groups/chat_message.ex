@@ -2,6 +2,7 @@ defmodule OmegaBravera.Groups.ChatMessage do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, only: [:id, :message, :user_id, :group_id]}
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "group_chat_messages" do
     field :message, :string

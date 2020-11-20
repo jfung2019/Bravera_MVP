@@ -3,6 +3,7 @@ defmodule OmegaBravera.Groups.Partner do
   import Ecto.Changeset
   alias OmegaBravera.Groups.{PartnerLocation, PartnerVote, Member, OfferPartner}
 
+  @derive {Jason.Encoder, only: [:name, :id]}
   schema "partners" do
     field :images, {:array, :string}, default: []
     field :introduction, :string
