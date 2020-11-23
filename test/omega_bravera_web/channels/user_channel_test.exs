@@ -76,9 +76,12 @@ defmodule OmegaBraveraWeb.UserChannelTest do
 
     test "when join new group and booted from group message is broadcasted", %{not_joined_partner: %{id: not_joined_partner_id}, user: %{id: user_id}} do
       @endpoint.subscribe(OmegaBraveraWeb.UserChannel.user_channel(user_id))
-      Groups.join_partner(not_joined_partner_id, user_id)
+      {:ok, member} = Groups.join_partner(not_joined_partner_id, user_id)
       assert_broadcast "joined_group", %{id: not_joined_partner_id}
       assert_push "joined_group", %{group: %{id: ^not_joined_partner_id, chat_messages: [], users: [%{id: ^user_id}]}}
+      Groups.delete_partner_member(member)
+      assert_broadcast "removed_group", %{id: ^not_joined_partner_id}
+      assert_push "removed_group", %{group: %{id: ^not_joined_partner_id}}
     end
   end
 end

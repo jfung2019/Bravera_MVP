@@ -49,6 +49,13 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:noreply, socket}
   end
 
+  def handle_info(%{event: "removed_group" = event, payload: %{id: group_id}}, socket) do
+    group = Groups.get_partner!(group_id)
+    :ok = socket.endpoint.unsubscribe("#{@group_channel_prefix}#{group_id}")
+    push(socket, event, %{group: render_one(group, @view, "show_group.json")})
+    {:noreply, socket}
+  end
+
   def handle_info(%{event: event, payload: payload}, socket) do
     push(socket, event, payload)
     {:noreply, socket}
@@ -56,7 +63,7 @@ defmodule OmegaBraveraWeb.UserChannel do
 
   def handle_in("joined_groups", _payload, %{assigns: %{current_user: %{id: user_id}}} = socket) do
     groups = Groups.list_joined_partners_with_chat_messages(user_id)
-    {:reply, {:ok, %{groups: render_many(groups, @view, "show_group.json")}}, socket}
+    {:reply, {:ok, %{groups: render_many(groups, @view, "show_group_with_messages.json")}}, socket}
   end
 
   def handle_in(
