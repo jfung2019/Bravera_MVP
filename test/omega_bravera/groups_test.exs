@@ -219,7 +219,7 @@ defmodule OmegaBravera.GroupsTest do
     test "get_chat_message!/1 returns the chat_message with given id", %{
       chat_message: chat_message
     } do
-      assert Groups.get_chat_message!(chat_message.id) == chat_message
+      assert Groups.get_chat_message!(chat_message.id).id == chat_message.id
     end
 
     test "update_chat_message/2 with valid data updates the chat_message", %{
@@ -237,7 +237,7 @@ defmodule OmegaBravera.GroupsTest do
       assert {:error, %Ecto.Changeset{}} =
                Groups.update_chat_message(chat_message, %{message: nil, meta_data: nil})
 
-      assert chat_message == Groups.get_chat_message!(chat_message.id)
+      assert chat_message.updated_at == Groups.get_chat_message!(chat_message.id).updated_at
     end
 
     test "delete_chat_message/1 deletes the chat_message", %{chat_message: chat_message} do
