@@ -105,13 +105,42 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       assert_push "removed_group", %{group: %{id: ^not_joined_partner_id}}
     end
 
-    test "can like and unlike a message", %{socket: socket, message: %{id: message_id}, user: %{id: user_id}} do
+    test "can like and unlike a message", %{
+      socket: socket,
+      message: %{id: message_id},
+      user: %{id: user_id}
+    } do
       push(socket, "like_message", %{"message_id" => message_id})
-      assert_broadcast "updated_message", %{message: %{id: ^message_id, meta_data: %{likes: [^user_id]}}}
-      assert_push "updated_message", %{message: %{id: ^message_id, meta_data: %{likes: [^user_id]}}}
+
+      assert_broadcast "updated_message", %{
+        message: %{id: ^message_id, meta_data: %{likes: [^user_id]}}
+      }
+
+      assert_push "updated_message", %{
+        message: %{id: ^message_id, meta_data: %{likes: [^user_id]}}
+      }
+
       push(socket, "like_message", %{"message_id" => message_id})
       assert_broadcast "updated_message", %{message: %{id: ^message_id}}
       assert_push "updated_message", %{message: %{id: ^message_id, meta_data: %{likes: []}}}
+    end
+
+    test "can add an emoji to a message", %{socket: socket, message: %{id: message_id}, user: %{id: user_id}} do
+      emoji = "🧑‍🦯"
+      push(socket, "emoji_message", %{"message_id" => message_id, "emoji" => emoji})
+
+      assert_broadcast "updated_message", %{
+        message: %{id: ^message_id, meta_data: %{emoji: %{^emoji => [^user_id]}}}
+      }
+
+      assert_push "updated_message", %{
+        message: %{id: ^message_id, meta_data: %{emoji: %{^emoji => [^user_id]}}}
+      }
+
+      push(socket, "emoji_message", %{"message_id" => message_id, "emoji" => emoji})
+      assert_broadcast "updated_message", %{message: %{id: ^message_id}}
+      assert_push "updated_message", %{message: %{id: ^message_id, meta_data: %{emoji: map}}}
+      assert map_size(map) == 0
     end
   end
 end

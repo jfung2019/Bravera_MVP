@@ -26,6 +26,9 @@ defmodule OmegaBravera.Groups.ChatMessage do
   def update_changeset(chat_message, attrs) do
     chat_message
     |> cast(attrs, [])
-    |> cast_embed(:meta_data, required: true, with: &OmegaBravera.Groups.ChatMessageMetaData.update_changeset/2)
+    |> cast_embed(:meta_data,
+      required: true,
+      with: &OmegaBravera.Groups.ChatMessageMetaData.update_changeset/2
+    )
   end
 end

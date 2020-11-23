@@ -24,7 +24,7 @@ defmodule OmegaBraveraWeb.GroupView do
       user: Phoenix.View.render_one(message.user, __MODULE__, "show_user.json", as: :user),
       group_id: message.group_id,
       message: message.message,
-      meta_data: %{likes: message.meta_data.likes}
+      meta_data: %{likes: message.meta_data.likes, emoji: message.meta_data.emoji}
     }
   end
 

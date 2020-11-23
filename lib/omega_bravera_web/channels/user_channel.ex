@@ -61,18 +61,49 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:noreply, socket}
   end
 
-  def handle_in("like_message", %{"message_id" => message_id}, %{assigns: %{current_user: %{id: user_id}}} = socket) do
+  def handle_in("emoji_message", %{"message_id" => message_id, "emoji" => emoji}, %{assigns: %{current_user: %{id: user_id}}} = socket) do
+    %{meta_data: %{emoji: emoji_map}} = message = Groups.get_chat_message!(message_id)
+    user_ids = Map.get(emoji_map, emoji, [])
+    emoji_map =
+      cond do
+        # at least this user, just remove the user, and keep others
+        user_id in user_ids and length(user_ids) > 1 ->
+          Map.put(emoji_map, emoji, Enum.reject(user_ids, fn u_id -> u_id == user_id end))
+        # only this user
+        user_id in user_ids and length(user_ids) == 1 ->
+          Map.delete(emoji_map, emoji)
+        # user doesn't currently emoji this
+        true ->
+          Map.put(emoji_map, emoji, [user_id | user_ids])
+      end
+    {:ok, message} = Groups.update_chat_message(message, %{meta_data: %{emoji: emoji_map}})
+
+    socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "updated_message", %{
+      message: @view.render("show_message.json", message: message)
+    })
+    {:noreply, socket}
+  end
+
+  def handle_in(
+        "like_message",
+        %{"message_id" => message_id},
+        %{assigns: %{current_user: %{id: user_id}}} = socket
+      ) do
     %{meta_data: %{likes: likes}} = message = Groups.get_chat_message!(message_id)
+
     likes =
       if user_id in likes do
         Enum.reject(likes, fn u_id -> u_id == user_id end)
       else
         [user_id | likes]
       end
+
     {:ok, message} = Groups.update_chat_message(message, %{meta_data: %{likes: likes}})
+
     socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "updated_message", %{
       message: @view.render("show_message.json", message: message)
     })
+
     {:noreply, socket}
   end
 
