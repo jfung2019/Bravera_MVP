@@ -180,31 +180,31 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
              "data" => %{
                "getPartnerLeaderboard" => %{
                  "allTime" => [
-                   %{"id" => ^user2_id, "totalKilometers" => 45.0, "totalPoints" => 210.0},
-                   %{"id" => ^user1_id, "totalKilometers" => 30.0, "totalPoints" => 180.0}
+                   %{"id" => ^user2_id, "totalKilometers" => 45.0, "totalPoints" => 160.0},
+                   %{"id" => ^user1_id, "totalKilometers" => 30.0, "totalPoints" => 130.0}
                  ],
                  "thisMonth" => [
                    %{
                      "id" => ^user1_id,
                      "totalKilometersThisMonth" => 25.0,
-                     "totalPointsThisMonth" => 180.0
+                     "totalPointsThisMonth" => 130.0
                    },
                    %{
                      "id" => ^user2_id,
                      "totalKilometersThisMonth" => 15.0,
-                     "totalPointsThisMonth" => 210.0
+                     "totalPointsThisMonth" => 160.0
                    }
                  ],
                  "thisWeek" => [
                    %{
                      "id" => ^user1_id,
                      "totalKilometersThisWeek" => 20.0,
-                     "totalPointsThisWeek" => 180.0
+                     "totalPointsThisWeek" => 130.0
                    },
                    %{
                      "id" => ^user2_id,
                      "totalKilometersThisWeek" => 5.0,
-                     "totalPointsThisWeek" => 210.0
+                     "totalPointsThisWeek" => 160.0
                    }
                  ]
                }
