@@ -34,6 +34,10 @@ defmodule OmegaBraveraWeb.UserChannelTest do
        socket: socket, joined_partner: joined_partner, not_joined_partner: not_joined_partner}
     end
 
+    test "can get joined_groups with their users and last messages", %{joined_partner: %{id: partner_id}, user: %{id: user_id}} do
+      assert_push("joined_groups", %{groups: [%{id: ^partner_id, chat_messages: [], users: [%{id: ^user_id}]}]})
+    end
+
     test "can get all group channels", %{socket: socket, joined_partner: %{id: partner_id}} do
       ref = push(socket, "joined_groups", %{})
       assert_reply ref, :ok, %{groups: [%{id: ^partner_id}]}
@@ -68,6 +72,13 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       refute_broadcast "new_message", %{message: %OmegaBravera.Groups.ChatMessage{}}
       refute_push "new_message", %{message: %OmegaBravera.Groups.ChatMessage{}}
       assert_reply ref, :error, %{errors: %Ecto.Changeset{}}
+    end
+
+    test "when join new group and booted from group message is broadcasted", %{not_joined_partner: %{id: not_joined_partner_id}, user: %{id: user_id}} do
+      @endpoint.subscribe(OmegaBraveraWeb.UserChannel.user_channel(user_id))
+      Groups.join_partner(not_joined_partner_id, user_id)
+      assert_broadcast "joined_group", %{id: not_joined_partner_id}
+      assert_push "joined_group", %{group: %{id: ^not_joined_partner_id, chat_messages: [], users: [%{id: ^user_id}]}}
     end
   end
 end

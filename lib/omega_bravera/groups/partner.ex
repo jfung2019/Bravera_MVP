@@ -20,6 +20,7 @@ defmodule OmegaBravera.Groups.Partner do
     has_many :offers, through: [:offer_partners, :offer]
     has_many :votes, PartnerVote
     has_many :members, Member
+    has_many :users, through: [:members, :user]
     has_many :chat_messages, ChatMessage, foreign_key: :group_id, references: :id
 
     timestamps()

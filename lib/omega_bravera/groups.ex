@@ -1,4 +1,6 @@
 defmodule OmegaBravera.Groups do
+  @endpoint OmegaBraveraWeb.Endpoint
+  @user_channel OmegaBraveraWeb.UserChannel
   @moduledoc """
   The Partners context.
   """
@@ -361,7 +363,15 @@ defmodule OmegaBravera.Groups do
     %Member{}
     |> Member.changeset(%{user_id: user_id, partner_id: partner_id})
     |> Repo.insert()
+    |> broadcast_join_partner()
   end
+
+  defp broadcast_join_partner({:ok, %{user_id: user_id, partner_id: group_id}} = result) do
+    @endpoint.broadcast(@user_channel.user_channel(user_id), "joined_group", %{id: group_id})
+    result
+  end
+
+  defp broadcast_join_partner(result), do: result
 
   @doc """
   Lists all members from a partner ID.
@@ -413,6 +423,7 @@ defmodule OmegaBravera.Groups do
       as: :group,
       left_join: m in assoc(p, :members),
       left_join: me in assoc(p, :chat_messages),
+      left_join: u in assoc(m, :user),
       left_lateral_join:
         last_messages in subquery(
           from(ChatMessage,
@@ -424,9 +435,34 @@ defmodule OmegaBravera.Groups do
         ),
       on: last_messages.id == me.id,
       where: m.user_id == ^user_id and p.live == true,
-      preload: [chat_messages: {me, [:user]}]
+      preload: [chat_messages: {me, [:user]}, users: u]
     )
     |> Repo.all()
+  end
+
+  @doc """
+  Get the partner joined by the user, along with the latest 10 messages.
+  """
+  def list_joined_partner_with_chat_messages(partner_id, message_count \\ 10) do
+    from(p in Partner,
+      as: :group,
+      left_join: m in assoc(p, :members),
+      left_join: me in assoc(p, :chat_messages),
+      left_join: u in assoc(m, :user),
+      left_lateral_join:
+        last_messages in subquery(
+          from(ChatMessage,
+            where: [group_id: parent_as(:group).id],
+            order_by: [desc: :inserted_at],
+            limit: ^message_count,
+            select: [:id]
+          )
+        ),
+      on: last_messages.id == me.id,
+      where: p.id == ^partner_id and p.live == true,
+      preload: [chat_messages: {me, [:user]}, users: u]
+    )
+    |> Repo.one()
   end
 
   @doc """
