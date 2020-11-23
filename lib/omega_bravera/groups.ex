@@ -391,7 +391,10 @@ defmodule OmegaBravera.Groups do
   """
   def delete_partner_member(member) do
     Repo.delete(member)
-    @endpoint.broadcast(@user_channel.user_channel(member.user_id), "removed_group", %{id: member.partner_id})
+
+    @endpoint.broadcast(@user_channel.user_channel(member.user_id), "removed_group", %{
+      id: member.partner_id
+    })
   end
 
   @doc """
@@ -438,7 +441,7 @@ defmodule OmegaBravera.Groups do
         ),
       on: last_messages.id == me.id,
       where: m.user_id == ^user_id and p.live == true,
-      preload: [chat_messages: {me, [:user]}, users: u]
+      preload: [chat_messages: {me, [:user, :reply_to_message]}, users: u]
     )
     |> Repo.all()
   end
@@ -463,7 +466,7 @@ defmodule OmegaBravera.Groups do
         ),
       on: last_messages.id == me.id,
       where: p.id == ^partner_id and p.live == true,
-      preload: [chat_messages: {me, [:user]}, users: u]
+      preload: [chat_messages: {me, [:user, :reply_to_message]}, users: u]
     )
     |> Repo.one()
   end
@@ -542,7 +545,10 @@ defmodule OmegaBravera.Groups do
       ** (Ecto.NoResultsError)
 
   """
-  def get_chat_message!(id), do: Repo.get!(ChatMessage, id)
+  def get_chat_message!(id) do
+    from(m in ChatMessage, where: m.id == ^id, preload: [:reply_to_message, :user])
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a chat_message.

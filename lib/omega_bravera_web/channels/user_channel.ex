@@ -61,9 +61,26 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:noreply, socket}
   end
 
+  def handle_in("like_message", %{"message_id" => message_id}, %{assigns: %{current_user: %{id: user_id}}} = socket) do
+    %{meta_data: %{likes: likes}} = message = Groups.get_chat_message!(message_id)
+    likes =
+      if user_id in likes do
+        Enum.reject(likes, fn u_id -> u_id == user_id end)
+      else
+        [user_id | likes]
+      end
+    {:ok, message} = Groups.update_chat_message(message, %{meta_data: %{likes: likes}})
+    socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "updated_message", %{
+      message: @view.render("show_message.json", message: message)
+    })
+    {:noreply, socket}
+  end
+
   def handle_in("joined_groups", _payload, %{assigns: %{current_user: %{id: user_id}}} = socket) do
     groups = Groups.list_joined_partners_with_chat_messages(user_id)
-    {:reply, {:ok, %{groups: render_many(groups, @view, "show_group_with_messages.json")}}, socket}
+
+    {:reply, {:ok, %{groups: render_many(groups, @view, "show_group_with_messages.json")}},
+     socket}
   end
 
   def handle_in(

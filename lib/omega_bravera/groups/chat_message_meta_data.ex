@@ -15,4 +15,10 @@ defmodule OmegaBravera.Groups.ChatMessageMetaData do
     |> validate_required([:message_type])
     |> validate_inclusion(:message_type, Ecto.Enum.values(__MODULE__, :message_type))
   end
+
+  def update_changeset(meta, attrs) do
+    meta
+    |> cast(attrs, [:likes, :emoji])
+    |> validate_required([:likes, :emoji])
+  end
 end

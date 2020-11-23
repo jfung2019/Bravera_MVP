@@ -11,7 +11,9 @@ defmodule OmegaBraveraWeb.GroupView do
       name: group.name,
       image: List.first(group.images),
       chat_messages:
-        Phoenix.View.render_many(group.chat_messages, __MODULE__, "show_message.json", as: :message),
+        Phoenix.View.render_many(group.chat_messages, __MODULE__, "show_message.json",
+          as: :message
+        ),
       users: Phoenix.View.render_many(group.users, __MODULE__, "show_user.json", as: :user)
     }
   end
@@ -21,7 +23,8 @@ defmodule OmegaBraveraWeb.GroupView do
       id: message.id,
       user: Phoenix.View.render_one(message.user, __MODULE__, "show_user.json", as: :user),
       group_id: message.group_id,
-      message: message.message
+      message: message.message,
+      meta_data: %{likes: message.meta_data.likes}
     }
   end
 

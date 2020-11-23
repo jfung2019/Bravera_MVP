@@ -26,16 +26,30 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       Groups.join_partner(joined_partner.id, user.id)
       not_joined_partner = Fixtures.partner_fixture()
 
+      message =
+        Fixtures.group_chat_message_fixture(%{group_id: joined_partner.id, user_id: user.id})
+
       {:ok, _, socket} =
         socket(OmegaBraveraWeb.UserSocket, user.id, %{current_user: user})
         |> subscribe_and_join(OmegaBraveraWeb.UserChannel, "user:#{user.id}")
 
       {:ok,
-       socket: socket, joined_partner: joined_partner, not_joined_partner: not_joined_partner}
+       socket: socket,
+       joined_partner: joined_partner,
+       not_joined_partner: not_joined_partner,
+       message: message}
     end
 
-    test "can get joined_groups with their users and last messages", %{joined_partner: %{id: partner_id}, user: %{id: user_id}} do
-      assert_push("joined_groups", %{groups: [%{id: ^partner_id, chat_messages: [], users: [%{id: ^user_id}]}]})
+    test "can get joined_groups with their users and last messages", %{
+      joined_partner: %{id: partner_id},
+      user: %{id: user_id},
+      message: %{id: message_id}
+    } do
+      assert_push("joined_groups", %{
+        groups: [
+          %{id: ^partner_id, chat_messages: [%{id: ^message_id}], users: [%{id: ^user_id}]}
+        ]
+      })
     end
 
     test "can get all group channels", %{socket: socket, joined_partner: %{id: partner_id}} do
@@ -74,14 +88,30 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       assert_reply ref, :error, %{errors: %Ecto.Changeset{}}
     end
 
-    test "when join new group and booted from group message is broadcasted", %{not_joined_partner: %{id: not_joined_partner_id}, user: %{id: user_id}} do
+    test "when join new group and booted from group message is broadcasted", %{
+      not_joined_partner: %{id: not_joined_partner_id},
+      user: %{id: user_id}
+    } do
       @endpoint.subscribe(OmegaBraveraWeb.UserChannel.user_channel(user_id))
       {:ok, member} = Groups.join_partner(not_joined_partner_id, user_id)
       assert_broadcast "joined_group", %{id: not_joined_partner_id}
-      assert_push "joined_group", %{group: %{id: ^not_joined_partner_id, chat_messages: [], users: [%{id: ^user_id}]}}
+
+      assert_push "joined_group", %{
+        group: %{id: ^not_joined_partner_id, chat_messages: [], users: [%{id: ^user_id}]}
+      }
+
       Groups.delete_partner_member(member)
       assert_broadcast "removed_group", %{id: ^not_joined_partner_id}
       assert_push "removed_group", %{group: %{id: ^not_joined_partner_id}}
+    end
+
+    test "can like and unlike a message", %{socket: socket, message: %{id: message_id}, user: %{id: user_id}} do
+      push(socket, "like_message", %{"message_id" => message_id})
+      assert_broadcast "updated_message", %{message: %{id: ^message_id, meta_data: %{likes: [^user_id]}}}
+      assert_push "updated_message", %{message: %{id: ^message_id, meta_data: %{likes: [^user_id]}}}
+      push(socket, "like_message", %{"message_id" => message_id})
+      assert_broadcast "updated_message", %{message: %{id: ^message_id}}
+      assert_push "updated_message", %{message: %{id: ^message_id, meta_data: %{likes: []}}}
     end
   end
 end
