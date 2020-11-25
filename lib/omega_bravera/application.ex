@@ -10,6 +10,7 @@ defmodule OmegaBravera.Application do
       OmegaBravera.Repo,
       # Start the endpoint when the application starts
       {Phoenix.PubSub, name: OmegaBravera.PubSub},
+      OmegaBravera.PostgresListener,
       OmegaBraveraWeb.Endpoint,
       OmegaBravera.IngestionSupervisor,
       {Absinthe.Subscription, [OmegaBraveraWeb.Endpoint]},

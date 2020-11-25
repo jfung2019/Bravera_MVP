@@ -125,7 +125,11 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       assert_push "updated_message", %{message: %{id: ^message_id, meta_data: %{likes: []}}}
     end
 
-    test "can add an emoji to a message", %{socket: socket, message: %{id: message_id}, user: %{id: user_id}} do
+    test "can add an emoji to a message", %{
+      socket: socket,
+      message: %{id: message_id},
+      user: %{id: user_id}
+    } do
       emoji = "🧑‍🦯"
       push(socket, "emoji_message", %{"message_id" => message_id, "emoji" => emoji})
 
@@ -141,6 +145,15 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       assert_broadcast "updated_message", %{message: %{id: ^message_id}}
       assert_push "updated_message", %{message: %{id: ^message_id, meta_data: %{emoji: map}}}
       assert map_size(map) == 0
+    end
+
+    test "can delete old message", %{socket: socket, message: %{id: message_id, group_id: group_id}} do
+      push(socket, "delete_message", %{"message_id" => message_id})
+      # because tests are run in transaction, this never gets called properly,
+      # so we need to manually call this
+      OmegaBravera.PostgresListener.broadcast_deletion(message_id, group_id)
+      assert_broadcast "deleted_message", %{message: %{id: ^message_id, group_id: ^group_id}}
+      assert_push "deleted_message", %{message: %{id: ^message_id, group_id: ^group_id}}
     end
   end
 end

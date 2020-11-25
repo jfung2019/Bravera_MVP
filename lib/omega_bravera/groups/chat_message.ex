@@ -7,7 +7,7 @@ defmodule OmegaBravera.Groups.ChatMessage do
   schema "group_chat_messages" do
     field :message, :string
     embeds_one :meta_data, OmegaBravera.Groups.ChatMessageMetaData, on_replace: :update
-    belongs_to :reply_to_message, __MODULE__
+    belongs_to :reply_to_message, __MODULE__, type: :binary_id
     belongs_to :user, OmegaBravera.Accounts.User
     belongs_to :group, OmegaBravera.Groups.Partner
 
