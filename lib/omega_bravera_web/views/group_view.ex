@@ -18,9 +18,7 @@ defmodule OmegaBraveraWeb.GroupView do
     }
   end
 
-  def render("show_message.json", %{message: nil}), do: nil
-
-  def render("show_message.json", %{message: message}) do
+  def render("show_message.json", %{message: %OmegaBravera.Groups.ChatMessage{} = message}) do
     %{
       id: message.id,
       user: Phoenix.View.render_one(message.user, __MODULE__, "show_user.json", as: :user),
@@ -32,6 +30,8 @@ defmodule OmegaBraveraWeb.GroupView do
       updated_at: message.updated_at
     }
   end
+
+  def render("show_message.json", %{message: _message}), do: nil
 
   def render("show_meta_data.json", %{meta_data: meta_data}) do
    %{likes: meta_data.likes, emoji: meta_data.emoji, message_type: meta_data.message_type}
