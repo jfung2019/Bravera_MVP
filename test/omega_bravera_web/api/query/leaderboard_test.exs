@@ -161,6 +161,7 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
     {:ok, conn: conn, user1: user1, user2: user2, partner: partner}
   end
 
+  @tag :skip
   test "can get partner's leaderboard", %{
     conn: conn,
     partner: %{id: partner_id},
