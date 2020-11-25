@@ -441,7 +441,7 @@ defmodule OmegaBravera.Groups do
         ),
       on: last_messages.id == me.id,
       where: m.user_id == ^user_id and p.live == true,
-      preload: [chat_messages: {me, [:user, :reply_to_message]}, users: u]
+      preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u]
     )
     |> Repo.all()
   end
@@ -466,7 +466,7 @@ defmodule OmegaBravera.Groups do
         ),
       on: last_messages.id == me.id,
       where: p.id == ^partner_id and p.live == true,
-      preload: [chat_messages: {me, [:user, :reply_to_message]}, users: u]
+      preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u]
     )
     |> Repo.one()
   end
@@ -546,7 +546,7 @@ defmodule OmegaBravera.Groups do
 
   """
   def get_chat_message!(id) do
-    from(m in ChatMessage, where: m.id == ^id, preload: [:reply_to_message, :user])
+    from(m in ChatMessage, where: m.id == ^id, preload: [:user, reply_to_message: :user])
     |> Repo.one!()
   end
 

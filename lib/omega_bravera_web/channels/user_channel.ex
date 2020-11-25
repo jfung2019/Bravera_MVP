@@ -120,11 +120,11 @@ defmodule OmegaBraveraWeb.UserChannel do
         %{"message_params" => message_params},
         %{assigns: %{current_user: user}} = socket
       ) do
-    # TODO: look into preloading user instead of this hack.
     case Groups.create_chat_message(Map.put(message_params, "user_id", user.id)) do
       {:ok, message} ->
+        message = Groups.get_chat_message!(message.id)
         socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "new_message", %{
-          message: @view.render("show_message.json", message: %{message | user: user})
+          message: @view.render("show_message.json", message: message)
         })
 
         {:noreply, socket}
