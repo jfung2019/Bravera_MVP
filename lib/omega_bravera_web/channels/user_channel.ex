@@ -45,6 +45,7 @@ defmodule OmegaBraveraWeb.UserChannel do
 
   def handle_info(%{event: "joined_group" = event, payload: %{id: group_id}}, socket) do
     group = Groups.list_joined_partner_with_chat_messages(group_id)
+    :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
     push(socket, event, %{group: render_one(group, @view, "show_group_with_messages.json")})
     {:noreply, socket}
   end
