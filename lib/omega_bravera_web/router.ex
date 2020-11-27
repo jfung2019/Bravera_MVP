@@ -121,7 +121,7 @@ defmodule OmegaBraveraWeb.Router do
 
   pipeline :admin_section do
     plug :browser
-    plug :put_root_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
+    plug :put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
   scope "/admin", OmegaBraveraWeb do
