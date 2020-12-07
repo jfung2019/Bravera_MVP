@@ -1,6 +1,7 @@
 defmodule OmegaBraveraWeb.UserChannel do
   use OmegaBraveraWeb, :channel
   alias OmegaBravera.Groups
+  alias OmegaBraveraWeb.Api.Resolvers.Helpers
   @group_channel_prefix "group_channel:"
   @user_channel_prefix "user_channel:"
   @view OmegaBraveraWeb.GroupView
@@ -31,30 +32,31 @@ defmodule OmegaBraveraWeb.UserChannel do
     # Grab group latest info for chats and subscribe to the chat channels for
     # forwarding messages, etc.
     groups = Groups.list_joined_partners_with_chat_messages(user_id)
-
-    for %{id: group_id} <- groups do
+    group_ids = Enum.map(groups, fn %{id: group_id} ->
       :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
-    end
+      group_id
+    end)
 
     push(socket, "joined_groups", %{
       groups: render_many(groups, @view, "show_group_with_messages.json")
     })
 
-    {:noreply, socket}
+    {:noreply, assign(socket, :group_ids, group_ids)}
   end
 
   def handle_info(%{event: "joined_group" = event, payload: %{id: group_id}}, socket) do
     group = Groups.list_joined_partner_with_chat_messages(group_id)
     :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
     push(socket, event, %{group: render_one(group, @view, "show_group_with_messages.json")})
-    {:noreply, socket}
+    {:noreply, assign(socket, :group_ids, [group_id | socket.assigns.group_ids])}
   end
 
   def handle_info(%{event: "removed_group" = event, payload: %{id: group_id}}, socket) do
     group = Groups.get_partner!(group_id)
     :ok = socket.endpoint.unsubscribe("#{@group_channel_prefix}#{group_id}")
+    group_ids = Enum.reject(socket.assigns.group_ids, fn id -> id == group_id end)
     push(socket, event, %{group: render_one(group, @view, "show_group.json")})
-    {:noreply, socket}
+    {:noreply, assign(socket, :group_ids, group_ids)}
   end
 
   def handle_info(%{event: event, payload: payload}, socket) do
@@ -132,21 +134,26 @@ defmodule OmegaBraveraWeb.UserChannel do
 
   def handle_in(
         "create_message",
-        %{"message_params" => message_params},
-        %{assigns: %{current_user: user}} = socket
+        %{"message_params" => %{"group_id" => group_id} = message_params},
+        %{assigns: %{current_user: user, group_ids: group_ids}} = socket
       ) do
-    case Groups.create_chat_message(Map.put(message_params, "user_id", user.id)) do
-      {:ok, message} ->
-        message = Groups.get_chat_message!(message.id)
+    if group_id in group_ids do
+      case Groups.create_chat_message(Map.put(message_params, "user_id", user.id)) do
+        {:ok, message} ->
+          message = Groups.get_chat_message!(message.id)
 
-        socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "new_message", %{
-          message: @view.render("show_message.json", message: message)
-        })
+          socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "new_message", %{
+            message: @view.render("show_message.json", message: message)
+          })
 
-        {:noreply, socket}
+          {:noreply, socket}
 
-      {:error, changeset} ->
-        {:reply, {:error, %{errors: changeset}}, socket}
+        {:error, changeset} ->
+          {:reply, {:error, %{errors: Helpers.transform_errors(changeset)}}, socket}
+      end
+    else
+      push(socket, "removed_group", %{group: %{id: group_id}})
+      {:reply, {:error, %{errors: %{group_id: ["not allowed"]}}}, socket}
     end
   end
 

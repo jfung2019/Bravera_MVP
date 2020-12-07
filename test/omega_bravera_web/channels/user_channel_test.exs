@@ -85,7 +85,17 @@ defmodule OmegaBraveraWeb.UserChannelTest do
 
       refute_broadcast "new_message", %{message: %OmegaBravera.Groups.ChatMessage{}}
       refute_push "new_message", %{message: %OmegaBravera.Groups.ChatMessage{}}
-      assert_reply ref, :error, %{errors: %Ecto.Changeset{}}
+      assert_reply ref, :error, %{errors: %{message: ["can't be blank"]}}
+    end
+
+    test "won't allow user to send message in a group if they are not in that group", %{socket: socket, not_joined_partner: %{id: not_joined_partner_id}} do
+      ref =
+        push(socket, "create_message", %{
+          "message_params" => %{"group_id" => not_joined_partner_id, "message" => nil, "meta_data" => %{}}
+        })
+      assert_reply ref, :error, %{errors: %{group_id: ["not allowed"]}}
+      refute_push "new_message", %{message: %OmegaBravera.Groups.ChatMessage{}}
+      assert_push "removed_group", %{group: %{id: ^not_joined_partner_id}}
     end
 
     test "when join new group and booted from group message is broadcasted", %{
