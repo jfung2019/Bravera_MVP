@@ -428,7 +428,7 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       as: :group,
       left_join: m in assoc(p, :members),
-      left_join: me in assoc(p, :chat_messages),
+      join: me in assoc(p, :chat_messages),
       left_join: u in assoc(m, :user),
       left_lateral_join:
         last_messages in subquery(
@@ -453,7 +453,7 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       as: :group,
       left_join: m in assoc(p, :members),
-      left_join: me in assoc(p, :chat_messages),
+      join: me in assoc(p, :chat_messages),
       left_join: u in assoc(m, :user),
       left_lateral_join:
         last_messages in subquery(
