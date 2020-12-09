@@ -5,7 +5,7 @@ defmodule OmegaBraveraWeb.UserChannel do
   @group_channel_prefix "group_channel:"
   @user_channel_prefix "user_channel:"
   @view OmegaBraveraWeb.GroupView
-  import Phoenix.View, only: [render_many: 3, render_one: 3]
+  import Phoenix.View, only: [render_many: 3, render_one: 3, render_many: 4]
 
   @moduledoc """
   This channel is used to send notifications when users are connected
@@ -32,10 +32,12 @@ defmodule OmegaBraveraWeb.UserChannel do
     # Grab group latest info for chats and subscribe to the chat channels for
     # forwarding messages, etc.
     groups = Groups.list_joined_partners_with_chat_messages(user_id)
-    group_ids = Enum.map(groups, fn %{id: group_id} ->
-      :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
-      group_id
-    end)
+
+    group_ids =
+      Enum.map(groups, fn %{id: group_id} ->
+        :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
+        group_id
+      end)
 
     push(socket, "joined_groups", %{
       groups: render_many(groups, @view, "show_group_with_messages.json")
@@ -67,6 +69,7 @@ defmodule OmegaBraveraWeb.UserChannel do
   def handle_in("delete_message", %{"message_id" => message_id}, socket) do
     Groups.get_chat_message!(message_id)
     |> Groups.delete_chat_message()
+
     {:noreply, socket}
   end
 
@@ -142,9 +145,13 @@ defmodule OmegaBraveraWeb.UserChannel do
         {:ok, message} ->
           message = Groups.get_chat_message!(message.id)
 
-          socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "new_message", %{
-            message: @view.render("show_message.json", message: message)
-          })
+          socket.endpoint.broadcast(
+            "#{@group_channel_prefix}#{message.group_id}",
+            "new_message",
+            %{
+              message: @view.render("show_message.json", message: message)
+            }
+          )
 
           {:noreply, socket}
 
@@ -155,6 +162,22 @@ defmodule OmegaBraveraWeb.UserChannel do
       push(socket, "removed_group", %{group: %{id: group_id}})
       {:reply, {:error, %{errors: %{group_id: ["not allowed"]}}}, socket}
     end
+  end
+
+  def handle_in("unread_count", %{"message_ids" => message_ids}, socket) do
+    unread_count =
+      message_ids
+      |> Enum.map(fn message_id ->
+        {message_id, Groups.get_unread_group_message_count(message_id)}
+      end)
+      |> Enum.into(%{})
+
+    {:reply, {:ok, %{unread_count: unread_count}}, socket}
+  end
+
+  def handle_in("previous_messages", %{"message_id" => message_id, "limit" => limit}, socket) do
+    previous_messages = Groups.get_previous_messages(message_id, limit)
+    {:reply, {:ok, %{messages: render_many(previous_messages, @view, "show_message.json", as: :message)}}, socket}
   end
 
   def user_channel(user_id), do: "#{@user_channel_prefix}#{user_id}"

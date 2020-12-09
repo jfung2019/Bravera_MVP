@@ -1,6 +1,7 @@
 defmodule OmegaBraveraWeb.UserChannelTest do
   use OmegaBraveraWeb.ChannelCase
   import OmegaBravera.Factory
+  import Ecto.Query
   alias OmegaBravera.{Groups, Fixtures}
 
   setup do
@@ -88,11 +89,19 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       assert_reply ref, :error, %{errors: %{message: ["can't be blank"]}}
     end
 
-    test "won't allow user to send message in a group if they are not in that group", %{socket: socket, not_joined_partner: %{id: not_joined_partner_id}} do
+    test "won't allow user to send message in a group if they are not in that group", %{
+      socket: socket,
+      not_joined_partner: %{id: not_joined_partner_id}
+    } do
       ref =
         push(socket, "create_message", %{
-          "message_params" => %{"group_id" => not_joined_partner_id, "message" => nil, "meta_data" => %{}}
+          "message_params" => %{
+            "group_id" => not_joined_partner_id,
+            "message" => nil,
+            "meta_data" => %{}
+          }
         })
+
       assert_reply ref, :error, %{errors: %{group_id: ["not allowed"]}}
       refute_push "new_message", %{message: %OmegaBravera.Groups.ChatMessage{}}
       assert_push "removed_group", %{group: %{id: ^not_joined_partner_id}}
@@ -157,13 +166,48 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       assert map_size(map) == 0
     end
 
-    test "can delete old message", %{socket: socket, message: %{id: message_id, group_id: group_id}} do
+    test "can delete old message", %{
+      socket: socket,
+      message: %{id: message_id, group_id: group_id}
+    } do
       push(socket, "delete_message", %{"message_id" => message_id})
       # because tests are run in transaction, this never gets called properly,
       # so we need to manually call this
       OmegaBravera.PostgresListener.broadcast_deletion(message_id, group_id)
       assert_broadcast "deleted_message", %{message: %{id: ^message_id, group_id: ^group_id}}
       assert_push "deleted_message", %{message: %{id: ^message_id, group_id: ^group_id}}
+    end
+
+    test "can get unread message count", %{
+      socket: socket,
+      message: %{id: first_id, group_id: group_id},
+      user: %{id: user_id}
+    } do
+      now = Timex.now()
+      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^first_id), set: [inserted_at: Timex.shift(now, days: -2)])
+      %{id: second_id} =
+        Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
+      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^second_id), set: [inserted_at: Timex.shift(now, days: -1)])
+      %{id: third_id} =
+        Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
+
+      ref = push(socket, "unread_count", %{"message_ids" => [first_id, second_id, third_id]})
+      assert_reply ref, :ok, %{unread_count: %{^first_id => 2, ^second_id => 1, ^third_id => 0}}
+    end
+
+    test "can get old messages", %{socket: socket, message: %{id: first_id, group_id: group_id}, user: %{id: user_id}} do
+      now = Timex.now()
+      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^first_id), set: [inserted_at: Timex.shift(now, days: -2)])
+      %{id: second_id} =
+        Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
+      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^second_id), set: [inserted_at: Timex.shift(now, days: -1)])
+      %{id: third_id} =
+        Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
+      ref = push(socket, "previous_messages", %{"message_id" => third_id, "limit" => 1})
+      assert_reply ref, :ok, %{messages: [%{id: ^second_id}]}
+
+      ref = push(socket, "previous_messages", %{"message_id" => third_id, "limit" => 20})
+      assert_reply ref, :ok, %{messages: [%{id: ^second_id}, %{id: ^first_id}]}
     end
   end
 end

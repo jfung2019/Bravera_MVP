@@ -23,7 +23,11 @@ defmodule OmegaBravera.PostgresListener do
     {:noreply, state}
   end
 
-  def broadcast_deletion(message_id, group_id), do: OmegaBraveraWeb.Endpoint.broadcast("group_channel:#{group_id}", "deleted_message", %{message: %{id: message_id, group_id: group_id}})
+  def broadcast_deletion(message_id, group_id),
+    do:
+      OmegaBraveraWeb.Endpoint.broadcast("group_channel:#{group_id}", "deleted_message", %{
+        message: %{id: message_id, group_id: group_id}
+      })
 
   def terminate(_reason, %{ref: ref, pid: pid}) do
     Notifications.unlisten!(pid, ref)
