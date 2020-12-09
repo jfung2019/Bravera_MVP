@@ -428,9 +428,9 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       as: :group,
       left_join: m in assoc(p, :members),
-      join: me in assoc(p, :chat_messages),
+      left_join: me in assoc(p, :chat_messages),
       left_join: u in assoc(m, :user),
-      left_lateral_join:
+      inner_lateral_join:
         last_messages in subquery(
           from(ChatMessage,
             where: [group_id: parent_as(:group).id],
@@ -439,7 +439,7 @@ defmodule OmegaBravera.Groups do
             select: [:id]
           )
         ),
-      on: last_messages.id == me.id,
+      on: last_messages.id == me.id and not is_nil(last_messages.id),
       where: m.user_id == ^user_id and p.live == true,
       preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u]
     )
@@ -453,7 +453,7 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       as: :group,
       left_join: m in assoc(p, :members),
-      join: me in assoc(p, :chat_messages),
+      left_join: me in assoc(p, :chat_messages),
       left_join: u in assoc(m, :user),
       left_lateral_join:
         last_messages in subquery(
@@ -464,7 +464,7 @@ defmodule OmegaBravera.Groups do
             select: [:id]
           )
         ),
-      on: last_messages.id == me.id,
+      on: last_messages.id == me.id and not is_nil(last_messages.id),
       where: p.id == ^partner_id and p.live == true,
       preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u]
     )
