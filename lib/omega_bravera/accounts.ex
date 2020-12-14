@@ -14,6 +14,7 @@ defmodule OmegaBravera.Accounts do
     Accounts.User,
     Accounts.Credential,
     Accounts.Donor,
+    Accounts.PartnerUser,
     Devices.Device,
     Money.Donation,
     Trackers,
@@ -1579,5 +1580,36 @@ defmodule OmegaBravera.Accounts do
   """
   def change_donor(%Donor{} = donor) do
     Donor.changeset(donor, %{})
+  end
+
+  def create_partner_user(attrs \\ %{}) do
+    %PartnerUser{}
+    |> PartnerUser.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def get_partner_user!(id), do: Repo.get!(PartnerUser, id)
+
+  def partner_user_auth(email, password) do
+    with {:ok, partner_user} <- get_partner_user_by_email(email),
+         do: verify_partner_user_password(password, partner_user)
+  end
+
+  defp get_partner_user_by_email(email) do
+    case Repo.get_by(PartnerUser, email: email) do
+      nil ->
+        {:error, :user_does_not_exist}
+
+      partner_user ->
+        {:ok, partner_user}
+    end
+  end
+
+  defp verify_partner_user_password(password, partner_user) do
+    if checkpw(password, partner_user.password_hash) do
+      {:ok, partner_user}
+    else
+      {:error, :invalid_password}
+    end
   end
 end

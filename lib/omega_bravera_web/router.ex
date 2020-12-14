@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.Router do
   use OmegaBraveraWeb, :router
+  use Kaffy.Routes, scope: "/partner_admin", pipe_through: [:user_authenticated]
 
   alias OmegaBravera.Guardian
 
@@ -224,6 +225,7 @@ defmodule OmegaBraveraWeb.Router do
     resources "/tips", TipController, only: [:new, :create, :show]
     get "/", PageController, :index
     get "/ngos", NGOController, :index
+    resources "/partner_session", PartnerUserSessionController, only: [:new, :create, :delete], singleton: true
 
     resources "/", NGOController, only: [:show], param: "slug" do
       get "/leaderboard", NGOController, :leaderboard, param: "slug"
