@@ -99,7 +99,7 @@ defmodule OmegaBravera.Accounts.User do
     |> cast(attrs, allowed_attrs)
     |> put_username(user)
     |> validate_required(@required_attributes)
-    |> validate_format(:email, ~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i)
+    |> EctoCommons.EmailValidator.validate_email(:email)
     |> validate_length(:email, max: 254)
     |> lowercase_email()
     |> unique_constraint(:email)

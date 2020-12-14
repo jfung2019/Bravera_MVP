@@ -108,6 +108,27 @@ defmodule OmegaBravera.AccountsTest do
       assert user.lastname == "some lastname"
     end
 
+    test "cannot enter email with space at the beginning, end or middle" do
+      assert {:error, _} = Accounts.create_user(%{
+               email: " test@test.com",
+               firstname: "some firstname",
+               lastname: "some lastname",
+               location_id: 1
+             })
+      assert {:error, _} = Accounts.create_user(%{
+               email: "test@test.com ",
+               firstname: "some firstname",
+               lastname: "some lastname",
+               location_id: 1
+             })
+      assert {:error, _} = Accounts.create_user(%{
+               email: "te st@test.com",
+               firstname: "some firstname",
+               lastname: "some lastname",
+               location_id: 1
+             })
+    end
+
     test "create_user/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} =
                Accounts.create_user(%{email: nil, firstname: nil, lastname: nil})

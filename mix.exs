@@ -37,6 +37,7 @@ defmodule OmegaBravera.Mixfile do
       {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.0"},
+      {:ecto_commons, "~> 0.3.0"},
       {:postgrex, "~> 0.15.0"},
       {:phoenix_html, "~> 2.14"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
