@@ -170,5 +170,6 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(partner_user.email)
+    |> Mail.send()
   end
 end
