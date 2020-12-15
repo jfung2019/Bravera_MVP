@@ -1588,6 +1588,12 @@ defmodule OmegaBravera.Accounts do
     |> Repo.insert()
   end
 
+  def update_partner_user(partner_user, attrs) do
+    partner_user
+    |> PartnerUser.update_changeset(attrs)
+    |> Repo.update()
+  end
+
   def get_partner_user!(id), do: Repo.get!(PartnerUser, id)
 
   def partner_user_auth(email, password) do
@@ -1611,5 +1617,19 @@ defmodule OmegaBravera.Accounts do
     else
       {:error, :invalid_password}
     end
+  end
+
+  def get_partner_user_by_email_activation_token(email_activation_token) do
+    case Repo.get_by(PartnerUser, email_activation_token: email_activation_token) do
+      nil ->
+        {:error, :no_such_user}
+
+      partner_user ->
+        {:ok, partner_user}
+    end
+  end
+
+  def verify_partner_user_email(%PartnerUser{} = partner_user) do
+    update_partner_user(partner_user, %{email_verified: true})
   end
 end

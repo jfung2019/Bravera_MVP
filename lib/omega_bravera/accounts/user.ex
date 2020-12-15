@@ -1,6 +1,7 @@
 defmodule OmegaBravera.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  import OmegaBravera.Accounts.Shared
 
   alias OmegaBravera.Accounts.{Credential, Setting}
   alias OmegaBravera.Trackers.Strava
@@ -159,26 +160,10 @@ defmodule OmegaBravera.Accounts.User do
     |> cast(attrs, [:profile_picture])
   end
 
-  def add_email_activation_token(%Ecto.Changeset{} = changeset) do
-    case get_field(changeset, :email_activation_token) do
-      nil ->
-        changeset
-        |> Ecto.Changeset.change(%{
-          email_activation_token: gen_token()
-        })
-
-      _ ->
-        changeset
-    end
-  end
-
   def add_referred_by(changeset, referral) when is_nil(referral), do: changeset
 
   def add_referred_by(changeset, referral) when not is_nil(referral),
     do: put_change(changeset, :referred_by_id, referral.user_id)
-
-  defp gen_token(length \\ 16),
-    do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
 
   def full_name(%__MODULE__{firstname: first, lastname: last}), do: "#{first} #{last}"
 

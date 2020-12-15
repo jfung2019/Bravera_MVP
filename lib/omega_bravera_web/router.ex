@@ -227,6 +227,7 @@ defmodule OmegaBraveraWeb.Router do
     get "/ngos", NGOController, :index
     resources "/partner_session", PartnerUserSessionController, only: [:new, :create, :delete], singleton: true
     resources "/register/partner_user", PartnerUserRegisterController, only: [:new, :create]
+    get "/partner_session/activate/:email_activation_token", PartnerUserSessionController, :activate_email
 
     resources "/", NGOController, only: [:show], param: "slug" do
       get "/leaderboard", NGOController, :leaderboard, param: "slug"

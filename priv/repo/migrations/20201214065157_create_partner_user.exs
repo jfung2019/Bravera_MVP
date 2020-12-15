@@ -7,6 +7,8 @@ defmodule OmegaBravera.Repo.Migrations.CreatePartnerUser do
       add :email, :citext, null: false
       add :password_hash, :text, null: false
       add :business_type, :text, null: false
+      add :email_verified, :boolean, null: false, default: false
+      add :email_activation_token, :text
 
       timestamps()
     end

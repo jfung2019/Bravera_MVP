@@ -13,7 +13,7 @@
                 </div>
                 <div class="mb-3">
                     <%= label f, :email, class: "form-label" %>
-                    <%= text_input f, :email, class: "form-control" %>
+                    <%= email_input f, :email, class: "form-control" %>
                 </div>
                 <div class="mb-3">
                     <%= label f, :password, class: "form-label" %>

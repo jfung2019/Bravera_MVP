@@ -8,9 +8,16 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
   def create(conn, %{"email" => email, "password" => password}) do
     case Accounts.partner_user_auth(email, password) do
       {:ok, partner_user} ->
-        conn
-        |> Guardian.Plug.sign_in(partner_user)
-        |> redirect(to: Routes.kaffy_home_path(conn, :index))
+        case partner_user.email_verified do
+          true ->
+            conn
+            |> Guardian.Plug.sign_in(partner_user)
+            |> redirect(to: Routes.kaffy_home_path(conn, :index))
+          false ->
+            conn
+            |> put_flash(:error, "Email not verified")
+            |> render("new.html")
+        end
 
       {:error, _} ->
         conn
@@ -23,5 +30,27 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
     conn
     |> Guardian.Plug.sign_out()
     |> redirect(to: Routes.partner_user_session_path(conn, :new))
+  end
+
+  def activate_email(conn, %{"email_activation_token" => email_activation_token} = _params) do
+    case Accounts.get_partner_user_by_email_activation_token(email_activation_token) do
+      {:error, :no_such_user} ->
+        conn
+        |> put_flash(:error, "No such user.")
+        |> redirect(to: Routes.partner_user_session_path(conn, :new))
+
+      {:ok, partner_user} ->
+        case Accounts.verify_partner_user_email(partner_user) do
+          {:ok, _partner_user} ->
+            conn
+            |> put_flash(:info, "Email verified.")
+            |> redirect(to: Routes.partner_user_session_path(conn, :new))
+
+          {:error, _error} ->
+            conn
+            |> put_flash(:error, "Failed to verify email.")
+            |> redirect(to: Routes.partner_user_session_path(conn, :new))
+        end
+    end
   end
 end

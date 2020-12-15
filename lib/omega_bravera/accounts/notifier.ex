@@ -1,5 +1,5 @@
 defmodule OmegaBravera.Accounts.Notifier do
-  alias OmegaBravera.{Repo, Notifications, Accounts.User, Accounts.Credential}
+  alias OmegaBravera.{Repo, Notifications, Accounts.User, Accounts.Credential,Accounts.PartnerUser}
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Mail, Email}
@@ -157,5 +157,18 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(user.email)
     |> Mail.send()
+  end
+
+  def partner_user_signup_email(%PartnerUser{} = partner_user) do
+    Email.build()
+    |> Email.put_template("b47d2224-792a-43d8-b4b2-f53b033d2f41")
+    |> Email.add_substitution("-firstName-", partner_user.email)
+    |> Email.add_substitution(
+         "-emailVerificationUrl-",
+         Routes.partner_user_session_url(Endpoint, :activate_email, partner_user.email_activation_token)
+       )
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(partner_user.email)
   end
 end
