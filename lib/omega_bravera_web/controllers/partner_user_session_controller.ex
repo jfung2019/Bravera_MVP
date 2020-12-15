@@ -12,9 +12,9 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
         |> Guardian.Plug.sign_in(partner_user)
         |> redirect(to: Routes.kaffy_home_path(conn, :index))
 
-      {:error, error} ->
+      {:error, _} ->
         conn
-        |> put_flash(:error, error)
+        |> put_flash(:error, "Error logging in")
         |> render("new.html")
     end
   end
