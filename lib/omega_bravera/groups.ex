@@ -430,7 +430,7 @@ defmodule OmegaBravera.Groups do
       left_join: m in assoc(p, :members),
       left_join: me in assoc(p, :chat_messages),
       left_join: u in assoc(m, :user),
-      inner_lateral_join:
+      left_lateral_join:
         last_messages in subquery(
           from(ChatMessage,
             where: [group_id: parent_as(:group).id],
