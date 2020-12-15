@@ -621,9 +621,12 @@ defmodule OmegaBravera.Groups do
   def get_unread_group_message_count(message_id) do
     # TODO: replace with a better query
     message = get_chat_message!(message_id)
+
     from(m in ChatMessage,
       select: count(),
-      where: m.inserted_at >= ^message.inserted_at and m.id != ^message.id and m.group_id == ^message.group_id
+      where:
+        m.inserted_at >= ^message.inserted_at and m.id != ^message.id and
+          m.group_id == ^message.group_id
     )
     |> Repo.one()
   end
@@ -634,9 +637,12 @@ defmodule OmegaBravera.Groups do
   def get_previous_messages(message_id, limit) do
     # TODO: replace with a better query
     message = get_chat_message!(message_id)
+
     from(m in ChatMessage,
       order_by: [desc: m.inserted_at],
-      where: m.inserted_at <= ^message.inserted_at and m.id != ^message.id and m.group_id == ^message.group_id,
+      where:
+        m.inserted_at <= ^message.inserted_at and m.id != ^message.id and
+          m.group_id == ^message.group_id,
       limit: ^limit,
       preload: [:user, reply_to_message: :user]
     )

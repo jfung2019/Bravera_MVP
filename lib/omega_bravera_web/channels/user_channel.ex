@@ -177,7 +177,10 @@ defmodule OmegaBraveraWeb.UserChannel do
 
   def handle_in("previous_messages", %{"message_id" => message_id, "limit" => limit}, socket) do
     previous_messages = Groups.get_previous_messages(message_id, limit)
-    {:reply, {:ok, %{messages: render_many(previous_messages, @view, "show_message.json", as: :message)}}, socket}
+
+    {:reply,
+     {:ok, %{messages: render_many(previous_messages, @view, "show_message.json", as: :message)}},
+     socket}
   end
 
   def user_channel(user_id), do: "#{@user_channel_prefix}#{user_id}"
