@@ -98,9 +98,9 @@ defmodule OmegaBravera.Accounts.User do
   def changeset(user, attrs, allowed_attrs \\ @allowed_attributes) do
     user
     |> cast(attrs, allowed_attrs)
-    |> put_username(user)
+    |> put_username()
     |> validate_required(@required_attributes)
-    |> validate_format(:email, ~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i)
+    |> EctoCommons.EmailValidator.validate_email(:email)
     |> validate_length(:email, max: 254)
     |> lowercase_email()
     |> unique_constraint(:email)
@@ -177,30 +177,13 @@ defmodule OmegaBravera.Accounts.User do
     end
   end
 
-  defp put_username(changeset, user) do
-    case changeset do
-      %{changes: %{username: _username}} ->
-        changeset
+  defp put_username(changeset) do
+    case get_field(changeset, :username) do
+      nil ->
+        put_change(changeset, :username, "#{get_field(changeset, :firstname)} #{get_field(changeset, :lastname)}")
 
       _ ->
-        case user do
-          %{username: nil} ->
-            chars =
-              Enum.map(Enum.to_list(?0..?9), fn n -> <<n>> end) ++
-                Enum.map(Enum.to_list(?A..?Z), fn n -> <<n>> end) ++
-                Enum.map(Enum.to_list(?a..?z), fn n -> <<n>> end)
-
-            random_string =
-              Enum.reduce(1..8, [], fn _i, acc ->
-                [Enum.random(chars) | acc]
-              end)
-              |> Enum.join("")
-
-            put_change(changeset, :username, random_string)
-
-          _ ->
-            changeset
-        end
+        changeset
     end
   end
 end

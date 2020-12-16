@@ -125,6 +125,11 @@ defmodule OmegaBraveraWeb.Router do
     plug :put_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
   end
 
+  # TODO: fix root layout issue
+  pipeline :admin_liveview do
+    plug :put_root_layout, {OmegaBraveraWeb.LayoutView, :admin_panel}
+  end
+
   scope "/admin", OmegaBraveraWeb do
     pipe_through [:admin_section]
     resources "/sessions", AdminUserSessionController, only: [:new, :create]
@@ -171,12 +176,20 @@ defmodule OmegaBraveraWeb.Router do
       resources "/offer-partners", AdminPanelOfferPartnerController, only: [:create, :delete]
       get "/offers/:slug/statement", AdminPanelOfferController, :statement
       get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
-      live "/offers/:slug/images", AdminOfferImages
+
+      scope "/" do
+        pipe_through [:admin_liveview]
+        live "/offers/:slug/images", AdminOfferImages
+      end
     end
 
     scope "/" do
       pipe_through [:admin_authenticated]
-      live "/partners/:id/images", AdminPartnerImages
+
+      scope "/" do
+        pipe_through [:admin_liveview]
+        live "/partners/:id/images", AdminPartnerImages
+      end
 
       resources "/partners", AdminPanelPartnerController, except: [:delete] do
         resources "/locations", AdminPanelPartnerLocationController, except: [:index]

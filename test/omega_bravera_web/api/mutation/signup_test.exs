@@ -69,7 +69,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
     response =
       post(build_conn(), "/api", %{query: @query, variables: %{"user" => @invalid_user_input}})
 
-    assert %{"errors" => [%{"details" => %{"email" => ["has invalid format"]}}]} =
+    assert %{"errors" => [%{"details" => %{"email" => ["is not a valid email"]}}]} =
              json_response(response, 200)
   end
 

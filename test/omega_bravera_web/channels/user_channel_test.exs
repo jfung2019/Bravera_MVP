@@ -184,10 +184,18 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       user: %{id: user_id}
     } do
       now = Timex.now()
-      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^first_id), set: [inserted_at: Timex.shift(now, days: -2)])
+
+      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^first_id),
+        set: [inserted_at: Timex.shift(now, days: -2)]
+      )
+
       %{id: second_id} =
         Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
-      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^second_id), set: [inserted_at: Timex.shift(now, days: -1)])
+
+      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^second_id),
+        set: [inserted_at: Timex.shift(now, days: -1)]
+      )
+
       %{id: third_id} =
         Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
 
@@ -195,14 +203,27 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       assert_reply ref, :ok, %{unread_count: %{^first_id => 2, ^second_id => 1, ^third_id => 0}}
     end
 
-    test "can get old messages", %{socket: socket, message: %{id: first_id, group_id: group_id}, user: %{id: user_id}} do
+    test "can get old messages", %{
+      socket: socket,
+      message: %{id: first_id, group_id: group_id},
+      user: %{id: user_id}
+    } do
       now = Timex.now()
-      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^first_id), set: [inserted_at: Timex.shift(now, days: -2)])
+
+      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^first_id),
+        set: [inserted_at: Timex.shift(now, days: -2)]
+      )
+
       %{id: second_id} =
         Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
-      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^second_id), set: [inserted_at: Timex.shift(now, days: -1)])
+
+      OmegaBravera.Repo.update_all(from(m in Groups.ChatMessage, where: m.id == ^second_id),
+        set: [inserted_at: Timex.shift(now, days: -1)]
+      )
+
       %{id: third_id} =
         Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
+
       ref = push(socket, "previous_messages", %{"message_id" => third_id, "limit" => 1})
       assert_reply ref, :ok, %{messages: [%{id: ^second_id}]}
 

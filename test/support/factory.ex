@@ -15,6 +15,7 @@ defmodule OmegaBravera.Factory do
     %OmegaBravera.Accounts.User{
       firstname: "John",
       lastname: "Doe",
+      username: "John Doe",
       email: sequence(:email, &"john.doe.#{&1}@example.com"),
       email_verified: true,
       location_id: 1
