@@ -16,7 +16,8 @@ defmodule OmegaBravera.Repo.Migrations.CreatePartnerUser do
     create unique_index(:partner_user, [:email])
 
     alter table(:offer_vendors) do
-      add :partner_user_id, references(:partner_user, on_delete: :delete_all, type: :binary_id), null: true
+      add :partner_user_id, references(:partner_user, on_delete: :delete_all, type: :binary_id),
+        null: true
     end
   end
 end

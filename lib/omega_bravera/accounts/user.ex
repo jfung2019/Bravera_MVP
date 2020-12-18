@@ -180,7 +180,11 @@ defmodule OmegaBravera.Accounts.User do
   defp put_username(changeset) do
     case get_field(changeset, :username) do
       nil ->
-        put_change(changeset, :username, "#{get_field(changeset, :firstname)} #{get_field(changeset, :lastname)}")
+        put_change(
+          changeset,
+          :username,
+          "#{get_field(changeset, :firstname)} #{get_field(changeset, :lastname)}"
+        )
 
       _ ->
         changeset

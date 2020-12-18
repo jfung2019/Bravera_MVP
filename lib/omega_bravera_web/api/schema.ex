@@ -213,13 +213,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "Get offer's offer challenges."
     field :offer_offer_challenges, list_of(:offer_challenge) do
-      arg :offer_id, non_null(:integer)
+      arg :offer_id, non_null(:id)
       resolve &Resolvers.Offers.offer_offer_challenges/3
     end
 
     @desc "Get Challenge Redeem."
     field :get_challenge_redeem, :redeem do
-      arg :challenge_id, non_null(:integer)
+      arg :challenge_id, non_null(:id)
       middleware Middleware.Authenticate
       resolve &Resolvers.OfferChallenges.get_challenge_redeem/3
     end

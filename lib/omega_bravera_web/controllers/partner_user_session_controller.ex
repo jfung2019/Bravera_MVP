@@ -13,6 +13,7 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
             conn
             |> Guardian.Plug.sign_in(partner_user)
             |> redirect(to: Routes.kaffy_home_path(conn, :index))
+
           false ->
             conn
             |> put_flash(:error, "Email not verified")

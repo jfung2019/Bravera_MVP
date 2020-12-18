@@ -8,6 +8,7 @@ defmodule OmegaBraveraWeb.PartnerUserRegisterController do
     case Accounts.create_partner_user(register_params) do
       {:ok, partner_user} ->
         OmegaBravera.Accounts.Notifier.partner_user_signup_email(partner_user)
+
         conn
         |> put_flash(:info, "Account created. Please go to your email to verify the account.")
         |> redirect(to: Routes.partner_user_session_path(conn, :new))

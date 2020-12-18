@@ -16,7 +16,7 @@ defmodule OmegaBravera.Guardian do
     do: {:ok, Accounts.get_admin_user!(id)}
 
   def resource_from_claims(%{"sub" => "partner_user:" <> id}),
-      do: {:ok, Accounts.get_partner_user!(id)}
+    do: {:ok, Accounts.get_partner_user!(id)}
 
   def resource_from_claims(_claims), do: {:error, :reason_for_error}
 end
