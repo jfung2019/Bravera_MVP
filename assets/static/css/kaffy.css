@@ -15,6 +15,13 @@
 .sidebar .nav .nav-item .nav-link i.menu-arrow::before, .sidebar .nav .nav-item.active .nav-link.collapsed .menu-arrow::before, .sidebar .nav .nav-item.active .nav-link[aria-expanded="true"] .menu-arrow::before {
     color: #F5274B;
 }
+.sidebar .nav.sub-menu .nav-item .nav-link {
+    color: #F5274B;
+}
+
+.sidebar .nav.sub-menu .nav-item .nav-link::before {
+    color: #F5274B;
+}
 
 i.fas.fa-feather.icon-sm {
     color: #F5274B !important;
@@ -23,6 +30,11 @@ i.fas.fa-feather.icon-sm {
 .btn.btn-outline-primary {
     color: #F5274B;
     border-color: #F5274B;
+}
+
+.btn.btn-outline-primary:hover {
+    background: linear-gradient(to right, #F5274B, #F5274B);
+    color: white;
 }
 
 .btn.btn-primary {
@@ -51,4 +63,8 @@ i.fas.fa-feather.icon-sm {
 .sidebar {
     background-color: #F5274B;
     color: white;
+}
+
+footer.footer .text-muted {
+    display: none !important;
 }

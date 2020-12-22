@@ -16,13 +16,13 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
 
           true ->
             conn
-            |> put_flash(:error, "Email not verified")
+            |> put_flash(:error, gettext("Email not yet verified. Please check your email for a verification link"))
             |> render("new.html")
         end
 
       {:error, _} ->
         conn
-        |> put_flash(:error, "Error logging in")
+        |> put_flash(:error, gettext("Error: Username and/or password incorrect"))
         |> render("new.html")
     end
   end

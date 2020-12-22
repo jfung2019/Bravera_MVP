@@ -10,6 +10,7 @@ defmodule OmegaBravera.KaffyConfig do
         ]
       ],
       offer: [
+        name: "Offers & Rewards",
         resources: [
           offer_vendor: [
             schema: OmegaBravera.Offers.OfferVendor,
