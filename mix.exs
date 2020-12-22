@@ -83,7 +83,7 @@ defmodule OmegaBravera.Mixfile do
       {:countries, "~> 1.5"},
       {:pigeon, "~> 1.5.0"},
       {:kadabra, "~> 0.4.4"},
-      {:kaffy, "~> 0.9.0"}
+      {:kaffy, github: "aesmail/kaffy"}
     ]
   end
 

@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Auth.Tools do
+defmodule OmegaBravera.Accounts.Tools do
   alias OmegaBravera.Accounts
   @key_length 16
 

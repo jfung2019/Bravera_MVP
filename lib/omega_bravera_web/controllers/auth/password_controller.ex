@@ -6,7 +6,7 @@ defmodule OmegaBraveraWeb.PasswordController do
   alias OmegaBravera.Repo
   alias OmegaBravera.Accounts
   alias OmegaBravera.Accounts.{User, Credential, Notifier}
-  alias OmegaBraveraWeb.Auth.Tools
+  alias OmegaBravera.Accounts.Tools
 
   use Timex
 

@@ -1,6 +1,6 @@
 defmodule OmegaBraveraWeb.Router do
   use OmegaBraveraWeb, :router
-  use Kaffy.Routes, scope: "/partner_admin", pipe_through: [:user_authenticated]
+  use Kaffy.Routes, scope: "/partner-admin", pipe_through: [:partner_user_authenticated]
 
   alias OmegaBravera.Guardian
 
@@ -18,6 +18,11 @@ defmodule OmegaBraveraWeb.Router do
 
   pipeline :user_authenticated do
     plug Guardian.AuthPipeline
+  end
+
+  pipeline :partner_user_authenticated do
+    plug Guardian.AuthPipeline
+    plug OmegaBraveraWeb.PartnerUserLoggedIn
   end
 
   pipeline :admin_authenticated do
@@ -244,7 +249,13 @@ defmodule OmegaBraveraWeb.Router do
       get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
     end
 
-    resources "/partners", PartnerUserRegisterController, only: [:new, :create]
+    scope "/partners" do
+      resources "/password", PartnerUserPasswordController,
+        except: [:delete],
+        param: "reset_token"
+
+      resources "/", PartnerUserRegisterController, only: [:new, :create]
+    end
 
     resources "/", NGOController, only: [:show], param: "slug" do
       get "/leaderboard", NGOController, :leaderboard, param: "slug"

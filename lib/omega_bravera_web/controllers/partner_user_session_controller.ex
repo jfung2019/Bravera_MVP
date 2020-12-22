@@ -5,16 +5,16 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
 
   def new(conn, _params), do: render(conn, "new.html")
 
-  def create(conn, %{"email" => email, "password" => password}) do
-    case Accounts.partner_user_auth(email, password) do
+  def create(conn, %{"username" => username, "password" => password}) do
+    case Accounts.partner_user_auth(username, password) do
       {:ok, partner_user} ->
-        case partner_user.email_verified do
-          true ->
+        cond do
+          partner_user.email_verified ->
             conn
             |> Guardian.Plug.sign_in(partner_user)
             |> redirect(to: Routes.kaffy_home_path(conn, :index))
 
-          false ->
+          true ->
             conn
             |> put_flash(:error, "Email not verified")
             |> render("new.html")

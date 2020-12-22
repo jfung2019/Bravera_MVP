@@ -11,10 +11,12 @@ defmodule OmegaBravera.Accounts do
   alias OmegaBravera.{
     Repo,
     Accounts,
-    Accounts.User,
     Accounts.Credential,
     Accounts.Donor,
+    Accounts.Notifier,
     Accounts.PartnerUser,
+    Accounts.Tools,
+    Accounts.User,
     Devices.Device,
     Money.Donation,
     Trackers,
@@ -1596,13 +1598,86 @@ defmodule OmegaBravera.Accounts do
 
   def get_partner_user!(id), do: Repo.get!(PartnerUser, id)
 
-  def partner_user_auth(email, password) do
-    with {:ok, partner_user} <- get_partner_user_by_email(email),
+  def partner_user_auth(username, password) do
+    with {:ok, partner_user} <- get_partner_user_by_username(username),
          do: verify_partner_user_password(password, partner_user)
   end
 
-  defp get_partner_user_by_email(email) do
+  @doc """
+  Sets up a changeset for use in forms.
+  """
+  def change_partner_user(partner_user, attrs \\ %{}),
+    do: PartnerUser.changeset(partner_user, attrs)
+
+  @doc """
+  Gets a partner user by their email address.
+  """
+  @spec get_partner_user_by_email(String.t()) ::
+          {:ok, PartnerUser.t()} | {:error, :user_does_not_exist}
+  def get_partner_user_by_email(email) do
     case Repo.get_by(PartnerUser, email: email) do
+      nil ->
+        {:error, :user_does_not_exist}
+
+      partner_user ->
+        {:ok, partner_user}
+    end
+  end
+
+  @doc """
+  Resets a users password and send the email to them.
+  """
+  @spec reset_partner_user_password(PartnerUser.t()) :: PartnerUser.t()
+  def reset_partner_user_password(partner_user) do
+    {:ok, partner_user} =
+      partner_user
+      |> PartnerUser.reset_password_changeset(%{
+        reset_token: Tools.random_string(),
+        reset_token_created: DateTime.utc_now()
+      })
+      |> Repo.update()
+
+    Notifier.send_password_reset_email(partner_user)
+    partner_user
+  end
+
+  def get_partner_user_by_reset_password_token(token) do
+    partner_user =
+      from(u in PartnerUser, where: u.reset_token == ^token)
+      |> Repo.one()
+
+    case partner_user do
+      nil ->
+        {:error, :user_not_found}
+
+      partner_user ->
+        if Tools.expired?(partner_user.reset_token_created) do
+          {:error, :token_expired}
+        else
+          {:ok, partner_user}
+        end
+    end
+  end
+
+  @doc """
+  Allows a user to set their password if they have a token and not expired.
+  """
+  def set_partner_user_password(token, params) do
+    with {:ok, partner_user} <- get_partner_user_by_reset_password_token(token),
+         {:ok, partner_user} <- update_partner_user(partner_user, params) do
+      partner_user
+      |> PartnerUser.reset_password_changeset(%{
+        reset_token: nil,
+        reset_token_created: nil
+      })
+      |> Repo.update()
+    else
+      error -> error
+    end
+  end
+
+  defp get_partner_user_by_username(username) do
+    case Repo.get_by(PartnerUser, username: username) do
       nil ->
         {:error, :user_does_not_exist}
 
@@ -1629,7 +1704,10 @@ defmodule OmegaBravera.Accounts do
     end
   end
 
-  def verify_partner_user_email(%PartnerUser{} = partner_user) do
-    update_partner_user(partner_user, %{email_verified: true})
-  end
+  @doc """
+  Markes a partner user as their email verified.
+  """
+  @spec verify_partner_user_email(PartnerUser.t()) :: {:ok, PartnerUser.t()}
+  def verify_partner_user_email(%PartnerUser{} = partner_user),
+    do: update_partner_user(partner_user, %{email_verified: true})
 end

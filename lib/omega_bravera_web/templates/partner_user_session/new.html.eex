@@ -3,19 +3,24 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex flex-row justify-content-between">
-                    <h1>Log in</h1>
-                    <%= link "Register", to: Routes.partner_user_register_path(@conn, :new) %>
+                    <h1><%= gettext("Log in") %></h1>
+                    <ul class="nav">
+                        <li class="nav-item"><%= link gettext("Register"), to: Routes.partner_user_register_path(@conn, :new), class: "nav-link" %></li>
+                        <li class="nav-item"><%= link gettext("Forgot Password"), to: Routes.partner_user_password_path(@conn, :new), class: "nav-link" %></li>
+                    </ul>
                 </div>
                 <%= form_for @conn, Routes.partner_user_session_path(@conn, :create), fn f -> %>
                 <div class="mb-3">
-                    <%= label f, :email, class: "form-label" %>
-                    <%= email_input f, :email, class: "form-control" %>
+                    <%= label f, :username, class: "form-label" %>
+                    <%= email_input f, :username, class: "form-control", required: true %>
+                    <%= error_tag f, :username %>
                 </div>
                 <div class="mb-3">
                     <%= label f, :password, class: "form-label" %>
-                    <%= password_input f, :password, class: "form-control" %>
+                    <%= password_input f, :password, class: "form-control", required: true %>
+                    <%= error_tag f, :password %>
                 </div>
-                <%= submit "Log in", class: "btn btn-primary" %>
+                <%= submit gettext("Log in"), class: "btn btn-primary" %>
                 <% end %>
             </div>
         </div>

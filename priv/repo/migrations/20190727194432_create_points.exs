@@ -2,7 +2,7 @@ defmodule OmegaBravera.Repo.Migrations.CreatePoints do
   use Ecto.Migration
   import Ecto.Query
 
-  alias OmegaBravera.{Repo, Points.Point, Activity.ActivityAccumulator}
+  alias OmegaBravera.{Repo, Points.Point}
 
   def up do
     create table(:points) do

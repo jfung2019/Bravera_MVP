@@ -85,4 +85,18 @@ defmodule OmegaBravera.Fixtures do
 
     chat_message
   end
+
+  def partner_user_fixture(attrs \\ %{}) do
+    {:ok, partner_user} =
+      attrs
+      |> Enum.into(%{
+        business_type: "some biz",
+        username: "partner_user1",
+        email: "some@email.com",
+        password: "pass1234"
+      })
+      |> Accounts.create_partner_user()
+
+    partner_user
+  end
 end

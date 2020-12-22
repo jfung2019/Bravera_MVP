@@ -98,6 +98,21 @@ defmodule OmegaBravera.Accounts.Notifier do
     end
   end
 
+  def send_password_reset_email(%PartnerUser{} = partner_user) do
+    template_id = "6ad5a528-9f86-4301-8ff3-86db415a860"
+
+    Email.build()
+    |> Email.put_template(template_id)
+    |> Email.add_substitution(
+      "-ResetCode-",
+      Routes.partner_user_password_url(Endpoint, :edit, partner_user.reset_token)
+    )
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(partner_user.email)
+    |> Mail.send()
+  end
+
   def password_reset_email(%Credential{} = credential, template_id) do
     Email.build()
     |> Email.put_template(template_id)

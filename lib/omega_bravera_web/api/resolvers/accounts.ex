@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   alias OmegaBravera.{Accounts, Locations, Points, Repo, Notifications}
   alias OmegaBravera.Accounts.Notifier
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
-  alias OmegaBraveraWeb.Auth.Tools
+  alias OmegaBravera.Accounts.Tools
   alias OmegaBravera.Accounts.User
 
   def get_strava_oauth_url(_, _, %{

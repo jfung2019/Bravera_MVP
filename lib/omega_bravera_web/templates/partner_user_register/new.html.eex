@@ -3,21 +3,32 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex flex-row justify-content-between">
-                    <h1>Register</h1>
-                    <%= link "Log in", to: Routes.partner_user_session_path(@conn, :new) %>
+                    <h1><%= gettext("Register") %></h1>
+                    <ul class="nav">
+                        <li class="nav-item"><%= link gettext("Login"), to: Routes.partner_user_session_path(@conn, :new), class: "nav-link" %></li>
+                        <li class="nav-item"><%= link gettext("Forgot Password"), to: Routes.partner_user_password_path(@conn, :new), class: "nav-link" %></li>
+                    </ul>
                 </div>
-                <%= form_for @conn, Routes.partner_user_register_path(@conn, :create), fn f -> %>
+                <%= form_for @changeset, Routes.partner_user_register_path(@conn, :create), fn f -> %>
                 <div class="mb-3">
                     <%= label f, :business_type, class: "form-label" %>
-                    <%= text_input f, :business_type, class: "form-control" %>
+                    <%= text_input f, :business_type, class: add_error_class(f, :business_type, "form-control"), required: true %>
+                    <%= error_tag f, :business_type %>
+                </div>
+                <div class="mb-3">
+                    <%= label f, :username, class: "form-label" %>
+                    <%= text_input f, :username, class: add_error_class(f, :username, "form-control"), required: true %>
+                    <%= error_tag f, :username %>
                 </div>
                 <div class="mb-3">
                     <%= label f, :email, class: "form-label" %>
-                    <%= email_input f, :email, class: "form-control" %>
+                    <%= email_input f, :email, class: add_error_class(f, :email, "form-control"), required: true %>
+                    <%= error_tag f, :email %>
                 </div>
                 <div class="mb-3">
                     <%= label f, :password, class: "form-label" %>
-                    <%= password_input f, :password, class: "form-control" %>
+                    <%= password_input f, :password, class: add_error_class(f, :password, "form-control"), required: true %>
+                    <%= error_tag f, :password %>
                 </div>
                 <%= submit "Register", class: "btn btn-primary" %>
                 <% end %>

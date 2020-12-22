@@ -30,14 +30,6 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :logger, :error_log,
-  path: "/var/log/my_app/error.log",
-  level: :error
-
-config :logger, :info,
-  path: "/var/log/info.log",
-  level: :info
-
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 config :postgrex, :json_library, Jason
@@ -58,12 +50,13 @@ config :omega_bravera, OmegaBravera.Guardian,
 config :kaffy,
   otp_app: :omega_bravera,
   admin_title: "Bravera",
-  admin_logo: "/images/favicon.png",
-  admin_logo_mini: "/images/favicon.png",
+  admin_logo: "/images/kaffy_logo.png",
+  admin_logo_mini: "/images/kaffy_mini.png",
   ecto_repo: OmegaBravera.Repo,
   router: OmegaBraveraWeb.Router,
   home_page: [kaffy: :dashboard],
   hide_dashboard: false,
+  extensions: [OmegaBravera.Kaffy.BraveraExt],
   resources: &OmegaBravera.KaffyConfig.create_resources/1
 
 config :pigeon, :fcm,
@@ -72,6 +65,7 @@ config :pigeon, :fcm,
       "AAAARgqNKow:APA91bGW6f0F7RGp-TqPDbpKIUutW6JkSX6R9R-yemb8vjRvODB6ZwM-0O2FwiuGaXcMomkY1PgwesMaRISrYU5gI01Fto8H67_p2hXSyglB0LJShvRnQEto-PCrYsq0Uz8M2ps8P9eK"
   }
 
+config :omega_bravera, OmegaBraveraWeb.Gettext, locales: ~w(en zh)
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
