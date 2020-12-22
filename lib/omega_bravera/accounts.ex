@@ -1637,7 +1637,7 @@ defmodule OmegaBravera.Accounts do
       })
       |> Repo.update()
 
-    Notifier.send_password_reset_email(partner_user)
+    :ok = Notifier.send_password_reset_email(partner_user)
     partner_user
   end
 
