@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.PasswordControllerTest do
+defmodule OmegaBraveraWeb.PartnerUserPasswordControllerTest do
   use OmegaBraveraWeb.ConnCase, async: true
   alias OmegaBravera.{Accounts, Fixtures}
 
