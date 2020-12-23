@@ -84,10 +84,10 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordController do
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> render("edit.html",
-             changeset: changeset,
-             partner_user: Accounts.get_partner_user_by_reset_password_token(token),
-             token: token
-           )
+          changeset: changeset,
+          partner_user: Accounts.get_partner_user_by_reset_password_token(token),
+          token: token
+        )
     end
   end
 end

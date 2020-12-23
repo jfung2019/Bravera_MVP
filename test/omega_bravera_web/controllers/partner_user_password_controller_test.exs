@@ -104,7 +104,9 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordControllerTest do
       conn =
         put(
           conn,
-          Routes.partner_user_password_path(conn, :update, partner_user.reset_token, partner_user: attrs)
+          Routes.partner_user_password_path(conn, :update, partner_user.reset_token,
+            partner_user: attrs
+          )
         )
 
       assert get_flash(conn, :info) =~ "Password reset successfully!"

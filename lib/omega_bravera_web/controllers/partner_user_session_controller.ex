@@ -16,7 +16,10 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
 
           true ->
             conn
-            |> put_flash(:error, gettext("Email not yet verified. Please check your email for a verification link"))
+            |> put_flash(
+              :error,
+              gettext("Email not yet verified. Please check your email for a verification link")
+            )
             |> render("new.html")
         end
 
