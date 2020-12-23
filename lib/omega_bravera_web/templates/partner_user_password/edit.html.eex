@@ -1,20 +1,25 @@
 <div class="container">
   <div class="row">
-    <div class="col-sm-8">
-      <h2 class="mt-4"><%= gettext("Password reset") %></h2>
-      <p><%= gettext("Please enter a new password for your account.") %></p>
-      <%= form_for @changeset, Routes.partner_user_password_path(@conn, :update, @token), [method: "put"], fn f -> %>
-        <div class="form-group">
-          <p><%= gettext("Account") %>: <strong><%= @partner_user.email %></strong> </p>
-          <%= label f, :password, gettext("New password"), class: "control-label" %>
-          <%= password_input f, :password, class: add_error_class(f, :password, "form-control"), required: "" %>
-          <%= error_tag f, :password %>
-        </div>
+    <div class="col-sm-8 offset-sm-2">
+      <div class="card">
+        <div class="card-body">
 
-        <div class="form-group">
-          <%= submit gettext("Reset password"), class: "btn btn-primary" %>
+        <h2 class="mt-4"><%= gettext("Password reset") %></h2>
+        <p><%= gettext("Please enter a new password for your account.") %></p>
+        <%= form_for @changeset, Routes.partner_user_password_path(@conn, :update, @token), [method: "put"], fn f -> %>
+          <div class="form-group">
+            <p><%= gettext("Account") %>: <strong><%= @partner_user.email %></strong> </p>
+            <%= label f, :password, gettext("New password"), class: "control-label" %>
+            <%= password_input f, :password, class: add_error_class(f, :password, "form-control"), required: "" %>
+            <%= error_tag f, :password %>
+          </div>
+
+          <div class="form-group">
+            <%= submit gettext("Reset password"), class: "btn btn-primary" %>
+          </div>
+        <% end %>
         </div>
-      <% end %>
+      </div>
     </div>
   </div>
 </div>

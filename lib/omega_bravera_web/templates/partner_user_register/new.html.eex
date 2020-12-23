@@ -30,6 +30,16 @@
                     <%= password_input f, :password, class: add_error_class(f, :password, "form-control"), required: true %>
                     <%= error_tag f, :password %>
                 </div>
+                <div class="form-group">
+                    <div class="form-check">
+                        <%= checkbox f, :accept_terms, class: add_error_class(f, :accept_terms, "form-check-input"), required: true %>
+                        <%= label f, :accept_terms, gettext("I accept the Terms and Conditions and Privacy Policy"), class: "form-check-label" %>
+                        <%= error_tag f, :accept_terms %>
+                    </div>
+                </div>
+                <div class="mb-3">
+
+                </div>
                 <%= submit "Register", class: "btn btn-primary" %>
                 <% end %>
             </div>

@@ -23,7 +23,8 @@ defmodule OmegaBravera.Kaffy.PartnerUser do
       username: nil,
       email: nil,
       business_type: nil,
-      password: %{type: :password, help_text: "Leave blank to not change"}
+      password: %{type: :password, help_text: "Leave blank to not change"},
+      accept_terms: nil
     ]
   end
 

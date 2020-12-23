@@ -14,6 +14,7 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     field :email_activation_token, :string
     field :reset_token, :string
     field :reset_token_created, :utc_datetime
+    field :accept_terms, :boolean, virtual: true, default: false
 
     timestamps()
   end
@@ -21,13 +22,14 @@ defmodule OmegaBravera.Accounts.PartnerUser do
   @doc false
   def changeset(partner_user, attrs) do
     partner_user
-    |> cast(attrs, [:username, :email, :password, :business_type, :email_verified])
+    |> cast(attrs, [:username, :email, :password, :business_type, :email_verified, :accept_terms])
     |> validate_required([:username, :email, :password, :business_type])
     |> validate_length(:username, min: 3)
     |> unique_constraint(:email)
     |> validate_format(:email, ~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i)
     |> add_email_activation_token()
     |> validate_password()
+    |> validate_acceptance(:accept_terms)
   end
 
   def update_changeset(partner_user, attrs) do
