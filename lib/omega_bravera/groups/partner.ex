@@ -22,6 +22,7 @@ defmodule OmegaBravera.Groups.Partner do
     has_many :members, Member
     has_many :users, through: [:members, :user]
     has_many :chat_messages, ChatMessage, foreign_key: :group_id, references: :id
+    belongs_to :partner_user, OmegaBravera.Accounts.PartnerUser, type: :binary_id
 
     timestamps()
   end
@@ -38,6 +39,7 @@ defmodule OmegaBravera.Groups.Partner do
       :join_password,
       :email,
       :website,
+      :partner_user_id,
       :phone
     ])
     |> validate_length(:name, max: 255)

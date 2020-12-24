@@ -60,6 +60,14 @@ i.fas.fa-feather.icon-sm {
     color: #F5274B;
 }
 
+.sidebar-icon-only .sidebar .nav .nav-item.hover-open .collapse, .sidebar-icon-only .sidebar .nav .nav-item.hover-open .collapsing {
+    background: #F5274B;
+}
+
+.sidebar .nav.sub-menu .nav-item .nav-link {
+    color: white;
+}
+
 .sidebar {
     background-color: #F5274B;
     color: white;

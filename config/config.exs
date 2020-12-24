@@ -56,8 +56,8 @@ config :kaffy,
   router: OmegaBraveraWeb.Router,
   home_page: [kaffy: :dashboard],
   hide_dashboard: false,
-  extensions: [OmegaBravera.Kaffy.BraveraExt],
-  resources: &OmegaBravera.KaffyConfig.create_resources/1
+  extensions: [OmegaBraveraWeb.Kaffy.BraveraExt],
+  resources: &OmegaBraveraWeb.Kaffy.Config.create_resources/1
 
 config :pigeon, :fcm,
   fcm_default: %{

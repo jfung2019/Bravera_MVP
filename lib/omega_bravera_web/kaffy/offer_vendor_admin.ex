@@ -1,7 +1,9 @@
-defmodule OmegaBravera.OfferVendorAdmin do
+defmodule OmegaBraveraWeb.Kaffy.OfferVendorAdmin do
   import Ecto.Query, warn: false
 
   def singular_name(_schema), do: "Claim ID"
+
+  def plural_name(_schema), do: "Claim IDs"
 
   def custom_index_query(conn, _schema, query) do
     %{private: %{:guardian_default_claims => %{"sub" => "partner_user:" <> partner_user_id}}} =

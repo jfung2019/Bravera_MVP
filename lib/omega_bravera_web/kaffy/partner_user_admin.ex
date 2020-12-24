@@ -1,4 +1,4 @@
-defmodule OmegaBravera.Kaffy.PartnerUser do
+defmodule OmegaBraveraWeb.Kaffy.PartnerUserAdmin do
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
   alias OmegaBravera.Accounts.PartnerUser
   import Ecto.Query

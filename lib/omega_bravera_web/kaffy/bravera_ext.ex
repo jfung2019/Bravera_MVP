@@ -1,4 +1,4 @@
-defmodule OmegaBravera.Kaffy.BraveraExt do
+defmodule OmegaBraveraWeb.Kaffy.BraveraExt do
   def stylesheets(_conn) do
     [
       {:safe,
