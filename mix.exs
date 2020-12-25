@@ -20,7 +20,7 @@ defmodule OmegaBravera.Mixfile do
   def application do
     [
       mod: {OmegaBravera.Application, []},
-      extra_applications: [:logger, :runtime_tools, :sendgrid]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -82,8 +82,7 @@ defmodule OmegaBravera.Mixfile do
        github: "sorentwo/oban", ref: "f0124f323ee5740471fa4f855f731727ff6ef0bd", override: true},
       {:countries, "~> 1.5"},
       {:pigeon, "~> 1.5.0"},
-      {:kadabra, "~> 0.4.4"},
-      {:kaffy, github: "aesmail/kaffy"}
+      {:kadabra, "~> 0.4.4"}
     ]
   end
 

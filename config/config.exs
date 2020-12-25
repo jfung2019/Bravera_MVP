@@ -47,18 +47,6 @@ config :omega_bravera, OmegaBravera.Guardian,
   ttl: {52, :weeks},
   max_age: {78, :weeks}
 
-config :kaffy,
-  otp_app: :omega_bravera,
-  admin_title: "Bravera",
-  admin_logo: "/images/kaffy_logo.png",
-  admin_logo_mini: "/images/kaffy_mini.png",
-  ecto_repo: OmegaBravera.Repo,
-  router: OmegaBraveraWeb.Router,
-  home_page: [kaffy: :dashboard],
-  hide_dashboard: false,
-  extensions: [OmegaBraveraWeb.Kaffy.BraveraExt],
-  resources: &OmegaBraveraWeb.Kaffy.Config.create_resources/1
-
 config :pigeon, :fcm,
   fcm_default: %{
     key:

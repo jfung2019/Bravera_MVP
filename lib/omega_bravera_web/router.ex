@@ -1,6 +1,5 @@
 defmodule OmegaBraveraWeb.Router do
   use OmegaBraveraWeb, :router
-  use Kaffy.Routes, scope: "/partner-admin", pipe_through: [:partner_user_authenticated]
 
   alias OmegaBravera.Guardian
 

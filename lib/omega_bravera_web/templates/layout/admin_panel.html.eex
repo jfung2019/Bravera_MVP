@@ -20,18 +20,67 @@
   </head>
 
   <body class="gray-background">
-    <div class="vh-top">
-    <%= if logged_in?(@conn) && is_admin?(@conn) do %>
-      <%= render "admin_panel_nav.html", conn: @conn %>
-    <% end %>
-
     <div class="text-center">
       <p class="alert alert-success" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
     </div>
 
     <section class="container-fluid flex-grow px-0 px-sm-3">
-      <%= @inner_content %>
+      <div class="row">
+      <%= if logged_in?(@conn) && is_admin?(@conn) do %>
+        <div class="col-lg-2">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <%= link(gettext("Emails"), to: Routes.admin_panel_emails_path(@conn, :index)) %>
+            </li>
+            <li class="nav-item">
+              <%= link(gettext("Users"), to: Routes.admin_panel_user_path(@conn, :index)) %>
+            </li>
+            <li class="nav-item">
+              <%= link(gettext("Locations"), to: Routes.admin_panel_locations_path(@conn, :index)) %>
+            </li>
+            <li class="nav-item">
+              <%= link(gettext("Points"), to: Routes.admin_panel_points_path(@conn, :new)) %>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                NGO
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <%= link(gettext("List"), to: Routes.admin_panel_ngo_path(@conn, :index), class: "dropdown-item") %>
+                <%= link(gettext("Activities"), to: Routes.admin_panel_activity_path(@conn, :new), class: "dropdown-item") %>
+                <%= link(gettext("Challenges"), to: Routes.admin_panel_challenges_path(@conn, :index), class: "dropdown-item") %>
+
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="drop-offers" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Groups
+              </a>
+              <div class="dropdown-menu" aria-labelledby="drop-offers">
+                <%= link(gettext("List"), to: Routes.admin_panel_partner_path(@conn, :index), class: "dropdown-item") %>
+                <%= link(gettext("New"), to: Routes.admin_panel_partner_path(@conn, :new), class: "dropdown-item") %>
+              </div>
+
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="drop-offers" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Offer
+              </a>
+              <div class="dropdown-menu" aria-labelledby="drop-offers">
+                <%= link(gettext("List"), to: Routes.admin_panel_offer_path(@conn, :index), class: "dropdown-item") %>
+                <%= link(gettext("Activities"), to: Routes.admin_panel_offer_challenge_activity_path(@conn, :new), class: "dropdown-item") %>
+                <%= link(gettext("Rewards"), to: Routes.admin_panel_offer_reward_path(@conn, :index), class: "dropdown-item") %>
+                <%= link(gettext("Vendors"), to: Routes.admin_panel_offer_vendor_path(@conn, :index), class: "dropdown-item") %>
+              </div>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+        <div class="col">
+            <%= @inner_content %>
+        </div>
+      </div>
     </section>
 
     <footer class="footer">
@@ -48,7 +97,6 @@
         </nav>
       </div>
     </footer>
-    </div>
     <%= if assigns[:google_analytics_id] do %>
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=<%= assigns[:google_analytics_id] %>"></script>
