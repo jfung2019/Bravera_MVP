@@ -1,27 +1,25 @@
-<div class="row">
-  <div class="col-6 offset-2">
-    <h2>Listing Offer Rewards</h2>
-
-    <span><%= link "Create Offer Vendor", to: Routes.admin_panel_offer_vendor_path(@conn, :new) %></span>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Vendor ID</th>
-          <th>Email</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-    <%= for offer_vendor <- @offer_vendors do %>
-        <tr>
-          <td><%= offer_vendor.vendor_id %></td>
-          <td><%= offer_vendor.email %></td>
-          <td class="text-right">
-            <span><%= link "Edit", to: Routes.admin_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-default btn-xs"%> </span>
-          </td>
-        </tr>
-    <% end %>
-      </tbody>
-    </table>
-  </div>
+<div class="d-flex justify-content-between align-items-center">
+  <h2><%= gettext("Claim IDs") %></h2>
+  <%= link gettext("Create Claim ID"), to: Routes.admin_panel_offer_vendor_path(@conn, :new), class: "btn btn-outline-primary" %>
 </div>
+<small class="text-muted"><%= gettext("(Think of this like a ‘PIN’ you enter to verify rewards. Choose something you (and others in your business / group) will remember. A ‘Claim ID’ is linked to each offer and reward(s). If your offer reward will be ‘physical’ e.g. claimed in-person / in-store with a QR code, the QR code will be ‘verified’ by entering this ‘Claim ID’. Even if you're creating an online reward, please also create a Claim ID, as it is needed as a standard. Confused? Click \"I need a little help above to read more\".)") %></small>
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th><%= gettext("Claim ID") %></th>
+      <th><%= gettext("Email") %></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for offer_vendor <- @offer_vendors do %>
+      <tr>
+        <td><%= offer_vendor.vendor_id %></td>
+        <td><%= offer_vendor.email %></td>
+        <td>
+          <%= link gettext("Edit"), to: Routes.admin_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-warning btn-xs"%>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

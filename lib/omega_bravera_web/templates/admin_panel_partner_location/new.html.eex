@@ -1,6 +1,2 @@
-<div class="row">
-	<div class="col-6 offset-3">
-		<h1>New <%= @partner.name %> Location</h1>
-		<%= render "_form.html", Map.put(assigns, :action, Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :create, @partner)) %>
-	</div>
-</div>
+<h1><%= gettext("New %{name} Location", name: @partner.name) %></h1>
+<%= render "_form.html", Map.put(assigns, :action, Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :create, @partner)) %>

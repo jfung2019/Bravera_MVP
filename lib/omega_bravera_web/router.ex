@@ -136,8 +136,10 @@ defmodule OmegaBraveraWeb.Router do
 
   scope "/admin", OmegaBraveraWeb do
     pipe_through [:admin_section]
-    resources "/sessions", AdminUserSessionController, only: [:new, :create]
-    get "/logout", AdminUserSessionController, :logout
+
+    resources "/sessions", AdminUserSessionController,
+      only: [:new, :create, :delete],
+      singleton: true
 
     scope "/" do
       pipe_through [:super_admin_authenticated]
@@ -192,10 +194,10 @@ defmodule OmegaBraveraWeb.Router do
 
       scope "/" do
         pipe_through [:admin_liveview]
-        live "/partners/:id/images", AdminPartnerImages
+        live "/groups/:id/images", AdminPartnerImages
       end
 
-      resources "/partners", AdminPanelPartnerController, except: [:delete] do
+      resources "/groups", AdminPanelPartnerController, except: [:delete] do
         resources "/locations", AdminPanelPartnerLocationController, except: [:index]
         resources "/members", AdminPanelPartnerMemberController, only: [:index, :delete]
       end

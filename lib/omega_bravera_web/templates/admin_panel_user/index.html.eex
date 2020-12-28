@@ -1,25 +1,23 @@
-<div class="row">
-	<div class="col-12">
-		<h2>Listing Users</h2>
-
+<div class="overflow-auto" style="width: 80vw;">
+		<h2><%= gettext("Listing Users") %></h2>
 		<table class="table table-bordered table-hover">
 		  <thead>
 		    <tr>
-		      <th>First Name</th>
-		      <th>Last Name</th>
-		      <th>Email</th>
-		      <th>Location</th>
-		      <th>Sex</th>
-		      <th>DOB</th>
-		      <th>Sign Up Date</th>
-		      <th>Email Verified</th>
-		      <th>OS</th>
-		      <th>Active</th>
-		      <th>Rewards</th>
-		      <th>Claimed</th>
-		      <th>Total Distance</th>
-		      <th>Distance This Week</th>
-		      <th>Friend Referrals</th>
+		      <th><%= gettext("First Name") %></th>
+		      <th><%= gettext("Last Name") %></th>
+		      <th><%= gettext("Email") %></th>
+		      <th><%= gettext("Location") %></th>
+		      <th><%= gettext("Sex") %></th>
+		      <th><%= gettext("DOB") %></th>
+		      <th><%= gettext("Sign Up Date") %></th>
+		      <th><%= gettext("Email Verified") %></th>
+		      <th><%= gettext("OS") %></th>
+		      <th><%= gettext("Active") %></th>
+		      <th><%= gettext("Rewards") %></th>
+		      <th><%= gettext("Claimed") %></th>
+		      <th><%= gettext("Total Distance") %></th>
+		      <th><%= gettext("Distance This Week") %></th>
+		      <th><%= gettext("Friend Referrals") %></th>
 			  <th></th>
 		    </tr>
 		  </thead>
@@ -42,14 +40,13 @@
 		      <td><%= user.total_kilometers_this_week %></td>
 		      <td><%= user.friend_referrals %></td>
 		      <td class="text-right">
-		        <span><%= link "Show", to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
+		        <span><%= link gettext("Show"), to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-primary btn-xs" %></span>
 		      </td>
           <td class="text-right">
-            <span><%= link "Edit", to: Routes.admin_panel_user_path(@conn, :edit, user), class: "btn btn-default btn-xs"%> </span>
+            <span><%= link gettext("Edit"), to: Routes.admin_panel_user_path(@conn, :edit, user), class: "btn btn-warning btn-xs"%> </span>
           </td>
 		    </tr>
 		<% end %>
 		  </tbody>
 		</table>
-	</div>
 </div>

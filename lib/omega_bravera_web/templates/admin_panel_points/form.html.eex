@@ -1,29 +1,22 @@
 <%= form_for @changeset, @action, fn f -> %>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+      <p><%= gettext("Oops, something went wrong! Please check the errors below.") %></p>
     </div>
   <% end %>
 
-
-    <div class="form-group">
-      <%= label f, "User", class: "control-label" %>
-
-      <%= select(f, :user_id, Enum.map(@users,
-            &{"User: #{&1.firstname} #{&1.lastname} (#{&1.email})", &1.id}
-          ),
-            class: "form-control chosen", prompt: "Who is the points for?", name: "point[user_id]")
-      %>
-
-      <%= error_tag f, :user_id %>
-    </div>
-
-    <div class="form-group">
-        <%= label f, "Value (Can be in negative and positive.)", class: "control-label" %>
-        <%= number_input f, :value, class: "form-control", list: "country" %>
-        <%= error_tag f, :value %>
-    </div>
   <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
+    <%= label f, gettext("User"), class: "control-label" %>
+    <%= select f, :user_id, Enum.map(@users, &({"User: #{&1.firstname} #{&1.lastname} (#{&1.email})", &1.id})), class: "form-control chosen", prompt: gettext("Who is the points for?") %>
+    <%= error_tag f, :user_id %>
+  </div>
+
+  <div class="form-group">
+      <%= label f, gettext("Value (Can be in negative and positive.)"), class: "control-label" %>
+      <%= number_input f, :value, class: add_error_class(f, :value, "form-control") %>
+      <%= error_tag f, :value %>
+  </div>
+  <div class="mb-3">
+    <%= submit gettext("Submit"), class: "btn btn-primary" %>
   </div>
 <% end %>

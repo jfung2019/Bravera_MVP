@@ -1,9 +1,5 @@
-<div class="row">
-	<div class="col-6 offset-3">
-		<h2>Edit User</h2>
+<h2><%= gettext("Edit User") %></h2>
 
-		<%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_user_path(@conn, :edit, @user)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_user_path(@conn, :edit, @user)) %>
 
-		<span><%= link "Back", to: Routes.admin_panel_user_path(@conn, :index) %></span>
-	</div>
-</div>
+<span><%= link "Back", to: Routes.admin_panel_user_path(@conn, :index) %></span>

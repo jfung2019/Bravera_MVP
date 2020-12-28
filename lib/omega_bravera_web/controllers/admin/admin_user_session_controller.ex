@@ -40,10 +40,10 @@ defmodule OmegaBraveraWeb.AdminUserSessionController do
     end
   end
 
-  def logout(conn, _) do
+  def delete(conn, _params) do
     conn
     |> Guardian.Plug.sign_out()
     |> put_flash(:info, "Successfully signed out")
-    |> redirect(to: "/")
+    |> redirect(to: Routes.admin_user_session_path(conn, :new))
   end
 end

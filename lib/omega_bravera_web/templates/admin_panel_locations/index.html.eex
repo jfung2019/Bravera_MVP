@@ -1,35 +1,32 @@
-<div class="row">
-  <div class="col-6 offset-2">
-    <h2>Listing Locations</h2>
+<div class="d-flex align-items-center justify-content-between">
+  <h2><%= gettext("Listing Locations") %></h2>
 
-    <span><%= link "Create New Location", to: Routes.admin_panel_locations_path(@conn, :new) %></span>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>English Name</th>
-          <th>Chinese Name</th>
-          <th colspan="3"></th>
-        </tr>
-      </thead>
-      <tbody>
-    <%= for location <- @locations do %>
-        <tr>
-          <td><%= location.name_en %></td>
-          <td><%= location.name_zh %></td>
-          <td class="text-right">
-            <span><%= link "Show", to: Routes.admin_panel_locations_path(@conn, :show, location), class: "btn btn-primary btn-xs"%> </span>
-          </td>
-          <td class="text-right">
-            <span><%= link "Edit", to: Routes.admin_panel_locations_path(@conn, :edit, location), class: "btn btn-warning btn-xs"%> </span>
-          </td>
-          <td class="text-right">
-            <span><%= link "Delete", to: Routes.admin_panel_locations_path(@conn, :delete, location), class: "btn btn-danger btn-xs", method: :delete %> </span>
-          </td>
-
-
-        </tr>
-    <% end %>
-      </tbody>
-    </table>
-  </div>
+  <%= link gettext("Create New Location"), to: Routes.admin_panel_locations_path(@conn, :new), class: "btn btn-outline-primary" %>
 </div>
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th><%= gettext("English Name") %></th>
+      <th><%= gettext("Chinese Name") %></th>
+      <th><%= gettext("Longitude") %></th>
+      <th><%= gettext("Latitude") %></th>
+      <th colspan="2" class="text-center"><strong><%= gettext("Actions") %></strong></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for location <- @locations do %>
+    <tr>
+      <td><%= location.name_en %></td>
+      <td><%= location.name_zh %></td>
+      <td><%= location.longitude %></td>
+      <td><%= location.latitude %></td>
+      <td class="text-right">
+        <span><%= link "Show", to: Routes.admin_panel_locations_path(@conn, :show, location), class: "btn btn-primary btn-xs"%> </span>
+      </td>
+      <td class="text-right">
+        <span><%= link "Edit", to: Routes.admin_panel_locations_path(@conn, :edit, location), class: "btn btn-warning btn-xs"%> </span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

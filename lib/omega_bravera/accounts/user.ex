@@ -11,7 +11,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Stripe.StrCustomer
   alias OmegaBravera.Offers.{OfferChallenge, OfferChallengeTeam}
 
-  @required_attributes [:firstname, :lastname, :username, :location_id, :locale]
+  @required_attributes [:firstname, :lastname, :username, :location_id, :locale, :email]
   @allowed_attributes [
     :email,
     :firstname,

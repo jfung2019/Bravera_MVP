@@ -849,12 +849,21 @@ div.team-form {
 
 }
 
+// START OF ADMIN SECTION
 // Admin User Session
 .admin-user-session-new {
   .card {
     margin-top: 8%;
   }
 }
+
+.admin-nav-menu {
+  background-color: $bravera-red;
+  .nav-item .nav-link {
+    color: white;
+  }
+}
+// END OF ADMIN SECTION
 
 @import "~dropzone/dist/dropzone.css";
 .dropzone {

@@ -1,5 +1,3 @@
-<div class="container">
-    <h1>Edit Location</h1>
-    <%= render "_form.html", Map.put(assigns, :action, Routes.admin_panel_locations_path(@conn, :update, @location)) %>
-    <span><%= link "Back", to: Routes.admin_panel_locations_path(@conn, :index) %></span>
-</div>
+<h1><%= gettext("Edit Location") %></h1>
+<%= render "_form.html", Map.put(assigns, :action, Routes.admin_panel_locations_path(@conn, :update, @location)) %>
+<span><%= link gettext("Back"), to: Routes.admin_panel_locations_path(@conn, :index) %></span>

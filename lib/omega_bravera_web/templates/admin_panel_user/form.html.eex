@@ -7,31 +7,31 @@
 
   <div class="form-group">
     <%= label f, :firstname, class: "control-label" %>
-    <%= text_input f, :firstname, class: "form-control" %>
+    <%= text_input f, :firstname, class: add_error_class(f, :firstname, "form-control") %>
     <%= error_tag f, :firstname %>
   </div>
 
   <div class="form-group">
     <%= label f, :lastname, class: "control-label" %>
-    <%= text_input f, :lastname, class: "form-control" %>
+    <%= text_input f, :lastname, class: add_error_class(f, :lastname, "form-control") %>
     <%= error_tag f, :lastname %>
   </div>
 
-  <div class="form-group">
-    <%= label f, :email_verified, class: "control-label" %>
-    <%= checkbox f, :email_verified, class: "form-control" %>
+  <div class="form-group form-check">
+    <%= checkbox f, :email_verified, class: add_error_class(f, :email_verified, "form-check-input") %>
+    <%= label f, :email_verified, class: "form-check-label" %>
     <%= error_tag f, :email_verified %>
   </div>
 
   <div class="form-group">
     <%= label f, :email, class: "control-label" %>
-    <%= text_input f, :email, class: "form-control" %>
+    <%= text_input f, :email, class: add_error_class(f, :email, "form-control") %>
     <%= error_tag f, :email %>
   </div>
 
   <div class="form-group">
     <%= label f, "Daily Points Limit (in KM)", class: "control-label" %>
-    <%= number_input f, :daily_points_limit, class: "form-control" %>
+    <%= number_input f, :daily_points_limit, class: add_error_class(f, :daily_points_limit, "form-control") %>
     <%= error_tag f, :daily_points_limit %>
   </div>
 

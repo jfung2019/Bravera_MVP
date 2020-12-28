@@ -1,18 +1,18 @@
 <%= form_for @changeset, @action, fn f -> %>
   <div class="form-group">
     <%= label f, :address %>
-    <%= text_input f, :address, class: "form-control" %>
+    <%= text_input f, :address, class: add_error_class(f, :address, "form-control") %>
     <%= error_tag f, :address %>
   </div>
   <div class="form-group">
   	<%= label f, :latitude %>
-  	<%= text_input f, :latitude, class: "form-control" %>
+  	<%= text_input f, :latitude, class: add_error_class(f, :latitude, "form-control") %>
   	<%= error_tag f, :latitude %>
   </div>
   <div class="form-group">
   	<%= label f, :longitude %>
-  	<%= text_input f, :longitude, class: "form-control" %>
+  	<%= text_input f, :longitude, class: add_error_class(f, :longitude, "form-control") %>
   	<%= error_tag f, :longitude %>
   </div>
-  <%= submit "Submit", class: "btn btn-primary" %>
+  <%= submit gettext("Submit"), class: "btn btn-primary" %>
 <% end %>

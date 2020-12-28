@@ -1,27 +1,25 @@
 <div class="row">
-	<div class="col-6 offset-3">
-		<h2>Listing Emails</h2>
-
-        <span><%= link "Create New Email", to: Routes.admin_panel_emails_path(@conn, :new) %></span>
-		<table class="table">
+	<div class="col-12">
+		<div class="d-flex align-items-center justify-content-between">
+			<h2><%= gettext("Listing Emails") %></h2>
+			<%= link gettext("Create New Email Categorization"), to: Routes.admin_panel_emails_path(@conn, :new), class: "btn btn-outline-primary" %>
+		</div>
+		<table class="table mt-3">
 		  <thead>
 		    <tr>
-          <th>Category ID</th>
-		      <th>Sendgrid ID</th>
-		      <th>Category</th>
+		      <th><%= gettext("Sendgrid Template ID") %></th>
+		      <th><%= gettext("Category") %></th>
+					<th><strong><%= gettext("Actions") %></strong></th>
 		    </tr>
 		  </thead>
 		  <tbody>
-		<%= for email <- @emails do %>
+			<%= for email <- @emails do %>
 		    <tr>
-          <td><%= email.category.id %></td>
 		      <td><%= email.sendgrid_id %></td>
 		      <td><%= email.category.title %></td>
-					<td class="text-right">
-            <span><%= link "Edit", to: Routes.admin_panel_emails_path(@conn, :edit, email), class: "btn btn-default btn-xs"%> </span>
-          </td>   
+					<td><%= link gettext("Edit"), to: Routes.admin_panel_emails_path(@conn, :edit, email), class: "btn btn-warning btn-xs" %></td>
 		    </tr>
-		<% end %>
+			<% end %>
 		  </tbody>
 		</table>
 	</div>

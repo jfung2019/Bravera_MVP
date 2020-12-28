@@ -63,7 +63,7 @@
           <td data-title="Supporter Email"><%= donation.donor.email %></td>
           <td data-title="Milestone"><%= render_kickstarter(donation.milestone) %></td>
           <td data-title="Challenge currency"><%= donation.ngo_chal.default_currency %></td>
-          <td data-title="Donation Total"><%= Decimal.round(Decimal.mult(donation.charged_amount, donation.exchange_rate), 1) %></td>
+          <td data-title="Donation Total"><%= if is_nil(donation.charged_amount) or is_nil(donation.exchange_rate), do: "", else: Decimal.round(Decimal.mult(donation.charged_amount, donation.exchange_rate), 1) %></td>
           <td class="line-break-fix" data-title="Gateway Fees
 (3.4% + HKD 2.35)"> <!-- do not add spaces before (3.4% + HKD 2.35) -->
             <%= render_fees(donation, "gateway_fee") %>

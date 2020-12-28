@@ -1,46 +1,46 @@
 <%= form_for @changeset, @action, fn f -> %>
   <div class="form-group">
     <%= label f, :name %>
-    <%= text_input f, :name, class: "form-control" %>
+    <%= text_input f, :name, class: add_error_class(f, :name, "form-control") %>
     <%= error_tag f, :name %>
   </div>
   <div class="form-group">
     <%= label f, :short_description %>
-    <%= textarea f, :short_description, class: "form-control", data: [html: true] %>
+    <%= textarea f, :short_description, class: add_error_class(f, :short_description, "form-control"), data: [html: true] %>
     <%= error_tag f, :short_description %>
   </div>
   <div class="form-group">
   	<%= label f, :introduction %>
-  	<%= textarea f, :introduction, class: "form-control", data: [html: true] %>
+  	<%= textarea f, :introduction, class: add_error_class(f, :introduction, "form-control"), data: [html: true] %>
   	<%= error_tag f, :introduction %>
   </div>
   <div class="form-group">
     <%= label f, :join_password, "Password to Join (leave blank to have open)" %>
-    <%= text_input f, :join_password, class: "form-control" %>
+    <%= text_input f, :join_password, class: add_error_class(f, :join_password, "form-control") %>
     <%= error_tag f, :join_password %>
   </div>
  <div class="form-group">
     <%= label f, :email %>
-    <%= text_input f, :email, class: "form-control" %>
+    <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
     <%= error_tag f, :email %>
   </div>
   <div class="form-group">
       <%= label f, :website %>
-      <%= text_input f, :website, class: "form-control" %>
+      <%= text_input f, :website, class: add_error_class(f, :website, "form-control") %>
       <%= error_tag f, :website %>
     </div>
    <div class="form-group">
       <%= label f, :phone %>
-      <%= text_input f, :phone, class: "form-control" %>
+      <%= text_input f, :phone, class: add_error_class(f, :phone, "form-control") %>
       <%= error_tag f, :phone %>
     </div>
 
   <%= if @current_admin.role == "super" do %>
     <div class="form-check mb-3">
       <%= checkbox f, :live, class: "form-check-input" %>
-      <%= label f, :live, "Live Partner", class: "form-check-label" %>
+      <%= label f, :live, gettext("Live Group"), class: "form-check-label" %>
     </div>
   <% end %>
 
-  <%= submit "Submit", class: "btn btn-primary" %>
+  <%= submit gettext("Submit"), class: "btn btn-primary" %>
 <% end %>

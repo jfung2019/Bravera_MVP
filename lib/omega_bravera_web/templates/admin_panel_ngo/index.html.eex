@@ -1,41 +1,37 @@
-<div class="row">
-  <div class="col-6 offset-2">
-    <h2>Listing NGOs</h2>
-
-    <span><%= link "Create New NGO", to: Routes.admin_panel_ngo_path(@conn, :new) %></span>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>NGO Name</th>
-          <th>User ID</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Currency</th>
-        </tr>
-      </thead>
-      <tbody>
-    <%= for ngo <- @ngos do %>
-        <tr>
-          <td><%= ngo.name %></td>
-          <td><%= ngo.user.id %></td>
-          <td><%= ngo.user.firstname %></td>
-          <td><%= ngo.user.lastname %></td>
-          <td><%= ngo.user.email %></td>
-          <td><%= ngo.currency %></td>
-          <td class="text-right">
-            <span><%= link "Show", to: Routes.admin_panel_ngo_path(@conn, :show, ngo), class: "btn btn-default btn-xs"%> </span>
-          </td>
-          <td class="text-right">
-            <span><%= link "Statement", to: Routes.admin_panel_ngo_path(@conn, :statement, ngo), class: "btn btn-default btn-xs"%> </span>
-          </td>
-          <td class="text-right">
-            <span><%= link "Edit", to: Routes.admin_panel_ngo_path(@conn, :edit, ngo), class: "btn btn-default btn-xs"%> </span>
-          </td>
-
-        </tr>
-    <% end %>
-      </tbody>
-    </table>
-  </div>
+<div class="d-flex align-items-center justify-content-between">
+  <h2><%= gettext("Listing NGOs") %></h2>
+  <%= link gettext("Create New NGO"), to: Routes.admin_panel_ngo_path(@conn, :new), class: "btn btn-outline-primary" %>
 </div>
+<table class="table mt-3">
+  <thead>
+    <tr>
+      <th><%= gettext("NGO Name") %></th>
+      <th><%= gettext("User ID") %></th>
+      <th><%= gettext("First Name") %></th>
+      <th><%= gettext("Last Name") %></th>
+      <th><%= gettext("Email") %></th>
+      <th><%= gettext("Currency") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for ngo <- @ngos do %>
+      <tr>
+        <td><%= ngo.name %></td>
+        <td><%= ngo.user.id %></td>
+        <td><%= ngo.user.firstname %></td>
+        <td><%= ngo.user.lastname %></td>
+        <td><%= ngo.user.email %></td>
+        <td><%= ngo.currency %></td>
+        <td class="text-right">
+          <%= link gettext("Show"), to: Routes.admin_panel_ngo_path(@conn, :show, ngo), class: "btn btn-primary btn-xs"%>
+        </td>
+        <td class="text-right">
+          <%= link gettext("Statement"), to: Routes.admin_panel_ngo_path(@conn, :statement, ngo), class: "btn btn-secondary btn-xs"%>
+        </td>
+        <td class="text-right">
+          <%= link gettext("Edit"), to: Routes.admin_panel_ngo_path(@conn, :edit, ngo), class: "btn btn-warning btn-xs"%>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

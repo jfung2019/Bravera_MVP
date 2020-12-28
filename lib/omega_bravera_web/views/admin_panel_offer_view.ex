@@ -18,15 +18,17 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
     stats =
       Enum.reduce(offer_challenges, %{active: 0, complete: 0, expired: 0}, fn offer_challenge,
                                                                               acc ->
-        cond do
-          offer_challenge.status == "active" -> Map.update(acc, :active, 0, &(&1 + 1))
-          offer_challenge.status == "expired" -> Map.update(acc, :expired, 0, &(&1 + 1))
-          offer_challenge.status == "complete" -> Map.update(acc, :complete, 0, &(&1 + 1))
-          true -> acc
+        case offer_challenge.status do
+          "active" -> Map.update(acc, :active, 0, &(&1 + 1))
+          "expired" -> Map.update(acc, :expired, 0, &(&1 + 1))
+          "complete" -> Map.update(acc, :complete, 0, &(&1 + 1))
+          _ -> acc
         end
       end)
 
-    "C: #{stats[:complete]} <br /> E: #{stats[:expired]} <br /> L: #{stats[:active]}"
+    "Finished: #{stats[:complete]} <br /> Expired: #{stats[:expired]} <br /> Live: #{
+      stats[:active]
+    }"
   end
 
   def get_total_redeems_value(offer_redeems) do
