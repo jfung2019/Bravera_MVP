@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.SuperAdminAuth do
   alias OmegaBravera.Accounts.AdminUser
+  alias OmegaBraveraWeb.Router.Helpers, as: Routes
 
   def init(opts), do: opts
 
@@ -11,7 +12,7 @@ defmodule OmegaBraveraWeb.SuperAdminAuth do
       %AdminUser{role: "partner"} ->
         conn
         |> Plug.Conn.halt()
-        |> Phoenix.Controller.redirect(to: "/admin/partners")
+        |> Phoenix.Controller.redirect(to: Routes.admin_panel_partner_path(OmegaBraveraWeb.Endpoint, :index))
 
       _ ->
         conn

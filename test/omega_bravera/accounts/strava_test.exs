@@ -23,6 +23,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
     [attrs: attrs]
   end
 
+  @tag :skip
   test "login_changeset/1 returns the login params returned by Strava", %{attrs: attrs} do
     params = %{
       "code" => "4ce92c56bed42f3239a2b3a7af44632c894804bd",
@@ -42,6 +43,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
     end
   end
 
+  @tag :skip
   describe "create_user_with_tracker/1" do
     test "creates both user and tracker within a transaction", %{attrs: attrs} do
       assert {:ok,
@@ -51,6 +53,7 @@ defmodule OmegaBravera.Accounts.StravaTest do
               }} = Accounts.Strava.create_user_with_tracker(attrs)
     end
 
+    @tag :skip
     test "fails if either the user is already on the db", %{attrs: attrs} do
       insert(:strava, attrs)
 
