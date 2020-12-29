@@ -985,7 +985,10 @@ defmodule OmegaBravera.Offers do
       ** (Ecto.NoResultsError)
 
   """
-  def get_offer_vendor!(id), do: Repo.get!(OfferVendor, id)
+  def get_offer_vendor!(id, preloads \\ []) do
+    from(ov in OfferVendor, where: ov.id == ^id, preload: ^preloads)
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a offer_vendor.

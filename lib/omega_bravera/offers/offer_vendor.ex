@@ -5,12 +5,12 @@ defmodule OmegaBravera.Offers.OfferVendor do
   alias OmegaBravera.Offers.Offer
 
   schema "offer_vendors" do
-    field(:vendor_id, :string)
-    field(:email, :string)
-    field(:cc, :string)
+    field :vendor_id, :string
+    field :email, :string
+    field :cc, :string
 
-    belongs_to(:partner_user, OmegaBravera.Accounts.PartnerUser, type: :binary_id)
-    has_many(:offers, Offer, foreign_key: :vendor_id)
+    belongs_to :partner_user, OmegaBravera.Accounts.PartnerUser, type: :binary_id
+    has_many :offers, Offer, foreign_key: :vendor_id
 
     timestamps(type: :utc_datetime)
   end

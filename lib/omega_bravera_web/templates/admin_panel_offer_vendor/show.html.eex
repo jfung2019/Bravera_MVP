@@ -1,8 +1,28 @@
-<h1>Show Offer vendor</h1>
+<div class="card">
+  <div class="card-body">
+    <h1 class="display-3"><%= @offer_vendor.vendor_id %></h1>
 
-<ul>
+    <div class="row">
+      <div class="col">
+        <h3><%= gettext("Live Offers") %></h3>
+        <ul>
+          <%= for offer <- Enum.filter(@offer_vendor.offers, fn offer -> !offer.hidden end) do %>
+            <li><%= link offer.name, to: Routes.admin_panel_offer_path(@conn, :show, offer) %></li>
+          <% end %>
+        </ul>
+      </div>
+      <div class="col">
+        <h3><%= gettext("Hidden Offers") %></h3>
+        <ul>
+          <%= for offer <- Enum.filter(@offer_vendor.offers, fn offer -> offer.hidden end) do %>
+            <li><%= link offer.name, to: Routes.admin_panel_offer_path(@conn, :show, offer) %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
 
-</ul>
 
-<span><%= link "Edit", to: Routes.admin_panel_offer_vendor_path(@conn, :edit, @offer_vendor) %></span>
-<span><%= link "Back", to: Routes.admin_panel_offer_vendor_path(@conn, :index) %></span>
+    <span><%= link "Edit", to: Routes.admin_panel_offer_vendor_path(@conn, :edit, @offer_vendor), class: "btn btn-warning" %></span>
+    <span><%= link "Back", to: Routes.admin_panel_offer_vendor_path(@conn, :index), class: "btn btn-secondary" %></span>
+  </div>
+</div>

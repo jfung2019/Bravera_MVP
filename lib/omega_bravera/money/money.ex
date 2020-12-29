@@ -94,19 +94,17 @@ defmodule OmegaBravera.Money do
     |> Repo.one()
   end
 
-  def count_of_donations() do
+  def count_of_donations do
     from(d in Donation, select: count(d.id))
     |> Repo.one()
   end
 
-  def total_secured_donations() do
+  def total_secured_donations do
     from(d in Donation,
-      select: {sum(d.amount), fragment("upper(?)", d.currency)},
+      select: {fragment("round(?, 2)", sum(d.amount)), fragment("upper(?)", d.currency)},
       group_by: fragment("upper(?)", d.currency)
     )
     |> Repo.all()
-    |> Enum.map(fn {amount, currency} -> "#{currency}: #{amount}" end)
-    |> Enum.join(", ")
   end
 
   def list_tips, do: Repo.all(Tip)

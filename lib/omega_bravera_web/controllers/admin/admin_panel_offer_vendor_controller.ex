@@ -26,6 +26,8 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
     end
   end
 
+  def show(conn, %{"id" => id}), do: render(conn, "show.html", offer_vendor: Offers.get_offer_vendor!(id, [:offers]))
+
   def edit(conn, %{"id" => id}) do
     offer_vendor = Offers.get_offer_vendor!(id)
     changeset = Offers.change_offer_vendor(offer_vendor)

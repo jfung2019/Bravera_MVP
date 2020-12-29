@@ -6,10 +6,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Offers.{Offer, OfferChallenge}
 
-  def logged_in?(conn) do
-    user = Guardian.Plug.current_resource(conn)
-    if user !== nil, do: true, else: false
-  end
+  def logged_in?(conn), do: Guardian.Plug.current_resource(conn) !== nil
 
   def get_add_team_member_redirect_uri(conn) do
     case Plug.Conn.get_session(conn, "add_team_member_url") do
@@ -42,12 +39,12 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     end
   end
 
-  def is_own_offer_challenge?(%OfferChallenge{} = challenge, %User{} = user),
-    do: challenge.user.id == user.id
+  def is_own_offer_challenge?(%OfferChallenge{user_id: user_id}, %User{id: user_id}),
+    do: true
 
   def is_own_offer_challenge?(_, _), do: false
 
-  def is_own_challenge?(%NGOChal{} = challenge, %User{} = user), do: challenge.user.id == user.id
+  def is_own_challenge?(%NGOChal{user_id: user_id}, %User{id: user_id}), do: true
   def is_own_challenge?(_, _), do: false
 
   def render_datetime(nil), do: ""
@@ -127,7 +124,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
         default
       ) do
     cond do
-      valid_uri?(bravera_pp) == true -> bravera_pp
+      valid_uri?(bravera_pp) -> bravera_pp
       true -> default
     end
   end
@@ -137,8 +134,8 @@ defmodule OmegaBraveraWeb.ViewHelpers do
         default
       ) do
     cond do
-      valid_uri?(bravera_pp) == true -> bravera_pp
-      valid_uri?(strava_pp) == true -> strava_pp
+      valid_uri?(bravera_pp) -> bravera_pp
+      valid_uri?(strava_pp) -> strava_pp
       true -> default
     end
   end
@@ -159,13 +156,24 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   end
 
   def currency_to_symbol(currency) do
-    case currency do
+    case String.downcase(currency) do
       "myr" -> "RM"
       "hkd" -> "HK$"
       "krw" -> "₩"
       "sgd" -> "S$"
       "gbp" -> "£"
       _ -> "$"
+    end
+  end
+
+  @doc """
+  Returns class if in same section for the current URL path
+  """
+  def in_current_path(conn, path, class \\ "active") do
+    if String.starts_with?(conn.request_path, path) do
+      class
+    else
+      ""
     end
   end
 

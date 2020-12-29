@@ -19,7 +19,7 @@
     <script src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
 
-  <body class="gray-background pt-5 admin-section">
+  <body class="gray-background pt-3 admin-section">
     <div class="text-center">
       <p class="alert alert-success" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
@@ -29,45 +29,46 @@
       <div class="row">
       <%= if logged_in?(@conn) && is_admin?(@conn) do %>
         <div class="col-lg-2">
-          <div class="admin-nav-menu py-3">
+          <%= img_tag Routes.static_path(@conn, "/images/admin_logo.png"), class: "img-fluid py-2 bg-white shadow rounded-top" %>
+          <div class="admin-nav-menu py-3 rounded-bottom">
             <h6 class="pl-3"><%= gettext("Super Admin Options") %></h6>
             <ul class="nav flex-column">
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_user_page_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_user_page_path(@conn, :index), class: "nav-link" do %>
                   <span class="fa fa-dashboard"></span> <%= gettext("Dashboard") %>
                 <% end %>
               </li>
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_emails_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_emails_path(@conn, :index), class: "nav-link" do %>
                   <span class="fa fa-envelope"></span> <%= gettext("Email Categorization") %>
                 <% end %>
               </li>
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_user_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_user_path(@conn, :index), class: "nav-link" do %>
                   <span class="fa fa-address-book"></span> <%= gettext("Users") %>
                 <% end %>
               </li>
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_locations_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_locations_path(@conn, :index), class: "nav-link" do %>
                   <span class="fa fa-map-marker"></span> <%= gettext("Locations") %>
                 <% end %>
               </li>
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_points_path(@conn, :new)) %>">
                 <%= link to: Routes.admin_panel_points_path(@conn, :new), class: "nav-link" do %>
                   <span class="fa fa-plus"></span> <%= gettext("Points") %>
                 <% end %>
               </li>
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_ngo_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_ngo_path(@conn, :index), class: "nav-link" do %>
                   <span class="fa fa-heart"></span> <%= gettext("NGO") %>
                 <% end %>
               </li>
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_offer_challenge_activity_path(@conn, :new)) %>">
                 <%= link to: Routes.admin_panel_offer_challenge_activity_path(@conn, :new), class: "nav-link" do %>
                   <span class="fa fa-bullhorn"></span> <%= gettext("Activities") %>
                 <% end %>
               </li>
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_partner_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_partner_path(@conn, :index), class: "nav-link" do %>
                 <span class="fa fa-group"></span> <%= gettext("Groups") %>
                 <% end %>
@@ -76,17 +77,17 @@
             <hr>
             <h6 class="pl-3"><%= gettext("Offer Management") %></h6>
             <ul class="nav flex-column">
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_offer_vendor_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_offer_vendor_path(@conn, :index), class: "nav-link" do %>
                   <span class="fa fa-qrcode"></span> <%= gettext("Claim IDs") %>
                 <% end %>
               </li>
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_offer_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_offer_path(@conn, :index), class: "nav-link" do %>
                   <span class="fa fa-trophy"></span> <%= gettext("Offers") %>
                 <% end %>
               </li>
-              <li class="nav-item">
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_offer_reward_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_offer_reward_path(@conn, :index), class: "nav-link" do %>
                   <span class="fa fa-gift"></span> <%= gettext("Rewards") %>
                 <% end %>
@@ -96,7 +97,7 @@
             <ul class="nav flex-column">
               <li class="nav-item">
                 <%= link to: Routes.admin_user_session_path(@conn, :delete), class: "nav-link", method: :delete do %>
-                <span class="fa fa-sign-out"></span> <%= gettext("Logout") %>
+                  <span class="fa fa-sign-out"></span> <%= gettext("Logout") %>
                 <% end %>
               </li>
             </ul>

@@ -1,32 +1,40 @@
-<table class="table">
-	<tbody>
-		<tr>
-			<td>Total Amount of Users:</td>
-			<td><%= @users %></td>
-		</tr>
-		<tr>
-			<td>Total amount of donors:</td>
-			<td><%= @donors %></td>
-		</tr>
-		<tr>
-			<td>Total amount of Activities:</td>
-			<td><%= @activities %></td>
-		</tr>
-		<tr>
-			<td>Total amount of Target Distance:</td>
-			<td><%= @distance_target %></td>
-		</tr>
-		<tr>
-			<td>Total amount of Challenge Days:</td>
-			<td><%= @challenge_days %> days</td>
-		</tr>
-		<tr>
-			<td>Total amount of Donations:</td>
-			<td><%= @donations %></td>
-		</tr>
-		<tr>
-			<td>Total amount of Secured Donations:</td>
-			<td><%= @total_secured %></td>
-		</tr>
-	</tbody>
-</table>
+<div class="card">
+	<div class="card-body">
+		<table class="table">
+			<tbody>
+				<tr>
+					<td><%= gettext("Total Amount of Users") %>:</td>
+					<td><%= @users %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total amount of donors") %>:</td>
+					<td><%= @donors %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total amount of Activities") %>:</td>
+					<td><%= @activities %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total amount of Target Distance") %>:</td>
+					<td><%= @distance_target %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total amount of Challenge Days") %>:</td>
+					<td><%= @challenge_days %> days</td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total amount of Donations") %>:</td>
+					<td><%= @donations %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total amount of Secured Donations") %>:</td>
+					<td>
+						<%= for {amount, currency} <- @total_secured do %>
+							<%= currency %>: <%= "#{currency_to_symbol(currency)}#{amount}" %>
+						<% end %>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

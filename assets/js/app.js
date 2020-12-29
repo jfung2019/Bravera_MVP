@@ -5,9 +5,10 @@ import css from '../css/app.css.scss';
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
 import "phoenix_html";
+import $ from "jquery";
+import "popper.js";
 import "bootstrap";
 import "moment";
-import $ from "jquery";
 import "chosen-js";
 import {Socket} from "phoenix";
 import LiveSocket from "phoenix_live_view";
@@ -71,6 +72,7 @@ liveSocket.connect();
 
 $(() => {
   $('select.chosen').chosen();
+  $('[data-toggle="tooltip"]').tooltip();
   $(window).on('shown.bs.modal', (e) => {
     $(e.target).find('input:first').focus();
   });
