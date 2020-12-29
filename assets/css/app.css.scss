@@ -857,10 +857,38 @@ div.team-form {
   }
 }
 
-.admin-nav-menu {
-  background-color: $bravera-red;
-  .nav-item .nav-link {
-    color: white;
+.admin-section {
+  .admin-nav-menu {
+    background-color: $bravera-red;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+    h6 {
+      color: white;
+      font-weight: 400;
+      font-style: italic;
+    }
+    hr {
+      border-top-color: white;
+    }
+    .nav-item {
+      .nav-link {
+        color: white;
+      }
+      &.active, &:hover {
+        background-color: white;
+        .nav-link {
+          color: $bravera-red;
+        }
+      }
+    }
+
+  }
+  .btn.btn-outline-primary {
+    border-color: $bravera-red;
+    color: $bravera-red;
+    &:hover {
+      background-color: $bravera-red;
+      color: white;
+    }
   }
 }
 // END OF ADMIN SECTION

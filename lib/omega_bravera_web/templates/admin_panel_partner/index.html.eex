@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-between align-items-center">
-	<h1><%= gettext("Listing Groups") %></h1>
+	<h1><span class="fa fa-group"></span> <%= gettext("Groups") %></h1>
 	<%= link gettext("Create New Group"), to: Routes.admin_panel_partner_path(@conn, :new), class: "btn btn-outline-primary" %>
 </div>
 <div>

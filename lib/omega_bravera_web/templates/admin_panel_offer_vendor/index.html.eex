@@ -1,25 +1,39 @@
-<div class="d-flex justify-content-between align-items-center">
-  <h2><%= gettext("Claim IDs") %></h2>
-  <%= link gettext("Create Claim ID"), to: Routes.admin_panel_offer_vendor_path(@conn, :new), class: "btn btn-outline-primary" %>
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center">
+      <h1><%= gettext("Claim IDs") %></h1>
+    </div>
+    <div class="row my-3">
+      <div class="col-9">
+        <small class="text-muted"><%= gettext("(Think of this like a ‘PIN’ you enter to verify rewards. Choose something you (and others in your business / group) will remember. A ‘Claim ID’ is linked to each offer and reward(s). If your offer reward will be ‘physical’ e.g. claimed in-person / in-store with a QR code, the QR code will be ‘verified’ by entering this ‘Claim ID’. Even if you're creating an online reward, please also create a Claim ID, as it is needed as a standard. Confused? Click \"I need a little help above to read more\".)") %></small>
+      </div>
+    </div>
+    <%= link gettext("Create Claim ID"), to: Routes.admin_panel_offer_vendor_path(@conn, :new), class: "btn btn-outline-primary" %>
+    <table class="table mt-3 table-striped">
+      <thead>
+        <tr>
+          <th><%= gettext("Claim ID") %></th>
+          <th><%= gettext("Email") %></th>
+          <th><%= gettext("CC") %></th>
+          <th><%= gettext("Date Created") %></th>
+          <th><%= gettext("Last Edited") %></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for offer_vendor <- @offer_vendors do %>
+          <tr>
+            <td><%= offer_vendor.vendor_id %></td>
+            <td><%= offer_vendor.email %></td>
+            <td><%= if is_nil(offer_vendor.cc), do: "None", else: offer_vendor.cc %></td>
+            <td><%= offer_vendor.inserted_at %></td>
+            <td><%= offer_vendor.updated_at %></td>
+            <td>
+              <%= link gettext("Edit"), to: Routes.admin_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-warning btn-xs"%>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
-<small class="text-muted"><%= gettext("(Think of this like a ‘PIN’ you enter to verify rewards. Choose something you (and others in your business / group) will remember. A ‘Claim ID’ is linked to each offer and reward(s). If your offer reward will be ‘physical’ e.g. claimed in-person / in-store with a QR code, the QR code will be ‘verified’ by entering this ‘Claim ID’. Even if you're creating an online reward, please also create a Claim ID, as it is needed as a standard. Confused? Click \"I need a little help above to read more\".)") %></small>
-<table class="table mt-3">
-  <thead>
-    <tr>
-      <th><%= gettext("Claim ID") %></th>
-      <th><%= gettext("Email") %></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for offer_vendor <- @offer_vendors do %>
-      <tr>
-        <td><%= offer_vendor.vendor_id %></td>
-        <td><%= offer_vendor.email %></td>
-        <td>
-          <%= link gettext("Edit"), to: Routes.admin_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-warning btn-xs"%>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>

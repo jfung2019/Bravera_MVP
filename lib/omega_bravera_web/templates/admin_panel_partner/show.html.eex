@@ -23,6 +23,7 @@
 		</tr>
 	</tbody>
 </table>
+<h3><span class="fa fa-map-marker"></span> <%= gettext("Group Location") %></h3>
 <%= if @partner.location do %>
 	<%= link gettext("Edit Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :edit, @partner, @partner.location), class: "btn btn-warning" %>
 	<%= link gettext("Delete Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :delete, @partner, @partner.location), method: :delete, class: "ml-2 btn btn-danger" %>
@@ -45,7 +46,7 @@
 <% else %>
 	<%= link gettext("Add Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :new, @partner) %><br>
 <% end %>
-<h2><%= gettext("Offers") %></h2>
+<h2><span class="fa fa-trophy"></span> <%= gettext("Offers") %></h2>
 <%= if length(@partner.offers) > 0 do %>
 	<table class="table">
 		<tbody>
@@ -61,7 +62,7 @@
 	</table>
  <% end %>
  <hr>
- <h3><%= gettext("Attach an Offer") %></h3>
+ <h3><span class="fa fa-plus-square"></span> <%= gettext("Attach an Offer") %></h3>
  <div class="row">
 	<%= form_for @conn, Routes.admin_panel_offer_partner_path(@conn, :create), fn f -> %>
 		<%= hidden_input f, :partner_id, value: @partner.id %>
@@ -74,5 +75,5 @@
 		<% end %>
 	</div>
 	<hr>
-<h2><%= gettext("Group Images") %></h2>
+<h2><span class="fa fa-image"></span> <%= gettext("Group Images") %></h2>
  <%= link "Add/Edit Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, @partner) %>

@@ -967,7 +967,8 @@ defmodule OmegaBravera.Offers do
 
   """
   def list_offer_vendors do
-    Repo.all(OfferVendor)
+    from(o in OfferVendor, order_by: [desc: o.inserted_at])
+    |> Repo.all()
   end
 
   @doc """
