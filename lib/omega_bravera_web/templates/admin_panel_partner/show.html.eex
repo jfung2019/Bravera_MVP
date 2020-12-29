@@ -1,79 +1,83 @@
-<h1><%= @partner.name %></h1>
-<table class="table">
-	<tbody>
-		<tr>
-			<td><%= gettext("Intro") %></td>
-			<td><%= {:safe, @partner.introduction} %></td>
-		</tr>
-		<tr>
-			<td><%= gettext("Short Description") %></td>
-			<td><%= {:safe, @partner.short_description} %></td>
-		</tr>
-		<tr>
-			<td><%= gettext("Email") %></td>
-			<td><%= @partner.email %></td>
-		</tr>
-		<tr>
-			<td><%= gettext("Website") %></td>
-			<td><%= @partner.website %></td>
-		</tr>
-		<tr>
-			<td><%= gettext("Phone") %></td>
-			<td><%= @partner.phone %></td>
-		</tr>
-	</tbody>
-</table>
-<h3><span class="fa fa-map-marker"></span> <%= gettext("Group Location") %></h3>
-<%= if @partner.location do %>
-	<%= link gettext("Edit Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :edit, @partner, @partner.location), class: "btn btn-warning" %>
-	<%= link gettext("Delete Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :delete, @partner, @partner.location), method: :delete, class: "ml-2 btn btn-danger" %>
-	<table class="table">
-		<tbody>
+<div class="card">
+	<div class="card-body">
+		<h1><%= @partner.name %></h1>
+		<table class="table">
+			<tbody>
+			<tr>
+				<td><%= gettext("Intro") %></td>
+				<td><%= {:safe, @partner.introduction} %></td>
+			</tr>
+			<tr>
+				<td><%= gettext("Short Description") %></td>
+				<td><%= {:safe, @partner.short_description} %></td>
+			</tr>
+			<tr>
+				<td><%= gettext("Email") %></td>
+				<td><%= @partner.email %></td>
+			</tr>
+			<tr>
+				<td><%= gettext("Website") %></td>
+				<td><%= @partner.website %></td>
+			</tr>
+			<tr>
+				<td><%= gettext("Phone") %></td>
+				<td><%= @partner.phone %></td>
+			</tr>
+			</tbody>
+		</table>
+		<h3><span class="fa fa-map-marker"></span> <%= gettext("Group Location") %></h3>
+		<%= if @partner.location do %>
+		<%= link gettext("Edit Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :edit, @partner, @partner.location), class: "btn btn-warning" %>
+		<%= link gettext("Delete Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :delete, @partner, @partner.location), method: :delete, class: "ml-2 btn btn-danger" %>
+		<table class="table">
+			<tbody>
 			<tr>
 				<td><%= gettext("Address") %></td>
 				<td><%= @partner.location.address %></td>
-		</tr>
-		<tr>
-			<td><%= gettext("Latitude") %></td>
-			<td><%= @partner.location.latitude %></td>
-		</tr>
-		<tr>
-			<td><%= gettext("Longitude") %></td>
-			<td><%= @partner.location.longitude %></td>
-		</tr>
-	</tbody>
-	</table>
-<% else %>
-	<%= link gettext("Add Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :new, @partner) %><br>
-<% end %>
-<h2><span class="fa fa-trophy"></span> <%= gettext("Offers") %></h2>
-<%= if length(@partner.offers) > 0 do %>
-	<table class="table">
-		<tbody>
+			</tr>
+			<tr>
+				<td><%= gettext("Latitude") %></td>
+				<td><%= @partner.location.latitude %></td>
+			</tr>
+			<tr>
+				<td><%= gettext("Longitude") %></td>
+				<td><%= @partner.location.longitude %></td>
+			</tr>
+			</tbody>
+		</table>
+		<% else %>
+		<%= link gettext("Add Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :new, @partner) %><br>
+		<% end %>
+		<h2><span class="fa fa-trophy"></span> <%= gettext("Offers") %></h2>
+		<%= if length(@partner.offers) > 0 do %>
+		<table class="table">
+			<tbody>
 			<%= for offer_partner <- @partner.offer_partners do %>
-				<tr>
-					<td><%= offer_partner.offer.name %>
-						<%= link gettext("Edit Offer"), to: Routes.admin_panel_offer_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
-						<%= link gettext("Unlink Offer"), to: Routes.admin_panel_offer_partner_path(@conn, :delete, offer_partner), method: :delete, class: "btn btn-danger" %>
-					</td>
+			<tr>
+				<td><%= offer_partner.offer.name %>
+					<%= link gettext("Edit Offer"), to: Routes.admin_panel_offer_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
+					<%= link gettext("Unlink Offer"), to: Routes.admin_panel_offer_partner_path(@conn, :delete, offer_partner), method: :delete, class: "btn btn-danger" %>
+				</td>
 			</tr>
 			<% end %>
-	</tbody>
-	</table>
- <% end %>
- <hr>
- <h3><span class="fa fa-plus-square"></span> <%= gettext("Attach an Offer") %></h3>
- <div class="row">
-	<%= form_for @conn, Routes.admin_panel_offer_partner_path(@conn, :create), fn f -> %>
-		<%= hidden_input f, :partner_id, value: @partner.id %>
-	 <div class="col">
-			<%= select f, :offer_id, Enum.map(@offers, fn o -> {o.name, o.id} end), class: "form-control chosen" %>
-		</div>
-		<div class="col">
-			<%= submit gettext("Attach"), class: "btn btn-primary my-3" %>
-		</div>
+			</tbody>
+		</table>
 		<% end %>
+		<hr>
+		<h3><span class="fa fa-plus-square"></span> <%= gettext("Attach an Offer") %></h3>
+		<div class="row">
+			<%= form_for @conn, Routes.admin_panel_offer_partner_path(@conn, :create), fn f -> %>
+			<%= hidden_input f, :partner_id, value: @partner.id %>
+			<div class="col">
+				<%= select f, :offer_id, Enum.map(@offers, fn o -> {o.name, o.id} end), class: "form-control chosen" %>
+			</div>
+			<div class="col">
+				<%= submit gettext("Attach"), class: "btn btn-primary my-3" %>
+			</div>
+			<% end %>
+		</div>
+		<hr>
+		<h2><span class="fa fa-image"></span> <%= gettext("Group Images") %></h2>
+		<%= link "Add/Edit Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, @partner) %>
 	</div>
-	<hr>
-<h2><span class="fa fa-image"></span> <%= gettext("Group Images") %></h2>
- <%= link "Add/Edit Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, @partner) %>
+</div>

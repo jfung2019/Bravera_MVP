@@ -1,6 +1,7 @@
-<div class="container">
-  <h2><%= gettext("Add Sendgrid email to Category") %></h2>
-  <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_emails_path(@conn, :create)) %>
-  <span><%= link gettext("Back"), to: Routes.admin_panel_emails_path(@conn, :index) %></span>
+<div class="card">
+  <div class="card-body">
+    <h2><%= gettext("Add Sendgrid email to Category") %></h2>
+    <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_emails_path(@conn, :create)) %>
+    <span><%= link gettext("Back"), to: Routes.admin_panel_emails_path(@conn, :index) %></span>
+  </div>
 </div>
-

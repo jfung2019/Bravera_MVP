@@ -1,27 +1,34 @@
-<div class="d-flex justify-content-between align-items-center">
-  <h1><%= gettext("Listing Offer Rewards") %></h1>
-  <%= link gettext("Create Offer Reward"), to: Routes.admin_panel_offer_reward_path(@conn, :new), class: "btn btn-outline-primary" %>
+<div class="card">
+  <div class="card-body">
+    <h1><%= gettext("Offer Rewards") %></h1>
+    <%= link gettext("Create Offer Reward"), to: Routes.admin_panel_offer_reward_path(@conn, :new), class: "btn btn-outline-primary" %>
+    <table class="table mt-3 table-striped">
+      <thead>
+        <tr>
+          <th><%= gettext("Name") %></th>
+          <th><%= gettext("Value/Price") %></th>
+          <th><%= gettext("Offer") %></th>
+          <th><%= gettext("Hidden") %></th>
+          <th><%= gettext("Date Created") %></th>
+          <th><%= gettext("Last Edited") %></th>
+          <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+        </tr>
+      </thead>
+      <tbody>
+      <%= for offer_reward <- @offer_rewards do %>
+        <tr>
+          <td><%= offer_reward.name %></td>
+          <td><%= offer_reward.value %></td>
+          <td><%= offer_reward.offer.name %></td>
+          <td><%= offer_reward.hide %></td>
+          <td><%= render_datetime(offer_reward.inserted_at) %></td>
+          <td><%= render_datetime(offer_reward.updated_at) %></td>
+          <td class="text-center">
+            <%= link "Edit", to: Routes.admin_panel_offer_reward_path(@conn, :edit, offer_reward), class: "btn btn-warning btn-xs"%>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
-<table class="table mt-3">
-  <thead>
-    <tr>
-      <th><%= gettext("Name") %></th>
-      <th><%= gettext("Value/Price") %></th>
-      <th><%= gettext("Offer") %></th>
-      <th><%= gettext("Hidden") %></th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for offer_reward <- @offer_rewards do %>
-      <tr>
-        <td><%= offer_reward.name %></td>
-        <td><%= offer_reward.value %></td>
-        <td><%= offer_reward.offer.name %></td>
-        <td><%= offer_reward.hide %></td>
-        <td>
-          <%= link "Edit", to: Routes.admin_panel_offer_reward_path(@conn, :edit, offer_reward), class: "btn btn-warning btn-xs"%>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>

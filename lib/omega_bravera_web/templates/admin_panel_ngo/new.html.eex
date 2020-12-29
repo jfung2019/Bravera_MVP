@@ -1,3 +1,7 @@
-<h2><%= gettext("New NGO") %></h2>
-<%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_ngo_path(@conn, :create)) %>
-<%= link gettext("Back"), to: Routes.admin_panel_ngo_path(@conn, :index) %>
+<div class="card">
+    <div class="card-body">
+        <h2><%= gettext("New NGO") %></h2>
+        <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_ngo_path(@conn, :create)) %>
+        <%= link gettext("Back"), to: Routes.admin_panel_ngo_path(@conn, :index) %>
+    </div>
+</div>

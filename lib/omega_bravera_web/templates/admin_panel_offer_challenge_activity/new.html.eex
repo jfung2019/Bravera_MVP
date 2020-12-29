@@ -1,60 +1,64 @@
-<h2><%= gettext("New Offer Activity") %></h2>
-<h6 class="text-danger"><%= gettext("Warning: creating an activity will trigger emails and rewards!") %></h6>
+<div class="card">
+  <div class="card-body">
+    <h2><%= gettext("New Offer Activity") %></h2>
+    <h6 class="text-danger"><%= gettext("Warning: creating an activity will trigger emails and rewards!") %></h6>
 
-<%= form_for @changeset, Routes.admin_panel_offer_challenge_activity_path(@conn, :create), fn f -> %>
-  <%= if @changeset.action do %>
+    <%= form_for @changeset, Routes.admin_panel_offer_challenge_activity_path(@conn, :create), fn f -> %>
+    <%= if @changeset.action do %>
     <div class="alert alert-danger">
       <p><%= gettext("Oops, something went wrong! Please check the errors below.") %></p>
     </div>
-  <% end %>
+    <% end %>
 
-  <div class="form-group">
-    <%= label f, :challenge_id, gettext("Challenge and Participant"), class: "control-label" %>
-    <%= select f, :challenge_id, Enum.map(@challenges, &({"Challenge: #{&1.slug} Participant: #{&1.user.firstname} #{&1.user.lastname} (#{&1.user.email}) | Type: #{&1.activity_type} | Start date: #{render_datetime(&1.start_date)}", &1.id})), class: add_error_class(f, :challenge_id, "form-control chosen"), prompt: gettext("Who is the activity for?"), name: "challenge_id" %>
-    <%= error_tag f, :challenge_id %>
+    <div class="form-group">
+      <%= label f, :challenge_id, gettext("Challenge and Participant"), class: "control-label" %>
+      <%= select f, :challenge_id, Enum.map(@challenges, &({"Challenge: #{&1.slug} Participant: #{&1.user.firstname} #{&1.user.lastname} (#{&1.user.email}) | Type: #{&1.activity_type} | Start date: #{render_datetime(&1.start_date)}", &1.id})), class: add_error_class(f, :challenge_id, "form-control chosen"), prompt: gettext("Who is the activity for?"), name: "challenge_id" %>
+      <%= error_tag f, :challenge_id %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :type, class: "control-label" %>
+      <%= select f, :type, @available_activities, class: add_error_class(f, :type, "form-control"), step: "0.01"%>
+      <%= error_tag f, :type %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :start_date, class: "control-label" %>
+      <%= datetime_select f, :start_date, class: add_error_class(f, :start_date, "form-control"), required: "", year: [options: 2019..2025] %>
+      <%= error_tag f, :start_date %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :distance, "Distance (KM)", class: "control-label" %>
+      <%= number_input f, :distance, class: add_error_class(f, :distance, "form-control"), step: "0.01", required: "" %>
+      <%= error_tag f, :distance %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :average_speed, "Average Speed (KMs Per Hour) - (Leave blank to auto calculate)", class: "control-label" %>
+      <%= number_input f, :average_speed, class: add_error_class(f, :average_speed, "form-control"), step: "0.01"%>
+      <%= error_tag f, :average_speed %>
+    </div>
+
+    <%= label f, :moving_time, "Duration (moving time) - Number of Hours:Minutes:Seconds", class: "control-label" %>
+
+    <div class="form-group row ml-1">
+      <%= number_input f, :moving_time, class: add_error_class(f, :moving_time, "form-control col-1"), required: "", name: "activity_accumulator[moving_time][hour]", value: "00"%>
+      <%= number_input f, :moving_time, class: add_error_class(f, :moving_time, "form-control col-1"), required: "", name: "activity_accumulator[moving_time][minute]", value: "00"%>
+      <%= number_input f, :moving_time, class: add_error_class(f, :moving_time, "form-control col-1"), required: "", name: "activity_accumulator[moving_time][second]", value: "00"%>
+      <%= error_tag f, :moving_time %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :calories, gettext("Calories (Leave blank to auto calculate. If weight is 0, calories will not be calculated)"), class: "control-label" %>
+      <%= number_input f, :calories, class: add_error_class(f, :calories, "form-control"), step: "0.01" %>
+      <%= error_tag f, :calories %>
+    </div>
+
+    <div class="mb-3">
+      <%= submit gettext("Save"), class: "btn btn-primary" %>
+    </div>
+    <% end %>
+    <span><%= link "Back", to: Routes.admin_user_page_path(@conn, :index) %></span>
   </div>
-
-  <div class="form-group">
-    <%= label f, :type, class: "control-label" %>
-    <%= select f, :type, @available_activities, class: add_error_class(f, :type, "form-control"), step: "0.01"%>
-    <%= error_tag f, :type %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :start_date, class: "control-label" %>
-    <%= datetime_select f, :start_date, class: add_error_class(f, :start_date, "form-control"), required: "", year: [options: 2019..2025] %>
-    <%= error_tag f, :start_date %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :distance, "Distance (KM)", class: "control-label" %>
-    <%= number_input f, :distance, class: add_error_class(f, :distance, "form-control"), step: "0.01", required: "" %>
-    <%= error_tag f, :distance %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :average_speed, "Average Speed (KMs Per Hour) - (Leave blank to auto calculate)", class: "control-label" %>
-    <%= number_input f, :average_speed, class: add_error_class(f, :average_speed, "form-control"), step: "0.01"%>
-    <%= error_tag f, :average_speed %>
-  </div>
-
-  <%= label f, :moving_time, "Duration (moving time) - Number of Hours:Minutes:Seconds", class: "control-label" %>
-
-  <div class="form-group row ml-1">
-    <%= number_input f, :moving_time, class: add_error_class(f, :moving_time, "form-control col-1"), required: "", name: "activity_accumulator[moving_time][hour]", value: "00"%>
-    <%= number_input f, :moving_time, class: add_error_class(f, :moving_time, "form-control col-1"), required: "", name: "activity_accumulator[moving_time][minute]", value: "00"%>
-    <%= number_input f, :moving_time, class: add_error_class(f, :moving_time, "form-control col-1"), required: "", name: "activity_accumulator[moving_time][second]", value: "00"%>
-    <%= error_tag f, :moving_time %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :calories, gettext("Calories (Leave blank to auto calculate. If weight is 0, calories will not be calculated)"), class: "control-label" %>
-    <%= number_input f, :calories, class: add_error_class(f, :calories, "form-control"), step: "0.01" %>
-    <%= error_tag f, :calories %>
-  </div>
-
-  <div class="mb-3">
-    <%= submit gettext("Save"), class: "btn btn-primary" %>
-  </div>
-<% end %>
-<span><%= link "Back", to: Routes.admin_user_page_path(@conn, :index) %></span>
+</div>

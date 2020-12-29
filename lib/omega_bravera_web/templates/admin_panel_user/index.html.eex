@@ -1,52 +1,56 @@
-<div class="overflow-auto" style="width: 80vw;">
-		<h2><%= gettext("Listing Users") %></h2>
-		<table class="table table-bordered table-hover">
-		  <thead>
-		    <tr>
-		      <th><%= gettext("First Name") %></th>
-		      <th><%= gettext("Last Name") %></th>
-		      <th><%= gettext("Email") %></th>
-		      <th><%= gettext("Location") %></th>
-		      <th><%= gettext("Sex") %></th>
-		      <th><%= gettext("DOB") %></th>
-		      <th><%= gettext("Sign Up Date") %></th>
-		      <th><%= gettext("Email Verified") %></th>
-		      <th><%= gettext("OS") %></th>
-		      <th><%= gettext("Active") %></th>
-		      <th><%= gettext("Rewards") %></th>
-		      <th><%= gettext("Claimed") %></th>
-		      <th><%= gettext("Total Distance") %></th>
-		      <th><%= gettext("Distance This Week") %></th>
-		      <th><%= gettext("Friend Referrals") %></th>
-			  <th></th>
-		    </tr>
-		  </thead>
-		  <tbody>
-		<%= for user <- @users do %>
-		    <tr>
-		      <td><%= user.firstname %></td>
-		      <td><%= user.lastname %></td>
-		      <td><%= user.email %></td>
-		      <td><%= if user.location, do: user.location.name_en %></td>
-		      <td><%= if user.setting != nil, do: user.setting.gender %></td>
-		      <td><%= if user.setting != nil, do: Timex.format!(user.setting.date_of_birth, "{D}/{0M}/{YYYY}") %></td>
-		      <td><%= Timex.format!(user.inserted_at, "{D}/{0M}/{YY}") %></td>
-		      <td><%= user.email_verified %></td>
-		      <td><%= user.device_type %></td>
-		      <td><%= user.active %></td>
-		      <td><%= user.number_of_rewards %></td>
-		      <td><%= user.number_of_claimed_rewards %></td>
-		      <td><%= user.total_kilometers %></td>
-		      <td><%= user.total_kilometers_this_week %></td>
-		      <td><%= user.friend_referrals %></td>
-		      <td class="text-right">
-		        <span><%= link gettext("Show"), to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-primary btn-xs" %></span>
-		      </td>
-          <td class="text-right">
-            <span><%= link gettext("Edit"), to: Routes.admin_panel_user_path(@conn, :edit, user), class: "btn btn-warning btn-xs"%> </span>
-          </td>
-		    </tr>
-		<% end %>
-		  </tbody>
+<div class="card">
+	<div class="card-body overflow-auto" style="width: 80vw;">
+		<h2><%= gettext("Users") %></h2>
+		<table class="table mt-3 table-striped">
+			<thead>
+			<tr>
+				<th><%= gettext("First Name") %></th>
+				<th><%= gettext("Last Name") %></th>
+				<th><%= gettext("Email") %></th>
+				<th><%= gettext("Location") %></th>
+				<th><%= gettext("Sex") %></th>
+				<th><%= gettext("DOB") %></th>
+				<th><%= gettext("Sign Up Date") %></th>
+				<th><%= gettext("Email Verified") %></th>
+				<th><%= gettext("OS") %></th>
+				<th><%= gettext("Active") %></th>
+				<th><%= gettext("Rewards") %></th>
+				<th><%= gettext("Claimed") %></th>
+				<th><%= gettext("Total Distance") %></th>
+				<th><%= gettext("Distance This Week") %></th>
+				<th><%= gettext("Friend Referrals") %></th>
+				<th><%= gettext("Date Created") %></th>
+				<th><%= gettext("Last Edited") %></th>
+				<th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+			</tr>
+			</thead>
+			<tbody>
+			<%= for user <- @users do %>
+			<tr>
+				<td><%= user.firstname %></td>
+				<td><%= user.lastname %></td>
+				<td><%= user.email %></td>
+				<td><%= if user.location, do: user.location.name_en %></td>
+				<td><%= if user.setting != nil, do: user.setting.gender %></td>
+				<td><%= if user.setting != nil, do: Timex.format!(user.setting.date_of_birth, "{D}/{0M}/{YYYY}") %></td>
+				<td><%= Timex.format!(user.inserted_at, "{D}/{0M}/{YY}") %></td>
+				<td><%= user.email_verified %></td>
+				<td><%= user.device_type %></td>
+				<td><%= user.active %></td>
+				<td><%= user.number_of_rewards %></td>
+				<td><%= user.number_of_claimed_rewards %></td>
+				<td><%= user.total_kilometers %></td>
+				<td><%= user.total_kilometers_this_week %></td>
+				<td><%= user.friend_referrals %></td>
+				<td><%= render_datetime(user.inserted_at) %></td>
+				<td><%= render_datetime(user.updated_at) %></td>
+				<td class="text-center">
+					<%= link gettext("Show"), to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-primary btn-xs" %>
+					<%= link gettext("Edit"), to: Routes.admin_panel_user_path(@conn, :edit, user), class: "btn btn-warning btn-xs"%>
+				</td>
+			</tr>
+			<% end %>
+			</tbody>
 		</table>
+	</div>
 </div>

@@ -1,19 +1,23 @@
-<h1><%= @location.name_en %></h1>
-<ul>
-  <li>
-    <strong><%= gettext("English Name") %>:</strong>
-    <%= @location.name_en %>
-  </li>
-  <li>
-    <strong><%= gettext("Chinese Name") %>:</strong>
-    <%= @location.name_zh %>
-  </li>
-  <li>
-    <strong><%= gettext("Longitude") %>:</strong>
-    <%= @location.longitude %>
-  </li>
-  <li>
-    <strong><%= gettext("Latitude") %>:</strong>
-    <%= @location.latitude %>
-  </li>
-</ul>
+<div class="card">
+  <div class="card-body">
+    <h1><%= @location.name_en %></h1>
+    <ul>
+      <li>
+        <strong><%= gettext("English Name") %>:</strong>
+        <%= @location.name_en %>
+      </li>
+      <li>
+        <strong><%= gettext("Chinese Name") %>:</strong>
+        <%= @location.name_zh %>
+      </li>
+      <li>
+        <strong><%= gettext("Longitude") %>:</strong>
+        <%= @location.longitude %>
+      </li>
+      <li>
+        <strong><%= gettext("Latitude") %>:</strong>
+        <%= @location.latitude %>
+      </li>
+    </ul>
+  </div>
+</div>

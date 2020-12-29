@@ -1,44 +1,43 @@
-<div class="d-flex justify-content-between align-items-center">
-  <h2><%= gettext("Listing Offers") %></h2>
-
-  <%= link gettext("Create New Offer"), to: Routes.admin_panel_offer_path(@conn, :new), class: "btn btn-outline-primary" %>
+<div class="card">
+  <div class="card-body">
+    <h1><%= gettext("Offers") %></h1>
+    <%= link gettext("Create New Offer"), to: Routes.admin_panel_offer_path(@conn, :new), class: "btn btn-outline-primary" %>
+    <table class="table mt-3 table-striped">
+      <thead>
+        <tr>
+          <th><%= gettext("Name") %></th>
+          <th><%= gettext("Vendor ID") %></th>
+          <th><%= gettext("Patricipants") %></th>
+          <th><%= gettext("Challenges") %></th>
+          <th><%= gettext("Status") %></th>
+          <th><%= gettext("Redemptions") %></th>
+          <th><%= gettext("Total Value") %></th>
+          <th><%= gettext("Date Created") %></th>
+          <th><%= gettext("Last Edited") %></th>
+          <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+        </tr>
+      </thead>
+      <tbody>
+      <%= for offer <- @offers do %>
+        <tr>
+          <td><%= offer.name %></td>
+          <td><%= offer.vendor.vendor_id %></td>
+          <td><%= offer.unique_participants %></td>
+          <td><%= length(offer.offer_challenges) %></td>
+          <td class="small"><%= raw completed_challenges(offer.offer_challenges) %></td>
+          <td><%= redeems_total(offer.offer_redeems) %></td>
+          <td><%= get_total_redeems_value(offer.offer_redeems) %></td>
+          <td><%= render_datetime(offer.inserted_at) %></td>
+          <td><%= render_datetime(offer.updated_at) %></td>
+          <td class="text-center">
+            <%= link gettext("Show"), to: Routes.admin_panel_offer_path(@conn, :show, offer), class: "btn btn-primary btn-xs"%>
+            <%= link gettext("Statement"), to: Routes.admin_panel_offer_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs"%>
+            <%= link gettext("Edit"), to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning btn-xs"%>
+            <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminOfferImages, offer), class: "btn btn-info btn-xs"%>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
-<table class="table table-bordered table-hover mt-3">
-  <thead>
-    <tr>
-      <th><%= gettext("Name") %></th>
-      <th><%= gettext("Vendor ID") %></th>
-      <th><%= gettext("Patricipants") %></th>
-      <th><%= gettext("Challenges") %></th>
-      <th><%= gettext("Status") %></th>
-      <th><%= gettext("Redemptions") %></th>
-      <th><%= gettext("Total Value") %></th>
-      <th colspan="4" class="text-center"><strong><%= gettext("Actions") %></strong></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for offer <- @offers do %>
-    <tr>
-      <td><%= offer.name %></td>
-      <td><%= offer.vendor.vendor_id %></td>
-      <td><%= offer.unique_participants %></td>
-      <td><%= length(offer.offer_challenges) %></td>
-      <td class="small"><%= raw completed_challenges(offer.offer_challenges) %></td>
-      <td><%= redeems_total(offer.offer_redeems) %></td>
-      <td><%= get_total_redeems_value(offer.offer_redeems) %></td>
-      <td>
-        <%= link gettext("Show"), to: Routes.admin_panel_offer_path(@conn, :show, offer), class: "btn btn-primary btn-xs"%>
-      </td>
-      <td>
-        <%= link gettext("Statement"), to: Routes.admin_panel_offer_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs"%>
-      </td>
-      <td>
-        <%= link gettext("Edit"), to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning btn-xs"%>
-      </td>
-      <td>
-        <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminOfferImages, offer), class: "btn btn-info btn-xs"%>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>

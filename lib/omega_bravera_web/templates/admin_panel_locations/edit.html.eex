@@ -1,3 +1,7 @@
-<h1><%= gettext("Edit Location") %></h1>
-<%= render "_form.html", Map.put(assigns, :action, Routes.admin_panel_locations_path(@conn, :update, @location)) %>
-<span><%= link gettext("Back"), to: Routes.admin_panel_locations_path(@conn, :index) %></span>
+<div class="card">
+    <div class="card-body">
+        <h1><%= gettext("Edit Location") %></h1>
+        <%= render "_form.html", Map.put(assigns, :action, Routes.admin_panel_locations_path(@conn, :update, @location)) %>
+        <span><%= link gettext("Back"), to: Routes.admin_panel_locations_path(@conn, :index) %></span>
+    </div>
+</div>

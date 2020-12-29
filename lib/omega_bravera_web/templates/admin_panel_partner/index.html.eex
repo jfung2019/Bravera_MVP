@@ -1,50 +1,56 @@
-<div class="d-flex justify-content-between align-items-center">
-	<h1><span class="fa fa-group"></span> <%= gettext("Groups") %></h1>
-	<%= link gettext("Create New Group"), to: Routes.admin_panel_partner_path(@conn, :new), class: "btn btn-outline-primary" %>
-</div>
-<div>
-	<small class="text-muted"><%= gettext("This is where you create and manage the ‘groups’ you list inside the Bravera app.") %></small>
-	<ul class="text-muted">
-		<li><small><%= gettext("Group Name") %></small></li>
-		<li><small><%= gettext("Short Intro") %></small></li>
-		<li><small><%= gettext("Description") %></small></li>
-		<li><small><%= gettext("Add images") %></small></li>
-		<li><small><%= gettext("Password to join") %></small></li>
-		<li><small><%= gettext("Email contact details") %></small></li>
-		<li><small><%= gettext("Location (if required)") %></small></li>
-		<li><small><%= gettext("Add offers (and rewards)") %></small></li>
-	</ul>
-	<small class="text-muted"><%= gettext("Get started by creating your first group.") %></small><br>
-	<small class="text-muted"><%= gettext("If you need help") %>, <a href="#"><%= gettext("click here") %></a></small>
-</div>
-<table class="table mt-3">
-	<thead>
-		<tr>
-			 <th><%= gettext("Group Name") %></th>
-			 <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
-			 <th><%= gettext("Live?") %></th>
-		</tr>
-</thead>
-<tbody>
-	<%= for partner <- @partners do %>
-		<tr>
-			<td><%= partner.name %></td>
-			<td class="text-center">
-				<%= link gettext("Members"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
-				<%= link gettext("Show"), to: Routes.admin_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
-				<%= link gettext("Edit"), to: Routes.admin_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
-			</td>
-			<td>
-				<%= if partner.live do %>
+<div class="card">
+	<div class="card-body">
+		<h1><span class="fa fa-group"></span> <%= gettext("Groups") %></h1>
+		<%= link gettext("Create New Group"), to: Routes.admin_panel_partner_path(@conn, :new), class: "btn btn-outline-primary" %>
+		<div>
+			<small class="text-muted"><%= gettext("This is where you create and manage the ‘groups’ you list inside the Bravera app.") %></small>
+			<ul class="text-muted">
+				<li><small><%= gettext("Group Name") %></small></li>
+				<li><small><%= gettext("Short Intro") %></small></li>
+				<li><small><%= gettext("Description") %></small></li>
+				<li><small><%= gettext("Add images") %></small></li>
+				<li><small><%= gettext("Password to join") %></small></li>
+				<li><small><%= gettext("Email contact details") %></small></li>
+				<li><small><%= gettext("Location (if required)") %></small></li>
+				<li><small><%= gettext("Add offers (and rewards)") %></small></li>
+			</ul>
+			<small class="text-muted"><%= gettext("Get started by creating your first group.") %></small><br>
+			<small class="text-muted"><%= gettext("If you need help") %>, <a href="#"><%= gettext("click here") %></a></small>
+		</div>
+		<table class="table mt-3 table-striped">
+			<thead>
+			<tr>
+				<th><%= gettext("Group Name") %></th>
+				<th><%= gettext("Date Created") %></th>
+				<th><%= gettext("Last Edited") %></th>
+				<th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+				<th><%= gettext("Live?") %></th>
+			</tr>
+			</thead>
+			<tbody>
+			<%= for partner <- @partners do %>
+			<tr>
+				<td><%= partner.name %></td>
+				<td><%= render_datetime(partner.inserted_at) %></td>
+				<td><%= render_datetime(partner.updated_at) %></td>
+				<td class="text-center">
+					<%= link gettext("Members"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
+					<%= link gettext("Show"), to: Routes.admin_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
+					<%= link gettext("Edit"), to: Routes.admin_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
+				</td>
+				<td>
+					<%= if partner.live do %>
 					<button class="btn btn-danger"><%= gettext("Live") %></button>
-				<% else %>
+					<% else %>
 					<button class="btn btn-secondary"><%= gettext("Not Live") %></button>
-				<% end %>
-			</td>
-		</tr>
-	<% end %>
-</tbody>
-</table>
-<%= if @paginate.total_pages > 1 do %>
-	<%= turbo_pagination_links(@conn, @paginate) %>
-<% end %>
+					<% end %>
+				</td>
+			</tr>
+			<% end %>
+			</tbody>
+		</table>
+		<%= if @paginate.total_pages > 1 do %>
+		<%= turbo_pagination_links(@conn, @paginate) %>
+		<% end %>
+	</div>
+</div>

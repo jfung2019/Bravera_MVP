@@ -1,5 +1,7 @@
-<div class="container">
-<h2>New Offer</h2>
-<%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_offer_path(@conn, :create)) %>
-<span><%= link "Back", to: Routes.admin_panel_offer_path(@conn, :index) %></span>
+<div class="card">
+    <div class="card-body overflow-auto" style="width: 80vw;">
+        <h2>New Offer</h2>
+        <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_offer_path(@conn, :create)) %>
+        <span><%= link "Back", to: Routes.admin_panel_offer_path(@conn, :index) %></span>
+    </div>
 </div>
