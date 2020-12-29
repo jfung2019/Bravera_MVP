@@ -62,10 +62,7 @@ defmodule OmegaBraveraWeb.AdminUserSessionControllerTest do
     end
 
     test "logs out an admin user", %{conn: conn} do
-      conn =
-        conn
-        |> get(admin_user_session_path(conn, :logout))
-
+      conn = delete(conn, admin_user_session_path(conn, :delete))
       assert html_response(conn, 302)
     end
   end

@@ -19,7 +19,7 @@ defmodule OmegaBraveraWeb.Admin.PartnerControllerTest do
 
     test "can edit the partner", %{partner: partner, conn: conn} do
       conn = get(conn, Routes.admin_panel_partner_path(conn, :edit, partner))
-      assert html_response(conn, 200) =~ "Edit Partner"
+      assert html_response(conn, 200) =~ "Edit Group"
     end
 
     test "can re-render form if bad editing", %{partner: partner, conn: conn} do
@@ -40,7 +40,7 @@ defmodule OmegaBraveraWeb.Admin.PartnerControllerTest do
 
   test "can render new partner form", %{conn: conn} do
     conn = get(conn, Routes.admin_panel_partner_path(conn, :new))
-    assert html_response(conn, 200) =~ "New Partner"
+    assert html_response(conn, 200) =~ "New Group"
   end
 
   test "can create new partner", %{conn: conn} do

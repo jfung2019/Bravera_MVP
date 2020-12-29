@@ -43,7 +43,7 @@ defmodule OmegaBraveraWeb.Admin.UserControllerTest do
 
     test "shows a specific user", %{conn: conn, user: user} do
       conn = get(conn, admin_panel_user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Show User"
+      assert html_response(conn, 200) =~ "#{user.firstname} #{user.lastname}"
     end
   end
 
