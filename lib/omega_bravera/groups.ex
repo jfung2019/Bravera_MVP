@@ -377,7 +377,7 @@ defmodule OmegaBravera.Groups do
   Lists all members from a partner ID.
   """
   def list_partner_members(partner_id) do
-    from(m in Member, where: m.partner_id == ^partner_id, preload: [:user])
+    from(m in Member, where: m.partner_id == ^partner_id, preload: [user: [:strava]])
     |> Repo.all()
   end
 

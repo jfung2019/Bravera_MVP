@@ -19,20 +19,20 @@
 			<tbody>
 			<%= for partner <- @partners do %>
 			<tr>
-				<td><%= partner.name %></td>
-				<td><%= render_datetime(partner.inserted_at) %></td>
-				<td><%= render_datetime(partner.updated_at) %></td>
-				<td class="text-center">
+				<td style="width: 24%; word-break: break-all;"><%= partner.name %></td>
+				<td style="width: 13%; word-break: break-all;"><%= render_datetime(partner.inserted_at) %></td>
+				<td style="width: 13%; word-break: break-all;"><%= render_datetime(partner.updated_at) %></td>
+				<td class="text-center" style="width: 40%;">
 					<%= link gettext("Members"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
 					<%= link gettext("Details"), to: Routes.admin_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
 					<%= link gettext("Edit"), to: Routes.admin_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
 					<%= link gettext("Image"), to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, partner), class: "btn btn-info" %>
 				</td>
-				<td>
+				<td style="width: 10%;">
 					<%= if partner.live do %>
-					<div class="rounded py-1 px-4 d-inline-block btn-danger"><%= gettext("Live") %></div>
+					<div class="rounded py-1 px-3 d-inline-block bg-danger text-white"><%= gettext("Live") %></div>
 					<% else %>
-					<div class="rounded py-1 px-4 d-inline-block btn-secondary"><%= gettext("Not Live") %></div>
+					<div class="rounded py-1 px-3 d-inline-block bg-secondary"><%= gettext("Not Live") %></div>
 					<% end %>
 				</td>
 			</tr>

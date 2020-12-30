@@ -29,7 +29,7 @@
       <div class="row">
       <%= if logged_in?(@conn) && is_admin?(@conn) do %>
         <div class="col-lg-2">
-          <%= img_tag Routes.static_path(@conn, "/images/admin_logo.png"), class: "img-fluid py-2 bg-white shadow rounded-top" %>
+          <%= img_tag Routes.static_path(@conn, "/images/admin_logo.png"), class: "img-fluid py-2 bg-white shadow rounded-top", style: "object-fit: contain;" %>
           <div class="admin-nav-menu py-3 rounded-bottom">
             <h6 class="pl-3"><%= gettext("Super Admin Options") %></h6>
             <ul class="nav flex-column">
