@@ -8,7 +8,7 @@
         <a href="#"><%= gettext("click here") %></a>.)
       </small>
       <%= length(@members) %> member(s)
-      <table class="table">
+      <table class="table table-striped">
         <thead>
         <tr>
           <th><%= gettext("Profile Pic") %></th>
@@ -23,12 +23,12 @@
         <tbody>
         <%= for member <- @members do %>
         <tr>
-          <td><%= img_tag(profile_picture_or_default(member.user, Routes.static_path(@conn, "/images/profile_default.jpeg")),class: "thumbnail img-fluid rounded-circle border") %></td>
+          <td><%= img_tag(profile_picture_or_default(member.user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border", style: "max-height: 50px;") %></td>
           <%= if assigns[:current_admin] do %>
           <td><%= member.user.email %></td>
           <td><%= "#{member.user.firstname} #{member.user.lastname}" %></td>
           <% end %>
-          <td><%= member.username %></td>
+          <td><%= member.user.username %></td>
           <td><%= link gettext("Remove member"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :delete, @partner_id, member), method: :delete, class: "btn btn-danger", data_confirm: "Are you sure?" %></td>
         </tr>
         <% end %>
