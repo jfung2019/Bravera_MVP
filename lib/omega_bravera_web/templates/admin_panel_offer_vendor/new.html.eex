@@ -1,9 +1,9 @@
 <div class="card">
     <div class="card-body">
         <h1><%= gettext("New Claim ID") %></h1>
-        <small class="form-text text-muted">
-            <%= gettext("(Create a new CLAIM ID linked to an offer reward. Click ") %>
-            <a href="#"><%= gettext("here") %></a>
+        <small class="text-muted">
+            <%= gettext("(Create a new CLAIM ID linked to an offer reward. ") %>
+            <a href="#"><%= gettext("Click here") %></a>
             <%= gettext(" to learn more.)") %>
         </small>
         <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_offer_vendor_path(@conn, :create)) %>

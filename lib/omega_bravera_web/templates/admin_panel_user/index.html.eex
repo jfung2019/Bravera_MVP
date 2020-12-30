@@ -45,8 +45,10 @@
 				<td><%= render_datetime(user.inserted_at) %></td>
 				<td><%= render_datetime(user.updated_at) %></td>
 				<td class="text-center">
-					<%= link gettext("Show"), to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-primary btn-xs" %>
-					<%= link gettext("Edit"), to: Routes.admin_panel_user_path(@conn, :edit, user), class: "btn btn-warning btn-xs"%>
+					<div class="d-flex">
+						<%= link gettext("Show"), to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-primary btn-xs" %>
+						<%= link gettext("Edit"), to: Routes.admin_panel_user_path(@conn, :edit, user), class: "btn btn-warning btn-xs"%>
+					</div>
 				</td>
 			</tr>
 			<% end %>

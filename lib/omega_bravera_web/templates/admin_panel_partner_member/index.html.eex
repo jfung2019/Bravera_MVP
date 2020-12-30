@@ -1,21 +1,38 @@
-<h1>Members</h1>
-
-<%= length(@members) %> member(s)
-<table class="table">
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>Name</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for member <- @members do %>
-    <tr>
-      <td><%= member.user.email %></td>
-      <td><%= "#{member.user.firstname} #{member.user.lastname}" %></td>
-      <td><%= link "Remove member", to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :delete, @partner_id, member), method: :delete, class: "btn btn-danger", data_confirm: "Are you sure?" %></td>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
+<div class="card">
+    <div class="card-body">
+      <h1>Members</h1>
+      <small class="text-muted">
+        <%= gettext("(Below is a list of members of this group. You can view basic details and remove members that have successfully joined. For more information ") %>
+        <a href="#"><%= gettext("click here") %></a>
+        <%= gettext(". On how best to ‘invite’ new members to your group ") %>
+        <a href="#"><%= gettext("click here") %></a>.)
+      </small>
+      <%= length(@members) %> member(s)
+      <table class="table">
+        <thead>
+        <tr>
+          <th><%= gettext("Profile Pic") %></th>
+          <%= if assigns[:current_admin] do %>
+          <th><%= gettext("Email") %></th>
+          <th><%= gettext("Name") %></th>
+          <% end %>
+          <th><%= gettext("Alias") %></th>
+          <th class="text-center"><strong><%= gettext("Action") %></strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        <%= for member <- @members do %>
+        <tr>
+          <td><%= img_tag(profile_picture_or_default(member.user, Routes.static_path(@conn, "/images/profile_default.jpeg")),class: "thumbnail img-fluid rounded-circle border") %></td>
+          <%= if assigns[:current_admin] do %>
+          <td><%= member.user.email %></td>
+          <td><%= "#{member.user.firstname} #{member.user.lastname}" %></td>
+          <% end %>
+          <td><%= member.username %></td>
+          <td><%= link gettext("Remove member"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :delete, @partner_id, member), method: :delete, class: "btn btn-danger", data_confirm: "Are you sure?" %></td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+</div>

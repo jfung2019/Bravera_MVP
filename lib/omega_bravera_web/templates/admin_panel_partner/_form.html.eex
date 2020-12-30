@@ -1,32 +1,36 @@
 <%= form_for @changeset, @action, fn f -> %>
   <div class="form-group">
-    <%= label f, :name %>
-    <%= text_input f, :name, class: add_error_class(f, :name, "form-control") %>
-    <%= error_tag f, :name %>
+      <%= label f, :name, class: "control-label" %>
+      <small class="form-text text-muted"><%= gettext("(Your group name. Keep it short and simple. Hint: max 6 words is best)") %></small>
+      <%= text_input f, :name, class: add_error_class(f, :name, "form-control") %>
+      <%= error_tag f, :name %>
   </div>
   <div class="form-group">
-    <%= label f, :short_description %>
-    <%= textarea f, :short_description, class: add_error_class(f, :short_description, "form-control"), data: [html: true] %>
-    <small class="form-text text-muted"><%= gettext("(displayed on list of groups in the Bravera app. 5-10 words)") %></small>
-    <%= error_tag f, :short_description %>
+      <%= label f, :short_description, class: "control-label" %>
+      <small class="form-text text-muted"><%= gettext("(displayed on list of groups in the Bravera app. 5-10 words)") %></small>
+      <%= textarea f, :short_description, class: add_error_class(f, :short_description, "form-control"), data: [html: true] %>
+      <%= error_tag f, :short_description %>
   </div>
   <div class="form-group">
-  	<%= label f, :introduction %>
-  	<%= textarea f, :introduction, class: add_error_class(f, :introduction, "form-control"), data: [html: true] %>
-    <small class="form-text text-muted"><%= gettext("(longer introduction when people click to find out more. Up to 250 words)") %></small>
-  	<%= error_tag f, :introduction %>
+      <%= label f, :introduction, class: "control-label" %>
+      <small class="form-text text-muted"><%= gettext("(longer introduction when people click to find out more. Up to 250 words)") %></small>
+      <%= textarea f, :introduction, class: add_error_class(f, :introduction, "form-control"), data: [html: true] %>
+      <%= error_tag f, :introduction %>
   </div>
   <div class="form-group">
-    <%= label f, :join_password, "Password to Join (leave blank to have open)" %>
-    <%= text_input f, :join_password, class: add_error_class(f, :join_password, "form-control") %>
-    <small class="form-text text-muted"><%= gettext("(leave blank if you want a public / open group. Click here for more info)") %></small>
-    <%= error_tag f, :join_password %>
+      <%= label f, :join_password, "Password to Join (leave blank to have open)", class: "control-label" %>
+      <small class="form-text text-muted"><%= gettext("(leave blank if you want a public / open group. Click here for more info)") %></small>
+      <%= text_input f, :join_password, class: add_error_class(f, :join_password, "form-control") %>
+      <%= error_tag f, :join_password %>
   </div>
  <div class="form-group">
-    <%= label f, :email %>
-    <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
-   <small class="form-text text-muted"><%= gettext("(add if your group is private)") %></small>
-    <%= error_tag f, :email %>
+     <%= label f, :email, "Enquiry Email", class: "control-label" %>
+     <small class="form-text text-muted">
+         <%= gettext("(only required if your group if ‘private’ and requires a ‘password’ to join. Confused? ") %>
+         <a href="#"><%= gettext("Click here") %></a>
+         <%= gettext(" for more information)") %></small>
+     <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
+     <%= error_tag f, :email %>
   </div>
   <div class="form-group">
       <%= label f, :website %>
