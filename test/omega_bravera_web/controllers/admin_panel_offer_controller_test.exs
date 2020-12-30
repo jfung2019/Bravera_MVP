@@ -63,7 +63,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
 
     test "lists all offers in admin panel", %{conn: conn} do
       conn = get(conn, admin_panel_offer_path(conn, :index))
-      assert html_response(conn, 200) =~ "Listing Offers"
+      assert html_response(conn, 200) =~ "Offers"
     end
   end
 
