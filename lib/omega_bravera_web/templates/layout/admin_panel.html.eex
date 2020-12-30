@@ -104,7 +104,7 @@
           </div>
         </div>
       <% end %>
-        <div class="col">
+        <div class="col-lg-10">
           <%= @inner_content %>
         </div>
       </div>

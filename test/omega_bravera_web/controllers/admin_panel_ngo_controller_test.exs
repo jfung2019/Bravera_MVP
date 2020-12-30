@@ -74,7 +74,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
 
     test "lists all ngos in admin panel", %{conn: conn} do
       conn = get(conn, admin_panel_ngo_path(conn, :index))
-      assert html_response(conn, 200) =~ "Listing NGOs"
+      assert html_response(conn, 200) =~ "NGOs"
     end
   end
 

@@ -916,3 +916,12 @@ div.team-form {
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+#offer-vendor-form {
+  .control-label {
+    margin-bottom: 0;
+  }
+  small {
+    margin-bottom: 0.5rem;
+  }
+}

@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-body">
-    <h2><%= gettext("New Offer Activity") %></h2>
+    <h2><span class="fa fa-bullhorn"></span> <%= gettext("New Offer Activity") %></h2>
     <h6 class="text-danger"><%= gettext("Warning: creating an activity will trigger emails and rewards!") %></h6>
 
     <%= form_for @changeset, Routes.admin_panel_offer_challenge_activity_path(@conn, :create), fn f -> %>

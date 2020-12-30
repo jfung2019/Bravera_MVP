@@ -2,7 +2,7 @@
 	<div class="col-12">
 		<div class="card">
 			<div class="card-body">
-				<h2><%= gettext("Emails") %></h2>
+				<h2><span class="fa fa-envelope"></span> <%= gettext("Emails") %></h2>
 				<%= link gettext("Create New Email Categorization"), to: Routes.admin_panel_emails_path(@conn, :new), class: "btn btn-outline-primary" %>
 				<table class="table mt-3 table-striped">
 				  <thead>

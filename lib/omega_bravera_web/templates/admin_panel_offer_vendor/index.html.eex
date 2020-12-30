@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-body">
-    <h1><%= gettext("Claim IDs") %></h1>
+    <h1><span class="fa fa-qrcode"></span> <%= gettext("Claim IDs") %></h1>
     <div class="row my-3">
       <div class="col-9">
         <small class="text-muted"><%= gettext("(Think of this like a ‘PIN’ you enter to verify rewards. Choose something you (and others in your business / group) will remember. A ‘Claim ID’ is linked to each offer and reward(s). If your offer reward will be ‘physical’ e.g. claimed in-person / in-store with a QR code, the QR code will be ‘verified’ by entering this ‘Claim ID’. Even if you're creating an online reward, please also create a Claim ID, as it is needed as a standard. Confused? Click \"I need a little help above to read more\".)") %></small>
@@ -21,12 +21,12 @@
       <tbody>
         <%= for offer_vendor <- @offer_vendors do %>
           <tr>
-            <td><%= offer_vendor.vendor_id %></td>
-            <td><%= offer_vendor.email %></td>
-            <td><%= if is_nil(offer_vendor.cc), do: "None", else: offer_vendor.cc %></td>
-            <td><%= render_datetime(offer_vendor.inserted_at) %></td>
-            <td><%= render_datetime(offer_vendor.updated_at) %></td>
-            <td class="text-center">
+            <td style="width: 10%; word-break: break-all;"><%= offer_vendor.vendor_id %></td>
+            <td style="width: 15%; word-break: break-all;"><%= offer_vendor.email %></td>
+            <td style="width: 15%; word-break: break-all;"><%= if is_nil(offer_vendor.cc), do: "None", else: offer_vendor.cc %></td>
+            <td style="width: 15%; word-break: break-all;"><%= render_datetime(offer_vendor.inserted_at) %></td>
+            <td style="width: 15%; word-break: break-all;"><%= render_datetime(offer_vendor.updated_at) %></td>
+            <td class="text-center" style="width: 30%;">
               <%= link gettext("Details"), to: Routes.admin_panel_offer_vendor_path(@conn, :show, offer_vendor), class: "btn btn-primary btn-xs" %>
               <%= link gettext("Edit"), to: Routes.admin_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-warning btn-xs" %>
               <%= link gettext("Delete"), to: "#", class: "btn btn-danger disabled", data: [toggle: "tooltip", placement: "top"], title: "Tooltip on top" %>

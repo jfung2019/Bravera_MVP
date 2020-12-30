@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-body">
-    <h2><%= gettext("Locations") %></h2>
+    <h2><span class="fa fa-map-marker"></span> <%= gettext("Locations") %></h2>
     <%= link gettext("Create New Location"), to: Routes.admin_panel_locations_path(@conn, :new), class: "btn btn-outline-primary" %>
     <table class="table mt-3 table-striped">
       <thead>
