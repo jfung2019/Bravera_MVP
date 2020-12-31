@@ -3,7 +3,11 @@
     <h1><span class="fa fa-qrcode"></span> <%= gettext("Claim IDs") %></h1>
     <div class="row my-3">
       <div class="col-9">
-        <small class="text-muted"><%= gettext("(Think of this like a ‘PIN’ you enter to verify rewards. Choose something you (and others in your business / group) will remember. A ‘Claim ID’ is linked to each offer and reward(s). If your offer reward will be ‘physical’ e.g. claimed in-person / in-store with a QR code, the QR code will be ‘verified’ by entering this ‘Claim ID’. Even if you're creating an online reward, please also create a Claim ID, as it is needed as a standard. Confused? Click \"I need a little help above to read more\".)") %></small>
+        <small class="text-muted">
+          <%= gettext("(Think of this like a ‘PIN’ that verifies reward claims. A ‘Claim ID’ is linked to each offer and reward(s). If a reward is ‘in-store’, the QR code will be ‘verified’ by entering this ‘Claim ID’. Even if you're creating an online reward, please also create a Claim ID, as it is a standard requirement. Confused? ") %>
+          <a href="#"><%= gettext("Click here") %></a>
+          <%=gettext(" for more help).") %>
+        </small>
       </div>
     </div>
     <%= link gettext("Create Claim ID"), to: Routes.admin_panel_offer_vendor_path(@conn, :new), class: "btn btn-outline-primary" %>

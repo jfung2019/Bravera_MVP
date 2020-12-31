@@ -13,7 +13,7 @@
 				<th><%= gettext("Date Created") %></th>
 				<th><%= gettext("Last Edited") %></th>
 				<th class="text-center"><strong><%= gettext("Actions") %></strong></th>
-				<th><%= gettext("Status") %></th>
+				<th class="text-center"><%= gettext("Status") %></th>
 			</tr>
 			</thead>
 			<tbody>
@@ -26,13 +26,13 @@
 					<%= link gettext("Members"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
 					<%= link gettext("Details"), to: Routes.admin_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
 					<%= link gettext("Edit"), to: Routes.admin_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
-					<%= link gettext("Image"), to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, partner), class: "btn btn-info" %>
+					<%= link gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, partner), class: "btn btn-info" %>
 				</td>
-				<td style="width: 10%;">
+				<td class="text-center" style="width: 10%;">
 					<%= if partner.live do %>
-					<div class="rounded py-1 px-3 d-inline-block bg-danger text-white"><%= gettext("Live") %></div>
+					<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
 					<% else %>
-					<div class="rounded py-1 px-3 d-inline-block bg-secondary"><%= gettext("Not Live") %></div>
+					<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
 					<% end %>
 				</td>
 			</tr>

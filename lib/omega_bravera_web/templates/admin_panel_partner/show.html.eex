@@ -1,6 +1,6 @@
 <div class="card">
 	<div class="card-body">
-		<h1><%= @partner.name %></h1>
+		<h1><span class="fa fa-group"></span> <%= @partner.name %></h1>
 		<table class="table">
 			<tbody>
 			<tr>
@@ -76,8 +76,5 @@
 			</div>
 			<% end %>
 		</div>
-		<hr>
-		<h2><span class="fa fa-image"></span> <%= gettext("Group Images") %></h2>
-		<%= link "Add/Edit Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, @partner) %>
 	</div>
 </div>

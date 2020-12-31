@@ -1,16 +1,24 @@
 <div class="card">
-  <div class="card-body">
+  <div class="card-body overflow-auto">
     <h1><span class="fa fa-trophy"></span> <%= gettext("Offers") %></h1>
+    <div class="row my-3">
+      <div class="col-9">
+        <small class="text-muted">
+          <%= gettext("(This is where you create and manage offers linked to your group. Click ‘Create New Offer’ to be taken through the steps. For help ") %>
+          <a href="#"><%= gettext("click here") %></a>.)
+        </small>
+      </div>
+    </div>
     <%= link gettext("Create New Offer"), to: Routes.admin_panel_offer_path(@conn, :new), class: "btn btn-outline-primary" %>
     <table class="table mt-3 table-striped">
       <thead>
         <tr>
           <th><%= gettext("Name") %></th>
-          <th><%= gettext("Vendor ID") %></th>
-          <th><%= gettext("Patricipants") %></th>
+          <th><%= gettext("Claim ID") %></th>
+          <th><%= gettext("Participants") %></th>
           <th><%= gettext("Challenges") %></th>
           <th><%= gettext("Status") %></th>
-          <th><%= gettext("Redemptions") %></th>
+          <th><%= gettext("Claims") %></th>
           <th><%= gettext("Total Value") %></th>
           <th><%= gettext("Date Created") %></th>
           <th><%= gettext("Last Edited") %></th>
@@ -30,10 +38,12 @@
           <td><%= render_datetime(offer.inserted_at) %></td>
           <td><%= render_datetime(offer.updated_at) %></td>
           <td class="text-center">
-            <%= link gettext("Show"), to: Routes.admin_panel_offer_path(@conn, :show, offer), class: "btn btn-primary btn-xs"%>
-            <%= link gettext("Statement"), to: Routes.admin_panel_offer_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs"%>
-            <%= link gettext("Edit"), to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning btn-xs"%>
-            <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminOfferImages, offer), class: "btn btn-info btn-xs"%>
+            <div class="d-flex">
+              <%= link gettext("Show"), to: Routes.admin_panel_offer_path(@conn, :show, offer), class: "btn btn-primary btn-xs"%>&nbsp;
+              <%= link gettext("Statement"), to: Routes.admin_panel_offer_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs"%>&nbsp;
+              <%= link gettext("Edit"), to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning btn-xs"%>&nbsp;
+              <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminOfferImages, offer), class: "btn btn-info btn-xs"%>
+            </div>
           </td>
         </tr>
       <% end %>

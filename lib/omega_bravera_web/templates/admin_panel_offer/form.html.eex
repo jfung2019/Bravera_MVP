@@ -7,6 +7,11 @@
 
   <div class="form-group">
     <%= label f, :name, class: "control-label" %>
+    <small class="text-muted form-text">
+      <%= gettext("(The offer name that will appear inside your group. ") %>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%=gettext(" for more info.)") %>
+    </small>
     <%= text_input f, :name, class: "form-control" %>
     <%= error_tag f, :name %>
   </div>
@@ -40,6 +45,7 @@
   <div class="form-group">
     <%= label f, :start_date, "Start Date (when in pre_registration, it is used as the end of the countdown date)", class: "control-label" %>
     <br/>
+    <small class="text-muted form-text"><%= gettext("(Offer will be live after the start date displayed below.)") %></small>
     <%= registration_date_builder(f, :start_date, class: "form-control") %>
     <%= error_tag f, :start_date %>
   </div>
@@ -47,6 +53,11 @@
   <div class="form-group">
     <%= label f, :end_date, "End Date (when set, a challenge will end at this date)", class: "control-label" %>
     <br/>
+    <small class="text-muted form-text">
+      <%= gettext("(An offer will ‘end’ on this date. It will ‘disappear’. ") %>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%= gettext(" to learn more.)") %>
+    </small>
     <%= registration_date_builder(f, :end_date, class: "form-control") %>
     <%= error_tag f, :end_date %>
   </div>
@@ -85,6 +96,10 @@
 
   <div class="form-group">
     <%= label f, :toc, "Terms and Conditions", class: "control-label" %>
+    <small class="text-muted form-text">
+      <%= gettext("(Add important details about your offer and reward. For help and examples ") %>
+      <a href="#"><%= gettext("click here") %></a>.)
+    </small>
     <%= textarea f, :toc, class: "form-control", rows: 3, data: [html: true] %>
     <%= error_tag f, :toc %>
   </div>

@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body">
-        <h1><%= gettext("New Claim ID") %></h1>
+        <h1><span class="fa fa-qrcode"></span> <%= gettext("New Claim ID") %></h1>
         <small class="text-muted">
             <%= gettext("(Create a new CLAIM ID linked to an offer reward. ") %>
             <a href="#"><%= gettext("Click here") %></a>

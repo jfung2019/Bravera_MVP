@@ -14,14 +14,14 @@
 
   <div class="form-group">
     <%= label f, :email, gettext("Email"), class: "control-label" %>
-    <small class="form-text text-muted"><%= gettext("(Enter an email to be sent successful claim details. Only enter x1 email. If left blank, no notification emails will be sent per reward claim verification)") %></small>
+    <small class="form-text text-muted"><%= gettext("(Enter an email to be sent successful claim details. Only enter x1 email. If left blank, no notification emails will be sent per reward claim verification.)") %></small>
     <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
     <%= error_tag f, :email %>
   </div>
 
   <div class="form-group">
     <%= label f, :cc, gettext("CC: can be empty. Should separate emails using a comma. No limit."), class: "control-label" %>
-    <small class="form-text text-muted"><%= gettext("Enter any additional email addresses that you may also wish to send successful claim emails)") %></small>
+    <small class="form-text text-muted"><%= gettext("(Enter any additional email addresses that you may also wish to send successful claim emails.)") %></small>
     <%= textarea f, :cc, class: add_error_class(f, :cc, "form-control"), rows: 3 %>
     <%= error_tag f, :cc %>
   </div>

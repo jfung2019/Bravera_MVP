@@ -1,11 +1,11 @@
 <div class="card">
   <div class="card-body">
-    <h1><%= @offer_vendor.vendor_id %></h1>
-    <table class="table mt-3 table-striped">
+    <h1><span class="fa fa-qrcode"></span> <%= @offer_vendor.vendor_id %></h1>
+    <table class="table mt-3 table-striped" style="table-layout: fixed;">
       <thead>
       <tr>
-        <th><%= gettext("Live Offers") %></th>
-        <th><%= gettext("Hidden Offers") %></th>
+        <th><%= gettext("Public Offers") %></th>
+        <th><%= gettext("Private Offers") %></th>
       </tr>
       </thead>
       <tbody>
@@ -13,14 +13,14 @@
         <td>
           <ul>
             <%= for offer <- Enum.filter(@offer_vendor.offers, fn offer -> !offer.hidden end) do %>
-            <li><%= link offer.name, to: Routes.admin_panel_offer_path(@conn, :show, offer) %></li>
+            <li><%= link offer.name, to: Routes.admin_panel_offer_path(@conn, :edit, offer) %></li>
             <% end %>
           </ul>
         </td>
         <td>
           <ul>
             <%= for offer <- Enum.filter(@offer_vendor.offers, fn offer -> offer.hidden end) do %>
-            <li><%= link offer.name, to: Routes.admin_panel_offer_path(@conn, :show, offer) %></li>
+            <li><%= link offer.name, to: Routes.admin_panel_offer_path(@conn, :edit, offer) %></li>
             <% end %>
           </ul>
         </td>

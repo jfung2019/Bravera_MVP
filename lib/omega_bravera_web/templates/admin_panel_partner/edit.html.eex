@@ -1,10 +1,16 @@
 <div class="card">
     <div class="card-body">
-        <h1><%= gettext("Edit Group") %></h1>
-        <small class="text-muted">
-            <%= gettext("(This is where you create and manage the ‘groups’ you list inside the Bravera app. This includes, Group Name, Short Intro, Description, Adding images, Add a password to join, Email contact details, Location (optional). Adding offers and rewards. Get started by creating your first group. If you need help, ") %>
-            <a href="#"><%= gettext("click here") %></a>)
-        </small>
+        <h1><span class="fa fa-group"></span> <%= gettext("Edit Group") %></h1>
+        <div class="row my-3">
+            <div class="col-9">
+                <small class="text-muted">
+                    <%= gettext("(This is where you create and manage the ‘groups’ you list inside the Bravera app. This includes, ") %>
+                    <strong><%= gettext("Group Name, Short Intro, Description, Adding images, Add a password to join, Email contact details, Location (optional), Adding offers and rewards.") %></strong>
+                    <%=gettext(" Get started by creating your first group. If you need help, ") %>
+                    <a href="#"><%= gettext("click here") %></a>)
+                </small>
+            </div>
+        </div>
         <%= render "_form.html", Map.put(assigns, :action, Routes.admin_panel_partner_path(@conn, :update, @partner)) %>
     </div>
 </div>
