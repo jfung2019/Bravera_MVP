@@ -16,6 +16,7 @@
     <%= error_tag f, :name %>
   </div>
 
+  <%= if is_admin?(@conn) do %>
   <div class="form-group">
     <%= label f, "Slug (leave blank to auto generate based on name)", class: "control-label" %>
     <%= text_input f, :slug, class: "form-control" %>
@@ -41,6 +42,7 @@
     <%= checkbox f, :open_registration %>
     <%= error_tag f, :open_registration %>
   </div>
+  <% end %>
 
   <div class="form-group">
     <%= label f, :start_date, "Start Date (when in pre_registration, it is used as the end of the countdown date)", class: "control-label" %>
@@ -68,6 +70,7 @@
     <%= error_tag f, :time_limit %>
   </div>
 
+  <%= if is_admin?(@conn) do %>
   <div class="form-group">
     <%= label f, :hidden, "Hide Offer:", class: "control-label" %>
     <br/>
@@ -93,6 +96,7 @@
     <%= text_input f, :accept_terms_text, class: "form-control" %>
     <%= error_tag f, :accept_terms_text %>
   </div>
+  <% end %>
 
   <div class="form-group">
     <%= label f, :toc, "Terms and Conditions", class: "control-label" %>
