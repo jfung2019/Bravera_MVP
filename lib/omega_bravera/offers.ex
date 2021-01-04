@@ -463,8 +463,9 @@ defmodule OmegaBravera.Offers do
       left_join: user in assoc(challenge, :user),
       preload: ^preloads,
       order_by: o.inserted_at,
-      group_by: [o.id],
-      select: %{o | unique_participants: count(user.id, :distinct)}
+      windows: [group_id: [partition_by: o.id]],
+      distinct: true,
+      select: %{o | unique_participants: over(count(user.id), :group_id)}
     )
   end
 
