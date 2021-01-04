@@ -4,9 +4,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
   alias OmegaBravera.Offers
   alias OmegaBravera.Offers.OfferVendor
 
-  def index(conn, _params) do
-    offer_vendors = Offers.list_offer_vendors()
-    render(conn, "index.html", offer_vendors: offer_vendors)
+  def index(conn, params) do
+    results = turbo_paginate(conn, params)
+    render(conn, "index.html", offer_vendors: results.offer_vendors, paginate: results.paginate)
   end
 
   def new(conn, _params) do
@@ -26,7 +26,8 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
     end
   end
 
-  def show(conn, %{"id" => id}), do: render(conn, "show.html", offer_vendor: Offers.get_offer_vendor!(id, [:offers]))
+  def show(conn, %{"id" => id}),
+    do: render(conn, "show.html", offer_vendor: Offers.get_offer_vendor!(id, [:offers]))
 
   def edit(conn, %{"id" => id}) do
     offer_vendor = Offers.get_offer_vendor!(id)
@@ -45,6 +46,14 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", offer_vendor: offer_vendor, changeset: changeset)
+    end
+  end
+
+  defp turbo_paginate(conn, params) do
+    case OmegaBraveraWeb.ViewHelpers.is_admin?(conn) do
+      #      false ->
+      _ ->
+        Turbo.Ecto.turbo(Offers.list_offer_vendors_query(), params, entry_name: "offer_vendors")
     end
   end
 end

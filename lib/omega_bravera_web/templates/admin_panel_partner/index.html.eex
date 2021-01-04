@@ -19,9 +19,9 @@
 			<tbody>
 			<%= for partner <- @partners do %>
 			<tr>
-				<td style="width: 24%; word-break: break-all;"><%= partner.name %></td>
-				<td style="width: 13%; word-break: break-all;"><%= render_datetime(partner.inserted_at) %></td>
-				<td style="width: 13%; word-break: break-all;"><%= render_datetime(partner.updated_at) %></td>
+				<td style="width: 22%; word-break: break-all;"><%= partner.name %></td>
+				<td style="width: 14%; word-break: break-all;"><%= render_datetime(partner.inserted_at) %></td>
+				<td style="width: 14%; word-break: break-all;"><%= render_datetime(partner.updated_at) %></td>
 				<td class="text-center" style="width: 40%;">
 					<%= link gettext("Members"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
 					<%= link gettext("Details"), to: Routes.admin_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>

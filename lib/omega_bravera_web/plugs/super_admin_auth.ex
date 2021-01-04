@@ -12,7 +12,9 @@ defmodule OmegaBraveraWeb.SuperAdminAuth do
       %AdminUser{role: "partner"} ->
         conn
         |> Plug.Conn.halt()
-        |> Phoenix.Controller.redirect(to: Routes.admin_panel_partner_path(OmegaBraveraWeb.Endpoint, :index))
+        |> Phoenix.Controller.redirect(
+          to: Routes.admin_panel_partner_path(OmegaBraveraWeb.Endpoint, :index)
+        )
 
       _ ->
         conn

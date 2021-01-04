@@ -456,7 +456,7 @@ defmodule OmegaBravera.Offers do
     Repo.all(OfferChallenge)
   end
 
-  def list_offers_preload(preloads \\ [:vendor]) do
+  def list_offers_preload_query(preloads \\ [:vendor]) do
     from(
       o in Offer,
       left_join: challenge in assoc(o, :offer_challenges),
@@ -466,6 +466,10 @@ defmodule OmegaBravera.Offers do
       group_by: [o.id],
       select: %{o | unique_participants: count(user.id, :distinct)}
     )
+  end
+
+  def list_offers_preload(preloads \\ [:vendor]) do
+    list_offers_preload_query(preloads)
     |> Repo.all()
   end
 
@@ -708,6 +712,10 @@ defmodule OmegaBravera.Offers do
 
   def admin_list_offer_rewards do
     Repo.all(OfferReward)
+  end
+
+  def admin_list_offer_rewards_query(preloads \\ []) do
+    from(o in OfferReward, preload: ^preloads)
   end
 
   @doc "Get offer rewards of the given offer id"
@@ -958,6 +966,13 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
+  query for listing offer vendors
+  """
+  def list_offer_vendors_query() do
+    from(o in OfferVendor, order_by: [desc: o.inserted_at])
+  end
+
+  @doc """
   Returns the list of offer_vendors.
 
   ## Examples
@@ -967,7 +982,7 @@ defmodule OmegaBravera.Offers do
 
   """
   def list_offer_vendors do
-    from(o in OfferVendor, order_by: [desc: o.inserted_at])
+    list_offer_vendors_query()
     |> Repo.all()
   end
 

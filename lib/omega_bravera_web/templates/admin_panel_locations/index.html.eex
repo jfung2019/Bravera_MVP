@@ -20,8 +20,8 @@
         <td><%= location.longitude %></td>
         <td><%= location.latitude %></td>
         <td class="text-center">
-          <%= link "Show", to: Routes.admin_panel_locations_path(@conn, :show, location), class: "btn btn-primary btn-xs"%>
-          <%= link "Edit", to: Routes.admin_panel_locations_path(@conn, :edit, location), class: "btn btn-warning btn-xs"%>
+          <%= link gettext("Details"), to: Routes.admin_panel_locations_path(@conn, :show, location), class: "btn btn-primary btn-xs"%>
+          <%= link gettext("Edit"), to: Routes.admin_panel_locations_path(@conn, :edit, location), class: "btn btn-warning btn-xs"%>
         </td>
       </tr>
       <% end %>

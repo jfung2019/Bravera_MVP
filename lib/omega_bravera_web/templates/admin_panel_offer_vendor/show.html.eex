@@ -4,8 +4,19 @@
     <table class="table mt-3 table-striped" style="table-layout: fixed;">
       <thead>
       <tr>
-        <th><%= gettext("Public Offers") %></th>
-        <th><%= gettext("Private Offers") %></th>
+        <th class="align-top">
+          <%= gettext("Public Offers") %>
+          <br>
+          <small class="text-muted">
+            <%= gettext("(Offers that are ‘promoted’ to being public and available to a wider audience. ") %>
+            <a href="#"><%= gettext("Learn more here") %></a>.)
+          </small>
+        </th>
+        <th class="align-top">
+          <%= gettext("Private Offers") %>
+          <br>
+          <small class="text-muted"><%= gettext("(Offers that are ‘private’ and only available to your group members.)") %></small>
+        </th>
       </tr>
       </thead>
       <tbody>

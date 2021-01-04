@@ -38,12 +38,10 @@
           <td><%= render_datetime(offer.inserted_at) %></td>
           <td><%= render_datetime(offer.updated_at) %></td>
           <td class="text-center">
-            <div class="d-flex">
-              <%= link gettext("Show"), to: Routes.admin_panel_offer_path(@conn, :show, offer), class: "btn btn-primary btn-xs"%>&nbsp;
-              <%= link gettext("Statement"), to: Routes.admin_panel_offer_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs"%>&nbsp;
-              <%= link gettext("Edit"), to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning btn-xs"%>&nbsp;
-              <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminOfferImages, offer), class: "btn btn-info btn-xs"%>
-            </div>
+            <%= link gettext("Details"), to: Routes.admin_panel_offer_path(@conn, :show, offer), class: "btn btn-primary btn-xs mb-2"%>
+            <%= link gettext("Statement"), to: Routes.admin_panel_offer_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs mb-2"%>
+            <%= link gettext("Edit"), to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning btn-xs mb-2"%>
+            <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminOfferImages, offer), class: "btn btn-info btn-xs"%>
           </td>
         </tr>
       <% end %>

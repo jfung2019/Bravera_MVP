@@ -28,7 +28,7 @@
         <td><%= render_datetime(ngo.inserted_at) %></td>
         <td><%= render_datetime(ngo.updated_at) %></td>
         <td class="text-center">
-          <%= link gettext("Show"), to: Routes.admin_panel_ngo_path(@conn, :show, ngo), class: "btn btn-primary btn-xs"%>
+          <%= link gettext("Details"), to: Routes.admin_panel_ngo_path(@conn, :show, ngo), class: "btn btn-primary btn-xs"%>
           <%= link gettext("Statement"), to: Routes.admin_panel_ngo_path(@conn, :statement, ngo), class: "btn btn-secondary btn-xs"%>
           <%= link gettext("Edit"), to: Routes.admin_panel_ngo_path(@conn, :edit, ngo), class: "btn btn-warning btn-xs"%>
         </td>

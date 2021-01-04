@@ -1,14 +1,12 @@
 defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Offers, Repo}
+  alias OmegaBravera.Offers
 
-  def index(conn, _params) do
-    offer_rewards =
-      Offers.admin_list_offer_rewards()
-      |> Repo.preload(:offer)
+  def index(conn, params) do
+    results = turbo_paginate(conn, params)
 
-    render(conn, "index.html", offer_rewards: offer_rewards)
+    render(conn, "index.html", offer_rewards: results.offer_rewards, paginate: results.paginate)
   end
 
   def new(conn, _params) do
@@ -54,6 +52,14 @@ defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
       {:error, %Ecto.Changeset{} = changeset} ->
         offers = Offers.list_offers_all_offers()
         render(conn, "edit.html", offers: offers, changeset: changeset)
+    end
+  end
+
+  defp turbo_paginate(conn, params) do
+    case OmegaBraveraWeb.ViewHelpers.is_admin?(conn) do
+      #      false ->
+      _ ->
+        Turbo.Ecto.turbo(Offers.admin_list_offer_rewards_query([:offer]), params, entry_name: "offer_rewards")
     end
   end
 end

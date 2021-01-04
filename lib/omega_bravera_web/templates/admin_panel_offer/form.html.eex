@@ -45,7 +45,7 @@
   <% end %>
 
   <div class="form-group">
-    <%= label f, :start_date, "Start Date (when in pre_registration, it is used as the end of the countdown date)", class: "control-label" %>
+    <%= label f, :start_date, "Start Date", class: "control-label" %>
     <br/>
     <small class="text-muted form-text"><%= gettext("(Offer will be live after the start date displayed below.)") %></small>
     <%= registration_date_builder(f, :start_date, class: "form-control") %>
@@ -53,7 +53,7 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :end_date, "End Date (when set, a challenge will end at this date)", class: "control-label" %>
+    <%= label f, :end_date, "End Date", class: "control-label" %>
     <br/>
     <small class="text-muted form-text">
       <%= gettext("(An offer will ‘end’ on this date. It will ‘disappear’. ") %>
@@ -62,12 +62,6 @@
     </small>
     <%= registration_date_builder(f, :end_date, class: "form-control") %>
     <%= error_tag f, :end_date %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :time_limit, "Time Limit (leave blank to make offer challenge end date match offer's)", class: "control-label" %>
-    <%= number_input f, :time_limit, class: "form-control" %>
-    <%= error_tag f, :time_limit %>
   </div>
 
   <%= if is_admin?(@conn) do %>
@@ -224,8 +218,15 @@
 
   <div class="form-group">
     <%= label f, :take_challenge, "Enable Take Challenge", class: "control-label" %>
-    <%= checkbox f, :take_challenge, class: "form-control" %>
+    <br>
+    <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>
     <%= error_tag f, :take_challenge %>
+  </div>
+
+  <div class="form-group" id="offer_time_limit">
+    <%= label f, :time_limit, "Time Limit (leave blank to make offer challenge end date match offer's)", class: "control-label" %>
+    <%= number_input f, :time_limit, class: "form-control" %>
+    <%= error_tag f, :time_limit %>
   </div>
 
   <div class="form-group">
