@@ -1,14 +1,23 @@
 <div class="card">
   <div class="card-body">
     <h1><span class="fa fa-gift"></span> <%= gettext("Offer Rewards") %></h1>
+    <div class="row my-3">
+      <div class="col-9">
+        <small class="text-muted">
+          <%= gettext("(Create and edit in-store rewards to be validated when scanned and claimed with a QR code. ") %>
+          <a href="#"><%= gettext("Click here") %></a>
+          <%= gettext(" for help and hints)") %>
+        </small>
+      </div>
+    </div>
     <%= link gettext("Create Offer Reward"), to: Routes.admin_panel_offer_reward_path(@conn, :new), class: "btn btn-outline-primary" %>
     <table class="table mt-3 table-striped">
       <thead>
         <tr>
           <th><%= gettext("Name") %></th>
-          <th><%= gettext("Value/Price") %></th>
-          <th><%= gettext("Offer") %></th>
-          <th><%= gettext("Hidden") %></th>
+          <th><%= gettext("Revenue") %></th>
+          <th><%= gettext("Connected Offer") %></th>
+          <th><%= gettext("Active?") %></th>
           <th><%= gettext("Date Created") %></th>
           <th><%= gettext("Last Edited") %></th>
           <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
@@ -20,7 +29,7 @@
           <td><%= offer_reward.name %></td>
           <td><%= offer_reward.value %></td>
           <td><%= offer_reward.offer.name %></td>
-          <td><%= offer_reward.hide %></td>
+          <td><%= if offer_reward.hide, do: "No", else: "Yes" %></td>
           <td><%= render_datetime(offer_reward.inserted_at) %></td>
           <td><%= render_datetime(offer_reward.updated_at) %></td>
           <td class="text-center">

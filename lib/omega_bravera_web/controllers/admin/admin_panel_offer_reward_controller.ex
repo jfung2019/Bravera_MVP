@@ -59,7 +59,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
     case OmegaBraveraWeb.ViewHelpers.is_admin?(conn) do
       #      false ->
       _ ->
-        Turbo.Ecto.turbo(Offers.admin_list_offer_rewards_query([:offer]), params, entry_name: "offer_rewards")
+        Turbo.Ecto.turbo(Offers.admin_list_offer_rewards_query([:offer]), params,
+          entry_name: "offer_rewards"
+        )
     end
   end
 end

@@ -28,6 +28,7 @@ import "./one_time_modals";
 import "./init_html_editor";
 import "./donations";
 import "./payments";
+import "./offer_form";
 
 Dropzone.autoDiscover = false;
 const Hooks = {

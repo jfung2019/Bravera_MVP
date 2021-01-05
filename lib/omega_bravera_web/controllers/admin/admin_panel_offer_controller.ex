@@ -16,11 +16,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
   plug :assign_available_options when action in [:edit, :new]
 
-  def index(conn, _params) do
-    offers =
-      Offers.list_offers_preload([:vendor, :offer_challenges, offer_redeems: [:offer_reward]])
-
-    render(conn, "index.html", offers: offers)
+  def index(conn, params) do
+    results = turbo_paginate(conn, params)
+    render(conn, "index.html", offers: results.offers, paginate: results.paginate)
   end
 
   def show(conn, %{"slug" => slug}) do

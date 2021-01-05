@@ -103,136 +103,164 @@
   </div>
 
   <div class="form-group">
-    <%= label f, "Description (displayed on /offers)", class: "control-label" %>
+    <%= label f, "Description", class: "control-label" %>
+    <small class="text-mute form-text">
+      <%= gettext("(Introduce your offer in more detail. ") %>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%= gettext(" for help and hints.)") %>
+    </small>
     <%= textarea f, :desc, class: "form-control", rows: 3, data: [html: true] %>
     <%= error_tag f, :desc %>
   </div>
 
-  <div class="form-group">
-    <%= label f, "Full description (displayed on /offer/new)", class: "control-label" %>
-    <%= textarea f, :full_desc, class: "form-control", rows: 3, data: [html: true] %>
-    <%= error_tag f, :full_desc %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, "Offer Challenge description (displayed on /offer/offer_challenge)", class: "control-label" %>
-    <%= textarea f, :offer_challenge_desc, class: "form-control", rows: 3, data: [html: true] %>
-    <%= error_tag f, :offer_challenge_desc %>
-  </div>
-
-  <%= if !is_nil(assigns[:offer]) and @offer.logo do %>
-    <%= img_tag(@offer.logo, class: "img-thumbnail img-fluid cause-thumb") %>
-  <% end %>
-
-  <div class="form-group input-group">
-    <div class="input-group-prepend">
-      <span class="input-group-text">Add/Change</span>
-    </div>
-    <div class="custom-file">
-      <%= file_input f, :logo, class: "custom-file-input image_upload", id: "logo_upload_label" %>    
-      <%= label f, :logo, "Offer Logo  (150 x 150)", class: "custom-file-label", for: "logo_upload_label" %>    
-    </div>
-    <%= error_tag f, :logo %>
-  </div>
-
+  <%= if is_admin?(@conn) do %>
   <div class="form-group">
     <%= label f, :url, class: "control-label" %>
     <%= text_input f, :url, class: "form-control" %>
     <%= error_tag f, :url %>
   </div>
+  <% end %>
 
   <div class="form-group">
-    <%= label f, :currency, class: "control-label" %>
-    <%= select f, :currency, @available_currencies, class: "form-control" %>
-    <%= error_tag f, :currency %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :offer_percent, class: "control-label" %>
-    <%= number_input f, :offer_percent, class: "form-control" %>
-    <%= error_tag f, :offer_percent %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, "Additional Members (0 for Solo user challenges. More for Team Challenges)", class: "control-label" %>
-    <%= text_input f, :additional_members, class: "form-control" %>
-    <%= error_tag f, :additional_members %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :activities, class: "control-label" %>
-    <%= multiple_select f, :activities, @available_activities, class: "form-control" %>
-    <%= error_tag f, :activities %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :target, "Target (if km challenge: enter KMs. if Segment challenge: enter Segment ID", class: "control-label" %>
-    <%= number_input f, :target, class: "form-control", required: "", min: "1" %>
+    <%= label f, :target, "Target (if km challenge: enter KMs. if Segment challenge: enter Segment ID.)", class: "control-label" %>
+    <small class="text-mute form-text">
+      <%= gettext("(IMPORTANT: 10 points = 1 kilometer or approx. 1,350 steps. Each kilometer your group members walk/run generates 10 points. So, if you’d like someone to walk/run 20 kilometers, add ‘200’ points. If below you turn challenges off, group members will need to buy with the equivalent points. Confused? Don’t worry,  ") %>
+      <a href="#"><%= gettext("click here") %></a>.)
+    </small>
+    <%= number_input f, :target, class: "form-control", id: "offer_target", required: "", min: "1" %>
+    <table class="table mt-3" style="table-layout: fixed;">
+      <tr>
+        <td><%= gettext("Kilometers:") %></td>
+        <td id="km-target">0</td>
+        <td><%= gettext("Points needed:") %></td>
+        <td id="points-target">0</td>
+      </tr>
+      <tr>
+        <td><%= gettext("Miles needed:") %></td>
+        <td id="miles-target">0</td>
+        <td><%= gettext("Steps needed (approx.):") %></td>
+        <td id="steps-target">0</td>
+      </tr>
+    </table>
     <%= error_tag f, :target %>
   </div>
-
+  <%= if is_admin?(@conn) do %>
   <div class="form-group">
     <%= label f, :offer_challenge_types, class: "control-label" %>
     <%= multiple_select f, :offer_challenge_types, @available_challenge_type_options, class: "form-control" %>
     <%= error_tag f, :offer_challenge_types %>
   </div>
+  <% end %>
 
   <div class="form-group">
-  <%= label f, "User", class: "control-label" %>
-    <%= select(f, :vendor_id, Enum.map(@vendors, &{&1.vendor_id, &1.id}),
-          class: "form-control chosen", prompt: "Who is the Offer vendor?")
-    %>
-    <%= error_tag f, :vendor_id %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :location_id, "Location" %>
-    <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control chosen" %>
-    <%= error_tag f, :location_id %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :redemption_days, "How many days can redeem after completion of challenge" %>
+    <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>
+    <small class="form-text text-muted">
+      <%= gettext("(‘Countdown’ or ‘deadline’ to claim the reward after it has been unlocked. Example: Steven earned a reward on 07:00am on 1st January that has an expiry of 10 days. On 11th January, at 06:59:59, the reward will expire and be removed from his rewards wallet. ") %>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%= gettext(" for hints and help.)") %>
+    </small>
     <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
     <%= error_tag f, :redemption_days %>
   </div>
 
   <div class="form-group">
-    <%= label f, :offer_type, "Offer Type" %>
-    <%= select f, :offer_type, @available_offer_types, class: "form-control" %>
+    <%= label f, :offer_type, "Offer Type", class: "control-label" %>
+    <small class="form-text text-muted">
+      <%= gettext("(“In-store” Means claim by QR code. Reward is claimed by scanning a QR code. “Online” Means you’re offering something to be claimed ‘online’ e.g. a discount on a 3rd party website (e.g. shopify) or entries to a prize draw on an online form (e.g. Google forms, Typeform, Survey Monkey. ")%>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%= gettext(" for hints and help.)") %>
+    </small>
+    <%= select f, :offer_type, @available_offer_types, class: "form-control", id: "offer_type" %>
     <%= error_tag f, :offer_type %>
   </div>
 
+  <div id="instore-fields">
+    <div class="form-group">
+      <%= label f, :vendor_id, gettext("Claim ID"), class: "control-label" %>
+      <%= select(f, :vendor_id, Enum.map(@vendors, &{&1.vendor_id, &1.id}),
+              class: "form-control chosen", prompt: gettext("Select Claim ID linked to this offer"))
+        %>
+      <%= error_tag f, :vendor_id %>
+    </div>
 
-  <div class="form-group">
-    <%= label f, "Online URL", class: "control-label" %>
-    <%= text_input f, :online_url, class: "form-control" %>
-    <%= error_tag f, :online_url %>
+    <div class="form-group">
+      <%= label f, :location_id, gettext("Offer Availability"), class: "control-label" %>
+      <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control chosen" %>
+      <%= error_tag f, :location_id %>
+    </div>
+  </div>
+
+  <div id="online-fields">
+    <div class="form-group">
+      <%= label f, :online_url, gettext("Redirect URL Address"), class: "control-label" %>
+      <small class="form-text text-muted">
+        <%= gettext("If your offer is ‘online’ please add the redirect website / url where members can ‘claim’ here. (Confused? Don’t worry, ") %>
+        <a href="#"><%= gettext("click here for help") %></a>.)
+      </small>
+      <%= text_input f, :online_url, class: "form-control" %>
+      <%= error_tag f, :online_url %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :online_code, gettext("Online Promotion / Discount code"), class: "control-label" %>
+      <small class="form-text text-muted">
+        <%= gettext("(For 3rd party websites like shopify, please enter the discount code that will apply a discount at check-out. For online forms, enter a ‘secret code’ that should prove they completed the challenge. Confused? Don’t worry, ") %>
+        <a href="#"><%= gettext("click here") %></a>
+        <%= gettext(" for help.)") %>
+      </small>
+      <%= text_input f, :online_code, class: "form-control" %>
+      <%= error_tag f, :online_code %>
+    </div>
   </div>
 
   <div class="form-group">
-    <%= label f, "Online Code", class: "control-label" %>
-    <%= text_input f, :online_code, class: "form-control" %>
-    <%= error_tag f, :online_code %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :take_challenge, "Enable Take Challenge", class: "control-label" %>
+    <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
     <br>
+    <small class="form-text text-muted">
+      <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward.)") %>
+    </small>
     <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>
     <%= error_tag f, :take_challenge %>
   </div>
 
-  <div class="form-group" id="offer_time_limit">
-    <%= label f, :time_limit, "Time Limit (leave blank to make offer challenge end date match offer's)", class: "control-label" %>
-    <%= number_input f, :time_limit, class: "form-control" %>
-    <%= error_tag f, :time_limit %>
-  </div>
+  <div id="enable_take_challenge_fields">
+    <div class="form-group">
+      <%= label f, :time_limit, "Time Limit (leave blank to make offer challenge end date match offer's)", class: "control-label" %>
+      <%= number_input f, :time_limit, class: "form-control" %>
+      <%= error_tag f, :time_limit %>
+    </div>
 
-  <div class="form-group">
-    <%= label f, :form_url, "Form URL", class: "control-label" %>
-    <%= text_input f, :form_url, class: "form-control" %>
-    <%= error_tag f, :form_url %>
+    <%= if is_admin?(@conn) do %>
+    <div class="form-group">
+      <%= label f, :currency, class: "control-label" %>
+      <%= select f, :currency, @available_currencies, class: "form-control" %>
+      <%= error_tag f, :currency %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :offer_percent, class: "control-label" %>
+      <%= number_input f, :offer_percent, class: "form-control" %>
+      <%= error_tag f, :offer_percent %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, "Additional Members (0 for Solo user challenges. More for Team Challenges)", class: "control-label" %>
+      <%= text_input f, :additional_members, class: "form-control" %>
+      <%= error_tag f, :additional_members %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :activities, class: "control-label" %>
+      <%= multiple_select f, :activities, @available_activities, class: "form-control" %>
+      <%= error_tag f, :activities %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :form_url, "Form URL", class: "control-label" %>
+      <%= text_input f, :form_url, class: "form-control" %>
+      <%= error_tag f, :form_url %>
+    </div>
+    <% end %>
   </div>
 
   <div class="form-group">

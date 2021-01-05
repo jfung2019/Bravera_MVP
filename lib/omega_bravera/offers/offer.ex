@@ -51,7 +51,7 @@ defmodule OmegaBravera.Offers.Offer do
 
     field :slug, :string
     field :toc, :string
-    field :url, :string
+    field :url, :string, default: "https://www.bravera.fit/"
     field :time_limit, :integer, default: 0
     field :form_url, :string
 
@@ -61,9 +61,9 @@ defmodule OmegaBravera.Offers.Offer do
     field :total_calories, :decimal, default: 0, virtual: true
     field :unique_participants, :integer, default: 0, virtual: true
 
-    field :activities, {:array, :string}
+    field :activities, {:array, :string}, default: ["Run"]
     field :target, :integer
-    field :offer_challenge_types, {:array, :string}
+    field :offer_challenge_types, {:array, :string}, default: ["PER_KM"]
 
     belongs_to :vendor, OfferVendor
     belongs_to :location, OmegaBravera.Locations.Location
