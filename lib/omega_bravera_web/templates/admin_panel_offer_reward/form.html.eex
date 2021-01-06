@@ -30,7 +30,7 @@
   <div class="form-group">
     <%= label f, :offer, gettext("Connected Offer"), class: "control-label" %>
     <small class="form-text text-muted">
-      <%= gettext("") %>
+      <%= gettext("(The offer linked to this reward.)") %>
     </small>
     <%= select(f, :offer_id, generate_offers_list(@offers), class: "form-control chosen") %>
     <%= error_tag f, :offer_id %>
