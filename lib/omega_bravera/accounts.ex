@@ -805,6 +805,7 @@ defmodule OmegaBravera.Accounts do
         left_join: r in OmegaBravera.Offers.OfferRedeem,
         on: u.id == r.user_id,
         windows: [user_id: [partition_by: u.id]],
+        distinct: true,
         left_join: oc in assoc(r, :offer_challenge),
         on: oc.status == ^"complete",
         select: %{user_id: u.id, count: coalesce(over(count(r.id), :user_id), 0)}
@@ -815,18 +816,21 @@ defmodule OmegaBravera.Accounts do
         left_join: r in OmegaBravera.Offers.OfferRedeem,
         on: u.id == r.user_id and r.status == "redeemed",
         windows: [user_id: [partition_by: u.id]],
+        distinct: true,
         select: %{user_id: u.id, count: coalesce(over(count(r.id), :user_id), 0)}
       )
 
     total_distance_query =
       from(a in OmegaBravera.Activity.ActivityAccumulator,
-        group_by: a.user_id,
-        select: %{user_id: a.user_id, sum: coalesce(sum(a.distance), 0.0)}
+        windows: [user_id: [partition_by: a.user_id]],
+        distinct: true,
+        select: %{user_id: a.user_id, sum: coalesce(over(sum(a.distance), :user_id), 0.0)}
       )
 
     weekly_distance_query =
       from(u in User,
         windows: [user_id: [partition_by: u.id]],
+        distinct: true,
         left_join: a in OmegaBravera.Activity.ActivityAccumulator,
         on:
           u.id == a.user_id and
@@ -839,6 +843,7 @@ defmodule OmegaBravera.Accounts do
         left_join: r in User,
         on: u.id == r.referred_by_id,
         windows: [user_id: [partition_by: u.id]],
+        distinct: true,
         select: %{user_id: u.id, count: coalesce(over(count(r.id), :user_id), 0)}
       )
 
