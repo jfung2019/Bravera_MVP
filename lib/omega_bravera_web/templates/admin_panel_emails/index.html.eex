@@ -22,6 +22,9 @@
 					<% end %>
 				  </tbody>
 				</table>
+				<%= if @paginate.total_pages > 1 do %>
+				<%= turbo_pagination_links(@conn, @paginate) %>
+    			<% end %>
 			</div>
 		</div>
 	</div>

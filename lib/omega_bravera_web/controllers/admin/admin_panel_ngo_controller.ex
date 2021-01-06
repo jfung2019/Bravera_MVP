@@ -8,9 +8,9 @@ defmodule OmegaBraveraWeb.AdminPanelNGOController do
 
   plug(:assign_available_options when action in [:edit, :new])
 
-  def index(conn, _params) do
-    ngos = Fundraisers.list_ngos_preload()
-    render(conn, "index.html", ngos: ngos)
+  def index(conn, params) do
+    results = Turbo.Ecto.turbo(Fundraisers.list_ngos_preload_query(), params, entry_name: "ngos")
+    render(conn, "index.html", ngos: results.ngos, paginate: results.paginate)
   end
 
   def show(conn, %{"slug" => slug}) do

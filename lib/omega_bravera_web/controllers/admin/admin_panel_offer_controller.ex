@@ -17,7 +17,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
   plug :assign_available_options when action in [:edit, :new]
 
   def index(conn, params) do
-    results = turbo_paginate(conn, params)
+    results = Offers.paginate_offers(Guardian.Plug.current_resource(conn), params)
     render(conn, "index.html", offers: results.offers, paginate: results.paginate)
   end
 
@@ -160,22 +160,5 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     |> assign(:available_locations, OmegaBravera.Locations.list_locations())
     |> assign(:available_partners, OmegaBravera.Groups.partner_options())
     |> assign(:available_offer_types, [{"In Store", "in_store"}, {"Online", "online"}])
-  end
-
-  defp turbo_paginate(conn, params) do
-    case OmegaBraveraWeb.ViewHelpers.is_admin?(conn) do
-      #      false ->
-      _ ->
-        # raise cannot aggregate on query with group_by in query
-        Turbo.Ecto.turbo(
-          Offers.list_offers_preload_query([
-            :vendor,
-            :offer_challenges,
-            offer_redeems: [:offer_reward]
-          ]),
-          params,
-          entry_name: "offers"
-        )
-    end
   end
 end

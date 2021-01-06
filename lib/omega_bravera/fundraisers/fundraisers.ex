@@ -209,7 +209,7 @@ defmodule OmegaBravera.Fundraisers do
     Enum.sort(ngos, &(&1.id >= &2.id))
   end
 
-  def list_ngos_preload() do
+  def list_ngos_preload_query() do
     from(
       n in NGO,
       left_join: user in assoc(n, :user),
@@ -217,6 +217,10 @@ defmodule OmegaBravera.Fundraisers do
       preload: [user: {user, strava: strava}],
       order_by: n.inserted_at
     )
+  end
+
+  def list_ngos_preload() do
+    list_ngos_preload_query()
     |> Repo.all()
   end
 

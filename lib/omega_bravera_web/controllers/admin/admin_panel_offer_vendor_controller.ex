@@ -1,11 +1,13 @@
 defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.Offers
-  alias OmegaBravera.Offers.OfferVendor
+  alias OmegaBravera.{
+    Offers,
+    Offers.OfferVendor
+  }
 
   def index(conn, params) do
-    results = turbo_paginate(conn, params)
+    results = Offers.paginate_offer_vendors(Guardian.Plug.current_resource(conn), params)
     render(conn, "index.html", offer_vendors: results.offer_vendors, paginate: results.paginate)
   end
 
@@ -46,14 +48,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", offer_vendor: offer_vendor, changeset: changeset)
-    end
-  end
-
-  defp turbo_paginate(conn, params) do
-    case OmegaBraveraWeb.ViewHelpers.is_admin?(conn) do
-      #      false ->
-      _ ->
-        Turbo.Ecto.turbo(Offers.list_offer_vendors_query(), params, entry_name: "offer_vendors")
     end
   end
 end

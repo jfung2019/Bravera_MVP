@@ -22,7 +22,7 @@ defmodule OmegaBravera.Offers do
   alias OmegaBravera.Points
 
   alias OmegaBravera.Activity.ActivityAccumulator
-  alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Accounts.{User, AdminUser, PartnerUser}
 
   def buy_offer_with_points(offer, user) do
     Multi.new()
@@ -108,6 +108,25 @@ defmodule OmegaBravera.Offers do
     from(o in subquery(unioned_query), order_by: [desc: o.inserted_at])
     |> Repo.all()
   end
+
+  @doc """
+  pagination offers based on login user type
+  """
+  def paginate_offers(%AdminUser{}, params) do
+    Turbo.Ecto.turbo(
+      list_offers_preload_query([
+        :vendor,
+        :offer_challenges,
+        offer_redeems: [:offer_reward]
+      ]),
+      params,
+      entry_name: "offers"
+    )
+  end
+
+  #  def paginate_offers(%PartnerUser{}, params) do
+  #
+  #  end
 
   @doc """
   Gets a single offer.
@@ -726,6 +745,17 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
+  paginate offer rewards based on login user type
+  """
+  def paginate_offer_rewards(%AdminUser{}, params) do
+    Turbo.Ecto.turbo(admin_list_offer_rewards_query([:offer]), params, entry_name: "offer_rewards")
+  end
+
+  #  def paginate_offer_rewards(%PartnerUser{}, params) do
+  #
+  #  end
+
+  @doc """
   Gets a single offer_reward.
 
   Raises `Ecto.NoResultsError` if the Offer reward does not exist.
@@ -986,6 +1016,17 @@ defmodule OmegaBravera.Offers do
     list_offer_vendors_query()
     |> Repo.all()
   end
+
+  @doc """
+  paginate offer vendors based on login user type
+  """
+  def paginate_offer_vendors(%AdminUser{}, params) do
+    Turbo.Ecto.turbo(list_offer_vendors_query(), params, entry_name: "offer_vendors")
+  end
+
+  #  def paginate_offer_vendors(%PartnerUser{}, params) do
+  #
+  #  end
 
   @doc """
   Gets a single offer_vendor.

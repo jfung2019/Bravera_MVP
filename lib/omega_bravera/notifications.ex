@@ -126,6 +126,10 @@ defmodule OmegaBravera.Notifications do
     Repo.all(SendgridEmail)
   end
 
+  def list_sendgrid_emails_query() do
+    from(e in SendgridEmail, preload: [:category])
+  end
+
   @doc """
   Gets a single sendgrid_email.
 

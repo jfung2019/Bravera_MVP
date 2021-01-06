@@ -17,6 +17,7 @@ defmodule OmegaBravera.Accounts do
     Accounts.PartnerUser,
     Accounts.Tools,
     Accounts.User,
+    Accounts.AdminUser,
     Devices.Device,
     Money.Donation,
     Trackers,
@@ -793,7 +794,7 @@ defmodule OmegaBravera.Accounts do
   @doc """
   Prepares a list of current users with settings and extra fields ready in admin panel.
   """
-  def list_users_for_admin do
+  def list_users_for_admin_query() do
     today = Timex.today()
     before = today |> Timex.shift(days: -30)
     beginning_of_week = Timex.beginning_of_week(today)
@@ -803,18 +804,18 @@ defmodule OmegaBravera.Accounts do
       from(u in User,
         left_join: r in OmegaBravera.Offers.OfferRedeem,
         on: u.id == r.user_id,
-        group_by: u.id,
+        windows: [user_id: [partition_by: u.id]],
         left_join: oc in assoc(r, :offer_challenge),
         on: oc.status == ^"complete",
-        select: %{user_id: u.id, count: coalesce(count(r.id), 0)}
+        select: %{user_id: u.id, count: coalesce(over(count(r.id), :user_id), 0)}
       )
 
     rewards_redeemed_query =
       from(u in User,
         left_join: r in OmegaBravera.Offers.OfferRedeem,
         on: u.id == r.user_id and r.status == "redeemed",
-        group_by: u.id,
-        select: %{user_id: u.id, count: coalesce(count(r.id), 0)}
+        windows: [user_id: [partition_by: u.id]],
+        select: %{user_id: u.id, count: coalesce(over(count(r.id), :user_id), 0)}
       )
 
     total_distance_query =
@@ -825,20 +826,20 @@ defmodule OmegaBravera.Accounts do
 
     weekly_distance_query =
       from(u in User,
-        group_by: u.id,
+        windows: [user_id: [partition_by: u.id]],
         left_join: a in OmegaBravera.Activity.ActivityAccumulator,
         on:
           u.id == a.user_id and
             fragment("?::DATE BETWEEN ? AND ?", a.start_date, ^beginning_of_week, ^end_of_week),
-        select: %{user_id: u.id, sum: coalesce(sum(a.distance), 0.0)}
+        select: %{user_id: u.id, sum: coalesce(over(sum(a.distance), :user_id), 0.0)}
       )
 
     friend_referrals_query =
       from(u in User,
         left_join: r in User,
         on: u.id == r.referred_by_id,
-        group_by: u.id,
-        select: %{user_id: u.id, count: coalesce(count(r.id), 0)}
+        windows: [user_id: [partition_by: u.id]],
+        select: %{user_id: u.id, count: coalesce(over(count(r.id), :user_id), 0)}
       )
 
     from(u in User,
@@ -875,7 +876,18 @@ defmodule OmegaBravera.Accounts do
       },
       group_by: [u.id, d.uuid, r.count, cr.count, td.sum, wtd.sum, fr.count]
     )
+  end
+
+  def list_users_for_admin do
+    list_users_for_admin_query()
     |> Repo.all()
+  end
+
+  @doc """
+  paginate users based on login user type
+  """
+  def paginate_users(%AdminUser{}, params) do
+    Turbo.Ecto.turbo(list_users_for_admin_query(), params, entry_name: "users")
   end
 
   @doc """

@@ -17,8 +17,12 @@ defmodule OmegaBravera.Locations do
       [%Location{}, ...]
 
   """
-  def list_locations do
+  def list_locations_query() do
     from(l in Location, order_by: [asc: l.name_en])
+  end
+
+  def list_locations do
+    list_locations_query()
     |> Repo.all()
   end
 

@@ -1,14 +1,13 @@
 defmodule OmegaBraveraWeb.AdminPanelEmailsController do
   use OmegaBraveraWeb, :controller
 
-  alias OmegaBravera.{Notifications, Repo}
+  alias OmegaBravera.Notifications
 
-  def index(conn, _params) do
-    emails =
-      Notifications.list_sendgrid_emails()
-      |> Repo.preload(:category)
+  def index(conn, params) do
+    results =
+      Turbo.Ecto.turbo(Notifications.list_sendgrid_emails_query(), params, entry_name: "emails")
 
-    render(conn, "index.html", emails: emails)
+    render(conn, "index.html", emails: results.emails, paginate: results.paginate)
   end
 
   def new(conn, _params) do

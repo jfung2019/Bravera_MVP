@@ -2,8 +2,9 @@ defmodule OmegaBraveraWeb.AdminPanelLocationsController do
   use OmegaBraveraWeb, :controller
   alias OmegaBravera.Locations
 
-  def index(conn, _params) do
-    render(conn, "index.html", locations: Locations.list_locations())
+  def index(conn, params) do
+    results = Turbo.Ecto.turbo(Locations.list_locations_query(), params, entry_name: "locations")
+    render(conn, "index.html", locations: results.locations, paginate: results.paginate)
   end
 
   def new(conn, _params) do
