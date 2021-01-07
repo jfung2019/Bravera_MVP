@@ -73,6 +73,16 @@
                 <span class="fa fa-group"></span> <%= gettext("Groups") %>
                 <% end %>
               </li>
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_organization_path(@conn, :index)) %>">
+                <%= link to: Routes.admin_panel_organization_path(@conn, :index), class: "nav-link" do %>
+                <span class="fa fa-building"></span> <%= gettext("Organization") %>
+                <% end %>
+              </li>
+              <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_organization_member_path(@conn, :index)) %>">
+                <%= link to: Routes.admin_panel_organization_member_path(@conn, :index), class: "nav-link" do %>
+                <span class="fa fa-id-badge"></span> <%= gettext("Organization Member") %>
+                <% end %>
+              </li>
             </ul>
             <hr>
             <h6 class="pl-3"><%= gettext("Offer Management") %></h6>

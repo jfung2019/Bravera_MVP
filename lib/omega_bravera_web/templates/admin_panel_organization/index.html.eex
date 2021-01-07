@@ -1,0 +1,31 @@
+<div class="card">
+  <div class="card-body">
+    <h1><span class="fa fa-building"></span> <%= gettext("Organizations") %></h1>
+    <%= link "New Organization", to: Routes.admin_panel_organization_path(@conn, :new), class: "btn btn-outline-primary" %>
+    <table class="table mt-3 table-striped">
+      <thead>
+        <tr>
+          <th><%= gettext("Name") %></th>
+          <th><%= gettext("Number of Members") %></th>
+          <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+        </tr>
+      </thead>
+      <tbody>
+      <%= for organization <- @organizations do %>
+        <tr>
+          <td><%= organization.name %></td>
+          <td><%= organization.member_count %></td>
+          <td class="text-center">
+            <%= link gettext("Details"), to: Routes.admin_panel_organization_path(@conn, :show, organization), class: "btn btn-primary" %>
+            <%= link gettext("Edit"), to: Routes.admin_panel_organization_path(@conn, :edit, organization), class: "btn btn-warning btn-xs" %>
+            <%= link gettext("Delete"), to: Routes.admin_panel_organization_path(@conn, :delete, organization), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <%= if @paginate.total_pages > 1 do %>
+    <%= turbo_pagination_links(@conn, @paginate) %>
+    <% end %>
+  </div>
+</div>

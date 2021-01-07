@@ -1,0 +1,32 @@
+<div class="card">
+  <div class="card-body">
+    <h1><span class="fa fa-id-badge"></span> <%= gettext("Organization members") %></h1>
+    <%= link "New Organization member", to: Routes.admin_panel_organization_member_path(@conn, :new), class: "btn btn-outline-primary" %>
+    <table class="table mt-3 table-striped">
+      <thead>
+        <tr>
+          <th><%= gettext("Organization Name") %></th>
+          <th><%= gettext("Email") %></th>
+          <th><%= gettext("Username") %></th>
+          <th><%= gettext("Business Type") %></th>
+          <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+        </tr>
+      </thead>
+      <tbody>
+      <%= for organization_member <- @organization_members do %>
+        <tr>
+          <td><%= organization_member.organization.name %></td>
+          <td><%= organization_member.partner_user.email %></td>
+          <td><%= organization_member.partner_user.username %></td>
+          <td><%= organization_member.partner_user.business_type %></td>
+          <td class="text-center">
+            <span><%= link gettext("Details"), to: Routes.admin_panel_organization_member_path(@conn, :show, organization_member), class: "btn btn-primary" %></span>
+            <span><%= link gettext("Edit"), to: Routes.admin_panel_organization_member_path(@conn, :edit, organization_member), class: "btn btn-warning btn-xs" %></span>
+            <span><%= link gettext("Delete"), to: Routes.admin_panel_organization_member_path(@conn, :delete, organization_member), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

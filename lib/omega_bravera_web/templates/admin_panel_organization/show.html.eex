@@ -1,0 +1,16 @@
+<div class="card">
+  <div class="card-body">
+    <h1><span class="fa fa-building"></span> <%= gettext("Organization Details") %></h1>
+    <ul>
+
+      <li>
+        <strong>Name:</strong>
+        <%= @organization.name %>
+      </li>
+
+    </ul>
+
+    <span><%= link "Edit", to: Routes.admin_panel_organization_path(@conn, :edit, @organization), class: "btn btn-warning btn-xs" %></span>
+    <span><%= link "Back", to: Routes.admin_panel_organization_path(@conn, :index), class: "btn btn-secondary" %></span>
+  </div>
+</div>

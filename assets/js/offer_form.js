@@ -3,7 +3,7 @@ import $ from "jquery";
 $(function () {
     const offer_target = $("#offer_target");
     calTarget(offer_target.val());
-    offer_target.change(function () {
+    offer_target.keyup(function () {
         calTarget($(this).val());
     });
 
@@ -21,12 +21,13 @@ $(function () {
 })
 
 function calTarget(val) {
-    if (val !== "") {
-        $("#km-target").text(val);
-        $("#points-target").text(val * 10);
-        $("#miles-target").text((val * 0.621371).toFixed(2));
-        $("#steps-target").text(val * 1350);
+    if (val === "") {
+        val = 0;
     }
+    $("#km-target").text(val);
+    $("#points-target").text(val * 10);
+    $("#miles-target").text((val * 0.621371).toFixed(2));
+    $("#steps-target").text(val * 1350);
 }
 
 function checkEnableChallenge(obj) {

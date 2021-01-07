@@ -33,7 +33,9 @@ defmodule OmegaBravera.Accounts do
     Offers.OfferRedeem,
     Offers.OfferChallengeActivitiesM2m,
     Activity.ActivityAccumulator,
-    Groups.Member
+    Groups.Member,
+    Accounts.Organization,
+    Accounts.OrganizationMember
   }
 
   def get_all_athlete_ids() do
@@ -1727,4 +1729,230 @@ defmodule OmegaBravera.Accounts do
   @spec verify_partner_user_email(PartnerUser.t()) :: {:ok, PartnerUser.t()}
   def verify_partner_user_email(%PartnerUser{} = partner_user),
     do: update_partner_user(partner_user, %{email_verified: true})
+
+  @doc """
+  Returns the list of organization.
+
+  ## Examples
+
+      iex> list_organization()
+      [%Organization{}, ...]
+
+  """
+  def list_organization do
+    Repo.all(Organization)
+  end
+
+  def list_organization_with_member_count_query() do
+    from(o in Organization,
+      left_join: om in OrganizationMember,
+      on: o.id == om.organization_id,
+      windows: [organization_id: [partition_by: o.id]],
+      distinct: true,
+      select: %{o | member_count: coalesce(over(count(om.id), :organization_id), 0)}
+    )
+  end
+
+  @doc """
+  Gets a single organization.
+
+  Raises `Ecto.NoResultsError` if the Organization does not exist.
+
+  ## Examples
+
+      iex> get_organization!(123)
+      %Organization{}
+
+      iex> get_organization!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_organization!(id), do: Repo.get!(Organization, id)
+
+  @doc """
+  Creates a organization.
+
+  ## Examples
+
+      iex> create_organization(%{field: value})
+      {:ok, %Organization{}}
+
+      iex> create_organization(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_organization(attrs \\ %{}) do
+    %Organization{}
+    |> Organization.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a organization.
+
+  ## Examples
+
+      iex> update_organization(organization, %{field: new_value})
+      {:ok, %Organization{}}
+
+      iex> update_organization(organization, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_organization(%Organization{} = organization, attrs) do
+    organization
+    |> Organization.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a organization.
+
+  ## Examples
+
+      iex> delete_organization(organization)
+      {:ok, %Organization{}}
+
+      iex> delete_organization(organization)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_organization(%Organization{} = organization) do
+    Repo.delete(organization)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking organization changes.
+
+  ## Examples
+
+      iex> change_organization(organization)
+      %Ecto.Changeset{data: %Organization{}}
+
+  """
+  def change_organization(%Organization{} = organization, attrs \\ %{}) do
+    Organization.changeset(organization, attrs)
+  end
+
+  @doc """
+  Returns the list of organization_members.
+
+  ## Examples
+
+      iex> list_organization_members()
+      [%OrganizationMember{}, ...]
+
+  """
+  def list_organization_members do
+    Repo.all(OrganizationMember)
+  end
+
+  def list_organization_members_with_preloads_query(preloads \\ []) do
+    from(o in OrganizationMember,
+      preload: ^preloads
+    )
+  end
+
+  @doc """
+  Gets a single organization_member.
+
+  Raises `Ecto.NoResultsError` if the Organization member does not exist.
+
+  ## Examples
+
+      iex> get_organization_member!(123)
+      %OrganizationMember{}
+
+      iex> get_organization_member!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_organization_member!(id), do: Repo.get!(OrganizationMember, id)
+
+  @doc """
+  Creates a organization_member.
+
+  ## Examples
+
+      iex> create_organization_member(%{field: value})
+      {:ok, %OrganizationMember{}}
+
+      iex> create_organization_member(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_organization_member(attrs \\ %{}) do
+    %OrganizationMember{}
+    |> OrganizationMember.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_organization_partner_user(organization_id, attrs \\ %{}) do
+    Multi.new()
+    |> Multi.run(:create_partner_user, fn _repo, _ -> create_partner_user(attrs) end)
+    |> Multi.run(:create_organization_member, fn _repo, %{create_partner_user: partner_user} ->
+      param = %{"organization_id" => organization_id, "partner_user_id" => partner_user.id}
+      create_organization_member(param)
+    end)
+    |> Repo.transaction()
+  end
+
+  @doc """
+  Updates a organization_member.
+
+  ## Examples
+
+      iex> update_organization_member(organization_member, %{field: new_value})
+      {:ok, %OrganizationMember{}}
+
+      iex> update_organization_member(organization_member, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_organization_member(%OrganizationMember{} = organization_member, attrs) do
+    organization_member
+    |> OrganizationMember.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_organization_partner_user(%OrganizationMember{} = organization_member, attrs) do
+    Multi.new()
+    |> Multi.run(:update_partner_user, fn repo, _ ->
+      partner_user = repo.get!(PartnerUser, organization_member.partner_user_id)
+      update_partner_user(partner_user, attrs)
+    end)
+    |> Multi.run(:update_organization_member, fn _repo, %{update_partner_user: _partner_user} ->
+      update_organization_member(organization_member, attrs)
+    end)
+    |> Repo.transaction()
+  end
+
+  @doc """
+  Deletes a organization_member.
+
+  ## Examples
+
+      iex> delete_organization_member(organization_member)
+      {:ok, %OrganizationMember{}}
+
+      iex> delete_organization_member(organization_member)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_organization_member(%OrganizationMember{} = organization_member) do
+    Repo.delete(organization_member)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking organization_member changes.
+
+  ## Examples
+
+      iex> change_organization_member(organization_member)
+      %Ecto.Changeset{data: %OrganizationMember{}}
+
+  """
+  def change_organization_member(%OrganizationMember{} = organization_member, attrs \\ %{}) do
+    OrganizationMember.changeset(organization_member, attrs)
+  end
 end

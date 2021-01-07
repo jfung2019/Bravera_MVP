@@ -1,0 +1,7 @@
+<div class="card">
+    <div class="card-body">
+        <h1><span class="fa fa-id-badge"></span> <%= gettext("Edit Organization members") %></h1>
+        <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_organization_member_path(@conn, :update, @organization_member)) %>
+        <span><%= link "Back", to: Routes.admin_panel_organization_member_path(@conn, :index) %></span>
+    </div>
+</div>
