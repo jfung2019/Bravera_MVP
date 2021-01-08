@@ -27,6 +27,7 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
   def create(conn, %{"organization_member" => organization_member_params}) do
     organization_member_params = Map.put(organization_member_params, "accept_terms", true)
     %{"organization_id" => organization_id} = organization_member_params
+
     case Accounts.create_organization_partner_user(organization_id, organization_member_params) do
       {:ok, %{create_organization_member: organization_member}} ->
         conn
@@ -41,7 +42,8 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
     end
   end
 
-  def create(conn, %{"partner_user" => params}), do: create(conn, %{"organization_member" => params})
+  def create(conn, %{"partner_user" => params}),
+    do: create(conn, %{"organization_member" => params})
 
   def show(conn, %{"id" => id}) do
     organization_member = Accounts.get_organization_member!(id)
@@ -64,7 +66,10 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
   def update(conn, %{"id" => id, "partner_user" => organization_member_params}) do
     organization_member = Accounts.get_organization_member!(id)
 
-    case Accounts.update_organization_partner_user(organization_member, organization_member_params) do
+    case Accounts.update_organization_partner_user(
+           organization_member,
+           organization_member_params
+         ) do
       {:ok, %{update_organization_member: organization_member}} ->
         conn
         |> put_flash(:info, "Organization member updated successfully.")

@@ -35,7 +35,10 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
 
   describe "create organization" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.admin_panel_organization_path(conn, :create), organization: @create_attrs)
+      conn =
+        post(conn, Routes.admin_panel_organization_path(conn, :create),
+          organization: @create_attrs
+        )
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == Routes.admin_panel_organization_path(conn, :show, id)
@@ -45,7 +48,11 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.admin_panel_organization_path(conn, :create), organization: @invalid_attrs)
+      conn =
+        post(conn, Routes.admin_panel_organization_path(conn, :create),
+          organization: @invalid_attrs
+        )
+
       assert html_response(conn, 200) =~ "New Organization"
     end
   end
@@ -68,7 +75,8 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
           organization: @update_attrs
         )
 
-      assert redirected_to(conn) == Routes.admin_panel_organization_path(conn, :show, organization)
+      assert redirected_to(conn) ==
+               Routes.admin_panel_organization_path(conn, :show, organization)
 
       conn = get(conn, Routes.admin_panel_organization_path(conn, :show, organization))
       assert html_response(conn, 200) =~ "some updated name"
