@@ -1,6 +1,9 @@
 <div class="card">
     <div class="card-body">
-        <h1><span class="fa fa-trophy"></span> <%= gettext("Edit Images") %></h1>
+        <h1>
+            <span class="fa fa-<%= if @offer.offer_type == "online", do: "cart-arrow-down", else: "credit-card" %>"></span>
+            <%= "#{gettext("Edit")} #{if @offer.offer_type == "online", do: gettext("Online"), else: gettext("In Store")} #{gettext("Offer Images")}" %>
+        </h1>
         <h2><%= @offer.name %></h2>
 
         <div class="row">
@@ -14,8 +17,16 @@
             <div class="col-6 offset-3">
                 <h3><%= gettext("Photos should be 1080x1080 dimension") %></h3>
                 <form action="/test" class="dropzone" phx-hook="dropzone" data-dropzone="<%= @upload_token %>" data-dropzone-field="images" data-event="append-image"></form>
+                <div class="d-flex justify-content-center">
+                    <small class="text-muted text-center">
+                        <%= gettext("First image will also be the 'intro' image on the group listing.") %><br>
+                        <%= gettext("Image order will match the order here.") %><br>
+                        <%= gettext("Click on an unwanted image to delete.") %>
+                    </small>
+                </div>
             </div>
         </div>
+
         <button type="button" class="btn btn-primary" phx-click="save-images">Save</button>
     </div>
 </div>

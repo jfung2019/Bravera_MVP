@@ -153,24 +153,17 @@
   <% end %>
 
   <div class="form-group">
-    <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>
+    <%= label f, :offer_type, "#{if @offer_type == :online, do: "Online Offer", else: "In Store Offer"}", class: "control-label" %>
     <small class="form-text text-muted">
-      <%= gettext("(‘Countdown’ or ‘deadline’ to claim the reward after it has been unlocked. Example: Steven earned a reward on 07:00am on 1st January that has an expiry of 10 days. On 11th January, at 06:59:59, the reward will expire and be removed from his rewards wallet. ") %>
+      <%= if @offer_type == :online do %>
+      <%= gettext("(Hint: “Online” Means you’re offering something to be claimed ‘online’ e.g. a discount on a 3rd party ecommerce website (e.g. shopify) or entries to a prize draw on an online form (e.g. Google forms, Typeform, Survey Monkey. ")%>
+      <% else %>
+      <%= gettext("(Hint: “In-store” Means claim by QR code. Reward is claimed by scanning a QR code. ") %>
+      <% end %>
       <a href="#"><%= gettext("Click here") %></a>
       <%= gettext(" for hints and help.)") %>
     </small>
-    <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
-    <%= error_tag f, :redemption_days %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :offer_type, "Offer Type", class: "control-label" %>
-    <small class="form-text text-muted">
-      <%= gettext("(“In-store” Means claim by QR code. Reward is claimed by scanning a QR code. “Online” Means you’re offering something to be claimed ‘online’ e.g. a discount on a 3rd party website (e.g. shopify) or entries to a prize draw on an online form (e.g. Google forms, Typeform, Survey Monkey. ")%>
-      <a href="#"><%= gettext("Click here") %></a>
-      <%= gettext(" for hints and help.)") %>
-    </small>
-    <%= select f, :offer_type, @available_offer_types, class: "form-control", id: "offer_type" %>
+    <%= select f, :offer_type, @available_offer_types, class: "form-control d-none", id: "offer_type" %>
     <%= error_tag f, :offer_type %>
   </div>
 
@@ -194,8 +187,8 @@
     <div class="form-group">
       <%= label f, :online_url, gettext("Redirect URL Address"), class: "control-label" %>
       <small class="form-text text-muted">
-        <%= gettext("If your offer is ‘online’ please add the redirect website / url where members can ‘claim’ here. (Confused? Don’t worry, ") %>
-        <a href="#"><%= gettext("click here for help") %></a>.)
+        <%= gettext("Please add the redirect website / url where members can ‘claim’ here. ") %>
+        (<a href="#"><%= gettext("Click here for help") %></a>.)
       </small>
       <%= text_input f, :online_url, class: "form-control" %>
       <%= error_tag f, :online_url %>
@@ -224,6 +217,17 @@
   </div>
 
   <div id="enable_take_challenge_fields">
+    <div class="form-group">
+      <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>
+      <small class="form-text text-muted">
+        <%= gettext("(‘Countdown’ or ‘deadline’ to claim the reward after it has been unlocked. Example: Steven earned a reward on 07:00am on 1st January that has an expiry of 10 days. On 11th January, at 06:59:59, the reward will expire and be removed from his rewards wallet. ") %>
+        <a href="#"><%= gettext("Click here") %></a>
+        <%= gettext(" for hints and help.)") %>
+      </small>
+      <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
+      <%= error_tag f, :redemption_days %>
+    </div>
+
     <div class="form-group">
       <%= label f, :time_limit, "Time Limit (leave blank to make offer challenge end date match offer's)", class: "control-label" %>
       <%= number_input f, :time_limit, class: "form-control" %>
