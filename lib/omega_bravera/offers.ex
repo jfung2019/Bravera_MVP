@@ -128,6 +128,31 @@ defmodule OmegaBravera.Offers do
   #
   #  end
 
+  def total_offers_query() do
+    from(o in Offer, select: count(o.id))
+  end
+
+  def total_offers() do
+    total_offers_query()
+    |> Repo.one()
+  end
+
+  def total_live_offers() do
+
+  end
+
+  def total_online_offers() do
+    total_offers_query()
+    |> where([o], o.offer_type == "online")
+    |> Repo.one()
+  end
+
+  def total_in_store_offers() do
+    total_offers_query()
+    |> where([o], o.offer_type == "in_store")
+    |> Repo.one()
+  end
+
   @doc """
   Gets a single offer.
 

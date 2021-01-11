@@ -647,6 +647,7 @@ defmodule OmegaBravera.AccountsTest do
 
     test "create_organization_member/1 with valid data creates a organization_member" do
       assert {:ok, organization} = Accounts.create_organization(%{name: "name"})
+
       assert {:ok, %{create_organization_member: %OrganizationMember{}}} =
                Accounts.create_organization_partner_user(organization.id, %{
                  username: "name2",

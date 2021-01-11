@@ -1141,6 +1141,170 @@ defmodule OmegaBravera.Accounts do
     |> Repo.one()
   end
 
+  def new_user_this_month() do
+    now = Timex.now()
+    start_of_month = now |> Timex.beginning_of_month()
+    end_of_month = now |> Timex.end_of_month()
+
+    from(u in User,
+      where:
+        not is_nil(u.additional_info) and
+          fragment("? BETWEEN ? and ?", u.inserted_at, ^start_of_month, ^end_of_month),
+      select: count(u.id)
+    )
+    |> Repo.one()
+  end
+
+  defp count_sum(count_list) do
+    case count_list do
+      [] ->
+        0
+
+      _ ->
+        %{count: sum} =
+          Enum.reduce(count_list, fn item, acc ->
+            %{count: item.count + acc.count}
+          end)
+
+        sum
+    end
+  end
+
+  def total_friend_referrals() do
+    from(u in User,
+      left_join: r in User,
+      on: u.id == r.referred_by_id,
+      windows: [user_id: [partition_by: u.id]],
+      distinct: true,
+      select: %{count: coalesce(over(count(r.id), :user_id), 0)}
+    )
+    |> Repo.all()
+    |> count_sum()
+  end
+
+  def friend_referrals_this_month() do
+    now = Timex.now()
+    start_of_month = now |> Timex.beginning_of_month()
+    end_of_month = now |> Timex.end_of_month()
+
+    from(u in User,
+      left_join: r in User,
+      on: u.id == r.referred_by_id,
+      windows: [user_id: [partition_by: u.id]],
+      distinct: true,
+      where: fragment("? BETWEEN ? and ?", r.inserted_at, ^start_of_month, ^end_of_month),
+      select: %{count: coalesce(over(count(r.id), :user_id), 0)}
+    )
+    |> Repo.all()
+    |> count_sum()
+  end
+
+  def distance_sum(distance_list) do
+    case distance_list do
+      [] ->
+        0
+
+      _ ->
+        %{sum: sum} =
+          Enum.reduce(distance_list, fn item, acc ->
+            %{sum: item.sum + acc.sum}
+          end)
+
+        round(sum)
+    end
+  end
+
+  def total_distance_query() do
+    from(a in OmegaBravera.Activity.ActivityAccumulator,
+      group_by: [a.user_id],
+      select: %{sum: sum(coalesce(a.distance, 0.0))}
+    )
+  end
+
+  def total_distance() do
+    total_distance_query()
+    |> Repo.all()
+    |> distance_sum()
+  end
+
+  def total_distance_this_week() do
+    now = Timex.now()
+    start_of_week = now |> Timex.beginning_of_week()
+    end_of_week = now |> Timex.end_of_week()
+
+    total_distance_query()
+    |> where([a], fragment("? BETWEEN ? and ?", a.inserted_at, ^start_of_week, ^end_of_week))
+    |> Repo.all()
+    |> distance_sum()
+  end
+
+  defp amount_of_user_in_gender_query(gender) do
+    from(u in User,
+      left_join: s in assoc(u, :setting),
+      where: not is_nil(u.additional_info) and s.gender == ^gender,
+      select: count(u.id)
+    )
+  end
+
+  def amount_of_male_users() do
+    amount_of_user_in_gender_query("Male")
+    |> Repo.one()
+  end
+
+  def amount_of_female_users() do
+    amount_of_user_in_gender_query("Female")
+    |> Repo.one()
+  end
+
+  def amount_of_other_users() do
+    amount_of_user_in_gender_query("Other")
+    |> Repo.one()
+  end
+
+  def amount_of_ios_users() do
+    from(u in User,
+      left_join: d in assoc(u, :devices),
+      on: d.active == true,
+      where: ilike(d.uuid, "%-%"),
+      select: count(u.id)
+    )
+    |> Repo.one()
+  end
+
+  def amount_of_android_users() do
+    from(u in User,
+      left_join: d in assoc(u, :devices),
+      on: d.active == true,
+      where: not ilike(d.uuid, "%-%") and not is_nil(d.uuid),
+      select: count(u.id)
+    )
+    |> Repo.one()
+  end
+
+  def total_rewards_unlocked() do
+    from(u in User,
+      left_join: r in OmegaBravera.Offers.OfferRedeem,
+      on: u.id == r.user_id,
+      group_by: [ u.id],
+      left_join: oc in assoc(r, :offer_challenge),
+      on: oc.status == ^"complete",
+      select: %{count: coalesce(count(r.id), 0)}
+    )
+    |> Repo.all()
+    |> count_sum()
+  end
+
+  def total_rewards_claimed() do
+    from(u in User,
+      left_join: r in OmegaBravera.Offers.OfferRedeem,
+      on: u.id == r.user_id and r.status == "redeemed",
+      group_by: [u.id],
+      select: %{count: coalesce(count(r.id), 0)}
+    )
+    |> Repo.all()
+    |> count_sum()
+  end
+
   def number_of_referrals_over_week(user_id) do
     today = Timex.now()
     one_week_ago = today |> Timex.shift(days: -7)

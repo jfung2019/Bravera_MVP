@@ -1,37 +1,119 @@
 <div class="card">
 	<div class="card-body">
-		<table class="table">
+		<h1><span class="fa fa-dashboard"></span> <%= gettext("Dashboard") %></h1>
+		<small class="text-muted">
+			<%= gettext("(Below is your account at a glance. Hint: there’s more data insights inside ‘offers’. ") %>
+			<a href="#"><%= gettext("Click here") %></a>
+			<%=(" for more information.)") %>
+		</small>
+		<table class="table mt-3 table-striped" style="table-layout: fixed;">
 			<tbody>
 				<tr>
-					<td><%= gettext("Total Amount of Users") %>:</td>
+					<td><%= gettext("Total Users") %>:</td>
 					<td><%= @users %></td>
 				</tr>
 				<tr>
-					<td><%= gettext("Total amount of donors") %>:</td>
+					<td><%= gettext("New Users") %>:</td>
+					<td><%= @new_users %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Active Users") %>:</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Friend Referrals") %>:</td>
+					<td><%= @referrals %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("New Friend Referrals") %>:</td>
+					<td><%= @this_month_referrals %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Distance") %>:</td>
+					<td><%= @total_distance %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Distance this week") %>:</td>
+					<td><%= @weekly_distance %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Sync Events") %>:</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Male") %>:</td>
+					<td><%= @male_users %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Female") %>:</td>
+					<td><%= @female_users %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total 'other'") %>:</td>
+					<td><%= @other_users %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("iOS") %>:</td>
+					<td><%= @ios_users %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Android") %>:</td>
+					<td><%= @android_users %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Groups") %>:</td>
+					<td><%= @groups %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Live Groups") %>:</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Offers") %>:</td>
+					<td><%= @offers %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Live Offers") %>:</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Online offers") %>:</td>
+					<td><%= @online_offers %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total In Store Offers") %>:</td>
+					<td><%= @in_store_offers %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Rewards Unlocked") %>:</td>
+					<td><%= @unlocked_rewards %></td>
+				</tr>
+				<tr>
+					<td><%= gettext("Total Rewards Claimed") %>:</td>
+					<td><%= @claimed_rewards %></td>
+				</tr>
+			</tbody>
+		</table>
+		<table class="table mt-3 table-striped" style="table-layout: fixed;">
+			<tbody>
+				<tr>
+					<td><%= gettext("Total Donors") %>:</td>
 					<td><%= @donors %></td>
 				</tr>
 				<tr>
-					<td><%= gettext("Total amount of Activities") %>:</td>
+					<td><%= gettext("Total (sync) Activities") %>:</td>
 					<td><%= @activities %></td>
 				</tr>
 				<tr>
-					<td><%= gettext("Total amount of Target Distance") %>:</td>
-					<td><%= @distance_target %></td>
-				</tr>
-				<tr>
-					<td><%= gettext("Total amount of Challenge Days") %>:</td>
-					<td><%= @challenge_days %> days</td>
-				</tr>
-				<tr>
-					<td><%= gettext("Total amount of Donations") %>:</td>
+					<td><%= gettext("Total number of Donations") %>:</td>
 					<td><%= @donations %></td>
 				</tr>
 				<tr>
-					<td><%= gettext("Total amount of Secured Donations") %>:</td>
+					<td><%= gettext("Total Secured Donations") %>:</td>
 					<td>
 						<%= for {amount, currency} <- @total_secured do %>
-							<%= currency %>: <%= "#{currency_to_symbol(currency)}#{amount}" %>
-						<% end %>
+						<%= currency %>: <%= "#{currency_to_symbol(currency)}#{amount}" %>
+							<% end %>
 					</td>
 				</tr>
 			</tbody>

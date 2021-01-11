@@ -113,6 +113,15 @@ defmodule OmegaBravera.Groups do
     |> Repo.all()
   end
 
+  def total_groups() do
+    from(p in Partner, select: count(p.id))
+    |> Repo.one()
+  end
+
+  def total_live_groups() do
+
+  end
+
   @doc """
   Creates a partner.
 
