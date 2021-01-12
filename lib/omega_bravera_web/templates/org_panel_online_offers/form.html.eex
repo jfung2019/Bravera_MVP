@@ -16,34 +16,6 @@
     <%= error_tag f, :name %>
   </div>
 
-  <%= if is_admin?(@conn) do %>
-  <div class="form-group">
-    <%= label f, "Slug (leave blank to auto generate based on name)", class: "control-label" %>
-    <%= text_input f, :slug, class: "form-control" %>
-    <%= error_tag f, :slug %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, "Google Analytics ID", class: "control-label" %>
-    <%= text_input f, :ga_id, class: "form-control" %>
-    <%= error_tag f, :ga_id %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :pre_registration_start_date, "Pre-registration start: ", class: "control-label" %>
-    <br/>
-    <%= registration_date_builder(f, :pre_registration_start_date, class: "form-control") %>
-    <%= error_tag f, :pre_registration_start_date %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :open_registration, "Open Registration (when checked, pre registration date will be ignored)", class: "control-label" %>
-    <br/>
-    <%= checkbox f, :open_registration %>
-    <%= error_tag f, :open_registration %>
-  </div>
-  <% end %>
-
   <div class="form-group">
     <%= label f, :start_date, "Start Date", class: "control-label" %>
     <br/>
@@ -63,34 +35,6 @@
     <%= registration_date_builder(f, :end_date, class: "form-control") %>
     <%= error_tag f, :end_date %>
   </div>
-
-  <%= if is_admin?(@conn) do %>
-  <div class="form-group">
-    <%= label f, :hidden, "Hide Offer:", class: "control-label" %>
-    <br/>
-    <%= checkbox f, :hidden %>
-    <%= error_tag f, :hidden %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :payment_amount, "Payment Amount: Used as a fee of joining the race. (Leave Blank to not enable)", class: "control-label" %>
-    <br/>
-    <%= number_input f, :payment_amount, class: "form-control" %>
-    <%= error_tag f, :payment_amount %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :external_terms_url, class: "control-label" %>
-    <%= text_input f, :external_terms_url, class: "form-control" %>
-    <%= error_tag f, :external_terms_url %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :accept_terms_text, class: "control-label" %>
-    <%= text_input f, :accept_terms_text, class: "form-control" %>
-    <%= error_tag f, :accept_terms_text %>
-  </div>
-  <% end %>
 
   <div class="form-group">
     <%= label f, :toc, "Terms and Conditions", class: "control-label" %>
@@ -112,14 +56,6 @@
     <%= textarea f, :desc, class: "form-control", rows: 3, data: [html: true] %>
     <%= error_tag f, :desc %>
   </div>
-
-  <%= if is_admin?(@conn) do %>
-  <div class="form-group">
-    <%= label f, :url, class: "control-label" %>
-    <%= text_input f, :url, class: "form-control" %>
-    <%= error_tag f, :url %>
-  </div>
-  <% end %>
 
   <div class="form-group">
     <%= label f, :target, "Target (if km challenge: enter KMs. if Segment challenge: enter Segment ID.)", class: "control-label" %>
@@ -143,39 +79,14 @@
     </table>
     <%= error_tag f, :target %>
   </div>
-  <%= if is_admin?(@conn) do %>
-  <div class="form-group">
-    <%= label f, :offer_challenge_types, class: "control-label" %>
-    <%= multiple_select f, :offer_challenge_types, @available_challenge_type_options, class: "form-control" %>
-    <%= error_tag f, :offer_challenge_types %>
-  </div>
-  <% end %>
 
   <div class="form-group">
-    <%= label f, :offer_type, "Offer Type", class: "control-label" %>
+    <%= label f, :offer_type, gettext("Online Offer"), class: "control-label" %>
     <small class="form-text text-muted">
-      <%= gettext("(“In-store” Means claim by QR code. Reward is claimed by scanning a QR code. “Online” Means you’re offering something to be claimed ‘online’ e.g. a discount on a 3rd party website (e.g. shopify) or entries to a prize draw on an online form (e.g. Google forms, Typeform, Survey Monkey. ")%>
+      <%= gettext("(Hint: “Online” Means you’re offering something to be claimed ‘online’ e.g. a discount on a 3rd party ecommerce website (e.g. shopify) or entries to a prize draw on an online form (e.g. Google forms, Typeform, Survey Monkey. ")%>
       <a href="#"><%= gettext("Click here") %></a>
       <%= gettext(" for hints and help.)") %>
     </small>
-    <%= select f, :offer_type, @available_offer_types, class: "form-control", id: "offer_type" %>
-    <%= error_tag f, :offer_type %>
-  </div>
-
-  <div id="instore-fields">
-    <div class="form-group">
-      <%= label f, :vendor_id, gettext("Claim ID"), class: "control-label" %>
-      <%= select(f, :vendor_id, Enum.map(@vendors, &{&1.vendor_id, &1.id}),
-              class: "form-control chosen", prompt: gettext("Select Claim ID linked to this offer"))
-        %>
-      <%= error_tag f, :vendor_id %>
-    </div>
-
-    <div class="form-group">
-      <%= label f, :location_id, gettext("Offer Availability"), class: "control-label" %>
-      <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control chosen" %>
-      <%= error_tag f, :location_id %>
-    </div>
   </div>
 
   <div id="online-fields">
@@ -229,38 +140,6 @@
       <%= error_tag f, :time_limit %>
     </div>
   </div>
-
-  <%= if is_admin?(@conn) do %>
-  <div class="form-group">
-    <%= label f, :currency, class: "control-label" %>
-    <%= select f, :currency, @available_currencies, class: "form-control" %>
-    <%= error_tag f, :currency %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :offer_percent, class: "control-label" %>
-    <%= number_input f, :offer_percent, class: "form-control" %>
-    <%= error_tag f, :offer_percent %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, "Additional Members (0 for Solo user challenges. More for Team Challenges)", class: "control-label" %>
-    <%= text_input f, :additional_members, class: "form-control" %>
-    <%= error_tag f, :additional_members %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :activities, class: "control-label" %>
-    <%= multiple_select f, :activities, @available_activities, class: "form-control" %>
-    <%= error_tag f, :activities %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :form_url, "Form URL", class: "control-label" %>
-    <%= text_input f, :form_url, class: "form-control" %>
-    <%= error_tag f, :form_url %>
-  </div>
-  <% end %>
 
   <div class="form-group">
     <%= submit "Save", class: "btn btn-primary" %>

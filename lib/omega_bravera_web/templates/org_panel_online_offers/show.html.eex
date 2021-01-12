@@ -1,0 +1,16 @@
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col">
+				<h2><span class="fa fa-cart-arrow-down"></span> <%= @offer.name%>'s Offer Challenges:</h2>
+				<ul>
+					<%= for offer_challenge <- @offer.offer_challenges do %>
+					<li><%= link offer_challenge.slug, to: Routes.offer_offer_challenge_path(@conn, :show, @offer.slug, offer_challenge.slug), target: "_blank" %></li>
+					<% end %>
+					<% %>
+				</ul>
+				<span><%= link "Back", to: Routes.org_panel_online_offers_path(@conn, :index) %></span>
+			</div>
+		</div>
+	</div>
+</div>

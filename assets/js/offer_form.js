@@ -24,7 +24,6 @@ function calTarget(val) {
     if (val === "") {
         val = 0;
     }
-    $("#km-target").text(val);
     $("#points-target").text(val * 10);
     $("#miles-target").text((val * 0.621371).toFixed(2));
     $("#steps-target").text(val * 1350);

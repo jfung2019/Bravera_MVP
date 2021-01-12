@@ -1773,6 +1773,20 @@ defmodule OmegaBravera.Accounts do
     |> Repo.insert()
   end
 
+  def create_partner_user_and_organization(attrs \\ %{}) do
+    Multi.new()
+    |> Multi.run(:create_partner_user, fn _repo, _ -> create_partner_user(attrs) end)
+    |> Multi.run(:create_organization, fn _repo, %{create_partner_user: partner_user} ->
+    create_organization(%{"name" => "#{partner_user.username} Org."})
+    end)
+    |> Multi.run(:create_organization_member, fn _repo, result ->
+      %{create_partner_user: partner_user, create_organization: organization} = result
+      param = %{"organization_id" => organization.id, "partner_user_id" => partner_user.id}
+      create_organization_member(param)
+    end)
+    |> Repo.transaction()
+  end
+
   def update_partner_user(partner_user, attrs) do
     partner_user
     |> PartnerUser.update_changeset(attrs)

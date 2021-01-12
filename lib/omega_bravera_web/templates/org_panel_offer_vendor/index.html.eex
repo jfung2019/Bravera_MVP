@@ -1,0 +1,46 @@
+<div class="card">
+  <div class="card-body">
+    <h1><span class="fa fa-qrcode"></span> <%= gettext("Claim IDs") %></h1>
+    <div class="row my-3">
+      <div class="col-9">
+        <small class="text-muted">
+          <%= gettext("(Think of this like a ‘PIN’ that verifies reward claims. A ‘Claim ID’ is linked to each offer and reward(s). If a reward is ‘in-store’, the QR code will be ‘verified’ by entering this ‘Claim ID’. Even if you're creating an online reward, please also create a Claim ID, as it is a standard requirement. Confused? ") %>
+          <a href="#"><%= gettext("Click here") %></a>
+          <%=gettext(" for more help).") %>
+        </small>
+      </div>
+    </div>
+    <%= link gettext("Create Claim ID"), to: Routes.org_panel_offer_vendor_path(@conn, :new), class: "btn btn-outline-primary" %>
+    <table class="table mt-3 table-striped">
+      <thead>
+        <tr>
+          <th><%= gettext("Claim ID") %></th>
+          <th><%= gettext("Email") %></th>
+          <th><%= gettext("CC") %></th>
+          <th><%= gettext("Date Created") %></th>
+          <th><%= gettext("Last Edited") %></th>
+          <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for offer_vendor <- @offer_vendors do %>
+          <tr>
+            <td style="width: 10%; word-break: break-all;"><%= offer_vendor.vendor_id %></td>
+            <td style="width: 15%; word-break: break-all;"><%= offer_vendor.email %></td>
+            <td style="width: 15%; word-break: break-all;"><%= if is_nil(offer_vendor.cc), do: "None", else: offer_vendor.cc %></td>
+            <td style="width: 15%; word-break: break-all;"><%= render_datetime(offer_vendor.inserted_at) %></td>
+            <td style="width: 15%; word-break: break-all;"><%= render_datetime(offer_vendor.updated_at) %></td>
+            <td class="text-center" style="width: 30%;">
+              <%= link gettext("Details"), to: Routes.org_panel_offer_vendor_path(@conn, :show, offer_vendor), class: "btn btn-primary btn-xs" %>
+              <%= link gettext("Edit"), to: Routes.org_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-warning btn-xs" %>
+              <%= link gettext("Delete"), to: "#", class: "btn btn-danger disabled", data: [toggle: "tooltip", placement: "top"], title: "Tooltip on top" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= if @paginate.total_pages > 1 do %>
+    <%= turbo_pagination_links(@conn, @paginate) %>
+    <% end %>
+  </div>
+</div>
