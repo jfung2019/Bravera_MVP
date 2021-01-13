@@ -13,7 +13,7 @@
         <div class="row mt-3">
             <div class="col-6 offset-3">
                 <h3><%= gettext("Photos should be 1080x1080 dimension") %></h3>
-                <form action="/test" class="dropzone" phx-hook="dropzone" data-dropzone="<%= @upload_token %>" data-dropzone-field="images" data-event="append-image"></form>
+                <form id="offer_images_dropzone" action="/test" class="dropzone" phx-hook="dropzone" data-dropzone="<%= @upload_token %>" data-dropzone-field="images" data-event="append-image"></form>
                 <div class="d-flex justify-content-center">
                     <small class="text-muted text-center">
                         <%= gettext("First image will also be the 'intro' image on the group listing.") %><br>
@@ -26,3 +26,30 @@
         <button type="button" class="btn btn-primary" phx-click="save-images">Save</button>
     </div>
 </div>
+
+<div phx-update="ignore">
+    <div class="modal fade" id="first_time_adding_image_modal" tabindex="-1" role="dialog" aria-labelledby="first_time_adding_image_modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><%= gettext("Images added to your offer! Nice work.") %></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><%= gettext("You can now create the ‘reward’ that is linked to this offer and will be displayed to be verified by the CLAIM ID.") %></p>
+                    <br>
+                    <p><%= gettext("Click ‘Got it’ below to be taken to the ‘Rewards’ section and create a Reward linked to this Offline Offer.") %></p>
+                </div>
+                <div class="modal-footer">
+                    <%= link gettext("Got it"), to: Routes.org_panel_offer_reward_path(@socket, :index), class: "btn btn-primary" %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%= if assigns[:first_time_adding_image] != nil and @first_time_adding_image do %>
+<script>$("#first_time_adding_image_modal").modal("show");</script>
+<% end %>

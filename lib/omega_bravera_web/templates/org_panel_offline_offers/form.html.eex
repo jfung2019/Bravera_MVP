@@ -7,6 +7,9 @@
 
   <div class="form-group">
     <%= label f, :vendor_id, gettext("Claim ID"), class: "control-label" %>
+    <small class="form-text text-muted">
+      <%= gettext("(Think of this like a ‘PIN’ that verifies reward claims. A ‘Claim ID’ is linked to each offer and a reward. If you already have a CLAIM ID created for this offer/reward, select from the box below. If not, click ‘Create Claim ID‘.)") %>
+    </small>
     <%= select(f, :vendor_id, Enum.map(@vendors, &{&1.vendor_id, &1.id}),
                   class: "form-control chosen", prompt: gettext("Select Claim ID linked to this offer"))
             %>
@@ -15,6 +18,7 @@
 
   <div class="form-group">
     <%= label f, :location_id, gettext("Offer Availability"), class: "control-label" %>
+    <small class="form-text text-muted"><%= gettext("Location your offline reward can be claimed") %></small>
     <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control chosen" %>
     <%= error_tag f, :location_id %>
   </div>
@@ -97,7 +101,7 @@
   <div class="form-group">
     <%= label f, :offer_type, gettext("Offline Offer"), class: "control-label" %>
     <small class="form-text text-muted">
-      <%= gettext("(Hint: “In-store” Means claim by QR code. Reward is claimed by scanning a QR code. ")%>
+      <%= gettext("(Hint: “Offline” Means claim by QR code. Reward is claimed by scanning a QR code. ")%>
       <a href="#"><%= gettext("Click here") %></a>
       <%= gettext(" for hints and help.)") %>
     </small>
