@@ -35,7 +35,7 @@
             <%= link gettext("Details"), to: Routes.org_panel_online_offers_path(@conn, :show, offer), class: "btn btn-primary btn-xs mb-2"%>
             <%= link gettext("Statement"), to: Routes.org_panel_online_offers_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs mb-2"%>
             <%= link gettext("Edit"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer), class: "btn btn-warning btn-xs mb-2"%>
-            <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), class: "btn btn-info btn-xs"%>
+            <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), class: "btn btn-info btn-xs mb-2"%>
           </td>
         </tr>
       <% end %>

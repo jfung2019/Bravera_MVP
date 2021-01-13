@@ -1,0 +1,7 @@
+<div class="card">
+    <div class="card-body">
+        <h2><span class="fa fa-gift"></span> <%= gettext("New Offer Reward") %></h2>
+        <%= render "form.html", Map.put(assigns, :action, Routes.org_panel_offer_reward_path(@conn, :create)) %>
+        <span><%= link "Back", to: Routes.org_panel_offer_reward_path(@conn, :index) %></span>
+    </div>
+</div>

@@ -27,8 +27,8 @@
 		</table>
 		<h3><span class="fa fa-map-marker"></span> <%= gettext("Group Location") %></h3>
 		<%= if @partner.location do %>
-		<%= link gettext("Edit Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :edit, @partner, @partner.location), class: "btn btn-warning" %>
-		<%= link gettext("Delete Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :delete, @partner, @partner.location), method: :delete, class: "ml-2 btn btn-danger" %>
+		<%= link gettext("Edit Location"), to: Routes.org_panel_partner_org_panel_partner_location_path(@conn, :edit, @partner, @partner.location), class: "btn btn-warning" %>
+		<%= link gettext("Delete Location"), to: Routes.org_panel_partner_org_panel_partner_location_path(@conn, :delete, @partner, @partner.location), method: :delete, class: "ml-2 btn btn-danger" %>
 		<table class="table">
 			<tbody>
 			<tr>
@@ -46,7 +46,7 @@
 			</tbody>
 		</table>
 		<% else %>
-		<%= link gettext("Add Location"), to: Routes.admin_panel_partner_admin_panel_partner_location_path(@conn, :new, @partner), class: "btn btn-primary my-2" %><br>
+		<%= link gettext("Add Location"), to: Routes.org_panel_partner_org_panel_partner_location_path(@conn, :new, @partner), class: "btn btn-primary my-2" %><br>
 		<% end %>
 		<h2><span class="fa fa-trophy"></span> <%= gettext("Offers") %></h2>
 		<%= if length(@partner.offers) > 0 do %>
@@ -55,8 +55,12 @@
 			<%= for offer_partner <- @partner.offer_partners do %>
 			<tr>
 				<td><%= offer_partner.offer.name %>
-					<%= link gettext("Edit Offer"), to: Routes.admin_panel_offer_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
-					<%= link gettext("Unlink Offer"), to: Routes.admin_panel_offer_partner_path(@conn, :delete, offer_partner), method: :delete, class: "btn btn-danger" %>
+					<%= if offer_partner.offer.offer_type == "online" do %>
+					<%= link gettext("Edit Offer"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
+					<% else %>
+					<%= link gettext("Edit Offer"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
+					<% end %>
+					<%= link gettext("Unlink Offer"), to: Routes.org_panel_offer_partner_path(@conn, :delete, offer_partner), method: :delete, class: "btn btn-danger" %>
 				</td>
 			</tr>
 			<% end %>
@@ -66,7 +70,7 @@
 		<hr>
 		<h3><span class="fa fa-plus-square"></span> <%= gettext("Attach an Offer") %></h3>
 		<div class="row">
-			<%= form_for @conn, Routes.admin_panel_offer_partner_path(@conn, :create), fn f -> %>
+			<%= form_for @conn, Routes.org_panel_offer_partner_path(@conn, :create), fn f -> %>
 			<%= hidden_input f, :partner_id, value: @partner.id %>
 			<div class="col">
 				<%= select f, :offer_id, Enum.map(@offers, fn o -> {o.name, o.id} end), class: "form-control chosen" %>

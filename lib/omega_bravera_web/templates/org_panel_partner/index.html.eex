@@ -1,0 +1,46 @@
+<div class="card">
+	<div class="card-body">
+		<h1><span class="fa fa-group"></span> <%= gettext("Groups") %></h1>
+		<%= link gettext("Create New Group"), to: Routes.org_panel_partner_path(@conn, :new), class: "btn btn-outline-primary" %>
+		<div>
+			<small class="text-muted"><%= gettext("Get started by creating your first group.") %></small><br>
+			<small class="text-muted"><%= gettext("If you need help") %>, <a href="#"><%= gettext("click here") %></a></small>
+		</div>
+		<table class="table mt-3 table-striped">
+			<thead>
+			<tr>
+				<th><%= gettext("Group Name") %></th>
+				<th><%= gettext("Date Created") %></th>
+				<th><%= gettext("Last Edited") %></th>
+				<th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+				<th class="text-center"><%= gettext("Status") %></th>
+			</tr>
+			</thead>
+			<tbody>
+			<%= for partner <- @partners do %>
+			<tr>
+				<td style="width: 22%; word-break: break-all;"><%= partner.name %></td>
+				<td style="width: 14%; word-break: break-all;"><%= render_datetime(partner.inserted_at) %></td>
+				<td style="width: 14%; word-break: break-all;"><%= render_datetime(partner.updated_at) %></td>
+				<td class="text-center" style="width: 40%;">
+					<%= link gettext("Members"), to: Routes.org_panel_partner_org_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
+					<%= link gettext("Details"), to: Routes.org_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
+					<%= link gettext("Edit"), to: Routes.org_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
+					<%= link gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgPartnerImages, partner), class: "btn btn-info" %>
+				</td>
+				<td class="text-center" style="width: 10%;">
+					<%= if partner.live do %>
+					<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
+					<% else %>
+					<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
+					<% end %>
+				</td>
+			</tr>
+			<% end %>
+			</tbody>
+		</table>
+		<%= if @paginate.total_pages > 1 do %>
+		<%= turbo_pagination_links(@conn, @paginate) %>
+		<% end %>
+	</div>
+</div>

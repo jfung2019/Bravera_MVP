@@ -206,7 +206,6 @@ defmodule OmegaBraveraWeb.Router do
     end
   end
 
-
   pipeline :org_section do
     plug :browser
     plug :put_layout, {OmegaBraveraWeb.LayoutView, :org_panel}
@@ -224,7 +223,10 @@ defmodule OmegaBraveraWeb.Router do
   scope "/organization", OmegaBraveraWeb do
     pipe_through [:org_section]
 
-    resources "/sessions", PartnerUserSessionController, only: [:new, :create, :delete], singleton: true
+    resources "/sessions", PartnerUserSessionController,
+      only: [:new, :create, :delete],
+      singleton: true
+
     resources "/password", PartnerUserPasswordController, except: [:delete], param: "reset_token"
     resources "/register", PartnerUserRegisterController, only: [:new, :create]
     get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
@@ -232,18 +234,28 @@ defmodule OmegaBraveraWeb.Router do
     scope "/" do
       pipe_through [:org_authenticated]
       get "/dashboard", OrgPanelDashboardController, :index
-      # group
+
+      resources "/groups", OrgPanelPartnerController, except: [:delete] do
+        resources "/locations", OrgPanelPartnerLocationController, except: [:index]
+        resources "/members", OrgPanelPartnerMemberController, only: [:index, :delete]
+      end
+
+      resources "/points", OrgPanelPointsController, only: [:new, :create]
       resources "/online-offers", OrgPanelOnlineOffersController, param: "slug"
       get "/online-offers/:slug/statement", OrgPanelOnlineOffersController, :statement
       resources "/offline-offers", OrgPanelOfflineOffersController, param: "slug"
       get "/offline-offers/:slug/statement", OrgPanelOfflineOffersController, :statement
+
       scope "/" do
         pipe_through [:org_liveview]
         live "/offers/:slug/images", OrgOfferImages
+        live "/groups/:id/images", OrgPartnerImages
       end
+
+      resources "/offer-partners", OrgPanelOfferPartnerController, only: [:create, :delete]
       resources "/claim-ids", OrgPanelOfferVendorController, except: [:delete]
-      # reward
-      # Activation Checklist (?)
+      resources "/rewards", OrgPanelOfferRewardController, except: [:delete]
+      get "/guides", OrgPanelDashboardController, :guides
     end
   end
 
@@ -288,18 +300,18 @@ defmodule OmegaBraveraWeb.Router do
     get "/", PageController, :index
     get "/ngos", NGOController, :index
 
-#    scope "/partner-sessions" do
-#      resources "/", PartnerUserSessionController, only: [:new, :create, :delete], singleton: true
-#      get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
-#    end
+    #    scope "/partner-sessions" do
+    #      resources "/", PartnerUserSessionController, only: [:new, :create, :delete], singleton: true
+    #      get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
+    #    end
 
-#    scope "/partners" do
-#      resources "/password", PartnerUserPasswordController,
-#        except: [:delete],
-#        param: "reset_token"
-#
-#      resources "/", PartnerUserRegisterController, only: [:new, :create]
-#    end
+    #    scope "/partners" do
+    #      resources "/password", PartnerUserPasswordController,
+    #        except: [:delete],
+    #        param: "reset_token"
+    #
+    #      resources "/", PartnerUserRegisterController, only: [:new, :create]
+    #    end
 
     resources "/", NGOController, only: [:show], param: "slug" do
       get "/leaderboard", NGOController, :leaderboard, param: "slug"

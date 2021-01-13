@@ -7,7 +7,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfferVendorController do
   }
 
   def index(conn, params) do
-    results = Turbo.Ecto.turbo(Offers.list_org_offer_vendors_query(), params, entry_name: "offer_vendors")
+    results = Offers.paginate_offer_vendors(get_session(conn, :organization_id), params)
     render(conn, "index.html", offer_vendors: results.offer_vendors, paginate: results.paginate)
   end
 
@@ -17,7 +17,10 @@ defmodule OmegaBraveraWeb.OrgPanelOfferVendorController do
   end
 
   def create(conn, %{"offer_vendor" => offer_vendor_params}) do
-    case Offers.create_offer_vendor(offer_vendor_params) do
+    offer_vendor_params =
+      Map.put(offer_vendor_params, "organization_id", get_session(conn, :organization_id))
+
+    case Offers.create_org_offer_vendor(offer_vendor_params) do
       {:ok, _offer_vendor} ->
         conn
         |> put_flash(:info, "Offer vendor created successfully.")

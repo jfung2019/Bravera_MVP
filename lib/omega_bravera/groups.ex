@@ -23,6 +23,11 @@ defmodule OmegaBravera.Groups do
     Repo.all(Partner)
   end
 
+  def paginate_groups(organization_id, params) do
+    from(p in Partner, where: p.organization_id == ^organization_id)
+    |> Turbo.Ecto.turbo(params, entry_name: "partners")
+  end
+
   @doc """
   Returns tuple of partners ready for dropdown list.
   """
@@ -119,7 +124,6 @@ defmodule OmegaBravera.Groups do
   end
 
   def total_live_groups() do
-
   end
 
   @doc """
@@ -135,6 +139,12 @@ defmodule OmegaBravera.Groups do
 
   """
   def create_partner(attrs \\ %{}) do
+    %Partner{}
+    |> Partner.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_org_partner(attrs \\ %{}) do
     %Partner{}
     |> Partner.changeset(attrs)
     |> Repo.insert()

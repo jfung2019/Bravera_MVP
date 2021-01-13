@@ -1,0 +1,5 @@
+<div class="card">
+    <div class="card-body">
+        <h1><span class="fa fa-list"></span> <%= gettext("Launch Guides/ Templates") %></h1>
+    </div>
+</div>

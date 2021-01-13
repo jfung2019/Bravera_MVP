@@ -29,7 +29,7 @@
       <%= for offer <- @offers do %>
         <tr>
           <td><%= offer.name %></td>
-          <td><%= offer.vendor.vendor_id %></td>
+          <td><%= if offer.vendor !== nil, do: offer.vendor.vendor_id %></td>
           <td><%= offer.unique_participants %></td>
           <td><%= length(offer.offer_challenges) %></td>
           <td class="small"><%= raw completed_challenges(offer.offer_challenges) %></td>
@@ -41,7 +41,7 @@
             <%= link gettext("Details"), to: Routes.admin_panel_offer_path(@conn, :show, offer), class: "btn btn-primary btn-xs mb-2"%>
             <%= link gettext("Statement"), to: Routes.admin_panel_offer_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs mb-2"%>
             <%= link gettext("Edit"), to: Routes.admin_panel_offer_path(@conn, :edit, offer), class: "btn btn-warning btn-xs mb-2"%>
-            <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminOfferImages, offer), class: "btn btn-info btn-xs"%>
+            <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.AdminOfferImages, offer), class: "btn btn-info btn-xs mb-2"%>
           </td>
         </tr>
       <% end %>

@@ -72,6 +72,7 @@ defmodule OmegaBravera.Offers.Offer do
     has_many :offer_redeems, OfferRedeem
     has_many :offer_partners, OfferPartner
     has_many :partners, through: [:offer_partners, :partner]
+    belongs_to :organization, OmegaBravera.Accounts.Organization, type: :binary_id
 
     timestamps(type: :utc_datetime)
   end
@@ -109,7 +110,8 @@ defmodule OmegaBravera.Offers.Offer do
     :take_challenge,
     :online_url,
     :online_code,
-    :form_url
+    :form_url,
+    :organization_id
   ]
   @required_attributes [
     :name,
@@ -120,8 +122,6 @@ defmodule OmegaBravera.Offers.Offer do
     :start_date,
     :end_date,
     :toc,
-    :vendor_id,
-    :location_id,
     :take_challenge,
     :offer_type
   ]
@@ -154,6 +154,18 @@ defmodule OmegaBravera.Offers.Offer do
     |> validate_length(:images, min: 1)
     |> validate_pre_registration_start_date_modification(offer)
     |> validate_no_active_challenges(offer)
+  end
+
+  def org_online_offer_changeset(offer, attrs) do
+    changeset(offer, attrs)
+    |> validate_required([:organization_id, :online_url, :online_code])
+    |> put_change(:offer_type, "online")
+  end
+
+  def org_offline_offer_changeset(offer, attrs) do
+    changeset(offer, attrs)
+    |> validate_required([:organization_id, :vendor_id, :location_id])
+    |> put_change(:offer_type, "in_store")
   end
 
   def generate_slug(%Ecto.Changeset{} = changeset) do

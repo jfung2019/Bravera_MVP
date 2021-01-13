@@ -1285,7 +1285,7 @@ defmodule OmegaBravera.Accounts do
     from(u in User,
       left_join: r in OmegaBravera.Offers.OfferRedeem,
       on: u.id == r.user_id,
-      group_by: [ u.id],
+      group_by: [u.id],
       left_join: oc in assoc(r, :offer_challenge),
       on: oc.status == ^"complete",
       select: %{count: coalesce(count(r.id), 0)}
@@ -1777,7 +1777,7 @@ defmodule OmegaBravera.Accounts do
     Multi.new()
     |> Multi.run(:create_partner_user, fn _repo, _ -> create_partner_user(attrs) end)
     |> Multi.run(:create_organization, fn _repo, %{create_partner_user: partner_user} ->
-    create_organization(%{"name" => "#{partner_user.username} Org."})
+      create_organization(%{"name" => "#{partner_user.username} Org."})
     end)
     |> Multi.run(:create_organization_member, fn _repo, result ->
       %{create_partner_user: partner_user, create_organization: organization} = result
@@ -2029,6 +2029,11 @@ defmodule OmegaBravera.Accounts do
     from(o in OrganizationMember,
       preload: ^preloads
     )
+  end
+
+  def list_organization_members_by_partner_user(partner_user_id) do
+    from(o in OrganizationMember, where: o.partner_user_id == ^partner_user_id)
+    |> Repo.all()
   end
 
   @doc """

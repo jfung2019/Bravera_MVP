@@ -37,9 +37,14 @@
                                 <% end %>
                             </li>
                             <li><hr></li>
-                            <li class="nav-item <%= in_current_path(@conn, "#") %>">
-                                <%= link to: Routes.org_panel_dashboard_path(@conn, :index), class: "nav-link" do %>
+                            <li class="nav-item <%= in_current_path(@conn, Routes.org_panel_partner_path(@conn, :index)) %>">
+                                <%= link to: Routes.org_panel_partner_path(@conn, :index), class: "nav-link" do %>
                                 <span class="fa fa-group"></span> <%= gettext("Groups") %>
+                                <% end %>
+                            </li>
+                            <li class="nav-item <%= in_current_path(@conn, Routes.org_panel_points_path(@conn, :new)) %>">
+                                <%= link to: Routes.org_panel_points_path(@conn, :new), class: "nav-link" do %>
+                                <span class="fa fa-plus"></span> <%= gettext("Points") %>
                                 <% end %>
                             </li>
                             <li><hr></li>
@@ -59,9 +64,15 @@
                                 <span class="fa fa-qrcode"></span> <%= gettext("Claim IDs") %>
                                 <% end %>
                             </li>
-                            <li class="nav-item <%= in_current_path(@conn, "#") %>">
-                                <%= link to: Routes.org_panel_dashboard_path(@conn, :index), class: "nav-link" do %>
+                            <li class="nav-item <%= in_current_path(@conn, Routes.org_panel_offer_reward_path(@conn, :index)) %>">
+                                <%= link to: Routes.org_panel_offer_reward_path(@conn, :index), class: "nav-link" do %>
                                 <span class="fa fa-gift"></span> <%= gettext("Rewards") %>
+                                <% end %>
+                            </li>
+                            <li><hr></li>
+                            <li class="nav-item <%= in_current_path(@conn, Routes.org_panel_dashboard_path(@conn, :guides)) %>">
+                                <%= link to: Routes.org_panel_dashboard_path(@conn, :guides), class: "nav-link" do %>
+                                <span class="fa fa-list"></span> <%= gettext("Launch Guides / Templates") %>
                                 <% end %>
                             </li>
                             <li><hr></li>

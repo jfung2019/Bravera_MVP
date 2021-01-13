@@ -8,16 +8,15 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
     Accounts,
     Offers,
     Offers.Offer,
-    Fundraisers.NgoOptions,
     Offers.OfferChallenge
-    }
+  }
 
   use Timex
 
   plug :assign_available_options when action in [:edit, :new]
 
   def index(conn, params) do
-    results = Turbo.Ecto.turbo(Offers.list_org_offline_offers_query(), params, entry_name: "offers")
+    results = Offers.paginate_offers("in_store", get_session(conn, :organization_id), params)
     render(conn, "index.html", offers: results.offers, paginate: results.paginate)
   end
 
@@ -28,33 +27,31 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
 
   def new(conn, _params) do
     users = Accounts.list_users()
-    vendors = Offers.list_offer_vendors()
     changeset = Offers.change_offer(%Offer{offer_type: "in_store"})
-    render(conn, "new.html", changeset: changeset, users: users, vendors: vendors)
+    render(conn, "new.html", changeset: changeset, users: users)
   end
 
   def create(conn, %{"offer" => offer_params}) do
-    case Offers.create_offer(offer_params) do
+    offer_params = Map.put(offer_params, "organization_id", get_session(conn, :organization_id))
+
+    case Offers.create_org_offline_offer(offer_params) do
       {:ok, offer} ->
         conn
         |> put_flash(:info, "Offer created successfully.")
         |> redirect(to: Routes.live_path(conn, OmegaBraveraWeb.OrgOfferImages, offer))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        vendors = Offers.list_offer_vendors()
-
         conn
         |> assign_available_options(nil)
-        |> render("new.html", changeset: changeset, vendors: vendors)
+        |> render("new.html", changeset: changeset)
     end
   end
 
   def edit(conn, %{"slug" => slug}) do
     offer = Offers.get_offer_by_slug_with_hk_time(slug)
-    vendors = Offers.list_offer_vendors()
     changeset = Offers.change_offer(offer)
 
-    render(conn, "edit.html", offer: offer, vendors: vendors, changeset: changeset)
+    render(conn, "edit.html", offer: offer, changeset: changeset)
   end
 
   def update(conn, %{"slug" => slug, "offer" => offer_params}) do
@@ -70,7 +67,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
             offer_challenge in OfferChallenge,
             where:
               offer_challenge.offer_id == ^updated_offer.id and
-              offer_challenge.status == "pre_registration"
+                offer_challenge.status == "pre_registration"
           ),
           set: [start_date: updated_offer.start_date, end_date: updated_offer.end_date]
         )
@@ -81,8 +78,8 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
               offer_challenge in OfferChallenge,
               where:
                 (offer_challenge.offer_id == ^updated_offer.id and
-                 offer_challenge.status == "active") or
-                offer_challenge.status == "pre_registration"
+                   offer_challenge.status == "active") or
+                  offer_challenge.status == "pre_registration"
             ),
             set: [distance_target: updated_offer.target]
           )
@@ -93,11 +90,9 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
         |> redirect(to: Routes.org_panel_offline_offers_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        vendors = Offers.list_offer_vendors()
-
         conn
         |> assign_available_options(nil)
-        |> render("edit.html", offer: offer, vendors: vendors, changeset: changeset)
+        |> render("edit.html", offer: offer, changeset: changeset)
     end
   end
 
@@ -123,9 +118,9 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
     conn
     |> put_resp_content_type("text/csv")
     |> put_resp_header(
-         "content-disposition",
-         "attachment; filename=\"#{slug}'s_statement_for_#{month}.csv\""
-       )
+      "content-disposition",
+      "attachment; filename=\"#{slug}'s_statement_for_#{month}.csv\""
+    )
     |> send_resp(200, to_csv(csv_statement_headers(), csv_rows))
   end
 
@@ -154,11 +149,10 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
 
   defp assign_available_options(conn, _opts) do
     conn
-    |> assign(:available_currencies, NgoOptions.currency_options_human())
-    |> assign(:available_activities, NgoOptions.activity_options())
-    |> assign(:available_challenge_type_options, NgoOptions.challenge_type_options_human())
     |> assign(:available_locations, OmegaBravera.Locations.list_locations())
-    |> assign(:available_partners, OmegaBravera.Groups.partner_options())
-    |> assign(:available_offer_types, [{"In Store", "in_store"}, {"Online", "online"}])
+    |> assign(
+      :vendors,
+      Offers.list_offer_vendors_by_organization(get_session(conn, :organization_id))
+    )
   end
 end

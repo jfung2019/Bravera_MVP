@@ -9,7 +9,7 @@ defmodule OmegaBravera.Offers.OfferVendor do
     field :email, :string
     field :cc, :string
 
-    belongs_to :partner_user, OmegaBravera.Accounts.PartnerUser, type: :binary_id
+    belongs_to :organization, OmegaBravera.Accounts.Organization, type: :binary_id
     has_many :offers, Offer, foreign_key: :vendor_id
 
     timestamps(type: :utc_datetime)
@@ -18,8 +18,13 @@ defmodule OmegaBravera.Offers.OfferVendor do
   @doc false
   def changeset(offer_vendor, attrs) do
     offer_vendor
-    |> cast(attrs, [:vendor_id, :email, :cc, :partner_user_id])
+    |> cast(attrs, [:vendor_id, :email, :cc, :organization_id])
     |> validate_required([:vendor_id])
     |> unique_constraint(:vendor_id)
+  end
+
+  def org_changeset(offer_vendor, attrs) do
+    changeset(offer_vendor, attrs)
+    |> validate_required([:organization_id])
   end
 end

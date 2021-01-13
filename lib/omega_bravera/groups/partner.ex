@@ -50,4 +50,9 @@ defmodule OmegaBravera.Groups.Partner do
     |> validate_format(:website, ~r/^(https|http):\/\/\w+/)
     |> validate_required([:name, :introduction, :short_description, :images])
   end
+
+  def org_changeset(partner, attrs) do
+    changeset(partner, attrs)
+    |> validate_required([:organization_id])
+  end
 end

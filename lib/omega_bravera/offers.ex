@@ -22,7 +22,7 @@ defmodule OmegaBravera.Offers do
   alias OmegaBravera.Points
 
   alias OmegaBravera.Activity.ActivityAccumulator
-  alias OmegaBravera.Accounts.{User, AdminUser, PartnerUser}
+  alias OmegaBravera.Accounts.{User, AdminUser}
 
   def buy_offer_with_points(offer, user) do
     Multi.new()
@@ -80,6 +80,15 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
+  def list_offers_by_organization(organization_id) do
+    from(
+      offer in Offer,
+      where: offer.organization_id == ^organization_id,
+      order_by: [desc: offer.id]
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Only shows offers that don't have a partner
   or if the user is a member of a partner, then the offer will be shown.
@@ -124,22 +133,22 @@ defmodule OmegaBravera.Offers do
     )
   end
 
-  def list_org_online_offers_query() do
-    list_offers_preload_query([
-      :vendor,
-      :offer_challenges,
-      offer_redeems: [:offer_reward]
-    ])
-    |> where([o], o.offer_type == "online")
+  def paginate_offers("online", organization_id, params) do
+    org_offers_pagination("online", organization_id, params)
   end
 
-  def list_org_offline_offers_query() do
+  def paginate_offers("in_store", organization_id, params) do
+    org_offers_pagination("in_store", organization_id, params)
+  end
+
+  defp org_offers_pagination(offer_type, organization_id, params) do
     list_offers_preload_query([
       :vendor,
       :offer_challenges,
       offer_redeems: [:offer_reward]
     ])
-    |> where([o], o.offer_type == "in_store")
+    |> where([o], o.offer_type == ^offer_type and o.organization_id == ^organization_id)
+    |> Turbo.Ecto.turbo(params, entry_name: "offers")
   end
 
   def total_offers_query() do
@@ -152,7 +161,6 @@ defmodule OmegaBravera.Offers do
   end
 
   def total_live_offers() do
-
   end
 
   def total_online_offers() do
@@ -408,6 +416,23 @@ defmodule OmegaBravera.Offers do
   def create_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.changeset(attrs)
+    |> insert_offer()
+  end
+
+  def create_org_online_offer(attrs \\ %{}) do
+    %Offer{}
+    |> Offer.org_online_offer_changeset(attrs)
+    |> insert_offer()
+  end
+
+  def create_org_offline_offer(attrs \\ %{}) do
+    %Offer{}
+    |> Offer.org_offline_offer_changeset(attrs)
+    |> insert_offer()
+  end
+
+  defp insert_offer(changeset) do
+    changeset
     |> switch_pre_registration_date_to_utc()
     |> switch_start_date_to_utc()
     |> switch_end_date_to_utc()
@@ -790,9 +815,14 @@ defmodule OmegaBravera.Offers do
     Turbo.Ecto.turbo(admin_list_offer_rewards_query([:offer]), params, entry_name: "offer_rewards")
   end
 
-  #  def paginate_offer_rewards(%PartnerUser{}, params) do
-  #
-  #  end
+  def paginate_offer_rewards(organization_id, params) do
+    from(o in OfferReward,
+      left_join: offer in assoc(o, :offer),
+      where: offer.organization_id == ^organization_id,
+      preload: [:offer]
+    )
+    |> Turbo.Ecto.turbo(params, entry_name: "offer_rewards")
+  end
 
   @doc """
   Gets a single offer_reward.
@@ -1056,6 +1086,16 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
+  def list_offer_vendors_by_organization_query(organization_id) do
+    list_offer_vendors_query()
+    |> where([o], o.organization_id == ^organization_id)
+  end
+
+  def list_offer_vendors_by_organization(organization_id) do
+    list_offer_vendors_by_organization_query(organization_id)
+    |> Repo.all()
+  end
+
   @doc """
   paginate offer vendors based on login user type
   """
@@ -1063,12 +1103,9 @@ defmodule OmegaBravera.Offers do
     Turbo.Ecto.turbo(list_offer_vendors_query(), params, entry_name: "offer_vendors")
   end
 
-  #  def paginate_offer_vendors(%PartnerUser{}, params) do
-  #
-  #  end
-
-  def list_org_offer_vendors_query() do
-    list_offer_vendors_query()
+  def paginate_offer_vendors(organization_id, params) do
+    list_offer_vendors_by_organization_query(organization_id)
+    |> Turbo.Ecto.turbo(params, entry_name: "offer_vendors")
   end
 
   @doc """
@@ -1105,6 +1142,14 @@ defmodule OmegaBravera.Offers do
   def create_offer_vendor(attrs \\ %{}) do
     %OfferVendor{}
     |> OfferVendor.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_org_offer_vendor(attrs \\ %{}) do
+    IO.inspect(attrs)
+
+    %OfferVendor{}
+    |> OfferVendor.org_changeset(attrs)
     |> Repo.insert()
   end
 

@@ -89,27 +89,25 @@
     </small>
   </div>
 
-  <div id="online-fields">
-    <div class="form-group">
-      <%= label f, :online_url, gettext("Redirect URL Address"), class: "control-label" %>
-      <small class="form-text text-muted">
-        <%= gettext("Please add the redirect website / url where members can ‘claim’ here. ") %>
-        (<a href="#"><%= gettext("click here for help") %></a>.)
-      </small>
-      <%= text_input f, :online_url, class: "form-control" %>
-      <%= error_tag f, :online_url %>
-    </div>
+  <div class="form-group">
+    <%= label f, :online_url, gettext("Redirect URL Address"), class: "control-label" %>
+    <small class="form-text text-muted">
+      <%= gettext("Please add the redirect website / url where members can ‘claim’ here. ") %>
+      (<a href="#"><%= gettext("click here for help") %></a>.)
+    </small>
+    <%= text_input f, :online_url, class: "form-control" %>
+    <%= error_tag f, :online_url %>
+  </div>
 
-    <div class="form-group">
-      <%= label f, :online_code, gettext("Online Promotion / Discount code"), class: "control-label" %>
-      <small class="form-text text-muted">
-        <%= gettext("(For 3rd party websites like shopify, please enter the discount code that will apply a discount at check-out. For online forms, enter a ‘secret code’ that should prove they completed the challenge. Confused? Don’t worry, ") %>
-        <a href="#"><%= gettext("click here") %></a>
-        <%= gettext(" for help.)") %>
-      </small>
-      <%= text_input f, :online_code, class: "form-control" %>
-      <%= error_tag f, :online_code %>
-    </div>
+  <div class="form-group">
+    <%= label f, :online_code, gettext("Online Promotion / Discount code"), class: "control-label" %>
+    <small class="form-text text-muted">
+      <%= gettext("(For 3rd party websites like shopify, please enter the discount code that will apply a discount at check-out. For online forms, enter a ‘secret code’ that should prove they completed the challenge. Confused? Don’t worry, ") %>
+      <a href="#"><%= gettext("click here") %></a>
+      <%= gettext(" for help.)") %>
+    </small>
+    <%= text_input f, :online_code, class: "form-control" %>
+    <%= error_tag f, :online_code %>
   </div>
 
   <div class="form-group">

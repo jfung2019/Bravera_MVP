@@ -14,13 +14,13 @@ defmodule OmegaBravera.Offers.OfferReward do
     timestamps(type: :utc_datetime)
   end
 
-  @allowed_atributes [:name, :value, :hide, :offer_id]
-  @required_attributes [:name, :value, :hide, :offer_id]
+  @allowed_attributes [:name, :value, :hide, :offer_id]
+  @required_attributes [:name, :hide, :offer_id]
 
   @doc false
   def changeset(offer_reward, attrs) do
     offer_reward
-    |> cast(attrs, @allowed_atributes)
+    |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
   end
 end

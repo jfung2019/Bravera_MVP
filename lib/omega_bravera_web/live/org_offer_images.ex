@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.OrgOfferImages do
   alias OmegaBraveraWeb.Api.UploadAuth
 
   def render(assigns),
-      do: OmegaBraveraWeb.OrgPanelOnlineOffersView.render("offer_images.html", assigns)
+    do: OmegaBraveraWeb.OrgPanelOnlineOffersView.render("offer_images.html", assigns)
 
   def mount(%{"slug" => slug}, _session, socket) do
     offer = Offers.get_offer_by_slug(slug)
