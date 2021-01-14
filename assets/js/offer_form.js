@@ -13,7 +13,11 @@ $(function () {
         checkEnableChallenge($(this));
     });
 
-    checkOfferType($("#offer_type").val());
+    const offer_type = $("#offer_type");
+    checkOfferType(offer_type.val());
+    offer_type.change(function () {
+        checkOfferType($(this).val());
+    });
 })
 
 function calTarget(val) {

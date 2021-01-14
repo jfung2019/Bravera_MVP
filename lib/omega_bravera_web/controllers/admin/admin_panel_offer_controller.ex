@@ -5,7 +5,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
   alias OmegaBravera.{
     Repo,
-    Accounts,
     Offers,
     Offers.Offer,
     Fundraisers.NgoOptions,
@@ -16,40 +15,35 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
   plug :assign_available_options when action in [:edit, :new]
 
-  def online(conn, params) do
-    results = Offers.paginate_online_offers(Guardian.Plug.current_resource(conn), params)
-    render(conn, "index.html", offers: results.offers, paginate: results.paginate, offer_type: :online)
-  end
-
-  def in_store(conn, params) do
-    results = Offers.paginate_in_store_offers(Guardian.Plug.current_resource(conn), params)
-    render(conn, "index.html", offers: results.offers, paginate: results.paginate, offer_type: :in_store)
+  def index(conn, params) do
+    results = Offers.paginate_offers(params)
+    render(conn, "index.html", offers: results.offers, paginate: results.paginate)
   end
 
   def show(conn, %{"slug" => slug}) do
     offer = Offers.get_offer_by_slug(slug)
-    render(conn, "show.html", offer: offer, offer_type: online_or_in_store(offer))
+    render(conn, "show.html", offer: offer)
   end
 
-  def new(conn, %{"offer_type" => offer_type}) do
+  def new(conn, _params) do
     vendors = Offers.list_offer_vendors()
-    changeset = Offers.change_offer(%Offer{offer_type: offer_type})
-    render(conn, "new.html", changeset: changeset, vendors: vendors, offer_type: String.to_atom(offer_type))
+    changeset = Offers.change_offer(%Offer{})
+    render(conn, "new.html", changeset: changeset, vendors: vendors)
   end
 
-  def create(conn, %{"offer" => offer_params, "offer_type" => offer_type}) do
+  def create(conn, %{"offer" => offer_params}) do
     case Offers.create_offer(offer_params) do
       {:ok, offer} ->
         conn
         |> put_flash(:info, "Offer created successfully.")
-        |> redirect(to: Routes.live_path(conn, OmegaBraveraWeb.AdminOfferImages, offer))
+        |> redirect(to: Routes.admin_panel_offer_path(conn, :show, offer.slug))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         vendors = Offers.list_offer_vendors()
 
         conn
         |> assign_available_options(nil)
-        |> render("new.html", changeset: changeset, vendors: vendors, offer_type: String.to_atom(offer_type))
+        |> render("new.html", changeset: changeset, vendors: vendors)
     end
   end
 
@@ -58,7 +52,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     vendors = Offers.list_offer_vendors()
     changeset = Offers.change_offer(offer)
 
-    render(conn, "edit.html", offer: offer, vendors: vendors, changeset: changeset, offer_type: online_or_in_store(offer))
+    render(conn, "edit.html", offer: offer, vendors: vendors, changeset: changeset)
   end
 
   def update(conn, %{"slug" => slug, "offer" => offer_params}) do
@@ -94,14 +88,14 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
         conn
         |> put_flash(:info, "Offer updated successfully.")
-        |> redirect(to: Routes.admin_panel_offer_path(conn, online_or_in_store(updated_offer)))
+        |> redirect(to: Routes.admin_panel_offer_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         vendors = Offers.list_offer_vendors()
 
         conn
         |> assign_available_options(nil)
-        |> render("edit.html", offer: offer, vendors: vendors, changeset: changeset, offer_type: online_or_in_store(offer))
+        |> render("edit.html", offer: offer, vendors: vendors, changeset: changeset)
     end
   end
 
@@ -163,10 +157,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     |> assign(:available_challenge_type_options, NgoOptions.challenge_type_options_human())
     |> assign(:available_locations, OmegaBravera.Locations.list_locations())
     |> assign(:available_partners, OmegaBravera.Groups.partner_options())
-    |> assign(:available_offer_types, [{"In Store", "in_store"}, {"Online", "online"}])
+    |> assign(:available_offer_types, [{"In Store", :in_store}, {"Online", :online}])
   end
-
-  defp online_or_in_store(%Offer{offer_type: "in_store"}), do: :in_store
-
-  defp online_or_in_store(%Offer{offer_type: "online"}), do: :online
 end

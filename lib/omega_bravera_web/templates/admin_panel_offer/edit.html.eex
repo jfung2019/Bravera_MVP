@@ -1,9 +1,6 @@
 <div class="card">
     <div class="card-body">
-        <h2>
-            <span class="fa fa-<%= if @offer_type == :online, do: "cart-arrow-down", else: "credit-card" %>"></span>
-            <%= "#{gettext("Edit")} #{gettext_offer_type(@offer_type)} #{gettext("Offers")}" %>
-        </h2>
+        <h2><span class="fa fa-trophy"></span> <%= gettext("Edit Offer") %></h2>
         <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_offer_path(@conn, :update, @offer)) %>
         <span><%= link "Back", to: Routes.admin_panel_ngo_path(@conn, :index) %></span>
     </div>

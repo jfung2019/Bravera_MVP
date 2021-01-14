@@ -62,14 +62,14 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     setup [:create_offer]
 
     test "lists all offers in admin panel", %{conn: conn} do
-      conn = get(conn, admin_panel_offer_path(conn, :index))
+      conn = get(conn, Routes.admin_panel_offer_path(conn, :index))
       assert html_response(conn, 200) =~ "Offers"
     end
   end
 
   describe "new offer" do
     test "renders form", %{conn: conn} do
-      conn = get(conn, admin_panel_offer_path(conn, :new))
+      conn = get(conn, Routes.admin_panel_offer_path(conn, :new))
       assert html_response(conn, 200) =~ "New Offer"
     end
   end
@@ -79,16 +79,16 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
       {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "331678", email: "foo@bar.com"})
 
       conn =
-        post(conn, admin_panel_offer_path(conn, :create),
+        post(conn, Routes.admin_panel_offer_path(conn, :create),
           offer: Map.put(@offer_create_attrs, :vendor_id, vendor.id)
         )
 
       assert %{slug: slug} = redirected_params(conn)
-      assert redirected_to(conn) == admin_panel_offer_path(conn, :show, slug)
+      assert redirected_to(conn) == Routes.admin_panel_offer_path(conn, :show, slug)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, admin_panel_offer_path(conn, :create), offer: %{name: ""})
+      conn = post(conn, Routes.admin_panel_offer_path(conn, :create), offer: %{name: ""})
       assert html_response(conn, 200) =~ "New Offer"
     end
   end
@@ -97,7 +97,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     setup [:create_offer]
 
     test "renders form for editing chosen offer", %{conn: conn, offer: offer} do
-      conn = get(conn, admin_panel_offer_path(conn, :edit, offer))
+      conn = get(conn, Routes.admin_panel_offer_path(conn, :edit, offer))
       assert html_response(conn, 200)
     end
   end
@@ -108,7 +108,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     test "update when data is valid", %{conn: conn, offer: offer} do
       {:ok, vendor} = Offers.create_offer_vendor(%{vendor_id: "312322", email: "foo@bar.com"})
 
-      put(conn, admin_panel_offer_path(conn, :update, offer.slug),
+      put(conn, Routes.admin_panel_offer_path(conn, :update, offer.slug),
         offer: Map.put(@update_attrs, :vendor_id, vendor.id)
       )
 
@@ -118,7 +118,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     end
 
     test "renders errors in update when data is invalid", %{conn: conn, offer: offer} do
-      conn = put(conn, admin_panel_offer_path(conn, :update, offer.slug), offer: @invalid_attrs)
+      conn = put(conn, Routes.admin_panel_offer_path(conn, :update, offer.slug), offer: @invalid_attrs)
       assert html_response(conn, 200)
     end
 
@@ -137,7 +137,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
       Offers.create_offer_challenge(offer, insert(:user))
 
       conn =
-        put(conn, admin_panel_offer_path(conn, :update, offer),
+        put(conn, Routes.admin_panel_offer_path(conn, :update, offer),
           offer: %{start_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 15)}
         )
 

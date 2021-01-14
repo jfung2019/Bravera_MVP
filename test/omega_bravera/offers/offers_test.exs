@@ -126,7 +126,7 @@ defmodule OmegaBravera.OffersTest do
 
     test "create_offer/1 with offer_type should be invalid without the online_url and online_code" do
       assert {:error, %Ecto.Changeset{errors: errors}} =
-               create_offer(%{@valid_attrs | offer_type: "online"})
+               create_offer(%{@valid_attrs | offer_type: :online})
 
       assert Keyword.get(errors, :online_url) == {"can't be blank", [validation: :required]}
       assert Keyword.get(errors, :online_code) == {"can't be blank", [validation: :required]}

@@ -119,7 +119,19 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
-  pagination offers
+  Pagination offers
+  """
+  def paginate_offers(params) do
+    list_offers_preload_query([
+      :vendor,
+      :offer_challenges,
+      offer_redeems: [:offer_reward]
+    ])
+    |> Turbo.Ecto.turbo(params, entry_name: "offers")
+  end
+
+  @doc """
+  Pagination online offers
   """
   def paginate_online_offers(%AdminUser{}, params) do
     list_offers_preload_query([
@@ -177,13 +189,13 @@ defmodule OmegaBravera.Offers do
 
   def total_online_offers() do
     total_offers_query()
-    |> where([o], o.offer_type == "online")
+    |> where([o], o.offer_type == :online)
     |> Repo.one()
   end
 
   def total_in_store_offers() do
     total_offers_query()
-    |> where([o], o.offer_type == "in_store")
+    |> where([o], o.offer_type == :in_store)
     |> Repo.one()
   end
 
