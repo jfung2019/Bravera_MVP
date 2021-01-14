@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-body">
         <h2>
-            <span class="fa fa-cart-arrow-down"></span>
+            <span class="fa fa-trophy"></span>
             <%= gettext("New Offer") %>
         </h2>
         <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_offer_path(@conn, :create)) %>

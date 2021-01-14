@@ -36,7 +36,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
       {:ok, offer} ->
         conn
         |> put_flash(:info, "Offer created successfully.")
-        |> redirect(to: Routes.live_path(conn, OmegaBraveraWeb.AdminOfferImages, offer))
+        |> redirect(to: Routes.admin_panel_offer_path(conn, :show, offer.slug))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         vendors = Offers.list_offer_vendors()

@@ -324,7 +324,7 @@ defmodule OmegaBravera.Offers.Offer do
     type = get_field(changeset, :offer_type)
 
     case type do
-      @online_offer_type ->
+      :online ->
         validate_required(changeset, [:online_url, :online_code])
 
       _ ->

@@ -80,7 +80,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
 
       conn =
         post(conn, Routes.admin_panel_offer_path(conn, :create),
-          offer: Map.put(@offer_create_attrs, :vendor_id, vendor.id), offer_type: "in_store"
+          offer: Map.put(@offer_create_attrs, :vendor_id, vendor.id)
         )
 
       assert %{slug: slug} = redirected_params(conn)
@@ -88,7 +88,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.admin_panel_offer_path(conn, :create), offer: %{name: ""}, offer_type: "in_store")
+      conn = post(conn, Routes.admin_panel_offer_path(conn, :create), offer: %{name: ""})
       assert html_response(conn, 200) =~ "New Offer"
     end
   end

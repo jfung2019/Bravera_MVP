@@ -71,7 +71,7 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
           challenge_id: challenge.id
         )
 
-      assert redirected_to(conn) == Routes.admin_panel_offer_path(conn, :online)
+      assert redirected_to(conn) == Routes.admin_panel_offer_path(conn, :index)
       assert get_flash(conn, :info) =~ "Activity created successfully."
     end
 
@@ -98,7 +98,7 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
           challenge_id: challenge.id
         )
 
-      assert redirected_to(conn) == Routes.admin_panel_offer_path(conn, :online)
+      assert redirected_to(conn) == Routes.admin_panel_offer_path(conn, :index)
       assert get_flash(conn, :error) =~ "Activity not processed. Please check the logs."
     end
   end

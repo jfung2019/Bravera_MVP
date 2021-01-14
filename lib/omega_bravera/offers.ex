@@ -181,13 +181,13 @@ defmodule OmegaBravera.Offers do
 
   def total_online_offers() do
     total_offers_query()
-    |> where([o], o.offer_type == "online")
+    |> where([o], o.offer_type == :online)
     |> Repo.one()
   end
 
   def total_in_store_offers() do
     total_offers_query()
-    |> where([o], o.offer_type == "in_store")
+    |> where([o], o.offer_type == :in_store)
     |> Repo.one()
   end
 

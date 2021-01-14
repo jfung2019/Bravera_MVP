@@ -89,10 +89,9 @@
             <ul class="nav flex-column">
               <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_offer_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_offer_path(@conn, :index), class: "nav-link" do %>
-                  <span class="fa fa-cart-arrow-down"></span> <%= gettext("Offers") %>
+                  <span class="fa fa-trophy"></span> <%= gettext("Offers") %>
                 <% end %>
               </li>
-              <li><hr></li>
               <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_offer_vendor_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_offer_vendor_path(@conn, :index), class: "nav-link" do %>
                   <span class="fa fa-qrcode"></span> <%= gettext("Claim IDs") %>
