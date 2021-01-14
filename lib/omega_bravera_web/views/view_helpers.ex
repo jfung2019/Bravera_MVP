@@ -1,7 +1,6 @@
 defmodule OmegaBraveraWeb.ViewHelpers do
   import Phoenix.HTML.Tag, only: [tag: 2]
-  alias OmegaBravera.Accounts.User
-  alias OmegaBravera.Accounts.AdminUser
+  alias OmegaBravera.Accounts.{User, AdminUser, PartnerUser}
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Offers.{Offer, OfferChallenge}
@@ -32,6 +31,16 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   def is_admin?(conn) do
     case Guardian.Plug.current_resource(conn) do
       %AdminUser{} ->
+        true
+
+      _ ->
+        false
+    end
+  end
+
+  def is_partner_user?(conn) do
+    case Guardian.Plug.current_resource(conn) do
+      %PartnerUser{} ->
         true
 
       _ ->

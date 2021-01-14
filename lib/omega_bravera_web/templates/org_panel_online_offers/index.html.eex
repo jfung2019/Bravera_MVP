@@ -1,0 +1,48 @@
+<div class="card">
+  <div class="card-body overflow-auto">
+    <h1><span class="fa fa-cart-arrow-down"></span> <%= gettext("Online Offers") %></h1>
+    <div class="row my-3">
+      <div class="col-9">
+        <small class="text-muted">
+          <%= gettext("(This is where you create and manage offers linked to your group. Click ‘Create New Offer’ to be taken through the steps. For help ") %>
+          <a href="#"><%= gettext("click here") %></a>.)
+        </small>
+      </div>
+    </div>
+    <%= link gettext("Create New Offer"), to: Routes.org_panel_online_offers_path(@conn, :new), class: "btn btn-outline-primary" %>
+    <table class="table mt-3 table-striped">
+      <thead>
+        <tr>
+          <th><%= gettext("Name") %></th>
+          <th><%= gettext("Participants") %></th>
+          <th><%= gettext("Engagements") %></th>
+          <th><%= gettext("Status") %></th>
+          <th><%= gettext("Date Created") %></th>
+          <th><%= gettext("Last Edited") %></th>
+          <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+        </tr>
+      </thead>
+      <tbody>
+      <%= for offer <- @offers do %>
+        <tr>
+          <td><%= offer.name %></td>
+          <td><%= offer.unique_participants %></td>
+          <td><%= length(offer.offer_challenges) %></td>
+          <td class="small"><%= raw completed_challenges(offer.offer_challenges) %></td>
+          <td><%= render_datetime(offer.inserted_at) %></td>
+          <td><%= render_datetime(offer.updated_at) %></td>
+          <td class="text-center">
+            <%= link gettext("Details"), to: Routes.org_panel_online_offers_path(@conn, :show, offer), class: "btn btn-primary btn-xs mb-2"%>
+            <%= link gettext("Statement"), to: Routes.org_panel_online_offers_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs mb-2"%>
+            <%= link gettext("Edit"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer), class: "btn btn-warning btn-xs mb-2"%>
+            <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), class: "btn btn-info btn-xs"%>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <%= if @paginate.total_pages > 1 do %>
+    <%= turbo_pagination_links(@conn, @paginate) %>
+    <% end %>
+  </div>
+</div>

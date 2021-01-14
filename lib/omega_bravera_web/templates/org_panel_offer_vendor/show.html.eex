@@ -1,0 +1,52 @@
+<div class="card">
+  <div class="card-body">
+    <h1><span class="fa fa-qrcode"></span> <%= @offer_vendor.vendor_id %></h1>
+    <table class="table mt-3 table-striped" style="table-layout: fixed;">
+      <thead>
+      <tr>
+        <th class="align-top">
+          <%= gettext("Public Offers") %>
+          <br>
+          <small class="text-muted">
+            <%= gettext("(Offers that are ‘promoted’ to being public and available to a wider audience. ") %>
+            <a href="#"><%= gettext("Learn more here") %></a>.)
+          </small>
+        </th>
+        <th class="align-top">
+          <%= gettext("Private Offers") %>
+          <br>
+          <small class="text-muted"><%= gettext("(Offers that are ‘private’ and only available to your group members.)") %></small>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <ul>
+            <%= for offer <- Enum.filter(@offer_vendor.offers, fn offer -> !offer.hidden end) do %>
+            <%= if offer.offer_type == "in_store" do %>
+            <li><%= link offer.name, to: Routes.org_panel_offline_offers_path(@conn, :edit, offer) %></li>
+            <% else %>
+            <li><%= link offer.name, to: Routes.org_panel_online_offers_path(@conn, :edit, offer) %></li>
+            <% end %>
+            <% end %>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <%= for offer <- Enum.filter(@offer_vendor.offers, fn offer -> offer.hidden end) do %>
+            <%= if offer.offer_type == "in_store" do %>
+            <li><%= link offer.name, to: Routes.org_panel_offline_offers_path(@conn, :edit, offer) %></li>
+            <% else %>
+            <li><%= link offer.name, to: Routes.org_panel_online_offers_path(@conn, :edit, offer) %></li>
+            <% end %>
+            <% end %>
+          </ul>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <span><%= link "Edit", to: Routes.admin_panel_offer_vendor_path(@conn, :edit, @offer_vendor), class: "btn btn-warning" %></span>
+    <span><%= link "Back", to: Routes.admin_panel_offer_vendor_path(@conn, :index), class: "btn btn-secondary" %></span>
+  </div>
+</div>

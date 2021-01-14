@@ -110,7 +110,7 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
-  pagination offers based on login user type
+  pagination offers
   """
   def paginate_online_offers(%AdminUser{}, params) do
     list_offers_preload_query([
@@ -136,9 +136,23 @@ defmodule OmegaBravera.Offers do
     |> Turbo.Ecto.turbo(params, entry_name: "offers")
   end
 
-  #  def paginate_in_store_offers(%PartnerUser{}, params) do
-  #
-  #  end
+  def list_org_online_offers_query() do
+    list_offers_preload_query([
+      :vendor,
+      :offer_challenges,
+      offer_redeems: [:offer_reward]
+    ])
+    |> where([o], o.offer_type == "online")
+  end
+
+  def list_org_offline_offers_query() do
+    list_offers_preload_query([
+      :vendor,
+      :offer_challenges,
+      offer_redeems: [:offer_reward]
+    ])
+    |> where([o], o.offer_type == "in_store")
+  end
 
   def total_offers_query() do
     from(o in Offer, select: count(o.id))
@@ -1064,6 +1078,10 @@ defmodule OmegaBravera.Offers do
   #  def paginate_offer_vendors(%PartnerUser{}, params) do
   #
   #  end
+
+  def list_org_offer_vendors_query() do
+    list_offer_vendors_query()
+  end
 
   @doc """
   Gets a single offer_vendor.

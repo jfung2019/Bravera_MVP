@@ -1,0 +1,7 @@
+<div class="card">
+    <div class="card-body">
+        <h1><span class="fa fa-credit-card"></span> <%= gettext("New Offline Offers") %></h1>
+        <%= render "form.html", Map.put(assigns, :action, Routes.org_panel_offline_offers_path(@conn, :create)) %>
+        <span><%= link gettext("Back"), to: Routes.org_panel_offline_offers_path(@conn, :index) %></span>
+    </div>
+</div>

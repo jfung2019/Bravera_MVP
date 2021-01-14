@@ -1,0 +1,7 @@
+<div class="card">
+    <div class="card-body">
+        <h1><span class="fa fa-cart-arrow-down"></span> <%= gettext("Edit Online Offers") %></h1>
+        <%= render "form.html", Map.put(assigns, :action, Routes.org_panel_online_offers_path(@conn, :update, @offer)) %>
+        <span><%= link "Back", to: Routes.org_panel_online_offers_path(@conn, :index) %></span>
+    </div>
+</div>

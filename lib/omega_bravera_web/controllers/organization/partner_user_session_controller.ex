@@ -12,7 +12,7 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
           partner_user.email_verified ->
             conn
             |> Guardian.Plug.sign_in(partner_user)
-            |> redirect(to: Routes.kaffy_home_path(conn, :index))
+            |> redirect(to: Routes.org_panel_dashboard_path(conn, :index))
 
           true ->
             conn

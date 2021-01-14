@@ -1,0 +1,140 @@
+<%= form_for @changeset, @action, [multipart: true], fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div id="instore-fields">
+    <div class="form-group">
+      <%= label f, :vendor_id, gettext("Claim ID"), class: "control-label" %>
+      <%= select(f, :vendor_id, Enum.map(@vendors, &{&1.vendor_id, &1.id}),
+                class: "form-control chosen", prompt: gettext("Select Claim ID linked to this offer"))
+          %>
+      <%= error_tag f, :vendor_id %>
+    </div>
+
+    <div class="form-group">
+      <%= label f, :location_id, gettext("Offer Availability"), class: "control-label" %>
+      <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control chosen" %>
+      <%= error_tag f, :location_id %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :name, class: "control-label" %>
+    <small class="text-muted form-text">
+      <%= gettext("(The offer name that will appear inside your group. ") %>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%=gettext(" for more info.)") %>
+    </small>
+    <%= text_input f, :name, class: "form-control" %>
+    <%= error_tag f, :name %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :start_date, "Start Date", class: "control-label" %>
+    <br/>
+    <small class="text-muted form-text"><%= gettext("(Offer will be live after the start date displayed below.)") %></small>
+    <%= registration_date_builder(f, :start_date, class: "form-control") %>
+    <%= error_tag f, :start_date %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :end_date, "End Date", class: "control-label" %>
+    <br/>
+    <small class="text-muted form-text">
+      <%= gettext("(An offer will ‘end’ on this date. It will ‘disappear’. ") %>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%= gettext(" to learn more.)") %>
+    </small>
+    <%= registration_date_builder(f, :end_date, class: "form-control") %>
+    <%= error_tag f, :end_date %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :toc, "Terms and Conditions", class: "control-label" %>
+    <small class="text-muted form-text">
+      <%= gettext("(Add important details about your offer and reward. For help and examples ") %>
+      <a href="#"><%= gettext("click here") %></a>.)
+    </small>
+    <%= textarea f, :toc, class: "form-control", rows: 3, data: [html: true] %>
+    <%= error_tag f, :toc %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, "Description", class: "control-label" %>
+    <small class="text-mute form-text">
+      <%= gettext("(Introduce your offer in more detail. ") %>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%= gettext(" for help and hints.)") %>
+    </small>
+    <%= textarea f, :desc, class: "form-control", rows: 3, data: [html: true] %>
+    <%= error_tag f, :desc %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :target, "Target (if km challenge: enter KMs. if Segment challenge: enter Segment ID.)", class: "control-label" %>
+    <small class="text-mute form-text">
+      <%= gettext("(IMPORTANT: 10 points = 1 kilometer or approx. 1,350 steps. Each kilometer your group members walk/run generates 10 points. So, if you’d like someone to walk/run 20 kilometers, add ‘200’ points. If below you turn challenges off, group members will need to buy with the equivalent points. Confused? Don’t worry,  ") %>
+      <a href="#"><%= gettext("click here") %></a>.)
+    </small>
+    <table class="table mt-3" style="table-layout: fixed;">
+      <tr>
+        <td><%= gettext("Kilometers:") %></td>
+        <td><%= number_input f, :target, class: "form-control", id: "offer_target", required: "", min: "1" %></td>
+        <td><%= gettext("Points needed:") %></td>
+        <td id="points-target">0</td>
+      </tr>
+      <tr>
+        <td><%= gettext("Miles needed:") %></td>
+        <td id="miles-target">0</td>
+        <td><%= gettext("Steps needed (approx.):") %></td>
+        <td id="steps-target">0</td>
+      </tr>
+    </table>
+    <%= error_tag f, :target %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :offer_type, gettext("Offline Offer"), class: "control-label" %>
+    <small class="form-text text-muted">
+      <%= gettext("(Hint: “In-store” Means claim by QR code. Reward is claimed by scanning a QR code. ")%>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%= gettext(" for hints and help.)") %>
+    </small>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
+    <br>
+    <small class="form-text text-muted">
+      <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward.)") %>
+    </small>
+    <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>
+    <%= error_tag f, :take_challenge %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>
+    <small class="form-text text-muted">
+      <%= gettext("(‘Countdown’ or ‘deadline’ to claim the reward after it has been unlocked. Example: Steven earned a reward on 07:00am on 1st January that has an expiry of 10 days. On 11th January, at 06:59:59, the reward will expire and be removed from his rewards wallet. ") %>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%= gettext(" for hints and help.)") %>
+    </small>
+    <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
+    <%= error_tag f, :redemption_days %>
+  </div>
+
+  <div id="enable_take_challenge_fields">
+    <div class="form-group">
+      <%= label f, :time_limit, "Time Limit (leave blank to make offer challenge end date match offer's)", class: "control-label" %>
+      <%= number_input f, :time_limit, class: "form-control" %>
+      <%= error_tag f, :time_limit %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Save", class: "btn btn-primary" %>
+  </div>
+<% end %>
