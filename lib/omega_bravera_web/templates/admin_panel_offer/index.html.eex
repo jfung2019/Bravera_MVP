@@ -1,8 +1,8 @@
 <div class="card">
   <div class="card-body overflow-auto">
     <h1>
-      <span class="fa fa-<%= if @offer_type == :online, do: "cart-arrow-down", else: "credit-card" %>"></span>
-      <%= "#{gettext_offer_type(@offer_type)} #{gettext("Offers")}" %>
+      <span class="fa fa-cart-arrow-down"></span>
+      <%= gettext("Offers") %>
     </h1>
     <div class="row my-3">
       <div class="col-9">
@@ -12,21 +12,17 @@
         </small>
       </div>
     </div>
-    <%= link gettext("Create New Offer"), to: Routes.admin_panel_offer_path(@conn, :new, offer_type: @offer_type), class: "btn btn-outline-primary" %>
+    <%= link gettext("Create New Offer"), to: Routes.admin_panel_offer_path(@conn, :new), class: "btn btn-outline-primary" %>
     <table class="table mt-3 table-striped">
       <thead>
         <tr>
           <th><%= gettext("Name") %></th>
-          <%= if @offer_type != :online do %>
           <th><%= gettext("Claim ID") %></th>
-          <% end %>
           <th><%= gettext("Participants") %></th>
           <th><%= gettext("Engagements") %></th>
           <th><%= gettext("Status") %></th>
-          <%= if @offer_type != :online do %>
           <th><%= gettext("Claims") %></th>
           <th><%= gettext("Total Value") %></th>
-          <% end %>
           <th><%= gettext("Date Created") %></th>
           <th><%= gettext("Last Edited") %></th>
           <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
@@ -36,16 +32,12 @@
       <%= for offer <- @offers do %>
         <tr>
           <td><%= offer.name %></td>
-          <%= if @offer_type != :online do %>
           <td><%= offer.vendor.vendor_id %></td>
-          <% end %>
           <td><%= offer.unique_participants %></td>
           <td><%= length(offer.offer_challenges) %></td>
           <td class="small"><%= raw completed_challenges(offer.offer_challenges) %></td>
-          <%= if @offer_type != :online do %>
           <td><%= redeems_total(offer.offer_redeems) %></td>
           <td><%= get_total_redeems_value(offer.offer_redeems) %></td>
-          <% end %>
           <td><%= render_datetime(offer.inserted_at) %></td>
           <td><%= render_datetime(offer.updated_at) %></td>
           <td class="text-center">

@@ -54,7 +54,7 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
     setup [:create_challenge]
 
     test "renders create activity form", %{conn: conn} do
-      conn = get(conn, admin_panel_offer_challenge_activity_path(conn, :new))
+      conn = get(conn, Routes.admin_panel_offer_challenge_activity_path(conn, :new))
       assert html_response(conn, 200) =~ "New Offer Activity"
     end
   end
@@ -66,12 +66,12 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
       conn =
         post(
           conn,
-          admin_panel_offer_challenge_activity_path(conn, :create),
+          Routes.admin_panel_offer_challenge_activity_path(conn, :create),
           activity_accumulator: %{@activity_create_attrs | "type" => challenge.activity_type},
           challenge_id: challenge.id
         )
 
-      assert redirected_to(conn) == admin_panel_offer_path(conn, :index)
+      assert redirected_to(conn) == Routes.admin_panel_offer_path(conn, :online)
       assert get_flash(conn, :info) =~ "Activity created successfully."
     end
 
@@ -82,7 +82,7 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
       conn =
         post(
           conn,
-          admin_panel_offer_challenge_activity_path(conn, :create),
+          Routes.admin_panel_offer_challenge_activity_path(conn, :create),
           activity_accumulator: %{
             @activity_create_attrs
             | "type" => challenge.activity_type,
@@ -98,7 +98,7 @@ defmodule OmegaBraveraWeb.Admin.OfferChallengeActivityControllerTest do
           challenge_id: challenge.id
         )
 
-      assert redirected_to(conn) == admin_panel_offer_path(conn, :index)
+      assert redirected_to(conn) == Routes.admin_panel_offer_path(conn, :online)
       assert get_flash(conn, :error) =~ "Activity not processed. Please check the logs."
     end
   end

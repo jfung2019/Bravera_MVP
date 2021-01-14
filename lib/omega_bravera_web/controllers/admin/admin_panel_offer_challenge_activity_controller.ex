@@ -52,14 +52,14 @@ defmodule OmegaBraveraWeb.AdminPanelOfferChallengeActivityController do
           {:ok, :challenge_updated} ->
             conn
             |> put_flash(:info, "Activity created successfully.")
-            |> redirect(to: Routes.admin_panel_offer_path(conn, :online))
+            |> redirect(to: Routes.admin_panel_offer_path(conn, :index))
 
           {:error, :activity_not_processed} ->
             Repo.delete(saved_activity)
 
             conn
             |> put_flash(:error, "Activity not processed. Please check the logs.")
-            |> redirect(to: Routes.admin_panel_offer_path(conn, :online))
+            |> redirect(to: Routes.admin_panel_offer_path(conn, :index))
         end
 
       {:error, reason} ->

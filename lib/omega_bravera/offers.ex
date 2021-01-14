@@ -22,7 +22,7 @@ defmodule OmegaBravera.Offers do
   alias OmegaBravera.Points
 
   alias OmegaBravera.Activity.ActivityAccumulator
-  alias OmegaBravera.Accounts.{User, AdminUser, PartnerUser}
+  alias OmegaBravera.Accounts.{User, AdminUser}
 
   def buy_offer_with_points(offer, user) do
     Multi.new()
@@ -110,7 +110,19 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
-  pagination offers
+  Pagination offers
+  """
+  def paginate_offers(params) do
+    list_offers_preload_query([
+      :vendor,
+      :offer_challenges,
+      offer_redeems: [:offer_reward]
+    ])
+    |> Turbo.Ecto.turbo(params, entry_name: "offers")
+  end
+
+  @doc """
+  Pagination online offers
   """
   def paginate_online_offers(%AdminUser{}, params) do
     list_offers_preload_query([
