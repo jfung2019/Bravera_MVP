@@ -157,13 +157,13 @@ defmodule OmegaBravera.Offers.Offer do
   def org_online_offer_changeset(offer, attrs) do
     changeset(offer, attrs)
     |> validate_required([:organization_id, :online_url, :online_code])
-    |> put_change(:offer_type, "online")
+    |> put_change(:offer_type, :online)
   end
 
   def org_offline_offer_changeset(offer, attrs) do
     changeset(offer, attrs)
     |> validate_required([:organization_id, :vendor_id, :location_id])
-    |> put_change(:offer_type, "in_store")
+    |> put_change(:offer_type, :in_store)
   end
 
   def generate_slug(%Ecto.Changeset{} = changeset) do

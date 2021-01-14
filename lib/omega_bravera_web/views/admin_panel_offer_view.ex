@@ -58,8 +58,4 @@ defmodule OmegaBraveraWeb.AdminPanelOfferView do
   end
 
   def render_redeemed_reward_name(%OfferChallenge{has_team: true}), do: ""
-
-  def gettext_offer_type(:online), do: gettext("Online")
-
-  def gettext_offer_type(:in_store), do: gettext("In Store")
 end

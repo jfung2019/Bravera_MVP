@@ -27,7 +27,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
 
   def new(conn, _params) do
     users = Accounts.list_users()
-    changeset = Offers.change_offer(%Offer{offer_type: "in_store"})
+    changeset = Offers.change_offer(%Offer{offer_type: :in_store})
     render(conn, "new.html", changeset: changeset, users: users)
   end
 

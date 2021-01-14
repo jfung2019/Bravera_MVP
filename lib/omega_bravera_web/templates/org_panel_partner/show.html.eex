@@ -55,7 +55,7 @@
 			<%= for offer_partner <- @partner.offer_partners do %>
 			<tr>
 				<td><%= offer_partner.offer.name %>
-					<%= if offer_partner.offer.offer_type == "online" do %>
+					<%= if offer_partner.offer.offer_type == :online do %>
 					<%= link gettext("Edit Offer"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
 					<% else %>
 					<%= link gettext("Edit Offer"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
