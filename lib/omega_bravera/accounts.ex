@@ -793,6 +793,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  def list_users_for_org(organization_id) do
+    # TODO
+  end
+
   @doc """
   Prepares a list of current users with settings and extra fields ready in admin panel.
   """
@@ -1773,11 +1777,11 @@ defmodule OmegaBravera.Accounts do
     |> Repo.insert()
   end
 
-  def create_partner_user_and_organization(attrs \\ %{}) do
+  def create_partner_user_and_organization(business_type, attrs \\ %{}) do
     Multi.new()
     |> Multi.run(:create_partner_user, fn _repo, _ -> create_partner_user(attrs) end)
     |> Multi.run(:create_organization, fn _repo, %{create_partner_user: partner_user} ->
-      create_organization(%{"name" => "#{partner_user.username} Org."})
+      create_organization(%{"name" => "#{partner_user.username} Org.", "business_type" => business_type})
     end)
     |> Multi.run(:create_organization_member, fn _repo, result ->
       %{create_partner_user: partner_user, create_organization: organization} = result

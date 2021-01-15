@@ -3,7 +3,15 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
   alias OmegaBravera.Guardian
   alias OmegaBravera.Accounts
 
-  def new(conn, _params), do: render(conn, "new.html")
+  def new(conn, _params) do
+    case Guardian.Plug.current_resource(conn) do
+      %Accounts.PartnerUser{} ->
+        redirect(conn, to: Routes.org_panel_dashboard_path(conn, :index))
+
+      _ ->
+        render(conn, "new.html")
+    end
+  end
 
   def create(conn, %{"username" => username, "password" => password}) do
     case Accounts.partner_user_auth(username, password) do

@@ -300,19 +300,6 @@ defmodule OmegaBraveraWeb.Router do
     get "/", PageController, :index
     get "/ngos", NGOController, :index
 
-    #    scope "/partner-sessions" do
-    #      resources "/", PartnerUserSessionController, only: [:new, :create, :delete], singleton: true
-    #      get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
-    #    end
-
-    #    scope "/partners" do
-    #      resources "/password", PartnerUserPasswordController,
-    #        except: [:delete],
-    #        param: "reset_token"
-    #
-    #      resources "/", PartnerUserRegisterController, only: [:new, :create]
-    #    end
-
     resources "/", NGOController, only: [:show], param: "slug" do
       get "/leaderboard", NGOController, :leaderboard, param: "slug"
 

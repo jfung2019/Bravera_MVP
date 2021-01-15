@@ -2,13 +2,7 @@
     <div class="col col-md-6 offset-md-3">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex flex-row justify-content-between">
-                    <h1><%= gettext("Register") %></h1>
-                    <ul class="nav">
-                        <li class="nav-item"><%= link gettext("Login"), to: Routes.partner_user_session_path(@conn, :new), class: "nav-link" %></li>
-                        <li class="nav-item"><%= link gettext("Forgot Password"), to: Routes.partner_user_password_path(@conn, :new), class: "nav-link" %></li>
-                    </ul>
-                </div>
+                <h1><%= gettext("Register") %></h1>
                 <%= form_for @changeset, Routes.partner_user_register_path(@conn, :create), fn f -> %>
                 <div class="mb-3">
                     <%= label f, :business_type, class: "form-label" %>
@@ -29,18 +23,27 @@
                     <%= label f, :password, class: "form-label" %>
                     <%= password_input f, :password, class: add_error_class(f, :password, "form-control"), required: true %>
                     <%= error_tag f, :password %>
+                    <%= link gettext("Forgot Password"), to: Routes.partner_user_password_path(@conn, :new) %>
                 </div>
                 <div class="form-group">
                     <div class="form-check">
                         <%= checkbox f, :accept_terms, class: add_error_class(f, :accept_terms, "form-check-input"), required: true %>
-                        <%= label f, :accept_terms, gettext("I accept the Terms and Conditions and Privacy Policy"), class: "form-check-label" %>
+                        <%= label f, :accept_terms,  class: "form-check-label" do %>
+                        <%= gettext("I accept the ") %>
+                        <%= link gettext("Terms of Use"), to: "https://www.bravera.fit/terms", target: "_blank" %>
+                        <%= gettext(" and ") %>
+                        <%= link gettext("Privacy Policy"), to: "https://www.bravera.fit/privacy/", target: "_blank" %>
+                        <% end %>
                         <%= error_tag f, :accept_terms %>
                     </div>
                 </div>
-                <div class="mb-3">
-
+                <div class="p-0 d-inline-block">
+                    <%= submit "Register", class: "btn btn-primary" %>
+                   <div class="ml-4 d-inline-block" style="vertical-align: middle;">
+                       <%= gettext("Already have an account? ") %>
+                       <%= link gettext("Login"), to: Routes.partner_user_session_path(@conn, :new) %>
+                   </div>
                 </div>
-                <%= submit "Register", class: "btn btn-primary" %>
                 <% end %>
             </div>
         </div>

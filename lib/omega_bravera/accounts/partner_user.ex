@@ -9,7 +9,6 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     field :username, :string
     field :password, :string, virtual: true
     field :password_hash, :string
-    field :business_type, :string
     field :email_verified, :boolean, default: false
     field :email_activation_token, :string
     field :reset_token, :string
@@ -22,8 +21,8 @@ defmodule OmegaBravera.Accounts.PartnerUser do
   @doc false
   def changeset(partner_user, attrs) do
     partner_user
-    |> cast(attrs, [:username, :email, :password, :business_type, :email_verified, :accept_terms])
-    |> validate_required([:username, :email, :password, :business_type])
+    |> cast(attrs, [:username, :email, :password, :email_verified, :accept_terms])
+    |> validate_required([:username, :email, :password])
     |> validate_length(:username, min: 3)
     |> unique_constraint(:email)
     |> validate_format(:email, ~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i)
@@ -34,8 +33,8 @@ defmodule OmegaBravera.Accounts.PartnerUser do
 
   def update_changeset(partner_user, attrs) do
     partner_user
-    |> cast(attrs, [:email, :business_type, :email_verified, :password])
-    |> validate_required([:email, :business_type, :email_verified])
+    |> cast(attrs, [:email, :email_verified, :password])
+    |> validate_required([:email, :email_verified])
     |> validate_password()
   end
 

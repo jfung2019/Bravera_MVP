@@ -7,7 +7,7 @@
 
   <div class="form-group">
     <%= label f, gettext("User"), class: "control-label" %>
-    <%= select f, :user_id, Enum.map(@users, &({"User: #{&1.firstname} #{&1.lastname} (#{&1.email})", &1.id})), class: "form-control chosen", prompt: gettext("Who is the points for?") %>
+    <%= select f, :user_id, Enum.map(@users, &({"User: #{&1.username}", &1.id})), class: "form-control chosen", prompt: gettext("Who is the points for?") %>
     <%= error_tag f, :user_id %>
   </div>
 
