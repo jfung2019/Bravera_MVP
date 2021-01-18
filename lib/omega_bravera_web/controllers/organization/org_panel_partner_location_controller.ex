@@ -7,6 +7,8 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerLocationController do
 
     render(conn, "new.html",
       changeset: Groups.change_partner_location(%Groups.PartnerLocation{}),
+      first_location:
+        Groups.organization_locations_count(get_session(conn, :organization_id)) == 0,
       partner: partner
     )
   end

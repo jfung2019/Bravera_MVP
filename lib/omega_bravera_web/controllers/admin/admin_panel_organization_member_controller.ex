@@ -39,6 +39,7 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
       {:error, _, _, _} ->
         organizations = Accounts.list_organization()
         changeset = Accounts.change_organization_member(%OrganizationMember{})
+
         conn
         |> put_flash(:error, "Failed to create partner user.")
         |> render("new.html", changeset: changeset, organizations: organizations)

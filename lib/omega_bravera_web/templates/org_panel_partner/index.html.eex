@@ -44,3 +44,34 @@
 		<% end %>
 	</div>
 </div>
+
+<div class="modal fade" id="no_group" tabindex="-1" role="dialog" aria-labelledby="no_group_modal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"><%= gettext("Create your first ‘Group’") %></h5>
+			</div>
+			<div class="modal-body">
+				<p><%= gettext("A group is where you’ll invite people to join to:") %></p>
+				<br/>
+				<ul>
+					<li><%= gettext("See offers inside your group") %></li>
+					<li><%= gettext("Earn rewards") %></li>
+					<li><%= gettext("Enter your private chat group") %></li>
+					<li><%= gettext("Enter your private leaderboard") %></li>
+				</ul>
+				<br/>
+				<p><%= gettext("Optional: If your Group is also a business or organisation (e.g. retail store, club etc), you will have the opportunity to add a physical address to create a pin on the Bravera in-app map.") %></p>
+				<br/>
+				<p><%= gettext("Click ‘Got it’ below and then Create your first ‘Group’.") %></p>
+			</div>
+			<div class="modal-footer">
+				<%= link gettext("Got it"), to: Routes.org_panel_partner_path(@conn, :new), class: "btn btn-primary" %>
+			</div>
+		</div>
+	</div>
+</div>
+
+<%= if length(@partners) < 1 do %>
+<script>$("#no_group").modal("show");</script>
+<% end %>

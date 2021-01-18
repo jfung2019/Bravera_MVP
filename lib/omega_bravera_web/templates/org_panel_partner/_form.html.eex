@@ -38,7 +38,7 @@
         <div class="d-flex">
             <div class="form-group col-8 p-0">
                 <%= label f, :join_password, "Password to Join (leave blank to have open)", class: "control-label" %>
-                <small class="form-text text-muted"><%= gettext("(leave blank if you want a public / open group. Click here for more info)") %></small>
+                <small class="form-text text-muted"><%= gettext("(Enter a password to share with people you wish to join the group. You can edit / update this anytime here.)") %></small>
                 <%= text_input f, :join_password, class: add_error_class(f, :join_password, "form-control"), id: "join_password" %>
                 <%= error_tag f, :join_password %>
             </div>
@@ -46,17 +46,10 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label"><%= gettext("Contact Method:") %></label>
+            <%= select f, :method, [gettext("Enquiry Email"), gettext("Website / Link"), gettext("Phone / WhatsApp")], id: "group_contact_method", class: "form-control chosen", prompt: gettext("How do you want others to ‘request to join’ your group?") %>
             <small class="form-text text-muted">
-                <%= gettext("(only required if your group if ‘private’ and requires a ‘password’ to join. Confused? ") %>
-                <a href="#"><%= gettext("Click here") %></a>
-                <%= gettext(" for more information)") %>
+                <%= gettext("(This allows others to request access. You can choose email, phone / whatsapp, or a link e.g. Webpage, Facebook group, Instagram etc.)") %>
             </small>
-            <select id="group_contact_method" class="form-control mb-2">
-                <option><%= gettext("Enquiry Email") %></option>
-                <option><%= gettext("Website / Link") %></option>
-                <option><%= gettext("Phone / WhatsApp") %></option>
-            </select>
             <div id="method_email" style="display: none;">
                 <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
                 <%= error_tag f, :email %>

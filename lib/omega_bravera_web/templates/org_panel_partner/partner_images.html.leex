@@ -15,7 +15,7 @@
         <div class="row mt-3">
             <div class="col-6 offset-3">
                 <h3><%= gettext("Photos should be 1080x1080 dimension") %></h3>
-                <form action="/test" class="dropzone" phx-hook="dropzone" data-dropzone="<%= @upload_token %>" data-dropzone-field="images" data-event="append-image"></form>
+                <form action="/test" id="org_upload_group_image" class="dropzone" phx-hook="dropzone" data-dropzone="<%= @upload_token %>" data-dropzone-field="images" data-event="append-image"></form>
                 <div class="d-flex justify-content-center">
                     <small class="text-muted text-center">
                         <%= gettext("First image will also be the 'intro' image on the group listing.") %><br>
@@ -28,3 +28,33 @@
         <button type="button" class="btn btn-primary" phx-click="save-images">Save</button>
     </div>
 </div>
+
+<div phx-update="ignore">
+    <div class="modal fade" id="first_time_upload_image" tabindex="-1" role="dialog" aria-labelledby="first_time_upload_image_modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><%= gettext("Images saved.") %></h5>
+                </div>
+                <div class="modal-body">
+                    <p><%= gettext("Note: Please ensure they’re the correct dimension (1080x1080)") %></p>
+                    <br>
+                    <p><%= gettext("What do you want to do now?") %></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="hideModal()"><%= gettext("Edit Image") %></button>
+                    <%= link gettext("Save and continue"), to: Routes.org_panel_partner_path(@socket, :show, @partner), class: "btn btn-primary" %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% IO.inspect(assigns[:first_time_upload_image]) %>
+<%= if assigns[:first_time_upload_image] do %>
+<script>$("#first_time_upload_image").modal("show");</script>
+<% end %>
+<script>
+    function hideModal() {
+        $("#first_time_upload_image").modal("hide");
+    }
+</script>

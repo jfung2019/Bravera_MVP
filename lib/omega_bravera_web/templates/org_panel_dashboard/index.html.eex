@@ -3,3 +3,62 @@
         <h1><span class="fa fa-dashboard"></span> <%= gettext("Dashboard") %></h1>
     </div>
 </div>
+
+<div class="modal fade" id="first_time" tabindex="-1" role="dialog" aria-labelledby="first_time_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><%= gettext("Welcome to Bravera! ") %></h5>
+            </div>
+            <div class="modal-body">
+                <p><%= gettext("By using this moving for rewards customer platform, you can create your own loyalty groups and rewards. We hope the experience is convenient and easy.") %></p>
+                <br/>
+                <p><%= gettext("To help, we’ve added prompts and hyperlinks throughout to help you on your way.") %></p>
+                <br/>
+                <p><%= gettext("If you’ve not done so already, please also download the Bravera app so you can get familiar with what you’re creating will look like! Search ‘Bravera’ on the App Store or on Google Play.") %></p>
+                <br/>
+                <p><%= gettext("Thank you for creating your account. We look forward to seeing what you’re gonna build!") %></p>
+                <br/>
+                <p><%= gettext("Team Bravera") %></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="showDashboardIntro()"><%= gettext("Got it! Thanks!") %></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="dashboard_intro" tabindex="-1" role="dialog" aria-labelledby="dashboard_intro_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><%= gettext("You’re now on ‘Dashboard’.") %></h5>
+            </div>
+            <div class="modal-body">
+                <p><%= gettext("The dashboard will help you understand how your groups and rewards are performing ‘at a glance’. There is no data / info here yet. So, let’s get you started.") %></p>
+                <br/>
+                <p>
+                    <strong><%= gettext("VERY IMPORTANT: ") %></strong>
+                    <%= gettext("By clicking ‘Get Me Started’ below, you’ll start a guided process to create a group, add offers and rewards, and then save your first draft.") %>
+                </p>
+                <br/>
+                <p><%= gettext("The guide only gets activated once. So, please sit through it (maybe go get a coffee). It’ll take approx. 5 minutes!") %></p>
+                <br/>
+                <p><%= gettext("Team Bravera") %></p>
+            </div>
+            <div class="modal-footer">
+                <%= link gettext("Get Me Started"), to: Routes.org_panel_partner_path(@conn, :index), class: "btn btn-primary" %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%= if @no_groups do %>
+<script>$("#first_time").modal("show");</script>
+<% end %>
+<script>
+    function showDashboardIntro() {
+        $("#first_time").modal("hide");
+        $("#dashboard_intro").modal("show");
+    }
+</script>

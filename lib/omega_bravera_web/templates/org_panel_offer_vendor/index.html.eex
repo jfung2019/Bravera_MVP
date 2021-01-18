@@ -44,3 +44,20 @@
     <% end %>
   </div>
 </div>
+
+<div class="modal fade" id="first_vendor" tabindex="-1" role="dialog" aria-labelledby="first_vendor_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p><%= gettext("Great! You’re created a Claim ID. You can now add this to an Offline Offer.") %></p>
+      </div>
+      <div class="modal-footer">
+        <%= link gettext("Create and Offline Offer"), to: Routes.org_panel_offline_offers_path(@conn, :new), class: "btn btn-primary" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= if length(@offer_vendors) == 1 do %>
+<script>$("#first_vendor").modal("show");</script>
+<% end %>

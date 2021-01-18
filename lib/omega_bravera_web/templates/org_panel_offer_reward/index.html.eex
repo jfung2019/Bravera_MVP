@@ -44,3 +44,23 @@
     <% end %>
   </div>
 </div>
+
+<div class="modal fade" id="first_reward" tabindex="-1" role="dialog" aria-labelledby="first_reward_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p><%= gettext("Great! You’re created a reward linked to an Offline Offer.") %></p>
+        <br/>
+        <p><%= gettext("Now, you can add the Offline Offer to a Group.") %></p>
+        <br/>
+      </div>
+      <div class="modal-footer">
+        <%= link gettext("Add Offer to a Group"), to: Routes.org_panel_partner_path(@conn, :index), class: "btn btn-primary" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= if length(@offer_rewards) == 1 do %>
+<script>$("#first_reward").modal("show");</script>
+<% end %>

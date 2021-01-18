@@ -28,6 +28,11 @@ defmodule OmegaBravera.Groups do
     |> Turbo.Ecto.turbo(params, entry_name: "partners")
   end
 
+  def organization_group_count(organization_id) do
+    from(p in Partner, where: p.organization_id == ^organization_id, select: count(p.id))
+    |> Repo.one()
+  end
+
   @doc """
   Returns tuple of partners ready for dropdown list.
   """
@@ -288,6 +293,15 @@ defmodule OmegaBravera.Groups do
   """
   def change_partner_location(%PartnerLocation{} = partner_location) do
     PartnerLocation.changeset(partner_location, %{})
+  end
+
+  def organization_locations_count(organization_id) do
+    from(l in PartnerLocation,
+      left_join: p in assoc(l, :partner),
+      where: p.organization_id == ^organization_id,
+      select: count(l.id)
+    )
+    |> Repo.one()
   end
 
   alias OmegaBravera.Groups.PartnerVote

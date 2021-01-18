@@ -2,7 +2,6 @@ import $ from "jquery";
 
 $(function () {
     $("#public_group_checkbox").change(function () {
-        console.log($(this).is(":checked"))
         const private_group_fields = $("#private_group_fields")
         const join_password = $("#join_password")
         if ($(this).is(":checked")) {

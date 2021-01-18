@@ -4,9 +4,9 @@ defmodule OmegaBraveraWeb.OrgPanelOfferPartnerController do
 
   def create(conn, %{"partner_id" => partner_id} = params) do
     case Groups.create_offer_partner(params) do
-      {:ok, _} ->
+      {:ok, partner} ->
         conn
-        |> redirect(to: Routes.org_panel_partner_path(conn, :show, partner_id))
+        |> redirect(to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, partner))
     end
   end
 

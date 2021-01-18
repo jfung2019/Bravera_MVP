@@ -27,8 +27,6 @@
     </div>
 </div>
 
-<div>
-    <%= if length(@vendors) < 1 do %>
-    <script>$("#no_vendors_modal").modal("show");</script>
-    <% end %>
-</div>
+<%= if length(@vendors) < 1 do %>
+<script>$("#no_vendors_modal").modal("show");</script>
+<% end %>
