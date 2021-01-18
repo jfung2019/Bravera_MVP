@@ -32,10 +32,7 @@ defmodule OmegaBraveraWeb.OrgPartnerImages do
   def handle_event("save-images", _, %{assigns: %{images: images, partner: partner}} = socket) do
     case Groups.update_partner(partner, %{images: images}) do
       {:ok, updated_partner} ->
-        first_time_upload_image =
-          length(partner.images) < 1 and length(updated_partner.images) > 0
-
-        {:noreply, assign(socket, first_time_upload_image: first_time_upload_image)}
+        {:noreply, redirect(socket, to: Routes.org_panel_partner_path(socket, :show, partner))}
     end
   end
 end

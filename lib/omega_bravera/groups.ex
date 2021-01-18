@@ -34,6 +34,15 @@ defmodule OmegaBravera.Groups do
   end
 
   @doc """
+  Returns true if has groups.
+  """
+  @spec has_groups?(String.t()) :: boolean()
+  def has_groups?(organization_id) do
+    from(p in Partner, where: p.organization_id == ^organization_id, select: count(p.id) > 0)
+    |> Repo.one()
+  end
+
+  @doc """
   Returns tuple of partners ready for dropdown list.
   """
   def partner_options do

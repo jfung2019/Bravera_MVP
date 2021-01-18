@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.OrgAuth do
   alias OmegaBravera.{Accounts, Accounts.PartnerUser}
+  import Plug.Conn, only: [assign: 3]
 
   def init(opts), do: opts
 
@@ -14,9 +15,10 @@ defmodule OmegaBraveraWeb.OrgAuth do
 
             conn
             |> Plug.Conn.put_session(:organization_id, organization_member.organization_id)
+            |> assign(:organization_id, organization_member.organization_id)
 
-          _org_id ->
-            conn
+          org_id ->
+            assign(conn, :organization_id, org_id)
         end
 
       _ ->

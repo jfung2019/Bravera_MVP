@@ -2,18 +2,18 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
   use OmegaBraveraWeb, :controller
   alias OmegaBravera.Groups
 
-  def index(conn, params) do
-    results = Groups.paginate_groups(get_session(conn, :organization_id), params)
+  def index(%{assigns: %{organization_id: org_id}} = conn, params) do
+    results = Groups.paginate_groups(org_id, params)
     render(conn, partners: results.partners, paginate: results.paginate)
   end
 
-  def show(conn, %{"id" => partner_id}) do
+  def show(%{assigns: %{organization_id: org_id}} = conn, %{"id" => partner_id}) do
     partner = Groups.get_partner!(partner_id)
 
     render(conn, "show.html",
       partner: partner,
       first_group:
-        Groups.organization_group_count(get_session(conn, :organization_id)) == 1 and
+        Groups.organization_group_count(org_id) == 1 and
           length(partner.offers) < 1,
       offers: OmegaBravera.Offers.list_offers_by_organization(get_session(conn, :organization_id))
     )
@@ -28,15 +28,15 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
   def new(conn, _params),
     do: render(conn, "new.html", changeset: Groups.change_partner(%Groups.Partner{}))
 
-  def create(conn, %{"partner" => partner_params}) do
+  def create(%{assigns: %{organization_id: org_id}} = conn, %{"partner" => partner_params}) do
     partner_params =
-      Map.put(partner_params, "organization_id", get_session(conn, :organization_id))
+      Map.put(partner_params, "organization_id", org_id)
 
     case Groups.create_org_partner(partner_params) do
       {:ok, partner} ->
         conn
         |> put_flash(:info, "Partner created successfully")
-        |> redirect(to: Routes.org_panel_partner_path(conn, :show, partner))
+        |> redirect(to: Routes.live_path(conn, OmegaBraveraWeb.OrgPartnerImages, partner))
 
       {:error, changeset} ->
         conn

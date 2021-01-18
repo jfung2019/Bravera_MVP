@@ -3,18 +3,18 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
 
   alias OmegaBravera.Offers
 
-  def index(conn, params) do
-    results = Offers.paginate_offer_rewards(get_session(conn, :organization_id), params)
+  def index(%{assigns: %{organization_id: org_id}} = conn, params) do
+    results = Offers.paginate_offer_rewards(org_id, params)
     render(conn, "index.html", offer_rewards: results.offer_rewards, paginate: results.paginate)
   end
 
-  def new(conn, _params) do
+  def new(%{assigns: %{organization_id: org_id}} = conn, _params) do
     changeset = Offers.change_offer_reward(%Offers.OfferReward{})
-    offers = Offers.list_offers_by_organization(get_session(conn, :organization_id))
+    offers = Offers.list_offers_by_organization(org_id)
     render(conn, "new.html", offers: offers, changeset: changeset)
   end
 
-  def create(conn, %{"offer_reward" => offer_reward_params}) do
+  def create(%{assigns: %{organization_id: org_id}} = conn, %{"offer_reward" => offer_reward_params}) do
     case Offers.create_offer_reward(offer_reward_params) do
       {:ok, _sendgrid_email} ->
         conn
@@ -22,14 +22,14 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
         |> redirect(to: Routes.org_panel_offer_reward_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        offers = Offers.list_offers_by_organization(get_session(conn, :organization_id))
+        offers = Offers.list_offers_by_organization(org_id)
         render(conn, "new.html", offers: offers, changeset: changeset)
     end
   end
 
-  def edit(conn, %{"id" => id}) do
+  def edit(%{assigns: %{organization_id: org_id}} = conn, %{"id" => id}) do
     offer_reward = Offers.get_offer_reward!(id)
-    offers = Offers.list_offers_by_organization(get_session(conn, :organization_id))
+    offers = Offers.list_offers_by_organization(org_id)
     changeset = Offers.change_offer_reward(offer_reward)
 
     render(conn, "edit.html",
@@ -39,7 +39,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
     )
   end
 
-  def update(conn, %{"id" => id, "offer_reward" => offer_reward_params}) do
+  def update(%{assigns: %{organization_id: org_id}} = conn, %{"id" => id, "offer_reward" => offer_reward_params}) do
     offer_reward = Offers.get_offer_reward!(id)
 
     case Offers.update_offer_reward(offer_reward, offer_reward_params) do
@@ -49,7 +49,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
         |> redirect(to: Routes.org_panel_offer_reward_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        offers = Offers.list_offers_by_organization(get_session(conn, :organization_id))
+        offers = Offers.list_offers_by_organization(org_id)
         render(conn, "edit.html", offers: offers, changeset: changeset)
     end
   end
