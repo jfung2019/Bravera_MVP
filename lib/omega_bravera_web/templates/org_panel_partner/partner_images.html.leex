@@ -2,13 +2,15 @@
     <div class="card-body">
         <h1><span class="fa fa-group"></span> <%= gettext("Edit Images") %></h1>
         <h2><%= @partner.name %></h2>
-
-        <div class="row">
-            <%= for {url, index} <- Enum.with_index(@images) do %>
-            <div class="col-2 mt-2" phx-click="remove-image" phx-value-index="<%= index %>">
-                <%= img_tag(url, class: "img-fluid") %>
+        <div class="d-flex">
+            <div class="row col-8 p-0">
+                <%= for {url, index} <- Enum.with_index(@images) do %>
+                <div class="col-2 mt-2" phx-click="remove-image" phx-value-index="<%= index %>">
+                    <%= img_tag(url, class: "img-fluid") %>
+                </div>
+                <% end %>
             </div>
-            <% end %>
+            <%= img_tag Routes.static_path(@socket, "/images/org/group/group_img.png"), class: "col-4", style: "object-fit: contain;" %>
         </div>
         <div class="row mt-3">
             <div class="col-6 offset-3">

@@ -1,6 +1,11 @@
 <div class="card">
     <div class="card-body">
         <h1><span class="fa fa-map-marker"></span> <%= gettext("Edit %{name} Location", name: @partner.name) %></h1>
-        <%= render "_form.html", Map.put(assigns, :action, Routes.org_panel_partner_org_panel_partner_location_path(@conn, :update, @partner, @location)) %>
+        <div class="d-flex">
+            <div class="col-8 p-0">
+                <%= render "_form.html", Map.put(assigns, :action, Routes.org_panel_partner_org_panel_partner_location_path(@conn, :update, @partner, @location)) %>
+            </div>
+            <%= img_tag Routes.static_path(@conn, "/images/org/group/loc.png"), class: "col-4", style: "object-fit: contain;" %>
+        </div>
     </div>
 </div>
