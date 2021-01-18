@@ -16,9 +16,7 @@ defmodule OmegaBraveraWeb.PartnerUserRegisterController do
 
   def create(conn, %{"organization_member" => member_params}) do
     case Accounts.create_partner_user_and_organization(member_params) do
-      {:ok, %{partner_user: partner_user}} ->
-        OmegaBravera.Accounts.Notifier.partner_user_signup_email(partner_user)
-
+      {:ok, _} ->
         conn
         |> put_flash(
           :info,

@@ -1786,9 +1786,17 @@ defmodule OmegaBravera.Accounts do
   end
 
   def create_partner_user_and_organization(attrs) do
-    %OrganizationMember{organization: nil, partner_user: nil}
-    |> OrganizationMember.register_changeset(attrs)
-    |> Repo.insert()
+    result =
+      %OrganizationMember{organization: nil, partner_user: nil}
+      |> OrganizationMember.register_changeset(attrs)
+      |> Repo.insert()
+
+    case result do
+      {:ok, %{partner_user: partner_user}} ->
+        Notifier.partner_user_signup_email(partner_user)
+      _ -> :ok
+    end
+    result
   end
 
   def update_partner_user(partner_user, attrs) do

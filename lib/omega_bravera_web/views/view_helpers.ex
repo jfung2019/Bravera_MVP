@@ -1,5 +1,7 @@
 defmodule OmegaBraveraWeb.ViewHelpers do
   import Phoenix.HTML.Tag, only: [tag: 2]
+  import Phoenix.HTML.Form, only: [datetime_select: 3]
+  import Phoenix.HTML, only: [sigil_e: 2]
   alias OmegaBravera.Accounts.{User, AdminUser, PartnerUser}
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Fundraisers.NGO
@@ -213,4 +215,20 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     do: Number.Delimit.number_to_delimited(number, precision: 0)
 
   def number_with_commas(number), do: Number.Delimit.number_to_delimited(number)
+
+  @doc """
+  Datetime Builder
+  """
+  def registration_date_builder(form, field, opts \\ []) do
+    now_year = DateTime.utc_now().year
+    three_years = now_year + 2
+    builder = fn b ->
+      ~e"""
+      Date: <%= b.(:year, [prompt: "", options: now_year..three_years]) %> / <%= b.(:month, [prompt: ""]) %> / <%= b.(:day, [prompt: ""]) %>
+      Time: <%= b.(:hour, [prompt: ""]) %> : <%= b.(:minute, [prompt: ""]) %>
+      """
+    end
+
+    datetime_select(form, field, [builder: builder] ++ opts)
+  end
 end

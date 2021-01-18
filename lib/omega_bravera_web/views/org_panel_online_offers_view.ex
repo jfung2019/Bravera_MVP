@@ -3,17 +3,6 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersView do
 
   alias OmegaBravera.Offers.OfferChallenge
 
-  def registration_date_builder(form, field, opts \\ []) do
-    builder = fn b ->
-      ~e"""
-      Date: <%= b.(:year, [prompt: "", options: 2019..2021]) %> / <%= b.(:month, [prompt: ""]) %> / <%= b.(:day, [prompt: ""]) %>
-      Time: <%= b.(:hour, [prompt: ""]) %> : <%= b.(:minute, [prompt: ""]) %>
-      """
-    end
-
-    datetime_select(form, field, [builder: builder] ++ opts)
-  end
-
   def completed_challenges(offer_challenges) do
     stats =
       Enum.reduce(offer_challenges, %{active: 0, complete: 0, expired: 0}, fn offer_challenge,
