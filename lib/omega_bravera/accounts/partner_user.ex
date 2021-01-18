@@ -24,7 +24,7 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     |> cast(attrs, [:username, :email, :password, :email_verified, :accept_terms])
     |> validate_required([:username, :email, :password])
     |> validate_length(:username, min: 3)
-    |> unique_constraint(:email)
+    |> unique_constraint(:email, name: :partner_user_email_index)
     |> validate_format(:email, ~r/\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i)
     |> add_email_activation_token()
     |> validate_password()
