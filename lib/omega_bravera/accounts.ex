@@ -1805,6 +1805,8 @@ defmodule OmegaBravera.Accounts do
     |> Repo.update()
   end
 
+  def delete_partner_user(partner_user), do: Repo.delete(partner_user)
+
   def get_partner_user!(id), do: Repo.get!(PartnerUser, id)
 
   def partner_user_auth(username, password) do

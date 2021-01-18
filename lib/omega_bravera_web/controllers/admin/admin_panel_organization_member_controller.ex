@@ -94,7 +94,8 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
 
   def delete(conn, %{"id" => id}) do
     organization_member = Accounts.get_organization_member!(id)
-    {:ok, _organization_member} = Accounts.delete_organization_member(organization_member)
+    partner_user = Accounts.get_partner_user!(organization_member.partner_user_id)
+    {:ok, _partner_user} = Accounts.delete_partner_user(partner_user)
 
     conn
     |> put_flash(:info, "Organization member deleted successfully.")
