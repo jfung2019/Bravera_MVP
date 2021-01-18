@@ -6,7 +6,6 @@
                     <h1><%= gettext("Log in") %></h1>
                     <ul class="nav">
                         <li class="nav-item"><%= link gettext("Register"), to: Routes.partner_user_register_path(@conn, :new), class: "nav-link" %></li>
-                        <li class="nav-item"><%= link gettext("Forgot Password"), to: Routes.partner_user_password_path(@conn, :new), class: "nav-link" %></li>
                     </ul>
                 </div>
                 <%= form_for @conn, Routes.partner_user_session_path(@conn, :create), fn f -> %>
@@ -19,6 +18,7 @@
                     <%= label f, :password, class: "form-label" %>
                     <%= password_input f, :password, class: "form-control", required: true %>
                     <%= error_tag f, :password %>
+                    <%= link gettext("Forgot Password"), to: Routes.partner_user_password_path(@conn, :new) %>
                 </div>
                 <%= submit gettext("Log in"), class: "btn btn-primary" %>
                 <% end %>

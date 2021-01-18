@@ -12,7 +12,9 @@ defmodule OmegaBravera.Repo.Migrations.MoveBusinessTypeToOrg do
 
     flush()
 
-    Repo.update_all(from(o in Organization, where: is_nil(o.business_type)), set: [business_type: "Service"])
+    Repo.update_all(from(o in Organization, where: is_nil(o.business_type)),
+      set: [business_type: "Service"]
+    )
 
     alter table("partner_users") do
       remove :business_type

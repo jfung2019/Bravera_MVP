@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
 
   alias OmegaBravera.Accounts
 
-  @create_attrs %{name: "some name"}
+  @create_attrs %{name: "some name", business_type: "type"}
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 

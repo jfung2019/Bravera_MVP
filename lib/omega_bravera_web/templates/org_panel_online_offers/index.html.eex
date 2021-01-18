@@ -19,7 +19,7 @@
           <th><%= gettext("Status") %></th>
           <th><%= gettext("Date Created") %></th>
           <th><%= gettext("Last Edited") %></th>
-          <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
+          <th class="text-center"><%= gettext("Actions") %></th>
         </tr>
       </thead>
       <tbody>

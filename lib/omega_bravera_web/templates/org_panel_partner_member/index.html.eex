@@ -20,7 +20,7 @@
           <th><%= gettext("Name") %></th>
           <% end %>
           <th><%= gettext("Alias") %></th>
-          <th class="text-center"><strong><%= gettext("Action") %></strong></th>
+          <th class="text-center"><%= gettext("Action") %></th>
         </tr>
         </thead>
         <tbody>

@@ -555,7 +555,7 @@ defmodule OmegaBravera.AccountsTest do
   describe "organization" do
     alias OmegaBravera.Accounts.Organization
 
-    @valid_attrs %{name: "some name"}
+    @valid_attrs %{name: "some name", business_type: "type"}
     @update_attrs %{name: "some updated name"}
     @invalid_attrs %{name: nil}
 
@@ -621,7 +621,7 @@ defmodule OmegaBravera.AccountsTest do
     alias OmegaBravera.Accounts.OrganizationMember
 
     def organization_member_fixture(attrs \\ %{}) do
-      {:ok, organization} = Accounts.create_organization(%{name: "name"})
+      {:ok, organization} = Accounts.create_organization(%{name: "name", business_type: "type"})
 
       {:ok, %{create_organization_member: organization_member}} =
         Accounts.create_organization_partner_user(organization.id, %{
@@ -646,7 +646,7 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "create_organization_member/1 with valid data creates a organization_member" do
-      assert {:ok, organization} = Accounts.create_organization(%{name: "name"})
+      assert {:ok, organization} = Accounts.create_organization(%{name: "name", business_type: "type"})
 
       assert {:ok, %{create_organization_member: %OrganizationMember{}}} =
                Accounts.create_organization_partner_user(organization.id, %{
@@ -665,7 +665,7 @@ defmodule OmegaBravera.AccountsTest do
     test "update_organization_member/2 with valid data updates the organization_member" do
       organization_member = organization_member_fixture()
 
-      assert {:ok, %OrganizationMember{} = organization_member} =
+      assert {:ok, %OrganizationMember{}} =
                Accounts.update_organization_member(organization_member, @update_attrs)
     end
 

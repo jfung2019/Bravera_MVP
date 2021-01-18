@@ -108,16 +108,6 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
-    <br>
-    <small class="form-text text-muted">
-      <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward.)") %>
-    </small>
-    <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>
-    <%= error_tag f, :take_challenge %>
-  </div>
-
-  <div class="form-group">
     <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>
     <small class="form-text text-muted">
       <%= gettext("(‘Countdown’ or ‘deadline’ to claim the reward after it has been unlocked. Example: Steven earned a reward on 07:00am on 1st January that has an expiry of 10 days. On 11th January, at 06:59:59, the reward will expire and be removed from his rewards wallet. ") %>
@@ -126,6 +116,16 @@
     </small>
     <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
     <%= error_tag f, :redemption_days %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
+    <br>
+    <small class="form-text text-muted">
+      <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward.)") %>
+    </small>
+    <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>
+    <%= error_tag f, :take_challenge %>
   </div>
 
   <div id="enable_take_challenge_fields">

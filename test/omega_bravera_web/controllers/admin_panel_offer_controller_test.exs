@@ -118,7 +118,9 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
     end
 
     test "renders errors in update when data is invalid", %{conn: conn, offer: offer} do
-      conn = put(conn, Routes.admin_panel_offer_path(conn, :update, offer.slug), offer: @invalid_attrs)
+      conn =
+        put(conn, Routes.admin_panel_offer_path(conn, :update, offer.slug), offer: @invalid_attrs)
+
       assert html_response(conn, 200)
     end
 

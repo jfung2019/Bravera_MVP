@@ -29,6 +29,7 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     |> add_email_activation_token()
     |> validate_password()
     |> validate_acceptance(:accept_terms)
+    |> unique_constraint(:username)
   end
 
   def update_changeset(partner_user, attrs) do

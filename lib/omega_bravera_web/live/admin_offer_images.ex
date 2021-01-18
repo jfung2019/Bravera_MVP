@@ -34,7 +34,9 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
       {:ok, updated_offer} ->
         init_image_added = length(offer.images) < length(updated_offer.images)
         socket = assign(socket, :init_image_added, init_image_added)
-        {:noreply, redirect(socket, to: Routes.admin_panel_offer_path(socket, :show, updated_offer))}
+
+        {:noreply,
+         redirect(socket, to: Routes.admin_panel_offer_path(socket, :show, updated_offer))}
     end
   end
 end

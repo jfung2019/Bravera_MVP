@@ -26,7 +26,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
 
   describe "create organization_member" do
     test "redirects to show when data is valid", %{conn: conn} do
-      {:ok, organization} = Accounts.create_organization(%{name: "test2"})
+      {:ok, organization} = Accounts.create_organization(%{name: "test2", business_type: "test2"})
 
       conn =
         post(conn, Routes.admin_panel_organization_member_path(conn, :create),
@@ -48,7 +48,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      {:ok, organization} = Accounts.create_organization(%{name: "test2"})
+      {:ok, organization} = Accounts.create_organization(%{name: "test2", business_type: "test2"})
 
       conn =
         post(conn, Routes.admin_panel_organization_member_path(conn, :create),
@@ -78,8 +78,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
 
     test "redirects when data is valid", %{
       conn: conn,
-      organization_member: organization_member,
-      organization: organization
+      organization_member: organization_member
     } do
       conn =
         put(conn, Routes.admin_panel_organization_member_path(conn, :update, organization_member),
@@ -142,7 +141,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
   end
 
   defp create_organization_member(_) do
-    {:ok, organization} = Accounts.create_organization(%{name: "test"})
+    {:ok, organization} = Accounts.create_organization(%{name: "test", business_type: "test"})
 
     organization_member_params = %{
       username: "name",

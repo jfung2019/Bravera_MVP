@@ -4,39 +4,42 @@
             <div class="card-body">
                 <h1><%= gettext("Register") %></h1>
                 <%= form_for @changeset, Routes.partner_user_register_path(@conn, :create), fn f -> %>
+                <%= inputs_for f, :organization, fn org -> %>
                 <div class="mb-3">
-                    <%= label f, :business_type, class: "form-label" %>
-                    <%= text_input f, :business_type, class: add_error_class(f, :business_type, "form-control"), required: true %>
-                    <%= error_tag f, :business_type %>
+                    <%= label org, :business_type, class: "form-label" %>
+                    <%= text_input org, :business_type, class: add_error_class(f, :business_type, "form-control"), required: true %>
+                    <%= error_tag org, :business_type %>
+                </div>
+                <% end %>
+                <%= inputs_for f, :partner_user, fn p_user -> %>
+                <div class="mb-3">
+                    <%= label p_user, :username, class: "form-label" %>
+                    <%= text_input p_user, :username, class: add_error_class(f, :username, "form-control"), required: true %>
+                    <%= error_tag p_user, :username %>
                 </div>
                 <div class="mb-3">
-                    <%= label f, :username, class: "form-label" %>
-                    <%= text_input f, :username, class: add_error_class(f, :username, "form-control"), required: true %>
-                    <%= error_tag f, :username %>
+                    <%= label p_user, :email, class: "form-label" %>
+                    <%= email_input p_user, :email, class: add_error_class(f, :email, "form-control"), required: true %>
+                    <%= error_tag p_user, :email %>
                 </div>
                 <div class="mb-3">
-                    <%= label f, :email, class: "form-label" %>
-                    <%= email_input f, :email, class: add_error_class(f, :email, "form-control"), required: true %>
-                    <%= error_tag f, :email %>
-                </div>
-                <div class="mb-3">
-                    <%= label f, :password, class: "form-label" %>
-                    <%= password_input f, :password, class: add_error_class(f, :password, "form-control"), required: true %>
-                    <%= error_tag f, :password %>
-                    <%= link gettext("Forgot Password"), to: Routes.partner_user_password_path(@conn, :new) %>
+                    <%= label p_user, :password, class: "form-label" %>
+                    <%= password_input p_user, :password, class: add_error_class(f, :password, "form-control"), required: true %>
+                    <%= error_tag p_user, :password %>
                 </div>
                 <div class="form-group">
                     <div class="form-check">
-                        <%= checkbox f, :accept_terms, class: add_error_class(f, :accept_terms, "form-check-input"), required: true %>
-                        <%= label f, :accept_terms,  class: "form-check-label" do %>
+                        <%= checkbox p_user, :accept_terms, class: add_error_class(f, :accept_terms, "form-check-input"), required: true %>
+                        <%= label p_user, :accept_terms,  class: "form-check-label" do %>
                         <%= gettext("I accept the ") %>
                         <%= link gettext("Terms of Use"), to: "https://www.bravera.fit/terms", target: "_blank" %>
                         <%= gettext(" and ") %>
                         <%= link gettext("Privacy Policy"), to: "https://www.bravera.fit/privacy/", target: "_blank" %>
                         <% end %>
-                        <%= error_tag f, :accept_terms %>
+                        <%= error_tag p_user, :accept_terms %>
                     </div>
                 </div>
+                <% end %>
                 <div class="p-0 d-inline-block">
                     <%= submit "Register", class: "btn btn-primary" %>
                    <div class="ml-4 d-inline-block" style="vertical-align: middle;">

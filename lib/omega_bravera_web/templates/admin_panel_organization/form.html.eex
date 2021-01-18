@@ -11,7 +11,13 @@
         <%= error_tag f, :name %>
     </div>
 
-    <div class="mb-3">
+    <div class="form-group">
+        <%= label f, :business_type, class: "control-label" %>
+        <%= text_input f, :business_type, class: add_error_class(f, :vendor_id, "form-control") %>
+        <%= error_tag f, :business_type %>
+    </div>
+
+<div class="mb-3">
         <%= submit gettext("Submit"), class: "btn btn-primary" %>
     </div>
 <% end %>

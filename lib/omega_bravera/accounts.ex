@@ -794,7 +794,15 @@ defmodule OmegaBravera.Accounts do
   end
 
   def list_users_for_org(organization_id) do
-    # TODO
+    from(u in User,
+      left_join: m in OmegaBravera.Groups.Member,
+      on: u.id == m.user_id,
+      left_join: p in assoc(m, :partner),
+      where: p.organization_id == ^organization_id,
+      group_by: [u.id],
+      order_by: [desc: u.inserted_at]
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -1777,11 +1785,11 @@ defmodule OmegaBravera.Accounts do
     |> Repo.insert()
   end
 
-  def create_partner_user_and_organization(business_type, attrs \\ %{}) do
+  def create_partner_user_and_organization(org_params \\ %{}, attrs \\ %{}) do
     Multi.new()
     |> Multi.run(:create_partner_user, fn _repo, _ -> create_partner_user(attrs) end)
     |> Multi.run(:create_organization, fn _repo, %{create_partner_user: partner_user} ->
-      create_organization(%{"name" => "#{partner_user.username} Org.", "business_type" => business_type})
+      create_organization(Map.put(org_params, "name", "#{partner_user.username} Org."))
     end)
     |> Multi.run(:create_organization_member, fn _repo, result ->
       %{create_partner_user: partner_user, create_organization: organization} = result

@@ -36,9 +36,12 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
           to: Routes.admin_panel_organization_member_path(conn, :show, organization_member)
         )
 
-      {:error, :create_partner_user, %Ecto.Changeset{} = changeset, _} ->
+      {:error, _, _, _} ->
         organizations = Accounts.list_organization()
-        render(conn, "new.html", changeset: changeset, organizations: organizations)
+        changeset = Accounts.change_organization_member(%OrganizationMember{})
+        conn
+        |> put_flash(:error, "Failed to create partner user.")
+        |> render("new.html", changeset: changeset, organizations: organizations)
     end
   end
 

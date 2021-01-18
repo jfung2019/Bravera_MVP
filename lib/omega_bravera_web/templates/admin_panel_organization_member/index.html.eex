@@ -8,7 +8,6 @@
           <th><%= gettext("Organization Name") %></th>
           <th><%= gettext("Email") %></th>
           <th><%= gettext("Username") %></th>
-          <th><%= gettext("Business Type") %></th>
           <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
         </tr>
       </thead>
@@ -18,7 +17,6 @@
           <td><%= organization_member.organization.name %></td>
           <td><%= organization_member.partner_user.email %></td>
           <td><%= organization_member.partner_user.username %></td>
-          <td><%= organization_member.partner_user.business_type %></td>
           <td class="text-center">
             <span><%= link gettext("Details"), to: Routes.admin_panel_organization_member_path(@conn, :show, organization_member), class: "btn btn-primary" %></span>
             <span><%= link gettext("Edit"), to: Routes.admin_panel_organization_member_path(@conn, :edit, organization_member), class: "btn btn-warning btn-xs" %></span>

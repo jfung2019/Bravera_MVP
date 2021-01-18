@@ -1,46 +1,62 @@
 <%= form_for @changeset, @action, fn f -> %>
-  <div class="form-group">
-      <%= label f, :name, class: "control-label" %>
-      <small class="form-text text-muted"><%= gettext("(Your group name. Keep it short and simple. Hint: max 6 words is best)") %></small>
-      <%= text_input f, :name, class: add_error_class(f, :name, "form-control") %>
-      <%= error_tag f, :name %>
-  </div>
-  <div class="form-group">
-      <%= label f, :short_description, class: "control-label" %>
-      <small class="form-text text-muted"><%= gettext("(displayed on list of groups in the Bravera app. 5-10 words)") %></small>
-      <%= textarea f, :short_description, class: add_error_class(f, :short_description, "form-control"), data: [html: true] %>
-      <%= error_tag f, :short_description %>
-  </div>
-  <div class="form-group">
-      <%= label f, :introduction, class: "control-label" %>
-      <small class="form-text text-muted"><%= gettext("(longer introduction when people click to find out more. Up to 250 words)") %></small>
-      <%= textarea f, :introduction, class: add_error_class(f, :introduction, "form-control"), data: [html: true] %>
-      <%= error_tag f, :introduction %>
-  </div>
-  <div class="form-group">
-      <%= label f, :join_password, "Password to Join (leave blank to have open)", class: "control-label" %>
-      <small class="form-text text-muted"><%= gettext("(leave blank if you want a public / open group. Click here for more info)") %></small>
-      <%= text_input f, :join_password, class: add_error_class(f, :join_password, "form-control") %>
-      <%= error_tag f, :join_password %>
-  </div>
- <div class="form-group">
-     <%= label f, :email, "Enquiry Email", class: "control-label" %>
-     <small class="form-text text-muted">
-         <%= gettext("(only required if your group if ‘private’ and requires a ‘password’ to join. Confused? ") %>
-         <a href="#"><%= gettext("Click here") %></a>
-         <%= gettext(" for more information)") %></small>
-     <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
-     <%= error_tag f, :email %>
-  </div>
-  <div class="form-group">
-      <%= label f, :website %>
-      <%= text_input f, :website, class: add_error_class(f, :website, "form-control") %>
-      <%= error_tag f, :website %>
+    <div class="form-group">
+        <%= label f, :name, class: "control-label" %>
+        <small class="form-text text-muted"><%= gettext("(Your group name. Keep it short and simple. Hint: max 6 words is best)") %></small>
+        <%= text_input f, :name, class: add_error_class(f, :name, "form-control") %>
+        <%= error_tag f, :name %>
     </div>
-   <div class="form-group">
-      <%= label f, :phone %>
-      <%= text_input f, :phone, class: add_error_class(f, :phone, "form-control") %>
-      <%= error_tag f, :phone %>
+
+    <div class="form-group">
+        <%= label f, :short_description, class: "control-label" %>
+        <small class="form-text text-muted"><%= gettext("(displayed on list of groups in the Bravera app. 5-10 words)") %></small>
+        <%= textarea f, :short_description, class: add_error_class(f, :short_description, "form-control"), data: [html: true] %>
+        <%= error_tag f, :short_description %>
+    </div>
+
+    <div class="form-group">
+        <%= label f, :introduction, class: "control-label" %>
+        <small class="form-text text-muted"><%= gettext("(longer introduction when people click to find out more. Up to 250 words)") %></small>
+        <%= textarea f, :introduction, class: add_error_class(f, :introduction, "form-control"), data: [html: true] %>
+        <%= error_tag f, :introduction %>
+    </div>
+
+    <div class="form-check mb-3">
+        <%= checkbox f, :public_group, class: "form-check-input", id: "public_group_checkbox", checked: true %>
+        <%= label f, :public_group, gettext("Public Group"), class: "form-check-label" %>
+    </div>
+
+    <div id="private_group_fields" style="display: none;">
+        <div class="form-group">
+            <%= label f, :join_password, "Password to Join (leave blank to have open)", class: "control-label" %>
+            <small class="form-text text-muted"><%= gettext("(leave blank if you want a public / open group. Click here for more info)") %></small>
+            <%= text_input f, :join_password, class: add_error_class(f, :join_password, "form-control"), id: "join_password" %>
+            <%= error_tag f, :join_password %>
+        </div>
+
+        <div class="form-group">
+            <select id="group_contact_method" class="form-control mb-2">
+                <option><%= gettext("Enquiry Email") %></option>
+                <option><%= gettext("Website / Link") %></option>
+                <option><%= gettext("Phone / WhatsApp") %></option>
+            </select>
+            <div id="method_email" style="display: none;">
+                <small class="form-text text-muted">
+                    <%= gettext("(only required if your group if ‘private’ and requires a ‘password’ to join. Confused? ") %>
+                    <a href="#"><%= gettext("Click here") %></a>
+                    <%= gettext(" for more information)") %>
+                </small>
+                <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
+                <%= error_tag f, :email %>
+            </div>
+            <div id="method_website" style="display: none;">
+                <%= text_input f, :website, class: add_error_class(f, :website, "form-control") %>
+                <%= error_tag f, :website %>
+            </div>
+            <div id="method_phone" style="display: none;">
+                <%= text_input f, :phone, class: add_error_class(f, :phone, "form-control") %>
+                <%= error_tag f, :phone %>
+            </div>
+        </div>
     </div>
 
     <div class="form-check mb-3">
@@ -48,5 +64,5 @@
         <%= label f, :live, gettext("Live Group"), class: "form-check-label" %>
     </div>
 
-  <%= submit gettext("Submit"), class: "btn btn-primary" %>
+    <%= submit gettext("Submit"), class: "btn btn-primary" %>
 <% end %>

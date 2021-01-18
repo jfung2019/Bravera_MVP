@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.OrgPanelPointsController do
   alias OmegaBravera.{Points, Accounts}
 
   def new(conn, _) do
-    users = Accounts.list_users()
+    users = Accounts.list_users_for_org(get_session(conn, :organization_id))
     changeset = Points.change_point(%Points.Point{})
     render(conn, "new.html", changeset: changeset, users: users)
   end

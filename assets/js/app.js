@@ -29,6 +29,7 @@ import "./init_html_editor";
 import "./donations";
 import "./payments";
 import "./offer_form";
+import "./group_form"
 
 Dropzone.autoDiscover = false;
 const Hooks = {
