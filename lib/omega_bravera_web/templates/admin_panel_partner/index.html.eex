@@ -6,6 +6,14 @@
 			<small class="text-muted"><%= gettext("Get started by creating your first group.") %></small><br>
 			<small class="text-muted"><%= gettext("If you need help") %>, <a href="#"><%= gettext("click here") %></a></small>
 		</div>
+		<%= form_for @conn, Routes.admin_panel_partner_path(@conn, :index), [method: :get, class: "form-inline"], fn f -> %>
+			<div class="form-check mb-2 mr-sm-2">
+				<%= checkbox f, "q[live_is_true]", value: get_in(@conn.params, ["q", "live_is_true"]), class: "form-check-input" %>
+				<%= label f, "q[live_is_true]", gettext("Live"), class: "form-check-label" %>
+			</div>
+
+			<%= submit "Search", class: "btn btn-primary" %>
+		<% end %>
 		<table class="table mt-3 table-striped">
 			<thead>
 			<tr>
