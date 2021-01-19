@@ -115,15 +115,6 @@
     <%= img_tag Routes.static_path(@conn, "/images/org/offer/points_needed.png"), class: "col-4", style: "object-fit: contain;" %>
   </div>
 
-  <div class="form-group">
-    <%= label f, :offer_type, gettext("Offline Offer"), class: "control-label" %>
-    <small class="form-text text-muted">
-      <%= gettext("(Hint: “Offline” Means claim by QR code. Reward is claimed by scanning a QR code. ")%>
-      <a href="#"><%= gettext("Click here") %></a>
-      <%= gettext(" for hints and help.)") %>
-    </small>
-  </div>
-
   <div class="d-flex">
     <div class="form-group col-8 p-0">
       <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>

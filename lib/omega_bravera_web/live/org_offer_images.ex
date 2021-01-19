@@ -32,10 +32,13 @@ defmodule OmegaBraveraWeb.OrgOfferImages do
   def handle_event("save-images", _, %{assigns: %{images: images, offer: offer}} = socket) do
     case Offers.update_offer(offer, %{images: images}) do
       {:ok, updated_offer} ->
-        {:noreply,
-         assign(socket,
-           first_time_adding_image: length(offer.images) < 1 and length(updated_offer.images) > 0
-         )}
+        case updated_offer.offer_type do
+          :online ->
+            {:noreply, redirect(socket, to: Routes.org_panel_partner_path(socket, :index))}
+
+          _ ->
+            {:noreply, redirect(socket, to: Routes.org_panel_offer_reward_path(socket, :new))}
+        end
     end
   end
 end

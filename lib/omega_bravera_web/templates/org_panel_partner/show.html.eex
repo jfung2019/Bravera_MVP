@@ -82,7 +82,11 @@
 				<%= select f, :offer_id, Enum.map(@offers, fn o -> {o.name, o.id} end), class: "form-control chosen" %>
 			</div>
 			<div class="col">
-				<%= submit gettext("Attach"), class: "btn btn-primary my-3" %>
+				<%= if length(@offers) > 0 do %>
+					<%= submit gettext("Add"), class: "btn btn-primary my-3" %>
+				<% else %>
+					<%= submit gettext("Add"), class: "btn btn-primary my-3", disabled: true %>
+				<% end %>
 			</div>
 			<% end %>
 		</div>
@@ -95,12 +99,13 @@
 		<div class="modal-content">
 			<div class="modal-body">
 				<strong><%= gettext("There are two types of offers.") %></strong>
+				<br><br>
 				<strong><%= gettext("Online Offer") %></strong>
 				<p><%= gettext("Create an offer where rewards are claimed online (ecommerce, online lucky draw etc).") %></p>
-				<br/>
+				<br>
 				<strong><%= gettext("Offline Offer") %></strong>
 				<p><%= gettext("An offer claimed ‘in-person’ by having a QR code scanned and verified before a reward is issued.") %></p>
-				<br/>
+				<br>
 				<p><%= gettext("What kind would you like to create today?") %></p>
 			</div>
 			<div class="modal-footer">
@@ -135,6 +140,6 @@
 	</div>
 </div>
 
-<%= if @first_group do %>
-<script>$("#first_group").modal("show");</script>
+<%= if @first_group and length(@partner.offer_partners) == 0 and is_nil(@partner.location) do %>
+	<script>$("#first_group").modal("show");</script>
 <% end %>

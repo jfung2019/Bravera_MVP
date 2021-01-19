@@ -94,15 +94,6 @@
     <%= img_tag Routes.static_path(@conn, "/images/org/offer/points_needed.png"), class: "col-4", style: "object-fit: contain;" %>
   </div>
 
-  <div class="form-group">
-    <%= label f, :offer_type, gettext("Online Offer"), class: "control-label" %>
-    <small class="form-text text-muted">
-      <%= gettext("(Hint: “Online” Means you’re offering something to be claimed ‘online’ e.g. a discount on a 3rd party ecommerce website (e.g. shopify) or entries to a prize draw on an online form (e.g. Google forms, Typeform, Survey Monkey. ")%>
-      <a href="#"><%= gettext("Click here") %></a>
-      <%= gettext(" for hints and help.)") %>
-    </small>
-  </div>
-
   <div class="d-flex">
     <div class="form-group col-8 p-0">
       <%= label f, :online_url, gettext("Redirect URL Address"), class: "control-label" %>
