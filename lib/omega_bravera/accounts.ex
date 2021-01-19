@@ -1794,8 +1794,11 @@ defmodule OmegaBravera.Accounts do
     case result do
       {:ok, %{partner_user: partner_user}} ->
         Notifier.partner_user_signup_email(partner_user)
-      _ -> :ok
+
+      _ ->
+        :ok
     end
+
     result
   end
 
@@ -2046,7 +2049,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   def list_organization_members_by_partner_user(partner_user_id) do
-    from(o in OrganizationMember, where: o.partner_user_id == ^partner_user_id, select: o.organization_id)
+    from(o in OrganizationMember,
+      where: o.partner_user_id == ^partner_user_id,
+      select: o.organization_id
+    )
     |> Repo.all()
   end
 

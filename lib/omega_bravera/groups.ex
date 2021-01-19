@@ -160,7 +160,7 @@ defmodule OmegaBravera.Groups do
 
   def create_org_partner(attrs \\ %{}) do
     %Partner{}
-    |> Partner.changeset(attrs)
+    |> Partner.org_changeset(attrs)
     |> Repo.insert()
   end
 

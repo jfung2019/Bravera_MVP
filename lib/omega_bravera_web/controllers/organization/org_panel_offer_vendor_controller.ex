@@ -6,9 +6,16 @@ defmodule OmegaBraveraWeb.OrgPanelOfferVendorController do
     Offers.OfferVendor
   }
 
-  def index(conn, params) do
+  def index(%{assigns: %{organization_id: org_id}} = conn, params) do
     results = Offers.paginate_offer_vendors(get_session(conn, :organization_id), params)
-    render(conn, "index.html", offer_vendors: results.offer_vendors, paginate: results.paginate)
+
+    first_vendor = Offers.created_first_vendor?(org_id)
+
+    render(conn, "index.html",
+      offer_vendors: results.offer_vendors,
+      paginate: results.paginate,
+      first_vendor: first_vendor
+    )
   end
 
   def new(conn, _params) do

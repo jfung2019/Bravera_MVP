@@ -14,7 +14,9 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
     render(conn, "new.html", offers: offers, changeset: changeset)
   end
 
-  def create(%{assigns: %{organization_id: org_id}} = conn, %{"offer_reward" => offer_reward_params}) do
+  def create(%{assigns: %{organization_id: org_id}} = conn, %{
+        "offer_reward" => offer_reward_params
+      }) do
     case Offers.create_offer_reward(offer_reward_params) do
       {:ok, _sendgrid_email} ->
         conn
@@ -39,7 +41,10 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
     )
   end
 
-  def update(%{assigns: %{organization_id: org_id}} = conn, %{"id" => id, "offer_reward" => offer_reward_params}) do
+  def update(%{assigns: %{organization_id: org_id}} = conn, %{
+        "id" => id,
+        "offer_reward" => offer_reward_params
+      }) do
     offer_reward = Offers.get_offer_reward!(id)
 
     case Offers.update_offer_reward(offer_reward, offer_reward_params) do

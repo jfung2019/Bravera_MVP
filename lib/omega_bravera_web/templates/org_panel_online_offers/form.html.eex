@@ -22,7 +22,7 @@
         <%= label f, :start_date, "Start Date", class: "control-label" %>
         <br/>
         <small class="text-muted form-text"><%= gettext("(Offer will be live after the start date displayed below.)") %></small>
-        <%= registration_date_builder(f, :start_date, class: "form-control") %>
+        <%= datetime_builder(f, :start_date, class: "form-control") %>
         <%= error_tag f, :start_date %>
       </div>
 
@@ -34,7 +34,7 @@
           <a href="#"><%= gettext("Click here") %></a>
           <%= gettext(" to learn more.)") %>
         </small>
-        <%= registration_date_builder(f, :end_date, class: "form-control") %>
+        <%= datetime_builder(f, :end_date, class: "form-control") %>
         <%= error_tag f, :end_date %>
       </div>
     </div>

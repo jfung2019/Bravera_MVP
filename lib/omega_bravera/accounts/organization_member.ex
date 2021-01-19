@@ -26,7 +26,9 @@ defmodule OmegaBravera.Accounts.OrganizationMember do
     |> cast_assoc(:organization, with: &Organization.changeset/2, required: true)
   end
 
-  defp update_org(%{changes: %{partner_user: %{valid?: true, changes: %{username: username}}}} = changeset) do
+  defp update_org(
+         %{changes: %{partner_user: %{valid?: true, changes: %{username: username}}}} = changeset
+       ) do
     %{changeset | params: put_in(changeset.params, ["organization", "name"], "#{username} Org.")}
   end
 

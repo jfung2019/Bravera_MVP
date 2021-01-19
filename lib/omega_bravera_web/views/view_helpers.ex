@@ -219,9 +219,10 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   @doc """
   Datetime Builder
   """
-  def registration_date_builder(form, field, opts \\ []) do
+  def datetime_builder(form, field, opts \\ []) do
     now_year = DateTime.utc_now().year
     three_years = now_year + 2
+
     builder = fn b ->
       ~e"""
       Date: <%= b.(:year, [prompt: "", options: now_year..three_years]) %> / <%= b.(:month, [prompt: ""]) %> / <%= b.(:day, [prompt: ""]) %>

@@ -1093,6 +1093,17 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
+  def created_first_vendor?(organization_id) do
+    # only 1 offer vendor belongs to the organization
+    # that vendor is not attached to any offer
+    from(ov in OfferVendor,
+      left_join: o in assoc(ov, :offers),
+      where: is_nil(o.id) and ov.organization_id == ^organization_id,
+      select: count(ov.id) == 1
+    )
+    |> Repo.one()
+  end
+
   @doc """
   paginate offer vendors based on login user type
   """

@@ -54,5 +54,22 @@ defmodule OmegaBravera.Groups.Partner do
   def org_changeset(partner, attrs) do
     changeset(partner, attrs)
     |> validate_required([:organization_id])
+    |> validate_enquiry_method()
+  end
+
+  defp validate_enquiry_method(changeset) do
+    with password when is_binary(password) <- get_field(changeset, :join_password),
+         nil <- get_field(changeset, :email),
+         nil <- get_field(changeset, :website),
+         nil <- get_field(changeset, :phone) do
+      error = "Must fill out either an email, website, or phone number when group is private."
+      changeset
+      |> add_error(:email, error)
+      |> add_error(:website, error)
+      |> add_error(:phone, error)
+    else
+     _ ->
+      changeset
+    end
   end
 end

@@ -34,7 +34,7 @@
         <%= label f, :public_group, gettext("Public Group"), class: "form-check-label" %>
     </div>
 
-    <div id="private_group_fields" style="display: none;">
+    <div id="private_group_fields" class="d-none">
         <div class="d-flex">
             <div class="form-group col-8 p-0">
                 <%= label f, :join_password, "Password to Join (leave blank to have open)", class: "control-label" %>
@@ -50,24 +50,19 @@
             <small class="form-text text-muted">
                 <%= gettext("(This allows others to request access. You can choose email, phone / whatsapp, or a link e.g. Webpage, Facebook group, Instagram etc.)") %>
             </small>
-            <div id="method_email" style="display: none;">
+            <div id="method_email" class="d-none">
                 <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
                 <%= error_tag f, :email %>
             </div>
-            <div id="method_website" style="display: none;">
+            <div id="method_website" class="d-none">
                 <%= text_input f, :website, class: add_error_class(f, :website, "form-control") %>
                 <%= error_tag f, :website %>
             </div>
-            <div id="method_phone" style="display: none;">
+            <div id="method_phone" class="d-none">
                 <%= text_input f, :phone, class: add_error_class(f, :phone, "form-control") %>
                 <%= error_tag f, :phone %>
             </div>
         </div>
-    </div>
-
-    <div class="form-check mb-3">
-        <%= checkbox f, :live, class: "form-check-input" %>
-        <%= label f, :live, gettext("Live Group"), class: "form-check-label" %>
     </div>
 
     <%= submit gettext("Submit"), class: "btn btn-primary" %>

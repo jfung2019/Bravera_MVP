@@ -22,7 +22,7 @@ defmodule OmegaBravera.Offers.Offer do
     field :external_terms_url, :string
     field :accept_terms_text, :string, default: "I accept the waiver & release of liability"
     field :offer_percent, :float
-    field :hidden, :boolean, default: false
+    field :hidden, :boolean, default: true
     field :redemption_days, :integer
     field :offer_type, Ecto.Enum, values: [:in_store, :online], default: :in_store
     field :take_challenge, :boolean, default: true

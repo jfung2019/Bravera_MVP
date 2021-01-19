@@ -58,6 +58,6 @@
   </div>
 </div>
 
-<%= if length(@offer_vendors) == 1 do %>
+<%= if @first_vendor do %>
 <script>$("#first_vendor").modal("show");</script>
 <% end %>

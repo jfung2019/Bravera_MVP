@@ -61,6 +61,6 @@
   </div>
 </div>
 
-<%= if length(@offer_rewards) == 1 do %>
+<%= if length(@offer_rewards) == 1 and @paginate.current_page == 1 do %>
 <script>$("#first_reward").modal("show");</script>
 <% end %>

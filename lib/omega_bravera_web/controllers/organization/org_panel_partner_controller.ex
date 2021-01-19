@@ -29,8 +29,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
     do: render(conn, "new.html", changeset: Groups.change_partner(%Groups.Partner{}))
 
   def create(%{assigns: %{organization_id: org_id}} = conn, %{"partner" => partner_params}) do
-    partner_params =
-      Map.put(partner_params, "organization_id", org_id)
+    partner_params = Map.put(partner_params, "organization_id", org_id)
 
     case Groups.create_org_partner(partner_params) do
       {:ok, partner} ->
