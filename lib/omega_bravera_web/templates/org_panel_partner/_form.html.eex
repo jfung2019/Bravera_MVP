@@ -1,32 +1,32 @@
 <%= form_for @changeset, @action, fn f -> %>
     <div class="d-flex">
-        <div class="form-group col-8 p-0">
+        <div class="form-group col-9 p-0">
             <%= label f, :name, class: "control-label" %>
             <small class="form-text text-muted"><%= gettext("(Your group name. Keep it short and simple. Hint: max 6 words is best)") %></small>
             <%= text_input f, :name, class: add_error_class(f, :name, "form-control") %>
             <%= error_tag f, :name %>
         </div>
-        <%= img_tag Routes.static_path(@conn, "/images/org/group/group_name.png"), class: "col-4", style: "object-fit: contain;" %>
+        <%= img_tag Routes.static_path(@conn, "/images/org/group/group_name.png"), class: "col-3", style: "object-fit: contain;" %>
     </div>
 
     <div class="d-flex">
-        <div class="form-group col-8 p-0">
+        <div class="form-group col-9 p-0">
             <%= label f, :short_description, class: "control-label" %>
             <small class="form-text text-muted"><%= gettext("(displayed on list of groups in the Bravera app. 5-10 words)") %></small>
             <%= textarea f, :short_description, class: add_error_class(f, :short_description, "form-control"), data: [html: true] %>
             <%= error_tag f, :short_description %>
         </div>
-        <%= img_tag Routes.static_path(@conn, "/images/org/group/short_des.png"), class: "col-4", style: "object-fit: contain;" %>
+        <%= img_tag Routes.static_path(@conn, "/images/org/group/short_des.png"), class: "col-3", style: "object-fit: contain;" %>
     </div>
 
     <div class="d-flex">
-        <div class="form-group col-8 p-0">
+        <div class="form-group col-9 p-0">
             <%= label f, :introduction, class: "control-label" %>
             <small class="form-text text-muted"><%= gettext("(longer introduction when people click to find out more. Up to 250 words)") %></small>
             <%= textarea f, :introduction, class: add_error_class(f, :introduction, "form-control"), data: [html: true] %>
             <%= error_tag f, :introduction %>
         </div>
-        <%= img_tag Routes.static_path(@conn, "/images/org/group/intro.png"), class: "col-4", style: "object-fit: contain;" %>
+        <%= img_tag Routes.static_path(@conn, "/images/org/group/intro.png"), class: "col-3", style: "object-fit: contain;" %>
     </div>
 
     <div class="form-check mb-3">
@@ -36,13 +36,13 @@
 
     <div id="private_group_fields" class="d-none">
         <div class="d-flex">
-            <div class="form-group col-8 p-0">
+            <div class="form-group col-9 p-0">
                 <%= label f, :join_password, "Password to Join (leave blank to have open)", class: "control-label" %>
                 <small class="form-text text-muted"><%= gettext("(Enter a password to share with people you wish to join the group. You can edit / update this anytime here.)") %></small>
                 <%= text_input f, :join_password, class: add_error_class(f, :join_password, "form-control"), id: "join_password" %>
                 <%= error_tag f, :join_password %>
             </div>
-            <%= img_tag Routes.static_path(@conn, "/images/org/group/group_password.png"), class: "col-4", style: "object-fit: contain;" %>
+            <%= img_tag Routes.static_path(@conn, "/images/org/group/group_password.png"), class: "col-3", style: "object-fit: contain;" %>
         </div>
 
         <div class="form-group">
