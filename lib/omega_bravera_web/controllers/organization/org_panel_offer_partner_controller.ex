@@ -2,11 +2,11 @@ defmodule OmegaBraveraWeb.OrgPanelOfferPartnerController do
   use OmegaBraveraWeb, :controller
   alias OmegaBravera.Groups
 
-  def create(conn, %{"partner_id" => partner_id} = params) do
+  def create(conn, params) do
     case Groups.create_offer_partner(params) do
       {:ok, partner} ->
         conn
-        |> redirect(to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, partner))
+        |> redirect(to: Routes.live_path(conn, OmegaBraveraWeb.AdminPartnerImages, partner))
     end
   end
 
