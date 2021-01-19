@@ -2046,7 +2046,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   def list_organization_members_by_partner_user(partner_user_id) do
-    from(o in OrganizationMember, where: o.partner_user_id == ^partner_user_id)
+    from(o in OrganizationMember, where: o.partner_user_id == ^partner_user_id, select: o.organization_id)
     |> Repo.all()
   end
 
