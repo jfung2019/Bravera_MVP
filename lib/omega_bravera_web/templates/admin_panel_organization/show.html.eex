@@ -4,13 +4,13 @@
     <ul>
 
       <li>
-        <strong>Name:</strong>
+        <strong><%= gettext("Name") %>:</strong>
         <%= @organization.name %>
       </li>
 
     </ul>
 
-    <span><%= link "Edit", to: Routes.admin_panel_organization_path(@conn, :edit, @organization), class: "btn btn-warning btn-xs" %></span>
-    <span><%= link "Back", to: Routes.admin_panel_organization_path(@conn, :index), class: "btn btn-secondary" %></span>
+    <span><%= link gettext("Edit"), to: Routes.admin_panel_organization_path(@conn, :edit, @organization), class: "btn btn-warning btn-xs" %></span>
+    <span><%= link gettext("Back"), to: Routes.admin_panel_organization_path(@conn, :index), class: "btn btn-secondary" %></span>
   </div>
 </div>
