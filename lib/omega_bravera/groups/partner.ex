@@ -63,13 +63,14 @@ defmodule OmegaBravera.Groups.Partner do
          nil <- get_field(changeset, :website),
          nil <- get_field(changeset, :phone) do
       error = "Must fill out either an email, website, or phone number when group is private."
+
       changeset
       |> add_error(:email, error)
       |> add_error(:website, error)
       |> add_error(:phone, error)
     else
-     _ ->
-      changeset
+      _ ->
+        changeset
     end
   end
 end

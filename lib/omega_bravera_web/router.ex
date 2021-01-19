@@ -189,6 +189,9 @@ defmodule OmegaBraveraWeb.Router do
         pipe_through [:admin_liveview]
         live "/offers/:slug/images", AdminOfferImages
       end
+
+      resources "/group_approvals", AdminPanelGroupApprovalController, only: [:show]
+      post "/group_approvals", AdminPanelGroupApprovalController, :approve
     end
 
     scope "/" do

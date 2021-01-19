@@ -75,12 +75,12 @@
               </li>
               <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_organization_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_organization_path(@conn, :index), class: "nav-link" do %>
-                <span class="fa fa-building"></span> <%= gettext("Organization") %>
+                <span class="fa fa-building"></span> <%= gettext("Organizations") %>
                 <% end %>
               </li>
               <li class="nav-item <%= in_current_path(@conn, Routes.admin_panel_organization_member_path(@conn, :index)) %>">
                 <%= link to: Routes.admin_panel_organization_member_path(@conn, :index), class: "nav-link" do %>
-                <span class="fa fa-id-badge"></span> <%= gettext("Organization Member") %>
+                <span class="fa fa-id-badge"></span> <%= gettext("Organization Members") %>
                 <% end %>
               </li>
             </ul>

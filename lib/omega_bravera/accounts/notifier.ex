@@ -4,7 +4,8 @@ defmodule OmegaBravera.Accounts.Notifier do
     Notifications,
     Accounts.User,
     Accounts.Credential,
-    Accounts.PartnerUser
+    Accounts.PartnerUser,
+    Groups.GroupApproval
   }
 
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
@@ -196,6 +197,25 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(partner_user.email)
+    |> Mail.send()
+  end
+
+  def notify_customer_group_email(%GroupApproval{status: :approved}, email) do
+    Email.build()
+    |> Email.put_template("af72c512-278e-49b9-b2d5-3cb9ee4eb7f6")
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(email)
+    |> Mail.send()
+  end
+
+  def notify_customer_group_email(%GroupApproval{status: :denied} = group_approval, email) do
+    Email.build()
+    |> Email.put_template("6d8fc814-3e9a-473a-bed8-687381320bd9")
+    |> Email.add_substitution("-firstName-", group_approval.message)
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(email)
     |> Mail.send()
   end
 end

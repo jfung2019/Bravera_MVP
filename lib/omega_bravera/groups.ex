@@ -8,7 +8,8 @@ defmodule OmegaBravera.Groups do
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
 
-  alias OmegaBravera.Groups.{Partner, Member, OfferPartner, ChatMessage}
+  alias OmegaBravera.Groups.{Partner, Member, OfferPartner, ChatMessage, GroupApproval}
+  alias OmegaBravera.Accounts.Notifier
 
   @doc """
   Returns the list of partner.
@@ -80,7 +81,7 @@ defmodule OmegaBravera.Groups do
       }
     )
     |> Repo.one!()
-    |> Repo.preload([:location, :offers])
+    |> Repo.preload([:location, :offers, :organization])
   end
 
   @doc """
@@ -162,6 +163,26 @@ defmodule OmegaBravera.Groups do
     %Partner{}
     |> Partner.org_changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_group_approval(attrs \\ %{}) do
+    case GroupApproval.changeset(%GroupApproval{}, attrs) do
+      %{valid?: true} = changeset ->
+        group_approval =
+          changeset
+          |> Ecto.Changeset.apply_changes()
+
+#        Notifier.notify_customer_group_email(group_approval)
+
+        {:ok, group_approval}
+
+      changeset ->
+        {:error, changeset}
+    end
+  end
+
+  def change_group_approval(%GroupApproval{} = group_approval, attr \\ %{}) do
+    GroupApproval.changeset(group_approval, attr)
   end
 
   @doc """

@@ -1,0 +1,65 @@
+<div class="card">
+    <div class="card-body">
+        <h1><span class="fa fa-group"></span> <%= @group.name %></h1>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td><%= gettext("Organization Name") %></td>
+                    <td><%= @group.organization.name %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Organization Business Type") %></td>
+                    <td><%= @group.organization.business_type %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Intro") %></td>
+                    <td><%= {:safe, @group.introduction} %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Short Description") %></td>
+                    <td><%= {:safe, @group.short_description} %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Email") %></td>
+                    <td><%= @group.email %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Website") %></td>
+                    <td><%= @group.website %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Phone") %></td>
+                    <td><%= @group.phone %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Location") %></td>
+                    <td>
+                        <%= if !is_nil(@group.location) do %>
+                        <p class="mb-0"><%= @group.location.address %></p>
+                        <p class="mb-0"><%= "(#{@group.location.latitude}, #{@group.location.longitude})" %></p>
+                        <% end %>
+                    </td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Images") %></td>
+                    <td>
+                        <%= for image <- @group.images do %>
+                        <%= img_tag image %>
+                        <% end %>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <%= form_for @changeset, Routes.admin_panel_group_approval_path(@conn, :approve), fn f -> %>
+            <%= hidden_input f, :group_id, value: @group.id %>
+            <div class="form-group">
+                <%= label f, :message, class: "control-label" %>
+                <%= textarea f, :message, class: add_error_class(f, :join_password, "form-control") %>
+                <%= error_tag f, :message %>
+            </div>
+            <div class="d-flex">
+                <%= submit gettext("Submit"), class: "btn btn-primary mr-4" %>
+            </div>
+        <% end %>
+    </div>
+</div>

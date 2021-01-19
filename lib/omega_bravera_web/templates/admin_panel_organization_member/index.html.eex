@@ -8,6 +8,8 @@
           <th><%= gettext("Organization Name") %></th>
           <th><%= gettext("Email") %></th>
           <th><%= gettext("Username") %></th>
+          <th><%= gettext("Date Created") %></th>
+          <th><%= gettext("Last Edited") %></th>
           <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
         </tr>
       </thead>
@@ -17,6 +19,8 @@
           <td><%= organization_member.organization.name %></td>
           <td><%= organization_member.partner_user.email %></td>
           <td><%= organization_member.partner_user.username %></td>
+          <td><%= render_datetime(organization_member.inserted_at) %></td>
+          <td><%= render_datetime(organization_member.updated_at) %></td>
           <td class="text-center">
             <span><%= link gettext("Details"), to: Routes.admin_panel_organization_member_path(@conn, :show, organization_member), class: "btn btn-primary" %></span>
             <span><%= link gettext("Edit"), to: Routes.admin_panel_organization_member_path(@conn, :edit, organization_member), class: "btn btn-warning btn-xs" %></span>
