@@ -187,11 +187,9 @@ defmodule OmegaBravera.Offers do
       ** (Ecto.NoResultsError)
 
   """
-  def get_offer!(id), do: Repo.get!(Offer, id)
-
   def get_offer!(id, preloads \\ []) do
     from(o in Offer, where: o.id == ^id, preload: ^preloads)
-    |> Repo.one()
+    |> Repo.one!()
   end
 
   @doc """

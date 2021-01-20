@@ -15,10 +15,10 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordController do
   end
 
   def create(conn, %{"partner_user" => %{"email" => email}}) do
-    case Accounts.get_partner_user_by_email(email) do
+    case Accounts.get_partner_user_by_email_or_username(email) do
       {:error, _} ->
         conn
-        |> put_flash(:error, gettext("There's no account associated with that email"))
+        |> put_flash(:error, gettext("There's no account associated with that username or email"))
         |> render("new.html",
           changeset: Accounts.change_partner_user(%PartnerUser{}),
           action: Routes.partner_user_password_path(conn, :create)
@@ -31,7 +31,7 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordController do
         |> put_flash(
           :info,
           gettext(
-            "You will receive a link in your %{email} inbox, soon, to set your new password.",
+            "You will receive a link in your inbox, soon, to set your new password.",
             email: email
           )
         )

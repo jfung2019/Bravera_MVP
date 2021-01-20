@@ -1826,10 +1826,13 @@ defmodule OmegaBravera.Accounts do
   @doc """
   Gets a partner user by their email address.
   """
-  @spec get_partner_user_by_email(String.t()) ::
+  @spec get_partner_user_by_email_or_username(String.t()) ::
           {:ok, PartnerUser.t()} | {:error, :user_does_not_exist}
-  def get_partner_user_by_email(email) do
-    case Repo.get_by(PartnerUser, email: email) do
+  def get_partner_user_by_email_or_username(email_or_username) do
+    user =
+      from(p in PartnerUser, where: p.email == ^email_or_username or p.username == ^email_or_username, limit: 1)
+      |> Repo.one()
+    case user do
       nil ->
         {:error, :user_does_not_exist}
 

@@ -24,7 +24,7 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordControllerTest do
         })
 
       assert html_response(conn, 200) =~
-               "You will receive a link in your #{partner_user.email} inbox, soon, to set your new password."
+               "You will receive a link in your inbox, soon, to set your new password."
 
       %{reset_token: reset_token, reset_token_created: reset_token_created} =
         Accounts.get_partner_user!(user_id)
@@ -39,7 +39,7 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordControllerTest do
           partner_user: %{email: "noexist@test.com"}
         })
 
-      assert html_response(conn, 200) =~ "There&#39;s no account associated with that email"
+      assert html_response(conn, 200) =~ "There&#39;s no account associated with that username or email"
     end
   end
 

@@ -12,8 +12,8 @@
         </div>
           <%= form_for @changeset, @action, fn f -> %>
           <div class="form-group">
-            <%= label f, :email, gettext("Email"), class: "control-label" %>
-            <%= email_input f, :email, class: "form-control", required: "" %>
+            <%= label f, :email, gettext("Enter your account username or email"), class: "control-label" %>
+            <%= text_input f, :email, class: "form-control", required: "" %>
             <%= error_tag f, :email %>
           </div>
 

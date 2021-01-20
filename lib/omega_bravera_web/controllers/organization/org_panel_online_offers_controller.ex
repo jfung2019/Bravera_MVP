@@ -8,7 +8,6 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
     Accounts,
     Offers,
     Offers.Offer,
-    Fundraisers.NgoOptions,
     Offers.OfferChallenge
   }
 
@@ -45,8 +44,6 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
         |> redirect(to: Routes.live_path(conn, OmegaBraveraWeb.OrgOfferImages, offer))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        vendors = Offers.list_offer_vendors()
-
         conn
         |> render("new.html", changeset: changeset)
     end

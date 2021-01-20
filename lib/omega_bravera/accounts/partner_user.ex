@@ -26,7 +26,7 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     |> validate_length(:username, min: 3)
     |> unique_constraint(:email, name: :partner_user_email_index)
     |> EctoCommons.EmailValidator.validate_email(:email)
-    |> validate_format(:username, ~r/\A[a-zA-Z0-9]+\z/)
+    |> validate_format(:username, ~r/\A[a-zA-Z0-9_]+\z/)
     |> add_email_activation_token()
     |> validate_password()
     |> validate_acceptance(:accept_terms)
