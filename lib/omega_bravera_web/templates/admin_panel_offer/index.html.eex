@@ -32,7 +32,7 @@
       <%= for offer <- @offers do %>
         <tr>
           <td><%= offer.name %></td>
-          <td><%= offer.vendor.vendor_id %></td>
+          <td><%= if !is_nil(offer.vendor), do: offer.vendor.vendor_id %></td>
           <td><%= offer.unique_participants %></td>
           <td><%= length(offer.offer_challenges) %></td>
           <td class="small"><%= raw completed_challenges(offer.offer_challenges) %></td>

@@ -19,11 +19,6 @@ defmodule OmegaBraveraWeb.Router do
     plug Guardian.AuthPipeline
   end
 
-  pipeline :partner_user_authenticated do
-    plug Guardian.AuthPipeline
-    plug OmegaBraveraWeb.PartnerUserLoggedIn
-  end
-
   pipeline :admin_authenticated do
     plug Guardian.AuthPipeline
     plug OmegaBraveraWeb.AdminLoggedIn
@@ -190,8 +185,8 @@ defmodule OmegaBraveraWeb.Router do
         live "/offers/:slug/images", AdminOfferImages
       end
 
-      resources "/group_approvals", AdminPanelGroupApprovalController, only: [:show]
-      post "/group_approvals", AdminPanelGroupApprovalController, :approve
+      resources "/group_approvals", AdminPanelGroupApprovalController, only: [:show, :create]
+      resources "/offer_approvals", AdminPanelOfferApprovalController, only: [:show, :create]
     end
 
     scope "/" do

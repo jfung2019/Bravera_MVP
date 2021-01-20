@@ -31,6 +31,7 @@
                     <%= img_tag Routes.static_path(@conn, "/images/admin_logo.png"), class: "img-fluid py-2 bg-white shadow rounded-top", style: "object-fit: contain;" %>
                     <div class="admin-nav-menu py-3 rounded-bottom">
                         <ul class="nav flex-column">
+                            <li class="px-4 py-2 text-white"><%= "Logged in as #{@current_partner_user.username}" %></li>
                             <li class="nav-item <%= in_current_path(@conn, Routes.org_panel_dashboard_path(@conn, :index)) %>">
                                 <%= link to: Routes.org_panel_dashboard_path(@conn, :index), class: "nav-link" do %>
                                 <span class="fa fa-dashboard"></span> <%= gettext("Dashboard") %>

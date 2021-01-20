@@ -5,7 +5,8 @@ defmodule OmegaBravera.Accounts.Notifier do
     Accounts.User,
     Accounts.Credential,
     Accounts.PartnerUser,
-    Groups.GroupApproval
+    Groups.GroupApproval,
+    Offers.OfferApproval
   }
 
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
@@ -200,7 +201,7 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Mail.send()
   end
 
-  def notify_customer_group_email(%GroupApproval{status: :approved}, email) do
+  def notify_customer_group_email(email, %GroupApproval{status: :approved}) do
     Email.build()
     |> Email.put_template("af72c512-278e-49b9-b2d5-3cb9ee4eb7f6")
     |> Email.put_from("admin@bravera.co", "Bravera")
@@ -209,10 +210,29 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Mail.send()
   end
 
-  def notify_customer_group_email(%GroupApproval{status: :denied} = group_approval, email) do
+  def notify_customer_group_email(email, %GroupApproval{status: :denied} = group_approval) do
     Email.build()
     |> Email.put_template("6d8fc814-3e9a-473a-bed8-687381320bd9")
-    |> Email.add_substitution("-firstName-", group_approval.message)
+    |> Email.add_substitution("-message-", group_approval.message)
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(email)
+    |> Mail.send()
+  end
+
+  def notify_customer_offer_email(email, %OfferApproval{status: :approved}) do
+    Email.build()
+    |> Email.put_template("2516ad29-1350-4353-a8db-9f72bf240e01")
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(email)
+    |> Mail.send()
+  end
+
+  def notify_customer_offer_email(email, %OfferApproval{status: :denied} = offer_approval) do
+    Email.build()
+    |> Email.put_template("6ea1749a-6d02-499d-aabd-ec9dae873aa4")
+    |> Email.add_substitution("-message-", offer_approval.message)
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(email)

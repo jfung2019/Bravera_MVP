@@ -2158,4 +2158,32 @@ defmodule OmegaBravera.Accounts do
   def change_organization_member(%OrganizationMember{} = organization_member, attrs \\ %{}) do
     OrganizationMember.changeset(organization_member, attrs)
   end
+
+  def get_partner_user_email_by_group(group_id) do
+    from(pu in PartnerUser,
+      left_join: om in OrganizationMember,
+      on: pu.id == om.partner_user_id,
+      left_join: p in OmegaBravera.Groups.Partner,
+      on: om.organization_id == p.organization_id,
+      where: p.id == ^group_id,
+      order_by: [asc: pu.inserted_at],
+      limit: 1,
+      select: pu.email
+    )
+    |> Repo.one()
+  end
+
+  def get_partner_user_email_by_offer(offer_id) do
+    from(pu in PartnerUser,
+      left_join: om in OrganizationMember,
+      on: pu.id == om.partner_user_id,
+      left_join: o in OmegaBravera.Offers.Offer,
+      on: om.organization_id == o.organization_id,
+      where: o.id == ^offer_id,
+      order_by: [asc: pu.inserted_at],
+      limit: 1,
+      select: pu.email
+    )
+    |> Repo.one()
+  end
 end

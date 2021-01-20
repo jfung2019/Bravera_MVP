@@ -16,13 +16,14 @@ defmodule OmegaBravera.Offers do
     OfferChallengeTeamInvitation,
     OfferChallengeTeam,
     OfferRedeem,
-    OfferChallengeActivitiesM2m
+    OfferChallengeActivitiesM2m,
+    OfferApproval
   }
 
   alias OmegaBravera.Points
 
   alias OmegaBravera.Activity.ActivityAccumulator
-  alias OmegaBravera.Accounts.{User, AdminUser}
+  alias OmegaBravera.Accounts.{User, AdminUser, Notifier}
 
   def buy_offer_with_points(offer, user) do
     Multi.new()
@@ -187,6 +188,11 @@ defmodule OmegaBravera.Offers do
 
   """
   def get_offer!(id), do: Repo.get!(Offer, id)
+
+  def get_offer!(id, preloads \\ []) do
+    from(o in Offer, where: o.id == ^id, preload: ^preloads)
+    |> Repo.one()
+  end
 
   @doc """
   Gets an offer by the offer slug.
@@ -469,6 +475,30 @@ defmodule OmegaBravera.Offers do
     |> DateTime.to_naive()
     |> Timex.to_datetime("Asia/Hong_Kong")
     |> Timex.to_datetime("Etc/UTC")
+  end
+
+  def create_offer_approval(attrs \\ %{}) do
+    case OfferApproval.changeset(%OfferApproval{}, attrs) do
+      %{valid?: true} = changeset ->
+        offer_approval =
+          changeset
+          |> Ecto.Changeset.apply_changes()
+
+        get_offer!(offer_approval.offer_id)
+        |> update_offer(%{hidden: false})
+
+        OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_approval.offer_id)
+        |> Notifier.notify_customer_offer_email(offer_approval)
+
+        {:ok, changeset}
+
+      changeset ->
+        {:error, changeset}
+    end
+  end
+
+  def change_offer_approval(%OfferApproval{} = offer_approval, attr \\ %{}) do
+    OfferApproval.changeset(offer_approval, attr)
   end
 
   @doc """

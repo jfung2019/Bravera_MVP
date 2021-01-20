@@ -1,0 +1,85 @@
+<div class="card">
+    <div class="card-body">
+        <h1><span class="fa fa-trophy"></span> <%= @offer.name %></h1>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td><%= gettext("Organization Name") %></td>
+                    <td><%= @offer.organization.name %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Organization Business Type") %></td>
+                    <td><%= @offer.organization.business_type %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Offer Type") %></td>
+                    <td><%= @offer.offer_type %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Description") %></td>
+                    <td><%= {:safe, @offer.desc} %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Terms and Conditions") %></td>
+                    <td><%= {:safe, @offer.toc} %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Target") %></td>
+                    <td><%= @offer.target %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Images") %></td>
+                    <td>
+                        <%= for image <- @offer.images do %>
+                        <%= img_tag image %>
+                        <% end %>
+                    </td>
+                </tr>
+                <%= if @offer.offer_type == :in_store do %>
+                <tr>
+                    <td><%= gettext("Claim ID") %></td>
+                    <td><%= @offer.vendor.id %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Location") %></td>
+                    <td><%= @offer.location.name_en %></td>
+                </tr>
+                <% else %>
+                <tr>
+                    <td><%= gettext("Redirect URL Address") %></td>
+                    <td><%= @offer.online_url %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Online Promotion / Discount code") %></td>
+                    <td><%= @offer.online_code %></td>
+                </tr>
+                <% end %>
+                <tr>
+                    <td><%= gettext("Rewards") %></td>
+                    <td>
+                        <%= for reward <- @offer.offer_rewards do %>
+                        <p><%= "name: #{reward.name}, revenue: #{if is_nil(reward.value), do: 0, else: reward.value}" %></p>
+                        <% end%>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <%= form_for @changeset, Routes.admin_panel_offer_approval_path(@conn, :create), fn f -> %>
+        <%= hidden_input f, :offer_id, value: @offer.id %>
+        <div class="form-group">
+            <%= label f, :message, class: "control-label" %>
+            <%= textarea f, :message, class: add_error_class(f, :message, "form-control") %>
+            <%= error_tag f, :message %>
+        </div>
+        <div class="form-group">
+            <%= radio_button f, :status, :approved %> <%= label f, :approved, gettext("Approve"), class: "control-label" %>
+            <br>
+            <%= radio_button f, :status, :denied %> <%= label f, :denied, gettext("Deny"), class: "control-label" %>
+            <%= error_tag f, :status %>
+        </div>
+        <div class="d-flex">
+            <%= submit gettext("Submit"), class: "btn btn-primary mr-4" %>
+        </div>
+        <% end %>
+    </div>
+</div>

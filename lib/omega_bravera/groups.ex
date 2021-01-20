@@ -172,7 +172,11 @@ defmodule OmegaBravera.Groups do
           changeset
           |> Ecto.Changeset.apply_changes()
 
-#        Notifier.notify_customer_group_email(group_approval)
+        get_partner!(group_approval.group_id)
+        |> update_partner(%{live: true})
+
+        OmegaBravera.Accounts.get_partner_user_email_by_group(group_approval.group_id)
+        |> Notifier.notify_customer_group_email(group_approval)
 
         {:ok, group_approval}
 

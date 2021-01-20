@@ -50,12 +50,18 @@
                 </tr>
             </tbody>
         </table>
-        <%= form_for @changeset, Routes.admin_panel_group_approval_path(@conn, :approve), fn f -> %>
+        <%= form_for @changeset, Routes.admin_panel_group_approval_path(@conn, :create), fn f -> %>
             <%= hidden_input f, :group_id, value: @group.id %>
             <div class="form-group">
                 <%= label f, :message, class: "control-label" %>
-                <%= textarea f, :message, class: add_error_class(f, :join_password, "form-control") %>
+                <%= textarea f, :message, class: add_error_class(f, :message, "form-control") %>
                 <%= error_tag f, :message %>
+            </div>
+            <div class="form-group">
+                <%= radio_button f, :status, :approved %> <%= label f, :approved, gettext("Approve"), class: "control-label" %>
+                <br>
+                <%= radio_button f, :status, :denied %> <%= label f, :denied, gettext("Deny"), class: "control-label" %>
+                <%= error_tag f, :status %>
             </div>
             <div class="d-flex">
                 <%= submit gettext("Submit"), class: "btn btn-primary mr-4" %>
