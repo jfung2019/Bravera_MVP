@@ -8,6 +8,7 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     field :email, :string
     field :username, :string
     field :password, :string, virtual: true
+    field :password_confirmation, :string, virtual: true
     field :password_hash, :string
     field :email_verified, :boolean, default: false
     field :email_activation_token, :string
@@ -21,16 +22,17 @@ defmodule OmegaBravera.Accounts.PartnerUser do
   @doc false
   def changeset(partner_user, attrs) do
     partner_user
-    |> cast(attrs, [:username, :email, :password, :email_verified, :accept_terms])
-    |> validate_required([:username, :email, :password])
+    |> cast(attrs, [:username, :email, :password, :password_confirmation, :email_verified, :accept_terms])
+    |> validate_required([:username, :email, :password, :password_confirmation])
     |> validate_length(:username, min: 3)
     |> unique_constraint(:email, name: :partner_user_email_index)
     |> EctoCommons.EmailValidator.validate_email(:email)
     |> validate_format(:username, ~r/\A[a-zA-Z0-9_]+\z/)
     |> add_email_activation_token()
-    |> validate_password()
     |> validate_acceptance(:accept_terms)
     |> unique_constraint(:username)
+    |> validate_confirmation(:password)
+    |> validate_password()
   end
 
   def update_changeset(partner_user, attrs) do

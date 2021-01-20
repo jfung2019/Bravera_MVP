@@ -3,25 +3,17 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts.Credential, Fixtures, Repo}
+  alias OmegaBravera.{Accounts.Credential, Repo}
 
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
-  @all_offers_images_query """
-  query {
-    allOffers {
-      takeChallenge
-      image
-      images
-    }
-  }
-  """
   @get_offers_images_query_by_slug """
   query ($slug: String!){
     getOffer(slug: $slug) {
       takeChallenge
       images
       image
+      logo
     }
   }
   """
@@ -49,27 +41,6 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
     {:ok, offer: offer, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}
   end
 
-  test "images should be a list of urls and image should be the first image from that url in all offers",
-       %{
-         conn: conn
-       } do
-    response = post(conn, "/api", %{query: @all_offers_images_query})
-    %{id: offer_id} = insert(:offer, %{target: 15, images: ["url1", "url2"], image: "url3"})
-    %{id: partner_id} = Fixtures.partner_fixture()
-    OmegaBravera.Groups.create_offer_partner(%{partner_id: partner_id, offer_id: offer_id})
-
-    assert %{
-             "data" => %{
-               "allOffers" => [
-                 %{
-                   "image" => "url3",
-                   "images" => ["url1", "url2"]
-                 }
-               ]
-             }
-           } = json_response(response, 200)
-  end
-
   test "images should be a list of urls and image should be the first image from that url in a particular offer",
        %{
          conn: conn,
@@ -84,7 +55,8 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
     assert %{
              "data" => %{
                "getOffer" => %{
-                 "image" => "url3",
+                 "image" => "url1",
+                 "logo" => "url1",
                  "images" => ["url1", "url2"]
                }
              }
