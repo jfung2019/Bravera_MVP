@@ -6,7 +6,7 @@
   <% end %>
 
   <div class="d-flex">
-    <div class="form-group col-8 p-0">
+    <div class="form-group col-9 p-0">
       <%= label f, :vendor_id, gettext("Claim ID"), class: "control-label" %>
       <small class="form-text text-muted">
         <%= gettext("(Think of this like a ‘PIN’ that verifies reward claims. A ‘Claim ID’ is linked to each offer and a reward. If you already have a CLAIM ID created for this offer/reward, select from the box below. If not, click ‘Create Claim ID‘.)") %>
@@ -16,7 +16,7 @@
             %>
       <%= error_tag f, :vendor_id %>
     </div>
-    <%= img_tag Routes.static_path(@conn, "/images/org/offer/claim_id_qr.png"), class: "col-4", style: "object-fit: contain;" %>
+    <%= img_tag Routes.static_path(@conn, "/images/org/offer/claim_id_qr.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
   <div class="form-group">
@@ -27,7 +27,7 @@
   </div>
 
   <div class="d-flex">
-    <div class="col-8 p-0">
+    <div class="col-9 p-0">
       <div class="form-group">
         <%= label f, :name, class: "control-label" %>
         <small class="text-muted form-text">
@@ -59,11 +59,11 @@
         <%= error_tag f, :end_date %>
       </div>
     </div>
-    <%= img_tag Routes.static_path(@conn, "/images/org/offer/offer_name_date.png"), class: "col-4", style: "object-fit: contain;" %>
+    <%= img_tag Routes.static_path(@conn, "/images/org/offer/offer_name_date.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
   <div class="d-flex">
-    <div class="form-group col-8 p-0">
+    <div class="form-group col-9 p-0">
       <%= label f, :toc, "Terms and Conditions", class: "control-label" %>
       <small class="text-muted form-text">
         <%= gettext("(Add important details about your offer and reward. For help and examples ") %>
@@ -72,11 +72,11 @@
       <%= textarea f, :toc, class: "form-control", rows: 3, data: [html: true] %>
       <%= error_tag f, :toc %>
     </div>
-    <%= img_tag Routes.static_path(@conn, "/images/org/offer/terms.png"), class: "col-4", style: "object-fit: contain;" %>
+    <%= img_tag Routes.static_path(@conn, "/images/org/offer/terms.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
   <div class="d-flex">
-    <div class="form-group col-8 p-0">
+    <div class="form-group col-9 p-0">
       <%= label f, "Description", class: "control-label" %>
       <small class="text-mute form-text">
         <%= gettext("(Introduce your offer in more detail. ") %>
@@ -86,11 +86,11 @@
       <%= textarea f, :desc, class: "form-control", rows: 3, data: [html: true] %>
       <%= error_tag f, :desc %>
     </div>
-    <%= img_tag Routes.static_path(@conn, "/images/org/offer/des.png"), class: "col-4", style: "object-fit: contain;" %>
+    <%= img_tag Routes.static_path(@conn, "/images/org/offer/des.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
   <div class="d-flex">
-    <div class="form-group col-8 p-0">
+    <div class="form-group col-9 p-0">
       <%= label f, :target, "Target (if km challenge: enter KMs. if Segment challenge: enter Segment ID.)", class: "control-label" %>
       <small class="text-mute form-text">
         <%= gettext("(IMPORTANT: 10 points = 1 kilometer or approx. 1,350 steps. Each kilometer your group members walk/run generates 10 points. So, if you’d like someone to walk/run 20 kilometers, add ‘200’ points. If below you turn challenges off, group members will need to buy with the equivalent points. Confused? Don’t worry,  ") %>
@@ -112,11 +112,11 @@
       </table>
       <%= error_tag f, :target %>
     </div>
-    <%= img_tag Routes.static_path(@conn, "/images/org/offer/points_needed.png"), class: "col-4", style: "object-fit: contain;" %>
+    <%= img_tag Routes.static_path(@conn, "/images/org/offer/points_needed.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
   <div class="d-flex">
-    <div class="form-group col-8 p-0">
+    <div class="form-group col-9 p-0">
       <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>
       <small class="form-text text-muted">
         <%= gettext("(‘Countdown’ or ‘deadline’ to claim the reward after it has been unlocked. Example: Steven earned a reward on 07:00am on 1st January that has an expiry of 10 days. On 11th January, at 06:59:59, the reward will expire and be removed from his rewards wallet. ") %>
@@ -126,11 +126,11 @@
       <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
       <%= error_tag f, :redemption_days %>
     </div>
-    <%= img_tag Routes.static_path(@conn, "/images/org/offer/claim_countdown.png"), class: "col-4", style: "object-fit: contain;" %>
+    <%= img_tag Routes.static_path(@conn, "/images/org/offer/claim_countdown.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
   <div class="d-flex">
-    <div class="form-group col-8 p-0">
+    <div class="form-group col-9 p-0">
       <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
       <br>
       <small class="form-text text-muted">
@@ -139,7 +139,7 @@
       <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>
       <%= error_tag f, :take_challenge %>
     </div>
-    <%= img_tag Routes.static_path(@conn, "/images/org/offer/allow_challenge.png"), class: "col-4", style: "object-fit: contain;" %>
+    <%= img_tag Routes.static_path(@conn, "/images/org/offer/allow_challenge.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
   <div id="enable_take_challenge_fields">

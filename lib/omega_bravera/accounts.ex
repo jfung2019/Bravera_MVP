@@ -1893,6 +1893,12 @@ defmodule OmegaBravera.Accounts do
     |> Repo.update()
   end
 
+  def update_partner_user_password(partner_user, attrs) do
+    partner_user
+    |> PartnerUser.password_update_changeset(attrs)
+    |> Repo.update()
+  end
+
   def delete_partner_user(partner_user), do: Repo.delete(partner_user)
 
   def get_partner_user!(id), do: Repo.get!(PartnerUser, id)
@@ -1970,7 +1976,7 @@ defmodule OmegaBravera.Accounts do
   """
   def set_partner_user_password(token, params) do
     with {:ok, partner_user} <- get_partner_user_by_reset_password_token(token),
-         {:ok, partner_user} <- update_partner_user(partner_user, params) do
+         {:ok, partner_user} <- update_partner_user_password(partner_user, params) do
       partner_user
       |> PartnerUser.reset_password_changeset(%{
         reset_token: nil,

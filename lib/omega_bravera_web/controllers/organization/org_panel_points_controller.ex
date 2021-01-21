@@ -20,7 +20,7 @@ defmodule OmegaBraveraWeb.OrgPanelPointsController do
       {:ok, _point} ->
         conn
         |> put_flash(:info, "Successfully created point!")
-        |> redirect(to: Routes.org_panel_points_path(conn, :index))
+        |> redirect(to: Routes.org_panel_points_path(conn, :new))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         users = Accounts.list_users()

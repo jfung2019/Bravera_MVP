@@ -105,8 +105,8 @@ defmodule OmegaBravera.Points do
             ok_tuple
           end
 
-        error_tuple ->
-          error_tuple
+        {:error, changeset} ->
+          Repo.rollback(changeset)
       end
     end)
   end
