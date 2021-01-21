@@ -15,14 +15,17 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     field :name, non_null(:string)
     field :slug, non_null(:string)
     field :toc, non_null(:string)
+
     field :logo, :string,
-          resolve: fn _parent, %{source: %{images: images}} ->
-            {:ok, Enum.at(images, 0)}
-          end
+      resolve: fn _parent, %{source: %{images: images}} ->
+        {:ok, Enum.at(images, 0)}
+      end
+
     field :image, :string,
-          resolve: fn _parent, %{source: %{images: images}} ->
-            {:ok, Enum.at(images, 0)}
-          end
+      resolve: fn _parent, %{source: %{images: images}} ->
+        {:ok, Enum.at(images, 0)}
+      end
+
     field :images, non_null(list_of(:string))
     field :target, non_null(:integer)
     field :end_date, non_null(:date)

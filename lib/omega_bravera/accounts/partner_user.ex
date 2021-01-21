@@ -22,7 +22,14 @@ defmodule OmegaBravera.Accounts.PartnerUser do
   @doc false
   def changeset(partner_user, attrs) do
     partner_user
-    |> cast(attrs, [:username, :email, :password, :password_confirmation, :email_verified, :accept_terms])
+    |> cast(attrs, [
+      :username,
+      :email,
+      :password,
+      :password_confirmation,
+      :email_verified,
+      :accept_terms
+    ])
     |> validate_required([:username, :email, :password, :password_confirmation])
     |> validate_length(:username, min: 3)
     |> unique_constraint(:email, name: :partner_user_email_index)

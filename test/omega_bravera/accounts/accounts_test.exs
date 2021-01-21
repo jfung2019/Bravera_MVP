@@ -621,7 +621,8 @@ defmodule OmegaBravera.AccountsTest do
     alias OmegaBravera.Accounts.OrganizationMember
 
     def organization_member_fixture(attrs \\ %{}) do
-      {:ok, organization} = Accounts.create_organization(Map.merge(attrs, %{name: "name", business_type: "type"}))
+      {:ok, organization} =
+        Accounts.create_organization(Map.merge(attrs, %{name: "name", business_type: "type"}))
 
       {:ok, %{create_organization_member: organization_member}} =
         Accounts.create_organization_partner_user(organization.id, %{

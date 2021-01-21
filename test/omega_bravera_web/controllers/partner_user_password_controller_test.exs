@@ -39,7 +39,8 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordControllerTest do
           partner_user: %{email: "noexist@test.com"}
         })
 
-      assert html_response(conn, 200) =~ "There&#39;s no account associated with that username or email"
+      assert html_response(conn, 200) =~
+               "There&#39;s no account associated with that username or email"
     end
   end
 

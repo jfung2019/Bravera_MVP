@@ -1,6 +1,46 @@
 <div class="card">
     <div class="card-body">
         <h1><span class="fa fa-dashboard"></span> <%= gettext("Dashboard") %></h1>
+        <div class="row">
+            <div class="col-6 offset-3">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><%= gettext("Total Members (across all groups)") %></td>
+                            <td><%= @dashboard.members %></td>
+                        </tr>
+                        <tr>
+                            <td><%= gettext("Total Distance") %></td>
+                            <td><%= @dashboard.total_distance %></td>
+                        </tr>
+                        <tr>
+                            <td><%= gettext("Distance this week") %></td>
+                            <td><%= @dashboard.distance_this_week %></td>
+                        </tr>
+                        <tr>
+                            <td><%= gettext("Total Points Available") %></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><%= gettext("Total Groups") %></td>
+                            <td><%= @dashboard.groups %></td>
+                        </tr>
+                        <tr>
+                            <td><%= gettext("Total Offers") %></td>
+                            <td><%= @dashboard.offers %></td>
+                        </tr>
+                        <tr>
+                            <td><%= gettext("Total Rewards Unlocked") %></td>
+                            <td><%= @dashboard.unlocked_rewards %></td>
+                        </tr>
+                        <tr>
+                            <td><%= gettext("Total Claimed Rewards (Offline)") %></td>
+                            <td><%= @dashboard.claimed_rewards %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 

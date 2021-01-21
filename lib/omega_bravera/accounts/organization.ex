@@ -8,6 +8,9 @@ defmodule OmegaBravera.Accounts.Organization do
     field :business_type, :string
     field :member_count, :integer, virtual: true
 
+    has_many :groups, OmegaBravera.Groups.Partner
+    has_many :offers, OmegaBravera.Offers.Offer
+
     timestamps()
   end
 

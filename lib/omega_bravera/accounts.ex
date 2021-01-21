@@ -793,6 +793,37 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @doc """
+  Generates data for the dashboard.
+  """
+  @spec organization_dashboard(String.t()) :: map()
+  def organization_dashboard(organization_id) do
+    now = Timex.now()
+    beginning_of_week = Timex.beginning_of_week(now)
+    end_of_week = Timex.end_of_week(now)
+    from(o in Organization,
+      where: o.id == ^organization_id,
+      left_join: g in assoc(o, :groups),
+      left_join: of in assoc(o, :offers),
+      left_join: m in assoc(g, :members),
+      left_join: a in OmegaBravera.Activity.ActivityAccumulator,
+      on: m.user_id == a.user_id,
+      left_join: oc in assoc(of, :offer_challenges),
+      left_join: ofr in assoc(oc, :offer_redeems),
+      select: %{
+        groups: fragment("TO_CHAR(?, '999,999')", count(g.id)),
+        offers: fragment("TO_CHAR(?, '999,999')", count(of.id)),
+        members: fragment("TO_CHAR(?, '999,999')", count(m.user_id, :distinct)),
+        total_distance: fragment("TO_CHAR(?, '999,999 KM')", count(a.distance)),
+        distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", filter(count(a.distance), a.start_date >= ^beginning_of_week and a.end_date <= ^end_of_week)),
+        unlocked_rewards: fragment("TO_CHAR(?, '999,999')", filter(count(oc.id), oc.status == "complete")),
+        claimed_rewards: fragment("TO_CHAR(?, '999,999')", filter(count(ofr.id), ofr.status == "redeemed"))
+      }
+    )
+    |> Repo.one()
+  end
+
+  @spec list_users_for_org(String.t()) :: [User.t()]
   def list_users_for_org(organization_id) do
     from(u in User,
       left_join: m in OmegaBravera.Groups.Member,
@@ -1830,8 +1861,12 @@ defmodule OmegaBravera.Accounts do
           {:ok, PartnerUser.t()} | {:error, :user_does_not_exist}
   def get_partner_user_by_email_or_username(email_or_username) do
     user =
-      from(p in PartnerUser, where: p.email == ^email_or_username or p.username == ^email_or_username, limit: 1)
+      from(p in PartnerUser,
+        where: p.email == ^email_or_username or p.username == ^email_or_username,
+        limit: 1
+      )
       |> Repo.one()
+
     case user do
       nil ->
         {:error, :user_does_not_exist}
