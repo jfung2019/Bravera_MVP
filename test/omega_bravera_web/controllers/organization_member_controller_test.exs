@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
-  use OmegaBraveraWeb.ConnCase
+  use OmegaBraveraWeb.ConnCase, async: true
 
   alias OmegaBravera.Accounts
 
@@ -33,6 +33,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
           organization_member: %{
             username: "name",
             email: "iu@email.com",
+            password_confirmation: "123456",
             password: "123456",
             business_type: "type",
             accept_terms: true,
@@ -86,6 +87,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
             username: "name2",
             email: "iu@email.com",
             password: "123456",
+            password_confirmation: "123456",
             business_type: "type",
             accept_terms: true
           }
@@ -147,6 +149,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
       username: "name",
       email: "iu@email.com",
       password: "123456",
+      password_confirmation: "123456",
       business_type: "type",
       accept_terms: true
     }
