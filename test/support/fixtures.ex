@@ -94,6 +94,7 @@ defmodule OmegaBravera.Fixtures do
         username: "partner_user1",
         email: "some@email.com",
         accept_terms: true,
+        password_confirmation: "pass1234",
         password: "pass1234"
       })
       |> Accounts.create_partner_user()
