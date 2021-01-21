@@ -20,12 +20,14 @@ defmodule OmegaBravera.Points.Point do
     field :pos_value, :decimal, virtual: true
     field :neg_value, :decimal, virtual: true
     # Can be redeem, activity, referral, bonus, ...
-    field :source, :string
+    field :source, Ecto.Enum,
+      values: [:redeem, :purchase, :activity, :referral, :admin, :organization]
 
     timestamps(type: :utc_datetime)
 
     belongs_to :user, User
     belongs_to :activity, ActivityAccumulator
+    belongs_to :organization, OmegaBravera.Accounts.Organization
   end
 
   def activity_points_changeset(
@@ -42,7 +44,7 @@ defmodule OmegaBravera.Points.Point do
     |> cast(%{}, [])
     |> put_change(:activity_id, activity_id)
     |> put_change(:user_id, user_id)
-    |> put_change(:source, "activity")
+    |> put_change(:source, :activity)
     # Insert the point by the start date of an activity.
     |> put_change(:inserted_at, start_date)
     |> validate_activity_type(@allowed_activity_types, activity_type)
@@ -60,9 +62,16 @@ defmodule OmegaBravera.Points.Point do
     point
     |> cast(%{}, @allowed_attributes)
     |> put_change(:user_id, user.id)
-    |> put_change(:source, "purchase")
+    |> put_change(:source, :purchase)
     |> add_deduct_value(target)
     |> validate_required(@required_attributes)
+  end
+
+  def organization_changeset(point, attrs) do
+    point
+    |> cast(attrs, [:user_id, :organization_id, :value])
+    |> put_change(:source, :organization)
+    |> validate_required([:user_id, :organization_id, :source, :value])
   end
 
   defp add_deduct_value(changeset, offer_target) do

@@ -15,6 +15,7 @@
       <%= label f, gettext("Value (Can be in negative and positive.)"), class: "control-label" %>
       <%= number_input f, :value, class: add_error_class(f, :value, "form-control") %>
       <%= error_tag f, :value %>
+    <small><%= gettext("Remaining points") %>: <span class="text-danger"><%= @remaining_points %></span></small>
   </div>
   <div class="mb-3">
     <%= submit gettext("Submit"), class: "btn btn-primary" %>

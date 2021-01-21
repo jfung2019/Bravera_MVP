@@ -10,7 +10,7 @@ defmodule OmegaBraveraWeb.AdminPanelPointsController do
   end
 
   def create(conn, %{"point" => points_params}) do
-    case Points.create_bonus_points(Map.put(points_params, "source", "admin")) do
+    case Points.create_bonus_points(Map.put(points_params, "source", :admin)) do
       {:ok, _point} ->
         conn
         |> put_flash(:info, "Successfully created point!")

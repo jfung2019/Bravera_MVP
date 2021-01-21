@@ -7,6 +7,7 @@ defmodule OmegaBravera.Accounts do
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias Ecto.Multi
   alias OmegaBravera.Accounts.Jobs
+  @organization_max_points 1000
 
   alias OmegaBravera.{
     Repo,
@@ -801,6 +802,9 @@ defmodule OmegaBravera.Accounts do
     now = Timex.now()
     beginning_of_week = Timex.beginning_of_week(now)
     end_of_week = Timex.end_of_week(now)
+    beginning_of_day = Timex.beginning_of_day(now)
+    end_of_day = Timex.end_of_day(now)
+
     from(o in Organization,
       where: o.id == ^organization_id,
       left_join: g in assoc(o, :groups),
@@ -810,15 +814,65 @@ defmodule OmegaBravera.Accounts do
       on: m.user_id == a.user_id,
       left_join: oc in assoc(of, :offer_challenges),
       left_join: ofr in assoc(oc, :offer_redeems),
+      left_join: p in assoc(o, :points),
       select: %{
         groups: fragment("TO_CHAR(?, '999,999')", count(g.id)),
         offers: fragment("TO_CHAR(?, '999,999')", count(of.id)),
         members: fragment("TO_CHAR(?, '999,999')", count(m.user_id, :distinct)),
         total_distance: fragment("TO_CHAR(?, '999,999 KM')", count(a.distance)),
-        distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", filter(count(a.distance), a.start_date >= ^beginning_of_week and a.end_date <= ^end_of_week)),
-        unlocked_rewards: fragment("TO_CHAR(?, '999,999')", filter(count(oc.id), oc.status == "complete")),
-        claimed_rewards: fragment("TO_CHAR(?, '999,999')", filter(count(ofr.id), ofr.status == "redeemed"))
+        distance_this_week:
+          fragment(
+            "TO_CHAR(?, '999,999 KM')",
+            filter(
+              count(a.distance),
+              a.start_date >= ^beginning_of_week and a.end_date <= ^end_of_week
+            )
+          ),
+        unlocked_rewards:
+          fragment("TO_CHAR(?, '999,999')", filter(count(oc.id), oc.status == "complete")),
+        claimed_rewards:
+          fragment("TO_CHAR(?, '999,999')", filter(count(ofr.id), ofr.status == "redeemed")),
+        remaining_points:
+          fragment(
+            "TO_CHAR(?, '999,999')",
+            @organization_max_points -
+              coalesce(
+                filter(
+                  sum(fragment("ABS(?)", p.value)),
+                  p.inserted_at >= ^beginning_of_day and p.inserted_at <= ^end_of_day
+                ),
+                0
+              )
+          )
       }
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  Returns total number of points for the current day
+  """
+  @spec get_remaining_points_for_today_for_organization(String.t()) :: integer()
+  def get_remaining_points_for_today_for_organization(organization_id) do
+    now = Timex.now()
+    beginning_of_day = Timex.beginning_of_day(now)
+    end_of_day = Timex.end_of_day(now)
+
+    from(o in Organization,
+      where: o.id == ^organization_id,
+      left_join: p in assoc(o, :points),
+      select:
+        fragment(
+          "TO_CHAR(?, '999,999')",
+          ^@organization_max_points -
+            coalesce(
+              filter(
+                sum(fragment("ABS(?)", p.value)),
+                p.inserted_at >= ^beginning_of_day and p.inserted_at <= ^end_of_day
+              ),
+              0
+            )
+        )
     )
     |> Repo.one()
   end

@@ -103,7 +103,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         if not is_nil(user.referred_by_id) do
           Points.create_bonus_points(%{
             user_id: user.referred_by_id,
-            source: "referral",
+            source: :referral,
             value: OmegaBravera.Points.Point.get_inviter_points()
           })
 
@@ -113,7 +113,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
           Points.create_bonus_points(%{
             user_id: user.id,
-            source: "referral",
+            source: :referral,
             value: Decimal.div(OmegaBravera.Points.Point.get_inviter_points(), 2)
           })
         end

@@ -10,6 +10,7 @@ defmodule OmegaBravera.Accounts.Organization do
 
     has_many :groups, OmegaBravera.Groups.Partner
     has_many :offers, OmegaBravera.Offers.Offer
+    has_many :points, OmegaBravera.Points.Point
 
     timestamps()
   end

@@ -4,7 +4,7 @@ defmodule OmegaBravera.Points do
   """
   import Ecto.Query
 
-  alias OmegaBravera.{Repo}
+  alias OmegaBravera.{Repo, Accounts}
   alias OmegaBravera.Points.Point
 
   @doc """
@@ -82,5 +82,32 @@ defmodule OmegaBravera.Points do
     %Point{}
     |> Point.deduct_points_changeset(offer, user)
     |> Repo.insert()
+  end
+
+  @doc """
+  Allows giving of points to a user from an organization perspective.
+  """
+  @spec add_organization_points(String.t(), map()) ::
+          {:error, Ecto.Changeset.t()} | {:ok, Point.t()}
+  def add_organization_points(organization_id, attrs) do
+    Repo.transaction(fn ->
+      changeset =
+        %Point{}
+        |> Point.organization_changeset(Map.put(attrs, "organization_id", organization_id))
+
+      case Repo.insert(changeset) do
+        {:ok, _points} = ok_tuple ->
+          if Accounts.get_remaining_points_for_today_for_organization(organization_id) < 0 do
+            changeset
+            |> Ecto.Changeset.put_change(:value, "too many points")
+            |> Repo.rollback()
+          else
+            ok_tuple
+          end
+
+        error_tuple ->
+          error_tuple
+      end
+    end)
   end
 end

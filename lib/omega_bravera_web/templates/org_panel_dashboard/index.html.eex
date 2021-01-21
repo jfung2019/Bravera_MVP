@@ -2,7 +2,7 @@
     <div class="card-body">
         <h1><span class="fa fa-dashboard"></span> <%= gettext("Dashboard") %></h1>
         <div class="row">
-            <div class="col-6 offset-3">
+            <div class="col-6">
                 <table class="table">
                     <tbody>
                         <tr>
@@ -19,7 +19,7 @@
                         </tr>
                         <tr>
                             <td><%= gettext("Total Points Available") %></td>
-                            <td></td>
+                            <td><%= @dashboard.remaining_points %></td>
                         </tr>
                         <tr>
                             <td><%= gettext("Total Groups") %></td>
