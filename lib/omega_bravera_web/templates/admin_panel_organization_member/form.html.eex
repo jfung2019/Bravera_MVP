@@ -7,26 +7,32 @@
 
     <div class="form-group">
         <%= label f, :organization_id, gettext("Organization"), class: "control-label" %>
-        <%= select f, :organization_id, generate_organizations(@organizations), class: "form-control" %>
+        <%= select f, :organization_id, generate_organizations(@organizations), class: add_error_class(f, :organization_id, "form-control") %>
         <%= error_tag f, :organization_id %>
     </div>
 
     <div class="form-group">
         <%= label f, :username, class: "control-label" %>
-        <%= text_input f, :username, class: add_error_class(f, :vendor_id, "form-control") %>
+        <%= text_input f, :username, class: add_error_class(f, :username, "form-control") %>
         <%= error_tag f, :username %>
     </div>
 
     <div class="form-group">
         <%= label f, :email, class: "control-label" %>
-        <%= email_input f, :email, class: add_error_class(f, :vendor_id, "form-control") %>
+        <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
         <%= error_tag f, :email %>
     </div>
 
     <div class="form-group">
         <%= label f, :password, class: "control-label" %>
-        <%= password_input f, :password, class: add_error_class(f, :vendor_id, "form-control") %>
+        <%= password_input f, :password, class: add_error_class(f, :password, "form-control") %>
         <%= error_tag f, :password %>
+    </div>
+
+    <div class="form-group">
+        <%= label f, :password_confirmation, class: "control-label" %>
+        <%= password_input f, :password_confirmation, class: add_error_class(f, :password_confirmation, "form-control") %>
+        <%= error_tag f, :password_confirmation %>
     </div>
 
     <div class="mb-3">

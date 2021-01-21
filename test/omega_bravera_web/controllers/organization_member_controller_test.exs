@@ -87,9 +87,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
             username: "name2",
             email: "iu@email.com",
             password: "123456",
-            password_confirmation: "123456",
-            business_type: "type",
-            accept_terms: true
+            password_confirmation: "123456"
           }
         )
 

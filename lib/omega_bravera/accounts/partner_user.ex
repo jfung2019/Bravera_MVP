@@ -43,7 +43,7 @@ defmodule OmegaBravera.Accounts.PartnerUser do
 
   def update_changeset(partner_user, attrs) do
     partner_user
-    |> cast(attrs, [:email, :email_verified, :password])
+    |> cast(attrs, [:email, :email_verified, :password, :password_confirmation])
     |> validate_required([:email, :email_verified])
     |> validate_password()
   end
