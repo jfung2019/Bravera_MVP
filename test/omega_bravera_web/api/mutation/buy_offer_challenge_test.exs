@@ -35,7 +35,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.BuyOfferChallengeTest do
 
   test "buy/3 will not allow reward purchase without sufficiant points in user's balance" do
     credential = credential_fixture()
-    insert(:point, %{value: Decimal.new(150), user_id: credential.user_id, source: "test"})
+    insert(:point, %{value: Decimal.new(150), user_id: credential.user_id, source: :admin})
     offer = insert(:offer, %{target: 16})
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
@@ -54,7 +54,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.BuyOfferChallengeTest do
 
   test "buy/3 can create complete challenge, send reward to use, and deduct points from total balance" do
     credential = credential_fixture()
-    insert(:point, %{value: Decimal.new(150), user_id: credential.user_id, source: "test"})
+    insert(:point, %{value: Decimal.new(150), user_id: credential.user_id, source: :admin})
     offer = insert(:offer, %{target: 15})
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 

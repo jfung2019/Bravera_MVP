@@ -114,7 +114,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       moving_time: strava_activity.moving_time,
       calories: strava_activity.calories,
       admin_id: admin_user_id,
-      source: :admin
+      source: "admin"
     })
     |> use_start_date_for_end_date()
     |> validate_required(@required_attributes_for_admin)
