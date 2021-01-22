@@ -239,10 +239,18 @@ defmodule OmegaBraveraWeb.Router do
       end
 
       resources "/points", OrgPanelPointsController, only: [:new, :create]
-      resources "/online-offers", OrgPanelOnlineOffersController, param: "slug"
-      get "/online-offers/:slug/statement", OrgPanelOnlineOffersController, :statement
-      resources "/offline-offers", OrgPanelOfflineOffersController, param: "slug"
-      get "/offline-offers/:slug/statement", OrgPanelOfflineOffersController, :statement
+
+      scope "/online-offers" do
+        resources "/", OrgPanelOnlineOffersController, param: "slug"
+        get "/:slug/statement", OrgPanelOnlineOffersController, :statement
+        get "/:slug/statement/monthly/", OrgPanelOnlineOffersController, :export_statement
+      end
+
+      scope "/offline-offers" do
+        resources "/", OrgPanelOfflineOffersController, param: "slug"
+        get "/:slug/statement", OrgPanelOfflineOffersController, :statement
+        get "/:slug/statement/monthly/", OrgPanelOfflineOffersController, :export_statement
+      end
 
       scope "/" do
         pipe_through [:org_liveview]

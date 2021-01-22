@@ -29,14 +29,22 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
     {:noreply, assign(socket, images: images)}
   end
 
-  def handle_event("shift-right", %{"index" => string_index}, %{assigns: %{images: images}} = socket) do
+  def handle_event(
+        "shift-right",
+        %{"index" => string_index},
+        %{assigns: %{images: images}} = socket
+      ) do
     index = String.to_integer(string_index)
     new_index = index + 1
     images = swap_images(images, index, new_index)
     {:noreply, assign(socket, images: images)}
   end
 
-  def handle_event("shift-left", %{"index" => string_index}, %{assigns: %{images: images}} = socket) do
+  def handle_event(
+        "shift-left",
+        %{"index" => string_index},
+        %{assigns: %{images: images}} = socket
+      ) do
     index = String.to_integer(string_index)
     new_index = index - 1
     images = swap_images(images, index, new_index)
@@ -55,7 +63,7 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
   end
 
   defp swap_images(images, _original_index, new_index) when length(images) == new_index,
-       do: images
+    do: images
 
   defp swap_images(images, 0, new_index) when new_index < 0, do: images
 

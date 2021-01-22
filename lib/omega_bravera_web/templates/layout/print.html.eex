@@ -19,9 +19,7 @@
 
 
   <body>
-    <%= if logged_in?(@conn) && is_admin?(@conn) do %>
-      <%= @inner_content %>
-    <% end %>
+    <%= @inner_content %>
   </body>
 </html>
 

@@ -214,6 +214,31 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
+  Gets an offer by slug and organization_id.
+  """
+  def get_offer_by_slug_and_organization_id(
+        slug,
+        organization_id,
+        preloads \\ [:offer_challenges]
+      ) do
+    from(o in Offer,
+      where: o.slug == ^slug and o.organization_id == ^organization_id,
+      left_join: offer_challenges in assoc(o, :offer_challenges),
+      on: offer_challenges.offer_id == o.id and offer_challenges.status == ^"active",
+      preload: ^preloads,
+      group_by: [o.id],
+      select: %{
+        o
+        | active_offer_challenges: count(offer_challenges.id),
+          pre_registration_start_date:
+            fragment("? at time zone 'utc'", o.pre_registration_start_date)
+      }
+    )
+    |> Repo.one()
+    |> prepare_offer()
+  end
+
+  @doc """
   Gets an offer if it's allowed by the user, or else return `:not_authorized`.
   """
   def get_allowed_offer_by_slug_and_user_id(slug, user_id) do
@@ -362,6 +387,46 @@ defmodule OmegaBravera.Offers do
       _ ->
         offer
     end
+  end
+
+  def get_monthly_statement_for_organization_offer(slug, organization_id, month, year) do
+    {:ok, start_date} = Date.new(String.to_integer(year), String.to_integer(month), 1)
+    start_date = Timex.to_datetime(start_date)
+    end_date = Timex.shift(start_date, months: 1)
+
+    rows =
+      from(r in OfferRedeem,
+        join: o in assoc(r, :offer),
+        join: u in assoc(r, :user),
+        join: oc in assoc(r, :offer_challenge),
+        left_join: ofr in assoc(r, :offer_reward),
+        where:
+          o.slug == ^slug and o.organization_id == ^organization_id and
+            r.updated_at >= ^start_date and
+            r.updated_at <= ^end_date,
+        order_by: [desc: r.updated_at],
+        select: [
+          u.username,
+          fragment("TO_CHAR(?, 'D/M/YY HH24:MI')", oc.inserted_at),
+          fragment(
+            "CASE WHEN ? = 'complete' THEN TO_CHAR(?, 'D/M/YY HH24:MI') ELSE '' END",
+            oc.status,
+            oc.updated_at
+          ),
+          fragment(
+            "CASE WHEN ? = 'redeemed' THEN TO_CHAR(?, 'D/M/YY HH24:MI') ELSE '' END",
+            r.status,
+            r.updated_at
+          ),
+          ofr.name
+        ]
+      )
+      |> Repo.all()
+
+    ([organization_statement_headers] ++ rows)
+    |> CSV.encode()
+    |> Enum.to_list()
+    |> to_string()
   end
 
   def get_monthly_statement_for_offer(slug, start_date, end_date) do
@@ -963,6 +1028,31 @@ defmodule OmegaBravera.Offers do
     )
     |> Repo.all()
   end
+
+  @doc """
+  Lists offer_redeems used in offer statement.
+  """
+  def list_offer_redeems_for_offer_statement_by_organization(slug, organization_id) do
+    from(r in OfferRedeem,
+      join: o in assoc(r, :offer),
+      where: o.slug == ^slug and o.organization_id == ^organization_id,
+      preload: [:offer, :offer_challenge, :user, :offer_reward],
+      order_by: [desc: r.updated_at]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Headers for Statement.
+  """
+  def organization_statement_headers,
+    do: [
+      "Alias",
+      "Challenge Creation",
+      "Challenge Completed Date",
+      "Redeemed Date",
+      "Reward Name"
+    ]
 
   @doc """
   Lists all expired offer redeems for a user

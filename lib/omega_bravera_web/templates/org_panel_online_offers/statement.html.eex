@@ -2,7 +2,7 @@
   <div class="card-body">
     <div class="row mt-2 mb-2 mx-auto">
       <div class="col-4">
-        <%= form_for @conn, Routes.admin_panel_offer_path(@conn, :export_statement, @offer_slug), [as: :start_date, method: :get], fn _f -> %>
+        <%= form_for @conn, Routes.org_panel_online_offers_path(@conn, :export_statement, @offer_slug), [as: :start_date, method: :get], fn _f -> %>
         <select class="custom-select mb-2" name="month" required>
           <option value="">Month</option>
           <option value='1'>January</option>
@@ -20,11 +20,9 @@
         </select>
         <select class="custom-select" name="year" required>
           <option value="">Year</option>
-          <option value='2017'>2017</option>
-          <option value='2018'>2018</option>
-          <option value='2019'>2019</option>
-          <option value='2020'>2020</option>
-          <option value='2021'>2021</option>
+          <%= for year <- @years do %>
+            <option value="<%= year %>"><%= year %></option>
+          <% end %>
         </select>
       </div>
       <div class="col-1">
@@ -38,29 +36,19 @@
       <table class="table-bordered table-striped table-condensed cf">
         <thead class="cf">
         <tr>
-          <th scope="col"> Slug </th>
-          <th scope="col"> Firstname </th>
-          <th scope="col"> Lastname </th>
-          <th scope="col"> Email </th>
-          <th scope="col"> Challenge Creation </th>
-          <th scope="col"> Challenge Completed Date </th>
-          <th scope="col"> Team </th>
-          <th scope="col"> Redeemed Date </th>
-          <th scope="col"> Name </th>
+          <%= for header <- @headers do %>
+            <th scope="col"> <%= header %> </th>
+          <% end %>
         </tr>
         </thead>
         <tbody>
         <%= for redeem <- @offer_redeems do %>
         <tr>
-          <td data-title="Slug"><%= redeem.offer_challenge.slug %></td>
-          <td data-title="Firstname"><%= redeem.user.firstname %></td>
-          <td data-title="Lastname"><%= redeem.user.lastname %></td>
-          <td data-title="Email"><%= redeem.user.email %></td>
-          <td data-title="Challenge Creation"><%= render_datetime(redeem.offer_challenge.inserted_at) %></td>
-          <td data-title="Challenge Completed Date"><%= if redeem.offer_challenge.status == "complete", do: render_datetime(redeem.offer_challenge.updated_at), else: "" %></td>
-          <td data-title="Has Team"><%= redeem.offer_challenge.has_team %></td>
-          <td data-title="Redeemed Date"><%= redeemed_date(redeem) %></td>
-          <td data-title="Name"><%= if redeem.offer_reward, do: redeem.offer_reward.name %></td>
+          <td data-title="<%= Enum.at(@headers, 0) %>"><%= redeem.user.username %></td>
+          <td data-title="<%= Enum.at(@headers, 1) %>"><%= render_datetime(redeem.offer_challenge.inserted_at) %></td>
+          <td data-title="<%= Enum.at(@headers, 2) %>"><%= if redeem.offer_challenge.status == "complete", do: render_datetime(redeem.offer_challenge.updated_at) %></td>
+          <td data-title="<%= Enum.at(@headers, 3) %>"><%= redeemed_date(redeem) %></td>
+          <td data-title="<%= Enum.at(@headers, 4) %>"><%= if redeem.offer_reward, do: redeem.offer_reward.name %></td>
         </tr>
         <% end %>
         </tbody>
