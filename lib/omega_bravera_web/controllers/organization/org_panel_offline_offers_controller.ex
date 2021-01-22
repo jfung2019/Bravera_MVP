@@ -94,24 +94,25 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
     end
   end
 
-  def statement(conn, %{"slug" => slug}) do
-    render(conn, "statement.html",
+  def statement(%{assigns: %{organization_id: org_id}} = conn, %{"slug" => slug}) do
+    now = Timex.now()
+
+    conn
+    |> put_layout({OmegaBraveraWeb.LayoutView, "print.html"})
+    |> render("statement.html",
+      years: (now.year - 5)..now.year,
       offer_slug: slug,
-      offer_redeems:
-        Offers.list_offer_redeems_for_offer_statement(slug, [
-          :offer_challenge,
-          :user,
-          :offer_reward
-        ]),
-      layout: {OmegaBraveraWeb.LayoutView, "print.html"}
+      headers: Offers.organization_statement_headers(),
+      offer_redeems: Offers.list_offer_redeems_for_offer_statement_by_organization(slug, org_id)
     )
   end
 
-  def export_statement(conn, %{"slug" => slug, "month" => month, "year" => year}) do
-    {:ok, start_date} = Date.new(String.to_integer(year), String.to_integer(month), 1)
-    start_datetime = Timex.to_datetime(start_date)
-    end_datetime = Timex.shift(start_datetime, months: 1)
-    csv_rows = Offers.get_monthly_statement_for_offer(slug, start_datetime, end_datetime)
+  def export_statement(%{assigns: %{organization_id: org_id}} = conn, %{
+        "slug" => slug,
+        "month" => month,
+        "year" => year
+      }) do
+    csv = Offers.get_monthly_statement_for_organization_offer(slug, org_id, month, year)
 
     conn
     |> put_resp_content_type("text/csv")
@@ -119,38 +120,15 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
       "content-disposition",
       "attachment; filename=\"#{slug}'s_statement_for_#{month}.csv\""
     )
-    |> send_resp(200, to_csv(csv_statement_headers(), csv_rows))
+    |> send_resp(200, csv)
   end
 
-  def to_csv(cols, rows) do
-    (cols ++ rows)
-    |> CSV.encode()
-    |> Enum.to_list()
-    |> to_string
-  end
-
-  defp csv_statement_headers() do
-    [
-      [
-        "Slug",
-        "Firstname",
-        "Lastname",
-        "Email",
-        "Challenge Creation",
-        "Challenge Completed Date",
-        "Team",
-        "Redeemed Date",
-        "Name"
-      ]
-    ]
-  end
-
-  defp assign_available_options(conn, _opts) do
+  defp assign_available_options(%{assigns: %{organization_id: org_id}} = conn, _opts) do
     conn
     |> assign(:available_locations, OmegaBravera.Locations.list_locations())
     |> assign(
       :vendors,
-      Offers.list_offer_vendors_by_organization(get_session(conn, :organization_id))
+      Offers.list_offer_vendors_by_organization(org_id)
     )
   end
 end
