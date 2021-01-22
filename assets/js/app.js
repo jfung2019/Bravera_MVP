@@ -42,7 +42,7 @@ const Hooks = {
         maxFilesize: 3,
         acceptedFiles: 'image/*',
         sending: (file, xhr) => {
-          let _send = xhr.send;
+          const _send = xhr.send;
           xhr.send = () => {
             _send.call(xhr, file)
           }

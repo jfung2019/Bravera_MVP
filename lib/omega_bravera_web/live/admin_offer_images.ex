@@ -29,6 +29,20 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
     {:noreply, assign(socket, images: images)}
   end
 
+  def handle_event("shift-right", %{"index" => string_index}, %{assigns: %{images: images}} = socket) do
+    index = String.to_integer(string_index)
+    new_index = index + 1
+    images = swap_images(images, index, new_index)
+    {:noreply, assign(socket, images: images)}
+  end
+
+  def handle_event("shift-left", %{"index" => string_index}, %{assigns: %{images: images}} = socket) do
+    index = String.to_integer(string_index)
+    new_index = index - 1
+    images = swap_images(images, index, new_index)
+    {:noreply, assign(socket, images: images)}
+  end
+
   def handle_event("save-images", _, %{assigns: %{images: images, offer: offer}} = socket) do
     case Offers.update_offer(offer, %{images: images}) do
       {:ok, updated_offer} ->
@@ -38,5 +52,19 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
         {:noreply,
          redirect(socket, to: Routes.admin_panel_offer_path(socket, :show, updated_offer))}
     end
+  end
+
+  defp swap_images(images, _original_index, new_index) when length(images) == new_index,
+       do: images
+
+  defp swap_images(images, 0, new_index) when new_index < 0, do: images
+
+  defp swap_images(images, original_index, new_index) do
+    original_image = Enum.at(images, original_index)
+    other_image = Enum.at(images, new_index)
+
+    images
+    |> List.replace_at(new_index, original_image)
+    |> List.replace_at(original_index, other_image)
   end
 end

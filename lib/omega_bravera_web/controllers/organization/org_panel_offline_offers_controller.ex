@@ -15,13 +15,13 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
 
   plug :assign_available_options when action in [:edit, :new]
 
-  def index(conn, params) do
-    results = Offers.paginate_offers("in_store", get_session(conn, :organization_id), params)
+  def index(%{assigns: %{organization_id: org_id}} = conn, params) do
+    results = Offers.paginate_offers("in_store", org_id, params)
     render(conn, "index.html", offers: results.offers, paginate: results.paginate)
   end
 
-  def show(conn, %{"slug" => slug}) do
-    offer = Offers.get_offer_by_slug(slug)
+  def show(%{assigns: %{organization_id: org_id}} = conn, %{"slug" => slug}) do
+    %{organization_id: ^org_id} = offer = Offers.get_offer_by_slug(slug)
     render(conn, "show.html", offer: offer)
   end
 
@@ -31,10 +31,8 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
     render(conn, "new.html", changeset: changeset, users: users)
   end
 
-  def create(conn, %{"offer" => offer_params}) do
-    offer_params = Map.put(offer_params, "organization_id", get_session(conn, :organization_id))
-
-    case Offers.create_org_offline_offer(offer_params) do
+  def create(%{assigns: %{organization_id: org_id}} = conn, %{"offer" => offer_params}) do
+    case Offers.create_org_offline_offer(Map.put(offer_params, "organization_id", org_id)) do
       {:ok, offer} ->
         conn
         |> put_flash(:info, "Offer created successfully.")
