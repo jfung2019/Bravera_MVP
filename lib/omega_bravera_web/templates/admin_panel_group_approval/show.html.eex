@@ -44,7 +44,7 @@
                     <td><%= gettext("Images") %></td>
                     <td>
                         <%= for image <- @group.images do %>
-                        <%= img_tag image %>
+                        <%= img_tag image, class: "col-2" %>
                         <% end %>
                     </td>
                 </tr>

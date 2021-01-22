@@ -865,6 +865,17 @@ defmodule OmegaBravera.Offers do
   """
   def get_offer_reward!(id), do: Repo.get!(OfferReward, id)
 
+  def new_reward_created(organization_id) do
+    one_min_ago = Timex.now() |> Timex.shift(minutes: -1)
+
+    from(r in OfferReward,
+      left_join: o in assoc(r, :offer),
+      where: o.organization_id == ^organization_id and o.inserted_at >= ^one_min_ago,
+      select: r.id
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Creates a offer_reward.
 

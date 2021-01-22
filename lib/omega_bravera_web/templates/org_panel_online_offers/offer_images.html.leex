@@ -31,6 +31,11 @@
     <div class="modal fade" id="first_time_adding_image_modal" tabindex="-1" role="dialog" aria-labelledby="first_time_adding_image_modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
+                <div class="d-flex justify-content-end py-1 px-3">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
                     <p><%= gettext("Images added to your offer! Nice work.") %></p>
                     <br/>
@@ -48,6 +53,11 @@
     <div class="modal fade" id="first_time_added_image_online_offer" tabindex="-1" role="dialog" aria-labelledby="first_time_added_image_online_offer_modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
+                <div class="d-flex justify-content-end py-1 px-3">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
                     <p><%= gettext("Great! You’ve created an online offer and reward to be added to a Group.") %></p>
                 </div>
@@ -61,7 +71,9 @@
 </div>
 
 <%= if assigns[:first_time_adding_image] do %>
-<%= if @offer.offer_type == :online do %>
-<script>$("#first_time_added_image_online_offer").modal("show");</script>
-<% end %>
+    <%= if @offer.offer_type == :online do %>
+        <script>$("#first_time_added_image_online_offer").modal("show");</script>
+    <% else %>
+        <script>$("#first_time_adding_image_modal").modal("show");</script>
+    <% end %>
 <% end %>

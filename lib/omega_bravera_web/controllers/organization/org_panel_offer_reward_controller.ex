@@ -5,7 +5,13 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
 
   def index(%{assigns: %{organization_id: org_id}} = conn, params) do
     results = Offers.paginate_offer_rewards(org_id, params)
-    render(conn, "index.html", offer_rewards: results.offer_rewards, paginate: results.paginate)
+    new_reward = Offers.new_reward_created(org_id)
+
+    render(conn, "index.html",
+      offer_rewards: results.offer_rewards,
+      paginate: results.paginate,
+      new_reward: new_reward
+    )
   end
 
   def new(%{assigns: %{organization_id: org_id}} = conn, _params) do

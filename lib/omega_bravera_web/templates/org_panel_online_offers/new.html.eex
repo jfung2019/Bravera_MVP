@@ -2,9 +2,7 @@
     <div class="card-body">
         <h1><span class="fa fa-cart-arrow-down"></span> <%= gettext("New Online Offers") %></h1>
         <small class="form-text text-muted">
-            <%= gettext("(Hint: “Online” Means you’re offering something to be claimed ‘online’ e.g. a discount on a 3rd party ecommerce website (e.g. shopify) or entries to a prize draw on an online form (e.g. Google forms, Typeform, Survey Monkey. ")%>
-            <a href="#"><%= gettext("Click here") %></a>
-            <%= gettext(" for hints and help.)") %>
+            <%= gettext("(Hint: “Online” Means you’re offering something to be claimed ‘online’ e.g. a discount on a 3rd party ecommerce website (e.g. shopify) or entries to a prize draw on an online form (e.g. Google forms, Typeform, Survey Monkey).")%>
         </small>
         <%= render "form.html", Map.put(assigns, :action, Routes.org_panel_online_offers_path(@conn, :create)) %>
         <span><%= link gettext("Back"), to: Routes.org_panel_online_offers_path(@conn, :index) %></span>

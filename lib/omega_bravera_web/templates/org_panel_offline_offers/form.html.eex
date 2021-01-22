@@ -66,8 +66,7 @@
     <div class="form-group col-9 p-0">
       <%= label f, :toc, "Terms and Conditions", class: "control-label" %>
       <small class="text-muted form-text">
-        <%= gettext("(Add important details about your offer and reward. For help and examples ") %>
-        <a href="#"><%= gettext("click here") %></a>.)
+        <%= gettext("(Add important details about your offer and reward. Think: eligibility criteria, opening times, no refunds, reminder of offer end date etc).") %>
       </small>
       <%= textarea f, :toc, class: "form-control", rows: 3, data: [html: true] %>
       <%= error_tag f, :toc %>
@@ -79,9 +78,7 @@
     <div class="form-group col-9 p-0">
       <%= label f, "Description", class: "control-label" %>
       <small class="text-mute form-text">
-        <%= gettext("(Introduce your offer in more detail. ") %>
-        <a href="#"><%= gettext("Click here") %></a>
-        <%= gettext(" for help and hints.)") %>
+        <%= gettext("(Introduce your offer in more detail e.g. product / service background, features, functionality, review quotes, etc).") %>
       </small>
       <%= textarea f, :desc, class: "form-control", rows: 3, data: [html: true] %>
       <%= error_tag f, :desc %>
@@ -119,9 +116,7 @@
     <div class="form-group col-9 p-0">
       <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>
       <small class="form-text text-muted">
-        <%= gettext("(‘Countdown’ or ‘deadline’ to claim the reward after it has been unlocked. Example: Steven earned a reward on 07:00am on 1st January that has an expiry of 10 days. On 11th January, at 06:59:59, the reward will expire and be removed from his rewards wallet. ") %>
-        <a href="#"><%= gettext("Click here") %></a>
-        <%= gettext(" for hints and help.)") %>
+        <%= gettext("(Mandatory: This creates urgency. ‘Countdown’ or ‘deadline’ to claim a reward after being unlocked. Think: How many days should you give someone to claim a reward?).") %>
       </small>
       <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
       <%= error_tag f, :redemption_days %>

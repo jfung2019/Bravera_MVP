@@ -5,14 +5,17 @@ const website_opt = "Website / Link";
 const phone_opt = "Phone / WhatsApp"
 
 $(function () {
-    const group_checkbox = $("#public_group_checkbox");
+    const group_type_select = $("#group_type_select");
     const join_password = $("#join_password");
     if (join_password.val() !== "") {
-        group_checkbox.prop("checked", false);
+        group_type_select.val("Private (requires password)");
+    } else {
+        group_type_select.val("Public (open to all)");
     }
-    show_password_fields(group_checkbox, join_password);
-    group_checkbox.change(function () {
-        show_password_fields($(this), join_password);
+    group_type_select.trigger('chosen:updated');
+    show_password_fields(join_password);
+    group_type_select.change(function () {
+        show_password_fields(join_password);
     });
 
     const group_contact_method = $("#group_contact_method");
@@ -33,13 +36,14 @@ function update_select(group_contact_method, opt) {
     group_contact_method.val(opt).trigger('chosen:updated');
 }
 
-function show_password_fields(group_check, join_password) {
-    const private_group_fields = $("#private_group_fields")
-    if (group_check.is(":checked")) {
+function show_password_fields(join_password) {
+    const private_group_fields = $("#private_group_fields");
+    const selected = $("#group_type_select option:selected").text()
+    if (selected === "Public (open to all)") {
         private_group_fields.addClass("d-none");
         join_password.attr("required", false);
         join_password.val("");
-    } else {
+    } else if (selected === "Private (requires password)") {
         private_group_fields.removeClass("d-none");
         join_password.attr("required", true);
     }

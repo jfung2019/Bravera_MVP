@@ -121,7 +121,8 @@ defmodule OmegaBravera.Offers.Offer do
     :end_date,
     :toc,
     :take_challenge,
-    :offer_type
+    :offer_type,
+    :redemption_days
   ]
 
   @doc false

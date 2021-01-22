@@ -48,10 +48,16 @@
 <div class="modal fade" id="first_vendor" tabindex="-1" role="dialog" aria-labelledby="first_vendor_modal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
+      <div class="d-flex justify-content-end py-1 px-3">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       <div class="modal-body">
         <p><%= gettext("Great! You’re created a Claim ID. You can now add this to an Offline Offer.") %></p>
       </div>
       <div class="modal-footer">
+        <button class="btn btn-danger" data-dismiss="modal" aria-label="Close"><%= gettext("Cancel")  %></button>
         <%= link gettext("Create and Offline Offer"), to: Routes.org_panel_offline_offers_path(@conn, :new), class: "btn btn-primary" %>
       </div>
     </div>

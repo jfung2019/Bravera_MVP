@@ -29,9 +29,8 @@
         <%= img_tag Routes.static_path(@conn, "/images/org/group/intro.png"), class: "col-3", style: "object-fit: contain;" %>
     </div>
 
-    <div class="form-check mb-3">
-        <%= checkbox f, :public_group, class: "form-check-input", id: "public_group_checkbox", checked: true %>
-        <%= label f, :public_group, gettext("Public Group"), class: "form-check-label" %>
+    <div class="form-group">
+        <%= select f, :method, [gettext("Private (requires password)"), gettext("Public (open to all)")], id: "group_type_select", class: "form-control chosen", prompt: gettext("Please select") %>
     </div>
 
     <div id="private_group_fields" class="d-none">
