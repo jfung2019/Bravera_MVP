@@ -3,8 +3,7 @@
 		<h1><span class="fa fa-group"></span> <%= gettext("Groups") %></h1>
 		<%= link gettext("Create New Group"), to: Routes.org_panel_partner_path(@conn, :new), class: "btn btn-outline-primary" %>
 		<div>
-			<small class="text-muted"><%= gettext("Get started by creating your first group.") %></small><br>
-			<small class="text-muted"><%= gettext("If you need help") %>, <a href="#"><%= gettext("click here") %></a></small>
+			<small class="text-muted"><%= gettext("(This is where you create and manage the ‘groups’ you list inside the Bravera app. This includes, Group Name, Short Intro, Description, Adding images, Add a password to join, Email contact details, Location (optional), Adding offers and rewards. Get started by creating your first group).") %></small><br>
 		</div>
 		<table class="table mt-3 table-striped">
 			<thead>

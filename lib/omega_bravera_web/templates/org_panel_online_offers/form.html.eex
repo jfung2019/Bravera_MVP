@@ -10,9 +10,7 @@
       <div class="form-group">
         <%= label f, :name, class: "control-label" %>
         <small class="text-muted form-text">
-          <%= gettext("(The offer name that will appear inside your group. ") %>
-          <a href="#"><%= gettext("Click here") %></a>
-          <%=gettext(" for more info.)") %>
+          <%= gettext("(The offer name that will appear inside your group. Keep within 8-10 words).") %>
         </small>
         <%= text_input f, :name, class: "form-control" %>
         <%= error_tag f, :name %>
@@ -69,7 +67,7 @@
     <div class="form-group col-9 p-0">
       <%= label f, :target, "Target (if km challenge: enter KMs. if Segment challenge: enter Segment ID.)", class: "control-label" %>
       <small class="text-mute form-text">
-        <%= gettext("(IMPORTANT: 10 points = 1 kilometer or approx. 1,350 steps. Each kilometer your group members walk/run generates 10 points. So, if you’d like someone to walk/run 20 kilometers, add ‘200’ points. If below you turn challenges off, group members will need to buy with the equivalent points. Confused? Don’t worry,  ") %>
+        <%= gettext("(IMPORTANT: 10 points = 1 kilometer or approx. 1,350 steps. Each kilometer your group members walk/run generates 10 points. So, if you’d like someone to walk/run 20 kilometers, add ‘20’ into the empty field below, the other fields will be automatically calculated. If below you turn challenges off, group members will need to buy with the equivalent points. Confused? Don’t worry, ") %>
         <a href="#"><%= gettext("click here") %></a>.)
       </small>
       <table class="table mt-3" style="table-layout: fixed;">

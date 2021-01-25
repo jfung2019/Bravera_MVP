@@ -88,7 +88,7 @@
     <div class="form-group col-9 p-0">
       <%= label f, :target, "Target (if km challenge: enter KMs. if Segment challenge: enter Segment ID.)", class: "control-label" %>
       <small class="text-mute form-text">
-        <%= gettext("(IMPORTANT: 10 points = 1 kilometer or approx. 1,350 steps. Each kilometer your group members walk/run generates 10 points. So, if you’d like someone to walk/run 20 kilometers, add ‘200’ points. If below you turn challenges off, group members will need to buy with the equivalent points. Confused? Don’t worry,  ") %>
+        <%= gettext("(IMPORTANT: 10 points = 1 kilometer or approx. 1,350 steps. Each kilometer your group members walk/run generates 10 points. So, if you’d like someone to walk/run 20 kilometers, add ‘20’ into the empty field below, the other fields will be automatically calculated. If below you turn challenges off, group members will need to buy with the equivalent points. Confused? Don’t worry, ") %>
         <a href="#"><%= gettext("click here") %></a>.)
       </small>
       <table class="table mt-3" style="table-layout: fixed;">
@@ -127,7 +127,9 @@
       <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
       <br>
       <small class="form-text text-muted">
-        <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward.)") %>
+        <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward. NOTE: Any live challenges must end before the Offer End date you entered above. ") %>
+        <a href=""><%= gettext("Click here") %></a>
+        <%= gettext(" for help and hints).") %>
       </small>
       <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>
       <%= error_tag f, :take_challenge %>
