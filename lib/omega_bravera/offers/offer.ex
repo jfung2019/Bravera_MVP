@@ -121,8 +121,7 @@ defmodule OmegaBravera.Offers.Offer do
     :end_date,
     :toc,
     :take_challenge,
-    :offer_type,
-    :redemption_days
+    :offer_type
   ]
 
   @doc false
@@ -157,13 +156,13 @@ defmodule OmegaBravera.Offers.Offer do
 
   def org_online_offer_changeset(offer, attrs) do
     changeset(offer, attrs)
-    |> validate_required([:organization_id, :online_url, :online_code])
+    |> validate_required([:organization_id, :online_url, :online_code, :redemption_days])
     |> put_change(:offer_type, :online)
   end
 
   def org_offline_offer_changeset(offer, attrs) do
     changeset(offer, attrs)
-    |> validate_required([:organization_id, :vendor_id, :location_id])
+    |> validate_required([:organization_id, :vendor_id, :location_id, :redemption_days])
     |> put_change(:offer_type, :in_store)
   end
 
