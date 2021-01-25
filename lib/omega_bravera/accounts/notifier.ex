@@ -6,6 +6,8 @@ defmodule OmegaBravera.Accounts.Notifier do
     Accounts.Credential,
     Accounts.PartnerUser,
     Groups.GroupApproval,
+    Groups.Partner,
+    Offers.Offer,
     Offers.OfferApproval
   }
 
@@ -201,41 +203,86 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Mail.send()
   end
 
-  def notify_customer_group_email(email, %GroupApproval{status: :approved}) do
+  def customer_group_modified_email(%PartnerUser{} = partner_user, %Partner{} = partner) do
+    Email.build()
+    |> Email.put_template("dc0b20c4-1208-4c6a-845a-9dee4e7ff48a")
+    |> Email.add_substitution("-AccountUsername-", partner_user.username)
+    |> Email.add_substitution("-EmailAddress-", partner_user.email)
+    |> Email.add_substitution(
+      "-GroupEditLink-",
+      Routes.admin_panel_group_approval_url(Endpoint, :show, partner)
+    )
+    |> Email.put_from("support@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to("support@bravera.co")
+    |> Mail.send()
+  end
+
+  def customer_offer_modified_email(%PartnerUser{} = partner_user, %Offer{} = offer) do
+    Email.build()
+    |> Email.put_template("d8fadde1-2ad8-4274-8ee1-6f48a2820da1")
+    |> Email.add_substitution("-AccountUsername-", partner_user.username)
+    |> Email.add_substitution("-EmailAddress-", partner_user.email)
+    |> Email.add_substitution(
+      "-OfferEditLink-",
+      Routes.admin_panel_offer_approval_url(Endpoint, :show, offer)
+    )
+    |> Email.put_from("support@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to("support@bravera.co")
+    |> Mail.send()
+  end
+
+  def notify_customer_group_email(
+        %PartnerUser{} = partner_user,
+        %Partner{name: group_name},
+        %GroupApproval{status: :approved}
+      ) do
     Email.build()
     |> Email.put_template("af72c512-278e-49b9-b2d5-3cb9ee4eb7f6")
-    |> Email.put_from("admin@bravera.co", "Bravera")
-    |> Email.add_bcc("admin@bravera.co")
-    |> Email.add_to(email)
+    |> Email.add_substitution("-username-", partner_user.username)
+    |> Email.add_substitution("-GroupName-", group_name)
+    |> Email.put_from("support@bravera.co", "Bravera")
+    |> Email.add_bcc("support@bravera.co")
+    |> Email.add_to(partner_user.email)
     |> Mail.send()
   end
 
-  def notify_customer_group_email(email, %GroupApproval{status: :denied} = group_approval) do
+  def notify_customer_group_email(
+        %PartnerUser{} = partner_user,
+        %Partner{name: group_name},
+        %GroupApproval{status: :denied} = group_approval
+      ) do
     Email.build()
     |> Email.put_template("6d8fc814-3e9a-473a-bed8-687381320bd9")
-    |> Email.add_substitution("-message-", group_approval.message)
-    |> Email.put_from("admin@bravera.co", "Bravera")
-    |> Email.add_bcc("admin@bravera.co")
-    |> Email.add_to(email)
+    |> Email.add_substitution("-username-", partner_user.username)
+    |> Email.add_substitution("-GroupName-", group_name)
+    |> Email.add_substitution("-Message-", group_approval.message)
+    |> Email.put_from("support@bravera.co", "Bravera")
+    |> Email.add_bcc("support@bravera.co")
+    |> Email.add_to(partner_user.email)
     |> Mail.send()
   end
 
-  def notify_customer_offer_email(email, %OfferApproval{status: :approved}) do
+  def notify_customer_offer_email(%PartnerUser{} = partner_user, %OfferApproval{status: :approved}) do
     Email.build()
     |> Email.put_template("2516ad29-1350-4353-a8db-9f72bf240e01")
-    |> Email.put_from("admin@bravera.co", "Bravera")
-    |> Email.add_bcc("admin@bravera.co")
-    |> Email.add_to(email)
+    |> Email.put_from("support@bravera.co", "Bravera")
+    |> Email.add_bcc("support@bravera.co")
+    |> Email.add_to(partner_user.email)
     |> Mail.send()
   end
 
-  def notify_customer_offer_email(email, %OfferApproval{status: :denied} = offer_approval) do
+  def notify_customer_offer_email(
+        %PartnerUser{} = partner_user,
+        %OfferApproval{status: :denied} = offer_approval
+      ) do
     Email.build()
     |> Email.put_template("6ea1749a-6d02-499d-aabd-ec9dae873aa4")
     |> Email.add_substitution("-message-", offer_approval.message)
-    |> Email.put_from("admin@bravera.co", "Bravera")
-    |> Email.add_bcc("admin@bravera.co")
-    |> Email.add_to(email)
+    |> Email.put_from("support@bravera.co", "Bravera")
+    |> Email.add_bcc("support@bravera.co")
+    |> Email.add_to(partner_user.email)
     |> Mail.send()
   end
 end

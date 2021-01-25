@@ -57,7 +57,7 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
   def update(conn, %{"slug" => slug, "offer" => offer_params}) do
     offer = Offers.get_offer_by_slug_with_hk_time(slug)
 
-    case Offers.update_offer(offer, offer_params) do
+    case Offers.update_org_online_offer(offer, offer_params) do
       {:ok, updated_offer} ->
         # Update all pre_registration challenges' start date
         updated_offer = Offers.get_offer_by_slug(updated_offer.slug)

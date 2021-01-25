@@ -2265,8 +2265,7 @@ defmodule OmegaBravera.Accounts do
       on: om.organization_id == p.organization_id,
       where: p.id == ^group_id,
       order_by: [asc: pu.inserted_at],
-      limit: 1,
-      select: pu.email
+      limit: 1
     )
     |> Repo.one()
   end
@@ -2279,8 +2278,7 @@ defmodule OmegaBravera.Accounts do
       on: om.organization_id == o.organization_id,
       where: o.id == ^offer_id,
       order_by: [asc: pu.inserted_at],
-      limit: 1,
-      select: pu.email
+      limit: 1
     )
     |> Repo.one()
   end

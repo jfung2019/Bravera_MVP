@@ -23,6 +23,7 @@ defmodule OmegaBravera.Offers.Offer do
     field :accept_terms_text, :string, default: "I accept the waiver & release of liability"
     field :offer_percent, :float
     field :hidden, :boolean, default: true
+    field :live, :boolean, default: false
     field :redemption_days, :integer
     field :offer_type, Ecto.Enum, values: [:in_store, :online], default: :in_store
     field :take_challenge, :boolean, default: true
@@ -75,7 +76,7 @@ defmodule OmegaBravera.Offers.Offer do
     timestamps(type: :utc_datetime)
   end
 
-  @allowed_atributes [
+  @allowed_attributes [
     :name,
     :slug,
     :ga_id,
@@ -85,6 +86,7 @@ defmodule OmegaBravera.Offers.Offer do
     :end_date,
     :always,
     :hidden,
+    :live,
     :desc,
     :full_desc,
     :toc,
@@ -127,7 +129,7 @@ defmodule OmegaBravera.Offers.Offer do
   @doc false
   def changeset(offer, attrs) do
     offer
-    |> cast(attrs, @allowed_atributes)
+    |> cast(attrs, @allowed_attributes)
     |> validate_required(@required_attributes)
     |> validate_length(:name, max: 77)
     |> generate_slug()

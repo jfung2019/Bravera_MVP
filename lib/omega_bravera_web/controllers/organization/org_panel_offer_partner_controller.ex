@@ -2,10 +2,15 @@ defmodule OmegaBraveraWeb.OrgPanelOfferPartnerController do
   use OmegaBraveraWeb, :controller
   alias OmegaBravera.Groups
 
-  def create(conn, params) do
-    case Groups.create_offer_partner(params) do
+  def create(conn, %{"partner_id" => partner_id} = params) do
+    case Groups.create_org_offer_partner(params) do
       {:ok, %{partner_id: partner_id}} ->
         conn
+        |> redirect(to: Routes.org_panel_partner_path(conn, :show, partner_id))
+
+      {:error, _} ->
+        conn
+        |> put_flash(:error, "Failed to add offer to group")
         |> redirect(to: Routes.org_panel_partner_path(conn, :show, partner_id))
     end
   end

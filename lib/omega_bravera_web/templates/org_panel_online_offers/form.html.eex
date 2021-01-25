@@ -57,7 +57,7 @@
     <div class="form-group col-9 p-0">
       <%= label f, "Description", class: "control-label" %>
       <small class="text-mute form-text">
-        <%= gettext("troduce your offer in more detail") %>
+        <%= gettext("(Introduce your offer in more detail e.g. product / service background, features, functionality, review quotes, etc).") %>
       </small>
       <%= textarea f, :desc, class: "form-control", rows: 3, data: [html: true] %>
       <%= error_tag f, :desc %>
@@ -132,7 +132,9 @@
       <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
       <br>
       <small class="form-text text-muted">
-        <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward.)") %>
+        <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward. NOTE: Any live challenges must end before the Offer End date you entered above. ") %>
+        <a href=""><%= gettext("Click here") %></a>
+        <%= gettext(" for help and hints).") %>
       </small>
       <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>
       <%= error_tag f, :take_challenge %>

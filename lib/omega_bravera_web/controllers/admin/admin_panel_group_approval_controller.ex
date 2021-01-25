@@ -11,7 +11,7 @@ defmodule OmegaBraveraWeb.AdminPanelGroupApprovalController do
 
   def create(conn, %{"group_approval" => %{"group_id" => id} = approval_param}) do
     case Groups.create_group_approval(approval_param) do
-      {:ok, %{changes: %{status: status}}} ->
+      {:ok, %{status: status}} ->
         conn
         |> put_flash(:info, "Group #{status}.")
         |> redirect(to: Routes.admin_panel_partner_path(conn, :index))

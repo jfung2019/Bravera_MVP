@@ -47,7 +47,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
   def update(conn, %{"partner" => partner_params, "id" => id}) do
     partner = Groups.get_partner!(id)
 
-    case Groups.update_partner(partner, partner_params) do
+    case Groups.update_org_partner(partner, partner_params) do
       {:ok, partner} ->
         conn
         |> put_flash(:info, "Partner updated successfully")

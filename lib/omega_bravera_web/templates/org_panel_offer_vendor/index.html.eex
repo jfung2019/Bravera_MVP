@@ -4,9 +4,7 @@
     <div class="row my-3">
       <div class="col-9">
         <small class="text-muted">
-          <%= gettext("(Think of this like a ‘PIN’ that verifies reward claims. A ‘Claim ID’ is linked to each offer and reward(s). If a reward is ‘in-store’, the QR code will be ‘verified’ by entering this ‘Claim ID’. Even if you're creating an online reward, please also create a Claim ID, as it is a standard requirement. Confused? ") %>
-          <a href="#"><%= gettext("Click here") %></a>
-          <%=gettext(" for more help).") %>
+          <%= gettext("(If a reward is ‘in-store’, the QR code will be ‘verified’ by entering this ‘Claim ID’. A ‘Claim ID’ is linked to each offer and reward(s). Click ‘Create Claim ID’ to get started).") %>
         </small>
       </div>
     </div>

@@ -151,9 +151,21 @@ defmodule OmegaBravera.Groups do
   end
 
   def create_org_partner(attrs \\ %{}) do
-    %Partner{}
-    |> Partner.org_changeset(attrs)
-    |> Repo.insert()
+    result =
+      %Partner{}
+      |> Partner.org_changeset(attrs)
+      |> Repo.insert()
+
+    case result do
+      {:ok, partner} ->
+        OmegaBravera.Accounts.get_partner_user_email_by_group(partner.id)
+        |> Notifier.customer_group_modified_email(partner)
+
+      _ ->
+        :ok
+    end
+
+    result
   end
 
   def create_group_approval(attrs \\ %{}) do
@@ -163,11 +175,12 @@ defmodule OmegaBravera.Groups do
           changeset
           |> Ecto.Changeset.apply_changes()
 
-        get_partner!(group_approval.group_id)
-        |> update_partner(%{live: true})
+        {:ok, partner} =
+          get_partner!(group_approval.group_id)
+          |> update_partner(%{live: group_approval.status == :approved})
 
         OmegaBravera.Accounts.get_partner_user_email_by_group(group_approval.group_id)
-        |> Notifier.notify_customer_group_email(group_approval)
+        |> Notifier.notify_customer_group_email(partner, group_approval)
 
         {:ok, group_approval}
 
@@ -196,6 +209,24 @@ defmodule OmegaBravera.Groups do
     partner
     |> Partner.changeset(attrs)
     |> Repo.update()
+  end
+
+  def update_org_partner(%Partner{} = partner, attrs) do
+    result =
+      partner
+      |> Partner.org_changeset(attrs)
+      |> Repo.update()
+
+    case result do
+      {:ok, %{live: false} = updated_partner} ->
+        OmegaBravera.Accounts.get_partner_user_email_by_group(updated_partner.id)
+        |> Notifier.customer_group_modified_email(updated_partner)
+
+      _ ->
+        :ok
+    end
+
+    result
   end
 
   @doc """
@@ -540,6 +571,23 @@ defmodule OmegaBravera.Groups do
     %OfferPartner{}
     |> OfferPartner.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_org_offer_partner(attrs) do
+    result = create_offer_partner(attrs)
+
+    case result do
+      {:ok, %{offer_id: offer_id}} ->
+        offer = OmegaBravera.Offers.get_offer!(offer_id)
+
+        OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_id)
+        |> Notifier.customer_offer_modified_email(offer)
+
+      _ ->
+        :ok
+    end
+
+    result
   end
 
   @doc """

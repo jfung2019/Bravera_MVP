@@ -15,5 +15,6 @@ defmodule OmegaBravera.Groups.OfferPartner do
     offer_partner
     |> cast(attrs, [:offer_id, :partner_id])
     |> validate_required([:offer_id, :partner_id])
+    |> unique_constraint([:offer_id, :partner_id], name: :offer_partners_offer_id_partner_id_index)
   end
 end

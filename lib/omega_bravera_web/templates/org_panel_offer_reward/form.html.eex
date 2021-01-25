@@ -8,9 +8,7 @@
   <div class="form-group">
     <%= label f, :name, gettext("Reward Name"), class: "control-label" %>
     <small class="form-text text-muted">
-      <%= gettext("(Reward name that appears when validated by QR code scan and Claim ID entry. ") %>
-      <a href="#"><%= gettext("Click here") %></a>
-      <%= gettext(" for hints and help.)") %>
+      <%= gettext("(Reward name that appears when validated by QR code scan and Claim ID entry. See opposite screenshot “Select Reward”).") %>
     </small>
     <%= text_input f, :name, class: "form-control", list: "country" %>
     <%= error_tag f, :name %>
@@ -40,9 +38,9 @@
     <%= label f, :hide, gettext("Deactivate (Hide)"), class: "control-label" %>
     <br/>
     <small class="form-text text-muted">
-      <%= gettext("(When checked, this reward will be removed from any connected offer(s), and not listed as an option during reward claim / validation. ") %>
+      <%= gettext("(When checked, this reward will be removed from the dropdown menu if a reward is no longer active. ") %>
       <a href="#"><%= gettext("Click here") %></a>
-      <%= gettext(" for hints and help.)") %>
+      <%= gettext(" for hints and help).") %>
     </small>
     <%= checkbox f, :hide %>
     <%= error_tag f, :hide %>

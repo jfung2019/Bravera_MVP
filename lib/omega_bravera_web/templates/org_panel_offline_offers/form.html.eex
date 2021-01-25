@@ -31,9 +31,7 @@
       <div class="form-group">
         <%= label f, :name, class: "control-label" %>
         <small class="text-muted form-text">
-          <%= gettext("(The offer name that will appear inside your group. ") %>
-          <a href="#"><%= gettext("Click here") %></a>
-          <%=gettext(" for more info.)") %>
+          <%= gettext("(The offer name that will appear inside your group. Hint: keep to within 8 words)") %>
         </small>
         <%= text_input f, :name, class: "form-control" %>
         <%= error_tag f, :name %>

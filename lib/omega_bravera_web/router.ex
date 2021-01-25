@@ -186,7 +186,10 @@ defmodule OmegaBraveraWeb.Router do
       end
 
       resources "/group_approvals", AdminPanelGroupApprovalController, only: [:show, :create]
-      resources "/offer_approvals", AdminPanelOfferApprovalController, only: [:show, :create]
+
+      resources "/offer_approvals", AdminPanelOfferApprovalController,
+        only: [:show, :create],
+        param: "slug"
     end
 
     scope "/" do

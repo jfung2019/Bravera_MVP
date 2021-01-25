@@ -4,7 +4,7 @@
     <div class="row my-3">
       <div class="col-9">
         <small class="text-muted">
-          <%= gettext("(This is where you create and manage offers linked to your group. Click ‘Create New Offer’ to be taken through the steps).") %>
+          <%= gettext("(This is where you create and manage offline offers linked to your group. Click ‘Create New Offer’ to be taken through the steps).") %>
         </small>
       </div>
     </div>

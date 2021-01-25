@@ -101,7 +101,9 @@ defmodule OmegaBravera.Offers do
       from(
         offer in Offer,
         left_join: op in assoc(offer, :offer_partners),
-        where: offer.hidden == ^false and offer.end_date > ^now and is_nil(op.id)
+        where:
+          offer.hidden == ^false and offer.end_date > ^now and is_nil(op.id) and
+            offer.live == true
       )
 
     closed_offers_query =
@@ -110,7 +112,7 @@ defmodule OmegaBravera.Offers do
         right_join: p in assoc(offer, :partners),
         right_join: m in assoc(p, :members),
         on: m.user_id == ^user_id,
-        where: offer.end_date > ^now and not is_nil(m.id)
+        where: offer.end_date > ^now and not is_nil(m.id) and offer.live == true
       )
 
     unioned_query = union(open_offers_query, ^closed_offers_query)
@@ -547,8 +549,10 @@ defmodule OmegaBravera.Offers do
           changeset
           |> Ecto.Changeset.apply_changes()
 
+        show_offer = offer_approval.status == :approved
+
         get_offer!(offer_approval.offer_id)
-        |> update_offer(%{hidden: false})
+        |> update_offer(%{hidden: show_offer, live: show_offer})
 
         OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_approval.offer_id)
         |> Notifier.notify_customer_offer_email(offer_approval)
@@ -579,6 +583,40 @@ defmodule OmegaBravera.Offers do
   def update_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.changeset(attrs)
+    |> modify_offer()
+  end
+
+  defp send_customer_offer_email({:ok, %{id: offer_id, live: false} = updated_offer}) do
+    OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_id)
+    |> Notifier.customer_offer_modified_email(updated_offer)
+  end
+
+  defp send_customer_offer_email(_result), do: :ok
+
+  def update_org_online_offer(%Offer{} = offer, attrs) do
+    result =
+      offer
+      |> Offer.org_online_offer_changeset(attrs)
+      |> modify_offer()
+
+    send_customer_offer_email(result)
+
+    result
+  end
+
+  def update_org_offline_offer(%Offer{} = offer, attrs) do
+    result =
+      offer
+      |> Offer.org_offline_offer_changeset(attrs)
+      |> modify_offer()
+
+    send_customer_offer_email(result)
+
+    result
+  end
+
+  def modify_offer(changeset) do
+    changeset
     |> switch_pre_registration_date_to_utc()
     |> switch_start_date_to_utc()
     |> switch_end_date_to_utc()
@@ -1283,8 +1321,6 @@ defmodule OmegaBravera.Offers do
   end
 
   def create_org_offer_vendor(attrs \\ %{}) do
-    IO.inspect(attrs)
-
     %OfferVendor{}
     |> OfferVendor.org_changeset(attrs)
     |> Repo.insert()

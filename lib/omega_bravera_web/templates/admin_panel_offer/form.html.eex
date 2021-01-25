@@ -274,6 +274,13 @@
   <% end %>
 
   <div class="form-group">
+    <%= label f, :live, "Live Offer", class: "control-label" %>
+    <br/>
+    <%= checkbox f, :live %>
+    <%= error_tag f, :live %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Save", class: "btn btn-primary" %>
   </div>
 <% end %>
