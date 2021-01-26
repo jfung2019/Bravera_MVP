@@ -1904,7 +1904,7 @@ defmodule OmegaBravera.Accounts do
   def get_partner_user!(id), do: Repo.get!(PartnerUser, id)
 
   def partner_user_auth(username, password) do
-    with {:ok, partner_user} <- get_partner_user_by_username(username),
+    with {:ok, partner_user} <- get_partner_user_by_email_or_username(username),
          do: verify_partner_user_password(password, partner_user)
   end
 

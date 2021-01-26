@@ -12,10 +12,10 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
 
     render(conn, "show.html",
       partner: partner,
-      first_group:
-        Groups.organization_group_count(org_id) == 1 and
+      first_4_group:
+        Groups.organization_group_count(org_id) <= 4 and
           length(partner.offers) < 1,
-      offers: OmegaBravera.Offers.list_offers_by_organization(get_session(conn, :organization_id))
+      offers: OmegaBravera.Offers.list_offers_by_organization(org_id)
     )
   end
 

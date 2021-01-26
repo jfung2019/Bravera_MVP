@@ -10,7 +10,7 @@
                 <h1><%= gettext("Log in") %></h1>
                 <%= form_for @conn, Routes.partner_user_session_path(@conn, :create), fn f -> %>
                 <div class="mb-3">
-                    <%= label f, :username, class: "form-label" %>
+                    <%= label f, :username, gettext("Username or email"), class: "form-label" %>
                     <%= text_input f, :username, class: "form-control", required: true %>
                     <%= error_tag f, :username %>
                 </div>

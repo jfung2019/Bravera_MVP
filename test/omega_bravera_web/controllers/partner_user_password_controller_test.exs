@@ -24,7 +24,7 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordControllerTest do
         })
 
       assert html_response(conn, 200) =~
-               "You will receive a link in your inbox, soon, to set your new password."
+               "Password reset link sent. Please check your inbox."
 
       %{reset_token: reset_token, reset_token_created: reset_token_created} =
         Accounts.get_partner_user!(user_id)

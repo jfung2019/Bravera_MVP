@@ -84,7 +84,8 @@ defmodule OmegaBravera.Offers do
   def list_offers_by_organization(organization_id) do
     from(
       offer in Offer,
-      where: offer.organization_id == ^organization_id,
+      left_join: op in assoc(offer, :offer_partners),
+      where: offer.organization_id == ^organization_id and is_nil(op.id),
       order_by: [desc: offer.id]
     )
     |> Repo.all()
@@ -95,14 +96,14 @@ defmodule OmegaBravera.Offers do
   or if the user is a member of a partner, then the offer will be shown.
   """
   def list_offers_for_user(user_id) do
-    now = Timex.now("Asia/Hong_Kong")
+    now = Timex.now()
 
     open_offers_query =
       from(
         offer in Offer,
         left_join: op in assoc(offer, :offer_partners),
         where:
-          offer.hidden == ^false and offer.end_date > ^now and is_nil(op.id) and
+          offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
             offer.live == true
       )
 

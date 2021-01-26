@@ -8,7 +8,7 @@ defmodule OmegaBraveraWeb.OrgPanelDashboardController do
     render(conn, "index.html",
       # groups is formatted using 999,999
       # so we need to check if it's a string of 0
-      no_groups: dashboard.groups == "0",
+      no_groups: String.replace(dashboard.groups, " ", "") == "0",
       dashboard: dashboard
     )
   end

@@ -31,13 +31,14 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordController do
         |> put_flash(
           :info,
           gettext(
-            "You will receive a link in your inbox, soon, to set your new password.",
+            "Password reset link sent. Please check your inbox.",
             email: email
           )
         )
         |> render("new.html",
           changeset: Accounts.change_partner_user(partner_user),
-          action: Routes.partner_user_password_path(conn, :create)
+          action: Routes.partner_user_password_path(conn, :create),
+          email_sent: true
         )
     end
   end

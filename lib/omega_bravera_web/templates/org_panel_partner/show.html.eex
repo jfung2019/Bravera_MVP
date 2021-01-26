@@ -147,7 +147,7 @@
 	</div>
 </div>
 
-<%= if @first_group and length(@partner.offer_partners) == 0 and is_nil(@partner.location) do %>
+<%= if @first_4_group and length(@partner.offer_partners) == 0 and is_nil(@partner.location) do %>
 	<script>$("#first_group").modal("show");</script>
 <% end %>
 
