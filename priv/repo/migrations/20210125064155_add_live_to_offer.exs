@@ -1,26 +1,14 @@
 defmodule OmegaBravera.Repo.Migrations.AddLiveToOffer do
   use Ecto.Migration
-  import Ecto.Query
 
-  alias OmegaBravera.{Repo, Offers.Offer}
-
-  def up do
+  def change do
     alter table("offers") do
       add :live, :boolean, default: false, null: false
     end
 
     flush()
 
-    from(o in Offer, where: is_nil(o.organization_id))
-    |> Repo.update_all(set: [live: true])
-
-    from(o in Offer, where: not is_nil(o.organization_id))
-    |> Repo.update_all(set: [live: false])
-  end
-
-  def down do
-    alter table("offers") do
-      remove :live
-    end
+    execute "UPDATE offers SET live = 't' WHERE organization_id IS NULL", ""
+    execute "UPDATE offers SET live = 'f' WHERE NOT(organization_id IS NULL)", ""
   end
 end

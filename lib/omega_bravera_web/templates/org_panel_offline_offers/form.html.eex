@@ -22,7 +22,7 @@
   <div class="form-group">
     <%= label f, :location_id, gettext("Offer Availability"), class: "control-label" %>
     <small class="form-text text-muted"><%= gettext("Location your offline reward can be claimed") %></small>
-    <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control chosen" %>
+    <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), prompt: "", class: "form-control chosen" %>
     <%= error_tag f, :location_id %>
   </div>
 

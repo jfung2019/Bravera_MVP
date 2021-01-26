@@ -425,7 +425,7 @@ defmodule OmegaBravera.Offers do
       )
       |> Repo.all()
 
-    ([organization_statement_headers] ++ rows)
+    ([organization_statement_headers()] ++ rows)
     |> CSV.encode()
     |> Enum.to_list()
     |> to_string()

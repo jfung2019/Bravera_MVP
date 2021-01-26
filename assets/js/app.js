@@ -73,7 +73,7 @@ window.addEventListener("phx:page-loading-stop", info => NProgress.done());
 liveSocket.connect();
 
 $(() => {
-  $('select.chosen').chosen();
+  $('select.chosen').chosen({allow_single_deselect: true});
   $('[data-toggle="tooltip"]').tooltip();
   $(window).on('shown.bs.modal', (e) => {
     $(e.target).find('input:first').focus();
