@@ -1548,11 +1548,11 @@ defmodule OmegaBravera.Offers do
   def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
 
   def query(Offer, %{scope: :public_available}) do
-    now = Timex.now("Asia/Hong_Kong")
+    now = Timex.now()
 
     from(
       offer in Offer,
-      where: offer.end_date > ^now,
+      where: offer.end_date > ^now and offer.live == true,
       order_by: [desc: offer.id]
     )
   end

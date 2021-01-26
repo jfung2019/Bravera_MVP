@@ -83,6 +83,7 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       distinct: true,
       left_join: o in assoc(p, :offers),
+      on: o.live == true,
       left_join: m in assoc(p, :members),
       on: m.user_id == ^user_id,
       where: p.id == ^id,
@@ -106,9 +107,11 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       distinct: true,
       left_join: o in assoc(p, :offers),
+      on: o.live == true,
       left_join: m in assoc(p, :members),
       on: m.user_id == ^user_id,
       where: p.live == true,
+      order_by: [desc: p.inserted_at],
       select: %{
         p
         | type:
@@ -610,6 +613,7 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       distinct: true,
       left_join: o in assoc(p, :offers),
+      on: o.live == true,
       left_join: m in assoc(p, :members),
       on: m.user_id == ^user_id,
       select: %{
