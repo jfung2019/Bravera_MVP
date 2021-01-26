@@ -46,7 +46,7 @@
       </tr>
       </tbody>
     </table>
-    <span><%= link "Edit", to: Routes.admin_panel_offer_vendor_path(@conn, :edit, @offer_vendor), class: "btn btn-warning" %></span>
-    <span><%= link "Back", to: Routes.admin_panel_offer_vendor_path(@conn, :index), class: "btn btn-secondary" %></span>
+    <span><%= link "Edit", to: Routes.org_panel_offer_vendor_path(@conn, :edit, @offer_vendor), class: "btn btn-warning" %></span>
+    <span><%= link "Back", to: Routes.org_panel_offer_vendor_path(@conn, :index), class: "btn btn-secondary" %></span>
   </div>
 </div>
