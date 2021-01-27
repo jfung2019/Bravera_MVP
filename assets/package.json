@@ -6,6 +6,7 @@
     "watch": "webpack --mode development --watch-stdin"
   },
   "dependencies": {
+    "alpinejs": "^2.8.0",
     "bootstrap": "^4.5.3",
     "chosen-js": "^1.8.7",
     "dropzone": "^5.7.0",
