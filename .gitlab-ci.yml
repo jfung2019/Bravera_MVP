@@ -1,5 +1,5 @@
 test:
-  image: plangora/alpine-elixir-phoenix:otp-23.2.2-elixir-1.11.3
+  image: plangora/alpine-elixir-phoenix:otp-23.2.3-elixir-1.11.3
   services:
   - postgres:latest
   variables:
@@ -15,7 +15,7 @@ test:
 staging:
   stage: deploy
   environment: staging
-  image: plangora/alpine-elixir-phoenix:otp-23.2.2-elixir-1.11.3
+  image: plangora/alpine-elixir-phoenix:otp-23.2.3-elixir-1.11.3
   variables:
     MIX_ENV: "dev"
     REFSPEC: staging

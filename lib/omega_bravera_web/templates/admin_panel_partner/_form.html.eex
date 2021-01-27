@@ -44,9 +44,10 @@
     </div>
 
   <%= if @current_admin.role == "super" do %>
-    <div class="form-check mb-3">
-      <%= checkbox f, :live, class: "form-check-input" %>
-      <%= label f, :live, gettext("Live Group"), class: "form-check-label" %>
+    <div class="form-group">
+      <%= label f, :approval_status %>
+      <%= select f, :approval_status, @available_approval_statuses, class: add_error_class(f, :approval_status, "form-control") %>
+      <%= error_tag f, :approval_status %>
     </div>
   <% end %>
 

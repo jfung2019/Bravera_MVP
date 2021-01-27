@@ -1,6 +1,7 @@
 defmodule OmegaBraveraWeb.AdminPanelPartnerController do
   use OmegaBraveraWeb, :controller
   alias OmegaBravera.Groups
+  plug :assign_available_options when action in [:edit, :new]
 
   def index(conn, params) do
     results = Turbo.Ecto.turbo(Groups.Partner, params, entry_name: "partners")
@@ -34,6 +35,7 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
 
       {:error, changeset} ->
         conn
+        |> assign_available_options(nil)
         |> put_flash(:error, "Partner wasn't created")
         |> render("new.html", changeset: changeset)
     end
@@ -50,8 +52,14 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
 
       {:error, changeset} ->
         conn
+        |> assign_available_options(nil)
         |> put_flash(:error, "Partner was not updated")
         |> render("edit.html", changeset: changeset, partner: partner)
     end
+  end
+
+  defp assign_available_options(conn, _opts) do
+    conn
+    |> assign(:available_approval_statuses, Groups.Partner.available_approval_status())
   end
 end

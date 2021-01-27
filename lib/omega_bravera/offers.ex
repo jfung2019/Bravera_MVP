@@ -104,7 +104,7 @@ defmodule OmegaBravera.Offers do
         left_join: op in assoc(offer, :offer_partners),
         where:
           offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
-            offer.live == true
+            offer.approval_status == "approved"
       )
 
     closed_offers_query =
@@ -113,7 +113,7 @@ defmodule OmegaBravera.Offers do
         right_join: p in assoc(offer, :partners),
         right_join: m in assoc(p, :members),
         on: m.user_id == ^user_id,
-        where: offer.end_date > ^now and not is_nil(m.id) and offer.live == true
+        where: offer.end_date > ^now and not is_nil(m.id) and offer.approval_status == "approved"
       )
 
     unioned_query = union(open_offers_query, ^closed_offers_query)
@@ -1539,7 +1539,7 @@ defmodule OmegaBravera.Offers do
 
     from(
       offer in Offer,
-      where: offer.end_date > ^now and offer.live == true,
+      where: offer.end_date > ^now and offer.approval_status == "approved",
       order_by: [desc: offer.id]
     )
   end

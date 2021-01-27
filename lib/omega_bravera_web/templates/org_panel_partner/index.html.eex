@@ -28,10 +28,10 @@
 					<%= link gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgPartnerImages, partner), class: "btn btn-info" %>
 				</td>
 				<td class="text-center" style="width: 10%;">
-					<%= if partner.live do %>
-					<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
+					<%= if partner.approval_status == :approved do %>
+						<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
 					<% else %>
-					<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
+						<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
 					<% end %>
 				</td>
 			</tr>

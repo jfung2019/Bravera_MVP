@@ -12,7 +12,7 @@ defmodule OmegaBravera.Groups.Partner do
     field :email, :string
     field :website, :string
     field :phone, :string
-    field :live, :boolean, default: false
+    field :approval_status, Ecto.Enum, values: [:approved, :denied, :pending], default: :pending
     field :type, :string, virtual: true
     field :is_member, :boolean, virtual: true
     has_one :location, PartnerLocation
@@ -35,7 +35,7 @@ defmodule OmegaBravera.Groups.Partner do
       :introduction,
       :short_description,
       :images,
-      :live,
+      :approval_status,
       :join_password,
       :email,
       :website,
@@ -49,6 +49,7 @@ defmodule OmegaBravera.Groups.Partner do
     |> validate_length(:join_password, max: 255, min: 4)
     |> validate_format(:website, ~r/^(https|http):\/\/\w+/)
     |> validate_required([:name, :introduction, :short_description, :images])
+    |> validate_inclusion(:approval_status, available_approval_status())
   end
 
   def org_changeset(partner, attrs) do
@@ -56,6 +57,8 @@ defmodule OmegaBravera.Groups.Partner do
     |> validate_required([:organization_id])
     |> validate_enquiry_method()
   end
+
+  def available_approval_status, do: Ecto.Enum.values(__MODULE__, :approval_status)
 
   defp validate_enquiry_method(changeset) do
     with password when is_binary(password) <- get_field(changeset, :join_password),

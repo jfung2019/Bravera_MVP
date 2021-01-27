@@ -12,27 +12,27 @@
       <a href="#"><%= gettext("Click here") %></a>
       <%=gettext(" for more info.)") %>
     </small>
-    <%= text_input f, :name, class: "form-control" %>
+    <%= text_input f, :name, class: add_error_class(f, :name, "form-control") %>
     <%= error_tag f, :name %>
   </div>
 
   <%= if is_admin?(@conn) do %>
   <div class="form-group">
     <%= label f, "Slug (leave blank to auto generate based on name)", class: "control-label" %>
-    <%= text_input f, :slug, class: "form-control" %>
+    <%= text_input f, :slug, class: add_error_class(f, :slug, "form-control") %>
     <%= error_tag f, :slug %>
   </div>
 
   <div class="form-group">
     <%= label f, "Google Analytics ID", class: "control-label" %>
-    <%= text_input f, :ga_id, class: "form-control" %>
+    <%= text_input f, :ga_id, class: add_error_class(f, :ga_id, "form-control") %>
     <%= error_tag f, :ga_id %>
   </div>
 
   <div class="form-group">
     <%= label f, :pre_registration_start_date, "Pre-registration start: ", class: "control-label" %>
     <br/>
-    <%= datetime_builder(f, :pre_registration_start_date, class: "form-control") %>
+    <%= datetime_builder(f, :pre_registration_start_date, class: add_error_class(f, :pre_registration_start_date, "form-control")) %>
     <%= error_tag f, :pre_registration_start_date %>
   </div>
 
@@ -48,7 +48,7 @@
     <%= label f, :start_date, "Start Date", class: "control-label" %>
     <br/>
     <small class="text-muted form-text"><%= gettext("(Offer will be live after the start date displayed below.)") %></small>
-    <%= datetime_builder(f, :start_date, class: "form-control") %>
+    <%= datetime_builder(f, :start_date, class: add_error_class(f, :start_date, "form-control")) %>
     <%= error_tag f, :start_date %>
   </div>
 
@@ -60,7 +60,7 @@
       <a href="#"><%= gettext("Click here") %></a>
       <%= gettext(" to learn more.)") %>
     </small>
-    <%= datetime_builder(f, :end_date, class: "form-control") %>
+    <%= datetime_builder(f, :end_date, class: add_error_class(f, :end_date, "form-control")) %>
     <%= error_tag f, :end_date %>
   </div>
 
@@ -75,19 +75,19 @@
   <div class="form-group">
     <%= label f, :payment_amount, "Payment Amount: Used as a fee of joining the race. (Leave Blank to not enable)", class: "control-label" %>
     <br/>
-    <%= number_input f, :payment_amount, class: "form-control" %>
+    <%= number_input f, :payment_amount, class: add_error_class(f, :payment_amount, "form-control") %>
     <%= error_tag f, :payment_amount %>
   </div>
 
   <div class="form-group">
     <%= label f, :external_terms_url, class: "control-label" %>
-    <%= text_input f, :external_terms_url, class: "form-control" %>
+    <%= text_input f, :external_terms_url, class: add_error_class(f, :external_terms_url, "form-control") %>
     <%= error_tag f, :external_terms_url %>
   </div>
 
   <div class="form-group">
     <%= label f, :accept_terms_text, class: "control-label" %>
-    <%= text_input f, :accept_terms_text, class: "form-control" %>
+    <%= text_input f, :accept_terms_text, class: add_error_class(f, :accept_terms_text, "form-control") %>
     <%= error_tag f, :accept_terms_text %>
   </div>
   <% end %>
@@ -98,7 +98,7 @@
       <%= gettext("(Add important details about your offer and reward. For help and examples ") %>
       <a href="#"><%= gettext("click here") %></a>.)
     </small>
-    <%= textarea f, :toc, class: "form-control", rows: 3, data: [html: true] %>
+    <%= textarea f, :toc, class: add_error_class(f, :toc, "form-control"), rows: 3, data: [html: true] %>
     <%= error_tag f, :toc %>
   </div>
 
@@ -109,14 +109,14 @@
       <a href="#"><%= gettext("Click here") %></a>
       <%= gettext(" for help and hints.)") %>
     </small>
-    <%= textarea f, :desc, class: "form-control", rows: 3, data: [html: true] %>
+    <%= textarea f, :desc, class: add_error_class(f, :desc, "form-control"), rows: 3, data: [html: true] %>
     <%= error_tag f, :desc %>
   </div>
 
   <%= if is_admin?(@conn) do %>
   <div class="form-group">
     <%= label f, :url, class: "control-label" %>
-    <%= text_input f, :url, class: "form-control" %>
+    <%= text_input f, :url, class: add_error_class(f, :url, "form-control") %>
     <%= error_tag f, :url %>
   </div>
   <% end %>
@@ -130,7 +130,7 @@
     <table class="table mt-3" style="table-layout: fixed;">
       <tr>
         <td><%= gettext("Kilometers:") %></td>
-        <td><%= number_input f, :target, class: "form-control", id: "offer_target", required: "", min: "1" %></td>
+        <td><%= number_input f, :target, class: add_error_class(f, :target, "form-control"), id: "offer_target", required: "", min: "1" %></td>
         <td><%= gettext("Points needed:") %></td>
         <td id="points-target">0</td>
       </tr>
@@ -146,7 +146,7 @@
   <%= if is_admin?(@conn) do %>
   <div class="form-group">
     <%= label f, :offer_challenge_types, class: "control-label" %>
-    <%= multiple_select f, :offer_challenge_types, @available_challenge_type_options, class: "form-control" %>
+    <%= multiple_select f, :offer_challenge_types, @available_challenge_type_options, class: add_error_class(f, :offer_challenge_types, "form-control") %>
     <%= error_tag f, :offer_challenge_types %>
   </div>
   <% end %>
@@ -158,7 +158,7 @@
       <a href="#"><%= gettext("Click here") %></a>
       <%= gettext(" for hints and help.)") %>
     </small>
-    <%= select f, :offer_type, @available_offer_types, class: "form-control", id: "offer_type" %>
+    <%= select f, :offer_type, @available_offer_types, class: add_error_class(f, :offer_type, "form-control"), id: "offer_type" %>
     <%= error_tag f, :offer_type %>
   </div>
 
@@ -166,14 +166,14 @@
     <div class="form-group">
       <%= label f, :vendor_id, gettext("Claim ID"), class: "control-label" %>
       <%= select(f, :vendor_id, Enum.map(@vendors, &{&1.vendor_id, &1.id}),
-              class: "form-control chosen", prompt: gettext("Select Claim ID linked to this offer"))
+              class: add_error_class(f, :vendor_id, "form-control chosen"), prompt: gettext("Select Claim ID linked to this offer"))
         %>
       <%= error_tag f, :vendor_id %>
     </div>
 
     <div class="form-group">
       <%= label f, :location_id, gettext("Offer Availability"), class: "control-label" %>
-      <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: "form-control chosen" %>
+      <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: add_error_class(f, :location_id, "form-control chosen") %>
       <%= error_tag f, :location_id %>
     </div>
   </div>
@@ -185,7 +185,7 @@
         <%= gettext("Please add the redirect website / url where members can ‘claim’ here. ") %>
         (<a href="#"><%= gettext("click here for help") %></a>.)
       </small>
-      <%= text_input f, :online_url, class: "form-control" %>
+      <%= text_input f, :online_url, class: add_error_class(f, :online_url, "form-control") %>
       <%= error_tag f, :online_url %>
     </div>
 
@@ -196,7 +196,7 @@
         <a href="#"><%= gettext("click here") %></a>
         <%= gettext(" for help.)") %>
       </small>
-      <%= text_input f, :online_code, class: "form-control" %>
+      <%= text_input f, :online_code, class: add_error_class(f, :online_code, "form-control") %>
       <%= error_tag f, :online_code %>
     </div>
   </div>
@@ -218,7 +218,7 @@
       <a href="#"><%= gettext("Click here") %></a>
       <%= gettext(" for hints and help.)") %>
     </small>
-    <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
+    <%= number_input f, :redemption_days, class: add_error_class(f, :redemption_days, "form-control"), step: "1" %>
     <%= error_tag f, :redemption_days %>
   </div>
 
@@ -230,18 +230,17 @@
         <a href="#"><%= gettext("Click here") %></a>
         <%= gettext(" for hints and help.)") %>
       </small>
-      <%= number_input f, :redemption_days, class: "form-control", step: "1" %>
+      <%= number_input f, :redemption_days, class: add_error_class(f, :redemption_days, "form-control"), step: "1" %>
       <%= error_tag f, :redemption_days %>
     </div>
 
     <div class="form-group">
       <%= label f, :time_limit, "Time Limit (leave blank to make offer challenge end date match offer's)", class: "control-label" %>
-      <%= number_input f, :time_limit, class: "form-control" %>
+      <%= number_input f, :time_limit, class: add_error_class(f, :time_limit, "form-control") %>
       <%= error_tag f, :time_limit %>
     </div>
   </div>
 
-  <%= if is_admin?(@conn) do %>
   <div class="form-group">
     <%= label f, :currency, class: "control-label" %>
     <%= select f, :currency, @available_currencies, class: "form-control" %>
@@ -250,37 +249,33 @@
 
   <div class="form-group">
     <%= label f, :offer_percent, class: "control-label" %>
-    <%= number_input f, :offer_percent, class: "form-control" %>
+    <%= number_input f, :offer_percent, class: add_error_class(f, :offer_percent, "form-control") %>
     <%= error_tag f, :offer_percent %>
   </div>
 
   <div class="form-group">
     <%= label f, "Additional Members (0 for Solo user challenges. More for Team Challenges)", class: "control-label" %>
-    <%= text_input f, :additional_members, class: "form-control" %>
+    <%= text_input f, :additional_members, class: add_error_class(f, :additional_members, "form-control") %>
     <%= error_tag f, :additional_members %>
   </div>
 
   <div class="form-group">
     <%= label f, :activities, class: "control-label" %>
-    <%= multiple_select f, :activities, @available_activities, class: "form-control" %>
+    <%= multiple_select f, :activities, @available_activities, class: add_error_class(f, :activities, "form-control") %>
     <%= error_tag f, :activities %>
   </div>
 
   <div class="form-group">
     <%= label f, :form_url, "Form URL", class: "control-label" %>
-    <%= text_input f, :form_url, class: "form-control" %>
+    <%= text_input f, :form_url, class: add_error_class(f, :form_url, "form-control") %>
     <%= error_tag f, :form_url %>
   </div>
-  <% end %>
 
   <div class="form-group">
-    <%= label f, :live, "Live Offer", class: "control-label" %>
-    <br/>
-    <%= checkbox f, :live %>
-    <%= error_tag f, :live %>
+    <%= label f, :approval_status %>
+    <%= select f, :approval_status, @available_offer_approval_statuses, value: :approved, class: add_error_class(f, :approval_status, "form-control") %>
+    <%= error_tag f, :form_url %>
   </div>
-
-  <%= hidden_input f, :approval_status, value: :approved %>
 
   <div class="form-group">
     <%= submit "Save", class: "btn btn-primary" %>

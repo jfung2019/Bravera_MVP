@@ -1988,16 +1988,6 @@ defmodule OmegaBravera.Accounts do
     end
   end
 
-  defp get_partner_user_by_username(username) do
-    case Repo.get_by(PartnerUser, username: username) do
-      nil ->
-        {:error, :user_does_not_exist}
-
-      partner_user ->
-        {:ok, partner_user}
-    end
-  end
-
   defp verify_partner_user_password(password, partner_user) do
     if checkpw(password, partner_user.password_hash) do
       {:ok, partner_user}

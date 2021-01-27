@@ -3,10 +3,10 @@
 		<div class="d-flex justify-content-between">
 			<h1><span class="fa fa-group"></span> <%= @partner.name %></h1>
 			<div class="d-block">
-				<%= if @partner.live do %>
-				<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
+				<%= if @partner.approval_status == :approved do %>
+					<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
 				<% else %>
-				<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
+					<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
 				<% end %>
 			</div>
 		</div>
@@ -75,14 +75,9 @@
 			<tr>
 				<td><%= offer_partner.offer.name %></td>
 				<td class="text-center">
-					<%= if offer_partner.offer.live do %>
-						<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
-					<% else %>
-						<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
-					<% end %>
 					<%= cond do %>
 						<% offer_partner.offer.approval_status == :approved -> %>
-							<div class="rounded py-1 px-3 d-inline-block badge badge-info ml-2"><%= gettext("Approved") %></div>
+							<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
 						<% offer_partner.offer.approval_status == :denied -> %>
 							<div class="rounded py-1 px-3 d-inline-block badge badge-danger ml-2"><%= gettext("Denied") %></div>
 						<% true -> %>
