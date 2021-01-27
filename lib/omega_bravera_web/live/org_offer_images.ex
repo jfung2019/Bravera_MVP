@@ -51,7 +51,8 @@ defmodule OmegaBraveraWeb.OrgOfferImages do
     {:noreply, assign(socket, images: images)}
   end
 
-  def handle_event("to-delete", %{"index" => string_index}, socket), do: {:noreply, assign(socket, to_delete: String.to_integer(string_index))}
+  def handle_event("to-delete", %{"index" => string_index}, socket),
+    do: {:noreply, assign(socket, to_delete: String.to_integer(string_index))}
 
   def handle_event("undo-delete", _, socket), do: {:noreply, assign(socket, to_delete: nil)}
 
@@ -69,7 +70,7 @@ defmodule OmegaBraveraWeb.OrgOfferImages do
   end
 
   defp swap_images(images, _original_index, new_index) when length(images) == new_index,
-       do: images
+    do: images
 
   defp swap_images(images, 0, new_index) when new_index < 0, do: images
 
