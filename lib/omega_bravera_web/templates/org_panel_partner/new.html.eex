@@ -8,6 +8,31 @@
                 </small>
             </div>
         </div>
-        <%= render "_form.html", Map.put(assigns, :action, Routes.org_panel_partner_path(@conn, :create)) %>
+        <%= render "_form.html", assigns %>
     </div>
 </div>
+
+<div class="modal fade" id="group_create_redirect" tabindex="-1" role="dialog" aria-labelledby="group_create_redirect_modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><%= gettext("Great. Details have been added to your Group.") %></p>
+                <br>
+                <p><%= gettext("The Next step will be to add images before saving and submitting a draft to an admin to approve.") %></p>
+                <br>
+                <p><%= gettext("Do you want to continue adding images or edit the Group details?") %></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="$('#first_5_groups_submit_btn').click()"><%= gettext("Add Images") %></button>
+                <button class="btn btn-primary" onclick="redirectToEditGroup()"><%= gettext("Edit Group Details") %></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function redirectToEditGroup() {
+        $("#group_form").attr("action", "<%= @edit_action %>");
+        $("#first_5_groups_submit_btn").click();
+    }
+</script>

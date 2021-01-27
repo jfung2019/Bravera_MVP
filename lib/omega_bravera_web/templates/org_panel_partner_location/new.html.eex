@@ -43,6 +43,6 @@
     </div>
 </div>
 
-<%= if @no_location do %>
+<%= if @first_5_locations do %>
 <script>$("#no_location").modal("show");</script>
 <% end %>

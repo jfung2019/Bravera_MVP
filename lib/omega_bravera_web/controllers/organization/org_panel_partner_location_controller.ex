@@ -2,12 +2,12 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerLocationController do
   use OmegaBraveraWeb, :controller
   alias OmegaBravera.Groups
 
-  def new(conn, %{"org_panel_partner_id" => partner_id}) do
+  def new(%{assigns: %{organization_id: org_id}} = conn, %{"org_panel_partner_id" => partner_id}) do
     partner = Groups.get_partner!(partner_id)
 
     render(conn, "new.html",
       changeset: Groups.change_partner_location(%Groups.PartnerLocation{}),
-      no_location: Groups.organization_locations_count(get_session(conn, :organization_id)) == 0,
+      first_5_locations: Groups.organization_locations_count(org_id) <= 5,
       partner: partner
     )
   end

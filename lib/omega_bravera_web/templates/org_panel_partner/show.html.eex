@@ -76,18 +76,29 @@
 				<td><%= offer_partner.offer.name %></td>
 				<td class="text-center">
 					<%= if offer_partner.offer.live do %>
-					<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
+						<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
 					<% else %>
-					<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
+						<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
+					<% end %>
+					<%= cond do %>
+						<% offer_partner.offer.approval_status == :approved -> %>
+							<div class="rounded py-1 px-3 d-inline-block badge badge-info ml-2"><%= gettext("Approved") %></div>
+						<% offer_partner.offer.approval_status == :denied -> %>
+							<div class="rounded py-1 px-3 d-inline-block badge badge-danger ml-2"><%= gettext("Denied") %></div>
+						<% true -> %>
+							<div class="rounded py-1 px-3 d-inline-block badge badge-warning ml-2"><%= gettext("Pending") %></div>
 					<% end %>
 				</td>
 				<td class="text-center">
 					<%= if offer_partner.offer.offer_type == :online do %>
-					<%= link gettext("Edit Offer"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
+						<%= link gettext("Edit Offer"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
 					<% else %>
-					<%= link gettext("Edit Offer"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
+						<%= link gettext("Edit Offer"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
 					<% end %>
-					<%= link gettext("Unlink Offer"), to: Routes.org_panel_offer_partner_path(@conn, :delete, offer_partner), method: :delete, class: "btn btn-danger" %>
+						<%= link gettext("Unlink Offer"), to: Routes.org_panel_offer_partner_path(@conn, :delete, offer_partner), method: :delete, class: "btn btn-danger" %>
+					<%= if offer_partner.offer.approval_status == :denied do %>
+						<%= link gettext("Approve"), to: Routes.org_panel_offer_partner_path(@conn, :approval, offer_partner), class: "btn btn-danger" %>
+					<% end %>
 				</td>
 			</tr>
 			<% end %>
@@ -164,7 +175,7 @@
 	</div>
 </div>
 
-<%= if @first_4_group and length(@partner.offer_partners) == 0 and is_nil(@partner.location) do %>
+<%= if @first_10_groups and length(@partner.offer_partners) == 0 and is_nil(@partner.location) do %>
 	<script>$("#first_group").modal("show");</script>
 <% end %>
 

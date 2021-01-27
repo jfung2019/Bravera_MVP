@@ -24,6 +24,7 @@ defmodule OmegaBravera.Offers.Offer do
     field :offer_percent, :float
     field :hidden, :boolean, default: true
     field :live, :boolean, default: false
+    field :approval_status, Ecto.Enum, values: [:approved, :denied, :pending], default: :pending
     field :redemption_days, :integer
     field :offer_type, Ecto.Enum, values: [:in_store, :online], default: :in_store
     field :take_challenge, :boolean, default: true
@@ -87,6 +88,7 @@ defmodule OmegaBravera.Offers.Offer do
     :always,
     :hidden,
     :live,
+    :approval_status,
     :desc,
     :full_desc,
     :toc,
@@ -146,6 +148,7 @@ defmodule OmegaBravera.Offers.Offer do
     |> unique_constraint(:slug)
     |> upload_logo(attrs)
     |> validate_offer_type()
+    |> validate_inclusion(:approval_status, available_approval_status())
   end
 
   def update_changeset(offer, attrs) do
@@ -185,6 +188,8 @@ defmodule OmegaBravera.Offers.Offer do
   end
 
   def available_offer_types, do: Ecto.Enum.values(__MODULE__, :offer_type)
+
+  def available_approval_status, do: Ecto.Enum.values(__MODULE__, :approval_status)
 
   defp upload_logo(%Ecto.Changeset{} = changeset, %{"logo" => logo_params}) do
     logo_path = get_field(changeset, :logo)

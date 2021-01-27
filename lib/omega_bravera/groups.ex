@@ -576,21 +576,36 @@ defmodule OmegaBravera.Groups do
     |> Repo.insert()
   end
 
+  defp submit_offer_partner_for_approval(%{id: offer_id} = offer) do
+    OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_id)
+    |> Notifier.customer_offer_modified_email(offer)
+  end
+
   def create_org_offer_partner(attrs) do
     result = create_offer_partner(attrs)
 
     case result do
       {:ok, %{offer_id: offer_id}} ->
-        offer = OmegaBravera.Offers.get_offer!(offer_id)
-
-        OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_id)
-        |> Notifier.customer_offer_modified_email(offer)
+        OmegaBravera.Offers.get_offer!(offer_id)
+        |> submit_offer_partner_for_approval()
 
       _ ->
         :ok
     end
 
     result
+  end
+
+  def resubmit_offer_partner_for_approval(offer_id) do
+    offer = OmegaBravera.Offers.get_offer!(offer_id)
+
+    case OmegaBravera.Offers.update_offer(offer, %{approval_status: :pending}) do
+      {:ok, _} ->
+        submit_offer_partner_for_approval(offer)
+
+      {:error, _} = error_tuple ->
+        error_tuple
+    end
   end
 
   @doc """

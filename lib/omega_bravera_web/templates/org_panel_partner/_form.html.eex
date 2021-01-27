@@ -1,4 +1,4 @@
-<%= form_for @changeset, @action, fn f -> %>
+<%= form_for @changeset, @action, [id: "group_form"], fn f -> %>
     <div class="d-flex">
         <div class="form-group col-9 p-0">
             <%= label f, :name, class: "control-label" %>
@@ -63,6 +63,12 @@
             </div>
         </div>
     </div>
-
-    <%= submit gettext("Submit"), class: "btn btn-primary" %>
+    <%= if assigns[:first_5_groups] do %>
+        <%= submit gettext("Submit"), class: "d-none", id: "first_5_groups_submit_btn" %>
+    <% else %>
+        <%= submit gettext("Submit"), class: "btn btn-primary" %>
+    <% end %>
+<% end %>
+<%= if assigns[:first_5_groups] do %>
+    <button class="btn btn-primary" onclick="$('#group_create_redirect').modal('show');"><%= gettext("Submit") %></button>
 <% end %>

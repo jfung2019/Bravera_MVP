@@ -42,7 +42,7 @@
                     <p><%= gettext("What do you want to do now?") %></p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="hideModal()"><%= gettext("Edit Image") %></button>
+                    <button class="btn btn-primary" onclick="$('#first_time_upload_image').modal('hide');"><%= gettext("Edit Image") %></button>
                     <%= link gettext("Save and continue"), to: Routes.org_panel_partner_path(@socket, :show, @partner), class: "btn btn-primary" %>
                 </div>
             </div>
@@ -51,10 +51,31 @@
 </div>
 
 <%= if assigns[:first_time_upload_image] do %>
-<script>$("#first_time_upload_image").modal("show");</script>
+    <script>$("#first_time_upload_image").modal("show");</script>
 <% end %>
-<script>
-    function hideModal() {
-        $("#first_time_upload_image").modal("hide");
-    }
-</script>
+
+<div phx-update="ignore">
+    <div class="modal fade" id="first_10_group_image" tabindex="-1" role="dialog" aria-labelledby="first_10_group_image_modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><%= gettext("Add images to your group.") %></h5>
+                </div>
+                <div class="modal-body">
+                    <p><%= gettext("Drag and drop images you want to see in your group.") %></p>
+                    <br>
+                    <p><%= gettext("The first image will be your ‘lead’ image on the offers list.") %></p>
+                    <br>
+                    <p><%= gettext("Hint: Dimensions to use for best results are square 1080x1080 (similar to instagram).") %></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="$('#first_10_group_image').modal('hide');"><%= gettext("Add Images") %></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%= if assigns[:first_10_groups] do %>
+    <script>$("#first_10_group_image").modal("show");</script>
+<% end %>

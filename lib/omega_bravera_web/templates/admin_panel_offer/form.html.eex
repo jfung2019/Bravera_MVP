@@ -280,6 +280,8 @@
     <%= error_tag f, :live %>
   </div>
 
+  <%= hidden_input f, :approval_status, value: :approved %>
+
   <div class="form-group">
     <%= submit "Save", class: "btn btn-primary" %>
   </div>

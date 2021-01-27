@@ -6,10 +6,18 @@ defmodule OmegaBraveraWeb.OrgPartnerImages do
   def render(assigns),
     do: OmegaBraveraWeb.OrgPanelPartnerView.render("partner_images.html", assigns)
 
-  def mount(%{"id" => partner_id}, _session, socket) do
+  def mount(%{"id" => partner_id}, %{"organization_id" => org_id}, socket) do
     partner = Groups.get_partner!(partner_id)
     token = UploadAuth.generate_partner_token(partner.id)
-    {:ok, assign(socket, partner: partner, images: partner.images, upload_token: token)}
+    first_10_groups = Groups.organization_group_count(org_id) <= 10
+
+    {:ok,
+     assign(socket,
+       partner: partner,
+       images: partner.images,
+       upload_token: token,
+       first_10_groups: first_10_groups
+     )}
   end
 
   def handle_event(

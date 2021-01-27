@@ -24,7 +24,7 @@
         <td>
           <ul>
             <%= for offer <- Enum.filter(@offer_vendor.offers, fn offer -> !offer.hidden end) do %>
-            <%= if offer.offer_type == "in_store" do %>
+            <%= if offer.offer_type == :in_store do %>
             <li><%= link offer.name, to: Routes.org_panel_offline_offers_path(@conn, :edit, offer) %></li>
             <% else %>
             <li><%= link offer.name, to: Routes.org_panel_online_offers_path(@conn, :edit, offer) %></li>
@@ -35,7 +35,7 @@
         <td>
           <ul>
             <%= for offer <- Enum.filter(@offer_vendor.offers, fn offer -> offer.hidden end) do %>
-            <%= if offer.offer_type == "in_store" do %>
+            <%= if offer.offer_type == :in_store do %>
             <li><%= link offer.name, to: Routes.org_panel_offline_offers_path(@conn, :edit, offer) %></li>
             <% else %>
             <li><%= link offer.name, to: Routes.org_panel_online_offers_path(@conn, :edit, offer) %></li>

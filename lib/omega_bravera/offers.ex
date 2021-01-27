@@ -587,36 +587,19 @@ defmodule OmegaBravera.Offers do
     |> modify_offer()
   end
 
-  defp send_customer_offer_email({:ok, %{id: offer_id, live: false} = updated_offer}) do
-    OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_id)
-    |> Notifier.customer_offer_modified_email(updated_offer)
-  end
-
-  defp send_customer_offer_email(_result), do: :ok
-
   def update_org_online_offer(%Offer{} = offer, attrs) do
-    result =
-      offer
-      |> Offer.org_online_offer_changeset(attrs)
-      |> modify_offer()
-
-    send_customer_offer_email(result)
-
-    result
+    offer
+    |> Offer.org_online_offer_changeset(attrs)
+    |> modify_offer()
   end
 
   def update_org_offline_offer(%Offer{} = offer, attrs) do
-    result =
-      offer
-      |> Offer.org_offline_offer_changeset(attrs)
-      |> modify_offer()
-
-    send_customer_offer_email(result)
-
-    result
+    offer
+    |> Offer.org_offline_offer_changeset(attrs)
+    |> modify_offer()
   end
 
-  def modify_offer(changeset) do
+  defp modify_offer(changeset) do
     changeset
     |> switch_pre_registration_date_to_utc()
     |> switch_start_date_to_utc()

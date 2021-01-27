@@ -262,6 +262,7 @@ defmodule OmegaBraveraWeb.Router do
       end
 
       resources "/offer-partners", OrgPanelOfferPartnerController, only: [:create, :delete]
+      get "/offer-partners/:id", OrgPanelOfferPartnerController, :approval
       resources "/claim-ids", OrgPanelOfferVendorController, except: [:delete]
       resources "/rewards", OrgPanelOfferRewardController, except: [:delete]
       get "/guides", OrgPanelDashboardController, :guides

@@ -12,9 +12,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
 
     render(conn, "show.html",
       partner: partner,
-      first_4_group:
-        Groups.organization_group_count(org_id) <= 4 and
-          length(partner.offers) < 1,
+      first_10_groups: Groups.organization_group_count(org_id) <= 10,
       offers: OmegaBravera.Offers.list_offers_by_organization(org_id)
     )
   end
@@ -25,21 +23,36 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
     render(conn, partner: partner, changeset: Groups.change_partner(partner))
   end
 
-  def new(conn, _params),
-    do: render(conn, "new.html", changeset: Groups.change_partner(%Groups.Partner{}))
+  def new(conn, _params) do
+    conn
+    |> assigns_for_popup()
+    |> render("new.html", changeset: Groups.change_partner(%Groups.Partner{}))
+  end
 
-  def create(%{assigns: %{organization_id: org_id}} = conn, %{"partner" => partner_params}) do
+  def create(
+        %{assigns: %{organization_id: org_id}} = conn,
+        %{"partner" => partner_params} = params
+      ) do
     partner_params = Map.put(partner_params, "organization_id", org_id)
 
     case Groups.create_org_partner(partner_params) do
       {:ok, partner} ->
-        conn
-        |> put_flash(:info, "Partner created successfully")
-        |> redirect(to: Routes.live_path(conn, OmegaBraveraWeb.OrgPartnerImages, partner))
+        conn =
+          conn
+          |> put_flash(:info, "Group created successfully")
+
+        case params do
+          %{"redirect" => "edit"} ->
+            redirect(conn, to: Routes.org_panel_partner_path(conn, :edit, partner))
+
+          _ ->
+            redirect(conn, to: Routes.live_path(conn, OmegaBraveraWeb.OrgPartnerImages, partner))
+        end
 
       {:error, changeset} ->
         conn
-        |> put_flash(:error, "Partner wasn't created")
+        |> put_flash(:error, "Group wasn't created")
+        |> assigns_for_popup()
         |> render("new.html", changeset: changeset)
     end
   end
@@ -50,13 +63,20 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
     case Groups.update_org_partner(partner, partner_params) do
       {:ok, partner} ->
         conn
-        |> put_flash(:info, "Partner updated successfully")
+        |> put_flash(:info, "Group updated successfully")
         |> redirect(to: Routes.org_panel_partner_path(conn, :show, partner))
 
       {:error, changeset} ->
         conn
-        |> put_flash(:error, "Partner was not updated")
+        |> put_flash(:error, "Group was not updated")
         |> render("edit.html", changeset: changeset, partner: partner)
     end
+  end
+
+  defp assigns_for_popup(%{assigns: %{organization_id: org_id}} = conn) do
+    conn
+    |> assign(:action, Routes.org_panel_partner_path(conn, :create))
+    |> assign(:edit_action, Routes.org_panel_partner_path(conn, :create, %{"redirect" => "edit"}))
+    |> assign(:first_5_groups, Groups.organization_group_count(org_id) <= 5)
   end
 end
