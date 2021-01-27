@@ -5,9 +5,14 @@
 
         <div class="row">
             <%= for {url, index} <- Enum.with_index(@images) do %>
-            <div class="col-2 mt-2" phx-click="remove-image" phx-value-index="<%= index %>">
-                <%= img_tag(url, class: "img-fluid") %>
-            </div>
+              <div class="col-4 mt-2 position-relative image-with-toolbar" id="image-<%= url %>">
+                  <%= img_tag(url, class: "img-fluid") %>
+                  <div class="position-absolute fixed-top d-flex justify-content-end toolbar">
+                    <button type="button" class="btn btn-info" phx-click="shift-left" phx-value-index="<%= index %>"><span class="fa fa-arrow-left"></span></button>
+                    <button type="button" class="btn btn-info mx-4" phx-click="shift-right" phx-value-index="<%= index %>"><span class="fa fa-arrow-right"></span></button>
+                    <button type="button" class="btn btn-danger" @click="modal = true" phx-click="to-delete" phx-value-index="<%= index %>"><span class="fa fa-trash"></span></button>
+                  </div>
+              </div>
             <% end %>
         </div>
         <div class="row mt-3">
@@ -26,28 +31,49 @@
         <button type="button" class="btn btn-primary" phx-click="save-images">Save</button>
     </div>
 </div>
+<%= if assigns[:to_delete] do %>
+  <div class="modal fade show d-block" id="delete-image" tabindex="-1" role="dialog" aria-labelledby="first_time_adding_image_modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div class="d-flex justify-content-end py-1 px-3">
+                  <button type="button" class="close" aria-label="Close" @click="modal = false" phx-click="undo-remove">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                <div class="d-flex align-items-center flex-column">
+                  <h3><%= gettext("Remove image?") %></h3>
+                  <%= img_tag(Enum.at(@images, @to_delete), class: "img-fluid") %>
+                </div>
+              </div>
+              <div class="modal-footer">
+                  <a href="#" class="btn btn-secondary" @click="modal = false" phx-click="undo-delete"><%= gettext("Cancel") %></a>
+                  <a href="#" class="btn btn-danger" @click="modal = false" phx-click="remove-image" phx-value-index="<%= @to_delete %>"><%= gettext("Remove Image") %></a>
+              </div>
+          </div>
+      </div>
+  </div>
+<% end %>
 
-<div phx-update="ignore">
-    <div class="modal fade" id="first_time_adding_image_modal" tabindex="-1" role="dialog" aria-labelledby="first_time_adding_image_modal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="d-flex justify-content-end py-1 px-3">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p><%= gettext("Images added to your offer! Nice work.") %></p>
-                    <br/>
-                    <p><%= gettext("You can now create the ‘reward’ that is linked to this offer and will be displayed to be verified by the CLAIM ID.") %></p>
-                </div>
-                <div class="modal-footer">
-                    <%= link gettext("Add Reward"), to: Routes.org_panel_offer_reward_path(@socket, :new), class: "btn btn-primary" %>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+  <div class="modal fade" id="first_time_adding_image_modal d-block" tabindex="-1" role="dialog" aria-labelledby="first_time_adding_image_modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div class="d-flex justify-content-end py-1 px-3">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <p><%= gettext("Images added to your offer! Nice work.") %></p>
+                  <br/>
+                  <p><%= gettext("You can now create the ‘reward’ that is linked to this offer and will be displayed to be verified by the CLAIM ID.") %></p>
+              </div>
+              <div class="modal-footer">
+                  <%= link gettext("Add Reward"), to: Routes.org_panel_offer_reward_path(@socket, :new), class: "btn btn-primary" %>
+              </div>
+          </div>
+      </div>
+  </div>
 
 <div phx-update="ignore">
     <div class="modal fade" id="first_time_added_image_online_offer" tabindex="-1" role="dialog" aria-labelledby="first_time_added_image_online_offer_modal" aria-hidden="true">

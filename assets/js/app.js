@@ -14,6 +14,7 @@ import {Socket} from "phoenix";
 import LiveSocket from "phoenix_live_view";
 import Dropzone from "dropzone";
 import NProgress from "nprogress";
+import "alpinejs";
 
 import "./timezone_stuff";
 import "./challenge_creation";
