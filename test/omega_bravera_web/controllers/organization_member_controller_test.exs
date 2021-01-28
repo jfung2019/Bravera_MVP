@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.{Accounts, Fixtures}
 
   setup %{conn: conn} do
     with {:ok, admin_user} <-
@@ -27,7 +27,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
   describe "create organization_member" do
     test "redirects to show when data is valid", %{conn: conn} do
       {:ok, organization} = Accounts.create_organization(%{name: "test2", business_type: "test2"})
-
+      location = Fixtures.location_fixture()
       conn =
         post(conn, Routes.admin_panel_organization_member_path(conn, :create),
           organization_member: %{
@@ -36,6 +36,10 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
             password_confirmation: "123456",
             password: "123456",
             business_type: "type",
+            first_name: "First Name",
+            last_name: "Last Name",
+            location_id: location.id,
+            contact_number: "00000000",
             accept_terms: true,
             organization_id: organization.id
           }
@@ -142,12 +146,16 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
 
   defp create_organization_member(_) do
     {:ok, organization} = Accounts.create_organization(%{name: "test", business_type: "test"})
-
+    location = Fixtures.location_fixture()
     organization_member_params = %{
       username: "name",
       email: "iu@email.com",
       password: "123456",
       password_confirmation: "123456",
+      first_name: "First Name",
+      last_name: "Last Name",
+      location_id: location.id,
+      contact_number: "00000000",
       business_type: "type",
       accept_terms: true
     }
