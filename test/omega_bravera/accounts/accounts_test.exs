@@ -624,12 +624,18 @@ defmodule OmegaBravera.AccountsTest do
       {:ok, organization} =
         Accounts.create_organization(Map.merge(attrs, %{name: "name", business_type: "type"}))
 
+      location = Fixtures.location_fixture()
+
       {:ok, %{create_organization_member: organization_member}} =
         Accounts.create_organization_partner_user(organization.id, %{
           username: "name2",
           email: "iu@email.com",
           password: "123456",
           password_confirmation: "123456",
+          first_name: "First Name",
+          last_name: "Last Name",
+          location_id: location.id,
+          contact_number: "00000000",
           business_type: "type",
           accept_terms: true
         })
@@ -648,6 +654,8 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "create_organization_member/1 with valid data creates a organization_member" do
+      location = Fixtures.location_fixture()
+
       assert {:ok, organization} =
                Accounts.create_organization(%{name: "name", business_type: "type"})
 
@@ -655,6 +663,10 @@ defmodule OmegaBravera.AccountsTest do
                Accounts.create_organization_partner_user(organization.id, %{
                  username: "name2",
                  email: "iu@email.com",
+                 first_name: "First Name",
+                 last_name: "Last Name",
+                 location_id: location.id,
+                 contact_number: "00000000",
                  password: "123456",
                  password_confirmation: "123456",
                  business_type: "type",
