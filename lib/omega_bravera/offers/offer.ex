@@ -86,7 +86,6 @@ defmodule OmegaBravera.Offers.Offer do
     :end_date,
     :always,
     :hidden,
-    :live,
     :approval_status,
     :desc,
     :full_desc,
