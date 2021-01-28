@@ -11,7 +11,7 @@
                 <%= form_for @changeset, Routes.partner_user_register_path(@conn, :create), fn f -> %>
                 <%= inputs_for f, :organization, fn org -> %>
                 <div class="mb-3">
-                    <%= label org, :business_type, gettext("Organisation / Business type"), class: "form-label" %>
+                    <%= label org, :business_type, gettext("Organisation / Business type / Other"), class: "form-label" %>
                     <%= text_input org, :business_type, class: add_error_class(org, :business_type, "form-control"), required: true %>
                     <%= error_tag org, :business_type %>
                 </div>

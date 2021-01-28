@@ -12,7 +12,7 @@
     <div class="d-flex">
         <div class="form-group col-9 p-0">
             <%= label f, :short_description, class: "control-label" %>
-            <small class="form-text text-muted"><%= gettext("(displayed on list of groups in the Bravera app. 5-10 words)") %></small>
+            <small class="form-text text-muted"><%= gettext("(Displayed on list of groups inside the Bravera app. Ideally between 20 to 30 words)") %></small>
             <%= textarea f, :short_description, class: add_error_class(f, :short_description, "form-control"), data: [html: true] %>
             <%= error_tag f, :short_description %>
         </div>
@@ -22,7 +22,7 @@
     <div class="d-flex">
         <div class="form-group col-9 p-0">
             <%= label f, :introduction, class: "control-label" %>
-            <small class="form-text text-muted"><%= gettext("(longer introduction when people click to find out more. Up to 250 words)") %></small>
+            <small class="form-text text-muted"><%= gettext("(Longer introduction when people click to find out more. Up to 250 words)") %></small>
             <%= textarea f, :introduction, class: add_error_class(f, :introduction, "form-control"), data: [html: true] %>
             <%= error_tag f, :introduction %>
         </div>
@@ -30,7 +30,7 @@
     </div>
 
     <div class="form-group">
-        <%= select f, :method, [gettext("Private (requires password)"), gettext("Public (open to all)")], id: "group_type_select", class: "form-control chosen", prompt: gettext("Please select") %>
+        <%= select f, :method, [{gettext("Private (requires PIN/password to join the group)"), "private"}, {gettext("Public (open to all / anyone can join)"), "public"}], id: "group_type_select", class: "form-control chosen", prompt: gettext("Please select") %>
     </div>
 
     <div id="private_group_fields" class="d-none">

@@ -24,9 +24,9 @@ function calTarget(val) {
     if (val === "") {
         val = 0;
     }
-    $("#points-target").text(val * 10);
-    $("#miles-target").text((val * 0.621371).toFixed(2));
-    $("#steps-target").text(val * 1350);
+    $("#points-target").text((val * 10).toLocaleString());
+    $("#miles-target").text(parseFloat((val * 0.621371).toFixed(2)).toLocaleString());
+    $("#steps-target").text((val * 1350).toLocaleString());
 }
 
 function checkEnableChallenge(obj) {

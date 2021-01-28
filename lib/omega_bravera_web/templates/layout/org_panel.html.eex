@@ -28,6 +28,7 @@
             <div class="row">
                 <%= if logged_in?(@conn) && is_partner_user?(@conn) do %>
                 <div class="col-lg-2">
+                    <div class="sticky-top">
                     <%= img_tag Routes.static_path(@conn, "/images/admin_logo.png"), class: "img-fluid py-2 bg-white shadow rounded-top", style: "object-fit: contain;" %>
                     <div class="admin-nav-menu py-3 rounded-bottom">
                         <ul class="nav flex-column">
@@ -84,6 +85,7 @@
                             </li>
                         </ul>
                     </div>
+                    </div>
                 </div>
                 <% end %>
                 <div class="<%= if logged_in?(@conn) && is_partner_user?(@conn), do: "col-lg-10", else: "col"%>">
@@ -92,7 +94,7 @@
             </div>
         </section>
         <div x-show="modal" class="position-absolute" style="top: 0; left: 0; height: 100%; width: 100%; background-color: rgba(0,0,0,.5);"></div>
-        <footer class="footer">
+        <footer class="footer mt-3">
             <div class="container">
                 <nav class="navbar navbar-expand">
                     <ul class="navbar-nav">

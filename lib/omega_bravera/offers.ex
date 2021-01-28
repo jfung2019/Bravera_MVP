@@ -1084,7 +1084,7 @@ defmodule OmegaBravera.Offers do
   """
   def organization_statement_headers,
     do: [
-      "Alias",
+      "Alias/Username",
       "Challenge Creation",
       "Challenge Completed Date",
       "Redeemed Date",

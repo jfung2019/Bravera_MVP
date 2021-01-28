@@ -9,50 +9,57 @@
       </div>
     </div>
     <%= link gettext("Create New Offer"), to: Routes.org_panel_offline_offers_path(@conn, :new), class: "btn btn-outline-primary" %>
-    <table class="table mt-3 table-striped">
-      <thead>
-        <tr>
-          <th><%= gettext("Name") %></th>
-          <th><%= gettext("Claim ID") %></th>
-          <th><%= gettext("Participants") %></th>
-          <th><%= gettext("Engagements") %></th>
-          <th><%= gettext("Status") %></th>
-          <th><%= gettext("Claims") %></th>
-          <th><%= gettext("Total Value") %></th>
-          <th><%= gettext("Date Created") %></th>
-          <th><%= gettext("Last Edited") %></th>
-          <th class="text-center"><%= gettext("Actions") %></th>
-          <th class="text-center"><%= gettext("Status") %></th>
-        </tr>
-      </thead>
-      <tbody>
-      <%= for offer <- @offers do %>
-        <tr>
-          <td><%= offer.name %></td>
-          <td><%= offer.vendor.vendor_id %></td>
-          <td><%= offer.unique_participants %></td>
-          <td><%= length(offer.offer_challenges) %></td>
-          <td class="small"><%= raw completed_challenges(offer.offer_challenges) %></td>
-          <td><%= redeems_total(offer.offer_redeems) %></td>
-          <td><%= get_total_redeems_value(offer.offer_redeems) %></td>
-          <td><%= render_datetime(offer.inserted_at) %></td>
-          <td><%= render_datetime(offer.updated_at) %></td>
-          <td class="text-center">
-            <%= link gettext("Statement"), to: Routes.org_panel_offline_offers_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs mb-2"%>
-            <%= link gettext("Edit"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer), class: "btn btn-warning btn-xs mb-2"%>
-            <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), class: "btn btn-info btn-xs mb-2"%>
-          </td>
-          <td class="text-center">
-            <%= if offer.approval_status == :approved do %>
-              <div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
-            <% else %>
-              <div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
+    <%= case @offers do %>
+      <% [] -> %>
+        <div class="d-flex justify-content-center align-items-center mt-3">
+          <p><%= gettext("No data yet. Hint: for help on launching a Group and / or Offer you can go to “Launch Guides / Templates” on the main navigation.") %></p>
+        </div>
+      <% _ -> %>
+        <table class="table mt-3 table-striped">
+          <thead>
+            <tr>
+              <th><%= gettext("Name") %></th>
+              <th><%= gettext("Claim ID") %></th>
+              <th><%= gettext("Participants") %></th>
+              <th><%= gettext("Engagements") %></th>
+              <th><%= gettext("Status") %></th>
+              <th><%= gettext("Claims") %></th>
+              <th><%= gettext("Total Value") %></th>
+              <th><%= gettext("Date Created") %></th>
+              <th><%= gettext("Last Edited") %></th>
+              <th class="text-center"><%= gettext("Actions") %></th>
+              <th class="text-center"><%= gettext("Status") %></th>
+            </tr>
+          </thead>
+          <tbody>
+          <%= for offer <- @offers do %>
+            <tr>
+              <td><%= offer.name %></td>
+              <td><%= offer.vendor.vendor_id %></td>
+              <td><%= offer.unique_participants %></td>
+              <td><%= length(offer.offer_challenges) %></td>
+              <td class="small"><%= raw completed_challenges(offer.offer_challenges) %></td>
+              <td><%= redeems_total(offer.offer_redeems) %></td>
+              <td><%= get_total_redeems_value(offer.offer_redeems) %></td>
+              <td><%= render_datetime(offer.inserted_at) %></td>
+              <td><%= render_datetime(offer.updated_at) %></td>
+              <td class="text-center">
+                <%= link gettext("Statement"), to: Routes.org_panel_offline_offers_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs mb-2"%>
+                <%= link gettext("Edit"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer), class: "btn btn-warning btn-xs mb-2"%>
+                <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), class: "btn btn-info btn-xs mb-2"%>
+              </td>
+              <td class="text-center">
+                <%= if offer.approval_status == :approved do %>
+                  <div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
+                <% else %>
+                  <div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+    <% end %>
     <%= if @paginate.total_pages > 1 do %>
     <%= turbo_pagination_links(@conn, @paginate) %>
     <% end %>

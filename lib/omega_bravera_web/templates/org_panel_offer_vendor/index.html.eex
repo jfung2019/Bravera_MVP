@@ -8,7 +8,7 @@
         </small>
       </div>
     </div>
-    <%= link gettext("Create Claim ID"), to: Routes.org_panel_offer_vendor_path(@conn, :new), class: "btn btn-outline-primary" %>
+    <%= link gettext("Create a Claim ID"), to: Routes.org_panel_offer_vendor_path(@conn, :new), class: "btn btn-outline-primary" %>
     <table class="table mt-3 table-striped">
       <thead>
         <tr>

@@ -4,22 +4,29 @@
         <h2><%= @partner.name %></h2>
         <div class="d-flex">
             <div class="row col-8 p-0">
-                <%= for {url, index} <- Enum.with_index(@images) do %>
-                  <div class="col-4 mt-2 position-relative image-with-toolbar" id="image-<%= url %>">
-                    <%= img_tag(url, class: "img-fluid") %>
-                    <div class="position-absolute fixed-top d-flex justify-content-end toolbar">
-                      <button type="button" class="btn btn-info" phx-click="shift-left" phx-value-index="<%= index %>"><span class="fa fa-arrow-left"></span></button>
-                      <button type="button" class="btn btn-info mx-4" phx-click="shift-right" phx-value-index="<%= index %>"><span class="fa fa-arrow-right"></span></button>
-                      <button type="button" class="btn btn-danger" @click="modal = true" phx-click="to-delete" phx-value-index="<%= index %>"><span class="fa fa-trash"></span></button>
+                <%= case @images do %>
+                  <% [] -> %>
+                    <div class="d-flex justify-content-center align-items-center" style="width: 100%;">
+                        <h2><%= gettext("No uploads yet") %></h2>
                     </div>
-                  </div>
+                  <% _ -> %>
+                    <%= for {url, index} <- Enum.with_index(@images) do %>
+                      <div class="col-4 mt-2 position-relative image-with-toolbar" id="image-<%= url %>">
+                        <%= img_tag(url, class: "img-fluid") %>
+                        <div class="position-absolute fixed-top d-flex justify-content-end toolbar">
+                          <button type="button" class="btn btn-info" phx-click="shift-left" phx-value-index="<%= index %>"><span class="fa fa-arrow-left"></span></button>
+                          <button type="button" class="btn btn-info mx-4" phx-click="shift-right" phx-value-index="<%= index %>"><span class="fa fa-arrow-right"></span></button>
+                          <button type="button" class="btn btn-danger" @click="modal = true" phx-click="to-delete" phx-value-index="<%= index %>"><span class="fa fa-trash"></span></button>
+                        </div>
+                      </div>
+                    <% end %>
                 <% end %>
             </div>
             <%= img_tag Routes.static_path(@socket, "/images/org/group/group_img.png"), class: "col-4", style: "object-fit: contain;" %>
         </div>
         <div class="row mt-3">
             <div class="col-6 offset-3">
-                <h3><%= gettext("Photos should be 1080x1080 dimension") %></h3>
+                <h4><%= gettext("Photos should be 1080x1080 dimension") %></h4>
                 <form action="/test" id="org_upload_group_image" class="dropzone" phx-hook="dropzone" data-dropzone="<%= @upload_token %>" data-dropzone-field="images" data-event="append-image"></form>
                 <div class="d-flex justify-content-center">
                     <small class="text-muted text-center">

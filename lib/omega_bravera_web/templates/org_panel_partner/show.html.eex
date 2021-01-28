@@ -34,6 +34,7 @@
 			</tr>
 			</tbody>
 		</table>
+		<%= link gettext("Edit"), to: Routes.org_panel_partner_path(@conn, :edit, @partner), class: "btn btn-warning mb-4" %>
 		<div class="mb-2">
 			<h3><span class="fa fa-map-marker"></span> <%= gettext("Group Location (optional)") %></h3>
 			<small class="text-muted"><%= gettext("(If you’d like your group to have a pin on the Bravera ‘Near Me’ map section, this is where you add the details. This is useful if you want people to ‘come to you’ (e.g. you’re a business or organisation). If you don’t need this. No need to add details)") %></small>
@@ -62,11 +63,7 @@
 		<% end %>
 		<div>
 			<h2><span class="fa fa-trophy"></span> <%= gettext("Your Offers") %></h2>
-			<small class="text-muted">
-				<%= gettext("(Below you can add offers you’ve created to your group. Don’t have rewards ready but want to activate your group? Select from ") %>
-				<a href="#"><%= gettext("our list") %></a>
-				<%= gettext(" and we will add them to your group soon!)") %>
-			</small>
+			<small class="text-muted"><%= gettext("(Below you can add offers you’ve created to your group)") %></small>
 		</div>
 		<%= if length(@partner.offers) > 0 do %>
 		<table class="table">
@@ -101,7 +98,8 @@
 		</table>
 		<% end %>
 		<hr>
-		<h3><span class="fa fa-plus-square"></span> <%= gettext("Add an Offer") %></h3>
+		<h2><span class="fa fa-plus-square"></span> <%= gettext("Add an Offer") %></h2>
+		<small class="text-muted"><%= gettext("(Don’t have rewards ready? Select existing rewards and activate your group. We will add them for you. ") %> <a href="#"><%= gettext("CLICK HERE") %></a>)</small>
 		<div class="row">
 			<%= form_for @conn, Routes.org_panel_offer_partner_path(@conn, :create), fn f -> %>
 			<%= hidden_input f, :partner_id, value: @partner.id %>
@@ -160,7 +158,7 @@
 				<p><%= gettext("(If you’d like your group to have a pin on the Bravera ‘Near Me’ map section, this is where you add the details. This is useful if you want people to ‘come to you’ (e.g. you’re a business or organisation.)") %></p>
 				<br/>
 				<strong><%= gettext("ADD AN OFFER (Mandatory)") %></strong>
-				<p><%= gettext("Select an existing reward curated by Bravera (if available in your location), or create your own offer to reward inside our Admin Panel. Select an existing reward curated by Bravera (if available in your location), or create your own offer to reward inside our Admin Panel.") %></p>
+				<p><%= gettext("Select an existing reward curated by Bravera (if available in your location), or create your own offer to reward inside our Admin Panel.") %></p>
 				<br/>
 			</div>
 			<div class="modal-footer">

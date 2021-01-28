@@ -21,7 +21,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerLocationController do
     case Groups.create_partner_location(Map.put(location_params, "partner_id", partner.id)) do
       {:ok, _location} ->
         conn
-        |> put_flash(:info, "Partner location created")
+        |> put_flash(:info, "Group location created")
         |> redirect(to: Routes.org_panel_partner_path(conn, :show, partner))
 
       {:error, changeset} ->

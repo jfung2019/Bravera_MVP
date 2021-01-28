@@ -9,7 +9,7 @@
   <% end %>
 
   <div class="form-group">
-    <%= label f, :vendor_id, gettext("Enter your Vendor ID"), class: "control-label" %>
+    <%= label f, :vendor_id, gettext("Enter your Claim ID"), class: "control-label" %>
     <%= if @changeset.action do %>
       <%= text_input f, :vendor_id, class: "form-control", required: "required", value: @vendor_id %>
       <%= error_tag f, :vendor_id %>

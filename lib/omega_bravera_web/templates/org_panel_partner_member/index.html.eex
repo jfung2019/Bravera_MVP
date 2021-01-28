@@ -4,10 +4,7 @@
       <div class="row my-3">
         <div class="col-9">
           <small class="text-muted">
-            <%= gettext("(Below is a list of members of this group. You can view basic details and remove members that have successfully joined. For more information ") %>
-            <a href="#"><%= gettext("click here") %></a>
-            <%= gettext(". On how best to ‘invite’ new members to your group ") %>
-            <a href="#"><%= gettext("click here") %></a>.)
+            <%= gettext("(List of members in this group. View basic details and ‘remove’ members, if you wish. On how best to invite members to your group, go to ‘Launch Guides / Templates’ on the main navigation)") %>
           </small>
         </div>
       </div>
@@ -19,7 +16,7 @@
           <th><%= gettext("Email") %></th>
           <th><%= gettext("Name") %></th>
           <% end %>
-          <th><%= gettext("Alias") %></th>
+          <th><%= gettext("Alias/Username") %></th>
           <th class="text-center"><%= gettext("Action") %></th>
         </tr>
         </thead>

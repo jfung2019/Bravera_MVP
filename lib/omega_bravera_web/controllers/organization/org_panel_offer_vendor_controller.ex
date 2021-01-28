@@ -30,7 +30,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfferVendorController do
     case Offers.create_org_offer_vendor(offer_vendor_params) do
       {:ok, _offer_vendor} ->
         conn
-        |> put_flash(:info, "Offer vendor created successfully.")
+        |> put_flash(:info, "Claim ID created successfully.")
         |> redirect(to: Routes.org_panel_offer_vendor_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -53,7 +53,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfferVendorController do
     case Offers.update_offer_vendor(offer_vendor, offer_vendor_params) do
       {:ok, _offer_vendor} ->
         conn
-        |> put_flash(:info, "Offer vendor updated successfully.")
+        |> put_flash(:info, "Claim ID updated successfully.")
         |> redirect(to: Routes.org_panel_offer_vendor_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->

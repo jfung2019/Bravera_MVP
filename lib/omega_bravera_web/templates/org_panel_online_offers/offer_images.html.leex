@@ -17,11 +17,11 @@
         </div>
         <div class="row mt-3">
             <div class="col-6 offset-3">
-                <h3><%= gettext("Photos should be 1080x1080 dimension") %></h3>
+                <h4><%= gettext("Photos should be 1080x1080 dimension") %></h4>
                 <form id="offer_images_dropzone" action="/test" class="dropzone" phx-hook="dropzone" data-dropzone="<%= @upload_token %>" data-dropzone-field="images" data-event="append-image"></form>
                 <div class="d-flex justify-content-center">
                     <small class="text-muted text-center">
-                        <%= gettext("First image will also be the 'intro' image on the group listing.") %><br>
+                        <%= gettext("First image will also be the 'intro' image on the offer listing.") %><br>
                         <%= gettext("Image order will match the order here.") %><br>
                         <%= gettext("Click on an unwanted image to delete.") %>
                     </small>

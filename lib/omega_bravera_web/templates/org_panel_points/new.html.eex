@@ -1,12 +1,11 @@
 <div class="card">
     <div class="card-body">
-        <h2><span class="fa fa-plus"></span> <%= gettext("Add/Subtract points for a Member") %></h2>
+        <h2><span class="fa fa-plus"></span> <%= gettext("Add/Subtract Points for a Member") %></h2>
         <div class="col-9 p-0">
             <small class="text-muted">
-                (<strong><%= gettext("NOTE: ") %></strong>
-                <%= gettext("The group member will be notified by email! Each organization can add or subtract a total of 1,000 points per day across its members. ") %>
-                <strong><%= gettext("IMPORTANT: The ‘day’ is based on GMT/UTC.") %></strong>
-                <%= gettext(" Please check your time zone versus).") %>
+                (<strong class="text-uppercase"><%= gettext("Important: ") %></strong>
+                <%= gettext("The group member will be notified by email. Each organization can add or subtract a total of 1,000 points per day across its members. ") %>
+                <strong class="text-uppercase"><%= gettext("Note") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your timezone versus GMT/UTC. We like") %> <a href="https://www.worldtimebuddy.com/" target="_blank"><%= gettext("this tool") %></a>
             </small>
         </div>
         <%= render "form.html", Map.put(assigns, :action, Routes.org_panel_points_path(@conn, :create)) %>

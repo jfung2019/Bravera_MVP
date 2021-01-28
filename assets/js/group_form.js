@@ -8,9 +8,9 @@ $(function () {
     const group_type_select = $("#group_type_select");
     const join_password = $("#join_password");
     if (join_password.val() !== "") {
-        group_type_select.val("Private (requires password)");
+        group_type_select.val("private");
     } else {
-        group_type_select.val("Public (open to all)");
+        group_type_select.val("public");
     }
     group_type_select.trigger('chosen:updated');
     show_password_fields(join_password);
@@ -39,11 +39,11 @@ function update_select(group_contact_method, opt) {
 function show_password_fields(join_password) {
     const private_group_fields = $("#private_group_fields");
     const selected = $("#group_type_select option:selected").text()
-    if (selected === "Public (open to all)") {
+    if (selected === "public") {
         private_group_fields.addClass("d-none");
         join_password.attr("required", false);
         join_password.val("");
-    } else if (selected === "Private (requires password)") {
+    } else if (selected === "private") {
         private_group_fields.removeClass("d-none");
         join_password.attr("required", true);
     }

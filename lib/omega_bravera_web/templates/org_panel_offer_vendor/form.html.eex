@@ -7,13 +7,13 @@
 
   <div class="form-group">
     <%= label f, :vendor_id, gettext("Claim ID"), class: "control-label" %>
-    <small class="form-text text-muted"><%= gettext("(Think of something memorable. Hint: 4-6 digits)") %></small>
+    <small class="form-text text-muted"><%= gettext("(Think of something memorable. Recommended 4-6 characters)") %></small>
     <%= text_input f, :vendor_id, class: add_error_class(f, :vendor_id, "form-control") %>
     <%= error_tag f, :vendor_id %>
   </div>
 
   <div class="form-group">
-    <%= label f, :email, gettext("Email"), class: "control-label" %>
+    <%= label f, :email, gettext("Primary Email"), class: "control-label" %>
     <small class="form-text text-muted"><%= gettext("(Enter an email to be sent successful claim details. Only enter x1 email. If left blank, no notification emails will be sent per reward claim verification.)") %></small>
     <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
     <%= error_tag f, :email %>
