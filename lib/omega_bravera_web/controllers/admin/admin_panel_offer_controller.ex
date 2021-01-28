@@ -17,7 +17,12 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
 
   def index(conn, params) do
     results = Offers.paginate_offers(params)
-    render(conn, "index.html", offers: results.offers, paginate: results.paginate, statuses: Offer.available_approval_status())
+
+    render(conn, "index.html",
+      offers: results.offers,
+      paginate: results.paginate,
+      statuses: Offer.available_approval_status()
+    )
   end
 
   def show(conn, %{"slug" => slug}) do

@@ -6,8 +6,11 @@
       <thead>
         <tr>
           <th><%= gettext("Organization Name") %></th>
+          <th><%= gettext("Name") %></th>
+          <th><%= gettext("Contact Number") %></th>
           <th><%= gettext("Email") %></th>
           <th><%= gettext("Username") %></th>
+          <th><%= gettext("Location") %></th>
           <th><%= gettext("Date Created") %></th>
           <th><%= gettext("Last Edited") %></th>
           <th class="text-center"><strong><%= gettext("Actions") %></strong></th>
@@ -17,8 +20,11 @@
       <%= for organization_member <- @organization_members do %>
         <tr>
           <td><%= organization_member.organization.name %></td>
+          <td><%= "#{organization_member.partner_user.first_name} #{organization_member.partner_user.last_name}" %></td>
+          <td><%= organization_member.partner_user.contact_number %></td>
           <td><%= organization_member.partner_user.email %></td>
           <td><%= organization_member.partner_user.username %></td>
+          <td><%= organization_member.partner_user.location.name_en %></td>
           <td><%= render_datetime(organization_member.inserted_at) %></td>
           <td><%= render_datetime(organization_member.updated_at) %></td>
           <td class="text-center">

@@ -7,7 +7,10 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
   def index(conn, params) do
     results =
       Turbo.Ecto.turbo(
-        Accounts.list_organization_members_with_preloads_query([:organization, :partner_user]),
+        Accounts.list_organization_members_with_preloads_query([
+          :organization,
+          partner_user: :location
+        ]),
         params,
         entry_name: "organization_members"
       )

@@ -18,6 +18,26 @@
                 <% end %>
                 <%= inputs_for f, :partner_user, fn p_user -> %>
                 <div class="mb-3">
+                    <%= label p_user, :first_name, class: "form-label" %>
+                    <%= text_input p_user, :first_name, class: add_error_class(p_user, :first_name, "form-control"), required: true %>
+                    <%= error_tag p_user, :first_name %>
+                </div>
+                <div class="mb-3">
+                    <%= label p_user, :last_name, class: "form-label" %>
+                    <%= text_input p_user, :last_name, class: add_error_class(p_user, :last_name, "form-control"), required: true %>
+                    <%= error_tag p_user, :last_name %>
+                </div>
+                <div class="mb-3">
+                    <%= label p_user, :contact_number, class: "form-label" %>
+                    <%= text_input p_user, :contact_number, class: add_error_class(p_user, :contact_number, "form-control"), required: true %>
+                    <%= error_tag p_user, :contact_number %>
+                </div>
+                <div class="mb-3">
+                    <%= label p_user, :location_id, gettext("Location"), class: "control-label" %>
+                    <%= select p_user, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), prompt: "", class: add_error_class(p_user, :contact_number, "form-control chosen") %>
+                    <%= error_tag p_user, :location_id %>
+                </div>
+                <div class="mb-3">
                     <%= label p_user, :username, class: "form-label" %>
                     <%= text_input p_user, :username, class: add_error_class(p_user, :username, "form-control"), required: true %>
                     <%= error_tag p_user, :username %>

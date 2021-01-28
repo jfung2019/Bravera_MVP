@@ -2,6 +2,8 @@ defmodule OmegaBraveraWeb.PartnerUserRegisterController do
   use OmegaBraveraWeb, :controller
   alias OmegaBravera.Accounts
 
+  plug :assign_available_options when action in [:edit, :new]
+
   def new(conn, _params) do
     case Guardian.Plug.current_resource(conn) do
       %Accounts.PartnerUser{} ->
@@ -26,8 +28,14 @@ defmodule OmegaBraveraWeb.PartnerUserRegisterController do
 
       {:error, changeset} ->
         conn
+        |> assign_available_options(nil)
         |> put_flash(:error, "Error Registering.")
         |> render("new.html", changeset: changeset)
     end
+  end
+
+  defp assign_available_options(conn, _opts) do
+    conn
+    |> assign(:available_locations, OmegaBravera.Locations.list_locations())
   end
 end

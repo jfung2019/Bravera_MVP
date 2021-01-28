@@ -257,7 +257,10 @@ defmodule OmegaBravera.Groups do
 
   """
   def list_partner_locations do
-    from(l in PartnerLocation, left_join: p in assoc(l, :partner), where: p.approval_status == :approved)
+    from(l in PartnerLocation,
+      left_join: p in assoc(l, :partner),
+      where: p.approval_status == :approved
+    )
     |> Repo.all()
   end
 

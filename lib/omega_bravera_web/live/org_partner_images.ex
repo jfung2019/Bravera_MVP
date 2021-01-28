@@ -38,7 +38,7 @@ defmodule OmegaBraveraWeb.OrgPartnerImages do
   end
 
   def handle_event("to-delete", %{"index" => string_index}, socket),
-      do: {:noreply, assign(socket, to_delete: String.to_integer(string_index))}
+    do: {:noreply, assign(socket, to_delete: String.to_integer(string_index))}
 
   def handle_event("undo-delete", _, socket), do: {:noreply, assign(socket, to_delete: nil)}
 

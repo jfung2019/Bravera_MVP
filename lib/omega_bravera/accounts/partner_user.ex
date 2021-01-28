@@ -5,6 +5,9 @@ defmodule OmegaBravera.Accounts.PartnerUser do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "partner_users" do
+    field :first_name, :string
+    field :last_name, :string
+    field :contact_number, :string
     field :email, :string
     field :username, :string
     field :password, :string, virtual: true
@@ -15,6 +18,7 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     field :reset_token, :string
     field :reset_token_created, :utc_datetime
     field :accept_terms, :boolean, virtual: true, default: false
+    belongs_to :location, OmegaBravera.Locations.Location
 
     timestamps()
   end
@@ -28,9 +32,22 @@ defmodule OmegaBravera.Accounts.PartnerUser do
       :password,
       :password_confirmation,
       :email_verified,
+      :location_id,
+      :first_name,
+      :last_name,
+      :contact_number,
       :accept_terms
     ])
-    |> validate_required([:username, :email, :password, :password_confirmation])
+    |> validate_required([
+      :username,
+      :email,
+      :password,
+      :password_confirmation,
+      :location_id,
+      :first_name,
+      :last_name,
+      :contact_number
+    ])
     |> validate_length(:username, min: 3)
     |> unique_constraint(:email, name: :partner_user_email_index)
     |> EctoCommons.EmailValidator.validate_email(:email)
