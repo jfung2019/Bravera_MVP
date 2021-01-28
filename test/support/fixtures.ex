@@ -10,7 +10,7 @@ defmodule OmegaBravera.Fixtures do
         introduction: "some introduction",
         name: "some name",
         short_description: "some opening_times",
-        live: true
+        approval_status: :approved
       })
       |> Groups.create_partner()
 

@@ -83,7 +83,7 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       distinct: true,
       left_join: o in assoc(p, :offers),
-      on: o.approval_status == "approved",
+      on: o.approval_status == :approved,
       left_join: m in assoc(p, :members),
       on: m.user_id == ^user_id,
       where: p.id == ^id,
@@ -107,10 +107,10 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       distinct: true,
       left_join: o in assoc(p, :offers),
-      on: o.approval_status == "approved",
+      on: o.approval_status == :approved,
       left_join: m in assoc(p, :members),
       on: m.user_id == ^user_id,
-      where: p.approval_status == "approved",
+      where: p.approval_status == :approved,
       order_by: [desc: p.inserted_at],
       select: %{
         p
@@ -257,7 +257,7 @@ defmodule OmegaBravera.Groups do
 
   """
   def list_partner_locations do
-    from(l in PartnerLocation, left_join: p in assoc(l, :partner), where: p.approval_status == "approved")
+    from(l in PartnerLocation, left_join: p in assoc(l, :partner), where: p.approval_status == :approved)
     |> Repo.all()
   end
 
@@ -500,7 +500,7 @@ defmodule OmegaBravera.Groups do
   def list_joined_partners(user_id) do
     from(p in Partner,
       left_join: m in assoc(p, :members),
-      where: m.user_id == ^user_id and p.approval_status == "approved"
+      where: m.user_id == ^user_id and p.approval_status == :approved
     )
     |> Repo.all()
   end
@@ -524,7 +524,7 @@ defmodule OmegaBravera.Groups do
           )
         ),
       on: last_messages.id == me.id and not is_nil(last_messages.id),
-      where: m.user_id == ^user_id and p.approval_status == "approved",
+      where: m.user_id == ^user_id and p.approval_status == :approved,
       preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u]
     )
     |> Repo.all()
@@ -549,7 +549,7 @@ defmodule OmegaBravera.Groups do
           )
         ),
       on: last_messages.id == me.id and not is_nil(last_messages.id),
-      where: p.id == ^partner_id and p.approval_status == "approved",
+      where: p.id == ^partner_id and p.approval_status == :approved,
       preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u]
     )
     |> Repo.one()
@@ -616,7 +616,7 @@ defmodule OmegaBravera.Groups do
     from(p in Partner,
       distinct: true,
       left_join: o in assoc(p, :offers),
-      on: o.approval_status == "approved",
+      on: o.approval_status == :approved,
       left_join: m in assoc(p, :members),
       on: m.user_id == ^user_id,
       select: %{

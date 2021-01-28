@@ -210,6 +210,7 @@ defmodule OmegaBravera.Factory do
       url: "http://test.com",
       offer_challenge_types: ["PER_KM"],
       target: 50,
+      approval_status: :approved,
       activities: ["Run", "Cycle"],
       time_limit: 0,
       toc: "foo",
