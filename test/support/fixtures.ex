@@ -1,5 +1,5 @@
 defmodule OmegaBravera.Fixtures do
-  alias OmegaBravera.{Accounts, Repo, Groups, Notifications}
+  alias OmegaBravera.{Accounts, Repo, Groups, Locations, Notifications}
   alias OmegaBravera.Accounts.Credential
 
   def partner_fixture(attrs \\ %{}) do
@@ -94,11 +94,23 @@ defmodule OmegaBravera.Fixtures do
         username: "partner_user1",
         email: "some@email.com",
         accept_terms: true,
+        first_name: "First Name",
+        last_name: "Last Name",
+        contact_number: "00000000",
         password_confirmation: "pass1234",
         password: "pass1234"
       })
       |> Accounts.create_partner_user()
 
     partner_user
+  end
+
+  def location_fixture(attrs \\ %{}) do
+    {:ok, location} =
+      attrs
+      |> Enum.into(%{name_en: "some name_en", name_zh: "some name_zh"})
+      |> Locations.create_location()
+
+    location
   end
 end

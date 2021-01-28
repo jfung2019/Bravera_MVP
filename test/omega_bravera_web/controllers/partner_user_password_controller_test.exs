@@ -3,7 +3,8 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordControllerTest do
   alias OmegaBravera.{Accounts, Fixtures}
 
   setup %{conn: conn} do
-    {:ok, conn: conn, partner_user: Fixtures.partner_user_fixture()}
+    location = Fixtures.location_fixture()
+    {:ok, conn: conn, partner_user: Fixtures.partner_user_fixture(%{location_id: location.id})}
   end
 
   describe "new/2" do
