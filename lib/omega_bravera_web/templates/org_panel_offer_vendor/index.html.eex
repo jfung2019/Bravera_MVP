@@ -31,7 +31,6 @@
             <td class="text-center" style="width: 30%;">
               <%= link gettext("Details"), to: Routes.org_panel_offer_vendor_path(@conn, :show, offer_vendor), class: "btn btn-primary btn-xs" %>
               <%= link gettext("Edit"), to: Routes.org_panel_offer_vendor_path(@conn, :edit, offer_vendor), class: "btn btn-warning btn-xs" %>
-              <%= link gettext("Delete"), to: "#", class: "btn btn-danger disabled", data: [toggle: "tooltip", placement: "top"], title: "Tooltip on top" %>
             </td>
           </tr>
         <% end %>
