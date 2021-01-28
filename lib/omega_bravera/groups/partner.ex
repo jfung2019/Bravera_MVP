@@ -13,6 +13,7 @@ defmodule OmegaBravera.Groups.Partner do
     field :website, :string
     field :phone, :string
     field :approval_status, Ecto.Enum, values: [:approved, :denied, :pending], default: :pending
+    field :approval_status_string, :string, load_in_query: false, source: :approval_status
     field :type, :string, virtual: true
     field :is_member, :boolean, virtual: true
     has_one :location, PartnerLocation

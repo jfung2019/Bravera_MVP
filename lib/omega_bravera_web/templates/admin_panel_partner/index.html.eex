@@ -6,13 +6,18 @@
 			<small class="text-muted"><%= gettext("Get started by creating your first group.") %></small><br>
 			<small class="text-muted"><%= gettext("If you need help") %>, <a href="#"><%= gettext("click here") %></a></small>
 		</div>
-		<%= form_for @conn, Routes.admin_panel_partner_path(@conn, :index), [method: :get, class: "form-inline"], fn f -> %>
-			<div class="form-check mb-2 mr-sm-2">
-				<%= checkbox f, "q[live_is_true]", value: get_in(@conn.params, ["q", "live_is_true"]), class: "form-check-input" %>
-				<%= label f, "q[live_is_true]", gettext("Live"), class: "form-check-label" %>
+		<%= form_for @conn, Routes.admin_panel_partner_path(@conn, :index), [method: :get], fn f -> %>
+			<div class="form-row">
+				<div class="form-group col-3">
+					<%= select f, "q[approval_status_string_like]", @statuses, value: get_in(@conn.params, ["q", "approval_status_string_like"]), class: "form-control", prompt: "Approval Status" %>
+				</div>
+				<div class="form-group col-3">
+					<%= text_input f, "q[name_ilike]", value: get_in(@conn.params, ["q", "name_ilike"]), class: "form-control", placeholder: gettext("Name") %>
+				</div>
+				<div class="col-1">
+					<%= submit "Search", class: "btn btn-primary" %>
+				</div>
 			</div>
-
-			<%= submit "Search", class: "btn btn-primary" %>
 		<% end %>
 		<table class="table mt-3 table-striped">
 			<thead>
@@ -37,10 +42,13 @@
 					<%= link gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, partner), class: "btn btn-info" %>
 				</td>
 				<td class="text-center" style="width: 10%;">
-					<%= if partner.approval_status == :approved do %>
-						<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
-					<% else %>
-						<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>
+					<%= case partner.approval_status do %>
+						<% :approved -> %>
+							<div class="rounded py-1 px-3 d-inline-block badge badge-success"><%= gettext("Approved") %></div>
+						<% :denied -> %>
+							<div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Denied") %></div>
+						<% :pending -> %>
+							<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Pending") %></div>
 					<% end %>
 				</td>
 			</tr>

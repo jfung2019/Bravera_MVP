@@ -37,7 +37,7 @@
             <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), class: "btn btn-info btn-xs mb-2"%>
           </td>
           <td class="text-center">
-            <%= if offer.live do %>
+            <%= if offer.approval_status == :approved do %>
             <div class="rounded py-1 px-3 d-inline-block badge badge-danger"><%= gettext("Live") %></div>
             <% else %>
             <div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Not Live") %></div>

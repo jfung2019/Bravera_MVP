@@ -5,7 +5,7 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
 
   def index(conn, params) do
     results = Turbo.Ecto.turbo(Groups.Partner, params, entry_name: "partners")
-    render(conn, partners: results.partners, paginate: results.paginate)
+    render(conn, partners: results.partners, paginate: results.paginate, statuses: Groups.Partner.available_approval_status())
   end
 
   def show(conn, %{"id" => partner_id}) do

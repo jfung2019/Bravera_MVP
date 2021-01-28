@@ -26,7 +26,7 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
       ) do
     index = String.to_integer(string_index)
     images = List.delete_at(images, index)
-    {:noreply, assign(socket, images: images)}
+    {:noreply, assign(socket, images: images, to_delete: nil)}
   end
 
   def handle_event(
@@ -50,6 +50,11 @@ defmodule OmegaBraveraWeb.AdminOfferImages do
     images = swap_images(images, index, new_index)
     {:noreply, assign(socket, images: images)}
   end
+
+  def handle_event("to-delete", %{"index" => string_index}, socket),
+      do: {:noreply, assign(socket, to_delete: String.to_integer(string_index))}
+
+  def handle_event("undo-delete", _, socket), do: {:noreply, assign(socket, to_delete: nil)}
 
   def handle_event("save-images", _, %{assigns: %{images: images, offer: offer}} = socket) do
     case Offers.update_offer(offer, %{images: images}) do
