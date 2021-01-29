@@ -1,16 +1,19 @@
 import $ from "jquery";
 
-const email_opt = "Enquiry Email";
-const website_opt = "Website / Link";
-const phone_opt = "Phone / WhatsApp"
+const email_opt = "email";
+const website_opt = "website";
+const phone_opt = "phone";
+const public_group = "public";
+const private_group = "private";
 
 $(function () {
     const group_type_select = $("#group_type_select");
     const join_password = $("#join_password");
-    if (join_password.val() !== "") {
-        group_type_select.val("private");
+    console.log(join_password.val() === "" || join_password.val() === null)
+    if (join_password.val() === "" || join_password.val() === null) {
+        group_type_select.val(public_group);
     } else {
-        group_type_select.val("public");
+        group_type_select.val(private_group);
     }
     group_type_select.trigger('chosen:updated');
     show_password_fields(join_password);
@@ -38,19 +41,19 @@ function update_select(group_contact_method, opt) {
 
 function show_password_fields(join_password) {
     const private_group_fields = $("#private_group_fields");
-    const selected = $("#group_type_select option:selected").text()
-    if (selected === "public") {
+    const selected = $("#group_type_select option:selected").val()
+    if (selected === public_group) {
         private_group_fields.addClass("d-none");
         join_password.attr("required", false);
         join_password.val("");
-    } else if (selected === "private") {
+    } else if (selected === private_group) {
         private_group_fields.removeClass("d-none");
         join_password.attr("required", true);
     }
 }
 
 function show_method() {
-    const selected = $("#group_contact_method option:selected").text();
+    const selected = $("#group_contact_method option:selected").val();
     if (selected === email_opt) {
         $("#method_email").removeClass("d-none");
         $("#method_website").addClass("d-none");
@@ -61,7 +64,11 @@ function show_method() {
         $("#method_phone").addClass("d-none");
     } else if (selected === phone_opt) {
         $("#method_email").addClass("d-none");
-        $("#method_website").removeClass("d-none");
+        $("#method_website").addClass("d-none");
+        $("#method_phone").removeClass("d-none");
+    } else {
+        $("#method_email").addClass("d-none");
+        $("#method_website").addClass("d-none");
         $("#method_phone").addClass("d-none");
     }
 }

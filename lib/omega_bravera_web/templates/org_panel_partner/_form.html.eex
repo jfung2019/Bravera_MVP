@@ -45,7 +45,7 @@
         </div>
 
         <div class="form-group">
-            <%= select f, :method, [gettext("Enquiry Email"), gettext("Website / Link"), gettext("Phone / WhatsApp")], id: "group_contact_method", class: "form-control chosen", prompt: gettext("How do you want others to ‘request to join’ your group?") %>
+            <%= select f, :method, [{gettext("Enquiry Email"), "email"}, {gettext("Website / Link"), "website"}, {gettext("Phone / WhatsApp"), "phone"}], id: "group_contact_method", class: "form-control chosen", prompt: gettext("How do you want others to ‘request to join’ your group?") %>
             <small class="form-text text-muted">
                 <%= gettext("(This allows others to request access. You can choose email, phone / whatsapp, or a link e.g. Webpage, Facebook group, Instagram etc.)") %>
             </small>
