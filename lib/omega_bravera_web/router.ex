@@ -300,7 +300,8 @@ defmodule OmegaBraveraWeb.Router do
     pipe_through :browser
 
     get "/signup", PageController, :signup
-    get "/login", PageController, :login
+    # TODO: possibly remove later if really not required.
+    # get "/login", PageController, :login
     get "/login/:team_invitation", PageController, :login
     get "/404", PageController, :not_found
     get "/500", PageController, :not_found
