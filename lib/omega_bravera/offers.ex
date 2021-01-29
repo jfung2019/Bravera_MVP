@@ -957,14 +957,12 @@ defmodule OmegaBravera.Offers do
   def get_offer_reward!(id), do: Repo.get!(OfferReward, id)
 
   def new_reward_created(organization_id) do
-    one_min_ago = Timex.now() |> Timex.shift(minutes: -1)
-
     from(r in OfferReward,
-      left_join: o in assoc(r, :offer),
-      where: o.organization_id == ^organization_id and o.inserted_at >= ^one_min_ago,
-      select: r.id
+      join: o in assoc(r, :offer),
+      where: o.organization_id == ^organization_id and fragment("? BETWEEN now() - interval '1 minute' AND now()", r.inserted_at),
+      select: count(r.id) > 0
     )
-    |> Repo.all()
+    |> Repo.one()
   end
 
   @doc """

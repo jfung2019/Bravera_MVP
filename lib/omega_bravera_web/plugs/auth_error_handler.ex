@@ -7,7 +7,7 @@ defmodule OmegaBravera.AuthErrorHandler do
     conn
     |> Guardian.Plug.sign_out()
     |> Plug.Conn.put_session("after_login_redirect", path)
-    |> redirect(to: "/login")
+    |> redirect(to: "/")
   end
 
   # TODO handle this properly
@@ -16,6 +16,6 @@ defmodule OmegaBravera.AuthErrorHandler do
 
     conn
     |> put_flash(:info, "Please login")
-    |> redirect(to: "/login")
+    |> redirect(to: "/")
   end
 end

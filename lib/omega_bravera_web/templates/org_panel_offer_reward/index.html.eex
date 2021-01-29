@@ -64,6 +64,6 @@
   </div>
 </div>
 
-<%= if length(@new_reward) > 0 do %>
-<script>$("#first_reward").modal("show");</script>
+<%= if @new_reward do %>
+  <script>$("#first_reward").modal("show");</script>
 <% end %>

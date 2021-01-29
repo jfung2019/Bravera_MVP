@@ -13,7 +13,7 @@ defmodule OmegaBraveraWeb.MaybeAuthPipelineTest do
       |> bypass_through(OmegaBravera.Router, :browser)
       |> get("/offers")
 
-    assert redirected_to(conn) =~ "/login"
+    assert redirected_to(conn) =~ "/"
     assert get_session(conn, "after_login_redirect") =~ "/offers"
   end
 end
