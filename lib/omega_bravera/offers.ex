@@ -553,7 +553,6 @@ defmodule OmegaBravera.Offers do
         {:ok, offer} =
           get_offer!(offer_approval.offer_id)
           |> update_offer(%{
-            hidden: show_offer,
             approval_status: offer_approval.status
           })
 
