@@ -21,6 +21,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :location_id, :integer
     field :setting, :setting
     field :push_notifications, non_null(:boolean)
+    field :email_permissions, list_of(:string)
   end
 
   object :notification_token do
@@ -74,6 +75,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :firstname, :string
     field :lastname, :string
     field :username, :string
+    field :email_permissions, list_of(:string)
 
     field :total_points, non_null(:decimal),
       resolve: fn _parent, %{source: %{id: user_id}} ->

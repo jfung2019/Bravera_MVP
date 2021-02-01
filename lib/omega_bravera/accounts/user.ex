@@ -23,7 +23,8 @@ defmodule OmegaBravera.Accounts.User do
     :accept_terms,
     :location_id,
     :locale,
-    :referred_by_id
+    :referred_by_id,
+    :email_permissions
   ]
 
   schema "users" do
@@ -49,6 +50,7 @@ defmodule OmegaBravera.Accounts.User do
     field :todays_points, :integer, virtual: true
     field :referred_by_id, :id, default: nil
     field :push_notifications, :boolean, default: true
+    field :email_permissions, {:array, :string}, default: []
 
     # API related
     field :total_points, :decimal, virtual: true, default: Decimal.new(0)
@@ -107,6 +109,7 @@ defmodule OmegaBravera.Accounts.User do
     |> add_email_activation_token()
     |> cast_assoc(:setting, with: &Setting.changeset/2, required: false)
     |> cast_assoc(:credential, with: &Credential.optional_changeset/2, required: false)
+    |> validate_subset(:email_permissions, email_permissions_list())
   end
 
   def create_credential_user_changeset(user, attrs \\ %{credential: %{}}, referral \\ nil) do
@@ -190,4 +193,6 @@ defmodule OmegaBravera.Accounts.User do
         changeset
     end
   end
+
+  defp email_permissions_list(), do: ["news", "activity", "inactivity"]
 end
