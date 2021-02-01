@@ -29,6 +29,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.username_update/3
     end
 
+    @desc "Update email permission"
+    field :update_email_permission, :user do
+      arg :email_permissions, list_of(non_null(:string))
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.update_user_email_permission/3
+    end
+
     @desc "Delete user profile picture and strava profile picture"
     field :delete_user_profile_picture, :delete_profile_picture_result do
       middleware Middleware.Authenticate

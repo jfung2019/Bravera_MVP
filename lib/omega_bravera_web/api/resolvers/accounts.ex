@@ -358,6 +358,19 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
+  def update_user_email_permission(_root, %{email_permissions: email_permissions}, %{
+        context: %{current_user: current_user}
+      }) do
+    case Accounts.update_user(current_user, %{email_permissions: email_permissions}) do
+      {:ok, %{id: user_id}} ->
+        {:ok, Accounts.get_user_with_account_settings(user_id)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:error,
+         message: "Could not save permission", details: Helpers.transform_errors(changeset)}
+    end
+  end
+
   def refresh_auth_token(_root, _args, %{context: %{current_user: %{id: _id} = current_user}}) do
     case Guardian.encode_and_sign(current_user) do
       {:ok, token, _} ->
