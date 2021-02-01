@@ -46,14 +46,14 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
   end
 
   def edit(conn, %{"slug" => slug}) do
-    offer = Offers.get_offer_by_slug_with_hk_time(slug)
+    offer = Offers.get_offer_by_slug_for_panel(slug)
     changeset = Offers.change_offer(offer)
 
     render(conn, "edit.html", offer: offer, changeset: changeset)
   end
 
   def update(conn, %{"slug" => slug, "offer" => offer_params}) do
-    offer = Offers.get_offer_by_slug_with_hk_time(slug)
+    offer = Offers.get_offer_by_slug_for_panel(slug)
 
     case Offers.update_org_offline_offer(offer, offer_params) do
       {:ok, updated_offer} ->

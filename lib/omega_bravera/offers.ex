@@ -205,12 +205,7 @@ defmodule OmegaBravera.Offers do
       on: offer_challenges.offer_id == o.id and offer_challenges.status == ^"active",
       preload: ^preloads,
       group_by: [o.id],
-      select: %{
-        o
-        | active_offer_challenges: count(offer_challenges.id),
-          pre_registration_start_date:
-            fragment("? at time zone 'utc'", o.pre_registration_start_date)
-      }
+      select: %{o | active_offer_challenges: count(offer_challenges.id)}
     )
     |> Repo.one()
     |> prepare_offer()
@@ -230,12 +225,7 @@ defmodule OmegaBravera.Offers do
       on: offer_challenges.offer_id == o.id and offer_challenges.status == ^"active",
       preload: ^preloads,
       group_by: [o.id],
-      select: %{
-        o
-        | active_offer_challenges: count(offer_challenges.id),
-          pre_registration_start_date:
-            fragment("? at time zone 'utc'", o.pre_registration_start_date)
-      }
+      select: %{o | active_offer_challenges: count(offer_challenges.id)}
     )
     |> Repo.one()
     |> prepare_offer()
@@ -287,12 +277,7 @@ defmodule OmegaBravera.Offers do
                 true,
                 false
               ),
-            offer: %{
-              o
-              | active_offer_challenges: count(offer_challenges.id),
-                pre_registration_start_date:
-                  fragment("? at time zone 'utc'", o.pre_registration_start_date)
-            }
+            offer: %{o | active_offer_challenges: count(offer_challenges.id)}
           }
         )
         |> Repo.one()
@@ -339,18 +324,13 @@ defmodule OmegaBravera.Offers do
         where: oc.slug == ^slug and offer.slug == ^offer_slug,
         preload: ^preloads,
         group_by: oc.id,
-        select: %{
-          oc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
-            start_date: fragment("? at time zone 'utc'", oc.start_date),
-            end_date: fragment("? at time zone 'utc'", oc.end_date)
-        }
+        select: %{oc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)}
       )
 
     Repo.one(query)
   end
 
-  def get_offer_by_slug_with_hk_time(slug, preloads \\ [:offer_challenges]) do
+  def get_offer_by_slug_for_panel(slug, preloads \\ [:offer_challenges]) do
     offer =
       from(o in Offer,
         where: o.slug == ^slug,
@@ -358,19 +338,7 @@ defmodule OmegaBravera.Offers do
         on: offer_challenges.offer_id == o.id and offer_challenges.status == ^"active",
         preload: ^preloads,
         group_by: [o.id],
-        select: %{
-          o
-          | active_offer_challenges: count(offer_challenges.id),
-            end_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.end_date),
-            pre_registration_start_date:
-              fragment(
-                "? at time zone 'utc' at time zone 'asia/hong_kong'",
-                o.pre_registration_start_date
-              ),
-            start_date:
-              fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.start_date),
-            end_date: fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", o.end_date)
-        }
+        select: %{o | active_offer_challenges: count(offer_challenges.id)}
       )
       |> Repo.one()
 
@@ -745,9 +713,7 @@ defmodule OmegaBravera.Offers do
       group_by: oc.id,
       select: %{
         oc
-        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
-          start_date: fragment("? at time zone 'utc'", oc.start_date),
-          end_date: fragment("? at time zone 'utc'", oc.end_date)
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
       }
     )
     |> Repo.all()
@@ -956,7 +922,9 @@ defmodule OmegaBravera.Offers do
   def new_reward_created(organization_id) do
     from(r in OfferReward,
       join: o in assoc(r, :offer),
-      where: o.organization_id == ^organization_id and fragment("? BETWEEN now() - interval '1 minute' AND now()", r.inserted_at),
+      where:
+        o.organization_id == ^organization_id and
+          fragment("? BETWEEN now() - interval '1 minute' AND now()", r.inserted_at),
       select: count(r.id) > 0
     )
     |> Repo.one()

@@ -237,10 +237,7 @@ defmodule OmegaBravera.Fundraisers do
         select: %{
           n
           | active_challenges: count(challenges.id),
-            utc_launch_date: n.launch_date,
-            launch_date: fragment("? at time zone 'utc'", n.launch_date),
-            pre_registration_start_date:
-              fragment("? at time zone 'utc'", n.pre_registration_start_date)
+            utc_launch_date: n.launch_date
         }
       )
       |> Repo.one()
@@ -273,14 +270,7 @@ defmodule OmegaBravera.Fundraisers do
         select: %{
           n
           | active_challenges: count(challenges.id),
-            utc_launch_date: n.launch_date,
-            launch_date:
-              fragment("? at time zone 'utc' at time zone 'asia/hong_kong'", n.launch_date),
-            pre_registration_start_date:
-              fragment(
-                "? at time zone 'utc' at time zone 'asia/hong_kong'",
-                n.pre_registration_start_date
-              )
+            utc_launch_date: n.launch_date
         }
       )
       |> Repo.one()

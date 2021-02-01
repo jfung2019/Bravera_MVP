@@ -235,7 +235,11 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Mail.send()
   end
 
-  def notify_customer_group_email(%PartnerUser{username: username, email: email}, %Partner{name: group_name}, %GroupApproval{status: :approved}) do
+  def notify_customer_group_email(
+        %PartnerUser{username: username, email: email},
+        %Partner{name: group_name},
+        %GroupApproval{status: :approved}
+      ) do
     Email.build()
     |> Email.put_template("af72c512-278e-49b9-b2d5-3cb9ee4eb7f6")
     |> Email.add_substitution("-username-", username)
@@ -246,7 +250,11 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Mail.send()
   end
 
-  def notify_customer_group_email(%PartnerUser{email: email, username: username}, %Partner{name: group_name}, %GroupApproval{status: :denied, message: message}) do
+  def notify_customer_group_email(
+        %PartnerUser{email: email, username: username},
+        %Partner{name: group_name},
+        %GroupApproval{status: :denied, message: message}
+      ) do
     Email.build()
     |> Email.put_template("6d8fc814-3e9a-473a-bed8-687381320bd9")
     |> Email.add_substitution("-username-", username)
@@ -258,7 +266,11 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Mail.send()
   end
 
-  def notify_customer_offer_email(%PartnerUser{username: username, email: email}, %OfferApproval{status: :approved}, %Offer{name: name}) do
+  def notify_customer_offer_email(
+        %PartnerUser{username: username, email: email},
+        %OfferApproval{status: :approved},
+        %Offer{name: name}
+      ) do
     Email.build()
     |> Email.put_template("2516ad29-1350-4353-a8db-9f72bf240e01")
     |> Email.put_from("support@bravera.co", "Bravera")
@@ -269,7 +281,11 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Mail.send()
   end
 
-  def notify_customer_offer_email(%PartnerUser{email: email, username: username}, %OfferApproval{status: :denied, message: message}, %Offer{name: name}) do
+  def notify_customer_offer_email(
+        %PartnerUser{email: email, username: username},
+        %OfferApproval{status: :denied, message: message},
+        %Offer{name: name}
+      ) do
     Email.build()
     |> Email.put_template("6ea1749a-6d02-499d-aabd-ec9dae873aa4")
     |> Email.add_substitution("-message-", message)

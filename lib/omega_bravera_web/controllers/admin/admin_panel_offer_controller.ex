@@ -53,7 +53,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
   end
 
   def edit(conn, %{"slug" => slug}) do
-    offer = Offers.get_offer_by_slug_with_hk_time(slug)
+    offer = Offers.get_offer_by_slug_for_panel(slug)
     vendors = Offers.list_offer_vendors()
     changeset = Offers.change_offer(offer)
 
@@ -61,7 +61,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
   end
 
   def update(conn, %{"slug" => slug, "offer" => offer_params}) do
-    offer = Offers.get_offer_by_slug_with_hk_time(slug)
+    offer = Offers.get_offer_by_slug_for_panel(slug)
 
     case Offers.update_offer(offer, offer_params) do
       {:ok, updated_offer} ->

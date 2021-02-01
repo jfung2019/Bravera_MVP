@@ -276,7 +276,7 @@ defmodule OmegaBravera.Offers.Offer do
     case open_registration == false and Timex.after?(pre_registration_start_date, Timex.now()) do
       true ->
         add_error(
-          changeset_to_hk_date(changeset),
+          changeset,
           :pre_registration_start_date,
           "Pre registration date cannot be modified because it has been reached."
         )
@@ -295,47 +295,13 @@ defmodule OmegaBravera.Offers.Offer do
        )
        when chals > 0 do
     add_error(
-      changeset_to_hk_date(changeset),
+      changeset,
       :open_registration,
       "Cannot close/open registration due to the presence of active offer challenges."
     )
   end
 
   defp validate_no_active_challenges(changeset, _offer), do: changeset
-
-  defp changeset_to_hk_date(
-         %Ecto.Changeset{
-           changes: %{
-             pre_registration_start_date: pre_registration_start_date,
-             start_date: start_date,
-             end_date: end_date
-           }
-         } = changeset
-       ) do
-    pre_registration_start_date =
-      pre_registration_start_date
-      |> Timex.to_datetime("Asia/Hong_Kong")
-      |> DateTime.to_naive()
-
-    start_date =
-      start_date
-      |> Timex.to_datetime("Asia/Hong_Kong")
-      |> DateTime.to_naive()
-
-    end_date =
-      end_date
-      |> Timex.to_datetime("Asia/Hong_Kong")
-      |> DateTime.to_naive()
-
-    changeset
-    |> change(%{
-      pre_registration_start_date: pre_registration_start_date,
-      start_date: start_date,
-      end_date: end_date
-    })
-  end
-
-  defp changeset_to_hk_date(%Ecto.Changeset{} = changeset), do: changeset
 
   defp validate_offer_type(changeset) do
     type = get_field(changeset, :offer_type)

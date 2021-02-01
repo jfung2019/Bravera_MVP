@@ -13,31 +13,31 @@ defmodule OmegaBravera.Challenges.NGOChal do
 
   @derive {Phoenix.Param, key: :slug}
   schema "ngo_chals" do
-    field(:activity_type, :string)
-    field(:distance_target, :integer, default: 100)
-    field(:duration, :integer)
-    field(:milestones, :integer, default: 4)
-    field(:money_target, :decimal, default: 2000)
-    field(:default_currency, :string, default: "hkd")
-    field(:slug, :string)
-    field(:start_date, :utc_datetime)
-    field(:end_date, :utc_datetime)
-    field(:status, :string, default: "active")
-    field(:last_activity_received, :utc_datetime)
-    field(:type, :string)
+    field :activity_type, :string
+    field :distance_target, :integer, default: 100
+    field :duration, :integer
+    field :milestones, :integer, default: 4
+    field :money_target, :decimal, default: 2000
+    field :default_currency, :string, default: "hkd"
+    field :slug, :string
+    field :start_date, :utc_datetime
+    field :end_date, :utc_datetime
+    field :status, :string, default: "active"
+    field :last_activity_received, :utc_datetime
+    field :type, :string
 
-    field(:has_team, :boolean, default: false)
-    field(:participant_notified_of_inactivity, :boolean, default: false)
-    field(:donor_notified_of_inactivity, :boolean, default: false)
-    field(:self_donated, :boolean, default: false)
+    field :has_team, :boolean, default: false
+    field :participant_notified_of_inactivity, :boolean, default: false
+    field :donor_notified_of_inactivity, :boolean, default: false
+    field :self_donated, :boolean, default: false
 
-    field(:distance_covered, :decimal, default: 0, virtual: true)
+    field :distance_covered, :decimal, default: 0, virtual: true
 
-    belongs_to(:user, User)
-    belongs_to(:ngo, NGO)
-    has_one(:team, Team, foreign_key: :challenge_id)
-    has_many(:donations, Donation)
-    has_many(:activities, NgoChallengeActivitiesM2m, foreign_key: :challenge_id)
+    belongs_to :user, User
+    belongs_to :ngo, NGO
+    has_one :team, Team, foreign_key: :challenge_id
+    has_many :donations, Donation
+    has_many :activities, NgoChallengeActivitiesM2m, foreign_key: :challenge_id
 
     timestamps(type: :utc_datetime)
   end

@@ -102,12 +102,7 @@ defmodule OmegaBravera.Challenges do
       preload: ^preloads,
       order_by: [desc: :start_date],
       group_by: nc.id,
-      select: %{
-        nc
-        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
-          start_date: fragment("? at time zone 'utc'", nc.start_date),
-          end_date: fragment("? at time zone 'utc'", nc.end_date)
-      }
+      select: %{nc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)}
     )
     |> Repo.all()
   end
@@ -123,12 +118,7 @@ defmodule OmegaBravera.Challenges do
       preload: ^preloads,
       order_by: [desc: :start_date],
       group_by: nc.id,
-      select: %{
-        nc
-        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
-          start_date: fragment("? at time zone 'utc'", nc.start_date),
-          end_date: fragment("? at time zone 'utc'", nc.end_date)
-      }
+      select: %{nc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)}
     )
     |> Repo.all()
   end
@@ -311,12 +301,7 @@ defmodule OmegaBravera.Challenges do
         where: nc.slug == ^slug and n.slug == ^ngo_slug,
         preload: ^preloads,
         group_by: nc.id,
-        select: %{
-          nc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance),
-            start_date: fragment("? at time zone 'utc'", nc.start_date),
-            end_date: fragment("? at time zone 'utc'", nc.end_date)
-        }
+        select: %{nc | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)}
       )
 
     Repo.one(query)
