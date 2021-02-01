@@ -1,7 +1,6 @@
 defmodule OmegaBraveraWeb.NGOChalController do
   use OmegaBraveraWeb, :controller
   use Timex
-  alias Numbers
 
   require Logger
 
@@ -104,6 +103,7 @@ defmodule OmegaBraveraWeb.NGOChalController do
         conn
         |> open_welcome_modal()
         |> open_signup_or_login_modal()
+        |> OmegaBraveraWeb.GoogleAnalytics.block_index()
         |> render("show.html", Map.merge(render_attrs, get_stats(challenge)))
     end
   end

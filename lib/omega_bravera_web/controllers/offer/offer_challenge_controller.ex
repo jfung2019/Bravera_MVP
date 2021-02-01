@@ -269,6 +269,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
         |> open_welcome_modal()
         |> open_success_modal()
         |> open_signup_or_login_modal()
+        |> OmegaBraveraWeb.GoogleAnalytics.block_index()
         |> render("show.html", render_attrs)
     end
   end
