@@ -550,17 +550,15 @@ defmodule OmegaBravera.Offers do
           changeset
           |> Ecto.Changeset.apply_changes()
 
-        show_offer = offer_approval.status == :approved
-
-        get_offer!(offer_approval.offer_id)
-        |> update_offer(%{
-          hidden: show_offer,
-          live: show_offer,
-          approval_status: offer_approval.status
-        })
+        {:ok, offer} =
+          get_offer!(offer_approval.offer_id)
+          |> update_offer(%{
+            hidden: show_offer,
+            approval_status: offer_approval.status
+          })
 
         OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_approval.offer_id)
-        |> Notifier.notify_customer_offer_email(offer_approval)
+        |> Notifier.notify_customer_offer_email(offer_approval, offer)
 
         {:ok, changeset}
 
