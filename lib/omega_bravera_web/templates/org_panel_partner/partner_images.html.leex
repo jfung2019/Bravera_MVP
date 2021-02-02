@@ -102,7 +102,7 @@
                     <br>
                     <p><%= gettext("The first image will be your ‘lead’ image on the offers list.") %></p>
                     <br>
-                    <p><%= gettext("Hint: Dimensions to use for best results are square 1080x1080 (similar to instagram).") %></p>
+                    <p><%= gettext("Hint: Dimensions to use for best results are square 1080x1080 (similar to Instagram).") %></p>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" onclick="$('#first_10_group_image').modal('hide');"><%= gettext("Add Images") %></button>
@@ -112,6 +112,6 @@
     </div>
 </div>
 
-<%= if assigns[:first_10_groups] do %>
+<%= if assigns[:first_10_groups] and length(@images) == 0 do %>
     <script>$("#first_10_group_image").modal("show");</script>
 <% end %>

@@ -24,7 +24,6 @@
 				<td class="text-center" style="width: 40%;">
 					<%= link gettext("Members"), to: Routes.org_panel_partner_org_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
 					<%= link gettext("Details"), to: Routes.org_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
-					<%= link gettext("Edit"), to: Routes.org_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
 					<%= link gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgPartnerImages, partner), class: "btn btn-info" %>
 				</td>
 				<td class="text-center" style="width: 10%;">
@@ -72,5 +71,29 @@
 </div>
 
 <%= if length(@partners) < 1 do %>
-<script>$("#no_group").modal("show");</script>
+	<script>$("#no_group").modal("show");</script>
+<% end %>
+
+<div class="modal fade" id="offer_not_attached" tabindex="-1" role="dialog" aria-labelledby="offer_not_attached_modal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="d-flex justify-content-end py-1 px-3">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p><%= gettext("Great! Now add an offer to a group.") %></p>
+				<br>
+				<p><%= gettext("Select a Group and click ‘Details’ to add an offer.") %></p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" onclick="$('#offer_not_attached').modal('hide');"><%= gettext("Add Offer to a Group") %></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<%= if assigns[:offer_not_attached] do %>
+	<script>$("#offer_not_attached").modal("show");</script>
 <% end %>

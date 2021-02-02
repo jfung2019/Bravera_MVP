@@ -273,7 +273,7 @@
 
   <div class="form-group">
     <%= label f, :approval_status %>
-    <%= select f, :approval_status, @available_offer_approval_statuses, value: :approved, class: add_error_class(f, :approval_status, "form-control") %>
+    <%= select f, :approval_status, @available_offer_approval_statuses, class: add_error_class(f, :approval_status, "form-control") %>
     <%= error_tag f, :form_url %>
   </div>
 

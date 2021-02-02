@@ -17,7 +17,13 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
   def new(%{assigns: %{organization_id: org_id}} = conn, _params) do
     changeset = Offers.change_offer_reward(%Offers.OfferReward{})
     offers = Offers.list_offers_by_organization(org_id)
-    render(conn, "new.html", offers: offers, changeset: changeset)
+    offer_no_reward = Offers.check_offer_no_reward(org_id)
+
+    render(conn, "new.html",
+      offers: offers,
+      changeset: changeset,
+      offer_no_reward: offer_no_reward
+    )
   end
 
   def create(%{assigns: %{organization_id: org_id}} = conn, %{

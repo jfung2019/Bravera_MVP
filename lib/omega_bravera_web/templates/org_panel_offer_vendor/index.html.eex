@@ -54,7 +54,6 @@
         <p><%= gettext("Great! You’re created a Claim ID. You can now add this to an Offline Offer.") %></p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-danger" data-dismiss="modal" aria-label="Close"><%= gettext("Cancel")  %></button>
         <%= link gettext("Create and Offline Offer"), to: Routes.org_panel_offline_offers_path(@conn, :new), class: "btn btn-primary" %>
       </div>
     </div>

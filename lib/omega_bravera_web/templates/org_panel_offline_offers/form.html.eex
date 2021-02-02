@@ -88,7 +88,7 @@
 
   <div class="d-flex">
     <div class="form-group col-9 p-0">
-      <%= label f, :target, "Target (Points are needed to unlock the reward)", class: "control-label" %>
+      <%= label f, :target, "Target (Points needed to unlock the reward)", class: "control-label" %>
       <small class="text-mute form-text">
         <%= gettext("(IMPORTANT: 10 points = 1 kilometer or approx. 1,350 steps. Each kilometer your group members walk/run generates 10 points. So, if you’d like someone to walk/run 20 kilometers, add ‘20’ into the empty field below, the other fields will be automatically calculated. If below you turn challenges off, group members will need to buy with the equivalent points. Confused? Don’t worry, ") %>
         <a href="#"><%= gettext("click here") %></a>.)
@@ -141,7 +141,12 @@
 
   <div id="enable_take_challenge_fields">
     <div class="form-group">
-      <%= label f, :time_limit, "Time Limit (If left blank, any challenge time limit will match the date / time you entered in ‘End Date’ above. Click here for help)", class: "control-label" %>
+      <%= label f, :time_limit, gettext("Time Limit"), class: "control-label" %>
+      <small class="form-text text-muted">
+        <%= gettext("(If left blank, any challenge time limit will match the date / time you entered in ‘End Date’ above. ") %>
+        <a href=""><%= gettext("Click here") %></a>
+        <%= (" for help).") %>
+      </small>
       <%= number_input f, :time_limit, class: "form-control" %>
       <%= error_tag f, :time_limit %>
     </div>

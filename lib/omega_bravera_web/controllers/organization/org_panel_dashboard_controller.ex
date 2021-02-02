@@ -4,6 +4,7 @@ defmodule OmegaBraveraWeb.OrgPanelDashboardController do
 
   def index(%{assigns: %{organization_id: org_id}} = conn, _params) do
     dashboard = Accounts.organization_dashboard(org_id)
+    empty_live_group_offer = Accounts.check_empty_live_group_offer(org_id)
 
     render(conn, "index.html",
       # groups is formatted using 999,999

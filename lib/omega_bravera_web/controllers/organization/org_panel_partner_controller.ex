@@ -4,7 +4,13 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
 
   def index(%{assigns: %{organization_id: org_id}} = conn, params) do
     results = Groups.paginate_groups(org_id, params)
-    render(conn, partners: results.partners, paginate: results.paginate)
+    offer_not_attached = Groups.check_offer_not_attached(org_id)
+
+    render(conn,
+      partners: results.partners,
+      paginate: results.paginate,
+      offer_not_attached: offer_not_attached
+    )
   end
 
   def show(%{assigns: %{organization_id: org_id}} = conn, %{"id" => partner_id}) do
@@ -51,7 +57,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
 
       {:error, changeset} ->
         conn
-        |> put_flash(:error, "Group wasn't created")
+        |> put_flash(:error, "Group not saved. Please check below why.")
         |> assigns_for_popup()
         |> render("new.html", changeset: changeset)
     end
@@ -61,6 +67,11 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
     partner = Groups.get_partner!(id)
 
     case Groups.update_org_partner(partner, partner_params) do
+      {:ok, %{images: []} = partner} ->
+        conn
+        |> put_flash(:info, "Group updated successfully")
+        |> redirect(to: Routes.live_path(conn, OmegaBraveraWeb.OrgPartnerImages, partner))
+
       {:ok, partner} ->
         conn
         |> put_flash(:info, "Group updated successfully")
@@ -68,7 +79,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
 
       {:error, changeset} ->
         conn
-        |> put_flash(:error, "Group was not updated")
+        |> put_flash(:error, "Group not saved. Please check below why.")
         |> render("edit.html", changeset: changeset, partner: partner)
     end
   end
@@ -77,6 +88,6 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
     conn
     |> assign(:action, Routes.org_panel_partner_path(conn, :create))
     |> assign(:edit_action, Routes.org_panel_partner_path(conn, :create, %{"redirect" => "edit"}))
-    |> assign(:first_5_groups, Groups.organization_group_count(org_id) <= 5)
+    |> assign(:first_5_groups, true)
   end
 end
