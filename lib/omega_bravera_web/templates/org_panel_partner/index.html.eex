@@ -24,7 +24,6 @@
 				<td class="text-center" style="width: 40%;">
 					<%= link gettext("Members"), to: Routes.org_panel_partner_org_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
 					<%= link gettext("Details"), to: Routes.org_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
-					<%= link gettext("Edit"), to: Routes.org_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
 					<%= link gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgPartnerImages, partner), class: "btn btn-info" %>
 				</td>
 				<td class="text-center" style="width: 10%;">

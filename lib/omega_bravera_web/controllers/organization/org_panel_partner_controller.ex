@@ -51,7 +51,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
 
       {:error, changeset} ->
         conn
-        |> put_flash(:error, "Group wasn't created")
+        |> put_flash(:error, "Group not saved. Please check below why.")
         |> assigns_for_popup()
         |> render("new.html", changeset: changeset)
     end
@@ -68,7 +68,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
 
       {:error, changeset} ->
         conn
-        |> put_flash(:error, "Group was not updated")
+        |> put_flash(:error, "Group not saved. Please check below why.")
         |> render("edit.html", changeset: changeset, partner: partner)
     end
   end
