@@ -84,7 +84,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
     end
   end
 
-  defp assigns_for_popup(%{assigns: %{organization_id: org_id}} = conn) do
+  defp assigns_for_popup(%{assigns: %{organization_id: _org_id}} = conn) do
     conn
     |> assign(:action, Routes.org_panel_partner_path(conn, :create))
     |> assign(:edit_action, Routes.org_panel_partner_path(conn, :create, %{"redirect" => "edit"}))

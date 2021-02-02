@@ -59,7 +59,7 @@
 			</tbody>
 		</table>
 		<% else %>
-		<%= link gettext("Add Location"), to: Routes.org_panel_partner_org_panel_partner_location_path(@conn, :new, @partner), class: "btn btn-primary my-2" %><br>
+			<%= link gettext("Add Location"), to: Routes.org_panel_partner_org_panel_partner_location_path(@conn, :new, @partner), class: "btn btn-primary my-2" %><br>
 		<% end %>
 		<div>
 			<h2><span class="fa fa-trophy"></span> <%= gettext("Your Offers") %></h2>
@@ -75,7 +75,7 @@
 					<%= cond do %>
 						<% offer_partner.offer.approval_status == :approved && @partner.approval_status == :approved -> %>
 							<div class="rounded py-1 px-3 d-inline-block badge badge-success"><%= gettext("Live") %></div>
-						<% offer_partner.offer.approval_status == :approved %> ->
+						<% offer_partner.offer.approval_status == :approved -> %>
 							<div class="rounded py-1 px-3 d-inline-block badge badge-secondary"><%= gettext("Pending Group Approval") %></div>
 						<% offer_partner.offer.approval_status == :denied -> %>
 							<div class="rounded py-1 px-3 d-inline-block badge badge-danger ml-2"><%= gettext("Denied") %></div>

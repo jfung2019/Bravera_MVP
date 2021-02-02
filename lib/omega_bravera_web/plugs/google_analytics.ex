@@ -23,5 +23,5 @@ defmodule OmegaBraveraWeb.GoogleAnalytics do
   Google from indexing current page.
   """
   @spec block_index(Plug.Conn.t(), any()) :: Plug.Conn.t()
-  def block_index(conn, opts \\ nil), do: Plug.Conn.put_resp_header(conn, "x-robots-tag", "noindex")
+  def block_index(conn, _opts \\ nil), do: Plug.Conn.put_resp_header(conn, "x-robots-tag", "noindex")
 end
