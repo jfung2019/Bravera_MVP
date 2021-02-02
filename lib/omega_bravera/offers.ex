@@ -195,6 +195,21 @@ defmodule OmegaBravera.Offers do
     |> Repo.one!()
   end
 
+  def check_first_10_offer_image(org_id) do
+    from(o in Offer, where: o.organization_id == ^org_id, select: count(o.id) <= 10)
+    |> Repo.one()
+  end
+
+  def check_offer_no_reward(org_id) do
+    from(
+      o in Offer,
+      left_join: reward in assoc(o, :offer_rewards),
+      where: o.organization_id == ^org_id and is_nil(reward.id),
+      select: count(o.id) > 0
+    )
+    |> Repo.one()
+  end
+
   @doc """
   Gets an offer by the offer slug.
   """

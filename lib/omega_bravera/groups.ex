@@ -180,7 +180,7 @@ defmodule OmegaBravera.Groups do
 
         {:ok, partner} =
           get_partner!(group_approval.group_id)
-          |> update_partner(%{live: group_approval.status == :approved})
+          |> update_partner(%{approval_status: group_approval.status})
 
         OmegaBravera.Accounts.get_partner_user_email_by_group(group_approval.group_id)
         |> Notifier.notify_customer_group_email(partner, group_approval)
@@ -494,6 +494,16 @@ defmodule OmegaBravera.Groups do
 
   def get_partner_with_password(partner_id, password) do
     from(p in Partner, where: p.id == ^partner_id and p.join_password == ^password)
+    |> Repo.one()
+  end
+
+  def check_offer_not_attached(org_id) do
+    from(
+      o in OmegaBravera.Offers.Offer,
+      left_join: op in assoc(o, :offer_partners),
+      where: o.organization_id == ^org_id and is_nil(op.id),
+      select: count(o.id) > 0
+    )
     |> Repo.one()
   end
 

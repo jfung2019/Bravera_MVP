@@ -24,7 +24,7 @@ defmodule OmegaBraveraWeb.PartnerUserRegisterController do
           :info,
           "Account created! Please check your inbox and click the link we sent to verify your account email."
         )
-        |> redirect(to: Routes.partner_user_register_path(conn, :new))
+        |> redirect(to: Routes.partner_user_session_path(conn, :new))
 
       {:error, changeset} ->
         conn

@@ -55,51 +55,28 @@
   </div>
 <% end %>
 
-  <div class="modal fade" id="first_time_adding_image_modal d-block" tabindex="-1" role="dialog" aria-labelledby="first_time_adding_image_modal" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-              <div class="d-flex justify-content-end py-1 px-3">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body">
-                  <p><%= gettext("Images added to your offer! Nice work.") %></p>
-                  <br/>
-                  <p><%= gettext("You can now create the ‘reward’ that is linked to this offer and will be displayed to be verified by the CLAIM ID.") %></p>
-              </div>
-              <div class="modal-footer">
-                  <%= link gettext("Add Reward"), to: Routes.org_panel_offer_reward_path(@socket, :new), class: "btn btn-primary" %>
-              </div>
-          </div>
-      </div>
-  </div>
-
 <div phx-update="ignore">
-    <div class="modal fade" id="first_time_added_image_online_offer" tabindex="-1" role="dialog" aria-labelledby="first_time_added_image_online_offer_modal" aria-hidden="true">
+    <div class="modal fade" id="first_10_offer_image" tabindex="-1" role="dialog" aria-labelledby="first_10_offer_image_modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="d-flex justify-content-end py-1 px-3">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="modal-header">
+                    <h5 class="modal-title"><%= gettext("Add images to your offer.") %></h5>
                 </div>
                 <div class="modal-body">
-                    <p><%= gettext("Great! You’ve created an online offer and reward to be added to a Group.") %></p>
+                    <p><%= gettext("Drag and drop images you want to see in your offer.") %></p>
+                    <br>
+                    <p><%= gettext("The first image will be your ‘lead’ image on the offers list.") %></p>
+                    <br>
+                    <p><%= gettext("Hint: Dimensions to use for best results are square 1080x1080 (similar to Instagram).") %></p>
                 </div>
                 <div class="modal-footer">
-                    <%= link gettext("Add Offer to a Group"), to: Routes.org_panel_partner_path(@socket, :index), class: "btn btn-primary" %>
-                    <%= link gettext("Create another Online Offer"), to: Routes.org_panel_online_offers_path(@socket, :new), class: "btn btn-primary" %>
+                    <button class="btn btn-primary" onclick="$('#first_10_offer_image').modal('hide');"><%= gettext("Add Images") %></button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<%= if assigns[:first_time_adding_image] do %>
-    <%= if @offer.offer_type == :online do %>
-        <script>$("#first_time_added_image_online_offer").modal("show");</script>
-    <% else %>
-        <script>$("#first_time_adding_image_modal").modal("show");</script>
-    <% end %>
+<%= if assigns[:first_10_offer_image] and length(@images) == 0 do %>
+    <script>$("#first_10_offer_image").modal("show");</script>
 <% end %>

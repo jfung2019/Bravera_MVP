@@ -6,10 +6,18 @@ defmodule OmegaBraveraWeb.OrgOfferImages do
   def render(assigns),
     do: OmegaBraveraWeb.OrgPanelOnlineOffersView.render("offer_images.html", assigns)
 
-  def mount(%{"slug" => slug}, _session, socket) do
+  def mount(%{"slug" => slug}, %{"organization_id" => org_id}, socket) do
     offer = Offers.get_offer_by_slug(slug)
     token = UploadAuth.generate_offer_token(offer.id)
-    {:ok, assign(socket, offer: offer, images: offer.images, upload_token: token)}
+    first_10_offer_image = Offers.check_first_10_offer_image(org_id)
+
+    {:ok,
+     assign(socket,
+       offer: offer,
+       images: offer.images,
+       upload_token: token,
+       first_10_offer_image: first_10_offer_image
+     )}
   end
 
   def handle_event(

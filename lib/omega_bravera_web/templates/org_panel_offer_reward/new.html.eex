@@ -10,3 +10,27 @@
         <span><%= link "Back", to: Routes.org_panel_offer_reward_path(@conn, :index) %></span>
     </div>
 </div>
+
+<div class="modal fade" id="offer_no_reward" tabindex="-1" role="dialog" aria-labelledby="offer_no_reward_modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="d-flex justify-content-end py-1 px-3">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><%= gettext("Images added to your offer! Nice work.") %></p>
+                <br/>
+                <p><%= gettext("You can now create the ‘reward’ that is linked to this offer and will be displayed to be verified by the CLAIM ID.") %></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal" aria-label="Close"><%= gettext("Add Reward") %></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%= if assigns[:offer_no_reward] do %>
+    <script>$("#offer_no_reward").modal("show");</script>
+<% end %>
