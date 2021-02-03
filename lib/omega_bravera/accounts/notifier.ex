@@ -102,7 +102,12 @@ defmodule OmegaBravera.Accounts.Notifier do
     end
   end
 
-  def send_password_reset_email(%PartnerUser{email: email, username: username, first_name: first_name, reset_token: reset_token}) do
+  def send_password_reset_email(%PartnerUser{
+        email: email,
+        username: username,
+        first_name: first_name,
+        reset_token: reset_token
+      }) do
     template_id = "6ad5a528-9f86-4301-8ff3-86db415a860d"
 
     Email.build()

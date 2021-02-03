@@ -816,22 +816,22 @@ defmodule OmegaBravera.Accounts do
       left_join: ofr in assoc(oc, :offer_redeems),
       left_join: p in assoc(o, :points),
       select: %{
-        groups: fragment("TO_CHAR(?, '999,999')", count(g.id)),
-        offers: fragment("TO_CHAR(?, '999,999')", count(of.id)),
+        groups: fragment("TO_CHAR(?, '999,999')", count(g.id, :distinct)),
+        offers: fragment("TO_CHAR(?, '999,999')", count(of.id, :distinct)),
         members: fragment("TO_CHAR(?, '999,999')", count(m.user_id, :distinct)),
-        total_distance: fragment("TO_CHAR(?, '999,999 KM')", count(a.distance)),
+        total_distance: fragment("TO_CHAR(?, '999,999 KM')", sum(a.distance)),
         distance_this_week:
           fragment(
             "TO_CHAR(?, '999,999 KM')",
             filter(
-              count(a.distance),
+              sum(a.distance),
               a.start_date >= ^beginning_of_week and a.end_date <= ^end_of_week
             )
           ),
         unlocked_rewards:
-          fragment("TO_CHAR(?, '999,999')", filter(count(oc.id), oc.status == "complete")),
+          fragment("TO_CHAR(?, '999,999')", filter(count(oc.id, :distinct), oc.status == "complete")),
         claimed_rewards:
-          fragment("TO_CHAR(?, '999,999')", filter(count(ofr.id), ofr.status == "redeemed")),
+          fragment("TO_CHAR(?, '999,999')", filter(count(ofr.id, :distinct), ofr.status == "redeemed")),
         remaining_points:
           fragment(
             "TO_CHAR(?, '999,999')",
@@ -850,7 +850,6 @@ defmodule OmegaBravera.Accounts do
   end
 
   def check_empty_live_group_offer(organization_id) do
-
   end
 
   @doc """
