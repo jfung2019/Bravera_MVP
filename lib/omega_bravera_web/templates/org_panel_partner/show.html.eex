@@ -104,7 +104,7 @@
 		<small class="text-muted">
 			(<span class="text-danger"><%= gettext("Don’t have rewards ready? ") %></span>
 			<%= gettext("Select existing rewards and activate your group. We will add them for you. ") %>
-			<a href="#"><%= gettext("CLICK HERE") %></a>).
+			<a href="http://bit.ly/BraveraHK-Admin-Offers" target="_blank"><%= gettext("CLICK HERE") %></a>).
 		</small>
 		<div class="row">
 			<%= form_for @conn, Routes.org_panel_offer_partner_path(@conn, :create), fn f -> %>

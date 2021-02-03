@@ -20,7 +20,7 @@
         <%= label f, :start_date, "Start Date", class: "control-label" %>
         <br/>
         <small class="text-muted form-text"><%= gettext("(Offer will be live after the start date displayed below.)") %></small>
-        <small class="text-muted form-text"><strong class="text-uppercase"><%= gettext("Important") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your time zone versus GMT/UTC. We like") %> <a href="https://www.worldtimebuddy.com/" target="_blank"><%= gettext("this tool") %></a></small>
+        <small class="text-muted form-text"><strong class="text-uppercase"><%= gettext("Important") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your time zone versus GMT/UTC. We like") %> <a href="http://bit.ly/World-Time-Buddy" target="_blank"><%= gettext("this tool") %></a></small>
         <%= datetime_builder(f, :start_date, class: "form-control") %>
         <%= error_tag f, :start_date %>
       </div>
@@ -30,10 +30,10 @@
         <br/>
         <small class="text-muted form-text">
           <%= gettext("(An offer will ‘end’ on this date. It will ‘disappear’. ") %>
-          <a href="#"><%= gettext("Click here") %></a>
+          <a href="http://bit.ly/Offer-End-Dates"><%= gettext("Click here") %></a>
           <%= gettext(" to learn more.)") %>
         </small>
-        <small class="text-muted form-text"><strong class="text-uppercase"><%= gettext("Important") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your time zone versus GMT/UTC. We like") %> <a href="https://www.worldtimebuddy.com/" target="_blank"><%= gettext("this tool") %></a></small>
+        <small class="text-muted form-text"><strong class="text-uppercase"><%= gettext("Important") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your time zone versus GMT/UTC. We like") %> <a href="http://bit.ly/World-Time-Buddy" target="_blank"><%= gettext("this tool") %></a></small>
         <%= datetime_builder(f, :end_date, class: "form-control") %>
         <%= error_tag f, :end_date %>
       </div>
@@ -70,7 +70,7 @@
       <%= label f, :target, "Target (Points needed to unlock the reward)", class: "control-label" %>
       <small class="text-mute form-text">
         <%= gettext("(IMPORTANT: 10 points = 1 kilometer or approx. 1,350 steps. Each kilometer your group members walk/run generates 10 points. So, if you’d like someone to walk/run 20 kilometers, add ‘20’ into the empty field below, the other fields will be automatically calculated. If below you turn challenges off, group members will need to buy with the equivalent points. Confused? Don’t worry, ") %>
-        <a href="#"><%= gettext("click here") %></a>.)
+        <a href="http://bit.ly/Points-Needed" target="_blank"><%= gettext("click here") %></a>.)
       </small>
       <table class="table mt-3" style="table-layout: fixed;">
         <tr>
@@ -96,7 +96,7 @@
       <%= label f, :online_url, gettext("Redirect URL Address"), class: "control-label" %>
       <small class="form-text text-muted">
         <%= gettext("Please add the redirect website / url where members can ‘claim’ here. ") %>
-        (<a href="#"><%= gettext("click here for help") %></a>.)
+        (<a href="http://bit.ly/Online-Redirect-URL" target="_blank"><%= gettext("click here for help") %></a>.)
       </small>
       <%= text_input f, :online_url, class: "form-control" %>
       <%= error_tag f, :online_url %>
@@ -108,7 +108,7 @@
     <%= label f, :online_code, gettext("Online Promotion / Discount code"), class: "control-label" %>
     <small class="form-text text-muted">
       <%= gettext("(For 3rd party websites like shopify, please enter the discount code that will apply a discount at check-out. For online forms, enter a ‘secret code’ that should prove they completed the challenge. Confused? Don’t worry, ") %>
-      <a href="#"><%= gettext("click here") %></a>
+      <a href="http://bit.ly/Online-Redirect-URL" target="_blank"><%= gettext("click here") %></a>
       <%= gettext(" for help.)") %>
     </small>
     <%= text_input f, :online_code, class: "form-control" %>
@@ -133,7 +133,7 @@
       <br>
       <small class="form-text text-muted">
         <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward. NOTE: Any live challenges must end before the Offer End date you entered above. ") %>
-        <a href=""><%= gettext("Click here") %></a>
+        <a href="http://bit.ly/Admin-Allow-Challenges" target="_blank"><%= gettext("Click here") %></a>
         <%= gettext(" for help and hints).") %>
       </small>
       <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>

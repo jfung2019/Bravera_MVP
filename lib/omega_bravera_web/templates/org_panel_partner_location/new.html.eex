@@ -3,7 +3,7 @@
         <h1><span class="fa fa-map-marker"></span> <%= gettext("New %{name} Location", name: @partner.name) %></h1>
         <small class="text-muted">
             <%= gettext("(We use Google Maps GPS coordinates to add pin locations to our map inside Bravera. ") %>
-            <a href="#"><%= gettext("Please follow this guide to learn more") %></a>)
+            <a href="http://bit.ly/Gmaps-GPS" target="_blank"><%= gettext("Please follow this guide to learn more") %></a>)
         </small>
         <div class="d-flex">
             <div class="col-8 p-0">

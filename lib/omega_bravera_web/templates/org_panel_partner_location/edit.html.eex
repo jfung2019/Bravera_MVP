@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-body">
         <h1><span class="fa fa-map-marker"></span> <%= gettext("Edit %{name} Location", name: @partner.name) %></h1>
-        <small class="text-muted"><%= gettext("(We use Google Maps GPS coordinates to add pin locations to our map inside Bravera. Please follow this guide to learn more)") %></small>
+        <small class="text-muted"><%= gettext("(We use Google Maps GPS coordinates to add pin locations to our map inside Bravera. Please ") %><a href="http://bit.ly/Gmaps-GPS" target="_blank"><%= gettext("follow this guide") %></a> <%= gettext(" to learn more)") %></small>
         <div class="d-flex">
             <div class="col-8 p-0">
                 <%= render "_form.html", Map.put(assigns, :action, Routes.org_panel_partner_org_panel_partner_location_path(@conn, :update, @partner, @location)) %>

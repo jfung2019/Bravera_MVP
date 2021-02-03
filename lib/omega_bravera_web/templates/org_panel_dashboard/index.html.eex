@@ -1,6 +1,7 @@
 <div class="card">
     <div class="card-body">
         <h1><span class="fa fa-dashboard"></span> <%= gettext("Dashboard") %></h1>
+        <small class="text-muted">(<%= gettext("A quick snapshot of what’s going on in your groups. ") %><a href="http://bit.ly/Cadmin-Dashboard" target="_blank"><%= gettext("Click here") %></a> <%= (" for more details") %>)</small>
         <div class="row">
             <div class="col-6">
                 <table class="table">

@@ -9,7 +9,7 @@
           <br>
           <small class="text-muted">
             <%= gettext("(Offers that are ‘promoted’ to being public and available to a wider audience. ") %>
-            <a href="#"><%= gettext("Learn more here") %></a>.)
+            <a href="http://bit.ly/Public-Offer" target="_blank"><%= gettext("Learn more here") %></a>.)
           </small>
         </th>
         <th class="align-top">
