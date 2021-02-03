@@ -321,7 +321,7 @@ defmodule OmegaBravera.Accounts do
 
   defp activity_query(start_date, end_date) do
     from(a in ActivityAccumulator,
-      select: %{distance: sum(a.distance), user_id: a.user_id},
+      select: %{distance: coalesce(sum(a.distance), 0), user_id: a.user_id},
       group_by: a.user_id,
       where:
         a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
@@ -819,19 +819,29 @@ defmodule OmegaBravera.Accounts do
         groups: fragment("TO_CHAR(?, '999,999')", count(g.id, :distinct)),
         offers: fragment("TO_CHAR(?, '999,999')", count(of.id, :distinct)),
         members: fragment("TO_CHAR(?, '999,999')", count(m.user_id, :distinct)),
-        total_distance: fragment("TO_CHAR(?, '999,999 KM')", sum(a.distance)),
+        total_distance: fragment("TO_CHAR(?, '999,999 KM')", coalesce(sum(a.distance), 0)),
         distance_this_week:
           fragment(
             "TO_CHAR(?, '999,999 KM')",
-            filter(
-              sum(a.distance),
-              a.start_date >= ^beginning_of_week and a.end_date <= ^end_of_week
+            coalesce(
+              filter(
+                sum(a.distance),
+                a.start_date >= ^beginning_of_week and a.end_date <= ^end_of_week and
+                  is_nil(a.strava_id) and not is_nil(a.device_id)
+              ),
+              0
             )
           ),
         unlocked_rewards:
-          fragment("TO_CHAR(?, '999,999')", filter(count(oc.id, :distinct), oc.status == "complete")),
+          fragment(
+            "TO_CHAR(?, '999,999')",
+            filter(count(oc.id, :distinct), oc.status == "complete")
+          ),
         claimed_rewards:
-          fragment("TO_CHAR(?, '999,999')", filter(count(ofr.id, :distinct), ofr.status == "redeemed")),
+          fragment(
+            "TO_CHAR(?, '999,999')",
+            filter(count(ofr.id, :distinct), ofr.status == "redeemed")
+          ),
         remaining_points:
           fragment(
             "TO_CHAR(?, '999,999')",
