@@ -81,9 +81,18 @@ defmodule OmegaBravera.Groups do
   """
   def get_partner_with_membership!(id, user_id) do
     from(p in Partner,
-      distinct: true,
-      left_join: o in assoc(p, :offers),
-      on: o.approval_status == :approved,
+      as: :group,
+      left_lateral_join:
+        o in subquery(
+          from(o in OmegaBravera.Offers.Offer,
+            inner_join: op in assoc(o, :offer_partners),
+            where: op.partner_id == parent_as(:group).id and o.approval_status == :approved,
+            order_by: [desc: :inserted_at],
+            limit: 1,
+            select: %{id: o.id, partner_id: op.partner_id}
+          )
+        ),
+      on: o.partner_id == p.id,
       left_join: m in assoc(p, :members),
       on: m.user_id == ^user_id,
       where: p.id == ^id,
@@ -105,9 +114,18 @@ defmodule OmegaBravera.Groups do
 
   def list_partners_with_membership(user_id) do
     from(p in Partner,
-      distinct: true,
-      left_join: o in assoc(p, :offers),
-      on: o.approval_status == :approved,
+      as: :group,
+      left_lateral_join:
+        o in subquery(
+          from(o in OmegaBravera.Offers.Offer,
+            inner_join: op in assoc(o, :offer_partners),
+            where: op.partner_id == parent_as(:group).id and o.approval_status == :approved,
+            order_by: [desc: :inserted_at],
+            limit: 1,
+            select: %{id: o.id, partner_id: op.partner_id}
+          )
+        ),
+      on: o.partner_id == p.id,
       left_join: m in assoc(p, :members),
       on: m.user_id == ^user_id,
       where: p.approval_status == :approved,
