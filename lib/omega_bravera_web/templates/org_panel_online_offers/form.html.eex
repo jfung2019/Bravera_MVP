@@ -96,7 +96,7 @@
       <%= label f, :online_url, gettext("Redirect URL Address"), class: "control-label" %>
       <small class="form-text text-muted">
         <%= gettext("Please add the redirect website / url where members can ‘claim’ here. ") %>
-        (<a href="http://bit.ly/Online-Redirect-URL" target="_blank"><%= gettext("click here for help") %></a>.)
+        (<a href="https://bit.ly/Redirect-URL" target="_blank"><%= gettext("click here for help") %></a>.)
       </small>
       <%= text_input f, :online_url, class: "form-control" %>
       <%= error_tag f, :online_url %>
@@ -108,7 +108,7 @@
     <%= label f, :online_code, gettext("Online Promotion / Discount code"), class: "control-label" %>
     <small class="form-text text-muted">
       <%= gettext("(For 3rd party websites like shopify, please enter the discount code that will apply a discount at check-out. For online forms, enter a ‘secret code’ that should prove they completed the challenge. Confused? Don’t worry, ") %>
-      <a href="http://bit.ly/Online-Redirect-URL" target="_blank"><%= gettext("click here") %></a>
+      <a href="https://bit.ly/Redirect-URL" target="_blank"><%= gettext("click here") %></a>
       <%= gettext(" for help.)") %>
     </small>
     <%= text_input f, :online_code, class: "form-control" %>
@@ -133,7 +133,7 @@
       <br>
       <small class="form-text text-muted">
         <%= gettext("(Check the box = allows group members to take a walk/run challenge and earn the reward. Uncheck the box = group members must use their points to unlock / earn the reward. NOTE: Any live challenges must end before the Offer End date you entered above. ") %>
-        <a href="http://bit.ly/Admin-Allow-Challenges" target="_blank"><%= gettext("Click here") %></a>
+        <a href="https://bit.ly/Allow-Challenges" target="_blank"><%= gettext("Click here") %></a>
         <%= gettext(" for help and hints).") %>
       </small>
       <%= checkbox f, :take_challenge, id: "enable_take_challenge_checkbox" %>
@@ -147,7 +147,7 @@
       <%= label f, :time_limit, gettext("Time Limit"), class: "control-label" %>
       <small class="form-text text-muted">
         <%= gettext("(If left blank, any challenge time limit will match the date / time you entered in ‘End Date’ above. ") %>
-        <a href=""><%= gettext("Click here") %></a>
+        <a href="https://bit.ly/Allow-Challenges" target="_blank"><%= gettext("Click here") %></a>
         <%= (" for help).") %>
       </small>
       <%= number_input f, :time_limit, class: "form-control" %>

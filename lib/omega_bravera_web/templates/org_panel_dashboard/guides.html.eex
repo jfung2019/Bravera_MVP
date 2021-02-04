@@ -1,5 +1,36 @@
 <div class="card">
     <div class="card-body">
         <h1><span class="fa fa-list"></span> <%= gettext("Launch Guides/ Templates") %></h1>
+        <hr>
+        <div id="invite_member" class="my-3">
+            <h3><%= gettext("Inviting Members to your Group(s)") %></h3>
+            <p><%= gettext("Invite members to join your Live Group that has activated / live Offers.") %></p>
+            <p><%= gettext("Copy, paste and EDIT the text below with instructions to invite members to a Group.") %></p>
+            <p><%= gettext("\"Hi! This is <Insert Name>, I’m sending you this invite to get access to a Group I’ve just created on Bravera, an app that rewards people for ‘moving’. By joining my private Group we can: ") %></p>
+            <ul>
+                <li><%= gettext("Convert walking/running into points and exchange for rewards") %></li>
+                <li><%= gettext("Take challenges") %></li>
+                <li><%= gettext("Compare and compete on a private leaderboard") %></li>
+                <li><%= gettext("Chat in our own private chat group") %></li>
+            </ul>
+            <p>
+                <%= gettext("Be sure to download Bravera on iOS (") %><a href="http://bit.ly/Bravera-iOS" target="_blank"><%= gettext("click here") %></a><%= gettext(") or on Android (") %><a href="http://bit.ly/Bravera-Android" target="_blank"><%= gettext("click here") %></a><%=(") or simply search \"Bravera\" on the App Store or Google Play. After download and set-up:") %>
+            </p>
+            <ol>
+                <li><%= gettext("Go to Groups") %></li>
+                <li><%= gettext("Find Group <Group Name>") %></li>
+                <li><%= gettext("Enter the PIN code <PinCode> to get access! ") %></li>
+            </ol>
+            <p><%= gettext("(Note: this is a private group, please don’t share the PIN!)") %></p>
+            <p><%= gettext("I’m waiting for you to join and we can have some fun moving for rewards!\"") %></p>
+        </div>
+        <hr>
+        <div id="brand_claim_instruct" class="my-3">
+            <h3><%= gettext("Brand Assets & Offline Claim Instructions") %></h3>
+            <p><%= gettext("Access and use the Bravera Logos for use when educating people about joining your group(s).") %></p>
+            <p><%= gettext("Tag us on Social Media, add us to your Mailing List.") %></p>
+            <p><%= gettext("You can also download a simple instruction guide for verifying CLAIM IDs, if necessary.") %></p>
+            <a href="http://bit.ly/Bravera-Brand-Assets" target="_blank"><%= gettext("Click here")%></a>.
+        </div>
     </div>
 </div>
