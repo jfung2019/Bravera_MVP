@@ -859,9 +859,6 @@ defmodule OmegaBravera.Accounts do
     |> Repo.one()
   end
 
-  def check_empty_live_group_offer(organization_id) do
-  end
-
   @doc """
   Returns total number of points for the current day
   """

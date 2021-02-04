@@ -150,7 +150,18 @@ defmodule OmegaBravera.Groups do
     |> Repo.one()
   end
 
-  def total_live_groups() do
+  def check_empty_live_group_offer(organization_id) do
+    from(p in Partner,
+      left_join: o in assoc(p, :offers),
+      left_join: m in assoc(p, :members),
+      where:
+        p.organization_id == ^organization_id and p.approval_status == :approved and
+          o.approval_status == :approved,
+      group_by: [p.id],
+      having: count(m.id) == 0,
+      select: count(p.id) > 0
+    )
+    |> Repo.one()
   end
 
   @doc """

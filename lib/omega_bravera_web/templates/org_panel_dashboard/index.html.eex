@@ -95,7 +95,7 @@
 </div>
 
 <%= if @no_groups do %>
-<script>$("#first_time").modal("show");</script>
+    <script>$("#first_time").modal("show");</script>
 <% end %>
 <script>
     function showDashboardIntro() {
@@ -103,3 +103,23 @@
         $("#dashboard_intro").modal("show");
     }
 </script>
+
+<div class="modal fade" id="new_group_offer_approved" tabindex="-1" role="dialog" aria-labelledby="new_group_offer_approved_modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><%= gettext("Seems a Group has been approved and ready to for members to join!") %></p>
+                <br>
+                <p><%= gettext("You can go to Launch Guides / Templates below to help invite people.") %></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal"><%= gettext("Not Now") %></button>
+                <%= link gettext("Go to Guides"), to: Routes.org_panel_dashboard_path(@conn, :guides), class: "btn btn-primary" %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%= if @empty_live_group_offer do %>
+    <script>$("#new_group_offer_approved").modal("show")</script>
+<% end %>

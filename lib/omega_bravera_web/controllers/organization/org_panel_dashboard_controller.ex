@@ -4,11 +4,12 @@ defmodule OmegaBraveraWeb.OrgPanelDashboardController do
 
   def index(%{assigns: %{organization_id: org_id}} = conn, _params) do
     dashboard = Accounts.organization_dashboard(org_id)
-    empty_live_group_offer = Accounts.check_empty_live_group_offer(org_id)
+    empty_live_group_offer = OmegaBravera.Groups.check_empty_live_group_offer(org_id)
 
     render(conn, "index.html",
       # groups is formatted using 999,999
       # so we need to check if it's a string of 0
+      empty_live_group_offer: empty_live_group_offer,
       no_groups: String.replace(dashboard.groups, " ", "") == "0",
       dashboard: dashboard
     )
