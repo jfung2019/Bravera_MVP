@@ -27,7 +27,7 @@ defmodule OmegaBravera.Points.Point do
 
     belongs_to :user, User
     belongs_to :activity, ActivityAccumulator
-    belongs_to :organization, OmegaBravera.Accounts.Organization
+    belongs_to :organization, OmegaBravera.Accounts.Organization, type: :binary_id
   end
 
   def activity_points_changeset(

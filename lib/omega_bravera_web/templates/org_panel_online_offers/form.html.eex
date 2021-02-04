@@ -30,7 +30,7 @@
         <br/>
         <small class="text-muted form-text">
           <%= gettext("(An offer will ‘end’ on this date. It will ‘disappear’. ") %>
-          <a href="http://bit.ly/Offer-End-Dates"><%= gettext("Click here") %></a>
+          <a href="http://bit.ly/Offer-End-Dates" target="_blank"><%= gettext("Click here") %></a>
           <%= gettext(" to learn more.)") %>
         </small>
         <small class="text-muted form-text"><strong class="text-uppercase"><%= gettext("Important") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your time zone versus GMT/UTC. We like") %> <a href="http://bit.ly/World-Time-Buddy" target="_blank"><%= gettext("this tool") %></a></small>
