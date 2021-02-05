@@ -86,6 +86,8 @@ defmodule OmegaBravera.Accounts.User do
     has_many :devices, OmegaBravera.Devices.Device
     has_many :offer_redeems, OmegaBravera.Offers.OfferRedeem
     belongs_to :location, OmegaBravera.Locations.Location
+    has_many :memberships, OmegaBravera.Groups.Member
+    has_many :groups, through: [:memberships, :partner]
 
     many_to_many :teams, Team, join_through: "team_members"
 

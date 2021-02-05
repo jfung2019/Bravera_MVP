@@ -806,32 +806,45 @@ defmodule OmegaBravera.Accounts do
     end_of_day = Timex.end_of_day(now)
 
     from(o in Organization,
+      as: :org,
       where: o.id == ^organization_id,
       left_join: g in assoc(o, :groups),
       left_join: of in assoc(o, :offers),
       left_join: m in assoc(g, :members),
-      left_join: a in OmegaBravera.Activity.ActivityAccumulator,
-      on: m.user_id == a.user_id,
+      left_lateral_join:
+        td in subquery(
+          from(a in OmegaBravera.Activity.ActivityAccumulator,
+            left_join: u in OmegaBravera.Groups.Member,
+            on: u.user_id == a.user_id,
+            left_join: g in assoc(u, :partner),
+            where: g.organization_id == parent_as(:org).id and is_nil(a.strava_id) and not is_nil(a.device_id),
+            group_by: g.organization_id,
+            select: %{distance: coalesce(sum(a.distance), 0), organization_id: g.organization_id}
+          )
+        ),
+      on: td.organization_id == o.id,
+      left_lateral_join:
+        wd in subquery(
+          from(a in OmegaBravera.Activity.ActivityAccumulator,
+            left_join: u in OmegaBravera.Groups.Member,
+            on: u.user_id == a.user_id,
+            left_join: g in assoc(u, :partner),
+            where: g.organization_id == parent_as(:org).id and a.start_date >= ^beginning_of_week and a.end_date <= ^end_of_week and is_nil(a.strava_id) and not is_nil(a.device_id),
+            group_by: g.organization_id,
+            select: %{distance: coalesce(sum(a.distance), 0), organization_id: g.organization_id}
+          )
+        ),
+      on: wd.organization_id == o.id,
       left_join: oc in assoc(of, :offer_challenges),
       left_join: ofr in assoc(oc, :offer_redeems),
       left_join: p in assoc(o, :points),
+      group_by: [o.id, td.distance, wd.distance],
       select: %{
         groups: fragment("TO_CHAR(?, '999,999')", count(g.id, :distinct)),
         offers: fragment("TO_CHAR(?, '999,999')", count(of.id, :distinct)),
         members: fragment("TO_CHAR(?, '999,999')", count(m.user_id, :distinct)),
-        total_distance: fragment("TO_CHAR(?, '999,999 KM')", coalesce(sum(a.distance), 0)),
-        distance_this_week:
-          fragment(
-            "TO_CHAR(?, '999,999 KM')",
-            coalesce(
-              filter(
-                sum(a.distance),
-                a.start_date >= ^beginning_of_week and a.end_date <= ^end_of_week and
-                  is_nil(a.strava_id) and not is_nil(a.device_id)
-              ),
-              0
-            )
-          ),
+        total_distance: fragment("TO_CHAR(?, '999,999 KM')", td.distance),
+        distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", wd.distance),
         unlocked_rewards:
           fragment(
             "TO_CHAR(?, '999,999')",
