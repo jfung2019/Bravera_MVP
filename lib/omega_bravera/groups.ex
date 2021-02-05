@@ -211,9 +211,6 @@ defmodule OmegaBravera.Groups do
           get_partner!(group_approval.group_id)
           |> update_partner(%{approval_status: group_approval.status})
 
-        OmegaBravera.Accounts.get_partner_user_email_by_group(group_approval.group_id)
-        |> Notifier.notify_customer_group_email(partner, group_approval)
-
         {:ok, group_approval}
 
       changeset ->
@@ -238,9 +235,22 @@ defmodule OmegaBravera.Groups do
 
   """
   def update_partner(%Partner{} = partner, attrs) do
-    partner
-    |> Partner.changeset(attrs)
-    |> Repo.update()
+    result =
+      partner
+      |> Partner.changeset(attrs)
+      |> Repo.update()
+
+    case {partner.approval_status, result} do
+      # If no Organization, then we don't care.
+       {_, {:ok, %{organization_id: nil}} = result} ->
+        result
+      # If org and from pending to approved or denied
+      {:pending, {:ok, %{approval_status: status} = updated_partner} = result} when status in [:approved, :denied] ->
+        OmegaBravera.Accounts.get_partner_user_email_by_group(updated_partner.id)
+        |> Notifier.notify_customer_group_email(updated_partner, %GroupApproval{status: status, message: ""})
+        result
+      {_ , result} -> result
+     end
   end
 
   def update_org_partner(%Partner{} = partner, attrs) do

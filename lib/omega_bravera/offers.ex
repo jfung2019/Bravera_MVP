@@ -468,62 +468,19 @@ defmodule OmegaBravera.Offers do
   def create_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.changeset(attrs)
-    |> insert_offer()
+    |> Repo.insert()
   end
 
   def create_org_online_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.org_online_offer_changeset(attrs)
-    |> insert_offer()
+    |> Repo.insert()
   end
 
   def create_org_offline_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.org_offline_offer_changeset(attrs)
-    |> insert_offer()
-  end
-
-  defp insert_offer(changeset) do
-    changeset
-    |> switch_pre_registration_date_to_utc()
-    |> switch_start_date_to_utc()
-    |> switch_end_date_to_utc()
     |> Repo.insert()
-  end
-
-  defp switch_start_date_to_utc(
-         %Ecto.Changeset{valid?: true, changes: %{start_date: start_date}} = changeset
-       ),
-       do: Ecto.Changeset.change(changeset, %{start_date: to_utc(start_date)})
-
-  defp switch_start_date_to_utc(%Ecto.Changeset{} = changeset), do: changeset
-
-  defp switch_end_date_to_utc(
-         %Ecto.Changeset{valid?: true, changes: %{end_date: end_date}} = changeset
-       ),
-       do: Ecto.Changeset.change(changeset, %{end_date: to_utc(end_date)})
-
-  defp switch_end_date_to_utc(%Ecto.Changeset{} = changeset), do: changeset
-
-  defp switch_pre_registration_date_to_utc(
-         %Ecto.Changeset{
-           valid?: true,
-           changes: %{pre_registration_start_date: pre_registration_start_date}
-         } = changeset
-       ),
-       do:
-         Ecto.Changeset.change(changeset, %{
-           pre_registration_start_date: to_utc(pre_registration_start_date)
-         })
-
-  defp switch_pre_registration_date_to_utc(%Ecto.Changeset{} = changeset), do: changeset
-
-  defp to_utc(%DateTime{} = datetime) do
-    datetime
-    |> Timex.to_datetime()
-    |> DateTime.to_naive()
-    |> Timex.to_datetime("Asia/Hong_Kong")
-    |> Timex.to_datetime("Etc/UTC")
   end
 
   def create_offer_approval(attrs \\ %{}) do
@@ -538,9 +495,6 @@ defmodule OmegaBravera.Offers do
           |> update_offer(%{
             approval_status: offer_approval.status
           })
-
-        OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_approval.offer_id)
-        |> Notifier.notify_customer_offer_email(offer_approval, offer)
 
         {:ok, changeset}
 
@@ -566,28 +520,33 @@ defmodule OmegaBravera.Offers do
 
   """
   def update_offer(%Offer{} = offer, attrs) do
-    offer
-    |> Offer.changeset(attrs)
-    |> modify_offer()
+    result =
+      offer
+      |> Offer.changeset(attrs)
+      |> Repo.update()
+
+    case {offer.approval_status, result} do
+      # If no Organization, then we don't care.
+      {_, {:ok, %{organization_id: nil}} = result} ->
+        result
+      # If org and from pending to approved or denied
+      {:pending, {:ok, %{approval_status: status} = updated_offer} = result} when status in [:approved, :denied] ->
+        OmegaBravera.Accounts.get_partner_user_email_by_offer(updated_offer.id)
+        |> Notifier.notify_customer_offer_email(%OfferApproval{status: status, message: ""}, updated_offer)
+        result
+      {_ , result} -> result
+    end
   end
 
   def update_org_online_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.org_online_offer_changeset(attrs)
-    |> modify_offer()
+    |> Repo.update()
   end
 
   def update_org_offline_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.org_offline_offer_changeset(attrs)
-    |> modify_offer()
-  end
-
-  defp modify_offer(changeset) do
-    changeset
-    |> switch_pre_registration_date_to_utc()
-    |> switch_start_date_to_utc()
-    |> switch_end_date_to_utc()
     |> Repo.update()
   end
 
