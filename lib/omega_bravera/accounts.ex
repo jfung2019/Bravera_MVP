@@ -817,7 +817,9 @@ defmodule OmegaBravera.Accounts do
             left_join: u in OmegaBravera.Groups.Member,
             on: u.user_id == a.user_id,
             left_join: g in assoc(u, :partner),
-            where: g.organization_id == parent_as(:org).id and is_nil(a.strava_id) and not is_nil(a.device_id),
+            where:
+              g.organization_id == parent_as(:org).id and is_nil(a.strava_id) and
+                not is_nil(a.device_id),
             group_by: g.organization_id,
             select: %{distance: coalesce(sum(a.distance), 0), organization_id: g.organization_id}
           )
@@ -829,7 +831,9 @@ defmodule OmegaBravera.Accounts do
             left_join: u in OmegaBravera.Groups.Member,
             on: u.user_id == a.user_id,
             left_join: g in assoc(u, :partner),
-            where: g.organization_id == parent_as(:org).id and a.start_date >= ^beginning_of_week and a.end_date <= ^end_of_week and is_nil(a.strava_id) and not is_nil(a.device_id),
+            where:
+              g.organization_id == parent_as(:org).id and a.start_date >= ^beginning_of_week and
+                a.end_date <= ^end_of_week and is_nil(a.strava_id) and not is_nil(a.device_id),
             group_by: g.organization_id,
             select: %{distance: coalesce(sum(a.distance), 0), organization_id: g.organization_id}
           )
@@ -837,8 +841,20 @@ defmodule OmegaBravera.Accounts do
       on: wd.organization_id == o.id,
       left_join: oc in assoc(of, :offer_challenges),
       left_join: ofr in assoc(oc, :offer_redeems),
-      left_join: p in assoc(o, :points),
-      group_by: [o.id, td.distance, wd.distance],
+      left_lateral_join:
+        p in subquery(
+          from p in OmegaBravera.Points.Point,
+            group_by: p.organization_id,
+            where:
+              p.organization_id == parent_as(:org).id and p.inserted_at >= ^beginning_of_day and
+                p.inserted_at <= ^end_of_day,
+            select: %{
+              organization_id: p.organization_id,
+              points: coalesce(sum(fragment("ABS(?)", p.value)), 0)
+            }
+        ),
+      on: p.organization_id == o.id,
+      group_by: [o.id, td.distance, wd.distance, p.points],
       select: %{
         groups: fragment("TO_CHAR(?, '999,999')", count(g.id, :distinct)),
         offers: fragment("TO_CHAR(?, '999,999')", count(of.id, :distinct)),
@@ -855,18 +871,7 @@ defmodule OmegaBravera.Accounts do
             "TO_CHAR(?, '999,999')",
             filter(count(ofr.id, :distinct), ofr.status == "redeemed")
           ),
-        remaining_points:
-          fragment(
-            "TO_CHAR(?, '999,999')",
-            @organization_max_points -
-              coalesce(
-                filter(
-                  sum(fragment("ABS(?)", p.value)),
-                  p.inserted_at >= ^beginning_of_day and p.inserted_at <= ^end_of_day
-                ),
-                0
-              )
-          )
+        remaining_points: fragment("TO_CHAR(?, '999,999')", @organization_max_points - p.points)
       }
     )
     |> Repo.one()

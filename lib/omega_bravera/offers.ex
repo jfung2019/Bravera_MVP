@@ -490,7 +490,7 @@ defmodule OmegaBravera.Offers do
           changeset
           |> Ecto.Changeset.apply_changes()
 
-        {:ok, offer} =
+        {:ok, _offer} =
           get_offer!(offer_approval.offer_id)
           |> update_offer(%{
             approval_status: offer_approval.status
@@ -529,12 +529,20 @@ defmodule OmegaBravera.Offers do
       # If no Organization, then we don't care.
       {_, {:ok, %{organization_id: nil}} = result} ->
         result
+
       # If org and from pending to approved or denied
-      {:pending, {:ok, %{approval_status: status} = updated_offer} = result} when status in [:approved, :denied] ->
+      {:pending, {:ok, %{approval_status: status} = updated_offer} = result}
+      when status in [:approved, :denied] ->
         OmegaBravera.Accounts.get_partner_user_email_by_offer(updated_offer.id)
-        |> Notifier.notify_customer_offer_email(%OfferApproval{status: status, message: ""}, updated_offer)
+        |> Notifier.notify_customer_offer_email(
+          %OfferApproval{status: status, message: ""},
+          updated_offer
+        )
+
         result
-      {_ , result} -> result
+
+      {_, result} ->
+        result
     end
   end
 

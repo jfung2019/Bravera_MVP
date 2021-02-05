@@ -5,7 +5,7 @@ defmodule OmegaBravera.Points do
   import Ecto.Query
 
   alias OmegaBravera.{Repo, Accounts}
-  alias OmegaBravera.Points.Point
+  alias OmegaBravera.Points.{Point, Notifier}
 
   @doc """
   Creates a changeset from a Point struct.
@@ -96,12 +96,24 @@ defmodule OmegaBravera.Points do
         |> Point.organization_changeset(Map.put(attrs, "organization_id", organization_id))
 
       case Repo.insert(changeset) do
-        {:ok, _points} = ok_tuple ->
+        {:ok, points} = ok_tuple ->
           if Accounts.get_remaining_points_for_today_for_organization(organization_id) < 0 do
             changeset
             |> Ecto.Changeset.put_change(:value, "too many points")
             |> Repo.rollback()
           else
+            Task.Supervisor.start_child(OmegaBravera.TaskSupervisor, fn ->
+              user = Accounts.get_user!(points.user_id)
+              current_balance = total_points(user.id)
+
+              :ok =
+                Notifier.send_points_updated_notification_from_org(
+                  user,
+                  current_balance,
+                  points.value
+                )
+            end)
+
             ok_tuple
           end
 
