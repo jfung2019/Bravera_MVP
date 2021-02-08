@@ -4,13 +4,14 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Bravera: Fundraise while you Train with Fitness with Impact">
+        <meta name="description" content="Bravera helps you turn moving into rewards.">
         <meta name="author" content="Bravera.co">
 
         <meta property="og:title" content="Bravera.co | Fitness with Impact" />
         <meta property="og:type" content="fitness.fundraising" />
-        <meta property="og:url" content="https://www.bravera.co" />
+        <meta property="og:url" content="<%= Routes.url(@conn) <> @conn.request_path %>" />
         <meta property="og:image" content="<%= Routes.static_path(@conn, "/images/bravera_stacked_small.jpg") %>" />
+        <meta property="og:description" content="Bravera helps you turn moving into rewards.">
         <%= csrf_meta_tag() %>
 
         <title><%= gettext("Bravera - Admin") %></title>
