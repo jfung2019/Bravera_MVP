@@ -3,10 +3,9 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
 
   @desc "Offer type according to if they have online or in store offers"
   enum :offer_type do
-    value :in_store, as: "in_store", description: "In store offer that uses a QR code"
+    value :in_store, description: "In store offer that uses a QR code"
 
     value :online,
-      as: "online",
       description: "Online offer that can be redeemed from partner's website"
   end
 
@@ -29,7 +28,7 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     field :images, non_null(list_of(:string))
     field :target, non_null(:integer)
     field :end_date, non_null(:date)
-    field :desc, non_null(:string)
+    field :desc, :string, resolve: fn _parent, %{source: %{desc: desc}} -> {:ok, to_string(desc)} end
     field :offer_type, non_null(:offer_type)
     field :offer_challenge_types, non_null(list_of(:string))
     field :offer_challenges, list_of(:offer_challenge)
