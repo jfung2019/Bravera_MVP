@@ -15,10 +15,8 @@
         <thead>
         <tr>
           <th><%= gettext("Profile Pic") %></th>
-          <%= if logged_in?(@conn) && is_admin?(@conn) do %>
           <th><%= gettext("Email") %></th>
           <th><%= gettext("Name") %></th>
-          <% end %>
           <th><%= gettext("Alias") %></th>
           <th class="text-center"><strong><%= gettext("Action") %></strong></th>
         </tr>
@@ -37,5 +35,8 @@
         <% end %>
         </tbody>
       </table>
+      <%= if @paginate.total_pages > 1 do %>
+        <%= turbo_pagination_links(@conn, @paginate) %>
+      <% end %>
     </div>
 </div>
