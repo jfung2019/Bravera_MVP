@@ -37,10 +37,6 @@
 					<td><%= @weekly_distance %></td>
 				</tr>
 				<tr>
-					<td><%= gettext("Total Sync Events") %>:</td>
-					<td></td>
-				</tr>
-				<tr>
 					<td><%= gettext("Total Male") %>:</td>
 					<td><%= @male_users %></td>
 				</tr>

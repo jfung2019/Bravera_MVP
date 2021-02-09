@@ -164,5 +164,6 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
     |> assign(:available_partners, OmegaBravera.Groups.partner_options())
     |> assign(:available_offer_types, [{"In Store", :in_store}, {"Online", :online}])
     |> assign(:available_offer_approval_statuses, Offer.available_approval_status())
+    |> assign(:available_org, OmegaBravera.Accounts.list_organization_options())
   end
 end

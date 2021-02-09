@@ -878,6 +878,31 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
+  Generate admin dashboard
+  """
+  def admin_dashboard() do
+    now = Timex.now()
+    start_of_month = now |> Timex.beginning_of_month()
+    end_of_month = now |> Timex.end_of_month()
+
+    from(u in User,
+      left_lateral_join:
+        new_user in subquery(
+          from(new_u in User,
+            where:
+              fragment("? BETWEEN ? and ?", new_u.inserted_at, ^start_of_month, ^end_of_month),
+            select: %{id: new_u.id}
+          )
+        ),
+      on: u.id == new_user.id,
+      where: not is_nil(u.additional_info),
+      group_by: [new_user.id],
+      select: %{total_users: count(u.id), new_users: count(new_user.id)}
+    )
+    |> Repo.one()
+  end
+
+  @doc """
   Returns total number of points for the current day
   """
   @spec get_remaining_points_for_today_for_organization(String.t()) :: integer()
@@ -2052,6 +2077,11 @@ defmodule OmegaBravera.Accounts do
   """
   def list_organization do
     Repo.all(Organization)
+  end
+
+  def list_organization_options() do
+    from(o in Organization, select: {o.name, o.id})
+    |> Repo.all()
   end
 
   def list_organization_with_member_count_query() do

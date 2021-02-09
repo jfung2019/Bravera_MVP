@@ -9,6 +9,7 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerMemberController do
       )
 
     render(conn, "index.html",
+      partner_id: partner_id,
       members: results.members,
       paginate: results.paginate,
       partner_id: partner_id

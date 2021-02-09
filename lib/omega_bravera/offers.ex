@@ -606,18 +606,20 @@ defmodule OmegaBravera.Offers do
     from(
       o in Offer,
       left_join: challenge in assoc(o, :offer_challenges),
-      left_join: user in assoc(challenge, :user),
+      left_join:
+        user_challenge in subquery(
+          from(oc in OfferChallenge,
+            distinct: [oc.user_id, oc.offer_id],
+            select: %{id: oc.id, user_id: oc.user_id}
+          )
+        ),
+      on: challenge.id == user_challenge.id,
       preload: ^preloads,
       order_by: o.inserted_at,
       windows: [group_id: [partition_by: o.id]],
       distinct: true,
-      select: %{o | unique_participants: over(count(user.id), :group_id)}
+      select: %{o | unique_participants: over(count(user_challenge.user_id), :group_id)}
     )
-  end
-
-  def list_offers_preload(preloads \\ [:vendor]) do
-    list_offers_preload_query(preloads)
-    |> Repo.all()
   end
 
   def list_offer_offer_challenges(offer_id) do

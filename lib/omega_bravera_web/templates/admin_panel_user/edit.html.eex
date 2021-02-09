@@ -1,5 +1,9 @@
-<h2><%= gettext("Edit User") %></h2>
+<div class="card">
+    <div class="card-body">
+        <h2><%= gettext("Edit User") %></h2>
 
-<%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_user_path(@conn, :edit, @user)) %>
+        <%= render "form.html", Map.put(assigns, :action, Routes.admin_panel_user_path(@conn, :edit, @user)) %>
 
-<span><%= link "Back", to: Routes.admin_panel_user_path(@conn, :index) %></span>
+        <span><%= link "Back", to: Routes.admin_panel_user_path(@conn, :index) %></span>
+    </div>
+</div>

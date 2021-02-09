@@ -28,7 +28,10 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     field :images, non_null(list_of(:string))
     field :target, non_null(:integer)
     field :end_date, non_null(:date)
-    field :desc, :string, resolve: fn _parent, %{source: %{desc: desc}} -> {:ok, to_string(desc)} end
+
+    field :desc, :string,
+      resolve: fn _parent, %{source: %{desc: desc}} -> {:ok, to_string(desc)} end
+
     field :offer_type, non_null(:offer_type)
     field :offer_challenge_types, non_null(list_of(:string))
     field :offer_challenges, list_of(:offer_challenge)

@@ -3,6 +3,8 @@ defmodule OmegaBraveraWeb.AdminUserPageController do
   alias OmegaBravera.{Accounts, Challenges, Money, Groups, Offers}
 
   def index(conn, _) do
+#    Accounts.admin_dashboard() |> IO.inspect()
+
     render(conn, "index.html",
       users: Accounts.amount_of_current_users(),
       new_users: Accounts.new_user_this_month(),

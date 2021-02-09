@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body">
-      <h1><span class="fa fa-group"></span> Members (<%= length(@members) %>)</h1>
+      <h1><span class="fa fa-group"></span> Members (<%= @paginate.total_count %>)</h1>
       <div class="row my-3">
         <div class="col-9">
           <small class="text-muted">
@@ -12,10 +12,6 @@
         <thead>
         <tr>
           <th><%= gettext("Profile Pic") %></th>
-          <%= if logged_in?(@conn) && is_admin?(@conn) do %>
-          <th><%= gettext("Email") %></th>
-          <th><%= gettext("Name") %></th>
-          <% end %>
           <th><%= gettext("Alias/Username") %></th>
           <th class="text-center"><%= gettext("Action") %></th>
         </tr>
@@ -24,15 +20,14 @@
         <%= for member <- @members do %>
         <tr>
           <td><%= img_tag(profile_picture_or_default(member.user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border", style: "max-height: 50px;") %></td>
-          <%= if logged_in?(@conn) && is_admin?(@conn) do %>
-          <td><%= member.user.email %></td>
-          <td><%= "#{member.user.firstname} #{member.user.lastname}" %></td>
-          <% end %>
           <td><%= member.user.username %></td>
           <td class="text-center"><%= link gettext("Remove member"), to: Routes.org_panel_partner_org_panel_partner_member_path(@conn, :delete, @partner_id, member), method: :delete, class: "btn btn-danger", data_confirm: "Are you sure?" %></td>
         </tr>
         <% end %>
         </tbody>
       </table>
+      <%= if @paginate.total_pages > 1 do %>
+        <%= turbo_pagination_links(@conn, @paginate) %>
+      <% end %>
     </div>
 </div>

@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body">
-      <h1><span class="fa fa-group"></span> Members (<%= length(@members) %>)</h1>
+      <h1><span class="fa fa-group"></span> Members (<%= @paginate.total_count %>)</h1>
       <div class="row my-3">
         <div class="col-9">
           <small class="text-muted">
@@ -11,6 +11,16 @@
           </small>
         </div>
       </div>
+      <%= form_for @conn, Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :index, @partner_id), [method: :get], fn f -> %>
+      <div class="form-row">
+        <div class="form-group col-3">
+          <%= text_input f, "q[user_email_or_user_firstname_or_user_lastname_or_user_username_ilike]", value: get_in(@conn.params, ["q", "user_email_or_user_firstname_or_user_lastname_or_user_username_ilike"]), class: "form-control", placeholder: gettext("Email / First Name / Last Name / Username") %>
+        </div>
+        <div class="col-1">
+          <%= submit "Search", class: "btn btn-primary" %>
+        </div>
+      </div>
+      <% end %>
       <table class="table table-striped">
         <thead>
         <tr>
@@ -25,10 +35,8 @@
         <%= for member <- @members do %>
         <tr>
           <td><%= img_tag(profile_picture_or_default(member.user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border", style: "max-height: 50px;") %></td>
-          <%= if logged_in?(@conn) && is_admin?(@conn) do %>
           <td><%= member.user.email %></td>
           <td><%= "#{member.user.firstname} #{member.user.lastname}" %></td>
-          <% end %>
           <td><%= member.user.username %></td>
           <td class="text-center"><%= link gettext("Remove member"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :delete, @partner_id, member), method: :delete, class: "btn btn-danger", data_confirm: "Are you sure?" %></td>
         </tr>
