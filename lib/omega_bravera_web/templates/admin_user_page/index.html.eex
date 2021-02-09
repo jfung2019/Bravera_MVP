@@ -10,75 +10,75 @@
 			<tbody>
 				<tr>
 					<td><%= gettext("Total Users") %>:</td>
-					<td><%= @users %></td>
+					<td><%= @users_info.total_users %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("New Users") %>:</td>
-					<td><%= @new_users %></td>
+					<td><%= @users_info.new_users %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Active Users") %>:</td>
-					<td></td>
+					<td><%= @users_info.active_users %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Friend Referrals") %>:</td>
-					<td><%= @referrals %></td>
+					<td><%= @users_info.total_referrals %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("New Friend Referrals") %>:</td>
-					<td><%= @this_month_referrals %></td>
+					<td><%= @users_info.new_referrals %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Distance") %>:</td>
-					<td><%= @total_distance %></td>
+					<td><%= @users_info.total_distance %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Distance this week") %>:</td>
-					<td><%= @weekly_distance %></td>
+					<td><%= @users_info.weekly_distance %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Male") %>:</td>
-					<td><%= @male_users %></td>
+					<td><%= @users_info.male %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Female") %>:</td>
-					<td><%= @female_users %></td>
+					<td><%= @users_info.female %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total 'other'") %>:</td>
-					<td><%= @other_users %></td>
+					<td><%= @users_info.other_gender %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("iOS") %>:</td>
-					<td><%= @ios_users %></td>
+					<td><%= @users_info.ios_users %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Android") %>:</td>
-					<td><%= @android_users %></td>
+					<td><%= @users_info.android_users %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Groups") %>:</td>
-					<td><%= @groups %></td>
+					<td><%= @groups_info.total_groups %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Live Groups") %>:</td>
-					<td></td>
+					<td><%= @groups_info.live_groups %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Offers") %>:</td>
-					<td><%= @offers %></td>
+					<td><%= @offers_info.total_offers %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Live Offers") %>:</td>
-					<td></td>
+					<td><%= @offers_info.live_offers %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Online offers") %>:</td>
-					<td><%= @online_offers %></td>
+					<td><%= @offers_info.online_offers %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total In Store Offers") %>:</td>
-					<td><%= @in_store_offers %></td>
+					<td><%= @offers_info.in_store_offers %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Rewards Unlocked") %>:</td>

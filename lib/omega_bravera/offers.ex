@@ -25,6 +25,21 @@ defmodule OmegaBravera.Offers do
   alias OmegaBravera.Activity.ActivityAccumulator
   alias OmegaBravera.Accounts.{User, AdminUser, Notifier}
 
+  @doc """
+  Admin dashboard offers information
+  """
+  def admin_dashboard_offers_info() do
+    from(o in Offer,
+      select: %{
+        total_offers: count(o.id),
+        live_offers: filter(count(o.id), o.approval_status == :approved),
+        online_offers: filter(count(o.id), o.offer_type == :online),
+        in_store_offers: filter(count(o.id), o.offer_type == :in_store)
+      }
+    )
+    |> Repo.one()
+  end
+
   def buy_offer_with_points(offer, user) do
     Multi.new()
     |> Multi.run(:create_offer_challenge_with_points, fn _repo, _changes ->

@@ -880,26 +880,75 @@ defmodule OmegaBravera.Accounts do
   @doc """
   Generate admin dashboard
   """
-  def admin_dashboard() do
-    now = Timex.now()
-    start_of_month = now |> Timex.beginning_of_month()
-    end_of_month = now |> Timex.end_of_month()
-
+  def admin_dashboard_users_info() do
     from(u in User,
+      as: :user,
       left_lateral_join:
-        new_user in subquery(
-          from(new_u in User,
+        aa_month in subquery(
+          from(aa in OmegaBravera.Activity.ActivityAccumulator,
             where:
-              fragment("? BETWEEN ? and ?", new_u.inserted_at, ^start_of_month, ^end_of_month),
-            select: %{id: new_u.id}
+              aa.user_id == parent_as(:user).id and
+                fragment("? Between now() and now() - interval '30 days'", aa.end_date),
+            limit: 1,
+            select: [:id, :user_id]
           )
         ),
-      on: u.id == new_user.id,
-      where: not is_nil(u.additional_info),
-      group_by: [new_user.id],
-      select: %{total_users: count(u.id), new_users: count(new_user.id)}
+      on: aa_month.user_id == u.id,
+      left_lateral_join:
+        aa_total in subquery(
+          from(aa in OmegaBravera.Activity.ActivityAccumulator,
+            group_by: aa.user_id,
+            select: %{distance: coalesce(sum(aa.distance), 0), user_id: aa.user_id}
+          )
+        ),
+      on: aa_total.user_id == u.id,
+      left_lateral_join:
+        aa_week in subquery(
+          from(aa in OmegaBravera.Activity.ActivityAccumulator,
+            where: fragment("? Between now() and now() - interval '7 days'", aa.end_date),
+            group_by: aa.user_id,
+            select: %{distance: coalesce(sum(aa.distance), 0), user_id: aa.user_id}
+          )
+        ),
+      on: aa_week.user_id == u.id,
+      left_join: setting in assoc(u, :setting),
+      left_join: device in assoc(u, :devices),
+      on: device.active == true,
+      select: %{
+        total_users: count(u.id),
+        new_users:
+          filter(
+            count(u.id),
+            fragment(
+              "? BETWEEN date_trunc('month', now()) AND date_trunc('month', now()) + interval '1 month'",
+              u.inserted_at
+            )
+          ),
+        active_users: count(aa_month.user_id),
+        total_referrals: count(u.referred_by_id),
+        new_referrals:
+          filter(
+            count(u.referred_by_id),
+            fragment(
+              "? BETWEEN date_trunc('month', now()) AND date_trunc('month', now()) + interval '1 month'",
+              u.inserted_at
+            )
+          ),
+        total_distance: sum(aa_total.distance),
+        weekly_distance: coalesce(sum(aa_week.distance), 0),
+        female: filter(count(u.id), setting.gender == "Female"),
+        male: filter(count(u.id), setting.gender == "Male"),
+        other_gender:
+          filter(count(u.id), setting.gender != "Female" and setting.gender != "Male"),
+        ios_users: filter(count(u.id), ilike(device.uuid, "%-%")),
+        android_users:
+          filter(count(u.id), not ilike(device.uuid, "%-%") and not is_nil(device.uuid))
+      }
     )
     |> Repo.one()
+  end
+
+  def admin_dashboard_offers_info() do
   end
 
   @doc """

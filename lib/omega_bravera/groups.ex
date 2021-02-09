@@ -12,6 +12,19 @@ defmodule OmegaBravera.Groups do
   alias OmegaBravera.Accounts.Notifier
 
   @doc """
+  Admin dashboard groups information
+  """
+  def admin_dashboard_groups_info() do
+    from(p in Partner,
+      select: %{
+        total_groups: count(p.id),
+        live_groups: filter(count(p.id), p.approval_status == :approved)
+      }
+    )
+    |> Repo.one()
+  end
+
+  @doc """
   Returns the list of partner.
 
   ## Examples
