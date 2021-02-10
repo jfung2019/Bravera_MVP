@@ -33,11 +33,14 @@ defmodule OmegaBravera.Offers do
       select: %{
         total_offers: fragment("TO_CHAR(?, '999,999')", count(o.id)),
         live_offers:
-          fragment("TO_CHAR(?, '999,999')", filter(count(o.id), o.approval_status == :approved)),
+          fragment(
+            "TO_CHAR(?, '999,999,999')",
+            filter(count(o.id), o.approval_status == :approved)
+          ),
         online_offers:
-          fragment("TO_CHAR(?, '999,999')", filter(count(o.id), o.offer_type == :online)),
+          fragment("TO_CHAR(?, '999,999,999')", filter(count(o.id), o.offer_type == :online)),
         in_store_offers:
-          fragment("TO_CHAR(?, '999,999')", filter(count(o.id), o.offer_type == :in_store))
+          fragment("TO_CHAR(?, '999,999,999')", filter(count(o.id), o.offer_type == :in_store))
       }
     )
     |> Repo.one()
@@ -48,9 +51,9 @@ defmodule OmegaBravera.Offers do
       inner_join: c in assoc(r, :offer_challenge),
       select: %{
         rewards_unlocked:
-          fragment("TO_CHAR(?, '999,999')", filter(count(r.id), c.status == "complete")),
+          fragment("TO_CHAR(?, '999,999,999')", filter(count(r.id), c.status == "complete")),
         rewards_claimed:
-          fragment("TO_CHAR(?, '999,999')", filter(count(r.id), r.status == "redeemed"))
+          fragment("TO_CHAR(?, '999,999,999')", filter(count(r.id), r.status == "redeemed"))
       }
     )
     |> Repo.one()

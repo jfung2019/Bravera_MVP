@@ -905,7 +905,7 @@ defmodule OmegaBravera.Accounts do
       left_lateral_join:
         aa_week in subquery(
           from(aa in OmegaBravera.Activity.ActivityAccumulator,
-            where: fragment("? Between now() - interval '7 days' and now()", aa.end_date),
+            where: fragment("? BETWEEN now() - interval '7 days' and now()", aa.end_date),
             group_by: aa.user_id,
             select: %{distance: coalesce(sum(aa.distance), 0), user_id: aa.user_id}
           )
@@ -915,49 +915,53 @@ defmodule OmegaBravera.Accounts do
       left_join: device in assoc(u, :devices),
       on: device.active == true,
       select: %{
-        total_users: count(u.id),
+        total_users: fragment("TO_CHAR(?, '999,999,999')", count(u.id)),
         new_users:
-          filter(
-            count(u.id),
-            fragment(
-              "? BETWEEN date_trunc('month', now()) AND date_trunc('month', now()) + interval '1 month'",
-              u.inserted_at
+          fragment(
+            "TO_CHAR(?, '999,999,999')",
+            filter(
+              count(u.id),
+              fragment(
+                "? BETWEEN date_trunc('month', now()) AND date_trunc('month', now()) + interval '1 month'",
+                u.inserted_at
+              )
             )
           ),
-        active_users: count(aa_month.user_id),
-        total_referrals: count(u.referred_by_id),
+        active_users: fragment("TO_CHAR(?, '999,999,999')", count(aa_month.user_id)),
+        total_referrals: fragment("TO_CHAR(?, '999,999,999')", count(u.referred_by_id)),
         new_referrals:
-          filter(
-            count(u.referred_by_id),
-            fragment(
-              "? BETWEEN date_trunc('month', now()) AND date_trunc('month', now()) + interval '1 month'",
-              u.inserted_at
+          fragment(
+            "TO_CHAR(?, '999,999,999')",
+            filter(
+              count(u.referred_by_id),
+              fragment(
+                "? BETWEEN date_trunc('month', now()) AND date_trunc('month', now()) + interval '1 month'",
+                u.inserted_at
+              )
             )
           ),
-        total_distance: fragment("TO_CHAR(?, '999,999.99 KM')", sum(aa_total.distance)),
+        total_distance: fragment("TO_CHAR(?, '999,999,999,999.99 KM')", sum(aa_total.distance)),
         weekly_distance:
-          fragment("TO_CHAR(?, '999,999.99 KM')", coalesce(sum(aa_week.distance), 0)),
+          fragment("TO_CHAR(?, '999,999,999.99 KM')", coalesce(sum(aa_week.distance), 0)),
         female:
-          fragment("TO_CHAR(?, '999,999')", filter(count(u.id), setting.gender == "Female")),
-        male: fragment("TO_CHAR(?, '999,999')", filter(count(u.id), setting.gender == "Male")),
+          fragment("TO_CHAR(?, '999,999,999')", filter(count(u.id), setting.gender == "Female")),
+        male:
+          fragment("TO_CHAR(?, '999,999,999')", filter(count(u.id), setting.gender == "Male")),
         other_gender:
           fragment(
-            "TO_CHAR(?, '999,999')",
+            "TO_CHAR(?, '999,999,999')",
             filter(count(u.id), setting.gender != "Female" and setting.gender != "Male")
           ),
         ios_users:
-          fragment("TO_CHAR(?, '999,999')", filter(count(u.id), ilike(device.uuid, "%-%"))),
+          fragment("TO_CHAR(?, '999,999,999')", filter(count(u.id), ilike(device.uuid, "%-%"))),
         android_users:
           fragment(
-            "TO_CHAR(?, '999,999')",
+            "TO_CHAR(?, '999,999,999')",
             filter(count(u.id), not ilike(device.uuid, "%-%") and not is_nil(device.uuid))
           )
       }
     )
     |> Repo.one()
-  end
-
-  def admin_dashboard_offers_info() do
   end
 
   @doc """
