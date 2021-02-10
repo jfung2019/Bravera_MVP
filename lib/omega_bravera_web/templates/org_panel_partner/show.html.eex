@@ -85,9 +85,9 @@
 				</td>
 				<td class="text-center">
 					<%= cond do %>
-						<% offer_partner.offer.organization_id ==@organization_id and offer_partner.offer.offer_type == :online -> %>
+						<% offer_partner.offer.organization_id == @organization_id and offer_partner.offer.offer_type == :online -> %>
 							<%= link gettext("Edit Offer"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
-						<% offer_partner.offer.organization_id ==@organization_id -> %>
+						<% offer_partner.offer.organization_id == @organization_id -> %>
 							<%= link gettext("Edit Offer"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
 						<% true -> %>
 							<button class="btn btn-warning" disabled><%= gettext("Edit Offer") %></button>
