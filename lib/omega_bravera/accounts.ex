@@ -898,6 +898,7 @@ defmodule OmegaBravera.Accounts do
         aa_total in subquery(
           from(aa in OmegaBravera.Activity.ActivityAccumulator,
             group_by: aa.user_id,
+            where: not is_nil(aa.device_id) and is_nil(aa.strava_id),
             select: %{distance: coalesce(sum(aa.distance), 0), user_id: aa.user_id}
           )
         ),
@@ -905,7 +906,9 @@ defmodule OmegaBravera.Accounts do
       left_lateral_join:
         aa_week in subquery(
           from(aa in OmegaBravera.Activity.ActivityAccumulator,
-            where: fragment("? BETWEEN now() - interval '7 days' and now()", aa.end_date),
+            where:
+              fragment("? BETWEEN now() - interval '7 days' and now()", aa.end_date) and
+                not is_nil(aa.device_id) and is_nil(aa.strava_id),
             group_by: aa.user_id,
             select: %{distance: coalesce(sum(aa.distance), 0), user_id: aa.user_id}
           )
