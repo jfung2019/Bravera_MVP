@@ -888,7 +888,8 @@ defmodule OmegaBravera.Accounts do
           from(aa in OmegaBravera.Activity.ActivityAccumulator,
             where:
               aa.user_id == parent_as(:user).id and
-                fragment("? BETWEEN now() - interval '30 days' and now()", aa.end_date),
+                fragment("? BETWEEN now() - interval '30 days' and now()", aa.end_date) and
+                not is_nil(aa.device_id) and is_nil(aa.strava_id),
             limit: 1,
             select: [:id, :user_id]
           )
