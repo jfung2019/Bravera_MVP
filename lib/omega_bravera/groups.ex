@@ -17,8 +17,9 @@ defmodule OmegaBravera.Groups do
   def admin_dashboard_groups_info() do
     from(p in Partner,
       select: %{
-        total_groups: count(p.id),
-        live_groups: filter(count(p.id), p.approval_status == :approved)
+        total_groups: fragment("TO_CHAR(?, '999,999')", count(p.id)),
+        live_groups:
+          fragment("TO_CHAR(?, '999,999')", filter(count(p.id), p.approval_status == :approved))
       }
     )
     |> Repo.one()

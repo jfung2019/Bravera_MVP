@@ -394,7 +394,7 @@ defmodule OmegaBravera.Challenges do
   end
 
   def amount_of_activities() do
-    from(a in ActivityAccumulator, select: count(a.id))
+    from(a in ActivityAccumulator, select: fragment("TO_CHAR(?, '999,999')", count(a.id)))
     |> Repo.one()
   end
 

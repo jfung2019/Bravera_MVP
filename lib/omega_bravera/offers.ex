@@ -31,10 +31,26 @@ defmodule OmegaBravera.Offers do
   def admin_dashboard_offers_info() do
     from(o in Offer,
       select: %{
-        total_offers: count(o.id),
-        live_offers: filter(count(o.id), o.approval_status == :approved),
-        online_offers: filter(count(o.id), o.offer_type == :online),
-        in_store_offers: filter(count(o.id), o.offer_type == :in_store)
+        total_offers: fragment("TO_CHAR(?, '999,999')", count(o.id)),
+        live_offers:
+          fragment("TO_CHAR(?, '999,999')", filter(count(o.id), o.approval_status == :approved)),
+        online_offers:
+          fragment("TO_CHAR(?, '999,999')", filter(count(o.id), o.offer_type == :online)),
+        in_store_offers:
+          fragment("TO_CHAR(?, '999,999')", filter(count(o.id), o.offer_type == :in_store))
+      }
+    )
+    |> Repo.one()
+  end
+
+  def dashboard_reward_info do
+    from(r in OfferRedeem,
+      inner_join: c in assoc(r, :offer_challenge),
+      select: %{
+        rewards_unlocked:
+          fragment("TO_CHAR(?, '999,999')", filter(count(r.id), c.status == "complete")),
+        rewards_claimed:
+          fragment("TO_CHAR(?, '999,999')", filter(count(r.id), r.status == "redeemed"))
       }
     )
     |> Repo.one()

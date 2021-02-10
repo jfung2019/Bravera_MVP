@@ -1,5 +1,4 @@
 defmodule OmegaBravera.Points.Notifier do
-  alias OmegaBravera.Points
   alias SendGrid.{Mail, Email}
 
   def send_points_updated_notification_from_org(

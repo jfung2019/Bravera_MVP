@@ -888,7 +888,7 @@ defmodule OmegaBravera.Accounts do
           from(aa in OmegaBravera.Activity.ActivityAccumulator,
             where:
               aa.user_id == parent_as(:user).id and
-                fragment("? Between now() and now() - interval '30 days'", aa.end_date),
+                fragment("? BETWEEN now() - interval '30 days' and now()", aa.end_date),
             limit: 1,
             select: [:id, :user_id]
           )
@@ -905,7 +905,7 @@ defmodule OmegaBravera.Accounts do
       left_lateral_join:
         aa_week in subquery(
           from(aa in OmegaBravera.Activity.ActivityAccumulator,
-            where: fragment("? Between now() and now() - interval '7 days'", aa.end_date),
+            where: fragment("? Between now() - interval '7 days' and now()", aa.end_date),
             group_by: aa.user_id,
             select: %{distance: coalesce(sum(aa.distance), 0), user_id: aa.user_id}
           )
@@ -934,15 +934,24 @@ defmodule OmegaBravera.Accounts do
               u.inserted_at
             )
           ),
-        total_distance: sum(aa_total.distance),
-        weekly_distance: coalesce(sum(aa_week.distance), 0),
-        female: filter(count(u.id), setting.gender == "Female"),
-        male: filter(count(u.id), setting.gender == "Male"),
+        total_distance: fragment("TO_CHAR(?, '999,999.99 KM')", sum(aa_total.distance)),
+        weekly_distance:
+          fragment("TO_CHAR(?, '999,999.99 KM')", coalesce(sum(aa_week.distance), 0)),
+        female:
+          fragment("TO_CHAR(?, '999,999')", filter(count(u.id), setting.gender == "Female")),
+        male: fragment("TO_CHAR(?, '999,999')", filter(count(u.id), setting.gender == "Male")),
         other_gender:
-          filter(count(u.id), setting.gender != "Female" and setting.gender != "Male"),
-        ios_users: filter(count(u.id), ilike(device.uuid, "%-%")),
+          fragment(
+            "TO_CHAR(?, '999,999')",
+            filter(count(u.id), setting.gender != "Female" and setting.gender != "Male")
+          ),
+        ios_users:
+          fragment("TO_CHAR(?, '999,999')", filter(count(u.id), ilike(device.uuid, "%-%"))),
         android_users:
-          filter(count(u.id), not ilike(device.uuid, "%-%") and not is_nil(device.uuid))
+          fragment(
+            "TO_CHAR(?, '999,999')",
+            filter(count(u.id), not ilike(device.uuid, "%-%") and not is_nil(device.uuid))
+          )
       }
     )
     |> Repo.one()
@@ -1354,50 +1363,6 @@ defmodule OmegaBravera.Accounts do
     |> Repo.one()
   end
 
-  defp count_sum(count_list) do
-    case count_list do
-      [] ->
-        0
-
-      _ ->
-        %{count: sum} =
-          Enum.reduce(count_list, fn item, acc ->
-            %{count: item.count + acc.count}
-          end)
-
-        sum
-    end
-  end
-
-  def total_friend_referrals() do
-    from(u in User,
-      left_join: r in User,
-      on: u.id == r.referred_by_id,
-      windows: [user_id: [partition_by: u.id]],
-      distinct: true,
-      select: %{count: coalesce(over(count(r.id), :user_id), 0)}
-    )
-    |> Repo.all()
-    |> count_sum()
-  end
-
-  def friend_referrals_this_month() do
-    now = Timex.now()
-    start_of_month = now |> Timex.beginning_of_month()
-    end_of_month = now |> Timex.end_of_month()
-
-    from(u in User,
-      left_join: r in User,
-      on: u.id == r.referred_by_id,
-      windows: [user_id: [partition_by: u.id]],
-      distinct: true,
-      where: fragment("? BETWEEN ? and ?", r.inserted_at, ^start_of_month, ^end_of_month),
-      select: %{count: coalesce(over(count(r.id), :user_id), 0)}
-    )
-    |> Repo.all()
-    |> count_sum()
-  end
-
   def distance_sum(distance_list) do
     case distance_list do
       [] ->
@@ -1422,17 +1387,6 @@ defmodule OmegaBravera.Accounts do
 
   def total_distance() do
     total_distance_query()
-    |> Repo.all()
-    |> distance_sum()
-  end
-
-  def total_distance_this_week() do
-    now = Timex.now()
-    start_of_week = now |> Timex.beginning_of_week()
-    end_of_week = now |> Timex.end_of_week()
-
-    total_distance_query()
-    |> where([a], fragment("? BETWEEN ? and ?", a.inserted_at, ^start_of_week, ^end_of_week))
     |> Repo.all()
     |> distance_sum()
   end
@@ -1478,30 +1432,6 @@ defmodule OmegaBravera.Accounts do
       select: count(u.id)
     )
     |> Repo.one()
-  end
-
-  def total_rewards_unlocked() do
-    from(u in User,
-      left_join: r in OmegaBravera.Offers.OfferRedeem,
-      on: u.id == r.user_id,
-      group_by: [u.id],
-      left_join: oc in assoc(r, :offer_challenge),
-      on: oc.status == ^"complete",
-      select: %{count: coalesce(count(r.id), 0)}
-    )
-    |> Repo.all()
-    |> count_sum()
-  end
-
-  def total_rewards_claimed() do
-    from(u in User,
-      left_join: r in OmegaBravera.Offers.OfferRedeem,
-      on: u.id == r.user_id and r.status == "redeemed",
-      group_by: [u.id],
-      select: %{count: coalesce(count(r.id), 0)}
-    )
-    |> Repo.all()
-    |> count_sum()
   end
 
   def number_of_referrals_over_week(user_id) do

@@ -90,19 +90,21 @@ defmodule OmegaBravera.Money do
   def change_donation(%Donation{} = donation), do: Donation.changeset(donation, %{})
 
   def amount_of_donors() do
-    from(d in Donor, select: count(d.id))
+    from(d in Donor, select: fragment("TO_CHAR(?, '999,999')", count(d.id)))
     |> Repo.one()
   end
 
   def count_of_donations do
-    from(d in Donation, select: count(d.id))
+    from(d in Donation, select: fragment("TO_CHAR(?, '999,999')", count(d.id)))
     |> Repo.one()
   end
 
   def total_secured_donations do
     from(d in Donation,
-      select: {fragment("round(?, 2)", sum(d.amount)), fragment("upper(?)", d.currency)},
-      group_by: fragment("upper(?)", d.currency)
+      select:
+        {fragment("TO_CHAR(ROUND(?, 2), '999,999.99')", sum(d.amount)),
+         fragment("UPPER(?)", d.currency)},
+      group_by: fragment("UPPER(?)", d.currency)
     )
     |> Repo.all()
   end

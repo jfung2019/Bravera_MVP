@@ -82,11 +82,11 @@
 				</tr>
 				<tr>
 					<td><%= gettext("Total Rewards Unlocked") %>:</td>
-					<td><%= @unlocked_rewards %></td>
+					<td><%= @reward_info.rewards_unlocked %></td>
 				</tr>
 				<tr>
 					<td><%= gettext("Total Rewards Claimed") %>:</td>
-					<td><%= @claimed_rewards %></td>
+					<td><%= @reward_info.rewards_claimed %></td>
 				</tr>
 			</tbody>
 		</table>
