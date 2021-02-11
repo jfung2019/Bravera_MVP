@@ -9,6 +9,8 @@ defmodule OmegaBravera.Accounts.Organization do
     field :member_count, :integer, virtual: true
 
     has_many :groups, OmegaBravera.Groups.Partner
+    has_many :group_members, through: [:groups, :members]
+    has_many :group_users, through: [:group_members, :user]
     has_many :offers, OmegaBravera.Offers.Offer
     has_many :points, OmegaBravera.Points.Point
 

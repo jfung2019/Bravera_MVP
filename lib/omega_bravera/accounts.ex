@@ -805,12 +805,30 @@ defmodule OmegaBravera.Accounts do
     beginning_of_day = Timex.beginning_of_day(now)
     end_of_day = Timex.end_of_day(now)
 
+    # Need to run in separate query or else
+    # query will be VERY long running.
+    members =
+      from(o in Organization,
+        left_join: m in assoc(o, :group_members),
+        where: o.id == ^organization_id,
+        group_by: o.id,
+        select: fragment("TO_CHAR(?, '999,999')", count(m.user_id, :distinct))
+      )
+      |> Repo.one()
+
     from(o in Organization,
       as: :org,
       where: o.id == ^organization_id,
       left_join: g in assoc(o, :groups),
       left_join: of in assoc(o, :offers),
-      left_join: m in assoc(g, :members),
+      #      left_lateral_join:
+      #        m in subquery(
+      #          from(o in OmegaBravera.Groups.Member,
+      #            left_join: m in assoc(:group_members),
+      #            where: o.id == parent_as(:org).id
+      #          )
+      #        ),
+      #      on: m.organization_id == o.id,
       left_lateral_join:
         td in subquery(
           from(a in OmegaBravera.Activity.ActivityAccumulator,
@@ -832,8 +850,9 @@ defmodule OmegaBravera.Accounts do
             on: u.user_id == a.user_id,
             left_join: g in assoc(u, :partner),
             where:
-              g.organization_id == parent_as(:org).id and a.start_date >= ^beginning_of_week and
-                a.end_date <= ^end_of_week and is_nil(a.strava_id) and not is_nil(a.device_id),
+              g.organization_id == ^organization_id and is_nil(a.strava_id) and
+                not is_nil(a.device_id) and a.start_date >= ^beginning_of_week and
+                a.end_date <= ^end_of_week,
             group_by: g.organization_id,
             select: %{distance: coalesce(sum(a.distance), 0), organization_id: g.organization_id}
           )
@@ -858,7 +877,6 @@ defmodule OmegaBravera.Accounts do
       select: %{
         groups: fragment("TO_CHAR(?, '999,999')", count(g.id, :distinct)),
         offers: fragment("TO_CHAR(?, '999,999')", count(of.id, :distinct)),
-        members: fragment("TO_CHAR(?, '999,999')", count(m.user_id, :distinct)),
         total_distance: fragment("TO_CHAR(?, '999,999 KM')", td.distance),
         distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", wd.distance),
         unlocked_rewards:
@@ -871,10 +889,12 @@ defmodule OmegaBravera.Accounts do
             "TO_CHAR(?, '999,999')",
             filter(count(ofr.id, :distinct), ofr.status == "redeemed")
           ),
-        remaining_points: fragment("TO_CHAR(?, '999,999')", @organization_max_points - p.points)
+        remaining_points:
+          fragment("TO_CHAR(?, '999,999')", @organization_max_points - coalesce(p.points, 0))
       }
     )
     |> Repo.one()
+    |> Map.put(:members, members)
   end
 
   @doc """
