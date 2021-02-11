@@ -126,7 +126,7 @@ defmodule OmegaBravera.Groups do
     |> Repo.one!()
   end
 
-  def list_partners_with_membership(user_id) do
+  defp list_partners_with_membership_query(user_id) do
     from(p in Partner,
       as: :group,
       left_lateral_join:
@@ -156,6 +156,18 @@ defmodule OmegaBravera.Groups do
           is_member: fragment("CASE WHEN ? THEN ? ELSE ? END", is_nil(m.id), false, true)
       }
     )
+  end
+
+  def list_partners_with_membership(user_id) do
+    list_partners_with_membership_query(user_id)
+    |> Repo.all()
+  end
+
+  def search_groups(user_id, keyword) do
+    search = "%#{keyword}%"
+
+    list_partners_with_membership_query(user_id)
+    |> where([p], ilike(p.name, ^search))
     |> Repo.all()
   end
 

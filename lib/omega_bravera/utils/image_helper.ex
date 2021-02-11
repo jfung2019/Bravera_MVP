@@ -1,6 +1,6 @@
 defmodule OmegaBravera.ImageHelper do
   def swap_images(images, _original_index, new_index) when length(images) == new_index,
-       do: images
+    do: images
 
   def swap_images(images, 0, new_index) when new_index < 0, do: images
 
