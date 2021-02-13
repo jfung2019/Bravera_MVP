@@ -67,6 +67,25 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
   }
   """
 
+  @search_groups """
+  query($keyword: String!) {
+    searchGroups(keyword: $keyword) {
+      name
+      introduction
+      isMember
+      votes {
+        user {
+          id
+          profilePicture
+        }
+      }
+      offers {
+        name
+      }
+    }
+  }
+  """
+
   setup %{conn: conn} do
     user = insert(:user)
     credential = Fixtures.credential_fixture(user.id)
@@ -98,6 +117,21 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
     response = post(conn, "/api", %{query: @partners_query})
 
     assert %{"data" => %{"getPartners" => [%{"name" => ^name, "isMember" => false}]}} =
+             json_response(response, 200)
+  end
+
+  test "can search live partners by keyword", %{conn: conn, partner: %{name: name}} do
+    OmegaBravera.Groups.create_partner(%{
+      images: [],
+      introduction: "intro",
+      name: "second",
+      short_description: "des",
+      approval_status: :approved
+    })
+
+    response = post(conn, "/api", %{query: @search_groups, variables: %{"keyword" => "na"}})
+
+    assert %{"data" => %{"searchGroups" => [%{"name" => ^name, "isMember" => false}]}} =
              json_response(response, 200)
   end
 end

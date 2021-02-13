@@ -1,6 +1,6 @@
 defmodule OmegaBraveraWeb.AdminPartnerImages do
   use OmegaBraveraWeb, :live_view
-  alias OmegaBravera.Groups
+  alias OmegaBravera.{Groups, ImageHelper}
   alias OmegaBraveraWeb.Api.UploadAuth
 
   def render(assigns),
@@ -27,6 +27,28 @@ defmodule OmegaBraveraWeb.AdminPartnerImages do
     index = String.to_integer(string_index)
     images = List.delete_at(images, index)
     {:noreply, assign(socket, images: images, to_delete: nil)}
+  end
+
+  def handle_event(
+        "shift-right",
+        %{"index" => string_index},
+        %{assigns: %{images: images}} = socket
+      ) do
+    index = String.to_integer(string_index)
+    new_index = index + 1
+    images = ImageHelper.swap_images(images, index, new_index)
+    {:noreply, assign(socket, images: images)}
+  end
+
+  def handle_event(
+        "shift-left",
+        %{"index" => string_index},
+        %{assigns: %{images: images}} = socket
+      ) do
+    index = String.to_integer(string_index)
+    new_index = index - 1
+    images = ImageHelper.swap_images(images, index, new_index)
+    {:noreply, assign(socket, images: images)}
   end
 
   def handle_event("to-delete", %{"index" => string_index}, socket),
