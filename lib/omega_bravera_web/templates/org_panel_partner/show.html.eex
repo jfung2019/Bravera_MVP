@@ -84,12 +84,15 @@
 					<% end %>
 				</td>
 				<td class="text-center">
-					<%= if offer_partner.offer.offer_type == :online do %>
-						<%= link gettext("Edit Offer"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
-					<% else %>
-						<%= link gettext("Edit Offer"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
+					<%= cond do %>
+						<% offer_partner.offer.organization_id == @organization_id and offer_partner.offer.offer_type == :online -> %>
+							<%= link gettext("Edit Offer"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
+						<% offer_partner.offer.organization_id == @organization_id -> %>
+							<%= link gettext("Edit Offer"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer_partner.offer), class: "btn btn-warning" %>
+						<% true -> %>
+							<button class="btn btn-warning" disabled><%= gettext("Edit Offer") %></button>
 					<% end %>
-						<%= link gettext("Unlink Offer"), to: Routes.org_panel_offer_partner_path(@conn, :delete, offer_partner), method: :delete, class: "btn btn-danger" %>
+					<%= link gettext("Unlink Offer"), to: Routes.org_panel_offer_partner_path(@conn, :delete, offer_partner), method: :delete, class: "btn btn-danger" %>
 					<%= if offer_partner.offer.approval_status == :denied do %>
 						<%= link gettext("Approve"), to: Routes.org_panel_offer_partner_path(@conn, :approval, offer_partner), class: "btn btn-danger" %>
 					<% end %>

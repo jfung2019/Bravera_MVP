@@ -56,7 +56,7 @@
     </section>
 
     <div class="col-1">
-      <span><%= link "Back", to: Routes.admin_panel_ngo_path(@conn, :index), class: "btn btn-success mt-3" %></span>
+      <span><%= link "Back", to: Routes.org_panel_offline_offers_path(@conn, :index), class: "btn btn-success mt-3" %></span>
     </div>
   </div>
 </div>
