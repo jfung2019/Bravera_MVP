@@ -49,7 +49,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
     |> put_change(:user_id, user_id)
     |> put_change(:vendor_id, vendor_id)
     |> put_change(:token, gen_token())
-    |> validate_required([:offer_id, :user_id, :vendor_id, :token])
+    |> validate_required([:offer_id, :user_id, :token])
   end
 
   def create_changeset(offer_redeems, offer_challenge, vendor, attrs \\ %{}, team_user \\ %User{})
