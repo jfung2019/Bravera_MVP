@@ -125,6 +125,26 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
+  def open_offers_query(now) do
+    from(
+      offer in Offer,
+      left_join: op in assoc(offer, :offer_partners),
+      where:
+        offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
+        offer.approval_status == :approved
+    )
+  end
+
+  def closed_offers_query(now, user_id) do
+    from(
+      offer in Offer,
+      right_join: p in assoc(offer, :partners),
+      right_join: m in assoc(p, :members),
+      on: m.user_id == ^user_id,
+      where: offer.end_date > ^now and not is_nil(m.id) and offer.approval_status == :approved
+    )
+  end
+
   @doc """
   Only shows offers that don't have a partner
   or if the user is a member of a partner, then the offer will be shown.
@@ -132,29 +152,44 @@ defmodule OmegaBravera.Offers do
   def list_offers_for_user(user_id) do
     now = Timex.now()
 
-    open_offers_query =
-      from(
-        offer in Offer,
-        left_join: op in assoc(offer, :offer_partners),
-        where:
-          offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
-            offer.approval_status == :approved
-      )
-
-    closed_offers_query =
-      from(
-        offer in Offer,
-        right_join: p in assoc(offer, :partners),
-        right_join: m in assoc(p, :members),
-        on: m.user_id == ^user_id,
-        where: offer.end_date > ^now and not is_nil(m.id) and offer.approval_status == :approved
-      )
-
-    unioned_query = union(open_offers_query, ^closed_offers_query)
+    unioned_query = union(open_offers_query(now), ^closed_offers_query(now, user_id))
 
     from(o in subquery(unioned_query), order_by: [desc: o.inserted_at])
     |> Repo.all()
   end
+
+  def search_offers_for_user(keyword, location_id, user_id) do
+    now = Timex.now()
+
+    open_offers =
+      open_offers_query(now)
+      |> search_offers_by_keyword(keyword)
+      |> search_offers_by_location(location_id)
+
+    close_offers =
+      closed_offers_query(now, user_id)
+      |> search_offers_by_keyword(keyword)
+      |> search_offers_by_location(location_id)
+
+    unioned_query = union(open_offers, ^close_offers)
+
+    offers =
+      from(o in subquery(unioned_query), order_by: [desc: o.inserted_at])
+      |> Repo.all()
+
+    {:ok, %{offers: offers, keyword: keyword, location_id: location_id}}
+  end
+
+  defp search_offers_by_keyword(query, nil), do: query
+
+  defp search_offers_by_keyword(query, keyword) do
+    search = "%#{keyword}%"
+    where(query, [o], ilike(o.name, ^search))
+  end
+
+  defp search_offers_by_location(query, nil), do: query
+
+  defp search_offers_by_location(query, location_id), do: where(query, [o], o.location_id == ^location_id)
 
   @doc """
   Pagination online offers

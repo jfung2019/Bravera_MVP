@@ -42,4 +42,10 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
     field :accept_terms_text, :string
     field :form_url, :string
   end
+
+  object :search_offers_result do
+    field :offers, list_of(non_null(:offer))
+    field :keyword, :string
+    field :location_id, :integer
+  end
 end

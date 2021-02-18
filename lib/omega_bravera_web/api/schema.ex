@@ -218,6 +218,14 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Offers.all_offers/3
     end
 
+    @desc "Search Offers"
+    field :search_offers, non_null(:search_offers_result) do
+      arg :keyword, :string
+      arg :location_id, :integer
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Offers.search_offers/3
+    end
+
     @desc "Get offer's offer challenges."
     field :offer_offer_challenges, list_of(:offer_challenge) do
       arg :offer_id, non_null(:id)
