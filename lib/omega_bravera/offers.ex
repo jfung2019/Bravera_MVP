@@ -35,7 +35,10 @@ defmodule OmegaBravera.Offers do
         live_offers:
           fragment(
             "TO_CHAR(?, '999,999,999')",
-            filter(count(o.id), o.approval_status == :approved)
+            filter(
+              count(o.id),
+              o.approval_status == :approved and fragment("? > now()", o.end_date)
+            )
           ),
         online_offers:
           fragment("TO_CHAR(?, '999,999,999')", filter(count(o.id), o.offer_type == :online)),
