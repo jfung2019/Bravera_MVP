@@ -68,8 +68,8 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
   """
 
   @search_groups """
-  query($keyword: String!) {
-    searchGroups(keyword: $keyword) {
+  query($keyword: String!, $coordination: CoordinationMap) {
+    searchGroups(keyword: $keyword, coordination: $coordination) {
       name
       introduction
       isMember
@@ -129,7 +129,7 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
       approval_status: :approved
     })
 
-    response = post(conn, "/api", %{query: @search_groups, variables: %{"keyword" => "na"}})
+    response = post(conn, "/api", %{query: @search_groups, variables: %{"keyword" => "na", "coordination" => nil}})
 
     assert %{"data" => %{"searchGroups" => [%{"name" => ^name, "isMember" => false}]}} =
              json_response(response, 200)
