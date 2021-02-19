@@ -163,12 +163,38 @@ defmodule OmegaBravera.Groups do
     |> Repo.all()
   end
 
-  def search_groups(user_id, keyword) do
+  def search_groups(user_id, keyword, nil) do
     search = "%#{keyword}%"
 
     list_partners_with_membership_query(user_id)
     |> where([p], ilike(p.name, ^search))
     |> Repo.all()
+  end
+
+  def search_groups(user_id, keyword, %{latitude: lat, longitude: long}) do
+    search = "%#{keyword}%"
+
+    list_partners_with_membership_query(user_id)
+    |> where([p], ilike(p.name, ^search))
+    |> search_location(lat, long)
+    |> Repo.all()
+  end
+
+  defp search_location(query, lat, long) do
+    # TODO: use PostGis
+    from(q in query,
+      left_join: l in assoc(q, :location),
+      where:
+        fragment(
+          "12742 * ASIN(SQRT(0.5 - COS((? - ?) * (PI()/180))/2 + COS(? * (PI()/180)) * COS(? * (PI()/180)) * (1 - COS((? - ?) * (PI()/180)))/2)) <= 50",
+          ^lat,
+          l.latitude,
+          l.latitude,
+          ^lat,
+          ^long,
+          l.longitude
+        )
+    )
   end
 
   def total_groups() do

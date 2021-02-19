@@ -321,6 +321,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     @desc "Search partners"
     field :search_groups, non_null(list_of(:partner)) do
       arg :keyword, non_null(:string)
+      arg :coordination, :coordination_map
       middleware Middleware.Authenticate
       resolve &Resolvers.Groups.search_groups/3
     end

@@ -134,7 +134,7 @@ defmodule OmegaBravera.Offers do
       left_join: op in assoc(offer, :offer_partners),
       where:
         offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
-        offer.approval_status == :approved
+          offer.approval_status == :approved
     )
   end
 
@@ -192,7 +192,8 @@ defmodule OmegaBravera.Offers do
 
   defp search_offers_by_location(query, nil), do: query
 
-  defp search_offers_by_location(query, location_id), do: where(query, [o], o.location_id == ^location_id)
+  defp search_offers_by_location(query, location_id),
+    do: where(query, [o], o.location_id == ^location_id)
 
   @doc """
   Pagination online offers

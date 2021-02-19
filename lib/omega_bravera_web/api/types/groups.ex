@@ -61,4 +61,9 @@ defmodule OmegaBraveraWeb.Api.Types.Groups do
     field :id, :id
     field :profile_picture, :string
   end
+
+  input_object :coordination_map do
+    field :latitude, non_null(:float)
+    field :longitude, non_null(:float)
+  end
 end

@@ -23,8 +23,10 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
   def get_partners(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Groups.list_partners_with_membership(user_id)}
 
-  def search_groups(_root, %{keyword: keyword}, %{context: %{current_user: %{id: user_id}}}),
-    do: {:ok, Groups.search_groups(user_id, keyword)}
+  def search_groups(_root, %{keyword: keyword, coordination: coordination}, %{
+        context: %{current_user: %{id: user_id}}
+      }),
+      do: {:ok, Groups.search_groups(user_id, keyword, coordination)}
 
   def list_joined_partners(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Groups.list_joined_partners(user_id)}

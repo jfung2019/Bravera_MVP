@@ -9,13 +9,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Offers do
 
   # search all location
   def search_offers(_root, %{keyword: keyword, location_id: -1}, %{
-    context: %{current_user: %{id: user_id}}
-  }),  do: Offers.search_offers_for_user(keyword, nil, user_id)
+        context: %{current_user: %{id: user_id}}
+      }),
+      do: Offers.search_offers_for_user(keyword, nil, user_id)
 
   # use user's location to search
   def search_offers(_root, %{keyword: keyword, location_id: nil}, %{
-    context: %{current_user: %{id: user_id, location_id: location_id}}
-  }),
+        context: %{current_user: %{id: user_id, location_id: location_id}}
+      }),
       do: Offers.search_offers_for_user(keyword, location_id, user_id)
 
   # search offers
