@@ -44,7 +44,8 @@ config :omega_bravera, Oban,
   crontab: [
     {"0 0 * * *", OmegaBravera.Notifications.Jobs.NotifyDaysNoActivity},
     {"0 4 * * *", OmegaBravera.Notifications.Jobs.NotifyExpiringReward},
-    {"0 8 */3 * *", OmegaBravera.Notifications.Jobs.NotifyNewGroupMembers}
+    {"0 8 */3 * *", OmegaBravera.Notifications.Jobs.NotifyNewGroupMembers},
+    {"0 */2 * * *", OmegaBravera.Notifications.Jobs.NotifyNewMessage}
   ]
 
 config :omega_bravera, OmegaBravera.Guardian,
