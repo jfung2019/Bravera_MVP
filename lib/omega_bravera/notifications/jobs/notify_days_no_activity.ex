@@ -4,25 +4,15 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyDaysNoActivity do
   to send push notifications to, and sends a push that they need
   to sync up their data.
   """
-  use Oban.Worker, queue: :default, max_attempts: 1
-  alias OmegaBravera.Notifications
-  alias Pigeon.FCM.Notification
+  use Oban.Worker, queue: :notification, max_attempts: 1
+  alias OmegaBravera.{Notifications, Notifications.Jobs.Helper}
 
   @impl Oban.Worker
   def perform(_args, _job) do
-    -4
-    |> Notifications.list_notification_devices_with_last_activity_from()
-    |> Enum.each(fn token ->
-      token
-      |> Notification.new(%{
-        "body" =>
-          "You could be converting walking into points! Don't miss out! Open Bravera and check your progress now.",
-        "title" => "Bravera",
-        "sound" => "default",
-        "badge" => "1"
-      })
-      |> Notification.put_priority(:high)
-      |> Pigeon.FCM.push()
-    end)
+    message =
+      "You could be converting walking into points! Don't miss out! Open Bravera and check your progress now."
+
+    Notifications.list_notification_devices_with_last_activity_every_7_days()
+    |> Enum.each(&Helper.send_notification(&1, message))
   end
 end

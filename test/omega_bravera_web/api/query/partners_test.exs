@@ -129,7 +129,11 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
       approval_status: :approved
     })
 
-    response = post(conn, "/api", %{query: @search_groups, variables: %{"keyword" => "na", "coordination" => nil}})
+    response =
+      post(conn, "/api", %{
+        query: @search_groups,
+        variables: %{"keyword" => "na", "coordination" => nil}
+      })
 
     assert %{"data" => %{"searchGroups" => [%{"name" => ^name, "isMember" => false}]}} =
              json_response(response, 200)
