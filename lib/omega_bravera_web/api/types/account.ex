@@ -186,4 +186,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :refresh_auth_token do
     field :token, :string
   end
+
+  object :home_in_app_noti do
+    field :new_offer, non_null(:boolean)
+    field :new_group, non_null(:boolean)
+    field :expiring_reward, non_null(:boolean)
+  end
 end

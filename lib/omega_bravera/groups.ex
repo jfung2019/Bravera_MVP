@@ -10,6 +10,7 @@ defmodule OmegaBravera.Groups do
 
   alias OmegaBravera.Groups.{Partner, Member, OfferPartner, ChatMessage, GroupApproval}
   alias OmegaBravera.Accounts.Notifier
+  alias OmegaBravera.Notifications.Jobs.NotifyNewMessage
 
   @doc """
   Admin dashboard groups information
@@ -213,6 +214,13 @@ defmodule OmegaBravera.Groups do
       having: count(m.id) == 0,
       select: count(p.id) > 0
     )
+    |> Repo.one()
+  end
+
+  def new_group_since(nil), do: false
+
+  def new_group_since(datetime) do
+    from(p in Partner, where: p.inserted_at > ^datetime, select: count(p.id) > 0)
     |> Repo.one()
   end
 
@@ -796,6 +804,16 @@ defmodule OmegaBravera.Groups do
     |> ChatMessage.changeset(attrs)
     |> Repo.insert()
   end
+
+  def notify_new_message(%ChatMessage{} = message) do
+    message
+    |> NotifyNewMessage.new()
+    |> Oban.insert()
+
+    message
+  end
+
+  def notify_new_message(message), do: message
 
   @doc """
   Updates a chat_message.

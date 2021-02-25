@@ -6,10 +6,8 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyNewMessage do
   alias OmegaBravera.{Notifications, Notifications.Jobs.Helper}
 
   @impl Oban.Worker
-  def perform(_args, _job) do
-    message = "There are missed messages inside your chat group(s)."
-
-    Notifications.list_notification_devices_with_new_message()
-    |> Enum.each(&Helper.send_notification(&1, message))
+  def perform(%{id: message_id} = message, _job) do
+    Notifications.list_notification_devices_with_new_message(message_id)
+    |> Enum.each(&Helper.send_notification(&1, message.message, message.user.username))
   end
 end

@@ -1,6 +1,6 @@
 defmodule OmegaBraveraWeb.UserChannel do
   use OmegaBraveraWeb, :channel
-  alias OmegaBravera.Groups
+  alias OmegaBravera.{Groups, Accounts}
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   @group_channel_prefix "group_channel:"
   @user_channel_prefix "user_channel:"
@@ -143,7 +143,9 @@ defmodule OmegaBraveraWeb.UserChannel do
     if group_id in group_ids do
       case Groups.create_chat_message(Map.put(message_params, "user_id", user.id)) do
         {:ok, message} ->
-          message = Groups.get_chat_message!(message.id)
+          message =
+            Groups.get_chat_message!(message.id)
+            |> Groups.notify_new_message()
 
           socket.endpoint.broadcast(
             "#{@group_channel_prefix}#{message.group_id}",
@@ -187,4 +189,11 @@ defmodule OmegaBraveraWeb.UserChannel do
 
   # Add authorization logic here as required.
   defp authorized?(string_user_id, user_id), do: String.to_integer(string_user_id) == user_id
+
+  def terminate(_reason, %{assigns: %{current_user: %{id: user_id}}}) do
+    Accounts.get_user!(user_id)
+    |> Accounts.update_user(%{last_login_datetime: Timex.now()})
+  end
+
+  def terminate(reason, _socket), do: reason
 end

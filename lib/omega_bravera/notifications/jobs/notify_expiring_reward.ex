@@ -10,7 +10,7 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyExpiringReward do
   def perform(_args, _job) do
     message = "A reward you 'own' expires soon! The clock is ticking ... claim it quick!"
 
-    Notifications.list_notification_devices_with_expiring_redeems()
+    Notifications.list_notification_devices_with_expiring_offer_redeem(14)
     |> Enum.each(&Helper.send_notification(&1, message))
   end
 end

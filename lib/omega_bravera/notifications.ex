@@ -503,7 +503,7 @@ defmodule OmegaBravera.Notifications do
   @doc """
   Gets push tokens of users who have an offer that will expire within X days.
   """
-  @spec list_notification_devices_with_expiring_offer_redeem(integer()) :: Ecto.Queryable.t()
+  @spec list_notification_devices_with_expiring_offer_redeem(integer()) :: [Device.t()]
   def list_notification_devices_with_expiring_offer_redeem(shift_days) do
     now = Timex.now()
     future = now |> Timex.shift(days: shift_days)
@@ -518,23 +518,6 @@ defmodule OmegaBravera.Notifications do
       group_by: [nd.id, nd.token],
       having: count(r.id) > 0
     )
-  end
-
-  @doc """
-  List notification_devices of users who have redeems expires in 3, 7 or 14 days
-  """
-  @spec list_notification_devices_with_expiring_redeems :: [Device.t()]
-  def list_notification_devices_with_expiring_redeems do
-    expire_in_3days = list_notification_devices_with_expiring_offer_redeem(3)
-    expire_in_7days = list_notification_devices_with_expiring_offer_redeem(7)
-    expire_in_14days = list_notification_devices_with_expiring_offer_redeem(14)
-
-    union_query =
-      expire_in_3days
-      |> union(^expire_in_7days)
-      |> union(^expire_in_14days)
-
-    from(d in subquery(union_query))
     |> Repo.all()
   end
 
@@ -556,14 +539,14 @@ defmodule OmegaBravera.Notifications do
   @doc """
   List notification_devices of users who have new messages in the past 2 hours
   """
-  @spec list_notification_devices_with_new_message :: [Device.t()]
-  def list_notification_devices_with_new_message do
-    from(cm in OmegaBravera.Groups.ChatMessage,
-      where: fragment("? BETWEEN now() - interval '2 hours' AND now()", cm.inserted_at),
-      distinct: cm.group_id,
-      select: cm.group_id
+  @spec list_notification_devices_with_new_message(String.t()) :: [Device.t()]
+  def list_notification_devices_with_new_message(message_id) do
+    from(pm in OmegaBravera.Groups.Member,
+      left_join: p in assoc(pm, :partner),
+      left_join: cm in assoc(p, :chat_messages),
+      where: cm.id == ^message_id and pm.mute_notification == false,
+      select: pm.user_id
     )
-    |> distinct_members_in_groups()
     |> list_notification_devices_of_users()
     |> Repo.all()
   end

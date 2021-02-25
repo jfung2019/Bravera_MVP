@@ -2,11 +2,11 @@ defmodule OmegaBravera.Notifications.Jobs.Helper do
   alias OmegaBravera.{Notifications, Notifications.Device}
   alias Pigeon.FCM.Notification
 
-  def send_notification(%Device{id: device_id, token: token}, message) do
+  def send_notification(%Device{id: device_id, token: token}, message, title \\ "") do
     token
     |> Notification.new(%{
       "body" => message,
-      "title" => "Bravera",
+      "title" => format_title("Bravera", title),
       "sound" => "default",
       "badge" => "1"
     })
@@ -14,6 +14,10 @@ defmodule OmegaBravera.Notifications.Jobs.Helper do
     |> Pigeon.FCM.push()
     |> handle_fcm_push_result(device_id)
   end
+
+  defp format_title(prefix, ""), do: prefix
+
+  defp format_title(prefix, suffix), do: "#{prefix}-#{suffix}"
 
   defp handle_fcm_push_result(%Notification{response: [invalid_registration: _token]}, device_id),
     do: delete_notification_device(device_id)
