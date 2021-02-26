@@ -46,8 +46,8 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:noreply, assign(socket, :group_ids, group_ids)}
   end
 
-  def handle_info(%{event: "joined_group" = event, payload: %{id: group_id}}, socket) do
-    group = Groups.list_joined_partner_with_chat_messages(group_id)
+  def handle_info(%{event: "joined_group" = event, payload: %{id: group_id}},%{assigns: %{current_user: %{id: user_id}}} = socket) do
+    group = Groups.list_joined_partner_with_chat_messages(group_id, user_id)
     :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
     push(socket, event, %{group: render_one(group, @view, "show_group_with_messages.json")})
     {:noreply, assign(socket, :group_ids, [group_id | socket.assigns.group_ids])}
@@ -183,6 +183,17 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:reply,
      {:ok, %{messages: render_many(previous_messages, @view, "show_message.json", as: :message)}},
      socket}
+  end
+
+  def handle_in("mute_notification", %{"group_id" => group_id}, %{assigns: %{current_user: %{id: user_id}}} = socket) do
+    member = Groups.get_group_member_by_group_id_user_id(group_id, user_id)
+    case Groups.update_group_member(member, %{mute_notification: not member.mute_notification}) do
+      {:ok, %{partner_id: partner_id, mute_notification: muted}} ->
+        {:reply, {:ok, %{group_id: partner_id ,muted: muted}}, socket}
+
+      {:error, changeset} ->
+        {:reply, {:error, %{errors: Helpers.transform_errors(changeset)}}, socket}
+    end
   end
 
   def user_channel(user_id), do: "#{@user_channel_prefix}#{user_id}"

@@ -10,6 +10,7 @@ defmodule OmegaBraveraWeb.GroupView do
       id: group.id,
       name: group.name,
       image: List.first(group.images),
+      is_muted: group.is_muted,
       chat_messages:
         Phoenix.View.render_many(group.chat_messages, __MODULE__, "show_message.json",
           as: :message

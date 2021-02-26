@@ -16,6 +16,7 @@ defmodule OmegaBravera.Groups.Partner do
     field :approval_status_string, :string, load_in_query: false, source: :approval_status
     field :type, :string, virtual: true
     field :is_member, :boolean, virtual: true
+    field :is_muted, :boolean, virtual: true
     has_one :location, PartnerLocation
     has_many :offer_partners, OfferPartner
     has_many :offers, through: [:offer_partners, :offer]

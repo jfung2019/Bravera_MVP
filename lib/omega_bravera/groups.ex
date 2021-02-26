@@ -580,6 +580,17 @@ defmodule OmegaBravera.Groups do
   """
   def get_partner_member!(member_id), do: Repo.get!(Member, member_id)
 
+  def get_group_member_by_group_id_user_id(group_id, user_id) do
+    from(m in Member, where: m.user_id == ^user_id and m.partner_id == ^group_id)
+    |> Repo.one()
+  end
+
+  def update_group_member(%Member{} = member, attrs \\ %{}) do
+    member
+    |> Member.changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Delete partner member.
   """
@@ -644,8 +655,17 @@ defmodule OmegaBravera.Groups do
           )
         ),
       on: last_messages.id == me.id and not is_nil(last_messages.id),
+      left_lateral_join:
+        muted in subquery(
+          from(m in Member,
+            where: m.user_id == ^user_id and parent_as(:group).id == m.partner_id,
+            select: %{partner_id: m.partner_id, mute_notification: m.mute_notification}
+          )
+        ),
+      on: muted.partner_id == p.id,
       where: m.user_id == ^user_id and p.approval_status == :approved,
-      preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u]
+      preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u],
+      select: %{p | is_muted: muted.mute_notification}
     )
     |> Repo.all()
   end
@@ -653,7 +673,7 @@ defmodule OmegaBravera.Groups do
   @doc """
   Get the partner joined by the user, along with the latest 10 messages.
   """
-  def list_joined_partner_with_chat_messages(partner_id, message_count \\ 10) do
+  def list_joined_partner_with_chat_messages(partner_id, user_id, message_count \\ 10) do
     from(p in Partner,
       as: :group,
       left_join: m in assoc(p, :members),
@@ -669,8 +689,17 @@ defmodule OmegaBravera.Groups do
           )
         ),
       on: last_messages.id == me.id and not is_nil(last_messages.id),
+      left_lateral_join:
+        muted in subquery(
+          from(m in Member,
+            where: m.user_id == ^user_id and m.partner_id == ^partner_id,
+            select: %{partner_id: m.partner_id, mute_notification: m.mute_notification}
+          )
+        ),
+      on: muted.partner_id == p.id,
       where: p.id == ^partner_id and p.approval_status == :approved,
-      preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u]
+      preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u],
+      select: %{p | is_muted: muted.mute_notification}
     )
     |> Repo.one()
   end
