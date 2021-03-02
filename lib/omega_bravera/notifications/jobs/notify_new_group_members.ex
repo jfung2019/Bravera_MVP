@@ -12,5 +12,7 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyNewGroupMembers do
 
     Notifications.list_notification_devices_with_new_group_member()
     |> Enum.each(&Helper.send_notification(&1, message))
+
+    :ok
   end
 end

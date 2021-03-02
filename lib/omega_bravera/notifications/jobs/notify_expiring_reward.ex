@@ -12,5 +12,7 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyExpiringReward do
 
     Notifications.list_notification_devices_with_expiring_offer_redeem(14)
     |> Enum.each(&Helper.send_notification(&1, message))
+
+    :ok
   end
 end

@@ -14,5 +14,7 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyDaysNoActivity do
 
     Notifications.list_notification_devices_with_last_activity_every_7_days()
     |> Enum.each(&Helper.send_notification(&1, message))
+
+    :ok
   end
 end

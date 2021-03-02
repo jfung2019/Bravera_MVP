@@ -816,6 +816,11 @@ defmodule OmegaBravera.Groups do
     |> Repo.one!()
   end
 
+  def get_chat_message_with_group!(id) do
+    from(m in ChatMessage, where: m.id == ^id, preload: [:group])
+    |> Repo.one!()
+  end
+
   @doc """
   Creates a chat_message.
 
