@@ -3,7 +3,7 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyNewGroupMembers do
   Checks for any new members joined a group that the user is in and
   sends a push notification to them.
   """
-  use Oban.Worker, queue: :notification, max_attempts: 1
+  use Oban.Worker, queue: :default, max_attempts: 1
   alias OmegaBravera.{Notifications, Notifications.Jobs.Helper}
 
   @impl Oban.Worker

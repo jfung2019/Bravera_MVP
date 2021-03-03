@@ -544,7 +544,7 @@ defmodule OmegaBravera.Notifications do
     from(pm in OmegaBravera.Groups.Member,
       left_join: p in assoc(pm, :partner),
       left_join: cm in assoc(p, :chat_messages),
-      where: cm.id == ^message_id and pm.mute_notification == false,
+      where: cm.id == ^message_id and is_nil(pm.mute_notification),
       select: pm.user_id
     )
     |> list_notification_devices_of_users()

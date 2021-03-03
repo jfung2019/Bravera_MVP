@@ -3,7 +3,7 @@ defmodule OmegaBravera.Groups.Jobs.NewPartnerJoined do
   Send email to Org Admin every day about the users that joined that day
   """
 
-  use Oban.Worker, queue: :notification, max_attempts: 1
+  use Oban.Worker, queue: :default
 
   alias OmegaBravera.{Accounts, Accounts.Notifier}
 

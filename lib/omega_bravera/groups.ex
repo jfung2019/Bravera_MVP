@@ -591,6 +591,12 @@ defmodule OmegaBravera.Groups do
     |> Repo.update()
   end
 
+  def group_member_mute_group(%Member{} = member, attrs \\  %{}) do
+    member
+    |> Member.mute_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Delete partner member.
   """
@@ -665,7 +671,7 @@ defmodule OmegaBravera.Groups do
       on: muted.partner_id == p.id,
       where: m.user_id == ^user_id and p.approval_status == :approved,
       preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u],
-      select: %{p | is_muted: muted.mute_notification}
+      select: %{p | is_muted: not is_nil(muted.mute_notification)}
     )
     |> Repo.all()
   end

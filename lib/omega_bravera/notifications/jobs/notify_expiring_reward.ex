@@ -3,7 +3,7 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyExpiringReward do
   Checks for any expiring rewards within the next 3, 7 or 14 days and
   sends a push notification to them.
   """
-  use Oban.Worker, queue: :notification, max_attempts: 1
+  use Oban.Worker, queue: :default, max_attempts: 1
   alias OmegaBravera.{Notifications, Notifications.Jobs.Helper}
 
   @impl Oban.Worker

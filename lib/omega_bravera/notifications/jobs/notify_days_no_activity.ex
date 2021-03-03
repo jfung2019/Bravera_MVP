@@ -4,7 +4,7 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyDaysNoActivity do
   to send push notifications to, and sends a push that they need
   to sync up their data.
   """
-  use Oban.Worker, queue: :notification, max_attempts: 1
+  use Oban.Worker, queue: :default, max_attempts: 1
   alias OmegaBravera.{Notifications, Notifications.Jobs.Helper}
 
   @impl Oban.Worker

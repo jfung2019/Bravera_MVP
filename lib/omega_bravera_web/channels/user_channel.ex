@@ -195,9 +195,9 @@ defmodule OmegaBraveraWeb.UserChannel do
       ) do
     member = Groups.get_group_member_by_group_id_user_id(group_id, user_id)
 
-    case Groups.update_group_member(member, %{mute_notification: not member.mute_notification}) do
+    case Groups.group_member_mute_group(member, mute_group(member)) do
       {:ok, %{partner_id: partner_id, mute_notification: muted}} ->
-        {:reply, {:ok, %{group_id: partner_id, muted: muted}}, socket}
+        {:reply, {:ok, %{group_id: partner_id, muted: not is_nil(muted)}}, socket}
 
       {:error, changeset} ->
         {:reply, {:error, %{errors: Helpers.transform_errors(changeset)}}, socket}
@@ -215,4 +215,8 @@ defmodule OmegaBraveraWeb.UserChannel do
   end
 
   def terminate(reason, _socket), do: reason
+
+  defp mute_group(%{mute_notification: nil}), do: %{mute_notification: Timex.now()}
+
+  defp mute_group(_member), do: %{mute_notification: nil}
 end
