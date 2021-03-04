@@ -2341,8 +2341,9 @@ defmodule OmegaBravera.Accounts do
   @doc """
   list new members joined yesterday
   """
-  def list_orgs_with_new_members() do
-    from(org in OmegaBravera.Accounts.Organization,
+  @spec list_orgs_with_new_members :: [Organization.t()]
+  def list_orgs_with_new_members do
+    from(org in Organization,
       left_join: group in assoc(org, :groups),
       left_join: member in assoc(group, :members),
       where: fragment("? BETWEEN now() - interval '1 days' AND now()", member.inserted_at),

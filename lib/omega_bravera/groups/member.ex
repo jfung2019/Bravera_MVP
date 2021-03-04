@@ -18,10 +18,4 @@ defmodule OmegaBravera.Groups.Member do
     |> cast(attrs, [:mute_notification, :user_id, :partner_id])
     |> validate_required([:user_id, :partner_id])
   end
-
-  def mute_changeset(member, attrs) do
-    member
-    |> cast(attrs, [:mute_notification, :user_id, :partner_id])
-    |> validate_required([:mute_notification, :user_id, :partner_id])
-  end
 end

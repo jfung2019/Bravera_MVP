@@ -526,6 +526,10 @@ defmodule OmegaBravera.Offers do
     |> Repo.all()
   end
 
+  @doc """
+  check if there is new offer inserted since the given datetime
+  """
+  @spec new_offer_since(Datetime.t()) ::  boolean()
   def new_offer_since(nil), do: false
 
   def new_offer_since(datetime) do
@@ -1559,6 +1563,10 @@ defmodule OmegaBravera.Offers do
     |> Repo.aggregate(:count, :id)
   end
 
+  @doc """
+  check if there is rewards expiring in the next 14 days for the given user
+  """
+  @spec expiring_reward(integer()) :: boolean()
   def expiring_reward(user_id) do
     from(r in OfferRedeem,
       where:

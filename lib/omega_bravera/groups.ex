@@ -580,20 +580,21 @@ defmodule OmegaBravera.Groups do
   """
   def get_partner_member!(member_id), do: Repo.get!(Member, member_id)
 
+  @doc """
+  Get group member using group id and user id
+  """
+  @spec get_group_member_by_group_id_user_id(String.t(), String.t()) :: Member.t()
   def get_group_member_by_group_id_user_id(group_id, user_id) do
     from(m in Member, where: m.user_id == ^user_id and m.partner_id == ^group_id)
     |> Repo.one()
   end
 
+  @doc """
+  update group member
+  """
   def update_group_member(%Member{} = member, attrs \\ %{}) do
     member
     |> Member.changeset(attrs)
-    |> Repo.update()
-  end
-
-  def group_member_mute_group(%Member{} = member, attrs \\  %{}) do
-    member
-    |> Member.mute_changeset(attrs)
     |> Repo.update()
   end
 
@@ -679,6 +680,7 @@ defmodule OmegaBravera.Groups do
   @doc """
   Get the partner joined by the user, along with the latest 10 messages.
   """
+  @spec list_joined_partner_with_chat_messages(integer(), integer(), integer()) :: Partner.t() | nil
   def list_joined_partner_with_chat_messages(partner_id, user_id, message_count \\ 10) do
     from(p in Partner,
       as: :group,
@@ -822,6 +824,10 @@ defmodule OmegaBravera.Groups do
     |> Repo.one!()
   end
 
+  @doc"""
+  Get chat message by id and preload group
+  """
+  @spec get_chat_message_with_group!(String.t()) :: ChatMessage.t()
   def get_chat_message_with_group!(id) do
     from(m in ChatMessage, where: m.id == ^id, preload: [:group])
     |> Repo.one!()
@@ -845,6 +851,10 @@ defmodule OmegaBravera.Groups do
     |> Repo.insert()
   end
 
+  @doc """
+  Insert new oban job when new chat message is inserted for sending notification
+  """
+  @ spec notify_new_message(ChatMessage.t()) :: ChatMessage.t()
   def notify_new_message(%ChatMessage{} = message) do
     message
     |> NotifyNewMessage.new()

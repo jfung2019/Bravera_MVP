@@ -195,7 +195,7 @@ defmodule OmegaBraveraWeb.UserChannel do
       ) do
     member = Groups.get_group_member_by_group_id_user_id(group_id, user_id)
 
-    case Groups.group_member_mute_group(member, mute_group(member)) do
+    case Groups.update_group_member(member, mute_group(member)) do
       {:ok, %{partner_id: partner_id, mute_notification: muted}} ->
         {:reply, {:ok, %{group_id: partner_id, muted: not is_nil(muted)}}, socket}
 
