@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.Api.Schema do
   use Absinthe.Schema
+  use Absinthe.Relay.Schema, :modern
   alias OmegaBraveraWeb.Api.{Resolvers, Types, Middleware}
 
   import_types Types.Offer
@@ -230,6 +231,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :offer_offer_challenges, list_of(:offer_challenge) do
       arg :offer_id, non_null(:id)
       resolve &Resolvers.Offers.offer_offer_challenges/3
+    end
+
+    @desc "Get offer's offer challenges, but paginated."
+    connection field :offer_offer_challenges_paginated, node_type: :offer_challenge do
+      arg :offer_id, non_null(:id)
+      resolve &Resolvers.Offers.offer_offer_challenges_paginated/3
     end
 
     @desc "Get Challenge Redeem."

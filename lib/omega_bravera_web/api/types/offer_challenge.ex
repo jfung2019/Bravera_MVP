@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
   alias OmegaBravera.Offers
   import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
@@ -21,6 +22,8 @@ defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
     field :user, :user
     field :offer, :offer, resolve: dataloader(Offers)
   end
+
+  connection(node_type: :offer_challenge)
 
   object :offer_challenges_map do
     field :total, :integer

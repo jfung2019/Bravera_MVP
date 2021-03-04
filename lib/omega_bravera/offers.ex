@@ -7,6 +7,7 @@ defmodule OmegaBravera.Offers do
 
   alias Ecto.Multi
   alias OmegaBravera.Repo
+  alias Absinthe.Relay
 
   alias OmegaBravera.Offers.{
     Offer,
@@ -711,6 +712,25 @@ defmodule OmegaBravera.Offers do
       }
     )
     |> Repo.all()
+  end
+
+  def offer_offer_challenges_paginated(offer_id, pagination_args) do
+    from(
+      oc in OfferChallenge,
+      left_join: a in OfferChallengeActivitiesM2m,
+      on: oc.id == a.offer_challenge_id,
+      left_join: ac in ActivityAccumulator,
+      on: a.activity_id == ac.id,
+      where: oc.offer_id == ^offer_id,
+      group_by: [oc.id],
+      preload: [user: [:strava]],
+      order_by: [desc: oc.inserted_at],
+      select: %{
+        oc
+      | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+      }
+    )
+    |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
   def get_redeem(challenge_id, user_id) do
