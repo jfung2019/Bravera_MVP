@@ -13,7 +13,7 @@ defmodule OmegaBravera.Points.Notifier do
     |> Email.add_substitution("-FirstName-", first_name)
     |> Email.add_substitution("-CurrentBalance-", Decimal.to_string(current_balance, :normal))
     |> Email.add_substitution(
-      "-PreviousBalance",
+      "-PreviousBalance-",
       Decimal.to_string(Decimal.sub(current_balance, points_difference), :normal)
     )
     |> Email.add_substitution("-value-", Decimal.to_string(points_difference, :normal))

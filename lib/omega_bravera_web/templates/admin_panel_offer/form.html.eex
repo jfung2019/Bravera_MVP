@@ -202,6 +202,17 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>
+    <small class="form-text text-muted">
+      <%= gettext("(‘Countdown’ or ‘deadline’ to claim the reward after it has been unlocked. Example: Steven earned a reward on 07:00am on 1st January that has an expiry of 10 days. On 11th January, at 06:59:59, the reward will expire and be removed from his rewards wallet. ") %>
+      <a href="#"><%= gettext("Click here") %></a>
+      <%= gettext(" for hints and help.)") %>
+    </small>
+    <%= number_input f, :redemption_days, class: add_error_class(f, :redemption_days, "form-control"), step: "1" %>
+    <%= error_tag f, :redemption_days %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
     <br>
     <small class="form-text text-muted">
@@ -212,17 +223,6 @@
   </div>
 
   <div id="enable_take_challenge_fields">
-    <div class="form-group">
-      <%= label f, :redemption_days, gettext("Claim countdown / deadline (days)"), class: "control-label" %>
-      <small class="form-text text-muted">
-        <%= gettext("(‘Countdown’ or ‘deadline’ to claim the reward after it has been unlocked. Example: Steven earned a reward on 07:00am on 1st January that has an expiry of 10 days. On 11th January, at 06:59:59, the reward will expire and be removed from his rewards wallet. ") %>
-        <a href="#"><%= gettext("Click here") %></a>
-        <%= gettext(" for hints and help.)") %>
-      </small>
-      <%= number_input f, :redemption_days, class: add_error_class(f, :redemption_days, "form-control"), step: "1" %>
-      <%= error_tag f, :redemption_days %>
-    </div>
-
     <div class="form-group">
       <%= label f, :time_limit, "Time Limit (leave blank to make offer challenge end date match offer's)", class: "control-label" %>
       <%= number_input f, :time_limit, class: add_error_class(f, :time_limit, "form-control") %>
