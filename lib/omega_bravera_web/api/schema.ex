@@ -325,6 +325,11 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Groups.get_partners/3
     end
 
+    connection field :get_partners_paginated, node_type: :partner do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Groups.get_partners_paginated/3
+    end
+
     @desc "Search partners"
     field :search_groups, non_null(list_of(:partner)) do
       arg :keyword, non_null(:string)

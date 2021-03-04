@@ -29,7 +29,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Offers do
     do: {:ok, Offers.list_offer_offer_challenges(offer_id)}
 
   def offer_offer_challenges_paginated(_root, %{offer_id: offer_id} = args, _info),
-      do: Offers.offer_offer_challenges_paginated(offer_id, args)
+    do: Offers.offer_offer_challenges_paginated(offer_id, args)
 
   def get_offer(_root, %{slug: offer_slug}, _info) do
     case Offers.get_offer_by_slug(offer_slug) do

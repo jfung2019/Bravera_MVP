@@ -738,7 +738,7 @@ defmodule OmegaBravera.Offers do
       order_by: [desc: oc.inserted_at],
       select: %{
         oc
-      | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
+        | distance_covered: fragment("round(sum(coalesce(?, 0)), 1)", ac.distance)
       }
     )
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)

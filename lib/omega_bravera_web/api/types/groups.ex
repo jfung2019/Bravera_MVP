@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.Api.Types.Groups do
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
   import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
   alias OmegaBravera.{Groups, Offers}
 
@@ -42,6 +43,8 @@ defmodule OmegaBraveraWeb.Api.Types.Groups do
 
     field :votes, list_of(non_null(:partner_vote)), resolve: dataloader(Groups)
   end
+
+  connection(node_type: :partner)
 
   object :partner_location do
     field :address, non_null(:string)

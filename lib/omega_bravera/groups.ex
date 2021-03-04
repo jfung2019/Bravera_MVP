@@ -7,6 +7,7 @@ defmodule OmegaBravera.Groups do
 
   import Ecto.Query, warn: false
   alias OmegaBravera.Repo
+  alias Absinthe.Relay
 
   alias OmegaBravera.Groups.{Partner, Member, OfferPartner, ChatMessage, GroupApproval}
   alias OmegaBravera.Accounts.Notifier
@@ -162,6 +163,11 @@ defmodule OmegaBravera.Groups do
   def list_partners_with_membership(user_id) do
     list_partners_with_membership_query(user_id)
     |> Repo.all()
+  end
+
+  def list_partners_with_membership_paginated(user_id, pagination_args) do
+    list_partners_with_membership_query(user_id)
+    |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
   def search_groups(user_id, keyword, nil) do
