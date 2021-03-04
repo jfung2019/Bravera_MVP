@@ -72,6 +72,7 @@ defmodule OmegaBravera.Mixfile do
       {:absinthe, "~> 1.5.3"},
       {:absinthe_plug, "~> 1.5.0"},
       {:absinthe_phoenix, "~> 2.0.0"},
+      {:absinthe_relay, "~> 1.5.1"},
       {:benchee, "~> 1.0", only: :dev},
       {:floki, ">= 0.0.0", only: :test},
       {:phoenix_live_view, "~> 0.14.8"},
