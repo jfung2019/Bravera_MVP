@@ -2337,4 +2337,19 @@ defmodule OmegaBravera.Accounts do
     )
     |> Repo.one()
   end
+
+  @doc """
+  list new members joined yesterday
+  """
+  @spec list_orgs_with_new_members :: [Organization.t()]
+  def list_orgs_with_new_members do
+    from(org in Organization,
+      left_join: group in assoc(org, :groups),
+      left_join: member in assoc(group, :members),
+      where: fragment("? BETWEEN now() - interval '1 days' AND now()", member.inserted_at),
+      group_by: [org.id],
+      preload: [organization_members: [:partner_user]]
+    )
+    |> Repo.all()
+  end
 end

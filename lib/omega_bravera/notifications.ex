@@ -485,9 +485,25 @@ defmodule OmegaBravera.Notifications do
   end
 
   @doc """
+  Get tokens of users with the days between the date of last activity and now dividable by 7d
+  """
+  @spec list_notification_devices_with_last_activity_every_7_days :: [Device.t()]
+  def list_notification_devices_with_last_activity_every_7_days do
+    from(nd in Device,
+      left_join: u in assoc(nd, :user),
+      on: u.push_notifications == true,
+      left_join: a in assoc(u, :activities),
+      where: not is_nil(a.device_id) and is_nil(a.strava_id),
+      group_by: [nd.id, nd.token],
+      having: fragment("(MAX(?)::date - now()::date) % 7 = 0", a.start_date)
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Gets push tokens of users who have an offer that will expire within X days.
   """
-  @spec list_notification_devices_with_expiring_offer_redeem(integer()) :: list(String.t())
+  @spec list_notification_devices_with_expiring_offer_redeem(integer()) :: [Device.t()]
   def list_notification_devices_with_expiring_offer_redeem(shift_days) do
     now = Timex.now()
     future = now |> Timex.shift(days: shift_days)
@@ -499,10 +515,64 @@ defmodule OmegaBravera.Notifications do
       on:
         r.status == "pending" and not is_nil(r.expired_at) and
           fragment("? BETWEEN ? AND ?", r.expired_at, ^now, ^future),
-      group_by: nd.token,
-      having: count(r.id) > 0,
-      select: nd.token
+      group_by: [nd.id, nd.token],
+      having: count(r.id) > 0
     )
     |> Repo.all()
+  end
+
+  @doc """
+  List notification_devices of users who belong to a group with new member joined in the past 3 days
+  """
+  @spec list_notification_devices_with_new_group_member :: [Device.t()]
+  def list_notification_devices_with_new_group_member do
+    from(pm in OmegaBravera.Groups.Member,
+      where: fragment("? BETWEEN now() - interval '3 days' AND now()", pm.inserted_at),
+      distinct: [pm.partner_id],
+      select: pm.partner_id
+    )
+    |> distinct_members_in_groups()
+    |> list_notification_devices_of_users()
+    |> Repo.all()
+  end
+
+  @doc """
+  List notification_devices of users who have new messages in the past 2 hours
+  """
+  @spec list_notification_devices_with_new_message(String.t()) :: [Device.t()]
+  def list_notification_devices_with_new_message(message_id) do
+    from(pm in OmegaBravera.Groups.Member,
+      left_join: p in assoc(pm, :partner),
+      left_join: cm in assoc(p, :chat_messages),
+      where: cm.id == ^message_id and is_nil(pm.mute_notification),
+      select: pm.user_id
+    )
+    |> list_notification_devices_of_users()
+    |> Repo.all()
+  end
+
+  @doc """
+  Query for getting distinct members from a group_id list
+  """
+  @spec distinct_members_in_groups(Ecto.Query.t()) :: Ecto.Query.t()
+  defp distinct_members_in_groups(query) do
+    from(pm in OmegaBravera.Groups.Member,
+      where: pm.partner_id in subquery(query),
+      distinct: [pm.user_id],
+      select: pm.user_id
+    )
+  end
+
+  @doc """
+  Query for getting distinct user device from a user_id list
+  """
+  @spec list_notification_devices_of_users(Ecto.Query.t()) :: Ecto.Query.t()
+  defp list_notification_devices_of_users(query) do
+    from(nd in Device,
+      left_join: pm in OmegaBravera.Groups.Member,
+      on: nd.user_id == pm.user_id,
+      where: nd.user_id in subquery(query),
+      distinct: [nd.user_id, nd.token]
+    )
   end
 end

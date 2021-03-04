@@ -345,6 +345,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
       arg :day, :day
       resolve &Resolvers.Points.point_breakdown_by_day/3
     end
+
+    @desc "in app notification checking for new offers, new groups and expiring redeems"
+    field :home_in_app_noti, non_null(:home_in_app_noti) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.noti_offer_group_redeem/3
+    end
   end
 
   subscription do

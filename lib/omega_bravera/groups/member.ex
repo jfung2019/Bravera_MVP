@@ -4,6 +4,8 @@ defmodule OmegaBravera.Groups.Member do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "partner_members" do
+    field :mute_notification, :utc_datetime
+
     belongs_to :user, OmegaBravera.Accounts.User
     belongs_to :partner, OmegaBravera.Groups.Partner
 
@@ -15,5 +17,9 @@ defmodule OmegaBravera.Groups.Member do
     member
     |> cast(attrs, [:user_id, :partner_id])
     |> validate_required([:user_id, :partner_id])
+  end
+
+  def mute_notification_changeset(member, attrs) do
+    member |> cast(attrs, [:mute_notification])
   end
 end

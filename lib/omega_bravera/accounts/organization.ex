@@ -13,6 +13,7 @@ defmodule OmegaBravera.Accounts.Organization do
     has_many :group_users, through: [:group_members, :user]
     has_many :offers, OmegaBravera.Offers.Offer
     has_many :points, OmegaBravera.Points.Point
+    has_many :organization_members, OmegaBravera.Accounts.OrganizationMember
 
     timestamps()
   end

@@ -528,6 +528,17 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
+  check if there is new offer inserted since the given datetime
+  """
+  @spec new_offer_since(Datetime.t()) :: boolean()
+  def new_offer_since(nil), do: false
+
+  def new_offer_since(datetime) do
+    from(o in Offer, where: o.inserted_at > ^datetime, select: count(o.id) > 0)
+    |> Repo.one()
+  end
+
+  @doc """
   Creates a offer.
 
   ## Examples
@@ -1570,6 +1581,20 @@ defmodule OmegaBravera.Offers do
           fragment("? BETWEEN ? and ?", r.updated_at, ^one_week_ago, ^today)
     )
     |> Repo.aggregate(:count, :id)
+  end
+
+  @doc """
+  check if there is rewards expiring in the next 14 days for the given user
+  """
+  @spec expiring_reward(integer()) :: boolean()
+  def expiring_reward(user_id) do
+    from(r in OfferRedeem,
+      where:
+        r.user_id == ^user_id and r.status == "pending" and not is_nil(r.expired_at) and
+          fragment("? BETWEEN now() AND now() + interval '14 days'", r.expired_at),
+      select: count(r.id) > 0
+    )
+    |> Repo.one()
   end
 
   def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)

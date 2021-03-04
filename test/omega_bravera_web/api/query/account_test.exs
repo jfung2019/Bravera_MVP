@@ -69,6 +69,16 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   }
   """
 
+  @home_in_app_noti """
+  query {
+    homeInAppNoti {
+      newOffer
+      newGroup
+      expiringReward
+    }
+  }
+  """
+
   def credential_fixture() do
     user = insert(:user, %{email: @email})
 
@@ -143,5 +153,15 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   test "can get past rewards", %{conn: conn} do
     response = post(conn, "/api", %{query: @past_rewards_query})
     %{"data" => %{"pastRedeems" => []}} = json_response(response, 200)
+  end
+
+  test "can get if there is new offers, groups or expiring rewards", %{conn: conn} do
+    response = post(conn, "/api", %{query: @home_in_app_noti})
+
+    %{
+      "data" => %{
+        "homeInAppNoti" => %{"newOffer" => false, "newGroup" => false, "expiringReward" => false}
+      }
+    } = json_response(response, 200)
   end
 end

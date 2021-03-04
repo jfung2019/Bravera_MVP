@@ -1,6 +1,6 @@
 defmodule OmegaBraveraWeb.UserChannel do
   use OmegaBraveraWeb, :channel
-  alias OmegaBravera.Groups
+  alias OmegaBravera.{Groups, Accounts}
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   @group_channel_prefix "group_channel:"
   @user_channel_prefix "user_channel:"
@@ -46,8 +46,11 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:noreply, assign(socket, :group_ids, group_ids)}
   end
 
-  def handle_info(%{event: "joined_group" = event, payload: %{id: group_id}}, socket) do
-    group = Groups.list_joined_partner_with_chat_messages(group_id)
+  def handle_info(
+        %{event: "joined_group" = event, payload: %{id: group_id}},
+        %{assigns: %{current_user: %{id: user_id}}} = socket
+      ) do
+    group = Groups.list_joined_partner_with_chat_messages(group_id, user_id)
     :ok = socket.endpoint.subscribe("#{@group_channel_prefix}#{group_id}")
     push(socket, event, %{group: render_one(group, @view, "show_group_with_messages.json")})
     {:noreply, assign(socket, :group_ids, [group_id | socket.assigns.group_ids])}
@@ -143,7 +146,9 @@ defmodule OmegaBraveraWeb.UserChannel do
     if group_id in group_ids do
       case Groups.create_chat_message(Map.put(message_params, "user_id", user.id)) do
         {:ok, message} ->
-          message = Groups.get_chat_message!(message.id)
+          message =
+            Groups.get_chat_message!(message.id)
+            |> Groups.notify_new_message()
 
           socket.endpoint.broadcast(
             "#{@group_channel_prefix}#{message.group_id}",
@@ -183,8 +188,35 @@ defmodule OmegaBraveraWeb.UserChannel do
      socket}
   end
 
+  def handle_in(
+        "mute_notification",
+        %{"group_id" => group_id},
+        %{assigns: %{current_user: %{id: user_id}}} = socket
+      ) do
+    member = Groups.get_group_member_by_group_id_user_id(group_id, user_id)
+
+    case Groups.mute_group(member, mute_group(member)) do
+      {:ok, %{partner_id: partner_id, mute_notification: muted}} ->
+        {:reply, {:ok, %{group_id: partner_id, muted: not is_nil(muted)}}, socket}
+
+      {:error, changeset} ->
+        {:reply, {:error, %{errors: Helpers.transform_errors(changeset)}}, socket}
+    end
+  end
+
   def user_channel(user_id), do: "#{@user_channel_prefix}#{user_id}"
 
   # Add authorization logic here as required.
   defp authorized?(string_user_id, user_id), do: String.to_integer(string_user_id) == user_id
+
+  def terminate(_reason, %{assigns: %{current_user: %{id: user_id}}}) do
+    Accounts.get_user!(user_id)
+    |> Accounts.update_user(%{last_login_datetime: Timex.now()})
+  end
+
+  def terminate(reason, _socket), do: reason
+
+  defp mute_group(%{mute_notification: nil}), do: %{mute_notification: Timex.now()}
+
+  defp mute_group(_member), do: %{mute_notification: nil}
 end

@@ -24,7 +24,8 @@ defmodule OmegaBravera.Accounts.User do
     :location_id,
     :locale,
     :referred_by_id,
-    :email_permissions
+    :email_permissions,
+    :last_login_datetime
   ]
 
   schema "users" do
@@ -71,6 +72,9 @@ defmodule OmegaBravera.Accounts.User do
     field :total_challenges, :integer, virtual: true, default: 0
     field :position_on_leaderboard, :integer, virtual: true, default: 0
     field :friend_referrals, :integer, virtual: true
+
+    # user login info
+    field :last_login_datetime, :utc_datetime
 
     # associations
     has_one :credential, Credential, on_replace: :update
