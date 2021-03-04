@@ -15,7 +15,11 @@ defmodule OmegaBravera.Groups.Member do
   @doc false
   def changeset(member, attrs) do
     member
-    |> cast(attrs, [:mute_notification, :user_id, :partner_id])
+    |> cast(attrs, [:user_id, :partner_id])
     |> validate_required([:user_id, :partner_id])
+  end
+
+  def mute_notification_changeset(member, attrs) do
+    member |> cast(attrs, [:mute_notification])
   end
 end

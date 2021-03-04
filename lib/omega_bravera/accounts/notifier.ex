@@ -302,6 +302,10 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Mail.send()
   end
 
+  @doc """
+  send email to org admin about new members in group
+  """
+  @spec notify_org_admin_new_members(PartnerUser.t()) :: :ok | {:error, [String.t()]} | {:error, String.t()}
   def notify_org_admin_new_members(%PartnerUser{email: email}) do
     Email.build()
     |> Email.put_template("c615bd74-7431-447e-b1d6-510c44bdaa91")

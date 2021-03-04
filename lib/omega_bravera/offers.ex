@@ -529,7 +529,7 @@ defmodule OmegaBravera.Offers do
   @doc """
   check if there is new offer inserted since the given datetime
   """
-  @spec new_offer_since(Datetime.t()) ::  boolean()
+  @spec new_offer_since(Datetime.t()) :: boolean()
   def new_offer_since(nil), do: false
 
   def new_offer_since(datetime) do

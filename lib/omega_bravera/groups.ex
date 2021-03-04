@@ -217,6 +217,10 @@ defmodule OmegaBravera.Groups do
     |> Repo.one()
   end
 
+  @doc """
+  check if there is new group added since the given datetime
+  """
+  @spec new_group_since(Datetime.t()) :: boolean()
   def new_group_since(nil), do: false
 
   def new_group_since(datetime) do
@@ -592,9 +596,20 @@ defmodule OmegaBravera.Groups do
   @doc """
   update group member
   """
+  @spec update_group_member(Member.t(), map()) :: {:ok, Member.t()} | {:error, Ecto.Changeset.t()}
   def update_group_member(%Member{} = member, attrs \\ %{}) do
     member
     |> Member.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  mute notification for group member
+  """
+  @spec mute_group(Member.t(), map()) :: {:ok, Member.t()} | {:error, Ecto.Changeset.t()}
+  def mute_group(%Member{} = member, attrs \\ %{}) do
+    member
+    |> Member.mute_notification_changeset(attrs)
     |> Repo.update()
   end
 
@@ -680,7 +695,8 @@ defmodule OmegaBravera.Groups do
   @doc """
   Get the partner joined by the user, along with the latest 10 messages.
   """
-  @spec list_joined_partner_with_chat_messages(integer(), integer(), integer()) :: Partner.t() | nil
+  @spec list_joined_partner_with_chat_messages(integer(), integer(), integer()) ::
+          Partner.t() | nil
   def list_joined_partner_with_chat_messages(partner_id, user_id, message_count \\ 10) do
     from(p in Partner,
       as: :group,
@@ -824,7 +840,7 @@ defmodule OmegaBravera.Groups do
     |> Repo.one!()
   end
 
-  @doc"""
+  @doc """
   Get chat message by id and preload group
   """
   @spec get_chat_message_with_group!(String.t()) :: ChatMessage.t()
@@ -854,7 +870,7 @@ defmodule OmegaBravera.Groups do
   @doc """
   Insert new oban job when new chat message is inserted for sending notification
   """
-  @ spec notify_new_message(ChatMessage.t()) :: ChatMessage.t()
+  @spec notify_new_message(ChatMessage.t()) :: ChatMessage.t()
   def notify_new_message(%ChatMessage{} = message) do
     message
     |> NotifyNewMessage.new()
