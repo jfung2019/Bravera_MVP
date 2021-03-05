@@ -227,6 +227,14 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Offers.search_offers/3
     end
 
+    @desc "Search Offers with pagination"
+    connection field :search_offers_paginated, node_type: :offer do
+      arg :keyword, :string
+      arg :location_id, :integer
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Offers.search_offers_paginated/3
+    end
+
     @desc "Get offer's offer challenges."
     field :offer_offer_challenges, list_of(:offer_challenge) do
       arg :offer_id, non_null(:id)
@@ -336,6 +344,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       arg :coordination, :coordination_map
       middleware Middleware.Authenticate
       resolve &Resolvers.Groups.search_groups/3
+    end
+
+    connection field :search_groups_paginated, node_type: :partner do
+      arg :keyword, non_null(:string)
+      arg :coordination, :coordination_map
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Groups.search_groups_paginated/3
     end
 
     @desc "Gets all joined partners"

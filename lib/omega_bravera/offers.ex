@@ -184,6 +184,40 @@ defmodule OmegaBravera.Offers do
     {:ok, %{offers: offers, keyword: keyword, location_id: location_id}}
   end
 
+  def search_offers_for_user_paginated(keyword, location_id, user_id, pagination_args) do
+    now = Timex.now()
+
+    open_offers =
+      open_offers_query(now)
+      |> search_offers_by_keyword(keyword)
+      |> search_offers_by_location(location_id)
+
+    close_offers =
+      closed_offers_query(now, user_id)
+      |> search_offers_by_keyword(keyword)
+      |> search_offers_by_location(location_id)
+
+    unioned_query = union(open_offers, ^close_offers)
+
+    result =
+      from(o in subquery(unioned_query), order_by: [desc: o.inserted_at])
+      |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
+
+    case result do
+      {:ok, ok_map} ->
+        result_map =
+          ok_map
+          |> Map.put(:keyword, keyword)
+          |> Map.put(:location_id, location_id)
+          |> IO.inspect()
+
+        {:ok, result_map}
+
+      {:error, _} = error_tuple ->
+        error_tuple
+    end
+  end
+
   defp search_offers_by_keyword(query, nil), do: query
 
   defp search_offers_by_keyword(query, keyword) do

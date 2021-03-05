@@ -1,5 +1,6 @@
 defmodule OmegaBraveraWeb.Api.Types.Offer do
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
 
   @desc "Offer type according to if they have online or in store offers"
   enum :offer_type do
@@ -45,6 +46,11 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
 
   object :search_offers_result do
     field :offers, list_of(non_null(:offer))
+    field :keyword, :string
+    field :location_id, :integer
+  end
+
+  connection(node_type: :offer) do
     field :keyword, :string
     field :location_id, :integer
   end

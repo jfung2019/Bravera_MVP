@@ -170,21 +170,29 @@ defmodule OmegaBravera.Groups do
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
-  def search_groups(user_id, keyword, nil) do
+  defp search_groups_query(user_id, keyword, nil) do
     search = "%#{keyword}%"
 
     list_partners_with_membership_query(user_id)
     |> where([p], ilike(p.name, ^search))
-    |> Repo.all()
   end
 
-  def search_groups(user_id, keyword, %{latitude: lat, longitude: long}) do
+  defp search_groups_query(user_id, keyword, %{latitude: lat, longitude: long}) do
     search = "%#{keyword}%"
 
     list_partners_with_membership_query(user_id)
     |> where([p], ilike(p.name, ^search))
     |> search_location(lat, long)
+  end
+
+  def search_groups(user_id, keyword, coordinate) do
+    search_groups_query(user_id, keyword, coordinate)
     |> Repo.all()
+  end
+
+  def search_groups_paginated(user_id, keyword, coordinate, pagination_args) do
+    search_groups_query(user_id, keyword, coordinate)
+    |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
   defp search_location(query, lat, long) do
