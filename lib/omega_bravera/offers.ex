@@ -209,7 +209,6 @@ defmodule OmegaBravera.Offers do
           ok_map
           |> Map.put(:keyword, keyword)
           |> Map.put(:location_id, location_id)
-          |> IO.inspect()
 
         {:ok, result_map}
 
@@ -321,7 +320,7 @@ defmodule OmegaBravera.Offers do
   @doc """
   Gets an offer by the offer slug.
   """
-  def get_offer_by_slug(slug, preloads \\ [:offer_challenges]) do
+  def get_offer_by_slug(slug, preloads \\ [:offer_challenges, :offer_locations, :offer_gps_coordinates]) do
     from(o in Offer,
       where: o.slug == ^slug,
       left_join: offer_challenges in assoc(o, :offer_challenges),
@@ -453,7 +452,7 @@ defmodule OmegaBravera.Offers do
     Repo.one(query)
   end
 
-  def get_offer_by_slug_for_panel(slug, preloads \\ [:offer_challenges]) do
+  def get_offer_by_slug_for_panel(slug, preloads \\ [:offer_challenges, :offer_locations, :offer_gps_coordinates]) do
     offer =
       from(o in Offer,
         where: o.slug == ^slug,
