@@ -568,10 +568,18 @@ defmodule OmegaBravera.Groups do
   Allows a user to join a partner to be a member.
   """
   def join_partner(partner_id, user_id) do
-    %Member{}
-    |> Member.changeset(%{user_id: user_id, partner_id: partner_id})
-    |> Repo.insert()
-    |> broadcast_join_partner()
+    partner = get_partner!(partner_id)
+    user = OmegaBravera.Accounts.get_user!(user_id)
+    case check_partner_email_restriction(partner, user) do
+      true ->
+        %Member{}
+        |> Member.changeset(%{user_id: user_id, partner_id: partner_id})
+        |> Repo.insert()
+        |> broadcast_join_partner()
+
+      _ ->
+        {:error, :email_restricted}
+    end
   end
 
   defp broadcast_join_partner({:ok, %{user_id: user_id, partner_id: group_id}} = result) do
@@ -581,6 +589,14 @@ defmodule OmegaBravera.Groups do
 
   defp broadcast_join_partner(result), do: result
 
+  defp check_partner_email_restriction(%{email_restriction: nil}, _user), do: true
+
+  defp check_partner_email_restriction(%{email_restriction: email_suffix}, %{email: email}) do
+    [_prefix, suffix] = String.split(email, "@")
+    email_suffix == suffix
+  end
+
+  defp check_partner_email_restriction(_partner, _user), do: false
   @doc """
   Lists all members from a partner ID.
   """

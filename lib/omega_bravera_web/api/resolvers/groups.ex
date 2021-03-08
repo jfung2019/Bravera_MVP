@@ -49,8 +49,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
          {:ok, _} <- Groups.join_partner(partner_id, user_id) do
       {:ok, Groups.get_partner_with_membership!(partner_id, user_id)}
     else
-      nil ->
-        {:error, message: "Password incorrect."}
+      result ->
+        case result do
+          nil ->
+            {:error, message: "Password incorrect."}
+
+          {:error, :email_restricted} ->
+            {:error, message: "Group is restricted to specific users."}
+        end
     end
   end
 end
