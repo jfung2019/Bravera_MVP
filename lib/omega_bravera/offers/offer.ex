@@ -3,7 +3,15 @@ defmodule OmegaBravera.Offers.Offer do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.Offers.{OfferChallenge, OfferReward, OfferVendor, OfferRedeem, OfferLocation, OfferGpsCoordinate}
+  alias OmegaBravera.Offers.{
+    OfferChallenge,
+    OfferReward,
+    OfferVendor,
+    OfferRedeem,
+    OfferLocation,
+    OfferGpsCoordinate
+  }
+
   alias OmegaBravera.Groups.OfferPartner
 
   @url_regex ~r/^(https|http):\/\/\w+/
@@ -72,7 +80,7 @@ defmodule OmegaBravera.Offers.Offer do
     has_many :offer_partners, OfferPartner
     has_many :partners, through: [:offer_partners, :partner]
     belongs_to :organization, OmegaBravera.Accounts.Organization, type: :binary_id
-    has_one :offer_locations, OfferLocation
+    has_many :offer_locations, OfferLocation
     has_many :offer_gps_coordinates, OfferGpsCoordinate
 
     timestamps(type: :utc_datetime)
@@ -149,8 +157,8 @@ defmodule OmegaBravera.Offers.Offer do
     |> upload_logo(attrs)
     |> validate_offer_type()
     |> validate_inclusion(:approval_status, available_approval_status())
-    |> cast_assoc(:offer_locations, with: &OfferLocation.changeset/2)
-    |> cast_assoc(:offer_gps_coordinates, with: &OfferGpsCoordinate.changeset/2)
+    |> cast_assoc(:offer_locations, with: &OfferLocation.assoc_changeset/2)
+    |> cast_assoc(:offer_gps_coordinates, with: &OfferGpsCoordinate.assoc_changeset/2)
   end
 
   def update_changeset(offer, attrs) do

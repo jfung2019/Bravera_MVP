@@ -9,7 +9,6 @@ const private_group = "private";
 $(function () {
     const group_type_select = $("#group_type_select");
     const join_password = $("#join_password");
-    console.log(join_password.val() === "" || join_password.val() === null)
     if (join_password.val() === "" || join_password.val() === null) {
         group_type_select.val(public_group);
     } else {

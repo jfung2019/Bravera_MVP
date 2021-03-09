@@ -12,12 +12,13 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferLocationOfferGps do
 
     create unique_index(:offer_locations, [:offer_id, :location_id])
 
+    execute "CREATE EXTENSION IF NOT EXISTS postgis", "DROP EXTENSION IF EXISTS postgis"
+
     create table("offer_gps_coordinates", primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :offer_id, references(:offers, on_delete: :delete_all), null: false
       add :address, :string, null: false
-      add :latitude, :decimal, null: false
-      add :longitude, :decimal, null: false
+      add :geom, :geography
 
       timestamps()
     end

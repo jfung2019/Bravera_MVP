@@ -320,7 +320,10 @@ defmodule OmegaBravera.Offers do
   @doc """
   Gets an offer by the offer slug.
   """
-  def get_offer_by_slug(slug, preloads \\ [:offer_challenges, :offer_locations, :offer_gps_coordinates]) do
+  def get_offer_by_slug(
+        slug,
+        preloads \\ [:offer_challenges, :offer_locations, :offer_gps_coordinates]
+      ) do
     from(o in Offer,
       where: o.slug == ^slug,
       left_join: offer_challenges in assoc(o, :offer_challenges),
@@ -452,7 +455,10 @@ defmodule OmegaBravera.Offers do
     Repo.one(query)
   end
 
-  def get_offer_by_slug_for_panel(slug, preloads \\ [:offer_challenges, :offer_locations, :offer_gps_coordinates]) do
+  def get_offer_by_slug_for_panel(
+        slug,
+        preloads \\ [:offer_challenges, :offer_locations, :offer_gps_coordinates]
+      ) do
     offer =
       from(o in Offer,
         where: o.slug == ^slug,
@@ -1643,4 +1649,220 @@ defmodule OmegaBravera.Offers do
   end
 
   def query(queryable, _), do: queryable
+
+  alias OmegaBravera.Offers.OfferLocation
+
+  @doc """
+  Returns the list of offer_locations.
+
+  ## Examples
+
+      iex> list_offer_locations()
+      [%OfferLocation{}, ...]
+
+  """
+  def list_offer_locations do
+    Repo.all(OfferLocation)
+  end
+
+  def list_offer_locations_by_offer_slug(slug, preloads \\ [:location]) do
+    from(ol in OfferLocation,
+      left_join: o in assoc(ol, :offer),
+      where: o.slug == ^slug,
+      preload: ^preloads
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a single offer_location.
+
+  Raises `Ecto.NoResultsError` if the Offer location does not exist.
+
+  ## Examples
+
+      iex> get_offer_location!(123)
+      %OfferLocation{}
+
+      iex> get_offer_location!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_offer_location!(id), do: Repo.get!(OfferLocation, id)
+
+  def get_offer_location!(id, preloads) do
+    from(ol in OfferLocation, where: ol.id == ^id, preload: ^preloads)
+    |> Repo.one!()
+  end
+
+  @doc """
+  Creates a offer_location.
+
+  ## Examples
+
+      iex> create_offer_location(%{field: value})
+      {:ok, %OfferLocation{}}
+
+      iex> create_offer_location(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_offer_location(attrs \\ %{}) do
+    %OfferLocation{}
+    |> OfferLocation.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a offer_location.
+
+  ## Examples
+
+      iex> update_offer_location(offer_location, %{field: new_value})
+      {:ok, %OfferLocation{}}
+
+      iex> update_offer_location(offer_location, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_offer_location(%OfferLocation{} = offer_location, attrs) do
+    offer_location
+    |> OfferLocation.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a offer_location.
+
+  ## Examples
+
+      iex> delete_offer_location(offer_location)
+      {:ok, %OfferLocation{}}
+
+      iex> delete_offer_location(offer_location)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_offer_location(%OfferLocation{} = offer_location) do
+    Repo.delete(offer_location)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking offer_location changes.
+
+  ## Examples
+
+      iex> change_offer_location(offer_location)
+      %Ecto.Changeset{data: %OfferLocation{}}
+
+  """
+  def change_offer_location(%OfferLocation{} = offer_location, attrs \\ %{}) do
+    OfferLocation.changeset(offer_location, attrs)
+  end
+
+  alias OmegaBravera.Offers.OfferGpsCoordinate
+
+  @doc """
+  Returns the list of offer_gps_coordinates.
+
+  ## Examples
+
+      iex> list_offer_gps_coordinates()
+      [%OfferGpsCoordinate{}, ...]
+
+  """
+  def list_offer_gps_coordinates do
+    Repo.all(OfferGpsCoordinate)
+  end
+
+  def list_offer_gps_coordinate_by_offer_slug(slug) do
+    from(oc in OfferGpsCoordinate, left_join: o in assoc(oc, :offer), where: o.slug == ^slug)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets a single offer_gps_coordinate.
+
+  Raises `Ecto.NoResultsError` if the Offer gps coordinate does not exist.
+
+  ## Examples
+
+      iex> get_offer_gps_coordinate!(123)
+      %OfferGpsCoordinate{}
+
+      iex> get_offer_gps_coordinate!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_offer_gps_coordinate!(id), do: Repo.get!(OfferGpsCoordinate, id)
+
+  def get_offer_gps_coordinate!(id, preloads) do
+    from(oc in OfferGpsCoordinate, where: oc.id == ^id, preload: ^preloads)
+    |> Repo.one!()
+  end
+
+  @doc """
+  Creates a offer_gps_coordinate.
+
+  ## Examples
+
+      iex> create_offer_gps_coordinate(%{field: value})
+      {:ok, %OfferGpsCoordinate{}}
+
+      iex> create_offer_gps_coordinate(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_offer_gps_coordinate(attrs \\ %{}) do
+    %OfferGpsCoordinate{}
+    |> OfferGpsCoordinate.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a offer_gps_coordinate.
+
+  ## Examples
+
+      iex> update_offer_gps_coordinate(offer_gps_coordinate, %{field: new_value})
+      {:ok, %OfferGpsCoordinate{}}
+
+      iex> update_offer_gps_coordinate(offer_gps_coordinate, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_offer_gps_coordinate(%OfferGpsCoordinate{} = offer_gps_coordinate, attrs) do
+    offer_gps_coordinate
+    |> OfferGpsCoordinate.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a offer_gps_coordinate.
+
+  ## Examples
+
+      iex> delete_offer_gps_coordinate(offer_gps_coordinate)
+      {:ok, %OfferGpsCoordinate{}}
+
+      iex> delete_offer_gps_coordinate(offer_gps_coordinate)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_offer_gps_coordinate(%OfferGpsCoordinate{} = offer_gps_coordinate) do
+    Repo.delete(offer_gps_coordinate)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking offer_gps_coordinate changes.
+
+  ## Examples
+
+      iex> change_offer_gps_coordinate(offer_gps_coordinate)
+      %Ecto.Changeset{data: %OfferGpsCoordinate{}}
+
+  """
+  def change_offer_gps_coordinate(%OfferGpsCoordinate{} = offer_gps_coordinate, attrs \\ %{}) do
+    OfferGpsCoordinate.changeset(offer_gps_coordinate, attrs)
+  end
 end

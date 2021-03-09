@@ -162,11 +162,47 @@
     <%= error_tag f, :offer_type %>
   </div>
 
-  <div class="form-group">
+  <div class="form-group" id="multi_locations_container">
+    <div class="row mb-2 px-3">
+      <label class="control-label"><%= gettext("Locations") %></label>
+      <a class="btn btn-primary ml-2 fa fa-plus" id="offer_add_location"></a>
+    </div>
     <%= inputs_for f, :offer_locations, fn offer_loc -> %>
-      <%= label offer_loc, :location_id, gettext("Locations"), class: "form-label" %>
-      <%= select offer_loc, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: add_error_class(offer_loc, :location_id, "form-control chosen"), multiple: true %>
+      <div class="row mb-2 px-3">
+        <%= select offer_loc, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: add_error_class(offer_loc, :location_id, "form-control chosen col-10") %>
+        <%= if offer_loc.data.id do %>
+          <span class="ml-2">
+            <%= label offer_loc, :remove, "Remove?", class: "control-label" %>
+            <%= checkbox offer_loc, :remove %>
+          </span>
+        <% end %>
+      </div>
       <%= error_tag offer_loc, :location_id %>
+    <% end %>
+  </div>
+
+  <div class="form-group" id="multi_gps_coordinates_container">
+    <div class="row mb-2 px-3">
+      <label class="control-label"><%= gettext("GPS Locations") %></label>
+      <a class="btn btn-primary ml-2 fa fa-plus" id="offer_add_coordinate"></a>
+    </div>
+    <%= inputs_for f, :offer_gps_coordinates, fn offer_coord -> %>
+      <div class="row mb-2 px-3">
+        <div class="col-10">
+          <%= text_input offer_coord, :address, class: add_error_class(offer_coord, :address, "form-control col-10") %>
+          <%= error_tag offer_coord, :address %>
+          <%= number_input offer_coord, :longitude, class: add_error_class(offer_coord, :address, "form-control col-10"), value: elem(offer_coord.data.geom.coordinates, 0) %>
+          <%= error_tag offer_coord, :longitude %>
+          <%= number_input offer_coord, :latitude, class: add_error_class(offer_coord, :address, "form-control col-10"), value: elem(offer_coord.data.geom.coordinates, 1) %>
+          <%= error_tag offer_coord, :longitude %>
+        </div>
+        <%= if offer_coord.data.id do %>
+        <span class="ml-2">
+            <%= label offer_coord, :remove, "Remove?", class: "control-label" %>
+            <%= checkbox offer_coord, :remove %>
+          </span>
+        <% end %>
+      </div>
     <% end %>
   </div>
 
@@ -284,3 +320,10 @@
     <%= submit "Save", class: "btn btn-primary" %>
   </div>
 <% end %>
+
+<div id="location_options" class="d-none">
+  <%= for location <- @available_locations do %>
+    <option value="<%= location.id %>"><%= location.name_en %></option>
+  <% end %>
+</div>
+

@@ -37,7 +37,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
   end
 
   def create(conn, %{"offer" => offer_params}) do
-    case Offers.create_offer(offer_params) |> IO.inspect() do
+    case Offers.create_offer(offer_params) do
       {:ok, offer} ->
         conn
         |> put_flash(:info, "Offer created successfully.")

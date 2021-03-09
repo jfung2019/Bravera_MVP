@@ -37,6 +37,8 @@ config :postgrex, :json_library, Jason
 # Turbo pagination
 config :turbo_ecto, Turbo.Ecto, repo: OmegaBravera.Repo, per_page: 20
 
+config :omega_bravera, OmegaBravera.Repo, types: OmegaBravera.PostgresTypes
+
 config :omega_bravera, Oban,
   repo: OmegaBravera.Repo,
   prune: {:maxlen, 10_000},
