@@ -22,7 +22,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferLocationOfferGps do
       add :id, :binary_id, primary_key: true
       add :offer_id, references(:offers, on_delete: :delete_all), null: false
       add :address, :string, null: false
-      add :geom, :geography
+      add :geom, :geography, null: false
 
       timestamps()
     end

@@ -132,8 +132,7 @@ defmodule OmegaBraveraWeb.Admin.OfferControllerTest do
           pre_registration_start_date: Timex.now(),
           start_date: Timex.shift(Timex.now(), days: 5),
           end_date: Timex.shift(Timex.now(), days: 10),
-          time_limit: 0,
-          location_id: 1
+          time_limit: 0
         })
 
       Offers.create_offer_challenge(offer, insert(:user))
