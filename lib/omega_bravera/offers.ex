@@ -122,8 +122,7 @@ defmodule OmegaBravera.Offers do
   def list_offers_by_organization(organization_id) do
     from(
       offer in Offer,
-      left_join: op in assoc(offer, :offer_partners),
-      where: offer.organization_id == ^organization_id and is_nil(op.id),
+      where: offer.organization_id == ^organization_id,
       order_by: [desc: offer.id]
     )
     |> Repo.all()
