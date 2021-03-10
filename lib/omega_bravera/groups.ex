@@ -185,11 +185,6 @@ defmodule OmegaBravera.Groups do
     |> search_location(lat, long)
   end
 
-  def search_groups(user_id, keyword, coordinate) do
-    search_groups_query(user_id, keyword, coordinate)
-    |> Repo.all()
-  end
-
   def search_groups_paginated(user_id, keyword, coordinate, pagination_args) do
     search_groups_query(user_id, keyword, coordinate)
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
@@ -570,6 +565,7 @@ defmodule OmegaBravera.Groups do
   def join_partner(partner_id, user_id) do
     partner = get_partner!(partner_id)
     user = OmegaBravera.Accounts.get_user!(user_id)
+
     case check_partner_email_restriction(partner, user) do
       true ->
         %Member{}
@@ -599,6 +595,7 @@ defmodule OmegaBravera.Groups do
   defp trim_and_downcase(word), do: word |> String.trim() |> String.downcase()
 
   defp check_partner_email_restriction(_partner, _user), do: false
+
   @doc """
   Lists all members from a partner ID.
   """

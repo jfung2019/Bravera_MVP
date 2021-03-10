@@ -73,7 +73,11 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
   end
 
   test "can join email restricted partner", %{conn: conn, partner: partner} do
-    {:ok, _partner} = OmegaBravera.Groups.update_partner(partner, %{join_password: "pass", email_restriction: "Email.COM"})
+    {:ok, _partner} =
+      OmegaBravera.Groups.update_partner(partner, %{
+        join_password: "pass",
+        email_restriction: "Email.COM"
+      })
 
     response =
       post(conn, "/api", %{
@@ -87,8 +91,12 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
              json_response(response, 200)
   end
 
-  test "block user from joining partner if does not have the smae email suffix", %{conn: conn, partner: partner} do
-    {:ok, _partner} = OmegaBravera.Groups.update_partner(partner, %{email_restriction: "gMaiL.Co "})
+  test "block user from joining partner if does not have the smae email suffix", %{
+    conn: conn,
+    partner: partner
+  } do
+    {:ok, _partner} =
+      OmegaBravera.Groups.update_partner(partner, %{email_restriction: "gMaiL.Co "})
 
     response =
       post(conn, "/api", %{

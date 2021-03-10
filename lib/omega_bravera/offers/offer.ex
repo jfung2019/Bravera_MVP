@@ -73,7 +73,6 @@ defmodule OmegaBravera.Offers.Offer do
     field :offer_challenge_types, {:array, :string}, default: ["PER_KM"]
 
     belongs_to :vendor, OfferVendor
-    belongs_to :location, OmegaBravera.Locations.Location
     has_many :offer_challenges, OfferChallenge
     has_many :offer_rewards, OfferReward
     has_many :offer_redeems, OfferRedeem
@@ -113,7 +112,6 @@ defmodule OmegaBravera.Offers.Offer do
     :payment_amount,
     :external_terms_url,
     :accept_terms_text,
-    :location_id,
     :images,
     :redemption_days,
     :offer_type,
@@ -177,7 +175,7 @@ defmodule OmegaBravera.Offers.Offer do
 
   def org_offline_offer_changeset(offer, attrs) do
     changeset(offer, attrs)
-    |> validate_required([:organization_id, :vendor_id, :location_id, :redemption_days])
+    |> validate_required([:organization_id, :vendor_id, :redemption_days])
     |> put_change(:offer_type, :in_store)
   end
 

@@ -19,13 +19,6 @@
     <%= img_tag Routes.static_path(@conn, "/images/org/offer/claim_id_qr.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
-  <div class="form-group">
-    <%= label f, :location_id, gettext("Offer Availability"), class: "control-label" %>
-    <small class="form-text text-muted"><%= gettext("Location your offline reward can be claimed") %></small>
-    <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), prompt: "", class: "form-control chosen" %>
-    <%= error_tag f, :location_id %>
-  </div>
-
   <div class="d-flex">
     <div class="col-9 p-0">
       <div class="form-group">

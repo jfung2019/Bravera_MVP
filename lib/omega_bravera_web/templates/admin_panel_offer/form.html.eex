@@ -217,12 +217,6 @@
         %>
       <%= error_tag f, :vendor_id %>
     </div>
-
-    <div class="form-group">
-      <%= label f, :location_id, gettext("Offer Availability"), class: "control-label" %>
-      <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: add_error_class(f, :location_id, "form-control chosen") %>
-      <%= error_tag f, :location_id %>
-    </div>
   </div>
 
   <div id="online-fields">

@@ -26,11 +26,6 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
   def get_partners_paginated(_root, args, %{context: %{current_user: %{id: user_id}}}),
     do: Groups.list_partners_with_membership_paginated(user_id, args)
 
-  def search_groups(_root, %{keyword: keyword, coordination: coordination}, %{
-        context: %{current_user: %{id: user_id}}
-      }),
-      do: {:ok, Groups.search_groups(user_id, keyword, coordination)}
-
   def search_groups_paginated(_root, %{keyword: keyword, coordination: coordination} = args, %{
         context: %{current_user: %{id: user_id}}
       }),

@@ -1,6 +1,10 @@
 defmodule OmegaBravera.Repo.Migrations.CreateOfferLocationOfferGps do
   use Ecto.Migration
 
+  import Ecto.Query
+
+  alias OmegaBravera.{Repo, Offers.Offer, Offers.OfferLocation}
+
   def change do
     create table("offer_locations", primary_key: false) do
       add :id, :binary_id, primary_key: true
@@ -21,6 +25,28 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferLocationOfferGps do
       add :geom, :geography
 
       timestamps()
+    end
+
+    flush()
+
+    now = Timex.now()
+
+    offer_locations =
+      from(o in Offer, where: not is_nil(o.location_id))
+      |> Repo.all()
+      |> Enum.map(
+        &%{
+          offer_id: &1.id,
+          location_id: &1.location_id,
+          inserted_at: NaiveDateTime.truncate(now, :second),
+          updated_at: NaiveDateTime.truncate(now, :second)
+        }
+      )
+
+    Repo.insert_all(OfferLocation, offer_locations)
+
+    alter table("offers") do
+      remove :location_id
     end
   end
 end
