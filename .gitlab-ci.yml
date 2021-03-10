@@ -1,7 +1,7 @@
 test:
   image: plangora/alpine-elixir-phoenix:otp-23.2.3-elixir-1.11.3
   services:
-  - postgres:latest
+  - postgis/postgis:13-master
   variables:
     MIX_ENV: "test"
     DB_HOST: postgres

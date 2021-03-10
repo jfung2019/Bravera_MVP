@@ -872,7 +872,7 @@ defmodule OmegaBravera.OffersTest do
 
       {:ok, offer_gps_coordinate} = Offers.create_offer_gps_coordinate(%{offer_id: offer_id, address: "100 test", latitude: 23, longitude: 24})
 
-      %{offer: offer, offer_gps_coordinate: offer_gps_coordinate}
+      %{offer: offer, offer_gps_coordinate: Offers.get_offer_gps_coordinate!(offer_gps_coordinate.id)}
     end
 
     test "list_offer_gps_coordinates/0 returns all offer_gps_coordinates", %{offer_gps_coordinate: offer_gps_coordinate} do
@@ -894,7 +894,7 @@ defmodule OmegaBravera.OffersTest do
 
     test "update_offer_gps_coordinate/2 with valid data updates the offer_gps_coordinate", %{offer_gps_coordinate: offer_gps_coordinate} do
       assert {:ok, %OfferGpsCoordinate{}} =
-               Offers.update_offer_gps_coordinate(offer_gps_coordinate, %{address: "78 test"})
+               Offers.update_offer_gps_coordinate(offer_gps_coordinate, %{address: "78 test", latitude: 33, longitude: 90})
     end
 
     test "update_offer_gps_coordinate/2 with invalid data returns error changeset" , %{offer_gps_coordinate: offer_gps_coordinate}do
