@@ -14,6 +14,7 @@ defmodule OmegaBravera.Groups.Partner do
     field :phone, :string
     field :approval_status, Ecto.Enum, values: [:approved, :denied, :pending], default: :pending
     field :approval_status_string, :string, load_in_query: false, source: :approval_status
+    field :email_restriction, :string
     field :type, :string, virtual: true
     field :is_member, :boolean, virtual: true
     field :is_muted, :boolean, virtual: true
@@ -42,7 +43,8 @@ defmodule OmegaBravera.Groups.Partner do
       :email,
       :website,
       :organization_id,
-      :phone
+      :phone,
+      :email_restriction
     ])
     |> validate_length(:name, max: 255)
     |> validate_length(:email, max: 255)
