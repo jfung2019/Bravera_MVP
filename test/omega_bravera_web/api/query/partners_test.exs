@@ -68,19 +68,26 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
   """
 
   @search_groups """
-  query($keyword: String!, $coordination: CoordinationMap) {
-    searchGroups(keyword: $keyword, coordination: $coordination) {
-      name
-      introduction
-      isMember
-      votes {
-        user {
+  query($keyword: String!, $coordination: CoordinationMap, $first: Integer!) {
+    searchGroupsPaginated(keyword: $keyword, coordination: $coordination, first: $first) {
+      edges {
+        node {
           id
-          profilePicture
+          name
+          introduction
+          images
+          shortDescription
+          votes {
+            user {
+              id
+              profilePicture
+            }
+          }
+          offers {
+            name
+            endDate
+          }
         }
-      }
-      offers {
-        name
       }
     }
   }
@@ -132,10 +139,15 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
     response =
       post(conn, "/api", %{
         query: @search_groups,
-        variables: %{"keyword" => "na", "coordination" => nil}
+        variables: %{"keyword" => "na", "coordination" => nil, "first" => 10}
       })
 
-    assert %{"data" => %{"searchGroups" => [%{"name" => ^name, "isMember" => false}]}} =
-             json_response(response, 200)
+    assert %{
+             "data" => %{
+               "searchGroupsPaginated" => %{
+                 "edges" => [%{"node" => %{"name" => ^name}}]
+               }
+             }
+           } = json_response(response, 200)
   end
 end

@@ -30,7 +30,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
   """
 
   setup %{conn: conn} do
-    user = insert(:user)
+    user = insert(:user, %{email: "test@email.com"})
     credential = Fixtures.credential_fixture(user.id)
     partner = Fixtures.partner_fixture()
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
@@ -69,6 +69,42 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
     string_partner_id = to_string(partner.id)
 
     assert %{"data" => %{"joinPartner" => %{"id" => ^string_partner_id}}} =
+             json_response(response, 200)
+  end
+
+  test "can join email restricted partner", %{conn: conn, partner: partner} do
+    {:ok, _partner} =
+      OmegaBravera.Groups.update_partner(partner, %{
+        join_password: "pass",
+        email_restriction: "Email.COM"
+      })
+
+    response =
+      post(conn, "/api", %{
+        query: @join_private_partner_mutation,
+        variables: %{"partnerId" => partner.id, "password" => "pass"}
+      })
+
+    string_partner_id = to_string(partner.id)
+
+    assert %{"data" => %{"joinPartner" => %{"id" => ^string_partner_id}}} =
+             json_response(response, 200)
+  end
+
+  test "block user from joining partner if does not have the smae email suffix", %{
+    conn: conn,
+    partner: partner
+  } do
+    {:ok, _partner} =
+      OmegaBravera.Groups.update_partner(partner, %{email_restriction: "gMaiL.Co "})
+
+    response =
+      post(conn, "/api", %{
+        query: @join_private_partner_mutation,
+        variables: %{"partnerId" => partner.id}
+      })
+
+    assert %{"errors" => [%{"message" => "Group is restricted to specific users."}]} =
              json_response(response, 200)
   end
 end

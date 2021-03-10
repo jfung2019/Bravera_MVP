@@ -3,7 +3,15 @@ defmodule OmegaBravera.Offers.Offer do
   import Ecto.Changeset
   import OmegaBravera.Fundraisers.NgoOptions
 
-  alias OmegaBravera.Offers.{OfferChallenge, OfferReward, OfferVendor, OfferRedeem}
+  alias OmegaBravera.Offers.{
+    OfferChallenge,
+    OfferReward,
+    OfferVendor,
+    OfferRedeem,
+    OfferLocation,
+    OfferGpsCoordinate
+  }
+
   alias OmegaBravera.Groups.OfferPartner
 
   @url_regex ~r/^(https|http):\/\/\w+/
@@ -65,13 +73,14 @@ defmodule OmegaBravera.Offers.Offer do
     field :offer_challenge_types, {:array, :string}, default: ["PER_KM"]
 
     belongs_to :vendor, OfferVendor
-    belongs_to :location, OmegaBravera.Locations.Location
     has_many :offer_challenges, OfferChallenge
     has_many :offer_rewards, OfferReward
     has_many :offer_redeems, OfferRedeem
     has_many :offer_partners, OfferPartner
     has_many :partners, through: [:offer_partners, :partner]
     belongs_to :organization, OmegaBravera.Accounts.Organization, type: :binary_id
+    has_many :offer_locations, OfferLocation
+    has_many :offer_gps_coordinates, OfferGpsCoordinate
 
     timestamps(type: :utc_datetime)
   end
@@ -103,7 +112,6 @@ defmodule OmegaBravera.Offers.Offer do
     :payment_amount,
     :external_terms_url,
     :accept_terms_text,
-    :location_id,
     :images,
     :redemption_days,
     :offer_type,
@@ -147,6 +155,8 @@ defmodule OmegaBravera.Offers.Offer do
     |> upload_logo(attrs)
     |> validate_offer_type()
     |> validate_inclusion(:approval_status, available_approval_status())
+    |> cast_assoc(:offer_locations, with: &OfferLocation.assoc_changeset/2)
+    |> cast_assoc(:offer_gps_coordinates, with: &OfferGpsCoordinate.assoc_changeset/2)
   end
 
   def update_changeset(offer, attrs) do
@@ -165,7 +175,7 @@ defmodule OmegaBravera.Offers.Offer do
 
   def org_offline_offer_changeset(offer, attrs) do
     changeset(offer, attrs)
-    |> validate_required([:organization_id, :vendor_id, :location_id, :redemption_days])
+    |> validate_required([:organization_id, :vendor_id, :redemption_days])
     |> put_change(:offer_type, :in_store)
   end
 

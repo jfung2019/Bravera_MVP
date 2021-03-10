@@ -7,40 +7,35 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Offers do
     {:ok, Offers.list_offers_for_user(user_id)}
   end
 
-  # search all location
-  def search_offers(_root, %{keyword: keyword, location_id: -1}, %{
-        context: %{current_user: %{id: user_id}}
-      }),
-      do: Offers.search_offers_for_user(keyword, nil, user_id)
-
-  # use user's location to search
-  def search_offers(_root, %{keyword: keyword, location_id: nil}, %{
-        context: %{current_user: %{id: user_id, location_id: location_id}}
-      }),
-      do: Offers.search_offers_for_user(keyword, location_id, user_id)
-
-  # search offers
-  def search_offers(_root, %{keyword: keyword, location_id: location_id}, %{
-        context: %{current_user: %{id: user_id}}
-      }),
-      do: Offers.search_offers_for_user(keyword, location_id, user_id)
-
   # search all location with pagination
-  def search_offers_paginated(_root, %{keyword: keyword, location_id: -1} = args, %{
-    context: %{current_user: %{id: user_id}}
-  }),
-      do: Offers.search_offers_for_user_paginated(keyword, nil, user_id, args)
+  def search_offers_paginated(
+        _root,
+        %{keyword: keyword, location_id: -1, coordinate: nil} = args,
+        %{
+          context: %{current_user: %{id: user_id}}
+        }
+      ),
+      do: Offers.search_offers_for_user_paginated(keyword, nil, nil, user_id, args)
 
   # use user's location to search with pagination
-  def search_offers_paginated(_root, %{keyword: keyword, location_id: nil} = args, %{
-    context: %{current_user: %{id: user_id, location_id: location_id}}
-  }), do: Offers.search_offers_for_user_paginated(keyword, location_id, user_id, args)
+  def search_offers_paginated(
+        _root,
+        %{keyword: keyword, location_id: nil, coordinate: coordinate} = args,
+        %{
+          context: %{current_user: %{id: user_id, location_id: location_id}}
+        }
+      ),
+      do: Offers.search_offers_for_user_paginated(keyword, location_id, coordinate, user_id, args)
 
   # search offers with pagination
-  def search_offers_paginated(_root, %{keyword: keyword, location_id: location_id} = args, %{
-    context: %{current_user: %{id: user_id}}
-  }),
-      do: Offers.search_offers_for_user_paginated(keyword, location_id, user_id, args)
+  def search_offers_paginated(
+        _root,
+        %{keyword: keyword, location_id: location_id, coordinate: coordinate} = args,
+        %{
+          context: %{current_user: %{id: user_id}}
+        }
+      ),
+      do: Offers.search_offers_for_user_paginated(keyword, location_id, coordinate, user_id, args)
 
   def offer_offer_challenges(_root, %{offer_id: offer_id}, _info),
     do: {:ok, Offers.list_offer_offer_challenges(offer_id)}

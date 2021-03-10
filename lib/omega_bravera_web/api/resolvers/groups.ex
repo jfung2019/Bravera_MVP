@@ -26,11 +26,6 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
   def get_partners_paginated(_root, args, %{context: %{current_user: %{id: user_id}}}),
     do: Groups.list_partners_with_membership_paginated(user_id, args)
 
-  def search_groups(_root, %{keyword: keyword, coordination: coordination}, %{
-        context: %{current_user: %{id: user_id}}
-      }),
-      do: {:ok, Groups.search_groups(user_id, keyword, coordination)}
-
   def search_groups_paginated(_root, %{keyword: keyword, coordination: coordination} = args, %{
         context: %{current_user: %{id: user_id}}
       }),
@@ -49,8 +44,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
          {:ok, _} <- Groups.join_partner(partner_id, user_id) do
       {:ok, Groups.get_partner_with_membership!(partner_id, user_id)}
     else
-      nil ->
-        {:error, message: "Password incorrect."}
+      result ->
+        case result do
+          nil ->
+            {:error, message: "Password incorrect."}
+
+          {:error, :email_restricted} ->
+            {:error, message: "Group is restricted to specific users."}
+        end
     end
   end
 end

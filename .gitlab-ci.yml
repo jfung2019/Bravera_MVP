@@ -1,10 +1,10 @@
 test:
   image: plangora/alpine-elixir-phoenix:otp-23.2.3-elixir-1.11.3
   services:
-  - postgres:latest
+  - postgis/postgis:13-master
   variables:
     MIX_ENV: "test"
-    DB_HOST: postgres
+    DB_HOST: postgis-postgis
     POSTGRES_DB: omega_bravera_test
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres

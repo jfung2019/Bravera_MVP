@@ -551,9 +551,7 @@ defmodule OmegaBravera.Notifications do
     |> Repo.all()
   end
 
-  @doc """
-  Query for getting distinct members from a group_id list
-  """
+  # Query for getting distinct members from a group_id list
   @spec distinct_members_in_groups(Ecto.Query.t()) :: Ecto.Query.t()
   defp distinct_members_in_groups(query) do
     from(pm in OmegaBravera.Groups.Member,
@@ -563,9 +561,7 @@ defmodule OmegaBravera.Notifications do
     )
   end
 
-  @doc """
-  Query for getting distinct user device from a user_id list
-  """
+  # Query for getting distinct user device from a user_id list
   @spec list_notification_devices_of_users(Ecto.Query.t()) :: Ecto.Query.t()
   defp list_notification_devices_of_users(query) do
     from(nd in Device,

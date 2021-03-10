@@ -23,6 +23,10 @@
 				<td><%= gettext("Phone") %></td>
 				<td><%= @partner.phone %></td>
 			</tr>
+			<tr>
+				<td><%= gettext("Email Restriction") %></td>
+				<td><%= @partner.email_restriction %></td>
+			</tr>
 			</tbody>
 		</table>
 		<h3><span class="fa fa-map-marker"></span> <%= gettext("Group Location") %></h3>

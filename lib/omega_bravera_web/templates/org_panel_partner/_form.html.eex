@@ -30,6 +30,12 @@
     </div>
 
     <div class="form-group">
+        <%= label f, :email_restriction %>
+        <%= text_input f, :email_restriction, class: add_error_class(f, :email_restriction, "form-control") %>
+        <%= error_tag f, :email_restriction %>
+    </div>
+
+    <div class="form-group">
         <%= label f, :access, gettext("Group Access"), class: "control-label" %>
         <%= select f, :access, [{gettext("Private (requires PIN/password to join the group)"), "private"}, {gettext("Public (open to all / anyone can join)"), "public"}], id: "group_type_select", class: "form-control chosen", prompt: gettext("Please select") %>
     </div>

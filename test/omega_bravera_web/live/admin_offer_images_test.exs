@@ -11,7 +11,7 @@ defmodule OmegaBraveraWeb.AdminOfferImagesTest do
          do:
            {:ok,
             conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token),
-            offer: insert(:offer, %{images: ["url1"], location_id: 1})}
+            offer: insert(:offer, %{images: ["url1"]})}
   end
 
   test "can see offer name and existing photos to verify offer", %{conn: conn, offer: offer} do

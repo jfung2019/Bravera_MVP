@@ -185,11 +185,6 @@ defmodule OmegaBravera.Groups do
     |> search_location(lat, long)
   end
 
-  def search_groups(user_id, keyword, coordinate) do
-    search_groups_query(user_id, keyword, coordinate)
-    |> Repo.all()
-  end
-
   def search_groups_paginated(user_id, keyword, coordinate, pagination_args) do
     search_groups_query(user_id, keyword, coordinate)
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
@@ -568,10 +563,19 @@ defmodule OmegaBravera.Groups do
   Allows a user to join a partner to be a member.
   """
   def join_partner(partner_id, user_id) do
-    %Member{}
-    |> Member.changeset(%{user_id: user_id, partner_id: partner_id})
-    |> Repo.insert()
-    |> broadcast_join_partner()
+    partner = get_partner!(partner_id)
+    user = OmegaBravera.Accounts.get_user!(user_id)
+
+    case check_partner_email_restriction(partner, user) do
+      true ->
+        %Member{}
+        |> Member.changeset(%{user_id: user_id, partner_id: partner_id})
+        |> Repo.insert()
+        |> broadcast_join_partner()
+
+      _ ->
+        {:error, :email_restricted}
+    end
   end
 
   defp broadcast_join_partner({:ok, %{user_id: user_id, partner_id: group_id}} = result) do
@@ -580,6 +584,17 @@ defmodule OmegaBravera.Groups do
   end
 
   defp broadcast_join_partner(result), do: result
+
+  defp check_partner_email_restriction(%{email_restriction: nil}, _user), do: true
+
+  defp check_partner_email_restriction(%{email_restriction: email_suffix}, %{email: email}) do
+    [_prefix, suffix] = String.split(email, "@")
+    trim_and_downcase(email_suffix) == trim_and_downcase(suffix)
+  end
+
+  defp check_partner_email_restriction(_partner, _user), do: false
+
+  defp trim_and_downcase(word), do: word |> String.trim() |> String.downcase()
 
   @doc """
   Lists all members from a partner ID.
