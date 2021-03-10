@@ -593,8 +593,10 @@ defmodule OmegaBravera.Groups do
 
   defp check_partner_email_restriction(%{email_restriction: email_suffix}, %{email: email}) do
     [_prefix, suffix] = String.split(email, "@")
-    email_suffix == suffix
+    trim_and_downcase(email_suffix) == trim_and_downcase(suffix)
   end
+
+  defp trim_and_downcase(word), do: word |> String.trim() |> String.downcase()
 
   defp check_partner_email_restriction(_partner, _user), do: false
   @doc """
