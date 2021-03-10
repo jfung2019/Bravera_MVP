@@ -3,7 +3,7 @@ defmodule OmegaBravera.OffersTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Offers, Accounts.User, Offers.OfferChallenge, Repo, Locations}
+  alias OmegaBravera.{Offers, Accounts.User, Offers.OfferChallenge, Repo}
 
   describe "offers" do
     alias OmegaBravera.Offers.Offer

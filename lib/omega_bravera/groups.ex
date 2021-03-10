@@ -592,9 +592,9 @@ defmodule OmegaBravera.Groups do
     trim_and_downcase(email_suffix) == trim_and_downcase(suffix)
   end
 
-  defp trim_and_downcase(word), do: word |> String.trim() |> String.downcase()
-
   defp check_partner_email_restriction(_partner, _user), do: false
+
+  defp trim_and_downcase(word), do: word |> String.trim() |> String.downcase()
 
   @doc """
   Lists all members from a partner ID.
