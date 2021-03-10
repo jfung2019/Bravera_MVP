@@ -32,6 +32,10 @@
 				<td><%= gettext("Phone") %></td>
 				<td><%= @partner.phone %></td>
 			</tr>
+			<tr>
+				<td><%= gettext("Email Restriction") %></td>
+				<td><%= @partner.email_restriction %></td>
+			</tr>
 			</tbody>
 		</table>
 		<%= link gettext("Edit Group Details"), to: Routes.org_panel_partner_path(@conn, :edit, @partner), class: "btn btn-warning mb-4" %>
