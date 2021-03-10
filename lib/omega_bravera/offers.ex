@@ -4,6 +4,7 @@ defmodule OmegaBravera.Offers do
   """
 
   import Ecto.Query, warn: false
+  import Geo.PostGIS
 
   alias Ecto.Multi
   alias OmegaBravera.Repo
@@ -184,18 +185,12 @@ defmodule OmegaBravera.Offers do
     {:ok, %{offers: offers, keyword: keyword, location_id: location_id}}
   end
 
-  def search_offers_for_user_paginated(keyword, location_id, user_id, pagination_args) do
+  def search_offers_for_user_paginated(keyword, location_id, coordinate, user_id, pagination_args) do
     now = Timex.now()
 
-    open_offers =
-      open_offers_query(now)
-      |> search_offers_by_keyword(keyword)
-      |> search_offers_by_location(location_id)
+    open_offers = search_open_offers_query(now, keyword, location_id, coordinate)
 
-    close_offers =
-      closed_offers_query(now, user_id)
-      |> search_offers_by_keyword(keyword)
-      |> search_offers_by_location(location_id)
+    close_offers = search_closed_offers_query(now, user_id, keyword, location_id, coordinate)
 
     unioned_query = union(open_offers, ^close_offers)
 
@@ -228,6 +223,98 @@ defmodule OmegaBravera.Offers do
 
   defp search_offers_by_location(query, location_id),
     do: where(query, [o], o.location_id == ^location_id)
+
+  defp search_open_offers_query(now, keyword, nil, nil) do
+    search = "%#{keyword}%"
+
+    from(
+      offer in Offer,
+      left_join: op in assoc(offer, :offer_partners),
+      where:
+        offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
+          offer.approval_status == :approved and ilike(offer.name, ^search)
+    )
+  end
+
+  defp search_open_offers_query(now, keyword, location_id, nil) do
+    search = "%#{keyword}%"
+
+    from(
+      offer in Offer,
+      left_join: op in assoc(offer, :offer_partners),
+      left_join: ol in assoc(offer, :offer_locations),
+      where:
+        offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
+          offer.approval_status == :approved and ilike(offer.name, ^search) and
+          ol.location_id == ^location_id
+    )
+  end
+
+  defp search_open_offers_query(now, keyword, location_id, %{longitude: long, latitude: lat}) do
+    search = "%#{keyword}%"
+    geom = %Geo.Point{coordinates: {long, lat}, srid: 4326}
+
+    from(
+      offer in Offer,
+      left_join: op in assoc(offer, :offer_partners),
+      left_join: ol in assoc(offer, :offer_locations),
+      left_join: oc in assoc(offer, :offer_gps_coordinates),
+      where:
+        offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
+          offer.approval_status == :approved and ilike(offer.name, ^search) and
+          (ol.location_id == ^location_id or st_dwithin_in_meters(oc.geom, ^geom, 50000))
+    )
+  end
+
+  defp search_closed_offers_query(now, user_id, keyword, nil, nil) do
+    search = "%#{keyword}%"
+
+    from(
+      offer in Offer,
+      right_join: p in assoc(offer, :partners),
+      right_join: m in assoc(p, :members),
+      on: m.user_id == ^user_id,
+      where:
+        offer.end_date > ^now and not is_nil(m.id) and offer.approval_status == :approved and
+          ilike(offer.name, ^search)
+    )
+  end
+
+  defp search_closed_offers_query(now, user_id, keyword, location_id, nil) do
+    search = "%#{keyword}%"
+
+    from(
+      offer in Offer,
+      right_join: p in assoc(offer, :partners),
+      right_join: m in assoc(p, :members),
+      left_join: ol in assoc(offer, :offer_locations),
+      on: m.user_id == ^user_id,
+      where:
+        offer.end_date > ^now and not is_nil(m.id) and offer.approval_status == :approved and
+          ilike(offer.name, ^search) and ol.location_id == ^location_id
+    )
+  end
+
+  defp search_closed_offers_query(now, user_id, keyword, location_id, %{
+         longitude: long,
+         latitude: lat
+       }) do
+    search = "%#{keyword}%"
+    geom = %Geo.Point{coordinates: {long, lat}, srid: 4326}
+
+    from(
+      offer in Offer,
+      right_join: p in assoc(offer, :partners),
+      right_join: m in assoc(p, :members),
+      left_join: ol in assoc(offer, :offer_locations),
+      left_join: oc in assoc(offer, :offer_gps_coordinates),
+      on: m.user_id == ^user_id,
+      where:
+        offer.end_date > ^now and not is_nil(m.id) and offer.approval_status == :approved and
+          ilike(offer.name, ^search) and
+          (ol.location_id == ^location_id or st_dwithin_in_meters(oc.geom, ^geom, 50000))
+    )
+  end
 
   @doc """
   Pagination online offers

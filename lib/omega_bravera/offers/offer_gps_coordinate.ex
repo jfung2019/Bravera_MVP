@@ -28,7 +28,7 @@ defmodule OmegaBravera.Offers.OfferGpsCoordinate do
 
   def assoc_changeset(partner_location, attrs) do
     partner_location
-    |> cast(attrs, [:address, :latitude, :longitude, :offer_id])
+    |> cast(attrs, [:address, :latitude, :longitude, :offer_id, :remove])
     |> validate_length(:address, max: 255)
     |> validate_required([:address, :latitude, :longitude])
     |> cast_geom()

@@ -791,12 +791,12 @@ defmodule OmegaBravera.OffersTest do
       {:ok, %{id: location_id} = location1} =
         Locations.create_location(%{name_en: "location1", name_zh: "location1"})
 
-      {:ok, location2} =
-        Locations.create_location(%{name_en: "location2", name_zh: "location2"})
+      {:ok, location2} = Locations.create_location(%{name_en: "location2", name_zh: "location2"})
 
       {:ok, %{id: offer_id} = offer} = Offers.create_offer(@offer_attrs)
 
-      {:ok, offer_location} = Offers.create_offer_location(%{location_id: location_id, offer_id: offer_id})
+      {:ok, offer_location} =
+        Offers.create_offer_location(%{location_id: location_id, offer_id: offer_id})
 
       %{offer: offer, offer_location: offer_location, location1: location1, location2: location2}
     end
@@ -805,24 +805,35 @@ defmodule OmegaBravera.OffersTest do
       assert Offers.list_offer_locations() == [offer_location]
     end
 
-    test "get_offer_location!/1 returns the offer_location with given id", %{offer_location: offer_location} do
+    test "get_offer_location!/1 returns the offer_location with given id", %{
+      offer_location: offer_location
+    } do
       assert Offers.get_offer_location!(offer_location.id) == offer_location
     end
 
-    test "create_offer_location/1 with valid data creates a offer_location", %{offer: %{id: offer_id}, location2: %{id: location_id}} do
-      assert {:ok, %OfferLocation{}} = Offers.create_offer_location(%{location_id: location_id, offer_id: offer_id})
+    test "create_offer_location/1 with valid data creates a offer_location", %{
+      offer: %{id: offer_id},
+      location2: %{id: location_id}
+    } do
+      assert {:ok, %OfferLocation{}} =
+               Offers.create_offer_location(%{location_id: location_id, offer_id: offer_id})
     end
 
     test "create_offer_location/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Offers.create_offer_location(%{})
     end
 
-    test "update_offer_location/2 with valid data updates the offer_location", %{offer_location: offer_location, location2: %{id: location_id}} do
+    test "update_offer_location/2 with valid data updates the offer_location", %{
+      offer_location: offer_location,
+      location2: %{id: location_id}
+    } do
       assert {:ok, %OfferLocation{}} =
                Offers.update_offer_location(offer_location, %{location_id: location_id})
     end
 
-    test "update_offer_location/2 with invalid data returns error changeset", %{offer_location: offer_location} do
+    test "update_offer_location/2 with invalid data returns error changeset", %{
+      offer_location: offer_location
+    } do
       assert {:error, %Ecto.Changeset{}} =
                Offers.update_offer_location(offer_location, %{location_id: "333"})
 
@@ -834,7 +845,9 @@ defmodule OmegaBravera.OffersTest do
       assert_raise Ecto.NoResultsError, fn -> Offers.get_offer_location!(offer_location.id) end
     end
 
-    test "change_offer_location/1 returns a offer_location changeset", %{offer_location: offer_location} do
+    test "change_offer_location/1 returns a offer_location changeset", %{
+      offer_location: offer_location
+    } do
       assert %Ecto.Changeset{} = Offers.change_offer_location(offer_location)
     end
   end
@@ -870,41 +883,71 @@ defmodule OmegaBravera.OffersTest do
     setup do
       {:ok, %{id: offer_id} = offer} = Offers.create_offer(@offer_attrs)
 
-      {:ok, offer_gps_coordinate} = Offers.create_offer_gps_coordinate(%{offer_id: offer_id, address: "100 test", latitude: 23, longitude: 24})
+      {:ok, offer_gps_coordinate} =
+        Offers.create_offer_gps_coordinate(%{
+          offer_id: offer_id,
+          address: "100 test",
+          latitude: 23,
+          longitude: 24
+        })
 
-      %{offer: offer, offer_gps_coordinate: Offers.get_offer_gps_coordinate!(offer_gps_coordinate.id)}
+      %{
+        offer: offer,
+        offer_gps_coordinate: Offers.get_offer_gps_coordinate!(offer_gps_coordinate.id)
+      }
     end
 
-    test "list_offer_gps_coordinates/0 returns all offer_gps_coordinates", %{offer_gps_coordinate: offer_gps_coordinate} do
+    test "list_offer_gps_coordinates/0 returns all offer_gps_coordinates", %{
+      offer_gps_coordinate: offer_gps_coordinate
+    } do
       assert Offers.list_offer_gps_coordinates() == [offer_gps_coordinate]
     end
 
-    test "get_offer_gps_coordinate!/1 returns the offer_gps_coordinate with given id", %{offer_gps_coordinate: offer_gps_coordinate} do
+    test "get_offer_gps_coordinate!/1 returns the offer_gps_coordinate with given id", %{
+      offer_gps_coordinate: offer_gps_coordinate
+    } do
       assert Offers.get_offer_gps_coordinate!(offer_gps_coordinate.id) == offer_gps_coordinate
     end
 
-    test "create_offer_gps_coordinate/1 with valid data creates a offer_gps_coordinate", %{offer: %{id: offer_id}} do
+    test "create_offer_gps_coordinate/1 with valid data creates a offer_gps_coordinate", %{
+      offer: %{id: offer_id}
+    } do
       assert {:ok, %OfferGpsCoordinate{}} =
-               Offers.create_offer_gps_coordinate(%{offer_id: offer_id, address: "110 test", latitude: 222, longitude: 241})
+               Offers.create_offer_gps_coordinate(%{
+                 offer_id: offer_id,
+                 address: "110 test",
+                 latitude: 222,
+                 longitude: 241
+               })
     end
 
     test "create_offer_gps_coordinate/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Offers.create_offer_gps_coordinate(%{})
     end
 
-    test "update_offer_gps_coordinate/2 with valid data updates the offer_gps_coordinate", %{offer_gps_coordinate: offer_gps_coordinate} do
+    test "update_offer_gps_coordinate/2 with valid data updates the offer_gps_coordinate", %{
+      offer_gps_coordinate: offer_gps_coordinate
+    } do
       assert {:ok, %OfferGpsCoordinate{}} =
-               Offers.update_offer_gps_coordinate(offer_gps_coordinate, %{address: "78 test", latitude: 33, longitude: 90})
+               Offers.update_offer_gps_coordinate(offer_gps_coordinate, %{
+                 address: "78 test",
+                 latitude: 33,
+                 longitude: 90
+               })
     end
 
-    test "update_offer_gps_coordinate/2 with invalid data returns error changeset" , %{offer_gps_coordinate: offer_gps_coordinate}do
+    test "update_offer_gps_coordinate/2 with invalid data returns error changeset", %{
+      offer_gps_coordinate: offer_gps_coordinate
+    } do
       assert {:error, %Ecto.Changeset{}} =
                Offers.update_offer_gps_coordinate(offer_gps_coordinate, %{address: nil})
 
       assert offer_gps_coordinate == Offers.get_offer_gps_coordinate!(offer_gps_coordinate.id)
     end
 
-    test "delete_offer_gps_coordinate/1 deletes the offer_gps_coordinate", %{offer_gps_coordinate: offer_gps_coordinate} do
+    test "delete_offer_gps_coordinate/1 deletes the offer_gps_coordinate", %{
+      offer_gps_coordinate: offer_gps_coordinate
+    } do
       assert {:ok, %OfferGpsCoordinate{}} =
                Offers.delete_offer_gps_coordinate(offer_gps_coordinate)
 
@@ -913,7 +956,9 @@ defmodule OmegaBravera.OffersTest do
       end
     end
 
-    test "change_offer_gps_coordinate/1 returns a offer_gps_coordinate changeset", %{offer_gps_coordinate: offer_gps_coordinate} do
+    test "change_offer_gps_coordinate/1 returns a offer_gps_coordinate changeset", %{
+      offer_gps_coordinate: offer_gps_coordinate
+    } do
       assert %Ecto.Changeset{} = Offers.change_offer_gps_coordinate(offer_gps_coordinate)
     end
   end

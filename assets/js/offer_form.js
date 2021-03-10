@@ -35,6 +35,9 @@ $(function () {
     });
 
     let gps_coordinate_index = $("input[name^='offer[offer_gps_coordinates]'][type='text']").length;
+    if (gps_coordinate_index !== 0){
+        gps_coordinate_index /= 3;
+    }
     $("#offer_add_coordinate").click(function() {
         const address_input_id = `offer_offer_gps_coordinates_${gps_coordinate_index}_address`
         const address_input_name = `offer[offer_gps_coordinates][${gps_coordinate_index}][address]`
@@ -43,10 +46,13 @@ $(function () {
         const latitude_input_id = `offer_offer_gps_coordinates_${gps_coordinate_index}_latitude`
         const latitude_input_name = `offer[offer_gps_coordinates][${gps_coordinate_index}][latitude]`
         $("#multi_gps_coordinates_container").append(
-            `<div class="row mb-2 px-3"><div class="col">
+            `<div class="row mb-2 px-3 border py-1"><div class="col">
+                <label>Address</label>
                 <input class="form-control col-10" type="text" id="${address_input_id}" name="${address_input_name}" placeholder="GPS coordinate address ${gps_coordinate_index+1}">
-                <input class="form-control col-10" type="number" id="${longitude_input_id}" name="${longitude_input_name}" placeholder="GPS coordinate longitude ${gps_coordinate_index+1}">
-                <input class="form-control col-10" type="number" id="${latitude_input_id}" name="${latitude_input_name}" placeholder="GPS coordinate latitude ${gps_coordinate_index+1}">  
+                <label>Longitude</label>
+                <input class="form-control col-10" type="text" id="${longitude_input_id}" name="${longitude_input_name}" placeholder="GPS coordinate longitude ${gps_coordinate_index+1}">
+                <label>Latitude</label>
+                <input class="form-control col-10" type="text" id="${latitude_input_id}" name="${latitude_input_name}" placeholder="GPS coordinate latitude ${gps_coordinate_index+1}">  
             </div></div>`)
         gps_coordinate_index += 1;
     });

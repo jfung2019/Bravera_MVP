@@ -231,6 +231,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     connection field :search_offers_paginated, node_type: :offer do
       arg :keyword, :string
       arg :location_id, :integer
+      arg :coordinate, :coordination_map
       middleware Middleware.Authenticate
       resolve &Resolvers.Offers.search_offers_paginated/3
     end
