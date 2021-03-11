@@ -170,42 +170,22 @@ defmodule OmegaBravera.Groups do
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
-  defp search_groups_query(user_id, keyword, nil) do
+  def search_groups_paginated(user_id, keyword, global, location_id, pagination_args) do
     search = "%#{keyword}%"
 
     list_partners_with_membership_query(user_id)
     |> where([p], ilike(p.name, ^search))
-  end
-
-  defp search_groups_query(user_id, keyword, %{latitude: lat, longitude: long}) do
-    search = "%#{keyword}%"
-
-    list_partners_with_membership_query(user_id)
-    |> where([p], ilike(p.name, ^search))
-    |> search_location(lat, long)
-  end
-
-  def search_groups_paginated(user_id, keyword, coordinate, pagination_args) do
-    search_groups_query(user_id, keyword, coordinate)
+    |> search_location(global, location_id)
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
-  defp search_location(query, lat, long) do
-    # TODO: use PostGis
+  defp search_location(query, false, location_id) do
     from(q in query,
-      left_join: l in assoc(q, :location),
-      where:
-        fragment(
-          "12742 * ASIN(SQRT(0.5 - COS((? - ?) * (PI()/180))/2 + COS(? * (PI()/180)) * COS(? * (PI()/180)) * (1 - COS((? - ?) * (PI()/180)))/2)) <= 50",
-          ^lat,
-          l.latitude,
-          l.latitude,
-          ^lat,
-          ^long,
-          l.longitude
-        )
+      where: q.location_id == ^location_id
     )
   end
+
+  defp search_location(query, true, _location_id), do: query
 
   def total_groups() do
     from(p in Partner, select: count(p.id))

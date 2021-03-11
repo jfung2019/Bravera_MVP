@@ -20,6 +20,7 @@ defmodule OmegaBravera.Offers.OfferLocation do
     offer_location
     |> cast(attrs, [:offer_id, :location_id])
     |> validate_required([:offer_id, :location_id])
+    |> unique_constraint(:location_id, name: :offer_locations_offer_id_location_id_index)
     |> foreign_key_constraint(:location_id, name: :offer_locations_location_id_fkey)
   end
 
@@ -27,6 +28,8 @@ defmodule OmegaBravera.Offers.OfferLocation do
     offer_location
     |> cast(attrs, [:offer_id, :location_id, :remove])
     |> validate_required([:location_id])
+    |> unique_constraint(:location_id, name: :offer_locations_offer_id_location_id_index)
+    |> foreign_key_constraint(:location_id, name: :offer_locations_location_id_fkey)
     |> mark_for_delete()
   end
 

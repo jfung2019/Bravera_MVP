@@ -68,8 +68,8 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
   """
 
   @search_groups """
-  query($keyword: String!, $coordination: CoordinationMap, $first: Integer!) {
-    searchGroupsPaginated(keyword: $keyword, coordination: $coordination, first: $first) {
+  query($keyword: String, $global: Boolean!, $first: Integer!) {
+    searchGroupsPaginated(keyword: $keyword, global: $global, first: $first) {
       edges {
         node {
           id
@@ -94,7 +94,8 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
   """
 
   setup %{conn: conn} do
-    user = insert(:user)
+    {:ok, location} = OmegaBravera.Locations.create_location(%{name_en: "some name_en", name_zh: "some name_zh"})
+    user = insert(:user, %{location_id: location.id})
     credential = Fixtures.credential_fixture(user.id)
     partner = Fixtures.partner_fixture()
     Fixtures.partner_location_fixture(%{partner_id: partner.id})
@@ -104,7 +105,7 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
 
     {:ok,
      conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"),
-     partner: partner}
+     partner: partner, location: location}
   end
 
   test "can get partner locations, partner and their offers", %{conn: conn} do
@@ -127,25 +128,26 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
              json_response(response, 200)
   end
 
-  test "can search live partners by keyword", %{conn: conn, partner: %{name: name}} do
+  test "can search live partners by keyword", %{conn: conn, location: location} do
     OmegaBravera.Groups.create_partner(%{
       images: [],
       introduction: "intro",
       name: "second",
       short_description: "des",
-      approval_status: :approved
+      approval_status: :approved,
+      location_id: location.id
     })
 
     response =
       post(conn, "/api", %{
         query: @search_groups,
-        variables: %{"keyword" => "na", "coordination" => nil, "first" => 10}
+        variables: %{"keyword" => "on", "global" => false, "first" => 10}
       })
 
     assert %{
              "data" => %{
                "searchGroupsPaginated" => %{
-                 "edges" => [%{"node" => %{"name" => ^name}}]
+                 "edges" => [%{"node" => %{"name" => "second"}}]
                }
              }
            } = json_response(response, 200)

@@ -79,8 +79,8 @@ defmodule OmegaBravera.Offers.Offer do
     has_many :offer_partners, OfferPartner
     has_many :partners, through: [:offer_partners, :partner]
     belongs_to :organization, OmegaBravera.Accounts.Organization, type: :binary_id
-    has_many :offer_locations, OfferLocation
-    has_many :offer_gps_coordinates, OfferGpsCoordinate
+    has_many :offer_locations, OfferLocation, on_replace: :delete
+    has_many :offer_gps_coordinates, OfferGpsCoordinate, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end

@@ -67,5 +67,6 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
     conn
     |> assign(:available_approval_statuses, Groups.Partner.available_approval_status())
     |> assign(:available_org, OmegaBravera.Accounts.list_organization_options())
+    |> assign(:available_locations, OmegaBravera.Locations.list_locations())
   end
 end

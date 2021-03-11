@@ -26,10 +26,10 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
   def get_partners_paginated(_root, args, %{context: %{current_user: %{id: user_id}}}),
     do: Groups.list_partners_with_membership_paginated(user_id, args)
 
-  def search_groups_paginated(_root, %{keyword: keyword, coordination: coordination} = args, %{
-        context: %{current_user: %{id: user_id}}
+  def search_groups_paginated(_root, %{keyword: keyword, global: global} = args, %{
+        context: %{current_user: %{id: user_id, location_id: location_id}}
       }),
-      do: Groups.search_groups_paginated(user_id, keyword, coordination, args)
+      do: Groups.search_groups_paginated(user_id, keyword, global, location_id, args)
 
   def list_joined_partners(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Groups.list_joined_partners(user_id)}

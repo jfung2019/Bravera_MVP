@@ -5,25 +5,35 @@
       <%= text_input f, :name, class: add_error_class(f, :name, "form-control") %>
       <%= error_tag f, :name %>
   </div>
+
   <div class="form-group">
       <%= label f, :short_description, class: "control-label" %>
       <small class="form-text text-muted"><%= gettext("(displayed on list of groups in the Bravera app. 5-10 words)") %></small>
       <%= textarea f, :short_description, class: add_error_class(f, :short_description, "form-control"), data: [html: true] %>
       <%= error_tag f, :short_description %>
   </div>
+
   <div class="form-group">
       <%= label f, :introduction, class: "control-label" %>
       <small class="form-text text-muted"><%= gettext("(longer introduction when people click to find out more. Up to 250 words)") %></small>
       <%= textarea f, :introduction, class: add_error_class(f, :introduction, "form-control"), data: [html: true] %>
       <%= error_tag f, :introduction %>
   </div>
+
+  <div class="form-group">
+      <%= label f, :location_id, class: "control-label" %>
+      <%= select f, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: add_error_class(f, :location_id, "form-control chosen"), prompt: "Which location does this group belong to?" %>
+      <%= error_tag f, :location_id %>
+  </div>
+
   <div class="form-group">
       <%= label f, :join_password, "Password to Join (leave blank to have open)", class: "control-label" %>
       <small class="form-text text-muted"><%= gettext("(leave blank if you want a public / open group. Click here for more info)") %></small>
       <%= text_input f, :join_password, class: add_error_class(f, :join_password, "form-control") %>
       <%= error_tag f, :join_password %>
   </div>
- <div class="form-group">
+
+  <div class="form-group">
      <%= label f, :email, "Enquiry Email", class: "control-label" %>
      <small class="form-text text-muted">
          <%= gettext("(only required if your group if ‘private’ and requires a ‘password’ to join. Confused? ") %>
@@ -32,22 +42,24 @@
      <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
      <%= error_tag f, :email %>
   </div>
+
   <div class="form-group">
       <%= label f, :website %>
       <%= text_input f, :website, class: add_error_class(f, :website, "form-control") %>
       <%= error_tag f, :website %>
-    </div>
-   <div class="form-group">
+  </div>
+
+  <div class="form-group">
       <%= label f, :phone %>
       <%= text_input f, :phone, class: add_error_class(f, :phone, "form-control") %>
       <%= error_tag f, :phone %>
-   </div>
+  </div>
 
-    <div class="form-group">
+  <div class="form-group">
         <%= label f, :email_restriction %>
         <%= text_input f, :email_restriction, class: add_error_class(f, :email_restriction, "form-control") %>
         <%= error_tag f, :email_restriction %>
-    </div>
+  </div>
 
   <%= if @current_admin.role == "super" do %>
     <div class="form-group">

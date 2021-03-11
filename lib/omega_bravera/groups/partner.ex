@@ -26,6 +26,7 @@ defmodule OmegaBravera.Groups.Partner do
     has_many :users, through: [:members, :user]
     has_many :chat_messages, ChatMessage, foreign_key: :group_id, references: :id
     belongs_to :organization, OmegaBravera.Accounts.Organization, type: :binary_id
+    belongs_to :group_area, OmegaBravera.Locations.Location, foreign_key: :location_id
 
     timestamps()
   end
@@ -44,7 +45,8 @@ defmodule OmegaBravera.Groups.Partner do
       :website,
       :organization_id,
       :phone,
-      :email_restriction
+      :email_restriction,
+      :location_id
     ])
     |> validate_length(:name, max: 255)
     |> validate_length(:email, max: 255)

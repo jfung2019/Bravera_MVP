@@ -89,5 +89,6 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
     |> assign(:action, Routes.org_panel_partner_path(conn, :create))
     |> assign(:edit_action, Routes.org_panel_partner_path(conn, :create, %{"redirect" => "edit"}))
     |> assign(:first_5_groups, true)
+    |> assign(:available_locations, OmegaBravera.Locations.list_locations())
   end
 end

@@ -332,8 +332,8 @@ defmodule OmegaBraveraWeb.Api.Schema do
     end
 
     connection field :search_groups_paginated, node_type: :partner do
-      arg :keyword, non_null(:string)
-      arg :coordination, :coordination_map
+      arg :keyword, :string
+      arg :global, non_null(:boolean)
       middleware Middleware.Authenticate
       resolve &Resolvers.Groups.search_groups_paginated/3
     end
