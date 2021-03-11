@@ -313,6 +313,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Groups.latest_partner_locations/3
     end
 
+    @desc "Get all offer coordinates"
+    field :offer_coordinates, non_null(list_of(non_null(:offer_coordinate))) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Offers.list_offer_coordinates/3
+    end
+
     @desc "Gets a partner by their ID"
     field :get_partner, non_null(:partner) do
       arg :partner_id, non_null(:id)

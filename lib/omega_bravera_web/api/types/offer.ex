@@ -1,6 +1,8 @@
 defmodule OmegaBraveraWeb.Api.Types.Offer do
   use Absinthe.Schema.Notation
   use Absinthe.Relay.Schema.Notation, :modern
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
+  alias OmegaBravera.Offers
 
   @desc "Offer type according to if they have online or in store offers"
   enum :offer_type do
@@ -53,5 +55,34 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
   connection(node_type: :offer) do
     field :keyword, :string
     field :location_id, :integer
+  end
+
+  object :offer_coordinate do
+    field :address, non_null(:string)
+    field :longitude, non_null(:decimal),
+          resolve: fn _parent,
+                      %{
+                        source: %{
+                          geom: %Geo.Point{
+                            coordinates: {longitude, _latitude}
+                          }
+                        }
+                      } ->
+            {:ok, Decimal.from_float(longitude)}
+          end
+
+    field :latitude, non_null(:decimal),
+          resolve: fn _parent,
+                      %{
+                        source: %{
+                          geom: %Geo.Point{
+                            coordinates: {_longitude, latitude}
+                          }
+                        }
+                      } ->
+            {:ok, Decimal.from_float(latitude)}
+          end
+
+    field :offer, non_null(:offer), resolve: dataloader(Offers)
   end
 end

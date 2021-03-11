@@ -52,4 +52,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Offers do
         {:ok, offer}
     end
   end
+
+  def list_offer_coordinates(_root, _args, %{context: %{current_user: %{id: user_id}}}),
+      do: {:ok, Offers.list_offer_coordinates(user_id)}
 end

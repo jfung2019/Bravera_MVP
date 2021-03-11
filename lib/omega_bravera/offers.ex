@@ -19,7 +19,8 @@ defmodule OmegaBravera.Offers do
     OfferChallengeTeam,
     OfferRedeem,
     OfferChallengeActivitiesM2m,
-    OfferApproval
+    OfferApproval,
+    OfferGpsCoordinate
   }
 
   alias OmegaBravera.Points
@@ -1686,6 +1687,15 @@ defmodule OmegaBravera.Offers do
       select: count(r.id) > 0
     )
     |> Repo.one()
+  end
+
+  @doc """
+  list all the offers with gps coordinates and check if the user can access or not
+  """
+  @spec list_offer_coordinates(integer()) :: [OfferGpsCoordinate.t()]
+  def list_offer_coordinates(user_id) do
+    from(oc in OfferGpsCoordinate)
+    |> Repo.all()
   end
 
   def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
