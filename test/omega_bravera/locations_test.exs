@@ -6,7 +6,12 @@ defmodule OmegaBravera.LocationsTest do
   describe "location" do
     test "create_location/1 with valid data creates a location" do
       assert {:ok, %Location{} = location} =
-               Locations.create_location(%{name_en: "some name_en", name_zh: "some name_zh"})
+               Locations.create_location(%{
+                 name_en: "some name_en",
+                 name_zh: "some name_zh",
+                 longitude: 10,
+                 latitude: 78
+               })
 
       assert location.name_en == "some name_en"
       assert location.name_zh == "some name_zh"
@@ -20,7 +25,8 @@ defmodule OmegaBravera.LocationsTest do
 
   describe "location created" do
     setup do
-      {:ok, location: Fixtures.location_fixture()}
+      location = Fixtures.location_fixture()
+      {:ok, location: Locations.get_location!(location.id)}
     end
 
     test "list_locations/0 returns all locations", %{location: location} do
@@ -35,7 +41,9 @@ defmodule OmegaBravera.LocationsTest do
       assert {:ok, %Location{} = location} =
                Locations.update_location(location, %{
                  name_en: "some updated name_en",
-                 name_zh: "some updated name_zh"
+                 name_zh: "some updated name_zh",
+                 longitude: 10,
+                 latitude: 78
                })
 
       assert location.name_en == "some updated name_en"
