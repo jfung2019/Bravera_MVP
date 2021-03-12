@@ -128,9 +128,11 @@ defmodule OmegaBravera.GroupsTest do
                  longitude: "456.7"
                })
 
+      {long, lat} = partner_location.geom.coordinates
+
       assert partner_location.address == "some updated address"
-      assert partner_location.latitude == Decimal.new("456.7")
-      assert partner_location.longitude == Decimal.new("456.7")
+      assert long == 456.7
+      assert lat == 456.7
     end
 
     test "update_partner_location/2 with invalid data returns error changeset", %{
@@ -282,8 +284,10 @@ defmodule OmegaBravera.GroupsTest do
 
   defp create_partner(_), do: {:ok, partner: Fixtures.partner_fixture()}
 
-  defp create_partner_location(%{partner: partner}),
-    do: {:ok, partner_location: Fixtures.partner_location_fixture(%{partner_id: partner.id})}
+  defp create_partner_location(%{partner: partner}) do
+    partner_location = Fixtures.partner_location_fixture(%{partner_id: partner.id})
+    {:ok, partner_location: Groups.get_partner_location!(partner_location.id)}
+  end
 
   defp create_chat_message(%{user: %{id: user_id}, partner: %{id: partner_id}}),
     do:

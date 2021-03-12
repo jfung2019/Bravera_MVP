@@ -13,7 +13,12 @@ defmodule OmegaBraveraWeb.Api.Mutation.UserEmailPermissionText do
 
   setup %{conn: conn} do
     {:ok, %{id: location_id}} =
-      Locations.create_location(%{name_en: "location1", name_zh: "location1"})
+      Locations.create_location(%{
+        name_en: "location1",
+        name_zh: "location1",
+        longitude: 90,
+        latitude: 30
+      })
 
     {:ok, user} =
       Accounts.create_user(%{

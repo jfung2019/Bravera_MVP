@@ -20,7 +20,7 @@ defmodule OmegaBravera.Fixtures do
   def partner_location_fixture(attrs \\ %{}) do
     {:ok, partner_location} =
       attrs
-      |> Enum.into(%{address: "some address", latitude: "120.5", longitude: "120.5"})
+      |> Enum.into(%{address: "some address", latitude: "59.5", longitude: "120.5"})
       |> Groups.create_partner_location()
 
     partner_location
@@ -108,7 +108,12 @@ defmodule OmegaBravera.Fixtures do
   def location_fixture(attrs \\ %{}) do
     {:ok, location} =
       attrs
-      |> Enum.into(%{name_en: "some name_en", name_zh: "some name_zh"})
+      |> Enum.into(%{
+        name_en: "some name_en",
+        name_zh: "some name_zh",
+        longitude: 90,
+        latitude: 30
+      })
       |> Locations.create_location()
 
     location

@@ -95,7 +95,12 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
 
   setup %{conn: conn} do
     {:ok, location} =
-      OmegaBravera.Locations.create_location(%{name_en: "some name_en", name_zh: "some name_zh"})
+      OmegaBravera.Locations.create_location(%{
+        name_en: "some name_en",
+        name_zh: "some name_zh",
+        longitude: 90,
+        latitude: 30
+      })
 
     user = insert(:user, %{location_id: location.id})
     credential = Fixtures.credential_fixture(user.id)

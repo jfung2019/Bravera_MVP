@@ -17,7 +17,7 @@ defmodule OmegaBravera.Locations.Location do
   def changeset(location, attrs) do
     location
     |> cast(attrs, [:name_en, :name_zh, :latitude, :longitude])
-    |> validate_required([:name_en, :name_zh])
-    |> ChangesetHelper.cast_geom()
+    |> validate_required([:name_en, :name_zh, :latitude, :longitude])
+    |> cast_geom()
   end
 end

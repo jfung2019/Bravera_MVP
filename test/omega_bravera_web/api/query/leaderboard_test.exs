@@ -31,7 +31,12 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
     beginning_of_month = Timex.beginning_of_month(now)
 
     {:ok, %{id: location_id}} =
-      Locations.create_location(%{name_en: "location1", name_zh: "location1"})
+      Locations.create_location(%{
+        name_en: "location1",
+        name_zh: "location1",
+        longitude: 90,
+        latitude: 30
+      })
 
     {:ok, user1} =
       Accounts.create_user(%{
