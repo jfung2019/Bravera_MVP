@@ -1,6 +1,7 @@
 defmodule OmegaBravera.Offers.OfferGpsCoordinate do
   use Ecto.Schema
   import Ecto.Changeset
+  import OmegaBravera.ChangesetHelper
 
   alias OmegaBravera.Offers.Offer
 
@@ -11,6 +12,7 @@ defmodule OmegaBravera.Offers.OfferGpsCoordinate do
     field :longitude, :decimal, virtual: true
     field :latitude, :decimal, virtual: true
     field :remove, :boolean, virtual: true, default: false
+    field :can_access, :boolean, virtual: true
 
     belongs_to :offer, Offer
 
@@ -33,41 +35,5 @@ defmodule OmegaBravera.Offers.OfferGpsCoordinate do
     |> validate_required([:address, :latitude, :longitude])
     |> cast_geom()
     |> mark_for_delete()
-    |> validate_geom(partner_location)
-  end
-
-  defp cast_geom(changeset) do
-    case changeset do
-      %{valid?: true, changes: %{longitude: longitude, latitude: latitude}} ->
-        put_change(changeset, :geom, %Geo.Point{
-          coordinates: {Decimal.to_float(longitude), Decimal.to_float(latitude)},
-          srid: 4326
-        })
-
-      _ ->
-        changeset
-    end
-  end
-
-  defp mark_for_delete(changeset) do
-    if get_change(changeset, :remove) do
-      %{changeset | action: :delete}
-    else
-      changeset
-    end
-  end
-
-  defp validate_geom(changeset, partner_location) do
-    case changeset do
-      %{valid?: false, errors: [latitude: _lat_error, longitude: _long_error]} ->
-        if not is_nil(partner_location.geom) do
-          %{changeset | valid?: true}
-        else
-          changeset
-        end
-
-      _ ->
-        changeset
-    end
   end
 end

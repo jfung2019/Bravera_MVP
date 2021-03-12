@@ -48,8 +48,30 @@ defmodule OmegaBraveraWeb.Api.Types.Groups do
 
   object :partner_location do
     field :address, non_null(:string)
-    field :latitude, non_null(:decimal)
-    field :longitude, non_null(:decimal)
+
+    field :longitude, non_null(:decimal),
+      resolve: fn _parent,
+                  %{
+                    source: %{
+                      geom: %Geo.Point{
+                        coordinates: {longitude, _latitude}
+                      }
+                    }
+                  } ->
+        {:ok, Decimal.from_float(longitude)}
+      end
+
+    field :latitude, non_null(:decimal),
+      resolve: fn _parent,
+                  %{
+                    source: %{
+                      geom: %Geo.Point{
+                        coordinates: {_longitude, latitude}
+                      }
+                    }
+                  } ->
+        {:ok, Decimal.from_float(latitude)}
+      end
 
     field :partner, non_null(:partner),
       resolve: dataloader(Groups, :partner, args: %{scope: :partner_type})
@@ -68,5 +90,11 @@ defmodule OmegaBraveraWeb.Api.Types.Groups do
   input_object :coordination_map do
     field :latitude, non_null(:float)
     field :longitude, non_null(:float)
+  end
+
+  object :partner_locations_result do
+    field :partner_locations, non_null(list_of(non_null(:partner_location)))
+    field :loaded_longitude, non_null(:decimal)
+    field :loaded_latitude, non_null(:decimal)
   end
 end

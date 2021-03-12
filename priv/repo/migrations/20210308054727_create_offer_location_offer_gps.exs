@@ -32,7 +32,10 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferLocationOfferGps do
     now = Timex.now() |> NaiveDateTime.truncate(:second)
 
     offer_locations =
-      from(o in "offers", where: not is_nil(o."location_id"), select: %{id: o."id", location_id: o."location_id"})
+      from(o in "offers",
+        where: not is_nil(o.location_id),
+        select: %{id: o.id, location_id: o.location_id}
+      )
       |> Repo.all()
       |> Enum.map(
         &%{

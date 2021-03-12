@@ -59,30 +59,39 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
 
   object :offer_coordinate do
     field :address, non_null(:string)
+
     field :longitude, non_null(:decimal),
-          resolve: fn _parent,
-                      %{
-                        source: %{
-                          geom: %Geo.Point{
-                            coordinates: {longitude, _latitude}
-                          }
-                        }
-                      } ->
-            {:ok, Decimal.from_float(longitude)}
-          end
+      resolve: fn _parent,
+                  %{
+                    source: %{
+                      geom: %Geo.Point{
+                        coordinates: {longitude, _latitude}
+                      }
+                    }
+                  } ->
+        {:ok, Decimal.from_float(longitude)}
+      end
 
     field :latitude, non_null(:decimal),
-          resolve: fn _parent,
-                      %{
-                        source: %{
-                          geom: %Geo.Point{
-                            coordinates: {_longitude, latitude}
-                          }
-                        }
-                      } ->
-            {:ok, Decimal.from_float(latitude)}
-          end
+      resolve: fn _parent,
+                  %{
+                    source: %{
+                      geom: %Geo.Point{
+                        coordinates: {_longitude, latitude}
+                      }
+                    }
+                  } ->
+        {:ok, Decimal.from_float(latitude)}
+      end
+
+    field :can_access, non_null(:boolean)
 
     field :offer, non_null(:offer), resolve: dataloader(Offers)
+  end
+
+  object :offer_coordinates_result do
+    field :offer_coordinates, non_null(list_of(non_null(:offer_coordinate)))
+    field :loaded_longitude, non_null(:decimal)
+    field :loaded_latitude, non_null(:decimal)
   end
 end

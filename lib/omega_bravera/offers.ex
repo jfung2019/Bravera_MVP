@@ -1690,11 +1690,45 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
-  list all the offers with gps coordinates and check if the user can access or not
+  list all the offers within 50km of the given coordinate and check if the user can access or not
   """
-  @spec list_offer_coordinates(integer()) :: [OfferGpsCoordinate.t()]
-  def list_offer_coordinates(user_id) do
-    from(oc in OfferGpsCoordinate)
+  @spec list_offer_coordinates(integer(), Decimal.t(), Decimal.t()) :: [OfferGpsCoordinate.t()]
+  def list_offer_coordinates(user_id, longitude, latitude) do
+    geom = %Geo.Point{coordinates: {longitude, latitude}, srid: 4326}
+    now = Timex.now()
+
+    from(oc in OfferGpsCoordinate,
+      as: :coordinate,
+      left_lateral_join:
+        open_offer in subquery(
+          from(offer in Offer,
+            left_join: op in assoc(offer, :offer_partners),
+            where:
+              offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
+                offer.approval_status == :approved and offer.id == parent_as(:coordinate).offer_id,
+            select: %{offer_id: offer.id, can_access: is_nil(op.id)}
+          )
+        ),
+      on: oc.offer_id == open_offer.offer_id,
+      left_lateral_join:
+        close_offer in subquery(
+          from(
+            offer in Offer,
+            right_join: p in assoc(offer, :partners),
+            right_join: m in assoc(p, :members),
+            on: m.user_id == ^user_id,
+            where:
+              offer.end_date > ^now and offer.approval_status == :approved and
+                offer.id == parent_as(:coordinate).offer_id,
+            select: %{offer_id: offer.id, can_access: not is_nil(m.id)}
+          )
+        ),
+      on: oc.offer_id == close_offer.offer_id,
+      where:
+        st_dwithin_in_meters(oc.geom, ^geom, 50000) and
+          not (is_nil(open_offer.can_access) and is_nil(close_offer.can_access)),
+      select: %{oc | can_access: open_offer.can_access or close_offer.can_access}
+    )
     |> Repo.all()
   end
 

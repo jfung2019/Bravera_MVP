@@ -5,6 +5,28 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
   def latest_partner_locations(_root, _args, _context),
     do: {:ok, Groups.list_partner_locations()}
 
+  def list_partner_locations(_root, %{coordinate: %{longitude: long, latitude: lat}}, _context) do
+    {:ok,
+     %{
+       partner_locations: Groups.list_partner_locations(long, lat),
+       loaded_longitude: Decimal.from_float(long),
+       loaded_latitude: Decimal.from_float(lat)
+     }}
+  end
+
+  def list_partner_locations(_root, %{coordinate: nil}, %{
+        context: %{current_user: %{location_id: location_id}}
+      }) do
+    %{geom: %{coordinates: {long, lat}}} = OmegaBravera.Locations.get_location!(location_id)
+
+    {:ok,
+     %{
+       partner_locations: Groups.list_partner_locations(long, lat),
+       loaded_longitude: Decimal.from_float(long),
+       loaded_latitude: Decimal.from_float(lat)
+     }}
+  end
+
   def vote_partner(_root, %{partner_id: partner_id}, %{context: %{current_user: %{id: user_id}}}) do
     case Groups.create_partner_vote(%{partner_id: partner_id, user_id: user_id}) do
       {:ok, _vote} ->

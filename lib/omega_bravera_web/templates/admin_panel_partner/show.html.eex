@@ -41,11 +41,11 @@
 			</tr>
 			<tr>
 				<td><%= gettext("Latitude") %></td>
-				<td><%= @partner.location.latitude %></td>
+				<td><%= elem(@partner.location.geom.coordinates, 1) %></td>
 			</tr>
 			<tr>
 				<td><%= gettext("Longitude") %></td>
-				<td><%= @partner.location.longitude %></td>
+				<td><%= elem(@partner.location.geom.coordinates, 0) %></td>
 			</tr>
 			</tbody>
 		</table>

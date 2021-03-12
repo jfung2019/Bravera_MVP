@@ -94,7 +94,9 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
   """
 
   setup %{conn: conn} do
-    {:ok, location} = OmegaBravera.Locations.create_location(%{name_en: "some name_en", name_zh: "some name_zh"})
+    {:ok, location} =
+      OmegaBravera.Locations.create_location(%{name_en: "some name_en", name_zh: "some name_zh"})
+
     user = insert(:user, %{location_id: location.id})
     credential = Fixtures.credential_fixture(user.id)
     partner = Fixtures.partner_fixture()
@@ -105,7 +107,8 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
 
     {:ok,
      conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"),
-     partner: partner, location: location}
+     partner: partner,
+     location: location}
   end
 
   test "can get partner locations, partner and their offers", %{conn: conn} do

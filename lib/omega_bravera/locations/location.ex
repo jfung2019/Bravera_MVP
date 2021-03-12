@@ -1,12 +1,14 @@
 defmodule OmegaBravera.Locations.Location do
   use Ecto.Schema
   import Ecto.Changeset
+  import OmegaBravera.ChangesetHelper
 
   schema "locations" do
     field :name_en, :string
     field :name_zh, :string
-    field :latitude, :decimal
-    field :longitude, :decimal
+    field :geom, Geo.PostGIS.Geometry
+    field :latitude, :decimal, virtual: true
+    field :longitude, :decimal, virtual: true
 
     timestamps()
   end
@@ -16,5 +18,6 @@ defmodule OmegaBravera.Locations.Location do
     location
     |> cast(attrs, [:name_en, :name_zh, :latitude, :longitude])
     |> validate_required([:name_en, :name_zh])
+    |> ChangesetHelper.cast_geom()
   end
 end

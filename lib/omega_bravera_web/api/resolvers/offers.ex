@@ -53,6 +53,27 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Offers do
     end
   end
 
-  def list_offer_coordinates(_root, _args, %{context: %{current_user: %{id: user_id}}}),
-      do: {:ok, Offers.list_offer_coordinates(user_id)}
+  def list_offer_coordinates(_root, %{coordinate: %{longitude: long, latitude: lat}}, %{
+        context: %{current_user: %{id: user_id}}
+      }) do
+    {:ok,
+     %{
+       offer_coordinates: Offers.list_offer_coordinates(user_id, long, lat),
+       loaded_longitude: Decimal.from_float(long),
+       loaded_latitude: Decimal.from_float(lat)
+     }}
+  end
+
+  def list_offer_coordinates(_root, %{coordinate: nil}, %{
+        context: %{current_user: %{id: user_id, location_id: location_id}}
+      }) do
+    %{geom: %{coordinates: {long, lat}}} = OmegaBravera.Locations.get_location!(location_id)
+
+    {:ok,
+     %{
+       offer_coordinates: Offers.list_offer_coordinates(user_id, long, lat),
+       loaded_longitude: Decimal.from_float(long),
+       loaded_latitude: Decimal.from_float(lat)
+     }}
+  end
 end

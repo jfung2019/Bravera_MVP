@@ -6,6 +6,8 @@ defmodule OmegaBravera.Groups do
   """
 
   import Ecto.Query, warn: false
+  import Geo.PostGIS
+
   alias OmegaBravera.Repo
   alias Absinthe.Relay
 
@@ -360,6 +362,20 @@ defmodule OmegaBravera.Groups do
     from(l in PartnerLocation,
       left_join: p in assoc(l, :partner),
       where: p.approval_status == :approved
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  List partner_locations within 50km of the given coordinate
+  """
+  @spec list_partner_locations(integer(), integer()) :: [PartnerLocation.t()]
+  def list_partner_locations(longitude, latitude) do
+    geom = %Geo.Point{coordinates: {longitude, latitude}, srid: 4326}
+
+    from(l in PartnerLocation,
+      left_join: p in assoc(l, :partner),
+      where: p.approval_status == :approved and st_dwithin_in_meters(l.geom, ^geom, 50000)
     )
     |> Repo.all()
   end

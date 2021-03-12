@@ -1,6 +1,7 @@
 defmodule OmegaBravera.Offers.OfferLocation do
   use Ecto.Schema
   import Ecto.Changeset
+  import OmegaBravera.ChangesetHelper
 
   alias OmegaBravera.Offers.Offer
   alias OmegaBravera.Locations.Location
@@ -31,13 +32,5 @@ defmodule OmegaBravera.Offers.OfferLocation do
     |> unique_constraint(:location_id, name: :offer_locations_offer_id_location_id_index)
     |> foreign_key_constraint(:location_id, name: :offer_locations_location_id_fkey)
     |> mark_for_delete()
-  end
-
-  defp mark_for_delete(changeset) do
-    if get_change(changeset, :remove) do
-      %{changeset | action: :delete}
-    else
-      changeset
-    end
   end
 end
