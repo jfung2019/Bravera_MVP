@@ -211,11 +211,14 @@ defmodule OmegaBravera.Groups do
   @doc """
   check if there is new group added since the given datetime
   """
-  @spec new_group_since(Datetime.t()) :: boolean()
-  def new_group_since(nil), do: false
+  @spec new_group_since(Datetime.t(), integer()) :: boolean()
+  def new_group_since(nil, _location_id), do: false
 
-  def new_group_since(datetime) do
-    from(p in Partner, where: p.inserted_at > ^datetime, select: count(p.id) > 0)
+  def new_group_since(datetime, location_id) do
+    from(p in Partner,
+      where: p.inserted_at > ^datetime and p.location_id == ^location_id,
+      select: count(p.id) > 0
+    )
     |> Repo.one()
   end
 

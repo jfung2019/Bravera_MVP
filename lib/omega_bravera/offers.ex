@@ -622,11 +622,29 @@ defmodule OmegaBravera.Offers do
   @doc """
   check if there is new offer inserted since the given datetime
   """
-  @spec new_offer_since(Datetime.t()) :: boolean()
-  def new_offer_since(nil), do: false
+  @spec new_offer_since(Datetime.t(), integer()) :: boolean()
+  def new_offer_since(nil, _location_id), do: false
 
-  def new_offer_since(datetime) do
-    from(o in Offer, where: o.inserted_at > ^datetime, select: count(o.id) > 0)
+  def new_offer_since(datetime, location_id) do
+    from(o in Offer,
+      left_join: ol in assoc(o, :offer_locations),
+      where: o.inserted_at > ^datetime and ol.location_id == ^location_id,
+      select: count(o.id) > 0
+    )
+    |> Repo.one()
+  end
+
+  def new_offer_since(datetime, location_id, long, lat) do
+    geom = %Geo.Point{coordinates: {long, lat}, srid: 4326}
+
+    from(o in Offer,
+      left_join: ol in assoc(o, :offer_locations),
+      left_join: oc in assoc(o, :offer_gps_coordinates),
+      where:
+        o.inserted_at > ^datetime and
+          (ol.location_id == ^location_id or st_dwithin_in_meters(oc.geom, ^geom, 50000)),
+      select: count(o.id) > 0
+    )
     |> Repo.one()
   end
 
@@ -1724,10 +1742,8 @@ defmodule OmegaBravera.Offers do
           )
         ),
       on: oc.offer_id == close_offer.offer_id,
-      where:
-        st_dwithin_in_meters(oc.geom, ^geom, 50000) and
-          not (is_nil(open_offer.can_access) and is_nil(close_offer.can_access)),
-      select: %{oc | can_access: open_offer.can_access or close_offer.can_access}
+      where: st_dwithin_in_meters(oc.geom, ^geom, 50000),
+      select: %{oc | can_access: coalesce(open_offer.can_access or close_offer.can_access, false)}
     )
     |> Repo.all()
   end

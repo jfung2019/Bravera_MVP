@@ -367,6 +367,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "in app notification checking for new offers, new groups and expiring redeems"
     field :home_in_app_noti, non_null(:home_in_app_noti) do
+      arg :coordinate, :coordination_map
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.noti_offer_group_redeem/3
     end

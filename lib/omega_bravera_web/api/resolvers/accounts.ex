@@ -415,13 +415,28 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   def latest_expired_challenges(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Accounts.expired_challenges(user_id)}
 
-  def noti_offer_group_redeem(_root, _args, %{
-        context: %{current_user: %{id: user_id, last_login_datetime: last_login}}
+  def noti_offer_group_redeem(_root, %{coorindate: %{longitude: long, latitude: lat}}, %{
+        context: %{
+          current_user: %{id: user_id, last_login_datetime: last_login, location_id: location_id}
+        }
       }) do
     {:ok,
      %{
-       new_offer: OmegaBravera.Offers.new_offer_since(last_login),
-       new_group: OmegaBravera.Groups.new_group_since(last_login),
+       new_offer: OmegaBravera.Offers.new_offer_since(last_login, location_id, long, lat),
+       new_group: OmegaBravera.Groups.new_group_since(last_login, location_id),
+       expiring_reward: OmegaBravera.Offers.expiring_reward(user_id)
+     }}
+  end
+
+  def noti_offer_group_redeem(_root, _args, %{
+        context: %{
+          current_user: %{id: user_id, last_login_datetime: last_login, location_id: location_id}
+        }
+      }) do
+    {:ok,
+     %{
+       new_offer: OmegaBravera.Offers.new_offer_since(last_login, location_id),
+       new_group: OmegaBravera.Groups.new_group_since(last_login, location_id),
        expiring_reward: OmegaBravera.Offers.expiring_reward(user_id)
      }}
   end

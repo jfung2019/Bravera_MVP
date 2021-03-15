@@ -17,8 +17,8 @@
       <tr>
         <td><%= location.name_en %></td>
         <td><%= location.name_zh %></td>
-        <td><%= location.longitude %></td>
-        <td><%= location.latitude %></td>
+        <td><%= elem(location.geom.coordinates, 0) %></td>
+        <td><%= elem(location.geom.coordinates, 1) %></td>
         <td class="text-center">
           <%= link gettext("Details"), to: Routes.admin_panel_locations_path(@conn, :show, location), class: "btn btn-primary btn-xs"%>
           <%= link gettext("Edit"), to: Routes.admin_panel_locations_path(@conn, :edit, location), class: "btn btn-warning btn-xs"%>
