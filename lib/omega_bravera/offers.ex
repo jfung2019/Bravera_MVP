@@ -1717,13 +1717,14 @@ defmodule OmegaBravera.Offers do
 
     from(oc in OfferGpsCoordinate,
       as: :coordinate,
+      left_join: offer in assoc(oc, :offer),
       left_lateral_join:
         open_offer in subquery(
           from(offer in Offer,
             left_join: op in assoc(offer, :offer_partners),
             where:
-              offer.hidden == false and offer.end_date > ^now and is_nil(op.id) and
-                offer.approval_status == :approved and offer.id == parent_as(:coordinate).offer_id,
+              offer.hidden == false and is_nil(op.id) and
+              offer.id == parent_as(:coordinate).offer_id,
             select: %{offer_id: offer.id, can_access: is_nil(op.id)}
           )
         ),
@@ -1735,14 +1736,14 @@ defmodule OmegaBravera.Offers do
             right_join: p in assoc(offer, :partners),
             right_join: m in assoc(p, :members),
             on: m.user_id == ^user_id,
-            where:
-              offer.end_date > ^now and offer.approval_status == :approved and
-                offer.id == parent_as(:coordinate).offer_id,
+            where: offer.id == parent_as(:coordinate).offer_id,
             select: %{offer_id: offer.id, can_access: not is_nil(m.id)}
           )
         ),
       on: oc.offer_id == close_offer.offer_id,
-      where: st_dwithin_in_meters(oc.geom, ^geom, 50000),
+      where:
+        st_dwithin_in_meters(oc.geom, ^geom, 50000) and offer.end_date > ^now and
+        offer.approval_status == :approved,
       select: %{oc | can_access: coalesce(open_offer.can_access or close_offer.can_access, false)}
     )
     |> Repo.all()

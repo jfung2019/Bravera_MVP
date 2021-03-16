@@ -2,6 +2,8 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
   use OmegaBraveraWeb, :controller
   alias OmegaBravera.Groups
 
+  plug :assign_available_options when action in [:edit, :new]
+
   def index(%{assigns: %{organization_id: org_id}} = conn, params) do
     results = Groups.paginate_groups(org_id, params)
     offer_not_attached = Groups.check_offer_not_attached(org_id)
@@ -57,6 +59,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
 
       {:error, changeset} ->
         conn
+        |> assign_available_options(nil)
         |> put_flash(:error, "Group not saved. Please check below why.")
         |> assigns_for_popup()
         |> render("new.html", changeset: changeset)
@@ -79,6 +82,7 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
 
       {:error, changeset} ->
         conn
+        |> assign_available_options(nil)
         |> put_flash(:error, "Group not saved. Please check below why.")
         |> render("edit.html", changeset: changeset, partner: partner)
     end
@@ -89,6 +93,10 @@ defmodule OmegaBraveraWeb.OrgPanelPartnerController do
     |> assign(:action, Routes.org_panel_partner_path(conn, :create))
     |> assign(:edit_action, Routes.org_panel_partner_path(conn, :create, %{"redirect" => "edit"}))
     |> assign(:first_5_groups, true)
+  end
+
+  defp assign_available_options(conn, _opts) do
+    conn
     |> assign(:available_locations, OmegaBravera.Locations.list_locations())
   end
 end

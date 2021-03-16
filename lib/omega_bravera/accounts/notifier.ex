@@ -305,14 +305,21 @@ defmodule OmegaBravera.Accounts.Notifier do
   @doc """
   send email to org admin about new members in group
   """
-  @spec notify_org_admin_new_members(PartnerUser.t()) ::
+  @spec notify_org_admin_new_members(PartnerUser.t(), [User.t()]) ::
           :ok | {:error, [String.t()]} | {:error, String.t()}
-  def notify_org_admin_new_members(%PartnerUser{email: email}) do
+  def notify_org_admin_new_members(%PartnerUser{email: email}, users) do
     Email.build()
-    |> Email.put_template("c615bd74-7431-447e-b1d6-510c44bdaa91")
+    |> Email.put_template("d-ed9558705d2b4d9ca622dd695f5852b8")
+    |> Email.add_dynamic_template_data("usernames", get_username_list(users))
     |> Email.put_from("support@bravera.co", "Bravera")
     |> Email.add_bcc("support@bravera.co")
     |> Email.add_to(email)
     |> Mail.send()
+  end
+
+  @spec get_username_list([User.t()]) :: [String.t()]
+  defp get_username_list(users) do
+    users
+    |> Enum.map(fn %{username: username} -> username end)
   end
 end

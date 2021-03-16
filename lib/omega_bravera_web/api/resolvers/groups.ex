@@ -72,7 +72,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
             {:error, message: "Password incorrect."}
 
           {:error, :email_restricted} ->
-            {:error, message: "Group is restricted to specific users."}
+            {:error, message: "This group is restricted to specific users."}
         end
     end
   end
