@@ -40,16 +40,6 @@ defmodule OmegaBraveraWeb.ViewHelpers do
     end
   end
 
-  def is_partner_user?(conn) do
-    case Guardian.Plug.current_resource(conn) do
-      %PartnerUser{} ->
-        true
-
-      _ ->
-        false
-    end
-  end
-
   def is_own_offer_challenge?(%OfferChallenge{user_id: user_id}, %User{id: user_id}),
     do: true
 
