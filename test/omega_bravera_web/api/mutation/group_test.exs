@@ -104,7 +104,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
         variables: %{"partnerId" => partner.id}
       })
 
-    assert %{"errors" => [%{"message" => "Group is restricted to specific users."}]} =
+    assert %{"errors" => [%{"message" => "This group is restricted to specific users."}]} =
              json_response(response, 200)
   end
 end
