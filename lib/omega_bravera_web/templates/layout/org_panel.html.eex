@@ -27,7 +27,7 @@
         </div>
         <section class="container-fluid flex-grow px-0 px-sm-3">
             <div class="row">
-                <%= if logged_in?(@conn) && is_partner_user?(@conn) do %>
+                <%= if assigns[:current_partner_user] do %>
                 <div class="col-lg-2">
                     <div class="sticky-top">
                     <%= img_tag Routes.static_path(@conn, "/images/admin_logo.png"), class: "img-fluid py-2 bg-white shadow rounded-top", style: "object-fit: contain;" %>
@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <% end %>
-                <div class="<%= if logged_in?(@conn) && is_partner_user?(@conn), do: "col-lg-10", else: "col"%>">
+                <div class="<%= if assigns[:current_partner_user], do: "col-lg-10", else: "col"%>">
                     <%= @inner_content %>
                 </div>
             </div>
