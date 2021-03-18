@@ -65,7 +65,7 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
            organization_member,
            organization_member_params
          ) do
-      {:ok, %{update_organization_member: organization_member}} ->
+      {:ok, organization_member} ->
         conn
         |> put_flash(:info, "Organization member updated successfully.")
         |> redirect(
