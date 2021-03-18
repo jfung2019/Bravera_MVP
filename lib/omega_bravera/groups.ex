@@ -211,6 +211,7 @@ defmodule OmegaBravera.Groups do
       limit: 1
     )
     |> Repo.one()
+
     #       group_by: [p.id],
   end
 
@@ -870,9 +871,20 @@ defmodule OmegaBravera.Groups do
 
   """
   def get_chat_message!(id) do
-    from(m in ChatMessage, where: m.id == ^id, preload: [:user, reply_to_message: :user])
+    get_chat_message_query(id)
     |> Repo.one!()
   end
+
+  @doc """
+  Gets a single chat message, but nil instead of throwing an exception if no message.
+  """
+  def get_chat_message(id) do
+    get_chat_message_query(id)
+    |> Repo.one()
+  end
+
+  defp get_chat_message_query(id),
+    do: from(m in ChatMessage, where: m.id == ^id, preload: [:user, reply_to_message: :user])
 
   @doc """
   Get chat message by id and preload group
@@ -967,15 +979,19 @@ defmodule OmegaBravera.Groups do
   """
   def get_unread_group_message_count(message_id) do
     # TODO: replace with a better query
-    message = get_chat_message!(message_id)
+    case get_chat_message(message_id) do
+      nil ->
+        0
 
-    from(m in ChatMessage,
-      select: count(),
-      where:
-        m.inserted_at >= ^message.inserted_at and m.id != ^message.id and
-          m.group_id == ^message.group_id
-    )
-    |> Repo.one()
+      message ->
+        from(m in ChatMessage,
+          select: count(),
+          where:
+            m.inserted_at >= ^message.inserted_at and m.id != ^message.id and
+              m.group_id == ^message.group_id
+        )
+        |> Repo.one()
+    end
   end
 
   @doc """
