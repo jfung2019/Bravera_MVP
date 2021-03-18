@@ -211,7 +211,6 @@ defmodule OmegaBravera.Groups do
       limit: 1
     )
     |> Repo.one()
-    #       group_by: [p.id],
   end
 
   @doc """
