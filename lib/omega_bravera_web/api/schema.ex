@@ -106,6 +106,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.create_user/3
     end
 
+    @desc "Verify user's email"
+    field :verify_email, non_null(:user) do
+      arg :code, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.verify_email/3
+    end
+
     # Is this a duplicate of earn challenge...? -Sherief
     @desc "Create offer challenge."
     field :create_offer_challenge, :offer_challenge_create_result do

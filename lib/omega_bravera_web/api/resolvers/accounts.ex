@@ -440,4 +440,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
        expiring_reward: OmegaBravera.Offers.expiring_reward(user_id)
      }}
   end
+
+  def verify_email(_root, %{code: code}, %{context: %{current_user: %{id: user_id}}}) do
+    case Accounts.get_user_by_token(code) do
+      %User{id: ^user_id} = user ->
+        Accounts.activate_user_email(user)
+
+      _ ->
+        {:error, message: "The verification code is incorrect. Please try again."}
+    end
+  end
 end
