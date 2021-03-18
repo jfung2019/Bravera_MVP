@@ -32,6 +32,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
       conn =
         post(conn, Routes.admin_panel_organization_member_path(conn, :create),
           organization_member: %{
+            partner_user: %{
             username: "name",
             email: "iu@email.com",
             password_confirmation: "123456",
@@ -40,8 +41,7 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
             first_name: "First Name",
             last_name: "Last Name",
             location_id: location.id,
-            contact_number: "00000000",
-            accept_terms: true,
+            contact_number: "00000000"},
             organization_id: organization.id
           }
         )
@@ -150,7 +150,8 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
     location = Fixtures.location_fixture()
 
     organization_member_params = %{
-      username: "name",
+      organization_id: organization.id,
+      partner_user: %{username: "name",
       email: "iu@email.com",
       password: "123456",
       password_confirmation: "123456",
@@ -160,10 +161,9 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
       contact_number: "00000000",
       business_type: "type",
       accept_terms: true
-    }
+    }}
 
-    {:ok, %{create_organization_member: organization_member}} =
-      Accounts.create_organization_partner_user(organization.id, organization_member_params)
+    {:ok, organization_member} = Accounts.create_organization_partner_user(organization_member_params)
 
     %{organization_member: organization_member, organization: organization}
   end

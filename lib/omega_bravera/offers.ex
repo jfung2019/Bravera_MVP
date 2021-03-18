@@ -1724,7 +1724,7 @@ defmodule OmegaBravera.Offers do
             left_join: op in assoc(offer, :offer_partners),
             where:
               offer.hidden == false and is_nil(op.id) and
-              offer.id == parent_as(:coordinate).offer_id,
+                offer.id == parent_as(:coordinate).offer_id,
             select: %{offer_id: offer.id, can_access: is_nil(op.id)}
           )
         ),
@@ -1743,7 +1743,7 @@ defmodule OmegaBravera.Offers do
       on: oc.offer_id == close_offer.offer_id,
       where:
         st_dwithin_in_meters(oc.geom, ^geom, 50000) and offer.end_date > ^now and
-        offer.approval_status == :approved,
+          offer.approval_status == :approved,
       select: %{oc | can_access: coalesce(open_offer.can_access or close_offer.can_access, false)}
     )
     |> Repo.all()

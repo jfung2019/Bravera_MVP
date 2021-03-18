@@ -626,31 +626,34 @@ defmodule OmegaBravera.AccountsTest do
 
       location = Fixtures.location_fixture()
 
-      {:ok, %{create_organization_member: organization_member}} =
-        Accounts.create_organization_partner_user(organization.id, %{
-          username: "name2",
-          email: "iu@email.com",
-          password: "123456",
-          password_confirmation: "123456",
-          first_name: "First Name",
-          last_name: "Last Name",
-          location_id: location.id,
-          contact_number: "00000000",
-          business_type: "type",
-          accept_terms: true
+      {:ok, organization_member} =
+        Accounts.create_organization_partner_user(%{
+          organization_id: organization.id,
+          partner_user: %{
+            username: "name2",
+            email: "iu@email.com",
+            password: "123456",
+            password_confirmation: "123456",
+            first_name: "First Name",
+            last_name: "Last Name",
+            location_id: location.id,
+            contact_number: "00000000"
+          }
         })
 
       organization_member
     end
 
     test "list_organization_members/0 returns all organization_members" do
-      organization_member = organization_member_fixture()
-      assert Accounts.list_organization_members() == [organization_member]
+      %{id: member_id} = organization_member_fixture()
+      assert [%{id: ^member_id}] = Accounts.list_organization_members()
     end
 
     test "get_organization_member!/1 returns the organization_member with given id" do
       organization_member = organization_member_fixture()
-      assert Accounts.get_organization_member!(organization_member.id) == organization_member
+
+      assert Accounts.get_organization_member!(organization_member.id).id ==
+               organization_member.id
     end
 
     test "create_organization_member/1 with valid data creates a organization_member" do
@@ -659,18 +662,19 @@ defmodule OmegaBravera.AccountsTest do
       assert {:ok, organization} =
                Accounts.create_organization(%{name: "name", business_type: "type"})
 
-      assert {:ok, %{create_organization_member: %OrganizationMember{}}} =
-               Accounts.create_organization_partner_user(organization.id, %{
-                 username: "name2",
-                 email: "iu@email.com",
-                 first_name: "First Name",
-                 last_name: "Last Name",
-                 location_id: location.id,
-                 contact_number: "00000000",
-                 password: "123456",
-                 password_confirmation: "123456",
-                 business_type: "type",
-                 accept_terms: true
+      assert {:ok, %OrganizationMember{}} =
+               Accounts.create_organization_partner_user(%{
+                 organization_id: organization.id,
+                 partner_user: %{
+                   username: "name2",
+                   email: "iu@email.com",
+                   first_name: "First Name",
+                   last_name: "Last Name",
+                   location_id: location.id,
+                   contact_number: "00000000",
+                   password: "123456",
+                   password_confirmation: "123456"
+                 }
                })
     end
 
@@ -686,12 +690,14 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "update_organization_member/2 with invalid data returns error changeset" do
-      organization_member = organization_member_fixture()
+      %{updated_at: updated_at} = organization_member = organization_member_fixture()
 
-      assert {:error, :update_partner_user, %Ecto.Changeset{}, _} =
-               Accounts.update_organization_partner_user(organization_member, %{password: "123"})
+      assert {:error, %Ecto.Changeset{}} =
+               Accounts.update_organization_partner_user(organization_member, %{
+                 partner_user: %{password: "123"}
+               })
 
-      assert organization_member == Accounts.get_organization_member!(organization_member.id)
+      assert %{updated_at: ^updated_at} = Accounts.get_organization_member!(organization_member.id)
     end
 
     test "delete_organization_member/1 deletes the organization_member" do

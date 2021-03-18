@@ -3,6 +3,7 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
 
   alias OmegaBravera.Accounts
   alias OmegaBravera.Accounts.OrganizationMember
+  plug :assign_available_options when action in [:new, :edit]
 
   def index(conn, params) do
     results =
@@ -23,34 +24,27 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
 
   def new(conn, _params) do
     changeset = Accounts.change_organization_member(%OrganizationMember{})
-    organizations = Accounts.list_organization()
-    render(conn, "new.html", changeset: changeset, organizations: organizations)
+    render(conn, "new.html", changeset: changeset)
   end
 
   def create(conn, %{"organization_member" => organization_member_params}) do
-    organization_member_params = Map.put(organization_member_params, "accept_terms", true)
-    %{"organization_id" => organization_id} = organization_member_params
-
-    case Accounts.create_organization_partner_user(organization_id, organization_member_params) do
-      {:ok, %{create_organization_member: organization_member}} ->
+    case Accounts.create_organization_partner_user(organization_member_params) do
+      {:ok, organization_member} ->
         conn
         |> put_flash(:info, "Organization member created successfully.")
         |> redirect(
           to: Routes.admin_panel_organization_member_path(conn, :show, organization_member)
         )
 
-      {:error, _, _, _} ->
+      {:error, changeset} ->
         organizations = Accounts.list_organization()
-        changeset = Accounts.change_organization_member(%OrganizationMember{})
 
         conn
+        |> assign_available_options()
         |> put_flash(:error, "Failed to create partner user.")
         |> render("new.html", changeset: changeset, organizations: organizations)
     end
   end
-
-  def create(conn, %{"partner_user" => params}),
-    do: create(conn, %{"organization_member" => params})
 
   def show(conn, %{"id" => id}) do
     organization_member = Accounts.get_organization_member!(id)
@@ -59,15 +53,9 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
 
   def edit(conn, %{"id" => id}) do
     organization_member = Accounts.get_organization_member!(id)
-    partner_user = Accounts.get_partner_user!(organization_member.partner_user_id)
-    changeset = Accounts.change_partner_user(partner_user)
-    organizations = Accounts.list_organization()
+    changeset = Accounts.change_organization_member(organization_member)
 
-    render(conn, "edit.html",
-      organization_member: organization_member,
-      changeset: changeset,
-      organizations: organizations
-    )
+    render(conn, "edit.html", organization_member: organization_member, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "partner_user" => organization_member_params}) do
@@ -77,21 +65,17 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
            organization_member,
            organization_member_params
          ) do
-      {:ok, %{update_organization_member: organization_member}} ->
+      {:ok, organization_member} ->
         conn
         |> put_flash(:info, "Organization member updated successfully.")
         |> redirect(
           to: Routes.admin_panel_organization_member_path(conn, :show, organization_member)
         )
 
-      {:error, _, %Ecto.Changeset{} = changeset, _} ->
-        organizations = Accounts.list_organization()
-
-        render(conn, "edit.html",
-          organization_member: organization_member,
-          changeset: changeset,
-          organizations: organizations
-        )
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> assign_available_options()
+        |> render("edit.html", organization_member: organization_member, changeset: changeset)
     end
   end
 
@@ -103,5 +87,11 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationMemberController do
     conn
     |> put_flash(:info, "Organization member deleted successfully.")
     |> redirect(to: Routes.admin_panel_organization_member_path(conn, :index))
+  end
+
+  defp assign_available_options(conn, _opts \\ nil) do
+    conn
+    |> assign(:organizations, Accounts.list_organization())
+    |> assign(:available_locations, OmegaBravera.Locations.list_locations())
   end
 end

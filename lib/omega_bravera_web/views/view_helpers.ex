@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
   import Phoenix.HTML.Tag, only: [tag: 2]
   import Phoenix.HTML.Form, only: [datetime_select: 3]
   import Phoenix.HTML, only: [sigil_e: 2]
-  alias OmegaBravera.Accounts.{User, AdminUser, PartnerUser}
+  alias OmegaBravera.Accounts.{User, AdminUser}
   alias OmegaBravera.Challenges.NGOChal
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Offers.{Offer, OfferChallenge}

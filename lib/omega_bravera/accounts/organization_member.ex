@@ -6,7 +6,7 @@ defmodule OmegaBravera.Accounts.OrganizationMember do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "organization_members" do
     belongs_to :organization, Organization, type: :binary_id
-    belongs_to :partner_user, PartnerUser, type: :binary_id
+    belongs_to :partner_user, PartnerUser, type: :binary_id, on_replace: :update
 
     timestamps()
   end
@@ -24,6 +24,13 @@ defmodule OmegaBravera.Accounts.OrganizationMember do
     |> cast_assoc(:partner_user, with: &PartnerUser.changeset/2, required: true)
     |> update_org()
     |> cast_assoc(:organization, with: &Organization.changeset/2, required: true)
+  end
+
+  def admin_create_changeset(organization_member, attrs) do
+    organization_member
+    |> cast(attrs, [:organization_id])
+    |> validate_required([:organization_id])
+    |> cast_assoc(:partner_user, with: &PartnerUser.admin_create_changeset/2, required: true)
   end
 
   defp update_org(

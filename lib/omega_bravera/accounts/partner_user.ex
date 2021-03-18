@@ -78,6 +78,39 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     |> cast(attrs, [:reset_token, :reset_token_created])
   end
 
+  def admin_create_changeset(partner_user, attrs) do
+    partner_user
+    |> cast(attrs, [
+      :username,
+      :email,
+      :password,
+      :password_confirmation,
+      :email_verified,
+      :location_id,
+      :first_name,
+      :last_name,
+      :contact_number
+    ])
+    |> validate_required([
+      :username,
+      :email,
+      :password,
+      :password_confirmation,
+      :location_id,
+      :first_name,
+      :last_name,
+      :contact_number
+    ])
+    |> validate_length(:username, min: 3)
+    |> unique_constraint(:email, name: :partner_user_email_index)
+    |> EctoCommons.EmailValidator.validate_email(:email)
+    |> validate_format(:username, ~r/\A[a-zA-Z0-9_]+\z/,
+      message: "only letters and numbers are allowed"
+    )
+    |> unique_constraint(:username)
+    |> validate_password()
+  end
+
   defp validate_password(%{changes: %{password: _}} = changeset) do
     changeset
     |> validate_required([:password, :password_confirmation])
