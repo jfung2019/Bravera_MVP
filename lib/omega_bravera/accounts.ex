@@ -2223,7 +2223,10 @@ defmodule OmegaBravera.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_organization_member!(id), do: Repo.get!(OrganizationMember, id)
+  def get_organization_member!(id) do
+    from(o in OrganizationMember, where: o.id == ^id, preload: [:partner_user])
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a organization_member.
@@ -2243,14 +2246,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.insert()
   end
 
-  def create_organization_partner_user(organization_id, attrs \\ %{}) do
-    Multi.new()
-    |> Multi.run(:create_partner_user, fn _repo, _ -> create_partner_user(attrs) end)
-    |> Multi.run(:create_organization_member, fn _repo, %{create_partner_user: partner_user} ->
-      param = %{"organization_id" => organization_id, "partner_user_id" => partner_user.id}
-      create_organization_member(param)
-    end)
-    |> Repo.transaction()
+  def create_organization_partner_user(attrs \\ %{}) do
+    %OrganizationMember{}
+    |> OrganizationMember.admin_create_changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """
@@ -2272,15 +2271,9 @@ defmodule OmegaBravera.Accounts do
   end
 
   def update_organization_partner_user(%OrganizationMember{} = organization_member, attrs) do
-    Multi.new()
-    |> Multi.run(:update_partner_user, fn repo, _ ->
-      partner_user = repo.get!(PartnerUser, organization_member.partner_user_id)
-      update_partner_user(partner_user, attrs)
-    end)
-    |> Multi.run(:update_organization_member, fn _repo, %{update_partner_user: _partner_user} ->
-      update_organization_member(organization_member, attrs)
-    end)
-    |> Repo.transaction()
+    organization_member
+    |> OrganizationMember.admin_create_changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """

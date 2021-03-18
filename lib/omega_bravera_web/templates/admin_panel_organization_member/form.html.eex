@@ -10,30 +10,55 @@
         <%= select f, :organization_id, generate_organizations(@organizations), class: add_error_class(f, :organization_id, "form-control") %>
         <%= error_tag f, :organization_id %>
     </div>
+    <%= inputs_for f, :partner_user, fn p -> %>
+        <div class="form-group">
+            <%= label p, :first_name, class: "control-label" %>
+            <%= text_input p, :first_name, class: add_error_class(p, :first_name, "form-control") %>
+            <%= error_tag p, :first_name %>
+        </div>
 
-    <div class="form-group">
-        <%= label f, :username, class: "control-label" %>
-        <%= text_input f, :username, class: add_error_class(f, :username, "form-control") %>
-        <%= error_tag f, :username %>
-    </div>
+        <div class="form-group">
+            <%= label p, :last_name, class: "control-label" %>
+            <%= text_input p, :last_name, class: add_error_class(p, :last_name, "form-control") %>
+            <%= error_tag p, :last_name %>
+        </div>
 
-    <div class="form-group">
-        <%= label f, :email, class: "control-label" %>
-        <%= email_input f, :email, class: add_error_class(f, :email, "form-control") %>
-        <%= error_tag f, :email %>
-    </div>
+        <div class="form-group">
+            <%= label p, :username, class: "control-label" %>
+            <%= text_input p, :username, class: add_error_class(p, :username, "form-control") %>
+            <%= error_tag p, :username %>
+        </div>
 
-    <div class="form-group">
-        <%= label f, :password, class: "control-label" %>
-        <%= password_input f, :password, class: add_error_class(f, :password, "form-control") %>
-        <%= error_tag f, :password %>
-    </div>
+        <div class="form-group">
+            <%= label p, :contact_number, class: "form-label" %>
+            <%= text_input p, :contact_number, class: add_error_class(p, :contact_number, "form-control"), required: true %>
+            <%= error_tag p, :contact_number %>
+        </div>
 
-    <div class="form-group">
-        <%= label f, :password_confirmation, class: "control-label" %>
-        <%= password_input f, :password_confirmation, class: add_error_class(f, :password_confirmation, "form-control") %>
-        <%= error_tag f, :password_confirmation %>
-    </div>
+        <div class="form-group">
+            <%= label p, :location_id, gettext("Location"), class: "control-label" %>
+            <%= select p, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), prompt: "", class: add_error_class(p, :contact_number, "form-control chosen") %>
+            <%= error_tag p, :location_id %>
+        </div>
+
+        <div class="form-group">
+            <%= label p, :email, class: "control-label" %>
+            <%= email_input p, :email, class: add_error_class(p, :email, "form-control") %>
+            <%= error_tag p, :email %>
+        </div>
+
+        <div class="form-group">
+            <%= label p, :password, class: "control-label" %>
+            <%= password_input p, :password, class: add_error_class(p, :password, "form-control") %>
+            <%= error_tag p, :password %>
+        </div>
+
+        <div class="form-group">
+            <%= label p, :password_confirmation, class: "control-label" %>
+            <%= password_input p, :password_confirmation, class: add_error_class(p, :password_confirmation, "form-control") %>
+            <%= error_tag p, :password_confirmation %>
+        </div>
+    <% end %>
 
     <div class="mb-3">
         <%= submit gettext("Submit"), class: "btn btn-primary" %>
