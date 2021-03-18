@@ -109,6 +109,8 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     )
     |> unique_constraint(:username)
     |> validate_password()
+    # no need to verify email if admin created
+    |> put_change(:email_verified, true)
   end
 
   defp validate_password(%{changes: %{password: _}} = changeset) do
