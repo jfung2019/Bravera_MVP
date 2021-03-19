@@ -697,7 +697,8 @@ defmodule OmegaBravera.AccountsTest do
                  partner_user: %{password: "123"}
                })
 
-      assert %{updated_at: ^updated_at} = Accounts.get_organization_member!(organization_member.id)
+      assert %{updated_at: ^updated_at} =
+               Accounts.get_organization_member!(organization_member.id)
     end
 
     test "delete_organization_member/1 deletes the organization_member" do

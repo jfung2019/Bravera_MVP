@@ -33,15 +33,16 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
         post(conn, Routes.admin_panel_organization_member_path(conn, :create),
           organization_member: %{
             partner_user: %{
-            username: "name",
-            email: "iu@email.com",
-            password_confirmation: "123456",
-            password: "123456",
-            business_type: "type",
-            first_name: "First Name",
-            last_name: "Last Name",
-            location_id: location.id,
-            contact_number: "00000000"},
+              username: "name",
+              email: "iu@email.com",
+              password_confirmation: "123456",
+              password: "123456",
+              business_type: "type",
+              first_name: "First Name",
+              last_name: "Last Name",
+              location_id: location.id,
+              contact_number: "00000000"
+            },
             organization_id: organization.id
           }
         )
@@ -151,19 +152,22 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
 
     organization_member_params = %{
       organization_id: organization.id,
-      partner_user: %{username: "name",
-      email: "iu@email.com",
-      password: "123456",
-      password_confirmation: "123456",
-      first_name: "First Name",
-      last_name: "Last Name",
-      location_id: location.id,
-      contact_number: "00000000",
-      business_type: "type",
-      accept_terms: true
-    }}
+      partner_user: %{
+        username: "name",
+        email: "iu@email.com",
+        password: "123456",
+        password_confirmation: "123456",
+        first_name: "First Name",
+        last_name: "Last Name",
+        location_id: location.id,
+        contact_number: "00000000",
+        business_type: "type",
+        accept_terms: true
+      }
+    }
 
-    {:ok, organization_member} = Accounts.create_organization_partner_user(organization_member_params)
+    {:ok, organization_member} =
+      Accounts.create_organization_partner_user(organization_member_params)
 
     %{organization_member: organization_member, organization: organization}
   end
