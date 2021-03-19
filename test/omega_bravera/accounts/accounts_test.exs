@@ -662,7 +662,7 @@ defmodule OmegaBravera.AccountsTest do
       assert {:ok, organization} =
                Accounts.create_organization(%{name: "name", business_type: "type"})
 
-      assert {:ok, %OrganizationMember{}} =
+      assert {:ok, %OrganizationMember{partner_user: %{email_verified: true}}} =
                Accounts.create_organization_partner_user(%{
                  organization_id: organization.id,
                  partner_user: %{

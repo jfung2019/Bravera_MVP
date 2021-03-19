@@ -203,6 +203,17 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       assert_reply ref, :ok, %{unread_count: %{^first_id => 2, ^second_id => 1, ^third_id => 0}}
     end
 
+    test "can get unread message count with bad message ID", %{
+      socket: socket,
+      message: %{group_id: group_id},
+      user: %{id: user_id}
+    } do
+      Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
+      id = "b58611d3-177c-4041-aafd-6802f2fc16b4"
+      ref = push(socket, "unread_count", %{"message_ids" => [id]})
+      assert_reply ref, :ok, %{unread_count: %{^id => 0}}
+    end
+
     test "can get old messages", %{
       socket: socket,
       message: %{id: first_id, group_id: group_id},

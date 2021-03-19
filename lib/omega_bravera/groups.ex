@@ -194,6 +194,10 @@ defmodule OmegaBravera.Groups do
     |> Repo.one()
   end
 
+  @doc """
+  Checks for any live groups without any members.
+  """
+  @spec check_empty_live_group_offer(String.t()) :: bool()
   def check_empty_live_group_offer(organization_id) do
     from(p in Partner,
       left_join: o in assoc(p, :offers),
@@ -203,7 +207,8 @@ defmodule OmegaBravera.Groups do
           o.approval_status == :approved,
       group_by: [p.id],
       having: count(m.id) == 0,
-      select: count(p.id) > 0
+      select: count(p.id) > 0,
+      limit: 1
     )
     |> Repo.one()
   end
