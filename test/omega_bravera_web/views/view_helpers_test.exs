@@ -5,7 +5,7 @@ defmodule OmegaBraveraWeb.ViewHelpersTest do
 
   test "can render naivedatetime correctly" do
     naive_date_time = ~N[2018-09-29 05:57:32.201997]
-    assert ViewHelpers.render_datetime(naive_date_time) == "29/9/18 13:57"
+    assert ViewHelpers.render_datetime(naive_date_time) == "29/9/18 05:57"
   end
 
   test "can render date from datetime" do
