@@ -38,7 +38,7 @@
               </div>
             </div>
             <div class="p-1 pt-2 activity-text-size col">
-              <%= Timex.Timezone.convert(activity.start_date, "Hongkong") |> Timex.format!("%b %d", :strftime) %>
+              <%= activity.start_date |> Timex.format!("%b %d", :strftime) %>
             </div>
             <div class="p-1 pt-2 activity-text-size col">
               <%= render_time(activity.moving_time) %>
