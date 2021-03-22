@@ -67,8 +67,7 @@ defmodule OmegaBraveraWeb.ViewHelpers do
       end
 
     with {:ok, date_time} <- DateTime.from_naive(naive_date_time, "Etc/UTC"),
-         hk_date_time <- Timex.Timezone.convert(date_time, "Asia/Hong_Kong"),
-         {:ok, formatted_string} <- Timex.format(hk_date_time, "{D}/{M}/{WYY} {h24}:{m}") do
+         {:ok, formatted_string} <- Timex.format(date_time, "{D}/{M}/{WYY} {h24}:{m}") do
       formatted_string
     end
   end
