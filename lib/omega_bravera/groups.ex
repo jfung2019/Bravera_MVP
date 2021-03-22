@@ -211,8 +211,6 @@ defmodule OmegaBravera.Groups do
       limit: 1
     )
     |> Repo.one()
-
-    #       group_by: [p.id],
   end
 
   @doc """
@@ -274,7 +272,7 @@ defmodule OmegaBravera.Groups do
 
         {:ok, _partner} =
           get_partner!(group_approval.group_id)
-          |> update_partner(%{approval_status: group_approval.status})
+          |> update_partner(%{approval_status: group_approval.status}, group_approval.message)
 
         {:ok, group_approval}
 
@@ -299,7 +297,7 @@ defmodule OmegaBravera.Groups do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_partner(%Partner{} = partner, attrs) do
+  def update_partner(%Partner{} = partner, attrs, message \\ "") do
     result =
       partner
       |> Partner.changeset(attrs)
@@ -316,7 +314,7 @@ defmodule OmegaBravera.Groups do
         OmegaBravera.Accounts.get_partner_user_email_by_group(updated_partner.id)
         |> Notifier.notify_customer_group_email(updated_partner, %GroupApproval{
           status: status,
-          message: ""
+          message: message
         })
 
         result
@@ -884,7 +882,8 @@ defmodule OmegaBravera.Groups do
   end
 
   defp get_chat_message_query(id),
-    do: from(m in ChatMessage, where: m.id == ^id, preload: [:user, reply_to_message: :user])
+       do: from(m in ChatMessage, where: m.id == ^id, preload: [:user, reply_to_message: :user])
+
 
   @doc """
   Get chat message by id and preload group
@@ -988,7 +987,7 @@ defmodule OmegaBravera.Groups do
           select: count(),
           where:
             m.inserted_at >= ^message.inserted_at and m.id != ^message.id and
-              m.group_id == ^message.group_id
+            m.group_id == ^message.group_id
         )
         |> Repo.one()
     end

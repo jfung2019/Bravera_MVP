@@ -191,7 +191,7 @@
             <%= error_tag offer_coord, :address %>
             <%= label offer_coord, :latitude, class: "control-label" %>
             <%= text_input offer_coord, :latitude, class: add_error_class(offer_coord, :address, "form-control col-10"), value: if is_nil(offer_coord.data.geom), do: offer_coord.data.latitude, else: elem(offer_coord.data.geom.coordinates, 1) %>
-            <%= error_tag offer_coord, :longitude %>
+            <%= error_tag offer_coord, :latitude %>
             <%= label offer_coord, :longitude, class: "control-label" %>
             <%= text_input offer_coord, :longitude, class: add_error_class(offer_coord, :address, "form-control col-10"), value: if is_nil(offer_coord.data.geom), do: offer_coord.data.longitude, else: elem(offer_coord.data.geom.coordinates, 0) %>
             <%= error_tag offer_coord, :longitude %>
