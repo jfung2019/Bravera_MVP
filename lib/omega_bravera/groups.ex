@@ -272,7 +272,7 @@ defmodule OmegaBravera.Groups do
 
         {:ok, _partner} =
           get_partner!(group_approval.group_id)
-          |> update_partner(%{approval_status: group_approval.status})
+          |> update_partner(%{approval_status: group_approval.status}, group_approval.message)
 
         {:ok, group_approval}
 
@@ -297,7 +297,7 @@ defmodule OmegaBravera.Groups do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_partner(%Partner{} = partner, attrs) do
+  def update_partner(%Partner{} = partner, attrs, message \\ "") do
     result =
       partner
       |> Partner.changeset(attrs)
@@ -314,7 +314,7 @@ defmodule OmegaBravera.Groups do
         OmegaBravera.Accounts.get_partner_user_email_by_group(updated_partner.id)
         |> Notifier.notify_customer_group_email(updated_partner, %GroupApproval{
           status: status,
-          message: ""
+          message: message
         })
 
         result
