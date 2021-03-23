@@ -17,6 +17,7 @@ defmodule OmegaBravera.Groups.Member do
     member
     |> cast(attrs, [:user_id, :partner_id])
     |> validate_required([:user_id, :partner_id])
+    |> unique_constraint(:user_id, name: :partner_members_user_id_partner_id_index)
   end
 
   def mute_notification_changeset(member, attrs) do

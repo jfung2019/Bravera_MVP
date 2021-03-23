@@ -37,7 +37,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
 
     {:ok,
      conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"),
-     partner: partner}
+     partner: partner,
+     user: user}
   end
 
   test "can vote for partner to have offers", %{conn: conn, partner: %{id: partner_id}} do
@@ -105,6 +106,29 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
       })
 
     assert %{"errors" => [%{"message" => "This group is restricted to specific users."}]} =
+             json_response(response, 200)
+  end
+
+  test "return error if the user tries to join a group again", %{
+    conn: conn,
+    partner: partner,
+    user: user
+  } do
+    {:ok, partner} =
+      OmegaBravera.Groups.update_partner(partner, %{
+        join_password: "pass",
+        email_restriction: "Email.COM"
+      })
+
+    OmegaBravera.Groups.join_partner(partner.id, user.id)
+
+    response =
+      post(conn, "/api", %{
+        query: @join_private_partner_mutation,
+        variables: %{"partnerId" => partner.id, "password" => "pass"}
+      })
+
+    assert %{"errors" => [%{"message" => "You have already joined this group."}]} =
              json_response(response, 200)
   end
 end

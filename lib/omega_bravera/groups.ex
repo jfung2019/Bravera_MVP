@@ -756,7 +756,7 @@ defmodule OmegaBravera.Groups do
       on: muted.partner_id == p.id,
       where: p.id == ^partner_id and p.approval_status == :approved,
       preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u],
-      select: %{p | is_muted: muted.mute_notification}
+      select: %{p | is_muted: not is_nil(muted.mute_notification)}
     )
     |> Repo.one()
   end
@@ -882,8 +882,7 @@ defmodule OmegaBravera.Groups do
   end
 
   defp get_chat_message_query(id),
-       do: from(m in ChatMessage, where: m.id == ^id, preload: [:user, reply_to_message: :user])
-
+    do: from(m in ChatMessage, where: m.id == ^id, preload: [:user, reply_to_message: :user])
 
   @doc """
   Get chat message by id and preload group
@@ -987,7 +986,7 @@ defmodule OmegaBravera.Groups do
           select: count(),
           where:
             m.inserted_at >= ^message.inserted_at and m.id != ^message.id and
-            m.group_id == ^message.group_id
+              m.group_id == ^message.group_id
         )
         |> Repo.one()
     end
