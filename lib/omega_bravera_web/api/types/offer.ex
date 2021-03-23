@@ -58,6 +58,7 @@ defmodule OmegaBraveraWeb.Api.Types.Offer do
   end
 
   object :offer_coordinate do
+    field :id, non_null(:id)
     field :address, non_null(:string)
 
     field :longitude, non_null(:decimal),

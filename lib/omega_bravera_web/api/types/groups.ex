@@ -47,6 +47,7 @@ defmodule OmegaBraveraWeb.Api.Types.Groups do
   connection(node_type: :partner)
 
   object :partner_location do
+    field :id, non_null(:id)
     field :address, non_null(:string)
 
     field :longitude, non_null(:decimal),
