@@ -48,7 +48,12 @@ defmodule OmegaBraveraWeb.UserChannelTest do
     } do
       assert_push("joined_groups", %{
         groups: [
-          %{id: ^partner_id, chat_messages: [%{id: ^message_id}], users: [%{id: ^user_id}]}
+          %{
+            id: ^partner_id,
+            chat_messages: [%{id: ^message_id}],
+            users: [%{id: ^user_id}],
+            is_muted: false
+          }
         ]
       })
     end
@@ -116,7 +121,12 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       assert_broadcast "joined_group", %{id: not_joined_partner_id}
 
       assert_push "joined_group", %{
-        group: %{id: ^not_joined_partner_id, chat_messages: [], users: [%{id: ^user_id}]}
+        group: %{
+          id: ^not_joined_partner_id,
+          chat_messages: [],
+          users: [%{id: ^user_id}],
+          is_muted: false
+        }
       }
 
       Groups.delete_partner_member(member)
@@ -240,6 +250,22 @@ defmodule OmegaBraveraWeb.UserChannelTest do
 
       ref = push(socket, "previous_messages", %{"message_id" => third_id, "limit" => 20})
       assert_reply ref, :ok, %{messages: [%{id: ^second_id}, %{id: ^first_id}]}
+    end
+
+    test "can mute and unmute group", %{socket: socket, message: %{group_id: group_id}} do
+      # mute
+      ref = push(socket, "mute_notification", %{"group_id" => group_id})
+      assert_reply ref, :ok, %{group_id: ^group_id, muted: true}
+
+      ref = push(socket, "joined_groups")
+      assert_reply ref, :ok, %{groups: [%{id: ^group_id, is_muted: true}]}
+
+      # unmute
+      ref = push(socket, "mute_notification", %{"group_id" => group_id})
+      assert_reply ref, :ok, %{group_id: ^group_id, muted: false}
+
+      ref = push(socket, "joined_groups")
+      assert_reply ref, :ok, %{groups: [%{id: ^group_id, is_muted: false}]}
     end
   end
 end

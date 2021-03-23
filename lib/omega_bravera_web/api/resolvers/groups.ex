@@ -73,6 +73,19 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
 
           {:error, :email_restricted} ->
             {:error, message: "This group is restricted to specific users."}
+
+          {:error,
+           %{
+             errors: [
+               user_id:
+                 {"has already been taken",
+                  [
+                    constraint: :unique,
+                    constraint_name: "partner_members_user_id_partner_id_index"
+                  ]}
+             ]
+           }} ->
+            {:error, message: "You have already joined this group."}
         end
     end
   end
