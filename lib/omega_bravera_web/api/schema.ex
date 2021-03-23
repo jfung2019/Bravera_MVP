@@ -170,6 +170,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       arg :password, :string, default_value: nil
       resolve &Resolvers.Groups.join_partner/3
     end
+
+    @desc "Leave a group"
+    field :leave_group, :partner do
+      arg :group_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Groups.leave_group/3
+    end
   end
 
   query do

@@ -29,6 +29,14 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
   }
   """
 
+  @leave_group """
+  mutation($groupId: ID!) {
+    leaveGroup(groupId: $groupId) {
+      id
+    }
+  }
+  """
+
   setup %{conn: conn} do
     user = insert(:user, %{email: "test@email.com"})
     credential = Fixtures.credential_fixture(user.id)
@@ -129,6 +137,21 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
       })
 
     assert %{"errors" => [%{"message" => "You have already joined this group."}]} =
+             json_response(response, 200)
+  end
+
+  test "can leave group", %{conn: conn, partner: partner, user: user} do
+    OmegaBravera.Groups.join_partner(partner.id, user.id)
+
+    response =
+      post(conn, "/api", %{
+        query: @leave_group,
+        variables: %{"groupId" => partner.id}
+      })
+
+    string_partner_id = to_string(partner.id)
+
+    assert %{"data" => %{"leaveGroup" => %{"id" => ^string_partner_id}}} =
              json_response(response, 200)
   end
 end

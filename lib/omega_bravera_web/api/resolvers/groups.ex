@@ -89,4 +89,16 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
         end
     end
   end
+
+  def leave_group(_root, %{group_id: group_id}, %{context: %{current_user: %{id: user_id}}}) do
+    member = Groups.get_group_member_by_group_id_user_id(group_id, user_id)
+
+    case Groups.delete_partner_member(member) do
+      {:ok, _member} ->
+        {:ok, Groups.get_partner!(group_id)}
+
+      error_tuple ->
+        error_tuple
+    end
+  end
 end

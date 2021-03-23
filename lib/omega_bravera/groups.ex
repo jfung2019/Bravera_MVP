@@ -650,11 +650,13 @@ defmodule OmegaBravera.Groups do
   Delete partner member.
   """
   def delete_partner_member(member) do
-    Repo.delete(member)
+    result = Repo.delete(member)
 
     @endpoint.broadcast(@user_channel.user_channel(member.user_id), "removed_group", %{
       id: member.partner_id
     })
+
+    result
   end
 
   @doc """
