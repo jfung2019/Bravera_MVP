@@ -6,6 +6,7 @@ defmodule OmegaBravera.Accounts do
   import Ecto.Query, warn: false
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias Ecto.Multi
+  alias Absinthe.Relay
   alias OmegaBravera.Accounts.Jobs
   @organization_max_points 1000
 
@@ -36,7 +37,8 @@ defmodule OmegaBravera.Accounts do
     Activity.ActivityAccumulator,
     Groups.Member,
     Accounts.Organization,
-    Accounts.OrganizationMember
+    Accounts.OrganizationMember,
+    Accounts.Friend
   }
 
   def get_all_athlete_ids() do
@@ -2360,5 +2362,96 @@ defmodule OmegaBravera.Accounts do
       distinct: true
     )
     |> Repo.all()
+  end
+
+  @doc """
+  create friend request
+  """
+  @spec create_friend_request(map()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
+  def create_friend_request(%{receiver_id: receiver_id, requester_id: requester_id} = attrs) do
+    with nil <- find_existing_friend(receiver_id, requester_id) do
+      %Friend{}
+      |> Friend.request_changeset(attrs)
+      |> Repo.insert()
+      |> notify_user()
+    else
+      %Friend{} = friend ->
+        {:ok, friend}
+    end
+  end
+
+  @spec find_existing_friend(integer(), integer()) :: Friend.t() | nil
+  def find_existing_friend(receiver_id, requester_id) do
+    from(f in Friend,
+      where:
+        (f.receiver_id == ^receiver_id and f.requester_id == ^requester_id) or
+          (f.receiver_id == ^requester_id and f.requester_id == ^receiver_id)
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  accept friend request
+  """
+  @spec accept_friend_request(Friend.t()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
+  def accept_friend_request(%Friend{} = friend) do
+    friend
+    |> Friend.accept_changeset(%{})
+    |> Repo.update()
+    |> notify_user()
+  end
+
+  @spec notify_user(tuple()) :: tuple()
+  defp notify_user({:ok, %Friend{} = friend} = tuple) do
+    OmegaBravera.Notifications.Jobs.NotifyNewFriend.new(friend)
+    |> Oban.insert()
+
+    tuple
+  end
+
+  defp notify_user(tuple), do: tuple
+
+  @doc """
+  reject friend request
+  """
+  @spec reject_friend_request(Friend.t()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
+  def reject_friend_request(%Friend{} = friend), do: Repo.delete(friend)
+
+  @doc """
+  get friend by receiver_id and requester_id
+  """
+  @spec get_friend_by_receiver_id_requester_id(integer(), integer()) :: Friend.t() | nil
+  def get_friend_by_receiver_id_requester_id(receiver_id, requester_id) do
+    from(f in Friend, where: f.receiver_id == ^receiver_id and f.requester_id == ^requester_id)
+    |> Repo.one()
+  end
+
+  @doc """
+  list and search accepted friends
+  """
+  @spec list_accepted_friends(integer(), String.t(), map()) :: [User.t()]
+  def list_accepted_friends(user_id, keyword, pagination_args) do
+    search = "%#{keyword}%"
+
+    from(u in User,
+      left_join: f in Friend,
+      on: f.receiver_id == u.id or f.requester_id == u.id,
+      where:
+        f.status == :accepted and
+          ((f.receiver_id == ^user_id and ilike(requester.username, ^search)) or
+             (f.requester_id == ^user_id and ilike(receiver.username, ^search))) and
+          u.id != ^user_id,
+      order_by: [u.username]
+    )
+    |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
+  end
+
+  @doc """
+  list friend requests
+  """
+  @spec list_friend_requests(integer()) :: [Friend.t()]
+  def list_friend_requests(user_id, pagination_args) do
+    from(f in Friend, where: f.status == :pending and f.receiver_id == ^user_id)
+    |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 end
