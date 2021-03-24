@@ -2438,8 +2438,8 @@ defmodule OmegaBravera.Accounts do
       on: f.receiver_id == u.id or f.requester_id == u.id,
       where:
         f.status == :accepted and
-          ((f.receiver_id == ^user_id and ilike(requester.username, ^search)) or
-             (f.requester_id == ^user_id and ilike(receiver.username, ^search))) and
+          ((f.receiver_id == ^user_id and ilike(u.username, ^search)) or
+             (f.requester_id == ^user_id and ilike(u.username, ^search))) and
           u.id != ^user_id,
       order_by: [u.username]
     )
@@ -2449,7 +2449,7 @@ defmodule OmegaBravera.Accounts do
   @doc """
   list friend requests
   """
-  @spec list_friend_requests(integer()) :: [Friend.t()]
+  @spec list_friend_requests(integer(), map()) :: [Friend.t()]
   def list_friend_requests(user_id, pagination_args) do
     from(f in Friend, where: f.status == :pending and f.receiver_id == ^user_id)
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
