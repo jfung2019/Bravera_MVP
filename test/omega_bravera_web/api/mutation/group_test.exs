@@ -33,6 +33,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.GroupTest do
   mutation($groupId: ID!) {
     leaveGroup(groupId: $groupId) {
       id
+      name
+      isMember
     }
   }
   """

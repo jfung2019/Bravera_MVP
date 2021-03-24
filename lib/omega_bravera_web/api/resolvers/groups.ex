@@ -95,7 +95,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Groups do
 
     case Groups.delete_partner_member(member) do
       {:ok, _member} ->
-        {:ok, Groups.get_partner!(group_id)}
+        {:ok, Groups.get_partner_with_membership!(group_id, user_id)}
 
       error_tuple ->
         error_tuple
