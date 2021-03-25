@@ -450,4 +450,31 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         {:error, message: "The verification code is incorrect. Please try again."}
     end
   end
+
+  def create_friend_request(_root, %{receiver_id: receiver_id}, %{
+        context: %{current_user: %{id: requester_id}}
+      }),
+      do: Accounts.create_friend_request(%{receiver_id: receiver_id, requester_id: requester_id})
+
+  def accept_friend_request(_root, %{requester_id: requester_id}, %{
+        context: %{current_user: %{id: receiver_id}}
+      }),
+      do:
+        Accounts.accept_friend_request(
+          Accounts.get_friend_by_receiver_id_requester_id(receiver_id, requester_id)
+        )
+
+  def reject_friend_request(_root, %{requester_id: requester_id}, %{
+        context: %{current_user: %{id: receiver_id}}
+      }),
+      do:
+        Accounts.reject_friend_request(
+          Accounts.get_friend_by_receiver_id_requester_id(receiver_id, requester_id)
+        )
+
+  def list_friends(_root, args, %{context: %{current_user: %{id: user_id}}}),
+    do: Accounts.list_accepted_friends(user_id, Map.get(args, :keyword), args)
+
+  def list_friend_requests(_root, _args, %{context: %{current_user: %{id: user_id}}}),
+    do: {:ok, Accounts.list_friend_requests(user_id)}
 end

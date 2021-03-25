@@ -2449,9 +2449,13 @@ defmodule OmegaBravera.Accounts do
   @doc """
   list friend requests
   """
-  @spec list_friend_requests(integer(), map()) :: [Friend.t()]
-  def list_friend_requests(user_id, pagination_args) do
+  @spec list_friend_requests(integer()) :: [Friend.t()]
+  def list_friend_requests(user_id) do
     from(f in Friend, where: f.status == :pending and f.receiver_id == ^user_id)
-    |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
+    |> Repo.all()
   end
+
+  def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
+
+  def query(queryable, _), do: queryable
 end

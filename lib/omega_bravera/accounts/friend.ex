@@ -2,6 +2,8 @@ defmodule OmegaBravera.Accounts.Friend do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias OmegaBravera.Accounts.User
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @derive {Jason.Encoder, only: [:receiver_id, :requester_id, :status]}
   schema "friends" do

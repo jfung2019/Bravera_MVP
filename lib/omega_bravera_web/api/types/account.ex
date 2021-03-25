@@ -1,5 +1,7 @@
 defmodule OmegaBraveraWeb.Api.Types.Account do
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
   alias OmegaBravera.{Accounts, Points}
 
   object :user do
@@ -110,6 +112,8 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :email_verified, non_null(:boolean)
   end
 
+  connection(node_type: :user_profile)
+
   object :user_points_with_history do
     field :balance, non_null(:decimal)
     field :history, non_null(list_of(:point_summary))
@@ -191,5 +195,18 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :new_offer, non_null(:boolean)
     field :new_group, non_null(:boolean)
     field :expiring_reward, non_null(:boolean)
+  end
+
+  enum :friend_status do
+    value :pending, description: "Friend request pending accept/reject"
+
+    value :accepted,
+      description: "Friend request accepted"
+  end
+
+  object :friend do
+    field :receiver, non_null(:user_profile), resolve: dataloader(Accounts)
+    field :requester, non_null(:user_profile), resolve: dataloader(Accounts)
+    field :status, non_null(:friend_status)
   end
 end
