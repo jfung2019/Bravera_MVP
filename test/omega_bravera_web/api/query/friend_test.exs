@@ -47,13 +47,15 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
     {:ok,
-      conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"),
-      user1: user1,
-      user2: user2}
+     conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"),
+     user1: user1,
+     user2: user2}
   end
 
   test "can list friends", %{conn: conn, user1: %{id: user1_id}, user2: %{id: user2_id}} do
-    {:ok, friend} = Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
+    {:ok, friend} =
+      Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
+
     Accounts.accept_friend_request(friend)
 
     response = post(conn, "/api", %{query: @list_friends, variables: %{"first" => 3}})
@@ -63,7 +65,7 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
     assert %{
              "data" => %{
                "listFriends" => %{
-                  "edges" => [%{"node" => %{"id" => ^user2_id_string}}]
+                 "edges" => [%{"node" => %{"id" => ^user2_id_string}}]
                }
              }
            } = json_response(response, 200)
@@ -80,11 +82,13 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
 
     assert %{
              "data" => %{
-               "listFriendRequests" => [%{
-                 "receiver" => %{"id" => ^user1_id_string},
-                 "requester" => %{"id" => ^user2_id_string},
-                "status" => "PENDING"
-               }]
+               "listFriendRequests" => [
+                 %{
+                   "receiver" => %{"id" => ^user1_id_string},
+                   "requester" => %{"id" => ^user2_id_string},
+                   "status" => "PENDING"
+                 }
+               ]
              }
            } = json_response(response, 200)
   end

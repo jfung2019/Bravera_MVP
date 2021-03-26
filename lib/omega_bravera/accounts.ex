@@ -2373,7 +2373,7 @@ defmodule OmegaBravera.Accounts do
       %Friend{}
       |> Friend.request_changeset(attrs)
       |> Repo.insert()
-      |> notify_user()
+#      |> notify_user()
     else
       %Friend{} = friend ->
         {:ok, friend}
@@ -2398,7 +2398,7 @@ defmodule OmegaBravera.Accounts do
     friend
     |> Friend.accept_changeset(%{})
     |> Repo.update()
-    |> notify_user()
+#    |> notify_user()
   end
 
   @spec notify_user(tuple()) :: tuple()
@@ -2437,10 +2437,8 @@ defmodule OmegaBravera.Accounts do
       left_join: f in Friend,
       on: f.receiver_id == u.id or f.requester_id == u.id,
       where:
-        f.status == :accepted and
-          ((f.receiver_id == ^user_id and ilike(u.username, ^search)) or
-             (f.requester_id == ^user_id and ilike(u.username, ^search))) and
-          u.id != ^user_id,
+        f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id) and
+          u.id != ^user_id and ilike(u.username, ^search),
       order_by: [u.username]
     )
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
@@ -2453,6 +2451,21 @@ defmodule OmegaBravera.Accounts do
   def list_friend_requests(user_id) do
     from(f in Friend, where: f.status == :pending and f.receiver_id == ^user_id)
     |> Repo.all()
+  end
+
+  @doc """
+  search and list users that can send friend request to
+  """
+  @spec list_possible_friends(integer(), String.t(), map()) :: [User.t()]
+  def list_possible_friends(user_id, keyword, pagination_args) do
+    search = "%#{keyword}%"
+
+    from(u in User,
+      left_join: f in Friend,
+      on: f.receiver_id == u.id or f.requester_id == u.id,
+      where: is_nil(f.id) and u.id != ^user_id and ilike(u.username, ^search)
+    )
+    |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
   def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
