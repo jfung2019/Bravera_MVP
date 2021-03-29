@@ -477,4 +477,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def list_friend_requests(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do: {:ok, Accounts.list_friend_requests(user_id)}
+
+  def list_possible_friends(_root, args, %{context: %{current_user: %{id: user_id}}}),
+    do: Accounts.list_possible_friends(user_id, Map.get(args, :keyword), args)
 end

@@ -419,6 +419,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.list_friend_requests/3
     end
+
+    @desc "list users that can send friend request to"
+    connection field :list_possible_friends, node_type: :user_profile do
+      arg :keyword, :string
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.list_possible_friends/3
+    end
   end
 
   subscription do

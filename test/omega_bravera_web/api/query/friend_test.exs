@@ -40,6 +40,25 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
   }
   """
 
+  @list_possible_friends """
+  query($keyword: String, $first: Integer!) {
+    listPossibleFriends(keyword: $keyword, first: $first) {
+      edges {
+        node {
+          id
+          username
+          total_points
+        }
+      }
+      pageInfo {
+        hasNextPage
+        startCursor
+        endCursor
+      }
+    }
+  }
+  """
+
   setup %{conn: conn} do
     user1 = insert(:user)
     user2 = insert(:user, %{email: "user2@email.com"})
@@ -89,6 +108,20 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
                    "status" => "PENDING"
                  }
                ]
+             }
+           } = json_response(response, 200)
+  end
+
+  test "can list possible user for sending friend request", %{conn: conn, user2: %{id: user2_id}} do
+    response = post(conn, "/api", %{query: @list_possible_friends, variables: %{"first" => 3}})
+
+    user2_id_string = to_string(user2_id)
+
+    assert %{
+             "data" => %{
+               "listPossibleFriends" => %{
+                 "edges" => [%{"node" => %{"id" => ^user2_id_string}}]
+               }
              }
            } = json_response(response, 200)
   end

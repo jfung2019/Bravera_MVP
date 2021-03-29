@@ -2373,7 +2373,7 @@ defmodule OmegaBravera.Accounts do
       %Friend{}
       |> Friend.request_changeset(attrs)
       |> Repo.insert()
-#      |> notify_user()
+      |> notify_user()
     else
       %Friend{} = friend ->
         {:ok, friend}
@@ -2398,7 +2398,7 @@ defmodule OmegaBravera.Accounts do
     friend
     |> Friend.accept_changeset(%{})
     |> Repo.update()
-#    |> notify_user()
+    |> notify_user()
   end
 
   @spec notify_user(tuple()) :: tuple()
@@ -2463,7 +2463,8 @@ defmodule OmegaBravera.Accounts do
     from(u in User,
       left_join: f in Friend,
       on: f.receiver_id == u.id or f.requester_id == u.id,
-      where: is_nil(f.id) and u.id != ^user_id and ilike(u.username, ^search)
+      where: is_nil(f.id) and u.id != ^user_id and ilike(u.username, ^search),
+      order_by: u.username
     )
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
