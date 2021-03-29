@@ -426,6 +426,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.list_possible_friends/3
     end
+
+    @desc "Compare with friend"
+    field :compare_with_friend, non_null(:friend_compare) do
+      arg :friend_user_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.compare_with_friend/3
+    end
   end
 
   subscription do

@@ -87,7 +87,9 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :total_points_this_week, non_null(:decimal)
     field :total_rewards, non_null(:integer)
     field :total_kilometers, non_null(:decimal)
+    field :total_kilometers_today, non_null(:decimal)
     field :total_kilometers_this_week, non_null(:decimal)
+    field :total_kilometers_this_month, non_null(:decimal)
     field :daily_points_limit, non_null(:integer)
     field :total_challenges, non_null(:integer)
     field :offer_challenges_map, :offer_challenges_map
@@ -110,6 +112,8 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
       end
 
     field :email_verified, non_null(:boolean)
+    field :inserted_at, non_null(:date)
+    field :groups, list_of(non_null(:partner)), resolve: dataloader(OmegaBravera.Groups)
   end
 
   connection(node_type: :user_profile)
@@ -208,5 +212,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :receiver, non_null(:user_profile), resolve: dataloader(Accounts)
     field :requester, non_null(:user_profile), resolve: dataloader(Accounts)
     field :status, non_null(:friend_status)
+  end
+
+  object :friend_compare do
+    field :user, non_null(:user_profile)
+    field :friend, non_null(:user_profile)
   end
 end

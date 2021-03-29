@@ -7,10 +7,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   alias OmegaBravera.Guardian
   alias OmegaBravera.{Accounts, Locations, Points, Repo, Notifications}
-  alias OmegaBravera.Accounts.Notifier
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
-  alias OmegaBravera.Accounts.Tools
-  alias OmegaBravera.Accounts.User
+  alias OmegaBravera.Accounts.{User, Friend, Tools, Notifier}
 
   def get_strava_oauth_url(_, _, %{
         context: %{current_user: %{id: _id} = current_user}
@@ -480,4 +478,19 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
   def list_possible_friends(_root, args, %{context: %{current_user: %{id: user_id}}}),
     do: Accounts.list_possible_friends(user_id, Map.get(args, :keyword), args)
+
+  def compare_with_friend(_root, %{friend_user_id: friend_user_id}, %{
+        context: %{current_user: %{id: user_id}}
+      }) do
+    with %Friend{status: :accepted} <- Accounts.find_existing_friend(friend_user_id, user_id) do
+      {:ok,
+       %{
+         user: Accounts.get_user_for_comparison(user_id),
+         friend: Accounts.get_user_for_comparison(friend_user_id)
+       }}
+    else
+      _ ->
+        {:error, message: "It seems you are not a friend with this user."}
+    end
+  end
 end

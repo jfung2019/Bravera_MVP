@@ -2469,6 +2469,36 @@ defmodule OmegaBravera.Accounts do
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
+  @doc """
+  get information of the given user for comparison
+  """
+  @spec get_user_for_comparison(integer()) :: User.t()
+  def get_user_for_comparison(user_id) do
+    now = Timex.now()
+    beginning_of_week = Timex.beginning_of_week(now)
+    end_of_week = Timex.end_of_week(now)
+    beginning_of_month = Timex.beginning_of_month(now)
+    end_of_month = Timex.end_of_month(now)
+
+    from(u in User,
+      left_join: ttd in subquery(activity_query(now, now)),
+      on: ttd.user_id == u.id,
+      left_join: wtd in subquery(activity_query(beginning_of_week, end_of_week)),
+      on: wtd.user_id == u.id,
+      left_join: mtd in subquery(activity_query(beginning_of_month, end_of_month)),
+      on: mtd.user_id == u.id,
+      where: u.id == ^user_id,
+      group_by: [u.id, ttd.distance, wtd.distance, mtd.distance],
+      select: %{
+        u
+        | total_kilometers_today: coalesce(ttd.distance, 0),
+          total_kilometers_this_week: coalesce(wtd.distance, 0),
+          total_kilometers_this_month: coalesce(mtd.distance, 0)
+      }
+    )
+    |> Repo.one()
+  end
+
   def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
 
   def query(queryable, _), do: queryable

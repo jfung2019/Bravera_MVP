@@ -59,6 +59,39 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
   }
   """
 
+  @compare_with_friend """
+  query($friendUserId: ID!) {
+    compareWithFriend(friendUserId: $friendUserId) {
+      user {
+        id
+        username
+        profilePicture
+        totalKilometersToday
+        totalKilometersThisWeek
+        totalKilometersThisMonth
+        totalPoints
+        insertedAt
+        groups {
+          name
+        }
+      }
+      friend {
+        id
+        username
+        profilePicture
+        totalKilometersToday
+        totalKilometersThisWeek
+        totalKilometersThisMonth
+        totalPoints
+        insertedAt
+        groups {
+          name
+        }
+      }
+    }
+  }
+  """
+
   setup %{conn: conn} do
     user1 = insert(:user)
     user2 = insert(:user, %{email: "user2@email.com"})
@@ -124,5 +157,35 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
                }
              }
            } = json_response(response, 200)
+  end
+
+  test "can compare with friend", %{conn: conn, user1: %{id: user1_id}, user2: %{id: user2_id}} do
+    {:ok, friend} =
+      Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
+
+    Accounts.accept_friend_request(friend)
+
+    response =
+      post(conn, "/api", %{query: @compare_with_friend, variables: %{"friendUserId" => user2_id}})
+
+    user1_id_string = to_string(user1_id)
+    user2_id_string = to_string(user2_id)
+
+    assert %{
+             "data" => %{
+               "compareWithFriend" => %{
+                 "friend" => %{"id" => ^user2_id_string},
+                 "user" => %{"id" => ^user1_id_string}
+               }
+             }
+           } = json_response(response, 200)
+  end
+
+  test "cannot compare with user if not friend", %{conn: conn, user2: %{id: user2_id}} do
+    response =
+      post(conn, "/api", %{query: @compare_with_friend, variables: %{"friendUserId" => user2_id}})
+
+    assert %{"errors" => [%{"message" => "It seems you are not a friend with this user."}]} =
+             json_response(response, 200)
   end
 end
