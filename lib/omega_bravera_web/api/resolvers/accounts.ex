@@ -482,13 +482,14 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   def compare_with_friend(_root, %{friend_user_id: friend_user_id}, %{
         context: %{current_user: %{id: user_id}}
       }) do
-    with %Friend{status: :accepted} <- Accounts.find_existing_friend(friend_user_id, user_id) do
-      {:ok,
-       %{
-         user: Accounts.get_user_for_comparison(user_id),
-         friend: Accounts.get_user_for_comparison(friend_user_id)
-       }}
-    else
+    case Accounts.find_existing_friend(friend_user_id, user_id) do
+      %Friend{status: :accepted} ->
+        {:ok,
+         %{
+           user: Accounts.get_user_for_comparison(user_id),
+           friend: Accounts.get_user_for_comparison(friend_user_id)
+         }}
+
       _ ->
         {:error, message: "It seems you are not a friend with this user."}
     end
