@@ -1,5 +1,7 @@
 defmodule OmegaBraveraWeb.Api.Types.Account do
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
   alias OmegaBravera.{Accounts, Points}
 
   object :user do
@@ -85,7 +87,9 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :total_points_this_week, non_null(:decimal)
     field :total_rewards, non_null(:integer)
     field :total_kilometers, non_null(:decimal)
+    field :total_kilometers_today, non_null(:decimal)
     field :total_kilometers_this_week, non_null(:decimal)
+    field :total_kilometers_this_month, non_null(:decimal)
     field :daily_points_limit, non_null(:integer)
     field :total_challenges, non_null(:integer)
     field :offer_challenges_map, :offer_challenges_map
@@ -108,7 +112,11 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
       end
 
     field :email_verified, non_null(:boolean)
+    field :inserted_at, non_null(:date)
+    field :groups, list_of(non_null(:partner)), resolve: dataloader(OmegaBravera.Groups)
   end
+
+  connection(node_type: :user_profile)
 
   object :user_points_with_history do
     field :balance, non_null(:decimal)
@@ -191,5 +199,23 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :new_offer, non_null(:boolean)
     field :new_group, non_null(:boolean)
     field :expiring_reward, non_null(:boolean)
+  end
+
+  enum :friend_status do
+    value :pending, description: "Friend request pending accept/reject"
+
+    value :accepted,
+      description: "Friend request accepted"
+  end
+
+  object :friend do
+    field :receiver, non_null(:user_profile), resolve: dataloader(Accounts)
+    field :requester, non_null(:user_profile), resolve: dataloader(Accounts)
+    field :status, non_null(:friend_status)
+  end
+
+  object :friend_compare do
+    field :user, non_null(:user_profile)
+    field :friend, non_null(:user_profile)
   end
 end

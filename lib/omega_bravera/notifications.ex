@@ -571,4 +571,18 @@ defmodule OmegaBravera.Notifications do
       distinct: [nd.user_id, nd.token]
     )
   end
+
+  @doc """
+  List notification_devices of the given user
+  """
+  @spec list_notification_devices_by_user_id(integer()) :: [Device.t()]
+  def list_notification_devices_by_user_id(user_id) do
+    from(nd in Device,
+      left_join: u in assoc(nd, :user),
+      on: u.push_notifications == true,
+      where: nd.user_id == ^user_id,
+      group_by: [nd.id, nd.token]
+    )
+    |> Repo.all()
+  end
 end

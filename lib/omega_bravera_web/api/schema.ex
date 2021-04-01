@@ -184,6 +184,27 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Groups.leave_group/3
     end
+
+    @desc "create a friend request"
+    field :create_friend_request, :friend do
+      arg :receiver_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.create_friend_request/3
+    end
+
+    @desc "accept a friend request"
+    field :accept_friend_request, :friend do
+      arg :requester_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.accept_friend_request/3
+    end
+
+    @desc "reject a friend request"
+    field :reject_friend_request, :friend do
+      arg :requester_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.reject_friend_request/3
+    end
   end
 
   query do
@@ -392,6 +413,33 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.noti_offer_group_redeem/3
     end
+
+    @desc "list and search friends paginated"
+    connection field :list_friends, node_type: :user_profile do
+      arg :keyword, :string
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.list_friends/3
+    end
+
+    @desc "list friend requests"
+    field :list_friend_requests, list_of(non_null(:friend)) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.list_friend_requests/3
+    end
+
+    @desc "list users that can send friend request to"
+    connection field :list_possible_friends, node_type: :user_profile do
+      arg :keyword, :string
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.list_possible_friends/3
+    end
+
+    @desc "Compare with friend"
+    field :compare_with_friend, non_null(:friend_compare) do
+      arg :friend_user_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.compare_with_friend/3
+    end
   end
 
   subscription do
@@ -429,6 +477,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
       Dataloader.new()
       |> Dataloader.add_source(OmegaBravera.Offers, OmegaBravera.Offers.datasource())
       |> Dataloader.add_source(OmegaBravera.Groups, OmegaBravera.Groups.datasource(ctx))
+      |> Dataloader.add_source(OmegaBravera.Accounts, OmegaBravera.Accounts.datasource())
 
     Map.put(ctx, :loader, loader)
   end
