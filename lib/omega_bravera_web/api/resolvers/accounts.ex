@@ -449,6 +449,21 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
+  def change_email(_root, %{email: _email} = args, %{
+        context: %{current_user: %{id: user_id}}
+      }) do
+    user = Accounts.get_user!(user_id)
+
+    case Accounts.update_user(user, args) do
+      {:ok, updated_user} = ok_tuple ->
+        Accounts.Notifier.send_user_signup_email(updated_user)
+        ok_tuple
+
+      _ ->
+        {:error, message: "Could not save new email"}
+    end
+  end
+
   def create_friend_request(_root, %{receiver_id: receiver_id}, %{
         context: %{current_user: %{id: requester_id}}
       }),
