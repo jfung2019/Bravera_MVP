@@ -6,6 +6,7 @@ defmodule OmegaBravera.Accounts do
   import Ecto.Query, warn: false
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias Ecto.Multi
+  alias Absinthe.Relay
   alias OmegaBravera.Accounts.Jobs
   @organization_max_points 1000
 
@@ -36,7 +37,8 @@ defmodule OmegaBravera.Accounts do
     Activity.ActivityAccumulator,
     Groups.Member,
     Accounts.Organization,
-    Accounts.OrganizationMember
+    Accounts.OrganizationMember,
+    Accounts.Friend
   }
 
   def get_all_athlete_ids() do
@@ -2361,4 +2363,143 @@ defmodule OmegaBravera.Accounts do
     )
     |> Repo.all()
   end
+
+  @doc """
+  create friend request
+  """
+  @spec create_friend_request(map()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
+  def create_friend_request(%{receiver_id: receiver_id, requester_id: requester_id} = attrs) do
+    with nil <- find_existing_friend(receiver_id, requester_id) do
+      %Friend{}
+      |> Friend.request_changeset(attrs)
+      |> Repo.insert()
+      |> notify_user()
+    else
+      %Friend{} = friend ->
+        {:ok, friend}
+    end
+  end
+
+  @spec find_existing_friend(integer(), integer()) :: Friend.t() | nil
+  def find_existing_friend(receiver_id, requester_id) do
+    from(f in Friend,
+      where:
+        (f.receiver_id == ^receiver_id and f.requester_id == ^requester_id) or
+          (f.receiver_id == ^requester_id and f.requester_id == ^receiver_id)
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  accept friend request
+  """
+  @spec accept_friend_request(Friend.t()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
+  def accept_friend_request(%Friend{} = friend) do
+    friend
+    |> Friend.accept_changeset(%{})
+    |> Repo.update()
+    |> notify_user()
+  end
+
+  @spec notify_user(tuple()) :: tuple()
+  defp notify_user({:ok, %Friend{} = friend} = tuple) do
+    OmegaBravera.Notifications.Jobs.NotifyNewFriend.new(friend)
+    |> Oban.insert()
+
+    tuple
+  end
+
+  defp notify_user(tuple), do: tuple
+
+  @doc """
+  reject friend request
+  """
+  @spec reject_friend_request(Friend.t()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
+  def reject_friend_request(%Friend{} = friend), do: Repo.delete(friend)
+
+  @doc """
+  get friend by receiver_id and requester_id
+  """
+  @spec get_friend_by_receiver_id_requester_id(integer(), integer()) :: Friend.t() | nil
+  def get_friend_by_receiver_id_requester_id(receiver_id, requester_id) do
+    from(f in Friend, where: f.receiver_id == ^receiver_id and f.requester_id == ^requester_id)
+    |> Repo.one()
+  end
+
+  @doc """
+  list and search accepted friends
+  """
+  @spec list_accepted_friends(integer(), String.t(), map()) :: [User.t()]
+  def list_accepted_friends(user_id, keyword, pagination_args) do
+    search = "%#{keyword}%"
+
+    from(u in User,
+      left_join: f in Friend,
+      on: f.receiver_id == u.id or f.requester_id == u.id,
+      where:
+        f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id) and
+          u.id != ^user_id and ilike(u.username, ^search),
+      order_by: [u.username]
+    )
+    |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
+  end
+
+  @doc """
+  list friend requests
+  """
+  @spec list_friend_requests(integer()) :: [Friend.t()]
+  def list_friend_requests(user_id) do
+    from(f in Friend, where: f.status == :pending and f.receiver_id == ^user_id)
+    |> Repo.all()
+  end
+
+  @doc """
+  search and list users that can send friend request to
+  """
+  @spec list_possible_friends(integer(), String.t(), map()) :: [User.t()]
+  def list_possible_friends(user_id, keyword, pagination_args) do
+    search = "%#{keyword}%"
+
+    from(u in User,
+      left_join: f in Friend,
+      on: f.receiver_id == u.id or f.requester_id == u.id,
+      where: is_nil(f.id) and u.id != ^user_id and ilike(u.username, ^search),
+      order_by: u.username
+    )
+    |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
+  end
+
+  @doc """
+  get information of the given user for comparison
+  """
+  @spec get_user_for_comparison(integer()) :: User.t()
+  def get_user_for_comparison(user_id) do
+    now = Timex.now()
+    beginning_of_week = Timex.beginning_of_week(now)
+    end_of_week = Timex.end_of_week(now)
+    beginning_of_month = Timex.beginning_of_month(now)
+    end_of_month = Timex.end_of_month(now)
+
+    from(u in User,
+      left_join: ttd in subquery(activity_query(now, now)),
+      on: ttd.user_id == u.id,
+      left_join: wtd in subquery(activity_query(beginning_of_week, end_of_week)),
+      on: wtd.user_id == u.id,
+      left_join: mtd in subquery(activity_query(beginning_of_month, end_of_month)),
+      on: mtd.user_id == u.id,
+      where: u.id == ^user_id,
+      group_by: [u.id, ttd.distance, wtd.distance, mtd.distance],
+      select: %{
+        u
+        | total_kilometers_today: coalesce(ttd.distance, 0),
+          total_kilometers_this_week: coalesce(wtd.distance, 0),
+          total_kilometers_this_month: coalesce(mtd.distance, 0)
+      }
+    )
+    |> Repo.one()
+  end
+
+  def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)
+
+  def query(queryable, _), do: queryable
 end
