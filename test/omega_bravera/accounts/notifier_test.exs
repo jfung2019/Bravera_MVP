@@ -17,7 +17,7 @@ defmodule OmegaBravera.Accounts.NotifierTest do
         email_activation_token: "8wqfT-c2L1V1lSRb_2eum3Ep3Tf2bDP4"
       })
 
-    result = Notifier.user_signup_email(user, "/", "b47d2224-792a-43d8-b4b2-f53b033d2f41")
+    result = Notifier.user_signup_email(user, "/", "d-1dc516c092744a15a0f5b1430962fa0d") |> IO.inspect()
 
     assert result == %SendGrid.Email{
              __phoenix_layout__: nil,
@@ -31,14 +31,15 @@ defmodule OmegaBravera.Accounts.NotifierTest do
              reply_to: nil,
              send_at: nil,
              subject: nil,
-             substitutions: %{
-               "-firstName-" => "Rafael Garcia",
-               "-emailVerificationUrl-" =>
+             dynamic_template_data: %{
+               "code" => user.email_activation_token,
+               "firstName" => "Rafael Garcia",
+               "emailVerificationUrl" =>
                  Routes.user_url(Endpoint, :activate_email, user.email_activation_token, %{
                    redirect_to: "/"
                  })
              },
-             template_id: "b47d2224-792a-43d8-b4b2-f53b033d2f41",
+             template_id: "d-1dc516c092744a15a0f5b1430962fa0d",
              to: [%{email: "simon.garciar@gmail.com"}],
              bcc: [%{email: "admin@bravera.co"}]
            }
