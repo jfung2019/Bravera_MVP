@@ -26,4 +26,13 @@ defmodule OmegaBravera.Accounts.Shared do
 
   def gen_token(length \\ 16),
     do: :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
+
+  def gen_user_activate_email_token(length \\ 6) do
+    {code, _} =
+      :crypto.strong_rand_bytes(length)
+      |> Base.encode16()
+      |> Integer.parse(16)
+
+    to_string(code) |> binary_part(0, length)
+  end
 end

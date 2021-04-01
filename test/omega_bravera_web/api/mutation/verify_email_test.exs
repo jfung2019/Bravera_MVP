@@ -11,6 +11,16 @@ defmodule OmegaBraveraWeb.Api.Mutation.VerifyEmailTest do
   }
   """
 
+
+  @change_email """
+  mutation($email: String!) {
+    changeEmail(email: $email) {
+      id
+      email
+    }
+  }
+  """
+
   setup %{conn: conn} do
     user =
       insert(:user, %{
@@ -44,5 +54,12 @@ defmodule OmegaBraveraWeb.Api.Mutation.VerifyEmailTest do
     assert %{
              "errors" => [%{"message" => "The verification code is incorrect. Please try again."}]
            } = json_response(response, 200)
+  end
+
+  test "can change email", %{conn: conn} do
+    response = post(conn, "/api", %{query: @change_email, variables: %{"email" => "change@email.com"}})
+
+    assert %{"data" => %{"changeEmail" => %{"email" => "change@email.com"}}} =
+             json_response(response, 200)
   end
 end

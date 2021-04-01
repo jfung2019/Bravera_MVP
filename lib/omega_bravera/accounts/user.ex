@@ -157,7 +157,7 @@ defmodule OmegaBravera.Accounts.User do
       new_email != user.email ->
         changeset
         |> put_change(:email_verified, false)
-        |> put_change(:email_activation_token, gen_token())
+        |> put_change(:email_activation_token, gen_user_activate_email_token())
 
       true ->
         changeset

@@ -37,23 +37,18 @@ defmodule OmegaBravera.Accounts.Notifier do
   end
 
   def send_user_signup_email(%User{} = user, redirect_to \\ "/") do
-    template_id = "b47d2224-792a-43d8-b4b2-f53b033d2f41"
-    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
-    user = Repo.preload(user, [:subscribed_email_categories])
-
-    if user_subscribed_in_category?(user.subscribed_email_categories, sendgrid_email.category.id) do
-      user
-      |> user_signup_email(redirect_to, template_id)
-      |> Mail.send()
-    end
+    user
+    |> user_signup_email(redirect_to, "d-1dc516c092744a15a0f5b1430962fa0d")
+    |> Mail.send()
   end
 
   def user_signup_email(%User{} = user, redirect_to, template_id) do
     Email.build()
     |> Email.put_template(template_id)
-    |> Email.add_substitution("-firstName-", User.full_name(user))
-    |> Email.add_substitution(
-      "-emailVerificationUrl-",
+    |> Email.add_dynamic_template_data("firstName", User.full_name(user))
+    |> Email.add_dynamic_template_data("code", user.email_activation_token)
+    |> Email.add_dynamic_template_data(
+      "emailVerificationUrl",
       Routes.user_url(Endpoint, :activate_email, user.email_activation_token, %{
         redirect_to: redirect_to
       })
