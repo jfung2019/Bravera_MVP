@@ -114,6 +114,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :email_verified, non_null(:boolean)
     field :inserted_at, non_null(:date)
     field :groups, list_of(non_null(:partner)), resolve: dataloader(OmegaBravera.Groups)
+    field :friend_requested, non_null(:boolean)
   end
 
   connection(node_type: :user_profile)

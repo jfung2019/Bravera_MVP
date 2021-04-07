@@ -2465,8 +2465,11 @@ defmodule OmegaBravera.Accounts do
       on:
         (f.receiver_id == u.id and f.requester_id == ^user_id) or
           (f.requester_id == u.id and f.receiver_id == ^user_id),
-      where: is_nil(f.id) and u.id != ^user_id and ilike(u.username, ^search),
-      order_by: u.username
+      where:
+        u.id != ^user_id and ilike(u.username, ^search) and
+          (is_nil(f.id) or f.status != :accepted),
+      order_by: u.username,
+      select: %{u | friend_requested: not is_nil(f.id)}
     )
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
