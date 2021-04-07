@@ -2462,7 +2462,9 @@ defmodule OmegaBravera.Accounts do
 
     from(u in User,
       left_join: f in Friend,
-      on: f.receiver_id == u.id or f.requester_id == u.id,
+      on:
+        (f.receiver_id == u.id and f.requester_id == ^user_id) or
+          (f.requester_id == u.id and f.receiver_id == ^user_id),
       where: is_nil(f.id) and u.id != ^user_id and ilike(u.username, ^search),
       order_by: u.username
     )

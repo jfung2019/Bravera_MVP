@@ -11,7 +11,6 @@ defmodule OmegaBraveraWeb.Api.Mutation.VerifyEmailTest do
   }
   """
 
-
   @change_email """
   mutation($email: String!) {
     changeEmail(email: $email) {
@@ -57,7 +56,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.VerifyEmailTest do
   end
 
   test "can change email", %{conn: conn} do
-    response = post(conn, "/api", %{query: @change_email, variables: %{"email" => "change@email.com"}})
+    response =
+      post(conn, "/api", %{query: @change_email, variables: %{"email" => "change@email.com"}})
 
     assert %{"data" => %{"changeEmail" => %{"email" => "change@email.com"}}} =
              json_response(response, 200)

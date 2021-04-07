@@ -146,14 +146,21 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
   end
 
   test "can list possible user for sending friend request", %{conn: conn, user2: %{id: user2_id}} do
+    %{id: user3_id} = insert(:user, %{email: "user3@email.com", username: "z"})
+    Accounts.create_friend_request(%{receiver_id: user3_id, requester_id: user2_id})
+
     response = post(conn, "/api", %{query: @list_possible_friends, variables: %{"first" => 3}})
 
     user2_id_string = to_string(user2_id)
+    user3_id_string = to_string(user3_id)
 
     assert %{
              "data" => %{
                "listPossibleFriends" => %{
-                 "edges" => [%{"node" => %{"id" => ^user2_id_string}}]
+                 "edges" => [
+                   %{"node" => %{"id" => ^user2_id_string}},
+                   %{"node" => %{"id" => ^user3_id_string}}
+                 ]
                }
              }
            } = json_response(response, 200)
