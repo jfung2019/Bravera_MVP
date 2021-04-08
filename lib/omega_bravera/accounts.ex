@@ -2480,13 +2480,15 @@ defmodule OmegaBravera.Accounts do
   @spec get_user_for_comparison(integer()) :: User.t()
   def get_user_for_comparison(user_id) do
     now = Timex.now()
+    beginning_of_day = Timex.beginning_of_day(now)
+    end_of_day = Timex.end_of_day(now)
     beginning_of_week = Timex.beginning_of_week(now)
     end_of_week = Timex.end_of_week(now)
     beginning_of_month = Timex.beginning_of_month(now)
     end_of_month = Timex.end_of_month(now)
 
     from(u in User,
-      left_join: ttd in subquery(activity_query(now, now)),
+      left_join: ttd in subquery(activity_query(beginning_of_day, end_of_day)),
       on: ttd.user_id == u.id,
       left_join: wtd in subquery(activity_query(beginning_of_week, end_of_week)),
       on: wtd.user_id == u.id,
