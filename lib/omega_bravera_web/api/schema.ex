@@ -31,7 +31,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     end
 
     @desc "Update email permission"
-    field :update_email_permission, :user do
+    field :update_email_permission, list_of(non_null(:email_category)) do
       arg :email_permissions, list_of(non_null(:string))
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.update_user_email_permission/3
@@ -218,6 +218,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :get_strava_oauth_url, :string do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.get_strava_oauth_url/3
+    end
+
+    @desc "List email categories"
+    field :list_email_categories, list_of(non_null(:email_category)) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.list_email_categories/3
     end
 
     @desc "Get User Settings"

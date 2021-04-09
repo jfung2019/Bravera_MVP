@@ -1,4 +1,4 @@
-defmodule OmegaBraveraWeb.Api.Mutation.UserEmailPermissionText do
+defmodule OmegaBraveraWeb.Api.Mutation.UserEmailPermissionTest do
   use OmegaBraveraWeb.ConnCase, async: true
 
   alias OmegaBravera.{Accounts, Locations, Fixtures}
@@ -6,7 +6,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.UserEmailPermissionText do
   @update_email_permission """
   mutation($email_permissions: List!) {
     updateEmailPermission(email_permissions: $email_permissions) {
-      emailPermissions
+      title
+      permitted
     }
   }
   """
@@ -41,22 +42,11 @@ defmodule OmegaBraveraWeb.Api.Mutation.UserEmailPermissionText do
     conn =
       post(conn, "/api", %{
         query: @update_email_permission,
-        variables: %{"email_permissions" => ["news", "activity"]}
+        variables: %{"email_permissions" => ["News, Offers, Updates", "Activity Updates"]}
       })
 
-    assert %{
-             "data" => %{"updateEmailPermission" => %{"emailPermissions" => ["news", "activity"]}}
-           } = json_response(conn, 200)
-  end
-
-  test "return error if input is invalid", %{conn: conn} do
-    conn =
-      post(conn, "/api", %{
-        query: @update_email_permission,
-        variables: %{"email_permissions" => ["news", "activities"]}
-      })
-
-    assert %{"errors" => [%{"details" => %{"email_permissions" => ["has an invalid entry"]}}]} =
-             json_response(conn, 200)
+    %{"data" => %{"updateEmailPermission" => permissions}} = json_response(conn, 200)
+    assert %{"title" => "Activity Updates", "permitted" => true} in permissions
+    assert %{"title" => "News, Offers, Updates", "permitted" => true} in permissions
   end
 end
