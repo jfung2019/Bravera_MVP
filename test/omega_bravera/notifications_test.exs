@@ -46,7 +46,7 @@ defmodule OmegaBravera.NotificationsTest do
     @invalid_attrs %{description: nil, title: nil}
 
     test "list_email_categories/0 returns all email_categories" do
-      assert length(Notifications.list_email_categories()) == 6
+      assert length(Notifications.list_email_categories()) == 4
     end
 
     test "get_email_category!/1 returns the email_category with given id", %{
