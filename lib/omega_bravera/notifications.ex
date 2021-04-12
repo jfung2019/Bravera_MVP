@@ -30,6 +30,7 @@ defmodule OmegaBravera.Notifications do
     from(c in EmailCategory,
       left_join: u in UserEmailCategories,
       on: c.id == u.category_id and u.user_id == ^user_id,
+      order_by: c.title,
       select: %{c | permitted: c.title == "Platform Notifications" or not is_nil(u.id)}
     )
     |> Repo.all()
