@@ -7,7 +7,7 @@ defmodule OmegaBravera.Notifications do
   alias OmegaBravera.Repo
   alias Ecto.Multi
 
-  alias OmegaBravera.Notifications.EmailCategory
+  alias OmegaBravera.Notifications.{EmailCategory, UserEmailCategories}
 
   @doc """
   Returns the list of email_categories.
@@ -20,6 +20,20 @@ defmodule OmegaBravera.Notifications do
   """
   def list_email_categories do
     Repo.all(EmailCategory)
+  end
+
+  @doc """
+  list all EmailCategory and check if user gave permission or not
+  """
+  @spec list_email_categories_permission(integer()) :: [EmailCategory.t()]
+  def list_email_categories_permission(user_id) do
+    from(c in EmailCategory,
+      left_join: u in UserEmailCategories,
+      on: c.id == u.category_id and u.user_id == ^user_id,
+      order_by: c.title,
+      select: %{c | permitted: c.title == "Platform Notifications" or not is_nil(u.id)}
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -220,8 +234,6 @@ defmodule OmegaBravera.Notifications do
     SendgridEmail.changeset(sendgrid_email, %{})
   end
 
-  alias OmegaBravera.Notifications.UserEmailCategories
-
   @doc """
   Returns the list of user_email_categories.
 
@@ -258,6 +270,15 @@ defmodule OmegaBravera.Notifications do
       preload: ^preloads
     )
     |> Repo.all()
+  end
+
+  @doc """
+  get UserEmailCategories from user_id and category_id
+  """
+  @spec get_user_email_category(integer(), integer()) :: UserEmailCategories.t() | nil
+  def get_user_email_category(user_id, category_id) do
+    from(u in UserEmailCategories, where: u.user_id == ^user_id and u.category_id == ^category_id)
+    |> Repo.one()
   end
 
   @doc """

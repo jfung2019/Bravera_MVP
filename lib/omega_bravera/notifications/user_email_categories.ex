@@ -2,10 +2,10 @@ defmodule OmegaBravera.Notifications.UserEmailCategories do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias OmegaBravera.Notifications.EmailCategory
+  alias OmegaBravera.{Notifications.EmailCategory, Acccounts.User}
 
   schema "user_email_categories" do
-    field :user_id, :id
+    belongs_to :user, User
     belongs_to :category, EmailCategory
     timestamps type: :utc_datetime
   end

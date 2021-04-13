@@ -32,7 +32,7 @@ defmodule OmegaBraveraWeb.EmailSettingsControllerTest do
         user
         |> Repo.preload(:subscribed_email_categories)
 
-      update_params = %{"subscribed_categories" => ["1", "4"]}
+      update_params = %{"subscribed_categories" => ["4"]}
       conn = post(conn, email_settings_path(conn, :update), update_params)
 
       updated_user =
@@ -40,8 +40,7 @@ defmodule OmegaBraveraWeb.EmailSettingsControllerTest do
         |> Repo.preload(:subscribed_email_categories)
 
       assert get_flash(conn, :info) =~ "Updated email settings sucessfully."
-      assert hd(updated_user.subscribed_email_categories).category_id == 1
-      assert hd(Enum.reverse(updated_user.subscribed_email_categories)).category_id == 4
+      assert hd(updated_user.subscribed_email_categories).category_id == 4
 
       # Ensure an email from unsubscribed category will not be sent to sendgrid.
       challenge = insert(:ngo_challenge, %{user: updated_user})

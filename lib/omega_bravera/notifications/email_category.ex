@@ -8,6 +8,8 @@ defmodule OmegaBravera.Notifications.EmailCategory do
     field :description, :string
     field :title, :string
 
+    field :permitted, :boolean, virtual: true
+
     has_many :sendgrid_emails, SendgridEmail, foreign_key: :category_id
   end
 

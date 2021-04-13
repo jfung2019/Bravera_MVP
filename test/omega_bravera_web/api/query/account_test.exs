@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential}
+  alias OmegaBravera.{Repo, Accounts.Credential, Notifications}
 
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
@@ -75,6 +75,16 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
       newOffer
       newGroup
       expiringReward
+    }
+  }
+  """
+
+  @list_email_categories """
+  query {
+    listEmailCategories {
+      title
+      description
+      permitted
     }
   }
   """
@@ -163,5 +173,25 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
         "homeInAppNoti" => %{"newOffer" => false, "newGroup" => false, "expiringReward" => false}
       }
     } = json_response(response, 200)
+  end
+
+  test "can get email categories", %{conn: conn} do
+    Notifications.create_email_category(%{
+      title: "Platform Notifications",
+      description: "Platform Notifications"
+    })
+
+    Notifications.create_email_category(%{title: "Activity", description: "Activity"})
+    response = post(conn, "/api", %{query: @list_email_categories})
+
+    assert %{"data" => %{"listEmailCategories" => category_list}} = json_response(response, 200)
+
+    assert %{"title" => "Activity", "description" => "Activity", "permitted" => false} in category_list
+
+    assert %{
+             "title" => "Platform Notifications",
+             "description" => "Platform Notifications",
+             "permitted" => true
+           } in category_list
   end
 end
