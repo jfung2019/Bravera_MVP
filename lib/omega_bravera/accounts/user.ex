@@ -3,7 +3,7 @@ defmodule OmegaBravera.Accounts.User do
   import Ecto.Changeset
   import OmegaBravera.Accounts.Shared
 
-  alias OmegaBravera.Accounts.{Credential, Setting}
+  alias OmegaBravera.Accounts.{Credential, Setting, PrivateChatMessage}
   alias OmegaBravera.Trackers.Strava
   alias OmegaBravera.Fundraisers.NGO
   alias OmegaBravera.Challenges.{NGOChal, Team}
@@ -91,6 +91,7 @@ defmodule OmegaBravera.Accounts.User do
     belongs_to :location, OmegaBravera.Locations.Location
     has_many :memberships, OmegaBravera.Groups.Member
     has_many :groups, through: [:memberships, :partner]
+    has_many :private_chat_messages, PrivateChatMessage, foreign_key: :from_user_id, references: :id
 
     many_to_many :teams, Team, join_through: "team_members"
 

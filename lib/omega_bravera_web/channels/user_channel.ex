@@ -4,7 +4,9 @@ defmodule OmegaBraveraWeb.UserChannel do
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   @group_channel_prefix "group_channel:"
   @user_channel_prefix "user_channel:"
+  @private_channel_prefix "private_channel:"
   @view OmegaBraveraWeb.GroupView
+  @private_chat_view OmegaBraveraWeb.PrivateChatView
   import Phoenix.View, only: [render_many: 3, render_one: 3, render_many: 4]
 
   @moduledoc """
@@ -43,7 +45,19 @@ defmodule OmegaBraveraWeb.UserChannel do
       groups: render_many(groups, @view, "show_group_with_messages.json")
     })
 
-    {:noreply, assign(socket, :group_ids, group_ids)}
+    friends = Accounts.list_accepted_friends_with_chat_messages(user_id)
+
+    friend_ids =
+      Enum.map(friends, fn %{id: friend_id} ->
+        :ok = socket.endpoint.subscribe("#{@private_channel_prefix}#{friend_id}")
+        friend_id
+      end)
+
+    push(socket, "friend_chats",
+      friend_chats: render_many(friends, @view, "show_friend_with_messages.json")
+    )
+
+    {:noreply, assign(socket, group_ids: group_ids, friend_ids: friend_ids)}
   end
 
   def handle_info(
