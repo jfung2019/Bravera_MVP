@@ -2469,7 +2469,7 @@ defmodule OmegaBravera.Accounts do
         u.id != ^user_id and ilike(u.username, ^search) and
           (is_nil(f.id) or f.status != :accepted),
       order_by: u.username,
-      select: %{u | friend_requested: not is_nil(f.id)}
+      select: %{u | friend_status: fragment("CASE WHEN ? THEN ? ELSE ? END", is_nil(f.id), :stranger, :pending)}
     )
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end

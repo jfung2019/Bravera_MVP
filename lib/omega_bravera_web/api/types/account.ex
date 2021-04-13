@@ -71,6 +71,15 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :strava_profile_picture, :string
   end
 
+  enum :user_friend_status do
+    value :pending, description: "Friend request pending accept/reject"
+
+    value :accepted,
+          description: "Friend request accepted"
+
+    value :stranger, description: "No friend request between 2 users"
+  end
+
   object :user_profile do
     field :id, non_null(:id)
     field :email, non_null(:string)
@@ -114,7 +123,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :email_verified, non_null(:boolean)
     field :inserted_at, non_null(:date)
     field :groups, list_of(non_null(:partner)), resolve: dataloader(OmegaBravera.Groups)
-    field :friend_requested, non_null(:boolean)
+    field :friend_status, non_null(:user_friend_status)
   end
 
   connection(node_type: :user_profile)
