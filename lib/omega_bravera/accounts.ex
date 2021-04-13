@@ -2465,8 +2465,11 @@ defmodule OmegaBravera.Accounts do
       on:
         (f.receiver_id == u.id and f.requester_id == ^user_id) or
           (f.requester_id == u.id and f.receiver_id == ^user_id),
-      where: is_nil(f.id) and u.id != ^user_id and ilike(u.username, ^search),
-      order_by: u.username
+      where:
+        u.id != ^user_id and ilike(u.username, ^search) and
+          (is_nil(f.id) or f.status != :accepted),
+      order_by: u.username,
+      select: %{u | friend_status: fragment("CASE WHEN ? THEN 'stranger' ELSE 'pending' END", is_nil(f.id))}
     )
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
@@ -2477,13 +2480,15 @@ defmodule OmegaBravera.Accounts do
   @spec get_user_for_comparison(integer()) :: User.t()
   def get_user_for_comparison(user_id) do
     now = Timex.now()
+    beginning_of_day = Timex.beginning_of_day(now)
+    end_of_day = Timex.end_of_day(now)
     beginning_of_week = Timex.beginning_of_week(now)
     end_of_week = Timex.end_of_week(now)
     beginning_of_month = Timex.beginning_of_month(now)
     end_of_month = Timex.end_of_month(now)
 
     from(u in User,
-      left_join: ttd in subquery(activity_query(now, now)),
+      left_join: ttd in subquery(activity_query(beginning_of_day, end_of_day)),
       on: ttd.user_id == u.id,
       left_join: wtd in subquery(activity_query(beginning_of_week, end_of_week)),
       on: wtd.user_id == u.id,

@@ -48,6 +48,7 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
           id
           username
           total_points
+          friendStatus
         }
       }
       pageInfo {
@@ -95,13 +96,15 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
   setup %{conn: conn} do
     user1 = insert(:user)
     user2 = insert(:user, %{email: "user2@email.com"})
+    user3 = insert(:user, %{email: "user3@email.com", username: "z"})
     credential = Fixtures.credential_fixture(user1.id)
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
     {:ok,
      conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"),
      user1: user1,
-     user2: user2}
+     user2: user2,
+     user3: user3}
   end
 
   test "can list friends", %{conn: conn, user1: %{id: user1_id}, user2: %{id: user2_id}} do
@@ -145,8 +148,11 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
            } = json_response(response, 200)
   end
 
-  test "can list possible user for sending friend request", %{conn: conn, user2: %{id: user2_id}} do
-    %{id: user3_id} = insert(:user, %{email: "user3@email.com", username: "z"})
+  test "can list possible users for sending friend request", %{
+    conn: conn,
+    user2: %{id: user2_id},
+    user3: %{id: user3_id}
+  } do
     Accounts.create_friend_request(%{receiver_id: user3_id, requester_id: user2_id})
 
     response = post(conn, "/api", %{query: @list_possible_friends, variables: %{"first" => 3}})
@@ -158,8 +164,36 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
              "data" => %{
                "listPossibleFriends" => %{
                  "edges" => [
-                   %{"node" => %{"id" => ^user2_id_string}},
-                   %{"node" => %{"id" => ^user3_id_string}}
+                   %{"node" => %{"id" => ^user2_id_string, "friendStatus" => "stranger"}},
+                   %{"node" => %{"id" => ^user3_id_string, "friendStatus" => "stranger"}}
+                 ]
+               }
+             }
+           } = json_response(response, 200)
+  end
+
+  test "can list possible users and show that a request was created", %{
+    conn: conn,
+    user1: %{id: user1_id},
+    user2: %{id: user2_id},
+    user3: %{id: user3_id}
+  } do
+    Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
+
+    {:ok, friend} =
+      Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user3_id})
+
+    Accounts.accept_friend_request(friend)
+
+    response = post(conn, "/api", %{query: @list_possible_friends, variables: %{"first" => 3}})
+
+    user2_id_string = to_string(user2_id)
+
+    assert %{
+             "data" => %{
+               "listPossibleFriends" => %{
+                 "edges" => [
+                   %{"node" => %{"id" => ^user2_id_string, "friendStatus" => "pending"}}
                  ]
                }
              }

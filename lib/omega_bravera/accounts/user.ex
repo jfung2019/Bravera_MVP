@@ -71,6 +71,7 @@ defmodule OmegaBravera.Accounts.User do
     field :total_challenges, :integer, virtual: true, default: 0
     field :position_on_leaderboard, :integer, virtual: true, default: 0
     field :friend_referrals, :integer, virtual: true
+    field :friend_status, Ecto.Enum, values: [:accepted, :pending, :stranger], default: :stranger, virtual: true
 
     # user login info
     field :last_login_datetime, :utc_datetime
