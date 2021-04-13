@@ -48,7 +48,7 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
           id
           username
           total_points
-          friendRequested
+          friendStatus
         }
       }
       pageInfo {
@@ -164,8 +164,8 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
              "data" => %{
                "listPossibleFriends" => %{
                  "edges" => [
-                   %{"node" => %{"id" => ^user2_id_string, "friendRequested" => false}},
-                   %{"node" => %{"id" => ^user3_id_string, "friendRequested" => false}}
+                   %{"node" => %{"id" => ^user2_id_string, "friendStatus" => "stranger"}},
+                   %{"node" => %{"id" => ^user3_id_string, "friendStatus" => "stranger"}}
                  ]
                }
              }
@@ -193,7 +193,7 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
              "data" => %{
                "listPossibleFriends" => %{
                  "edges" => [
-                   %{"node" => %{"id" => ^user2_id_string, "friendRequested" => true}}
+                   %{"node" => %{"id" => ^user2_id_string, "friendStatus" => "pending"}}
                  ]
                }
              }
