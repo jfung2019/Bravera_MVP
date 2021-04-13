@@ -356,17 +356,33 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  def update_user_email_permission(_root, %{email_permissions: email_permissions}, %{
-        context: %{current_user: current_user}
-      }) do
-    case Accounts.update_user(current_user, %{email_permissions: email_permissions}) do
-      {:ok, %{id: user_id}} ->
-        {:ok, Accounts.get_user_with_account_settings(user_id)}
+  def list_email_categories(_root, _args, %{context: %{current_user: %{id: user_id}}}),
+    do: {:ok, Notifications.list_email_categories_permission(user_id)}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:error,
-         message: "Could not save permission", details: Helpers.transform_errors(changeset)}
-    end
+  def update_user_email_permission(_root, %{email_permissions: email_permissions}, %{
+        context: %{current_user: %{id: user_id}}
+      }) do
+    Notifications.list_email_categories_permission(user_id)
+    |> Enum.each(fn category ->
+      if category.title != "Platform Notifications" do
+        cond do
+          category.title in email_permissions and not category.permitted ->
+            Notifications.create_user_email_categories(%{
+              category_id: category.id,
+              user_id: user_id
+            })
+
+          category.title not in email_permissions and category.permitted ->
+            Notifications.get_user_email_category(user_id, category.id)
+            |> Notifications.delete_user_email_categories()
+
+          true ->
+            :ok
+        end
+      end
+    end)
+
+    {:ok, Notifications.list_email_categories_permission(user_id)}
   end
 
   def refresh_auth_token(_root, _args, %{context: %{current_user: %{id: _id} = current_user}}) do

@@ -228,4 +228,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :user, non_null(:user_profile)
     field :friend, non_null(:user_profile)
   end
+
+  object :email_category do
+    field :title, non_null(:string)
+    field :description, non_null(:string)
+    field :permitted, non_null(:boolean)
+  end
 end
