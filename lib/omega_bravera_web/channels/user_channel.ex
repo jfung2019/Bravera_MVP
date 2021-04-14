@@ -4,9 +4,9 @@ defmodule OmegaBraveraWeb.UserChannel do
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   @group_channel_prefix "group_channel:"
   @user_channel_prefix "user_channel:"
-  @private_channel_prefix "private_channel:"
+  @pm_channel_prefix "pm_channel:"
   @view OmegaBraveraWeb.GroupView
-  @private_chat_view OmegaBraveraWeb.PrivateChatView
+  @pm_view OmegaBraveraWeb.PrivateChatView
   import Phoenix.View, only: [render_many: 3, render_one: 3, render_many: 4]
 
   @moduledoc """
@@ -49,13 +49,13 @@ defmodule OmegaBraveraWeb.UserChannel do
 
     friend_ids =
       Enum.map(friends, fn %{id: friend_id} ->
-        :ok = socket.endpoint.subscribe("#{@private_channel_prefix}#{friend_id}")
+        :ok = socket.endpoint.subscribe("#{@pm_channel_prefix}#{friend_id}")
         friend_id
       end)
 
-    push(socket, "friend_chats",
-      friend_chats: render_many(friends, @view, "show_friend_with_messages.json")
-    )
+    push(socket, "friend_chats", %{
+      friends: render_many(friends, @pm_view, "show_friend_with_messages.json", as: :friend)
+    })
 
     {:noreply, assign(socket, group_ids: group_ids, friend_ids: friend_ids)}
   end
@@ -123,6 +123,38 @@ defmodule OmegaBraveraWeb.UserChannel do
   end
 
   def handle_in(
+        "emoji_private_message",
+        %{"message_id" => message_id, "emoji" => emoji},
+        %{assigns: %{current_user: %{id: user_id}}} = socket
+      ) do
+    %{meta_data: %{emoji: emoji_map}} = message = Accounts.get_private_message!(message_id)
+    user_ids = Map.get(emoji_map, emoji, [])
+
+    emoji_map =
+      cond do
+        # at least this user, just remove the user, and keep others
+        user_id in user_ids and length(user_ids) > 1 ->
+          Map.put(emoji_map, emoji, Enum.reject(user_ids, fn u_id -> u_id == user_id end))
+
+        # only this user
+        user_id in user_ids and length(user_ids) == 1 ->
+          Map.delete(emoji_map, emoji)
+
+        # user doesn't currently emoji this
+        true ->
+          Map.put(emoji_map, emoji, [user_id | user_ids])
+      end
+
+    {:ok, message} = Accounts.update_private_message(message, %{meta_data: %{emoji: emoji_map}})
+
+    socket.endpoint.broadcast("#{@pm_channel_prefix}#{message.to_user_id}", "updated_message", %{
+      message: @pm_view.render("show_message.json", message: message)
+    })
+
+    {:noreply, socket}
+  end
+
+  def handle_in(
         "like_message",
         %{"message_id" => message_id},
         %{assigns: %{current_user: %{id: user_id}}} = socket
@@ -140,6 +172,29 @@ defmodule OmegaBraveraWeb.UserChannel do
 
     socket.endpoint.broadcast("#{@group_channel_prefix}#{message.group_id}", "updated_message", %{
       message: @view.render("show_message.json", message: message)
+    })
+
+    {:noreply, socket}
+  end
+
+  def handle_in(
+        "like_private_message",
+        %{"message_id" => message_id},
+        %{assigns: %{current_user: %{id: user_id}}} = socket
+      ) do
+    %{meta_data: %{likes: likes}} = message = Accounts.get_private_message!(message_id)
+
+    likes =
+      if user_id in likes do
+        Enum.reject(likes, fn u_id -> u_id == user_id end)
+      else
+        [user_id | likes]
+      end
+
+    {:ok, message} = Accounts.update_private_message(message, %{meta_data: %{likes: likes}})
+
+    socket.endpoint.broadcast("#{@pm_channel_prefix}#{message.to_user_id}", "updated_message", %{
+      message: @pm_view.render("show_message.json", message: message)
     })
 
     {:noreply, socket}
@@ -180,6 +235,36 @@ defmodule OmegaBraveraWeb.UserChannel do
     else
       push(socket, "removed_group", %{group: %{id: group_id}})
       {:reply, {:error, %{errors: %{group_id: ["not allowed"]}}}, socket}
+    end
+  end
+
+  def handle_in(
+        "create_message",
+        %{"message_params" => %{"to_user_id" => to_user_id} = message_params},
+        %{assigns: %{current_user: user, friend_ids: friend_ids}} = socket
+      ) do
+    if to_user_id in friend_ids do
+      case Accounts.create_private_chat_message(Map.put(message_params, "from_user_id", user.id)) do
+        {:ok, message} ->
+          message =
+            Accounts.get_private_message!(message.id)
+            |> Groups.notify_new_message()
+
+          socket.endpoint.broadcast(
+            "#{@pm_channel_prefix}#{message.to_user_id}",
+            "new_message",
+            %{
+              message: @pm_view.render("show_message.json", message: message)
+            }
+          )
+
+          {:noreply, socket}
+
+        {:error, changeset} ->
+          {:reply, {:error, %{errors: Helpers.transform_errors(changeset)}}, socket}
+      end
+    else
+      {:reply, {:error, %{errors: %{to_user_id: ["not allowed"]}}}, socket}
     end
   end
 

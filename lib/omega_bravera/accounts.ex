@@ -2506,7 +2506,7 @@ defmodule OmegaBravera.Accounts do
   list all friends with chat messages
   """
   @spec list_accepted_friends_with_chat_messages(integer(), integer()) :: [User.t()]
-  def list_accepted_friends_with_chat_messages(user_id, limit \\10) do
+  def list_accepted_friends_with_chat_messages(user_id, limit \\ 10) do
     from(u in User,
       as: :user,
       left_join: f in Friend,
@@ -2518,7 +2518,7 @@ defmodule OmegaBravera.Accounts do
           from(private_chat in PrivateChatMessage,
             where:
               private_chat.from_user_id == parent_as(:user).id or
-              private_chat.to_user_id == parent_as(:user).id,
+                private_chat.to_user_id == parent_as(:user).id,
             order_by: private_chat.inserted_at,
             limit: ^limit
           )
@@ -2526,8 +2526,11 @@ defmodule OmegaBravera.Accounts do
       on: pm.from_user_id == ^user_id or pm.to_user_id == ^user_id,
       where:
         f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id) and
-        u.id != ^user_id,
-      preload: [private_chat_messages: {message, [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]}]
+          u.id != ^user_id,
+      preload: [
+        private_chat_messages:
+          {message, [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]}
+      ]
     )
     |> Repo.all()
   end
@@ -2535,11 +2538,35 @@ defmodule OmegaBravera.Accounts do
   @doc """
   create new private_chat_message
   """
-  @spec create_private_chat_message(map()) :: {:ok, PrivateChatMessage.t()} | {:error, Ecto.Changeset.t()}
+  @spec create_private_chat_message(map()) ::
+          {:ok, PrivateChatMessage.t()} | {:error, Ecto.Changeset.t()}
   def create_private_chat_message(attrs \\ %{}) do
     %PrivateChatMessage{}
     |> PrivateChatMessage.changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  update private message
+  """
+  @spec update_private_message(PrivateChatMessage.t(), map()) ::
+          {:ok, PrivateChatMessage.t()} | {:error, Ecto.Changeset.t()}
+  def update_private_message(message, attrs \\ %{}) do
+    message
+    |> PrivateChatMessage.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Get private message with preload
+  """
+  @spec get_private_message!(String.t()) :: PrivateChatMessage.t()
+  def get_private_message!(message_id) do
+    from(pm in PrivateChatMessage,
+      where: pm.id == ^message_id,
+      preload: [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]
+    )
+    |> Repo.one!()
   end
 
   def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)

@@ -91,7 +91,10 @@ defmodule OmegaBravera.Accounts.User do
     belongs_to :location, OmegaBravera.Locations.Location
     has_many :memberships, OmegaBravera.Groups.Member
     has_many :groups, through: [:memberships, :partner]
-    has_many :private_chat_messages, PrivateChatMessage, foreign_key: :from_user_id, references: :id
+
+    has_many :private_chat_messages, PrivateChatMessage,
+      foreign_key: :from_user_id,
+      references: :id
 
     many_to_many :teams, Team, join_through: "team_members"
 
