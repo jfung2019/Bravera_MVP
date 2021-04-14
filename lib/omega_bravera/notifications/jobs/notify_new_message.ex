@@ -6,6 +6,10 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyNewMessage do
   alias OmegaBravera.{Notifications, Notifications.Jobs.Helper}
 
   @impl Oban.Worker
+  def perform(%{"to_user_id" => to_user_id}, _job) do
+#    message = OmegaBravera.Accounts.get_private_message!()
+  end
+
   def perform(%{"id" => message_id}, _job) do
     message = OmegaBravera.Groups.get_chat_message_with_group!(message_id)
 

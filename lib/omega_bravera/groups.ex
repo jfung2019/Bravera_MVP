@@ -12,7 +12,7 @@ defmodule OmegaBravera.Groups do
   alias Absinthe.Relay
 
   alias OmegaBravera.Groups.{Partner, Member, OfferPartner, ChatMessage, GroupApproval}
-  alias OmegaBravera.Accounts.Notifier
+  alias OmegaBravera.Accounts.{Notifier, PrivateChatMessage}
   alias OmegaBravera.Notifications.Jobs.NotifyNewMessage
 
   @doc """
@@ -916,16 +916,15 @@ defmodule OmegaBravera.Groups do
   @doc """
   Insert new oban job when new chat message is inserted for sending notification
   """
-  @spec notify_new_message(ChatMessage.t()) :: ChatMessage.t()
-  def notify_new_message(%ChatMessage{} = message) do
+  @spec notify_new_message(ChatMessage.t() | PrivateChatMessage.t()) ::
+          ChatMessage.t() | PrivateChatMessage.t()
+  def notify_new_message(message) do
     message
     |> NotifyNewMessage.new()
     |> Oban.insert()
 
     message
   end
-
-  def notify_new_message(message), do: message
 
   @doc """
   Updates a chat_message.
