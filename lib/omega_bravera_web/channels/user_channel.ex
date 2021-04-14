@@ -4,7 +4,6 @@ defmodule OmegaBraveraWeb.UserChannel do
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   @group_channel_prefix "group_channel:"
   @user_channel_prefix "user_channel:"
-  @pm_channel_prefix "pm_channel:"
   @view OmegaBraveraWeb.GroupView
   @pm_view OmegaBraveraWeb.PrivateChatView
   import Phoenix.View, only: [render_many: 3, render_one: 3, render_many: 4]
@@ -47,11 +46,7 @@ defmodule OmegaBraveraWeb.UserChannel do
 
     friends = Accounts.list_accepted_friends_with_chat_messages(user_id)
 
-    friend_ids =
-      Enum.map(friends, fn %{id: friend_id} ->
-        :ok = socket.endpoint.subscribe("#{@pm_channel_prefix}#{friend_id}")
-        friend_id
-      end)
+    friend_ids = Enum.map(friends, & &1.id)
 
     push(socket, "friend_chats", %{
       friends: render_many(friends, @pm_view, "show_friend_with_messages.json", as: :friend)
@@ -147,7 +142,7 @@ defmodule OmegaBraveraWeb.UserChannel do
 
     {:ok, message} = Accounts.update_private_message(message, %{meta_data: %{emoji: emoji_map}})
 
-    socket.endpoint.broadcast("#{@pm_channel_prefix}#{message.to_user_id}", "updated_message", %{
+    socket.endpoint.broadcast("#{@user_channel_prefix}#{message.to_user_id}", "updated_message", %{
       message: @pm_view.render("show_message.json", message: message)
     })
 
@@ -193,7 +188,7 @@ defmodule OmegaBraveraWeb.UserChannel do
 
     {:ok, message} = Accounts.update_private_message(message, %{meta_data: %{likes: likes}})
 
-    socket.endpoint.broadcast("#{@pm_channel_prefix}#{message.to_user_id}", "updated_message", %{
+    socket.endpoint.broadcast("#{@user_channel_prefix}#{message.to_user_id}", "updated_message", %{
       message: @pm_view.render("show_message.json", message: message)
     })
 
@@ -251,7 +246,7 @@ defmodule OmegaBraveraWeb.UserChannel do
             |> Groups.notify_new_message()
 
           socket.endpoint.broadcast(
-            "#{@pm_channel_prefix}#{message.to_user_id}",
+            "#{@user_channel_prefix}#{message.to_user_id}",
             "new_message",
             %{
               message: @pm_view.render("show_message.json", message: message)
