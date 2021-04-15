@@ -65,6 +65,15 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:noreply, assign(socket, :group_ids, [group_id | socket.assigns.group_ids])}
   end
 
+  def handle_info(
+        %{event: "friend_chat" = event, payload: %{id: to_user_id}},
+        %{assigns: %{current_user: %{id: user_id}}} = socket
+      ) do
+    friend = Accounts.get_friend_with_chat_messages(user_id, to_user_id)
+    push(socket, event, %{friend: @pm_view.render("show_friend_with_messages.json", friend: friend)})
+    {:noreply, assign(socket, :friend_ids, [to_user_id | socket.assigns.friend_ids])}
+  end
+
   def handle_info(%{event: "removed_group" = event, payload: %{id: group_id}}, socket) do
     group = Groups.get_partner!(group_id)
     :ok = socket.endpoint.unsubscribe("#{@group_channel_prefix}#{group_id}")
@@ -222,6 +231,15 @@ defmodule OmegaBraveraWeb.UserChannel do
     groups = Groups.list_joined_partners_with_chat_messages(user_id)
 
     {:reply, {:ok, %{groups: render_many(groups, @view, "show_group_with_messages.json")}},
+     socket}
+  end
+
+  def handle_in("friend_chats", _payload, %{assigns: %{current_user: %{id: user_id}}} = socket) do
+    friends = Accounts.list_accepted_friends_with_chat_messages(user_id)
+
+    {:reply,
+     {:ok,
+      %{friends: render_many(friends, @pm_view, "show_friend_with_messages.json", as: :friend)}},
      socket}
   end
 

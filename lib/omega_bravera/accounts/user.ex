@@ -72,7 +72,11 @@ defmodule OmegaBravera.Accounts.User do
     field :position_on_leaderboard, :integer, virtual: true, default: 0
     field :friend_referrals, :integer, virtual: true
     field :chat_muted, :boolean, virtual: true
-    field :friend_status, Ecto.Enum, values: [:accepted, :pending, :stranger], default: :stranger, virtual: true
+
+    field :friend_status, Ecto.Enum,
+      values: [:accepted, :pending, :stranger],
+      default: :stranger,
+      virtual: true
 
     # user login info
     field :last_login_datetime, :utc_datetime
