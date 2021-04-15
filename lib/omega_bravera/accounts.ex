@@ -9,6 +9,8 @@ defmodule OmegaBravera.Accounts do
   alias Absinthe.Relay
   alias OmegaBravera.Accounts.Jobs
   @organization_max_points 1000
+  @endpoint OmegaBraveraWeb.Endpoint
+  @user_channel OmegaBraveraWeb.UserChannel
 
   alias OmegaBravera.{
     Repo,
@@ -2400,6 +2402,7 @@ defmodule OmegaBravera.Accounts do
     |> Friend.accept_changeset(%{})
     |> Repo.update()
     |> notify_user()
+    |> broadcast_friend_chat()
   end
 
   @spec notify_user(tuple()) :: tuple()
@@ -2411,6 +2414,22 @@ defmodule OmegaBravera.Accounts do
   end
 
   defp notify_user(tuple), do: tuple
+
+  defp broadcast_friend_chat(
+         {:ok, %{receiver_id: receiver_id, requester_id: requester_id}} = result
+       ) do
+    @endpoint.broadcast(@user_channel.user_channel(receiver_id), "friend_chat", %{
+      id: requester_id
+    })
+
+    @endpoint.broadcast(@user_channel.user_channel(requester_id), "friend_chat", %{
+      id: receiver_id
+    })
+
+    result
+  end
+
+  defp broadcast_friend_chat(result), do: result
 
   @doc """
   reject friend request
@@ -2488,7 +2507,10 @@ defmodule OmegaBravera.Accounts do
         u.id != ^user_id and ilike(u.username, ^search) and
           (is_nil(f.id) or f.status != :accepted),
       order_by: u.username,
-      select: %{u | friend_status: fragment("CASE WHEN ? THEN 'stranger' ELSE 'pending' END", is_nil(f.id))}
+      select: %{
+        u
+        | friend_status: fragment("CASE WHEN ? THEN 'stranger' ELSE 'pending' END", is_nil(f.id))
+      }
     )
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
@@ -2530,6 +2552,7 @@ defmodule OmegaBravera.Accounts do
   """
   @spec list_accepted_friends_with_chat_messages(integer(), integer()) :: [User.t()]
   def list_accepted_friends_with_chat_messages(user_id, limit \\ 10) do
+    IO.inspect(user_id)
     from(u in User,
       as: :user,
       left_join: f in Friend,
@@ -2566,6 +2589,50 @@ defmodule OmegaBravera.Accounts do
       }
     )
     |> Repo.all()
+  end
+
+  @doc """
+  Get friend with chat messages
+  """
+  def get_friend_with_chat_messages(user_id, to_user_id, limit \\ 10) do
+    from(u in User,
+      as: :user,
+      left_join: f in Friend,
+      on: f.receiver_id == u.id or f.requester_id == u.id,
+      left_join: message in PrivateChatMessage,
+      on: message.from_user_id == u.id or message.to_user_id == u.id,
+      left_lateral_join:
+        pm in subquery(
+          from(private_chat in PrivateChatMessage,
+            where:
+              private_chat.from_user_id == parent_as(:user).id or
+                private_chat.to_user_id == parent_as(:user).id,
+            order_by: [desc: :inserted_at],
+            limit: ^limit
+          )
+        ),
+      on: pm.from_user_id == ^user_id or pm.to_user_id == ^user_id,
+      where:
+        f.status == :accepted and
+          ((f.receiver_id == ^user_id and f.requester_id == ^to_user_id) or
+             (f.requester_id == ^user_id and f.receiver_id == ^to_user_id)) and
+          u.id != ^user_id and u.id == ^to_user_id,
+      preload: [
+        private_chat_messages:
+          {message, [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]}
+      ],
+      select: %{
+        u
+        | chat_muted:
+            fragment(
+              "CASE WHEN ? THEN ? ElSE ? END",
+              f.requester_id == u.id,
+              not is_nil(f.requester_muted),
+              not is_nil(f.receiver_muted)
+            )
+      }
+    )
+    |> Repo.one()
   end
 
   @doc """
