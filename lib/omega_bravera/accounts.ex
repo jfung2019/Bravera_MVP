@@ -2553,7 +2553,17 @@ defmodule OmegaBravera.Accounts do
       preload: [
         private_chat_messages:
           {message, [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]}
-      ]
+      ],
+      select: %{
+        u
+        | chat_muted:
+            fragment(
+              "CASE WHEN ? THEN ? ElSE ? END",
+              f.requester_id == u.id,
+              not is_nil(f.requester_muted),
+              not is_nil(f.receiver_muted)
+            )
+      }
     )
     |> Repo.all()
   end

@@ -6,6 +6,7 @@ defmodule OmegaBraveraWeb.PrivateChatView do
       id: friend.id,
       username: friend.username,
       image: friend.profile_picture,
+      muted: friend.chat_muted,
       chat_messages:
         Phoenix.View.render_many(friend.private_chat_messages, __MODULE__, "show_message.json",
           as: :message
