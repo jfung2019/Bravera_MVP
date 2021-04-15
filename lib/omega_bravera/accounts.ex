@@ -2419,6 +2419,24 @@ defmodule OmegaBravera.Accounts do
   def reject_friend_request(%Friend{} = friend), do: Repo.delete(friend)
 
   @doc """
+  mute or unmute receiver's notification
+  """
+  def mute_receiver_notification(friend, attrs \\ %{}) do
+    friend
+    |> Friend.mute_receiver_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  mute or unmute requester's notification
+  """
+  def mute_requester_notification(friend, attrs \\ %{}) do
+    friend
+    |> Friend.mute_requester_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
   get friend by receiver_id and requester_id
   """
   @spec get_friend_by_receiver_id_requester_id(integer(), integer()) :: Friend.t() | nil
@@ -2524,7 +2542,7 @@ defmodule OmegaBravera.Accounts do
             where:
               private_chat.from_user_id == parent_as(:user).id or
                 private_chat.to_user_id == parent_as(:user).id,
-            order_by: private_chat.inserted_at,
+            order_by: [desc: :inserted_at],
             limit: ^limit
           )
         ),
@@ -2563,15 +2581,71 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  Get private message with preload
+  delete private message
   """
-  @spec get_private_message!(String.t()) :: PrivateChatMessage.t()
-  def get_private_message!(message_id) do
+  @spec delete_private_message(PrivateChatMessage.t()) ::
+          {:ok, PrivateChatMessage.t()} | {:error, Ecto.Changeset.t()}
+  def delete_private_message(%PrivateChatMessage{} = message), do: Repo.delete(message)
+
+  def get_private_message_query(message_id) do
     from(pm in PrivateChatMessage,
       where: pm.id == ^message_id,
       preload: [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]
     )
+  end
+
+  @doc """
+  Get private message with preload
+  """
+  @spec get_private_message!(String.t()) :: PrivateChatMessage.t()
+  def get_private_message!(message_id) do
+    get_private_message_query(message_id)
     |> Repo.one!()
+  end
+
+  def get_private_message(message_id) do
+    get_private_message_query(message_id)
+    |> Repo.one()
+  end
+
+  @doc """
+  Get previous private messages
+  """
+  @spec get_previous_private_messages(String.t(), integer()) :: [PrivateChatMessage.t()]
+  def get_previous_private_messages(message_id, limit) do
+    message = get_private_message!(message_id)
+
+    from(pm in PrivateChatMessage,
+      where:
+        pm.inserted_at <= ^message.inserted_at and pm.id != ^message.id and
+          ((pm.from_user_id == ^message.from_user_id and pm.to_user_id == ^message.to_user_id) or
+             (pm.from_user_id == ^message.to_user_id and pm.to_user_id == ^message.from_user_id)),
+      limit: ^limit,
+      preload: [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get unread count from message_id
+  """
+  @spec get_unread_private_message_count(String.t()) :: integer()
+  def get_unread_private_message_count(message_id) do
+    case get_private_message(message_id) do
+      nil ->
+        0
+
+      message ->
+        from(pm in PrivateChatMessage,
+          select: count(),
+          where:
+            pm.inserted_at >= ^message.inserted_at and pm.id != ^message.id and
+              ((pm.from_user_id == ^message.from_user_id and pm.to_user_id == ^message.to_user_id) or
+                 (pm.from_user_id == ^message.to_user_id and
+                    pm.to_user_id == ^message.from_user_id))
+        )
+        |> Repo.one()
+    end
   end
 
   def datasource, do: Dataloader.Ecto.new(Repo, query: &query/2)

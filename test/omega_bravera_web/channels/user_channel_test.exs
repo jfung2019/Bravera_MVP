@@ -209,7 +209,7 @@ defmodule OmegaBraveraWeb.UserChannelTest do
       %{id: third_id} =
         Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
 
-      ref = push(socket, "unread_count", %{"message_ids" => [first_id, second_id, third_id]})
+      ref = push(socket, "unread_count", %{"message_ids" => [first_id, second_id, third_id], "pm_ids" => []})
       assert_reply ref, :ok, %{unread_count: %{^first_id => 2, ^second_id => 1, ^third_id => 0}}
     end
 
@@ -220,7 +220,7 @@ defmodule OmegaBraveraWeb.UserChannelTest do
     } do
       Fixtures.group_chat_message_fixture(%{group_id: group_id, user_id: user_id})
       id = "b58611d3-177c-4041-aafd-6802f2fc16b4"
-      ref = push(socket, "unread_count", %{"message_ids" => [id]})
+      ref = push(socket, "unread_count", %{"message_ids" => [id], "pm_ids" => []})
       assert_reply ref, :ok, %{unread_count: %{^id => 0}}
     end
 
