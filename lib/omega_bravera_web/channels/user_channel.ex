@@ -308,6 +308,17 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:reply, {:ok, %{unread_count: all_unread_count}}, socket}
   end
 
+  def handle_in("unread_count", %{"message_ids" => message_ids}, socket) do
+    group_unread_count =
+      message_ids
+      |> Enum.map(fn message_id ->
+        {message_id, Groups.get_unread_group_message_count(message_id)}
+      end)
+      |> Enum.into(%{})
+
+    {:reply, {:ok, %{unread_count: group_unread_count}}, socket}
+  end
+
   def handle_in("previous_messages", %{"message_id" => message_id, "limit" => limit}, socket) do
     previous_messages = Groups.get_previous_messages(message_id, limit)
 
