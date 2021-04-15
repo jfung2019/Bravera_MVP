@@ -16,7 +16,7 @@ defmodule OmegaBravera.Accounts.Shared do
       nil ->
         changeset
         |> Ecto.Changeset.change(%{
-          email_activation_token: gen_token()
+          email_activation_token: gen_user_activate_email_token()
         })
 
       _ ->
