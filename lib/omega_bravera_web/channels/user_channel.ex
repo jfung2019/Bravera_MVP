@@ -85,6 +85,13 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:noreply, socket}
   end
 
+  def handle_in("delete_private_message", %{"message_id" => message_id}, socket) do
+    Accounts.get_private_message!(message_id)
+    |> Accounts.delete_private_message()
+
+    {:noreply, socket}
+  end
+
   def handle_in(
         "emoji_message",
         %{"message_id" => message_id, "emoji" => emoji},
@@ -142,7 +149,15 @@ defmodule OmegaBraveraWeb.UserChannel do
 
     {:ok, message} = Accounts.update_private_message(message, %{meta_data: %{emoji: emoji_map}})
 
-    socket.endpoint.broadcast("#{@user_channel_prefix}#{message.to_user_id}", "updated_message", %{
+    socket.endpoint.broadcast(
+      "#{@user_channel_prefix}#{message.to_user_id}",
+      "updated_message",
+      %{
+        message: @pm_view.render("show_message.json", message: message)
+      }
+    )
+
+    push(socket, "updated_message", %{
       message: @pm_view.render("show_message.json", message: message)
     })
 
@@ -188,7 +203,15 @@ defmodule OmegaBraveraWeb.UserChannel do
 
     {:ok, message} = Accounts.update_private_message(message, %{meta_data: %{likes: likes}})
 
-    socket.endpoint.broadcast("#{@user_channel_prefix}#{message.to_user_id}", "updated_message", %{
+    socket.endpoint.broadcast(
+      "#{@user_channel_prefix}#{message.to_user_id}",
+      "updated_message",
+      %{
+        message: @pm_view.render("show_message.json", message: message)
+      }
+    )
+
+    push(socket, "updated_message", %{
       message: @pm_view.render("show_message.json", message: message)
     })
 
@@ -253,6 +276,10 @@ defmodule OmegaBraveraWeb.UserChannel do
             }
           )
 
+          push(socket, "new_message", %{
+            message: @pm_view.render("show_message.json", message: message)
+          })
+
           {:noreply, socket}
 
         {:error, changeset} ->
@@ -263,15 +290,22 @@ defmodule OmegaBraveraWeb.UserChannel do
     end
   end
 
-  def handle_in("unread_count", %{"message_ids" => message_ids}, socket) do
-    unread_count =
+  def handle_in("unread_count", %{"message_ids" => message_ids, "pm_ids" => pm_ids}, socket) do
+    group_unread_count =
       message_ids
       |> Enum.map(fn message_id ->
         {message_id, Groups.get_unread_group_message_count(message_id)}
       end)
       |> Enum.into(%{})
 
-    {:reply, {:ok, %{unread_count: unread_count}}, socket}
+    all_unread_count =
+      pm_ids
+      |> Enum.map(fn pm_id ->
+        {pm_id, Accounts.get_unread_private_message_count(pm_id)}
+      end)
+      |> Enum.into(group_unread_count)
+
+    {:reply, {:ok, %{unread_count: all_unread_count}}, socket}
   end
 
   def handle_in("previous_messages", %{"message_id" => message_id, "limit" => limit}, socket) do
@@ -279,6 +313,19 @@ defmodule OmegaBraveraWeb.UserChannel do
 
     {:reply,
      {:ok, %{messages: render_many(previous_messages, @view, "show_message.json", as: :message)}},
+     socket}
+  end
+
+  def handle_in(
+        "previous_private_messages",
+        %{"message_id" => message_id, "limit" => limit},
+        socket
+      ) do
+    previous_messages = Accounts.get_previous_private_messages(message_id, limit)
+
+    {:reply,
+     {:ok,
+      %{messages: render_many(previous_messages, @pm_view, "show_message.json", as: :message)}},
      socket}
   end
 
@@ -298,6 +345,37 @@ defmodule OmegaBraveraWeb.UserChannel do
     end
   end
 
+  def handle_in(
+        "mute_pm_notification",
+        %{"to_user_id" => to_user_id},
+        %{assigns: %{current_user: %{id: user_id}}} = socket
+      ) do
+    friend = Accounts.find_existing_friend(user_id, to_user_id)
+
+    cond do
+      friend.requester_id == user_id ->
+        case Accounts.mute_requester_notification(friend, mute_requester(friend)) do
+          {:ok, %{receiver_id: receiver_id, requester_muted: muted}} ->
+            {:reply, {:ok, %{to_user_id: receiver_id, muted: not is_nil(muted)}}, socket}
+
+          {:error, changeset} ->
+            {:reply, {:error, %{errors: Helpers.transform_errors(changeset)}}, socket}
+        end
+
+      friend.receiver_id == user_id ->
+        case Accounts.mute_receiver_notification(friend, mute_receiver(friend)) do
+          {:ok, %{requester_id: requester_id, receiver_muted: muted}} ->
+            {:reply, {:ok, %{to_user_id: requester_id, muted: not is_nil(muted)}}, socket}
+
+          {:error, changeset} ->
+            {:reply, {:error, %{errors: Helpers.transform_errors(changeset)}}, socket}
+        end
+
+      true ->
+        {:noreply, socket}
+    end
+  end
+
   def user_channel(user_id), do: "#{@user_channel_prefix}#{user_id}"
 
   # Add authorization logic here as required.
@@ -313,4 +391,12 @@ defmodule OmegaBraveraWeb.UserChannel do
   defp mute_group(%{mute_notification: nil}), do: %{mute_notification: Timex.now()}
 
   defp mute_group(_member), do: %{mute_notification: nil}
+
+  defp mute_receiver(%{receiver_muted: nil}), do: %{receiver_muted: Timex.now()}
+
+  defp mute_receiver(_friend), do: %{receiver_muted: nil}
+
+  defp mute_requester(%{requester_muted: nil}), do: %{requester_muted: Timex.now()}
+
+  defp mute_requester(_friend), do: %{requester_muted: nil}
 end

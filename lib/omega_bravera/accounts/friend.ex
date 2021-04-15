@@ -10,6 +10,8 @@ defmodule OmegaBravera.Accounts.Friend do
     belongs_to :receiver, User
     belongs_to :requester, User
     field :status, Ecto.Enum, values: [:accepted, :pending], default: :pending
+    field :receiver_muted, :utc_datetime
+    field :requester_muted, :utc_datetime
 
     timestamps()
   end
@@ -32,5 +34,13 @@ defmodule OmegaBravera.Accounts.Friend do
   def accept_changeset(friend, attrs) do
     changeset(friend, attrs)
     |> put_change(:status, :accepted)
+  end
+
+  def mute_receiver_changeset(friend, attrs) do
+    friend |> cast(attrs, [:receiver_muted])
+  end
+
+  def mute_requester_changeset(friend, attrs) do
+    friend |> cast(attrs, [:requester_muted])
   end
 end
