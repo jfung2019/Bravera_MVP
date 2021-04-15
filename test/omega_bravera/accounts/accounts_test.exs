@@ -95,7 +95,7 @@ defmodule OmegaBravera.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} =
+      assert {:ok, %User{email_activation_token: token} = user} =
                Accounts.create_user(%{
                  email: "test@test.com",
                  firstname: "some firstname",
@@ -107,6 +107,7 @@ defmodule OmegaBravera.AccountsTest do
       assert user.firstname == "some firstname"
       assert user.lastname == "some lastname"
       assert user.username == "#{user.firstname} #{user.lastname}"
+      assert Regex.match?(~r/^\d{6}$/, token)
     end
 
     test "cannot enter email with space at the beginning, end or middle" do
