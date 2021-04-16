@@ -43,6 +43,8 @@ defmodule OmegaBravera.Notifications.Jobs.NotifyNewMessage do
     message = OmegaBravera.Accounts.get_private_message!(message_id)
 
     Notifications.list_notification_devices_by_user_id(to_user_id)
-    |> Enum.each(&Helper.send_notification(&1, format_message(message), message.from_user.username))
+    |> Enum.each(
+      &Helper.send_notification(&1, format_message(message), message.from_user.username)
+    )
   end
 end

@@ -1133,7 +1133,16 @@ defmodule OmegaBravera.Accounts do
           friend_referrals: fr.count,
           marketing_email_permission: coalesce(permission.marketing_email_permission, false)
       },
-      group_by: [u.id, d.uuid, r.count, cr.count, td.sum, wtd.sum, fr.count, permission.marketing_email_permission]
+      group_by: [
+        u.id,
+        d.uuid,
+        r.count,
+        cr.count,
+        td.sum,
+        wtd.sum,
+        fr.count,
+        permission.marketing_email_permission
+      ]
     )
   end
 
@@ -2563,25 +2572,29 @@ defmodule OmegaBravera.Accounts do
   """
   @spec list_accepted_friends_with_chat_messages(integer(), integer()) :: [User.t()]
   def list_accepted_friends_with_chat_messages(user_id, limit \\ 10) do
-    IO.inspect(user_id)
-
     from(u in User,
       as: :user,
       left_join: f in Friend,
       on: f.receiver_id == u.id or f.requester_id == u.id,
       left_join: message in PrivateChatMessage,
-      on: message.from_user_id == u.id or message.to_user_id == u.id,
+      on:
+        (message.from_user_id == u.id and message.to_user_id == ^user_id) or
+          (message.from_user_id == ^user_id and message.to_user_id == u.id),
       left_lateral_join:
         pm in subquery(
           from(private_chat in PrivateChatMessage,
             where:
-              private_chat.from_user_id == parent_as(:user).id or
-                private_chat.to_user_id == parent_as(:user).id,
+              (private_chat.from_user_id == parent_as(:user).id and
+                 private_chat.to_user_id == ^user_id) or
+                (private_chat.from_user_id == ^user_id and
+                   private_chat.to_user_id == parent_as(:user).id),
             order_by: [desc: :inserted_at],
             limit: ^limit
           )
         ),
-      on: pm.from_user_id == ^user_id or pm.to_user_id == ^user_id,
+      on:
+        (pm.from_user_id == u.id and pm.to_user_id == ^user_id) or
+          (pm.from_user_id == ^user_id and pm.to_user_id == u.id),
       where:
         f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id) and
           u.id != ^user_id,
@@ -2612,18 +2625,24 @@ defmodule OmegaBravera.Accounts do
       left_join: f in Friend,
       on: f.receiver_id == u.id or f.requester_id == u.id,
       left_join: message in PrivateChatMessage,
-      on: message.from_user_id == u.id or message.to_user_id == u.id,
+      on:
+        (message.from_user_id == u.id and message.to_user_id == ^user_id) or
+          (message.from_user_id == ^user_id and message.to_user_id == u.id),
       left_lateral_join:
         pm in subquery(
           from(private_chat in PrivateChatMessage,
             where:
-              private_chat.from_user_id == parent_as(:user).id or
-                private_chat.to_user_id == parent_as(:user).id,
+              (private_chat.from_user_id == parent_as(:user).id and
+                 private_chat.to_user_id == ^user_id) or
+                (private_chat.from_user_id == ^user_id and
+                   private_chat.to_user_id == parent_as(:user).id),
             order_by: [desc: :inserted_at],
             limit: ^limit
           )
         ),
-      on: pm.from_user_id == ^user_id or pm.to_user_id == ^user_id,
+      on:
+        (pm.from_user_id == u.id and pm.to_user_id == ^user_id) or
+          (pm.from_user_id == ^user_id and pm.to_user_id == u.id),
       where:
         f.status == :accepted and
           ((f.receiver_id == ^user_id and f.requester_id == ^to_user_id) or
