@@ -12,6 +12,7 @@
 				<th><%= gettext("DOB") %></th>
 				<th><%= gettext("Sign Up Date") %></th>
 				<th><%= gettext("Email Verified") %></th>
+				<th><%= gettext("Marketing Email Permission") %></th>
 				<th><%= gettext("OS") %></th>
 				<th><%= gettext("Active") %></th>
 				<th><%= gettext("Rewards") %></th>
@@ -35,6 +36,7 @@
 				<td><%= if user.setting != nil, do: Timex.format!(user.setting.date_of_birth, "{D}/{0M}/{YYYY}") %></td>
 				<td><%= Timex.format!(user.inserted_at, "{D}/{0M}/{YY}") %></td>
 				<td><%= user.email_verified %></td>
+				<td><%= user.marketing_email_permission %></td>
 				<td><%= user.device_type %></td>
 				<td><%= user.active %></td>
 				<td><%= user.number_of_rewards %></td>

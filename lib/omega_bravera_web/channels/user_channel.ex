@@ -70,7 +70,11 @@ defmodule OmegaBraveraWeb.UserChannel do
         %{assigns: %{current_user: %{id: user_id}}} = socket
       ) do
     friend = Accounts.get_friend_with_chat_messages(user_id, to_user_id)
-    push(socket, event, %{friend: @pm_view.render("show_friend_with_messages.json", friend: friend)})
+
+    push(socket, event, %{
+      friend: @pm_view.render("show_friend_with_messages.json", friend: friend)
+    })
+
     {:noreply, assign(socket, :friend_ids, [to_user_id | socket.assigns.friend_ids])}
   end
 

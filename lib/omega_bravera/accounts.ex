@@ -1090,6 +1090,14 @@ defmodule OmegaBravera.Accounts do
         select: %{user_id: u.id, count: coalesce(over(count(r.id), :user_id), 0)}
       )
 
+    marketing_email_permission =
+      from(u in User,
+        left_join: permission in assoc(u, :subscribed_email_categories),
+        left_join: category in assoc(permission, :category),
+        where: category.title == "News, Offers, Updates",
+        select: %{user_id: u.id, marketing_email_permission: not is_nil(permission.id)}
+      )
+
     from(u in User,
       order_by: [desc: u.inserted_at],
       preload: [:setting, :location],
@@ -1107,6 +1115,8 @@ defmodule OmegaBravera.Accounts do
       on: wtd.user_id == u.id,
       left_join: fr in subquery(friend_referrals_query),
       on: fr.user_id == u.id,
+      left_join: permission in subquery(marketing_email_permission),
+      on: permission.user_id == u.id,
       select: %{
         u
         | active: fragment("? > 0", count(a.id)),
@@ -1120,9 +1130,10 @@ defmodule OmegaBravera.Accounts do
           number_of_rewards: r.count,
           total_kilometers: td.sum,
           total_kilometers_this_week: wtd.sum,
-          friend_referrals: fr.count
+          friend_referrals: fr.count,
+          marketing_email_permission: coalesce(permission.marketing_email_permission, false)
       },
-      group_by: [u.id, d.uuid, r.count, cr.count, td.sum, wtd.sum, fr.count]
+      group_by: [u.id, d.uuid, r.count, cr.count, td.sum, wtd.sum, fr.count, permission.marketing_email_permission]
     )
   end
 
@@ -2553,6 +2564,7 @@ defmodule OmegaBravera.Accounts do
   @spec list_accepted_friends_with_chat_messages(integer(), integer()) :: [User.t()]
   def list_accepted_friends_with_chat_messages(user_id, limit \\ 10) do
     IO.inspect(user_id)
+
     from(u in User,
       as: :user,
       left_join: f in Friend,
