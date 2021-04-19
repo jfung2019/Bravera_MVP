@@ -234,9 +234,9 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             conn
             |> put_flash(:info, gettext("Success! You have registered for this offer!"))
             |> put_session("created_offer_challenge", true)
-            |> redirect(
-              to: Routes.offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug)
-            )
+#            |> redirect(
+#              to: Routes.offer_offer_challenge_path(conn, :show, offer.slug, offer_challenge.slug)
+#            )
 
           {:error, %Ecto.Changeset{} = changeset} ->
             Logger.info("Could not sign up user for offer. Reason: #{inspect(changeset)}")
@@ -296,14 +296,14 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
           {:ok, _struct} ->
             conn
             |> put_flash(:info, "Removed team member sucessfully!")
-            |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
+#            |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
 
           {:error, reason} ->
             Logger.error("Could not remove team member, reason: #{inspect(reason)}")
 
             conn
             |> put_flash(:error, "Could not remove team member.")
-            |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
+#            |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
         end
     end
   end
@@ -332,7 +332,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
             )
             |> put_session("open_login_or_sign_up_to_join_team_modal", true)
             |> put_session("add_team_member_url", conn.request_path)
-            |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
+#            |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
 
           user ->
             # TODO: allow to fail gracefully when not found and passed to changeset. -Sherief
@@ -363,7 +363,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
                   :info,
                   "You are now part of #{inspect(User.full_name(challenge.user))} team."
                 )
-                |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
+#                |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
 
               {:error, reason} ->
                 Logger.info(
@@ -377,7 +377,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
                   :error,
                   "Something went wrong, please make sure you are logged in and clicked your link in your invitation email."
                 )
-                |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
+#                |> redirect(to: Routes.offer_offer_challenge_path(conn, :show, offer_slug, slug))
             end
         end
     end
