@@ -274,8 +274,9 @@ defmodule OmegaBraveraWeb.Router do
     pipe_through [:browser]
 
     resources "/", Offer.OfferController, only: [:index], param: "slug" do
-      resources "/", Offer.OfferChallengeController, only: [:show, :new, :create], param: "slug" do
-        get "/activities", Offer.OfferChallengeActivityController, :index
+      # :show, :new, :create
+      resources "/", Offer.OfferChallengeController, only: [], param: "slug" do
+#        get "/activities", Offer.OfferChallengeActivityController, :index
         get "/:redeem_token", Offer.OfferChallengeController, :send_qr_code
         get "/redeem/:redeem_token", Offer.OfferChallengeController, :new_redeem
         post "/:redeem_token", Offer.OfferChallengeController, :save_redeem
