@@ -22,7 +22,7 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersView do
 
   def get_total_redeems_value(offer_redeems) do
     Enum.filter(offer_redeems, fn offer_redeem ->
-      not is_nil(offer_redeem.offer_reward_id) and offer_redeem.status == "redeemed"
+      not is_nil(offer_redeem.offer_reward_id) and offer_redeem.status == "redeemed" and !is_nil(offer_redeem.offer_reward.value)
     end)
     |> Enum.reduce(0, &(&1.offer_reward.value + &2))
   end
