@@ -17,7 +17,7 @@
           <tr>
             <td><%= activity.id %></td>
             <td><%= activity.admin_id %></td>
-            <td><%= link("URL", to: Routes.offer_offer_challenge_path(@conn, :show, activity.offer_challenge.offer, activity.offer_challenge),  target: "_blank") %></td>
+            <td><%= #link("URL", to: Routes.offer_offer_challenge_path(@conn, :show, activity.offer_challenge.offer, activity.offer_challenge),  target: "_blank") %></td>
             <td><%= "#{activity.user.firstname} #{activity.user.lastname} (#{activity.user.email})" %></td>
           </tr>
         <% end %>
