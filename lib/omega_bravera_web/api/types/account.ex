@@ -125,6 +125,41 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   connection(node_type: :user_profile)
 
+  object :user_profile_locked do
+    field :id, non_null(:id)
+    field :username, :string
+    field :profile_picture, :string
+    field :friend_status, non_null(:string)
+  end
+
+  connection(node_type: :user_profile_locked)
+
+  object :friend_profile do
+    field :id, non_null(:id)
+    field :firstname, :string
+    field :lastname, :string
+    field :username, non_null(:string)
+
+    field :total_points, non_null(:decimal),
+          resolve: fn _parent, %{source: %{id: user_id}} ->
+            {:ok, Points.total_points(user_id)}
+          end
+
+    field :total_points_this_week, non_null(:decimal)
+    field :total_kilometers, non_null(:decimal)
+    field :total_kilometers_today, non_null(:decimal)
+    field :total_kilometers_this_week, non_null(:decimal)
+    field :total_kilometers_this_month, non_null(:decimal)
+    field :profile_picture, :string
+    field :strava, :strava
+
+    field :inserted_at, non_null(:date)
+    field :groups, list_of(non_null(:partner)), resolve: dataloader(OmegaBravera.Groups)
+    field :friend_status, non_null(:string)
+  end
+
+  connection(node_type: :friend_profile)
+
   object :user_points_with_history do
     field :balance, non_null(:decimal)
     field :history, non_null(list_of(:point_summary))
@@ -215,15 +250,21 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
       description: "Friend request accepted"
   end
 
+  object :possible_friend do
+    field :id, non_null(:id)
+    field :username, non_null(:string)
+    field :profile_picture, :string
+  end
+
   object :friend do
-    field :receiver, non_null(:user_profile), resolve: dataloader(Accounts)
-    field :requester, non_null(:user_profile), resolve: dataloader(Accounts)
+    field :receiver, non_null(:possible_friend), resolve: dataloader(Accounts)
+    field :requester, non_null(:possible_friend), resolve: dataloader(Accounts)
     field :status, non_null(:friend_status)
   end
 
   object :friend_compare do
     field :user, non_null(:user_profile)
-    field :friend, non_null(:user_profile)
+    field :friend, non_null(:friend_profile)
   end
 
   object :email_category do
