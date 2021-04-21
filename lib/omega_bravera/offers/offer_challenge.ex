@@ -103,7 +103,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> add_start_date(offer)
     |> add_end_date(offer)
     |> add_status(offer)
-    |> generate_slug(user)
+    |> generate_slug()
     |> put_change(:user_id, user.id)
     |> add_last_activity_received(offer)
     |> validate_required([:start_date, :end_date])
@@ -207,19 +207,15 @@ defmodule OmegaBravera.Offers.OfferChallenge do
   defp add_payment(%Ecto.Changeset{} = changeset, _, _),
     do: changeset
 
-  defp generate_slug(%Ecto.Changeset{} = changeset, %User{firstname: firstname}) do
-    slug = get_field(changeset, :slug)
+  defp generate_slug(%Ecto.Changeset{} = changeset) do
+    slug =
+      case get_field(changeset, :slug) do
+        nil ->
+          change(changeset, slug: "#{gen_unique_string()}-#{gen_unique_string()}")
 
-    cond do
-      not is_nil(slug) ->
-        changeset
-
-      is_nil(slug) and not is_nil(firstname) ->
-        change(changeset, slug: "#{Slug.slugify(firstname)}-#{gen_unique_string()}")
-
-      true ->
-        changeset
-    end
+        _ ->
+          changeset
+      end
   end
 
   defp gen_unique_string(length \\ 4),
