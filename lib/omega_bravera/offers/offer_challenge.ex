@@ -126,7 +126,7 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     |> put_change(:offer_id, offer.id)
     |> put_change(:distance_target, offer.target)
     |> validate_user_email_verified(user)
-    |> generate_slug(user)
+    |> generate_slug()
     |> add_one_offer_redeem_assoc(offer, user)
     |> validate_required(:slug)
     |> unique_constraint(:slug)
