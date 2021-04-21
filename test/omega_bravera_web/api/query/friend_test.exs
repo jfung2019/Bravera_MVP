@@ -27,13 +27,11 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
   @list_friend_requests """
   query {
     listFriendRequests {
-      receiver {
-        id
-        username
-      }
       requester {
         id
         username
+        firstname
+        lastname
       }
       status
     }
@@ -131,14 +129,12 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
     response =
       post(conn, "/api", %{query: @list_friend_requests, variables: %{"requesterId" => user2_id}})
 
-    user1_id_string = to_string(user1_id)
     user2_id_string = to_string(user2_id)
 
     assert %{
              "data" => %{
                "listFriendRequests" => [
                  %{
-                   "receiver" => %{"id" => ^user1_id_string},
                    "requester" => %{"id" => ^user2_id_string},
                    "status" => "PENDING"
                  }
