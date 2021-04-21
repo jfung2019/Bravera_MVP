@@ -186,21 +186,21 @@ defmodule OmegaBraveraWeb.Api.Schema do
     end
 
     @desc "create a friend request"
-    field :create_friend_request, :friend do
+    field :create_friend_request, :friend_request do
       arg :receiver_id, non_null(:id)
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.create_friend_request/3
     end
 
     @desc "accept a friend request"
-    field :accept_friend_request, :friend do
+    field :accept_friend_request, :friend_request do
       arg :requester_id, non_null(:id)
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.accept_friend_request/3
     end
 
     @desc "reject a friend request"
-    field :reject_friend_request, :friend do
+    field :reject_friend_request, :friend_request do
       arg :requester_id, non_null(:id)
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.reject_friend_request/3
@@ -428,13 +428,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
     end
 
     @desc "list friend requests"
-    field :list_friend_requests, list_of(non_null(:friend)) do
+    field :list_friend_requests, list_of(non_null(:friend_request)) do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.list_friend_requests/3
     end
 
     @desc "list users that can send friend request to"
-    connection field :list_possible_friends, node_type: :user_profile do
+    connection field :list_possible_friends, node_type: :user_profile_locked do
       arg :keyword, :string
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.list_possible_friends/3

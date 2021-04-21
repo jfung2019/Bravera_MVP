@@ -8,13 +8,11 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
   @create_friend_request """
   mutation($receiverId: ID!) {
     createFriendRequest(receiverId: $receiverId) {
-      receiver {
-        id
-        username
-      }
       requester {
         id
         username
+        firstname
+        lastname
       }
       status
     }
@@ -24,13 +22,11 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
   @accept_friend_request """
   mutation($requesterId: ID!) {
     acceptFriendRequest(requesterId: $requesterId) {
-      receiver {
-        id
-        username
-      }
       requester {
         id
         username
+        firstname
+        lastname
       }
       status
     }
@@ -40,13 +36,11 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
   @reject_friend_request """
   mutation($requesterId: ID!) {
     rejectFriendRequest(requesterId: $requesterId) {
-      receiver {
-        id
-        username
-      }
       requester {
         id
         username
+        firstname
+        lastname
       }
     }
   }
@@ -69,12 +63,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
       post(conn, "/api", %{query: @create_friend_request, variables: %{"receiverId" => user2_id}})
 
     user1_id_string = to_string(user1_id)
-    user2_id_string = to_string(user2_id)
 
     assert %{
              "data" => %{
                "createFriendRequest" => %{
-                 "receiver" => %{"id" => ^user2_id_string},
                  "requester" => %{"id" => ^user1_id_string},
                  "status" => "PENDING"
                }
@@ -92,13 +84,11 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
     response =
       post(conn, "/api", %{query: @create_friend_request, variables: %{"receiverId" => user2_id}})
 
-    user1_id_string = to_string(user1_id)
     user2_id_string = to_string(user2_id)
 
     assert %{
              "data" => %{
                "createFriendRequest" => %{
-                 "receiver" => %{"id" => ^user1_id_string},
                  "requester" => %{"id" => ^user2_id_string},
                  "status" => "PENDING"
                }
@@ -112,13 +102,11 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
     response =
       post(conn, "/api", %{query: @accept_friend_request, variables: %{"requesterId" => user2_id}})
 
-    user1_id_string = to_string(user1_id)
     user2_id_string = to_string(user2_id)
 
     assert %{
              "data" => %{
                "acceptFriendRequest" => %{
-                 "receiver" => %{"id" => ^user1_id_string},
                  "requester" => %{"id" => ^user2_id_string},
                  "status" => "ACCEPTED"
                }
@@ -132,13 +120,11 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
     response =
       post(conn, "/api", %{query: @reject_friend_request, variables: %{"requesterId" => user2_id}})
 
-    user1_id_string = to_string(user1_id)
     user2_id_string = to_string(user2_id)
 
     assert %{
              "data" => %{
                "rejectFriendRequest" => %{
-                 "receiver" => %{"id" => ^user1_id_string},
                  "requester" => %{"id" => ^user2_id_string}
                }
              }

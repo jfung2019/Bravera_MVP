@@ -208,14 +208,13 @@ defmodule OmegaBravera.Offers.OfferChallenge do
     do: changeset
 
   defp generate_slug(%Ecto.Changeset{} = changeset) do
-    slug =
-      case get_field(changeset, :slug) do
-        nil ->
-          change(changeset, slug: "#{gen_unique_string()}-#{gen_unique_string()}")
+    case get_field(changeset, :slug) do
+      nil ->
+        change(changeset, slug: "#{gen_unique_string()}-#{gen_unique_string()}")
 
-        _ ->
-          changeset
-      end
+      _ ->
+        changeset
+    end
   end
 
   defp gen_unique_string(length \\ 4),
