@@ -9,8 +9,6 @@ defmodule OmegaBravera.Challenges.Notifier do
   }
 
   alias OmegaBravera.Activity.ActivityAccumulator
-  alias OmegaBraveraWeb.Router.Helpers, as: Routes
-  alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mail}
   import OmegaBravera.Notifications, only: [user_subscribed_in_category?: 2]
 
@@ -33,7 +31,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-participantName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeLink-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
@@ -58,7 +56,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeLink-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
@@ -88,7 +86,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeLink-", "")
     |> Email.add_substitution(
       "-yearMonthDay-",
       Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
@@ -126,7 +124,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.add_substitution(
       "-startDate-",
       Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
@@ -171,7 +169,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     )
     |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
     |> Email.add_substitution("-timeRemaining-", "#{remaining_time(challenge)}")
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
@@ -191,7 +189,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.put_template(template_id)
     |> Email.add_substitution("-donorName-", donation.donor.firstname)
     |> Email.add_substitution("-participantName-", donation.ngo_chal.user.firstname)
-    |> Email.add_substitution("-challengeURL-", challenge_url(donation.ngo_chal))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donation.donor.email)
@@ -240,7 +238,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
@@ -260,7 +258,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.put_template(template_id)
     |> Email.add_substitution("-donorName-", donor.firstname)
     |> Email.add_substitution("-participantName-", User.full_name(challenge.user))
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donor.email)
@@ -287,7 +285,7 @@ defmodule OmegaBravera.Challenges.Notifier do
         %NGOChal{} = challenge,
         %{
           invitee_name: invitee_name,
-          token: token,
+          token: _token,
           email: email
         },
         template_id
@@ -297,7 +295,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_substitution("-inviteeName-", invitee_name)
     |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
     |> Email.add_substitution("-ngoName-", challenge.ngo.name)
-    |> Email.add_substitution("-teamInvitationLink-", team_member_invite_link(challenge, token))
+    |> Email.add_substitution("-teamInvitationLink-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(email)
@@ -336,7 +334,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
     |> Email.add_substitution("-inviteeName-", User.full_name(user))
     |> Email.add_substitution("-ngoName-", challenge.ngo.name)
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.add_substitution(
       "-startDate-",
       Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
@@ -363,27 +361,13 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_substitution("-buddyName-", name)
     |> Email.add_substitution("-participantName-", User.full_name(challenge.user))
     |> Email.add_substitution("-participantFirstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(email)
   end
 
   def buddy_invite_email(_, _) do
-  end
-
-  defp challenge_url(challenge) do
-    Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
-  end
-
-  defp team_member_invite_link(challenge, token) do
-    Routes.ngo_ngo_chal_ngo_chal_url(
-      Endpoint,
-      :add_team_member,
-      challenge.ngo.slug,
-      challenge.slug,
-      token
-    )
   end
 
   defp remaining_time(%NGOChal{end_date: end_date}) do

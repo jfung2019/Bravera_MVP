@@ -9,6 +9,7 @@ defmodule OmegaBraveraWeb.NGOControllerTest do
       assert html_response(conn, 404) =~ "You look lost, Mate."
     end
 
+    @tag :skip
     test "valid NGO slug will result in 200", %{conn: conn} do
       ngo = insert(:ngo)
       conn = get(conn, "/#{ngo.slug}")

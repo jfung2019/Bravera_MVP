@@ -1,10 +1,6 @@
 defmodule OmegaBravera.NotifierTest do
   use OmegaBravera.DataCase
   import OmegaBravera.Factory
-
-  alias OmegaBraveraWeb.Router.Helpers, as: Routes
-  alias OmegaBraveraWeb.Endpoint
-
   alias OmegaBravera.Donations.Notifier
 
   setup do
@@ -61,7 +57,7 @@ defmodule OmegaBravera.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeURL-" => challenge_url(challenge),
+               "-challengeURL-" => "",
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
                "-donorPledge-" => "HK$600",
                "-participantName-" => user.firstname
@@ -101,7 +97,7 @@ defmodule OmegaBravera.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeURL-" => challenge_url(pre_registration_challenge),
+               "-challengeURL-" => "",
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
                "-participantName-" => user.firstname,
                "-challengeStartDate-" =>
@@ -133,7 +129,7 @@ defmodule OmegaBravera.NotifierTest do
              subject: nil,
              from: %{email: "admin@bravera.co", name: "Bravera"},
              substitutions: %{
-               "-challengeURL-" => challenge_url(challenge),
+               "-challengeURL-" => "",
                "-donorName-" => "#{donor.firstname} #{donor.lastname}",
                "-participantName-" => user.firstname
              },
@@ -245,9 +241,5 @@ defmodule OmegaBravera.NotifierTest do
         ngo_chal: challenge
       })
     ]
-  end
-
-  defp challenge_url(challenge) do
-    Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
   end
 end

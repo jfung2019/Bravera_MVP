@@ -8,8 +8,6 @@ defmodule OmegaBravera.Donations.Notifier do
     Money.Donation
   }
 
-  alias OmegaBraveraWeb.Router.Helpers, as: Routes
-  alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mail}
   import OmegaBravera.Notifications, only: [user_subscribed_in_category?: 2]
 
@@ -78,7 +76,7 @@ defmodule OmegaBravera.Donations.Notifier do
         pledged_amount(pledges)
       }"
     )
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
@@ -102,7 +100,7 @@ defmodule OmegaBravera.Donations.Notifier do
       "-challengeStartDate-",
       Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
     )
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donor.email)
@@ -117,7 +115,7 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.put_template(donor_email_template_id)
     |> Email.add_substitution("-donorName-", Donor.full_name(donor))
     |> Email.add_substitution("-participantName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donor.email)
@@ -151,10 +149,6 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(donation.donor.email)
-  end
-
-  defp challenge_url(challenge) do
-    Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
   end
 
   defp pledged_amount(pledges) when is_list(pledges),

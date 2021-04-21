@@ -54,7 +54,7 @@ defmodule OmegaBraveraWeb.Admin.ActivityControllerTest do
     setup [:create_challenge]
 
     test "renders create activity form", %{conn: conn} do
-      conn = get(conn, admin_panel_activity_path(conn, :new))
+      conn = get(conn, Routes.admin_panel_activity_path(conn, :new))
       assert html_response(conn, 200) =~ "New NGO Activity"
     end
   end
@@ -66,12 +66,12 @@ defmodule OmegaBraveraWeb.Admin.ActivityControllerTest do
       conn =
         post(
           conn,
-          admin_panel_activity_path(conn, :create),
+          Routes.admin_panel_activity_path(conn, :create),
           activity_accumulator: %{@activity_create_attrs | "type" => challenge.activity_type},
           challenge_id: challenge.id
         )
 
-      assert redirected_to(conn) == admin_user_page_path(conn, :index)
+      assert redirected_to(conn) == Routes.admin_user_page_path(conn, :index)
       assert get_flash(conn, :info) =~ "Activity created successfully."
     end
 
@@ -98,7 +98,7 @@ defmodule OmegaBraveraWeb.Admin.ActivityControllerTest do
           challenge_id: challenge.id
         )
 
-      assert redirected_to(conn) == admin_user_page_path(conn, :index)
+      assert redirected_to(conn) == Routes.admin_user_page_path(conn, :index)
       assert get_flash(conn, :error) =~ "Activity not processed. Please check the logs."
     end
   end
