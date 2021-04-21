@@ -271,7 +271,13 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :profile_picture, :string
   end
 
+  object :friend_receiver do
+    field :id, non_null(:id)
+    field :username, non_null(:string)
+  end
+
   object :friend_request do
+    field :receiver, non_null(:friend_receiver)
     field :requester, non_null(:possible_friend), resolve: dataloader(Accounts)
     field :status, non_null(:friend_status)
   end
