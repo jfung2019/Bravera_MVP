@@ -38,7 +38,7 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
 
       conn =
         conn
-        |> get(strava_path(conn, :get_webhook_callback), %{"hub.challenge" => secret})
+        |> get(Routes.strava_path(conn, :get_webhook_callback), %{"hub.challenge" => secret})
 
       assert json_response(conn, 200) == %{
                "hub.mode" => "subscribe",
@@ -49,17 +49,17 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
   end
 
   test "strava redirect will use session path for after login redirect", %{conn: conn} do
-    offer_path = offer_path(conn, :index)
+    root_path = Routes.page_path(conn, :index)
 
     conn =
       conn
       |> bypass_through(OmegaBraveraWeb.Router, :browser)
       |> get("/")
-      |> put_session("after_login_redirect", offer_path)
+      |> put_session("after_login_redirect", root_path)
       |> send_resp(:ok, "")
       |> get(strava_path(conn, :authenticate))
 
-    assert "https://www.strava.com/oauth/authorize?client_id=23267&redirect_uri=http%3A%2F%2Flocalhost%3A4001%2Fstrava%2Fcallback%3Fredirect_to%3D%252Foffers&response_type=code&scope=activity%3Aread_all%2Cprofile%3Aread_all" =
+    assert "https://www.strava.com/oauth/authorize?client_id=23267&redirect_uri=http%3A%2F%2Flocalhost%3A4001%2Fstrava%2Fcallback%3Fredirect_to%3D%252F&response_type=code&scope=activity%3Aread_all%2Cprofile%3Aread_all" =
              redirected_to(conn)
   end
 
