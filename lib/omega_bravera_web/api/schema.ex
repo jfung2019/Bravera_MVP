@@ -277,13 +277,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
     end
 
     @desc "Get offer's offer challenges."
-    field :offer_offer_challenges, list_of(:offer_challenge) do
+    field :offer_offer_challenges, list_of(:offer_challenge_locked) do
       arg :offer_id, non_null(:id)
       resolve &Resolvers.Offers.offer_offer_challenges/3
     end
 
     @desc "Get offer's offer challenges, but paginated."
-    connection field :offer_offer_challenges_paginated, node_type: :offer_challenge do
+    connection field :offer_offer_challenges_paginated, node_type: :offer_challenge_locked do
       arg :offer_id, non_null(:id)
       resolve &Resolvers.Offers.offer_offer_challenges_paginated/3
     end

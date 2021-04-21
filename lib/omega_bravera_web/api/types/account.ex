@@ -26,6 +26,12 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :email_permissions, list_of(:string)
   end
 
+  object :user_locked do
+    field :username, non_null(:string)
+    field :profile_picture, :string
+    field :strava, :strava
+  end
+
   object :notification_token do
     field :token, non_null(:string)
   end

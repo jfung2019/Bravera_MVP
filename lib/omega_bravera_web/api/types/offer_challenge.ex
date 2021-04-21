@@ -25,6 +25,15 @@ defmodule OmegaBraveraWeb.Api.Types.OfferChallenge do
 
   connection(node_type: :offer_challenge)
 
+  object :offer_challenge_locked do
+    field :user, non_null(:user_locked)
+    field :distance_covered, :decimal
+    field :start_date, :date
+    field :end_date, :date
+  end
+
+  connection(node_type: :offer_challenge_locked)
+
   object :offer_challenges_map do
     field :total, :integer
     field :live, list_of(:offer_challenge)
