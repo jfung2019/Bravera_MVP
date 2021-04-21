@@ -311,24 +311,24 @@ defmodule OmegaBraveraWeb.Router do
     resources "/teams", TeamController, only: [:new, :create, :show]
     resources "/tips", TipController, only: [:new, :create, :show]
     get "/", PageController, :index
-    get "/ngos", NGOController, :index
-
-    resources "/", NGOController, only: [:show], param: "slug" do
-      get "/leaderboard", NGOController, :leaderboard, param: "slug"
-
-      resources "/", NGOChalController, only: [:show, :new, :create], param: "slug" do
-        resources "/donations", DonationController, only: [:create]
-        post "/follow_on_donation", DonationController, :create_and_charge_follow_on_donation
-        get "/donors", DonationController, :index
-        get "/activities", ActivityController, :index
-        post "/invite_buddies", NGOChalController, :invite_buddies
-        post "/invite_team_members", NGOChalController, :invite_team_members
-        get "/add_team_member/:invitation_token", NGOChalController, :add_team_member
-        get "/resend_invitation/:invitation_token", NGOChalController, :resend_invitation
-        get "/cancel_invitation/:invitation_token", NGOChalController, :cancel_invitation
-        post "/kick_team_member/:user_id", NGOChalController, :kick_team_member
-      end
-    end
+#    get "/ngos", NGOController, :index
+#
+#    resources "/", NGOController, only: [:show], param: "slug" do
+#      get "/leaderboard", NGOController, :leaderboard, param: "slug"
+#
+#      resources "/", NGOChalController, only: [:show, :new, :create], param: "slug" do
+#        resources "/donations", DonationController, only: [:create]
+#        post "/follow_on_donation", DonationController, :create_and_charge_follow_on_donation
+#        get "/donors", DonationController, :index
+#        get "/activities", ActivityController, :index
+#        post "/invite_buddies", NGOChalController, :invite_buddies
+#        post "/invite_team_members", NGOChalController, :invite_team_members
+#        get "/add_team_member/:invitation_token", NGOChalController, :add_team_member
+#        get "/resend_invitation/:invitation_token", NGOChalController, :resend_invitation
+#        get "/cancel_invitation/:invitation_token", NGOChalController, :cancel_invitation
+#        post "/kick_team_member/:user_id", NGOChalController, :kick_team_member
+#      end
+#    end
 
     get "/*path", PageController, :not_found
   end
