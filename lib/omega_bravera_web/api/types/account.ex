@@ -141,9 +141,9 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :username, non_null(:string)
 
     field :total_points, non_null(:decimal),
-          resolve: fn _parent, %{source: %{id: user_id}} ->
-            {:ok, Points.total_points(user_id)}
-          end
+      resolve: fn _parent, %{source: %{id: user_id}} ->
+        {:ok, Points.total_points(user_id)}
+      end
 
     field :total_points_this_week, non_null(:decimal)
     field :total_kilometers, non_null(:decimal)
