@@ -177,9 +177,22 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :leaderboard_result do
-    field :this_week, list_of(:user)
-    field :this_month, list_of(:user)
-    field :all_time, list_of(:user)
+    field :this_week, list_of(:leaderboard_user)
+    field :this_month, list_of(:leaderboard_user)
+    field :all_time, list_of(:leaderboard_user)
+  end
+
+  object :leaderboard_user do
+    field :id, non_null(:id)
+    field :username, non_null(:string)
+    field :profile_picture, :string
+    field :strava, :strava
+    field :total_points, :decimal
+    field :total_points_this_week, :decimal
+    field :total_points_this_month, :decimal
+    field :total_kilometers, :decimal
+    field :total_kilometers_this_week, :decimal
+    field :total_kilometers_this_month, :decimal
   end
 
   object :location do
