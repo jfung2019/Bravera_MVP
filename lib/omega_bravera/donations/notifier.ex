@@ -7,6 +7,7 @@ defmodule OmegaBravera.Donations.Notifier do
     Notifications,
     Money.Donation
   }
+
   alias SendGrid.{Email, Mail}
   import OmegaBravera.Notifications, only: [user_subscribed_in_category?: 2]
 

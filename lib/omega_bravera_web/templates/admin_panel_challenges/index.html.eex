@@ -34,7 +34,7 @@
           <td><%= challenge.user.lastname %></td>
           <td><%= challenge.user.additional_info["sex"]%> </td>
           <td><%= challenge.user.email %></td>
-          <td><%= link("URL", to: Routes.ngo_ngo_chal_path(@conn, :show, challenge.ngo.slug, challenge.slug),  target: "_blank") %></td>
+          <td>URL</td>
           <td><%= challenge.slug %></td>
           <td><%= challenge.activity_type %></td>
           <td><%= challenge.duration %></td>

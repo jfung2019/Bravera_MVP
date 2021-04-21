@@ -9,8 +9,6 @@ defmodule OmegaBravera.Challenges.Notifier do
   }
 
   alias OmegaBravera.Activity.ActivityAccumulator
-  alias OmegaBraveraWeb.Router.Helpers, as: Routes
-  alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mail}
   import OmegaBravera.Notifications, only: [user_subscribed_in_category?: 2]
 
@@ -287,7 +285,7 @@ defmodule OmegaBravera.Challenges.Notifier do
         %NGOChal{} = challenge,
         %{
           invitee_name: invitee_name,
-          token: token,
+          token: _token,
           email: email
         },
         template_id
@@ -297,7 +295,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     |> Email.add_substitution("-inviteeName-", invitee_name)
     |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
     |> Email.add_substitution("-ngoName-", challenge.ngo.name)
-    |> Email.add_substitution("-teamInvitationLink-", team_member_invite_link(challenge, token))
+    |> Email.add_substitution("-teamInvitationLink-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(email)
@@ -370,16 +368,6 @@ defmodule OmegaBravera.Challenges.Notifier do
   end
 
   def buddy_invite_email(_, _) do
-  end
-
-  defp team_member_invite_link(challenge, token) do
-    Routes.ngo_ngo_chal_ngo_chal_url(
-      Endpoint,
-      :add_team_member,
-      challenge.ngo.slug,
-      challenge.slug,
-      token
-    )
   end
 
   defp remaining_time(%NGOChal{end_date: end_date}) do
