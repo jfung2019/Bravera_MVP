@@ -253,6 +253,8 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :possible_friend do
     field :id, non_null(:id)
     field :username, non_null(:string)
+    field :firstname, non_null(:string)
+    field :lastname, non_null(:string)
     field :profile_picture, :string
   end
 
