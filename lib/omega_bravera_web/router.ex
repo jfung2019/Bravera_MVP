@@ -277,6 +277,7 @@ defmodule OmegaBraveraWeb.Router do
       # :show, :create
       resources "/", Offer.OfferChallengeController, only: [:new], param: "slug" do
 #        get "/activities", Offer.OfferChallengeActivityController, :index
+        get "/activities", PageController, :not_found
         get "/:redeem_token", Offer.OfferChallengeController, :send_qr_code
         get "/redeem/:redeem_token", Offer.OfferChallengeController, :new_redeem
         post "/:redeem_token", Offer.OfferChallengeController, :save_redeem
