@@ -82,14 +82,14 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     setup [:create_ngo]
 
     test "shows a specific ngo", %{conn: conn, ngo: ngo} do
-      conn = get(conn, admin_panel_ngo_path(conn, :show, ngo))
+      conn = get(conn, Routes.admin_panel_ngo_path(conn, :show, ngo))
       assert html_response(conn, 200) =~ "Challenges:"
     end
   end
 
   describe "new ngo" do
     test "renders form", %{conn: conn} do
-      conn = get(conn, admin_panel_ngo_path(conn, :new))
+      conn = get(conn, Routes.admin_panel_ngo_path(conn, :new))
       assert html_response(conn, 200) =~ "New NGO"
     end
   end
@@ -107,7 +107,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
       {:ok, user} = Accounts.create_user(attrs)
 
       conn =
-        post(conn, admin_panel_ngo_path(conn, :create),
+        post(conn, Routes.admin_panel_ngo_path(conn, :create),
           ngo: %{@ngo_create_attrs | user_id: user.id}
         )
 
@@ -116,11 +116,11 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
       ngo = Fundraisers.get_ngo_by_slug(slug)
       assert ngo.slug == "some-name"
 
-      assert redirected_to(conn) == admin_panel_ngo_path(conn, :show, slug)
+      assert redirected_to(conn) == Routes.admin_panel_ngo_path(conn, :show, slug)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, admin_panel_ngo_path(conn, :create), ngo: %{name: ""})
+      conn = post(conn, Routes.admin_panel_ngo_path(conn, :create), ngo: %{name: ""})
       assert html_response(conn, 200) =~ "New NGO"
     end
   end
@@ -129,7 +129,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     setup [:create_ngo]
 
     test "renders form for editing chosen ngo", %{conn: conn, ngo: ngo} do
-      conn = get(conn, admin_panel_ngo_path(conn, :edit, ngo))
+      conn = get(conn, Routes.admin_panel_ngo_path(conn, :edit, ngo))
       assert html_response(conn, 200)
     end
   end
@@ -138,23 +138,23 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
     setup [:create_ngo]
 
     test "redirects when data is valid after updating", %{conn: conn, ngo: ngo} do
-      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: @update_attrs)
+      conn = put(conn, Routes.admin_panel_ngo_path(conn, :update, ngo), ngo: @update_attrs)
 
       updated_ngo = Fundraisers.get_ngo_by_slug(@update_attrs.slug)
       assert updated_ngo.slug == @update_attrs.slug
 
-      assert redirected_to(conn) == admin_panel_ngo_path(conn, :index)
+      assert redirected_to(conn) == Routes.admin_panel_ngo_path(conn, :index)
     end
 
     test "renders errors in update when data is invalid", %{conn: conn, ngo: ngo} do
-      conn = put(conn, admin_panel_ngo_path(conn, :update, ngo), ngo: @invalid_attrs)
+      conn = put(conn, Routes.admin_panel_ngo_path(conn, :update, ngo), ngo: @invalid_attrs)
       assert html_response(conn, 200)
     end
 
     test "when updating closed registration launch date, all its pre_registration challenges' start_date is also updated",
          %{conn: conn, ngo: ngo} do
       conn =
-        put(conn, admin_panel_ngo_path(conn, :update, ngo),
+        put(conn, Routes.admin_panel_ngo_path(conn, :update, ngo),
           ngo: %{launch_date: Timex.shift(Timex.now("Asia/Hong_Kong"), days: 20)}
         )
 
@@ -175,7 +175,7 @@ defmodule OmegaBraveraWeb.Admin.NGOControllerTest do
       updated_ngo = Fundraisers.get_ngo!(ngo.id)
       assert ngo.additional_members == 0
       assert updated_ngo.additional_members == 5
-      assert redirected_to(conn) == admin_panel_ngo_path(conn, :index)
+      assert redirected_to(conn) == Routes.admin_panel_ngo_path(conn, :index)
     end
   end
 

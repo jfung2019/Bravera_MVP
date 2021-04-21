@@ -9,10 +9,6 @@ defmodule OmegaBravera.DailyDigest.Serializers.ChallengeTest do
 
   test "serialize/1 returns a map with the fields for the csv" do
     challenge = insert(:ngo_challenge)
-
-    assert Challenge.serialize(challenge) == %{
-             challenger: User.full_name(challenge.user),
-             url: Routes.ngo_ngo_chal_url(Endpoint, :show, challenge.ngo.slug, challenge.slug)
-           }
+    assert Challenge.serialize(challenge) == %{challenger: User.full_name(challenge.user)}
   end
 end
