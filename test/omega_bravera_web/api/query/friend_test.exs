@@ -47,7 +47,6 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
         node {
           id
           username
-          total_points
           friendStatus
         }
       }
