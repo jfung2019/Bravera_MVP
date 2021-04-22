@@ -11,8 +11,6 @@ defmodule OmegaBravera.Offers.Notifier do
   }
 
   alias OmegaBravera.Activity.ActivityAccumulator
-  alias OmegaBraveraWeb.Router.Helpers, as: Routes
-  alias OmegaBraveraWeb.Endpoint
   alias SendGrid.{Email, Mail}
   import OmegaBravera.Notifications, only: [user_subscribed_in_category?: 2]
 
@@ -36,7 +34,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeLink-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
@@ -72,7 +70,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.put_template(template_id)
     |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
     |> Email.add_substitution("-inviteeName-", User.full_name(user))
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.add_substitution(
       "-startDate-",
       Timex.format!(challenge.start_date, "%Y-%m-%d", :strftime)
@@ -114,7 +112,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.put_template(template_id)
     |> Email.add_substitution("-inviteeName-", invitee_name)
     |> Email.add_substitution("-teamOwnerName-", User.full_name(challenge.user))
-    |> Email.add_substitution("-teamInvitationLink-", team_member_invite_link(challenge, token))
+    |> Email.add_substitution("-teamInvitationLink-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(email)
@@ -197,7 +195,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-challengeLink-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeLink-", "")
     |> Email.add_substitution("-newPointsBalance-", Decimal.to_string(user.total_points))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
@@ -246,8 +244,8 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_dynamic_template_data("newBalance", calc_new_balance(challenge, user))
     |> Email.add_dynamic_template_data("firstName", challenge.user.firstname)
     |> Email.add_dynamic_template_data("offerName", challenge.offer.name)
-    |> Email.add_dynamic_template_data("challengeLink", new_challenge_url(challenge))
-    |> Email.add_dynamic_template_data("qrCode", challenge_qr_code_url(challenge, offer_redeem))
+    |> Email.add_dynamic_template_data("challengeLink", "")
+    |> Email.add_dynamic_template_data("qrCode", "")
     |> Email.add_dynamic_template_data("terms", challenge.offer.toc)
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
@@ -287,8 +285,8 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
     |> Email.add_substitution("-offerName-", challenge.offer.name)
-    |> Email.add_substitution("-challengeLink-", new_challenge_url(challenge))
-    |> Email.add_substitution("-qrCode-", challenge_qr_code_url(challenge, offer_redeem))
+    |> Email.add_substitution("-challengeLink-", "")
+    |> Email.add_substitution("-qrCode-", "")
     |> Email.add_substitution("-terms-", challenge.offer.toc)
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
@@ -318,7 +316,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-ChallengeLink-", challenge_url(challenge))
+    |> Email.add_substitution("-ChallengeLink-", "")
     |> Email.add_substitution(
       "-StartDate-",
       Timex.format!(start_date, "%Y-%m-%d", :strftime)
@@ -358,7 +356,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-ChallengeLink-", challenge_url(challenge))
+    |> Email.add_substitution("-ChallengeLink-", "")
     |> Email.add_substitution(
       "-StartDate-",
       Timex.format!(start_date, "%Y-%m-%d", :strftime)
@@ -398,7 +396,7 @@ defmodule OmegaBravera.Offers.Notifier do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_substitution("-firstName-", challenge.user.firstname)
-    |> Email.add_substitution("-ChallengeLink-", challenge_url(challenge))
+    |> Email.add_substitution("-ChallengeLink-", "")
     |> Email.add_substitution(
       "-StartDate-",
       Timex.format!(start_date, "%Y-%m-%d", :strftime)
@@ -448,7 +446,7 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_substitution("-completedChallengeDistance-", "#{challenge.distance_covered} Km")
     |> Email.add_substitution("-challengeDistance-", "#{challenge.distance_target} Km")
     |> Email.add_substitution("-timeRemaining-", "#{remaining_time(challenge)}")
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(user.email)
@@ -491,7 +489,7 @@ defmodule OmegaBravera.Offers.Notifier do
       "#{Decimal.round(challenge.distance_target, 2)} Km"
     )
     |> Email.add_substitution("-timeRemaining-", "#{remaining_time(challenge)}")
-    |> Email.add_substitution("-challengeURL-", challenge_url(challenge))
+    |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(challenge.user.email)
@@ -521,16 +519,6 @@ defmodule OmegaBravera.Offers.Notifier do
     |> Email.add_to(challenge.user.email)
   end
 
-  defp team_member_invite_link(challenge, token) do
-    Routes.offer_offer_challenge_offer_challenge_url(
-      Endpoint,
-      :add_team_member,
-      challenge.offer.slug,
-      challenge.slug,
-      token
-    )
-  end
-
   defp remaining_time(%OfferChallenge{end_date: end_date}) do
     now = Timex.now("Asia/Hong_Kong")
     end_date = end_date |> Timex.to_datetime("Asia/Hong_Kong")
@@ -557,24 +545,6 @@ defmodule OmegaBravera.Offers.Notifier do
 
   defp get_offer_duration(%OfferChallenge{start_date: start_date, end_date: end_date}),
     do: Timex.diff(end_date, start_date, :days)
-
-  defp challenge_url(challenge) do
-    Routes.offer_offer_challenge_url(Endpoint, :show, challenge.offer.slug, challenge.slug)
-  end
-
-  defp new_challenge_url(challenge) do
-    Routes.offer_offer_challenge_url(Endpoint, :new, challenge.offer.slug)
-  end
-
-  defp challenge_qr_code_url(challenge, offer_redeem) do
-    Routes.offer_offer_challenge_offer_challenge_url(
-      Endpoint,
-      :send_qr_code,
-      challenge.offer.slug,
-      challenge.slug,
-      offer_redeem.token
-    )
-  end
 
   defp add_cc(email, %OfferVendor{cc: cc_list}) when not is_nil(cc_list) do
     cleaned_cc_list =
