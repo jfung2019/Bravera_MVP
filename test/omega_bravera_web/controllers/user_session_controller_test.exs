@@ -25,7 +25,7 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
   describe "new user" do
     @tag :skip
     test "renders form", %{conn: conn} do
-      conn = get(conn, page_path(conn, :login))
+      conn = get(conn, Routes.page_path(conn, :login))
       assert html_response(conn, 200) =~ "Log in"
     end
   end
@@ -39,16 +39,16 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
         password: @password
       }
 
-      conn = post(conn, user_session_path(conn, :create), %{"session" => attrs})
+      conn = post(conn, Routes.user_session_path(conn, :create), %{"session" => attrs})
 
-      assert redirected_to(conn) == user_profile_path(conn, :show)
+      assert redirected_to(conn) == Routes.user_profile_path(conn, :show)
     end
 
     test "user with a session to after_login_redirect will be redirected", %{
       conn: conn,
       credential: credential
     } do
-      offer_path = offer_path(conn, :index)
+      root_path = Routes.page_path(conn, :index)
 
       attrs = %{
         email: credential.user.email,
@@ -59,11 +59,11 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
         conn
         |> bypass_through(OmegaBraveraWeb.Router, :browser)
         |> get("/")
-        |> put_session("after_login_redirect", offer_path)
+        |> put_session("after_login_redirect", root_path)
         |> send_resp(:ok, "")
-        |> post(user_session_path(conn, :create), %{"session" => attrs})
+        |> post(Routes.user_session_path(conn, :create), %{"session" => attrs})
 
-      assert ^offer_path = redirected_to(conn)
+      assert ^root_path = redirected_to(conn)
     end
 
     @tag :skip
@@ -89,11 +89,11 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
       }
 
       conn =
-        post(conn, user_session_path(conn, :create), %{
+        post(conn, Routes.user_session_path(conn, :create), %{
           "session" => %{attrs | email: "bademail"}
         })
 
-      assert redirected_to(conn, 302) == page_path(conn, :login)
+      assert redirected_to(conn, 302) == Routes.page_path(conn, :login)
     end
   end
 
@@ -110,7 +110,7 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
     test "logs out an user", %{conn: conn} do
       conn =
         conn
-        |> get(strava_path(conn, :logout))
+        |> get(Routes.strava_path(conn, :logout))
 
       assert html_response(conn, 302)
     end
