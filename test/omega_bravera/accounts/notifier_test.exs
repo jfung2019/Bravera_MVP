@@ -47,7 +47,7 @@ defmodule OmegaBravera.Accounts.NotifierTest do
 
   test "send_user_signup_email/1 sends the user signup email" do
     user = insert(:user, %{email_activation_token: "8wqfT-c2L1V1lSRb_2eum3Ep3Tf2bDP4"})
-    result = Notifier.send_user_signup_email(user, "/")
+    result = Notifier.send_user_signup_email(user)
 
     assert result == :ok
   end

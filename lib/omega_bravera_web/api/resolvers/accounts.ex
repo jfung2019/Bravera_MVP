@@ -116,7 +116,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
           })
         end
 
-        Accounts.Notifier.send_user_signup_email(user, "/open-app")
+        Accounts.Notifier.send_user_signup_email(user)
         {:ok, token, _} = Guardian.encode_and_sign(user, %{})
         {:ok, %{user: user, token: token}}
 
@@ -193,7 +193,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
              updated_user.email_activation_token != current_user.email_activation_token and
              updated_user.email_verified == false do
           # TODO: Email was updated. Should display verify your email in app -Sherief
-          Accounts.Notifier.send_user_signup_email(updated_user, "/")
+          Accounts.Notifier.send_user_signup_email(updated_user)
         end
 
         {:ok, Accounts.get_user_with_account_settings(id)}
@@ -413,7 +413,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     do: Accounts.enable_push_notifications(user, %{push_notifications: enabled})
 
   def resend_welcome_email(_root, _args, %{context: %{current_user: user}}) do
-    Accounts.Notifier.send_user_signup_email(user, "/open-app")
+    Accounts.Notifier.send_user_signup_email(user)
     {:ok, user}
   end
 
