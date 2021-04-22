@@ -47,7 +47,6 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.put_template(template_id)
     |> Email.add_dynamic_template_data("firstName", User.full_name(user))
     |> Email.add_dynamic_template_data("code", user.email_activation_token)
-    |> Email.put_subject("Thanks! Your verification code is #{user.email_activation_token}")
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(user.email)
