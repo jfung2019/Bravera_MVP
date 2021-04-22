@@ -36,23 +36,17 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.add_to(user_email)
   end
 
-  def send_user_signup_email(%User{} = user, redirect_to \\ "/") do
+  def send_user_signup_email(%User{} = user) do
     user
-    |> user_signup_email(redirect_to, "d-1dc516c092744a15a0f5b1430962fa0d")
+    |> user_signup_email("d-1dc516c092744a15a0f5b1430962fa0d")
     |> Mail.send()
   end
 
-  def user_signup_email(%User{} = user, redirect_to, template_id) do
+  def user_signup_email(%User{} = user, template_id) do
     Email.build()
     |> Email.put_template(template_id)
     |> Email.add_dynamic_template_data("firstName", User.full_name(user))
     |> Email.add_dynamic_template_data("code", user.email_activation_token)
-    |> Email.add_dynamic_template_data(
-      "emailVerificationUrl",
-      Routes.user_url(Endpoint, :activate_email, user.email_activation_token, %{
-        redirect_to: redirect_to
-      })
-    )
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(user.email)
