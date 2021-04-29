@@ -294,6 +294,16 @@ defmodule OmegaBravera.Offers do
     |> Turbo.Ecto.turbo(params, entry_name: "offers")
   end
 
+  def paginate_offers(organization_id, params) do
+    list_offers_preload_query([
+      :vendor,
+      :offer_challenges,
+      offer_redeems: [:offer_reward]
+    ])
+    |> where([o], o.organization_id == ^organization_id)
+    |> Turbo.Ecto.turbo(params, entry_name: "offers")
+  end
+
   def paginate_offers("online", organization_id, params) do
     org_offers_pagination(:online, organization_id, params)
   end

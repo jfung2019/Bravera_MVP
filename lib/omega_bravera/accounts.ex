@@ -2142,6 +2142,10 @@ defmodule OmegaBravera.Accounts do
   """
   def get_organization!(id), do: Repo.get!(Organization, id)
 
+  def get_organization(nil), do: nil
+
+  def get_organization(id), do: Repo.get(Organization, id)
+
   @doc """
   Creates a organization.
 

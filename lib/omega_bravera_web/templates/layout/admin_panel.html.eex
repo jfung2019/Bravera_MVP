@@ -115,6 +115,12 @@
         </div>
       <% end %>
         <div class="<%= if logged_in?(@conn) && is_admin?(@conn), do: "col-lg-10", else: "col"%>">
+          <%= if assigns[:view_as_org]do %>
+          <div class="view_as_org_indication">
+            <p>Viewing as <%= @view_as_org.name %></p>
+            <%= link gettext("(Remove)"), to: Routes.admin_panel_organization_path(@conn, :view_as, "remove") %>
+          </div>
+          <% end %>
           <%= @inner_content %>
         </div>
       </div>

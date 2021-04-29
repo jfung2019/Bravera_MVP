@@ -63,4 +63,14 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationController do
     |> put_flash(:info, "Organization deleted successfully.")
     |> redirect(to: Routes.admin_panel_organization_path(conn, :index))
   end
+
+  def view_as(conn, %{"id" => "remove"}) do
+    conn = Plug.Conn.delete_session(conn, :view_as_org_id)
+    redirect(conn, to: Routes.admin_panel_organization_path(conn, :index))
+  end
+
+  def view_as(conn, %{"id" => id}) do
+    conn = Plug.Conn.put_session(conn, :view_as_org_id, id)
+    redirect(conn, to: Routes.admin_panel_partner_path(conn, :index))
+  end
 end

@@ -16,7 +16,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
   plug :assign_available_options when action in [:edit, :new]
 
   def index(conn, params) do
-    results = Offers.paginate_offers(params)
+    results = check_view_as(conn, params)
 
     render(conn, "index.html",
       offers: results.offers,
@@ -24,6 +24,11 @@ defmodule OmegaBraveraWeb.AdminPanelOfferController do
       statuses: Offer.available_approval_status()
     )
   end
+
+  defp check_view_as(%{assigns: %{view_as_org: %{id: org_id}}}, params),
+    do: Offers.paginate_offers(org_id, params)
+
+  defp check_view_as(_conn, params), do: Offers.paginate_offers(params)
 
   def show(conn, %{"slug" => slug}) do
     offer = Offers.get_offer_by_slug(slug)

@@ -22,6 +22,7 @@
           <td><%= render_datetime(organization.inserted_at) %></td>
           <td><%= render_datetime(organization.updated_at) %></td>
           <td class="text-center">
+            <%= link gettext("View As"), to: Routes.admin_panel_organization_path(@conn, :view_as, organization), class: "btn btn-info" %>
             <%= link gettext("Details"), to: Routes.admin_panel_organization_path(@conn, :show, organization), class: "btn btn-primary" %>
             <%= link gettext("Edit"), to: Routes.admin_panel_organization_path(@conn, :edit, organization), class: "btn btn-warning btn-xs" %>
             <%= link gettext("Delete"), to: Routes.admin_panel_organization_path(@conn, :delete, organization), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
