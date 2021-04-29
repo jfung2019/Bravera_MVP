@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.SuperAdminAuthTest do
-  use OmegaBraveraWeb.ConnCase, async: true
+  use OmegaBraveraWeb.ConnCase
   alias OmegaBravera.Fixtures
   alias OmegaBraveraWeb.SuperAdminAuth
   alias OmegaBravera.Guardian.MaybeAuthPipeline
