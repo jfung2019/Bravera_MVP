@@ -177,7 +177,7 @@ defmodule OmegaBraveraWeb.Router do
       resources "/offer-partners", AdminPanelOfferPartnerController, only: [:create, :delete]
       get "/offers/:slug/statement", AdminPanelOfferController, :statement
       get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
-      get "/organizations/:id", AdminPanelOrganizationController, :view_as
+      get "/view_as_org/:id", AdminPanelOrganizationController, :view_as
       resources "/organizations", AdminPanelOrganizationController
       resources "/organization_members", AdminPanelOrganizationMemberController
 

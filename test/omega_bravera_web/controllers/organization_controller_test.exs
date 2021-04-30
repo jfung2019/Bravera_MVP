@@ -28,7 +28,7 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
 
   describe "new organization" do
     test "renders form", %{conn: conn} do
-      conn = get(conn, Routes.admin_panel_organization_path(conn, :new))
+      conn = get(conn, Routes.admin_panel_organization_path(conn, :new)) |> IO.inspect()
       assert html_response(conn, 200) =~ "New Organization"
     end
   end

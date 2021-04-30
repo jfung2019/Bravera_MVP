@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.SuperAdminAuthTest do
-  use OmegaBraveraWeb.ConnCase
+  use OmegaBraveraWeb.ConnCase, async: true
   alias OmegaBravera.Fixtures
   alias OmegaBraveraWeb.SuperAdminAuth
   alias OmegaBravera.Guardian.MaybeAuthPipeline
@@ -12,6 +12,7 @@ defmodule OmegaBraveraWeb.SuperAdminAuthTest do
     conn =
       conn
       |> put_req_header("authorization", "bearer: " <> token)
+      |> get(Routes.admin_user_session_path(conn, :new))
       |> MaybeAuthPipeline.call(nil)
       |> SuperAdminAuth.call(nil)
 
