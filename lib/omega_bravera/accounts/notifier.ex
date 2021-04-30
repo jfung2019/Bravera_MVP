@@ -335,14 +335,20 @@ defmodule OmegaBravera.Accounts.Notifier do
   def notify_bravera_verified_partner_user(%PartnerUser{} = partner_user) do
     Email.build()
     |> Email.put_template("d-67651d8adefc4406ba650e7403c60c8d")
-    |> Email.add_dynamic_template_data("organizationName", Enum.at(partner_user.organizations, 0).name)
+    |> Email.add_dynamic_template_data(
+      "organizationName",
+      Enum.at(partner_user.organizations, 0).name
+    )
     |> Email.add_dynamic_template_data("firstname", partner_user.first_name)
     |> Email.add_dynamic_template_data("lastname", partner_user.last_name)
     |> Email.add_dynamic_template_data("contactNumber", partner_user.contact_number)
     |> Email.add_dynamic_template_data("location", partner_user.location.name_en)
     |> Email.add_dynamic_template_data("username", partner_user.username)
     |> Email.add_dynamic_template_data("email", partner_user.email)
-    |> Email.add_dynamic_template_data("businessWebsite", Enum.at(partner_user.organizations, 0).business_website)
+    |> Email.add_dynamic_template_data(
+      "businessWebsite",
+      Enum.at(partner_user.organizations, 0).business_website
+    )
     |> Email.put_from("support@bravera.co", "Bravera")
     |> Email.add_bcc("support@bravera.co")
     |> Email.add_to("sales@bravera.co")
