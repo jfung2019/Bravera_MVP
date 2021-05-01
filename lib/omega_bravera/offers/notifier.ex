@@ -126,25 +126,17 @@ defmodule OmegaBravera.Offers.Notifier do
         %OfferRedeem{} = redeem
       ) do
     template_id = "0fd2f256-354f-480a-9b3e-502300da6366"
-    sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)
-    challenge = Repo.preload(challenge, [:offer, user: [:subscribed_email_categories]])
     redeem = Repo.preload(redeem, [:offer_reward, :vendor])
     redeems_count = Offers.get_offer_completed_redeems_count_by_offer_id(challenge.offer_id)
 
-    if not is_nil(sendgrid_email) and not is_nil(redeem.vendor.email) and
-         user_subscribed_in_category?(
-           challenge.user.subscribed_email_categories,
-           sendgrid_email.category.id
-         ) do
-      challenge
-      |> Repo.preload(:offer)
-      |> reward_vendor_redemption_successful_confirmation_email(
-        redeem,
-        redeems_count,
-        template_id
-      )
-      |> Mail.send()
-    end
+    challenge
+    |> Repo.preload(:offer)
+    |> reward_vendor_redemption_successful_confirmation_email(
+         redeem,
+         redeems_count,
+         template_id
+       )
+    |> Mail.send()
   end
 
   def reward_vendor_redemption_successful_confirmation_email(
