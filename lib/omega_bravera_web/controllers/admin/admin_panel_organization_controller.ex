@@ -64,13 +64,13 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationController do
     |> redirect(to: Routes.admin_panel_organization_path(conn, :index))
   end
 
-  def view_as(conn, %{"id" => "remove"}) do
-    conn = Plug.Conn.delete_session(conn, :view_as_org_id)
-    redirect(conn, to: Routes.admin_panel_organization_path(conn, :index))
-  end
-
   def view_as(conn, %{"id" => id}) do
-    conn = Plug.Conn.put_session(conn, :view_as_org_id, id)
-    redirect(conn, to: Routes.admin_panel_partner_path(conn, :index))
+    %{id: admin_id} = OmegaBravera.Guardian.Plug.current_resource(conn)
+    partner_user = Accounts.get_partner_user_by_org_id(id)
+    conn = Plug.Conn.put_session(conn, :admin_logged_in, admin_id)
+
+    conn
+    |> OmegaBravera.Guardian.Plug.sign_in(partner_user)
+    |> redirect(to: Routes.org_panel_dashboard_path(conn, :index))
   end
 end

@@ -267,6 +267,7 @@ defmodule OmegaBraveraWeb.Router do
       resources "/claim-ids", OrgPanelOfferVendorController, except: [:delete]
       resources "/rewards", OrgPanelOfferRewardController, except: [:delete]
       get "/guides", OrgPanelDashboardController, :guides
+      get "/admin_logged_in", OrgPanelDashboardController, :view_as
     end
   end
 

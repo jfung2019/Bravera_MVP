@@ -7,16 +7,7 @@ defmodule OmegaBraveraWeb.SuperAdminAuth do
   def call(conn, _opts) do
     case OmegaBravera.Guardian.Plug.current_resource(conn) do
       %AdminUser{role: "super"} ->
-        view_as_org_id = Plug.Conn.get_session(conn, :view_as_org_id)
-
-        case Accounts.get_organization(view_as_org_id) do
-          %{id: ^view_as_org_id} = view_as_org ->
-            conn
-            |> Plug.Conn.assign(:view_as_org, view_as_org)
-
-          _ ->
-            conn
-        end
+        conn
 
       %AdminUser{role: "partner"} ->
         conn

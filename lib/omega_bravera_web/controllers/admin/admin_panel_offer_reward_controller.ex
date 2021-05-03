@@ -4,15 +4,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferRewardController do
   alias OmegaBravera.Offers
 
   def index(conn, params) do
-    results = check_view_as(conn, params)
+    results = Offers.paginate_offer_rewards(Guardian.Plug.current_resource(conn), params)
     render(conn, "index.html", offer_rewards: results.offer_rewards, paginate: results.paginate)
   end
-
-  defp check_view_as(%{assigns: %{view_as_org: %{id: org_id}}}, params),
-    do: Offers.paginate_offer_rewards(org_id, params)
-
-  defp check_view_as(conn, params),
-    do: Offers.paginate_offer_rewards(Guardian.Plug.current_resource(conn), params)
 
   def new(conn, _params) do
     changeset = Offers.change_offer_reward(%Offers.OfferReward{})

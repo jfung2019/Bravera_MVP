@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
   plug :assign_available_options when action in [:edit, :new]
 
   def index(conn, params) do
-    results = check_view_as(conn, params)
+    results = Turbo.Ecto.turbo(Groups.Partner, params, entry_name: "partners")
 
     render(conn,
       partners: results.partners,
@@ -12,13 +12,6 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerController do
       statuses: Groups.Partner.available_approval_status()
     )
   end
-
-  defp check_view_as(%{assigns: %{view_as_org: %{id: org_id}}}, params),
-    do:
-      Turbo.Ecto.turbo(Groups.get_groups_by_org_id_query(org_id), params, entry_name: "partners")
-
-  defp check_view_as(_conn, params),
-    do: Turbo.Ecto.turbo(Groups.Partner, params, entry_name: "partners")
 
   def show(conn, %{"id" => partner_id}) do
     partner = Groups.get_partner!(partner_id)

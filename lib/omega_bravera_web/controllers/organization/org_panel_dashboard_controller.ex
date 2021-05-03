@@ -18,4 +18,14 @@ defmodule OmegaBraveraWeb.OrgPanelDashboardController do
   def guides(conn, _param) do
     render(conn, "guides.html")
   end
+
+  def view_as(conn, _param) do
+    admin_id = Plug.Conn.get_session(conn, :admin_logged_in)
+    conn = Plug.Conn.delete_session(conn, :admin_logged_in)
+    admin = Accounts.get_admin_user!(admin_id)
+
+    conn
+    |> OmegaBravera.Guardian.Plug.sign_in(admin)
+    |> redirect(to: Routes.admin_user_page_path(conn, :index))
+  end
 end

@@ -7,15 +7,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
   }
 
   def index(conn, params) do
-    results = check_view_as(conn, params)
+    results = Offers.paginate_offer_vendors(Guardian.Plug.current_resource(conn), params)
     render(conn, "index.html", offer_vendors: results.offer_vendors, paginate: results.paginate)
   end
-
-  defp check_view_as(%{assigns: %{view_as_org: %{id: org_id}}}, params),
-    do: Offers.paginate_offer_vendors(org_id, params)
-
-  defp check_view_as(conn, params),
-    do: Offers.paginate_offer_vendors(Guardian.Plug.current_resource(conn), params)
 
   def new(conn, _params) do
     changeset = Offers.change_offer_vendor(%OfferVendor{})

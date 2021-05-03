@@ -2091,6 +2091,15 @@ defmodule OmegaBravera.Accounts do
     end
   end
 
+  def get_partner_user_by_org_id(org_id) do
+    from(p in PartnerUser,
+      left_join: om in assoc(p, :organization_members),
+      where: om.organization_id == ^org_id,
+      limit: 1
+    )
+    |> Repo.one()
+  end
+
   @doc """
   Markes a partner user as their email verified.
   """

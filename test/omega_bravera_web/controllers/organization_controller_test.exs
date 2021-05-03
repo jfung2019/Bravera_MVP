@@ -1,7 +1,7 @@
 defmodule OmegaBraveraWeb.OrganizationControllerTest do
   use OmegaBraveraWeb.ConnCase
 
-  alias OmegaBravera.Accounts
+  alias OmegaBravera.{Accounts, Fixtures}
 
   @create_attrs %{name: "some name", business_type: "type"}
   @update_attrs %{name: "some updated name"}
@@ -28,7 +28,7 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
 
   describe "new organization" do
     test "renders form", %{conn: conn} do
-      conn = get(conn, Routes.admin_panel_organization_path(conn, :new)) |> IO.inspect()
+      conn = get(conn, Routes.admin_panel_organization_path(conn, :new))
       assert html_response(conn, 200) =~ "New Organization"
     end
   end
@@ -105,8 +105,41 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
     end
   end
 
+  describe "view as organization" do
+    setup [:create_partner_user]
+
+    test "view aws organization's admin", %{conn: conn, organization: organization} do
+      conn = get(conn, Routes.admin_panel_organization_path(conn, :view_as, organization))
+      assert redirected_to(conn) == Routes.org_panel_dashboard_path(conn, :index)
+    end
+
+    test "go back to admin panel after view as", %{conn: conn, organization: organization} do
+      conn =
+        conn
+        |> get(Routes.admin_panel_organization_path(conn, :view_as, organization))
+        |> get(Routes.org_panel_dashboard_path(conn, :index))
+
+      assert html_response(conn, 200) =~ "Back to Admin"
+      conn = get(conn, Routes.org_panel_dashboard_path(conn, :view_as))
+      assert redirected_to(conn) == Routes.admin_user_page_path(conn, :index)
+    end
+  end
+
   defp create_organization(_) do
     organization = fixture(:organization)
+    %{organization: organization}
+  end
+
+  defp create_partner_user(_) do
+    organization = fixture(:organization)
+    location = Fixtures.location_fixture()
+    partner_user = Fixtures.partner_user_fixture(%{location_id: location.id})
+
+    Accounts.create_organization_member(%{
+      organization_id: organization.id,
+      partner_user_id: partner_user.id
+    })
+
     %{organization: organization}
   end
 end
