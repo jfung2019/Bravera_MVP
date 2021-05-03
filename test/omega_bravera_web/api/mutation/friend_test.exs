@@ -46,6 +46,14 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
   }
   """
 
+  @unfriend_user """
+  mutation($userId: ID!) {
+    unfriendUser(userId: $userId) {
+      unfriendedUserId
+    }
+  }
+  """
+
   setup %{conn: conn} do
     user1 = insert(:user)
     user2 = insert(:user, %{email: "user2@email.com"})
@@ -127,6 +135,21 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
                "rejectFriendRequest" => %{
                  "requester" => %{"id" => ^user2_id_string}
                }
+             }
+           } = json_response(response, 200)
+  end
+
+  test "can unfriend user", %{conn: conn, user1: %{id: user1_id}, user2: %{id: user2_id}} do
+    Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
+
+    response =
+      post(conn, "/api", %{query: @unfriend_user, variables: %{"userId" => user2_id}})
+
+    user2_id_string = to_string(user2_id)
+
+    assert %{
+             "data" => %{
+               "unfriendUser" => %{"unfriendedUserId" => ^user2_id_string}
              }
            } = json_response(response, 200)
   end

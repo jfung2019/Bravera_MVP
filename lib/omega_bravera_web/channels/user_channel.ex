@@ -86,6 +86,12 @@ defmodule OmegaBraveraWeb.UserChannel do
     {:noreply, assign(socket, :group_ids, group_ids)}
   end
 
+  def handle_info(%{event: "unfriend" = event, payload: %{id: user_id}}, socket) do
+    user = Account.get_user!(user_id)
+    push(socket, event, %{group: render_one(user, @view, "show_user.json")})
+    {:noreply, assign(socket, :friend_ids, Enum.reject(socket.assigns.friend_ids, fn id -> id == user_id end))}
+  end
+
   def handle_info(%{event: event, payload: payload}, socket) do
     push(socket, event, payload)
     {:noreply, socket}

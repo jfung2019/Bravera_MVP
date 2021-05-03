@@ -282,6 +282,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :status, non_null(:friend_status)
   end
 
+  object :unfriend_result do
+    field :unfriended_user_id, non_null(:id)
+  end
+
   object :friend_compare do
     field :user, non_null(:user_profile)
     field :friend, non_null(:friend_profile)
