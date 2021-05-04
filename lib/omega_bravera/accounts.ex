@@ -2451,6 +2451,16 @@ defmodule OmegaBravera.Accounts do
 
   defp broadcast_friend_chat(result), do: result
 
+  def broadcast_user_unfriended(%{receiver_id: receiver_id, requester_id: requester_id}) do
+    :ok = @endpoint.broadcast(@user_channel.user_channel(receiver_id), "unfriended", %{
+      id: requester_id
+    })
+
+    :ok = @endpoint.broadcast(@user_channel.user_channel(requester_id), "unfriended", %{
+      id: receiver_id
+    })
+  end
+
   @doc """
   reject friend request
   """
