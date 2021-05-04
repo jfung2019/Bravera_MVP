@@ -504,7 +504,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   def unfriend_user(_root, %{user_id: unfriend_id}, %{context: %{current_user: %{id: user_id}}}) do
     case Accounts.reject_friend_request(Accounts.find_existing_friend(unfriend_id, user_id)) do
       {:ok, unfriended} ->
-        Accounts.broadcast_user_unfriended(unfriended)
+        Accounts.broadcast_user_unfriended(unfriended) |> IO.inspect()
         {:ok, %{unfriended_user_id: unfriend_id}}
 
       _ ->
