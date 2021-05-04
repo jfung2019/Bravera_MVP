@@ -47,10 +47,4 @@ defmodule OmegaBraveraWeb.GroupView do
   def render("show_user.json", %{user: user}) do
     %{id: user.id, username: user.username, profile_picture: user.profile_picture}
   end
-
-  def render(json, payload) do
-    IO.inspect(json)
-    IO.inspect(payload)
-    %{}
-  end
 end
