@@ -177,7 +177,7 @@ defmodule OmegaBraveraWeb.Router do
       resources "/offer-partners", AdminPanelOfferPartnerController, only: [:create, :delete]
       get "/offers/:slug/statement", AdminPanelOfferController, :statement
       get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
-      get "/view_as_org/:id", AdminPanelOrganizationController, :view_as
+      get "/view-as-org/:id", AdminPanelOrganizationController, :view_as
       resources "/organizations", AdminPanelOrganizationController
       resources "/organization_members", AdminPanelOrganizationMemberController
 
@@ -267,7 +267,7 @@ defmodule OmegaBraveraWeb.Router do
       resources "/claim-ids", OrgPanelOfferVendorController, except: [:delete]
       resources "/rewards", OrgPanelOfferRewardController, except: [:delete]
       get "/guides", OrgPanelDashboardController, :guides
-      get "/admin_logged_in", OrgPanelDashboardController, :view_as
+      get "/admin-logged-in", OrgPanelDashboardController, :view_as
     end
   end
 

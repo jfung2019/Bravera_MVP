@@ -42,15 +42,8 @@ defmodule OmegaBravera.Groups do
     Repo.all(Partner)
   end
 
-  @doc """
-  Query for getting groups by organization_id
-  """
-  @spec get_groups_by_org_id_query(String.t()) :: Ecto.Query.t()
-  def get_groups_by_org_id_query(organization_id),
-    do: from(p in Partner, where: p.organization_id == ^organization_id)
-
   def paginate_groups(organization_id, params) do
-    get_groups_by_org_id_query(organization_id)
+    from(p in Partner, where: p.organization_id == ^organization_id)
     |> Turbo.Ecto.turbo(params, entry_name: "partners")
   end
 

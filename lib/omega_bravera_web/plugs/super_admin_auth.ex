@@ -1,5 +1,5 @@
 defmodule OmegaBraveraWeb.SuperAdminAuth do
-  alias OmegaBravera.{Accounts.AdminUser, Accounts}
+  alias OmegaBravera.Accounts.AdminUser
   alias OmegaBraveraWeb.Router.Helpers, as: Routes
 
   def init(opts), do: opts

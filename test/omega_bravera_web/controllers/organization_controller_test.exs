@@ -123,6 +123,13 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
       conn = get(conn, Routes.org_panel_dashboard_path(conn, :view_as))
       assert redirected_to(conn) == Routes.admin_user_page_path(conn, :index)
     end
+
+    test "try go to admin panel as partner_user", %{conn: conn, partner_user: partner_user} do
+      {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(partner_user)
+      conn = Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)
+      conn = get(conn, Routes.org_panel_dashboard_path(conn, :view_as))
+      assert redirected_to(conn) == Routes.org_panel_dashboard_path(conn, :index)
+    end
   end
 
   defp create_organization(_) do
@@ -140,6 +147,6 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
       partner_user_id: partner_user.id
     })
 
-    %{organization: organization}
+    %{organization: organization, partner_user: partner_user}
   end
 end
