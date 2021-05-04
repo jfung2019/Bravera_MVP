@@ -2449,7 +2449,7 @@ defmodule OmegaBravera.Accounts do
     result
   end
 
-  defp broadcast_user_unfriended(%{receiver_id: receiver_id, requester_id: requester_id}) do
+  def broadcast_user_unfriended(%{receiver_id: receiver_id, requester_id: requester_id}) do
     @endpoint.broadcast(@user_channel.user_channel(receiver_id), "unfriended", %{
       id: requester_id
     })
