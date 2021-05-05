@@ -2451,7 +2451,7 @@ defmodule OmegaBravera.Accounts do
 
   defp broadcast_friend_chat(result), do: result
 
-  def broadcast_user_unfriended(%{receiver_id: receiver_id, requester_id: requester_id}) do
+  defp broadcast_user_unfriended({:ok, %{receiver_id: receiver_id, requester_id: requester_id}} = result) do
     :ok = @endpoint.broadcast(@user_channel.user_channel(receiver_id), "unfriended", %{
       id: requester_id
     })
@@ -2459,13 +2459,27 @@ defmodule OmegaBravera.Accounts do
     :ok = @endpoint.broadcast(@user_channel.user_channel(requester_id), "unfriended", %{
       id: receiver_id
     })
+
+    result
   end
+
+  defp broadcast_user_unfriended(result), do: result
 
   @doc """
   reject friend request
   """
   @spec reject_friend_request(Friend.t()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
   def reject_friend_request(%Friend{} = friend), do: Repo.delete(friend)
+
+  @doc """
+  remove the friendship between 2 users
+  """
+  @spec remove_friendship(String.t(), String.t()) :: {:ok, Friend.t()} | {:error, Ecto.Changeset.t()}
+  def remove_friendship(friend_user_id, user_id) do
+    find_existing_friend(friend_user_id, user_id)
+    |> Repo.delete()
+    |> broadcast_user_unfriended()
+  end
 
   @doc """
   mute or unmute receiver's notification
