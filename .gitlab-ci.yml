@@ -1,3 +1,7 @@
+.auto-deploy:
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v1.0.7"
+  dependencies: []
+
 test:
   image: plangora/alpine-elixir-phoenix:otp-23.3.2-elixir-1.11.3
   services:
@@ -12,15 +16,19 @@ test:
     - mix clean
     - mix do deps.get, test --exclude skip
 
-include:
-  - template: Jobs/Deploy.gitlab-ci.yml
-
 staging_deploy:
+  extends: .auto-deploy
   stage: deploy
+  script:
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy
   environment:
     name: staging
 #    url: https://staging.bravera.co/
-  extends: staging
   rules:
     - if: '$CI_COMMIT_REF_NAME == "feature/updateForContainer"'
 
