@@ -1,11 +1,13 @@
+# syntax = docker/dockerfile:experimental
 FROM plangora/alpine-elixir-phoenix:otp-23.3.2-elixir-1.11.3 as phx-builder
 
-ENV PORT=4000 MIX_ENV=prod
+ENV PORT=5000 MIX_ENV=prod
 
 ADD . .
 
 # Run frontend build, compile, and digest assets, and set default to own the directory
-RUN mix deps.get && cd assets/ && \
+RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets &&
+    mix deps.get && cd assets/ && \
 		npm install && \
     npm run deploy && \
     cd - && \
@@ -13,8 +15,8 @@ RUN mix deps.get && cd assets/ && \
 
 FROM plangora/alpine-erlang:23.3.2
 
-EXPOSE 4000
-ENV PORT=4000 MIX_ENV=prod
+EXPOSE 5000
+ENV PORT=5000 MIX_ENV=prod
 
 COPY --from=phx-builder /opt/app/_build/prod/rel/omega_bravera/ /opt/app/
 RUN chown -R default /opt/app/

@@ -1,7 +1,7 @@
 import Config
 
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: 5000],
   url: [host: System.fetch_env!("HOST_URL"), port: 443, scheme: "https"],
   cache_static_manifest: "priv/static/cache_manifest.json",
   live_view: [signing_salt: System.fetch_env!("LIVEVIEW_SIGNING_SALT")],
