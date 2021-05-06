@@ -24,4 +24,4 @@ RUN apk --update add imagemagick file
 
 USER default
 
-CMD ["/opt/app/bin/omega_bravera", "foreground"]
+CMD ["/opt/app/bin/omega_bravera", "start"]
