@@ -2460,14 +2460,18 @@ defmodule OmegaBravera.Accounts do
 
   defp broadcast_friend_chat(result), do: result
 
-  defp broadcast_user_unfriended({:ok, %{receiver_id: receiver_id, requester_id: requester_id}} = result) do
-    :ok = @endpoint.broadcast(@user_channel.user_channel(receiver_id), "unfriended", %{
-      id: requester_id
-    })
+  defp broadcast_user_unfriended(
+         {:ok, %{receiver_id: receiver_id, requester_id: requester_id}} = result
+       ) do
+    :ok =
+      @endpoint.broadcast(@user_channel.user_channel(receiver_id), "unfriended", %{
+        id: requester_id
+      })
 
-    :ok = @endpoint.broadcast(@user_channel.user_channel(requester_id), "unfriended", %{
-      id: receiver_id
-    })
+    :ok =
+      @endpoint.broadcast(@user_channel.user_channel(requester_id), "unfriended", %{
+        id: receiver_id
+      })
 
     result
   end
@@ -2483,7 +2487,8 @@ defmodule OmegaBravera.Accounts do
   @doc """
   remove the friendship between 2 users
   """
-  @spec remove_friendship(String.t(), String.t()) :: {:ok, Friend.t()} | {:error, Ecto.Changeset.t()}
+  @spec remove_friendship(String.t(), String.t()) ::
+          {:ok, Friend.t()} | {:error, Ecto.Changeset.t()}
   def remove_friendship(friend_user_id, user_id) do
     find_existing_friend(friend_user_id, user_id)
     |> Repo.delete()

@@ -1,5 +1,5 @@
 test:
-  image: plangora/alpine-elixir-phoenix:otp-23.2.3-elixir-1.11.3
+  image: plangora/alpine-elixir-phoenix:otp-23.3.2-elixir-1.11.3
   services:
   - postgis/postgis:13-master
   variables:
@@ -12,34 +12,22 @@ test:
     - mix clean
     - mix do deps.get, test --exclude skip
 
-staging:
+include:
+  - template: Jobs/Deploy.gitlab-ci.yml
+
+staging_deploy:
   stage: deploy
-  environment: staging
-  image: plangora/alpine-elixir-phoenix:otp-23.2.3-elixir-1.11.3
-  variables:
-    MIX_ENV: "dev"
-    REFSPEC: staging
+  environment:
+    name: staging
+#    url: https://staging.bravera.co/
+  extends: staging
   only:
-    - staging
-  before_script:
-    - apk add --no-cache openssh-client procps
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - mkdir -p /root/.ssh
-    - cp .deliver/ssh_config_staging /root/.ssh/config
-    - mv -f .deliver/config_staging .deliver/config
-    - chmod -R 700 /root/.ssh
-    - mix do deps.get, deps.compile
-    - git branch -f staging HEAD
-  script:
-    - mix edeliver update staging -P --start-deploy
-    - mix edeliver migrate staging -P
-    - mix edeliver ping staging -P
+    - feature/updateForContainer
 
 production:
   stage: deploy
   environment: production
-  image: plangora/alpine-elixir-phoenix:otp-23.2.2-elixir-1.11.3
+  image: plangora/alpine-elixir-phoenix:otp-23.3.2-elixir-1.11.3
   variables:
     MIX_ENV: "dev"
     REFSPEC: master

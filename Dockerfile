@@ -1,4 +1,4 @@
-FROM bitwalker/alpine-elixir-phoenix:latest as phx-builder
+FROM plangora/alpine-elixir-phoenix:otp-23.3.2-elixir-1.11.3 as phx-builder
 
 ENV PORT=4000 MIX_ENV=prod
 
@@ -11,7 +11,7 @@ RUN mix deps.get && cd assets/ && \
     cd - && \
     mix do compile, phx.digest, release --env docker
 
-FROM bitwalker/alpine-erlang:21.3.8
+FROM plangora/alpine-erlang:23.3.2
 
 EXPOSE 4000
 ENV PORT=4000 MIX_ENV=prod
