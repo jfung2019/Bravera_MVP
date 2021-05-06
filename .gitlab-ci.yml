@@ -16,31 +16,8 @@ test:
     - mix clean
     - mix do deps.get, test --exclude skip
 
-build_staging:
-  stage: build
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v0.4.0"
-  variables:
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: "/certs"
-  tags:
-    - docker
-  services:
-    - docker:19.03.12-dind
-  before_script:
-    - docker info
-  script:
-    - |
-      if [[ -z "$CI_COMMIT_TAG" ]]; then
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
-      else
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
-      fi
-    - /build/build.sh
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "feature/updateForContainer"'
+include:
+  - template: Jobs/Build.gitlab-ci.yml
 
 staging_deploy:
   extends: .auto-deploy
