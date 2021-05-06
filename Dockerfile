@@ -5,10 +5,6 @@ ENV PORT=5000 MIX_ENV=prod
 
 ADD . .
 
-RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets && cat /run/secrets/auto-devops-build-secrets
-
-RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets && env
-
 # Run frontend build, compile, and digest assets, and set default to own the directory
 RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets && \
     mix deps.get && cd assets/ && \

@@ -42,6 +42,9 @@ staging_deploy:
   stage: deploy
   variables:
     POSTGRES_ENABLED: "false"
+    KUBE_INGRESS_BASE_DOMAIN: "new-staging.bravera.co"
+  before_script:
+    - env
   script:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
@@ -49,8 +52,8 @@ staging_deploy:
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
     - auto-deploy deploy
-  environment:
-    name: staging
+  environment: staging
+#    name: staging
 #    url: https://staging.bravera.co/
   rules:
     - if: '$CI_COMMIT_REF_NAME == "feature/updateForContainer"'
