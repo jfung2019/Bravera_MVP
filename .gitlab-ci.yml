@@ -21,6 +21,8 @@ build_staging:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v0.4.0"
   variables:
     DOCKER_TLS_CERTDIR: ""
+  tags:
+    - kubernetes
   services:
     - docker:19.03.12-dind
   environment: staging
@@ -43,8 +45,7 @@ staging_deploy:
   variables:
     POSTGRES_ENABLED: "false"
     KUBE_INGRESS_BASE_DOMAIN: "new-staging.bravera.co"
-  before_script:
-    - env
+    AUTO_DEVOPS_DEPLOY_DEBUG: "true"
   script:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
