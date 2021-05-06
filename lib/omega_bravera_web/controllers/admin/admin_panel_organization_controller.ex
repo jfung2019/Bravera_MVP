@@ -63,4 +63,17 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationController do
     |> put_flash(:info, "Organization deleted successfully.")
     |> redirect(to: Routes.admin_panel_organization_path(conn, :index))
   end
+
+  def view_as(conn, %{"id" => id}) do
+    with %{id: admin_id} <- OmegaBravera.Guardian.Plug.current_resource(conn),
+         partner_user <- Accounts.get_partner_user_by_org_id(id),
+         false <- is_nil(partner_user),
+         conn <- Plug.Conn.put_session(conn, :admin_logged_in, admin_id) do
+      conn
+      |> OmegaBravera.Guardian.Plug.sign_in(partner_user)
+      |> redirect(to: Routes.org_panel_dashboard_path(conn, :index))
+    else
+      _ -> redirect(conn, to: Routes.admin_panel_organization_path(conn, :index))
+    end
+  end
 end

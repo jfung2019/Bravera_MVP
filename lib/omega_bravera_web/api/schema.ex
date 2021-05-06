@@ -205,6 +205,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.reject_friend_request/3
     end
+
+    @desc "unfriend user"
+    field :unfriend_user, :unfriend_result do
+      arg :user_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.unfriend_user/3
+    end
   end
 
   query do

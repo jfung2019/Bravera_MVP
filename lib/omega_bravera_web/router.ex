@@ -177,6 +177,7 @@ defmodule OmegaBraveraWeb.Router do
       resources "/offer-partners", AdminPanelOfferPartnerController, only: [:create, :delete]
       get "/offers/:slug/statement", AdminPanelOfferController, :statement
       get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
+      get "/view-as-org/:id", AdminPanelOrganizationController, :view_as
       resources "/organizations", AdminPanelOrganizationController
       resources "/organization_members", AdminPanelOrganizationMemberController
 
@@ -193,7 +194,7 @@ defmodule OmegaBraveraWeb.Router do
     end
 
     scope "/" do
-      pipe_through [:admin_authenticated]
+      pipe_through [:admin_authenticated, :super_admin_authenticated]
 
       scope "/" do
         pipe_through [:admin_liveview]
@@ -266,6 +267,7 @@ defmodule OmegaBraveraWeb.Router do
       resources "/claim-ids", OrgPanelOfferVendorController, except: [:delete]
       resources "/rewards", OrgPanelOfferRewardController, except: [:delete]
       get "/guides", OrgPanelDashboardController, :guides
+      get "/admin-logged-in", OrgPanelDashboardController, :view_as
     end
   end
 

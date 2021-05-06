@@ -501,6 +501,16 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
           Accounts.get_friend_by_receiver_id_requester_id(receiver_id, requester_id)
         )
 
+  def unfriend_user(_root, %{user_id: friend_user_id}, %{context: %{current_user: %{id: user_id}}}) do
+    case Accounts.remove_friendship(friend_user_id, user_id) do
+      {:ok, _unfriended} ->
+        {:ok, %{unfriended_user_id: friend_user_id}}
+
+      _ ->
+        {:error, message: "Could not unfriend user"}
+    end
+  end
+
   def list_friends(_root, args, %{context: %{current_user: %{id: user_id}}}),
     do: Accounts.list_accepted_friends(user_id, Map.get(args, :keyword), args)
 
