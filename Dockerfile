@@ -6,12 +6,12 @@ ENV PORT=5000 MIX_ENV=prod
 ADD . .
 
 # Run frontend build, compile, and digest assets, and set default to own the directory
-RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets &&
+RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets && \
     mix deps.get && cd assets/ && \
 		npm install && \
     npm run deploy && \
     cd - && \
-    mix do compile, phx.digest, release --env docker
+    mix do compile, phx.digest, release
 
 FROM plangora/alpine-erlang:23.3.2
 
