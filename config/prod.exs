@@ -1,75 +1,75 @@
-use Mix.Config
+import Config
 
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
-  http: [port: System.get_env("PORT") || 8080],
-  url: [host: System.get_env("APP_HOST"), port: 443, scheme: "https"],
-  #  force_ssl: [rewrite_on: [:x_forwarded_proto]], # Disable for Strava
+  http: [port: 5000],
+  url: [host: System.fetch_env!("HOST_URL"), port: 443, scheme: "https"],
   cache_static_manifest: "priv/static/cache_manifest.json",
+  live_view: [signing_salt: System.fetch_env!("LIVEVIEW_SIGNING_SALT")],
   server: true,
   code_reloader: false
 
 # Do not print debug messages in production
-config :logger, level: :error
-
-config :absinthe, Absinthe.Logger,
-  filter_variables: ["reset_token", "token", "password_hash", "secret"]
-
-config :absinthe,
-  log: true
-
-config :absinthe, Absinthe.Logger, pipeline: true
+config :logger, level: :debug
 
 config :phoenix, :serve_endpoints, true
 
-config :omega_bravera, OmegaBraveraWeb.Endpoint,
-  secret_key_base: System.get_env("SECRET_KEY_BASE")
+config :omega_bravera, Oban,
+  repo: OmegaBravera.Repo,
+  prune: {:maxlen, 10_000},
+  queues: [default: 10, email: 30],
+  crontab: [
+    # {"0 22 * * 0", OmegaBravera.Accounts.Jobs.WeeklySummary}
+    {"0 1 * * *", OmegaBravera.Notifications.Jobs.NotifyDaysNoActivity},
+    {"0 0 * * *", OmegaBravera.Notifications.Jobs.NotifyExpiringReward},
+    {"* * * * *", OmegaBravera.Offers.Jobs.ExpireOfferRedeem},
+    {"0 8 */3 * *", OmegaBravera.Notifications.Jobs.NotifyNewGroupMembers},
+    {"0 0 * * *", OmegaBravera.Groups.Jobs.NotifyOrgAdminNewGrpMemberJoined}
+  ]
 
+config :sendgrid,
+  api_key: System.fetch_env!("SENDGRID_API_KEY")
+
+config :omega_bravera, OmegaBravera.Endpoint,
+  secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
+
+# Configure your database
 config :omega_bravera, OmegaBravera.Repo,
-  url: System.get_env("DATABASE_URL"),
-  pool_size: 20
+  url: System.fetch_env!("DATABASE_URL"),
+  pool_size: 20,
+  type: OmegaBravera.PostgresTypes
 
+# Strava dev config
 config :strava,
-  client_id: System.get_env("STRAVA_CLIENT_ID"),
-  client_secret: System.get_env("STRAVA_CLIENT_SECRET"),
-  access_token: System.get_env("STRAVA_ACCESS_TOKEN"),
-  redirect_uri: System.get_env("STRAVA_REDIRECT_URI")
+  client_id: System.fetch_env!("STRAVA_CLIENT_ID") |> String.to_integer(),
+  client_secret: System.fetch_env!("STRAVA_CLIENT_SECRET"),
+  access_token: System.fetch_env!("STRAVA_ACCESS_TOKEN"),
+  redirect_uri: System.fetch_env!("STRAVA_REDIRECT_URI")
+
+# Stripy dev config
+config :omega_bravera, :stripe_public_key, System.fetch_env!("STRIPE_PUBLIC_KEY")
 
 config :stripy,
-  secret_key: System.get_env("STRIPE_SECRET_KEY"),
+  secret_key: System.fetch_env!("STRIPE_SECRET_KEY"),
   endpoint: "https://api.stripe.com/v1/"
-
-config :omega_bravera, :stripe_public_key, System.get_env("STRIPE_PUBLIC_KEY")
 
 # Guardian config
 config :omega_bravera, OmegaBravera.Guardian,
-  issuer: "bravera",
-  secret_key: System.get_env("GUARDIAN_SECRET_KEY")
-
-# Email config
-config :omega_bravera, OmegaBravera.Mail,
-  adapter: Bamboo.SendgridAdapter,
-  api_key: System.get_env("SENDGRID_API_KEY")
-
-config :sendgrid,
-  api_key: System.get_env("SENDGRID_API_KEY"),
-  sandbox_enable: is_nil(System.get_env("ENABLE_EMAILS"))
+  issuer: "Bravera.co",
+  secret_key: System.fetch_env!("GUARDIAN_SECRET_KEY")
 
 # S3 Bucket
 config :ex_aws,
   access_key_id: [{:system, "AWS_ACCESS_KEY_ID"}, :instance_role],
   secret_access_key: [{:system, "AWS_SECRET_ACCESS_KEY"}, :instance_role],
-  region: System.get_env("AWS_REGION")
+  region: "ap-southeast-1"
 
-config :omega_bravera, :images_bucket_name, System.get_env("S3_BUCKET_NAME")
+config :omega_bravera,
+  images_bucket_name: System.fetch_env!("S3_BUCKET"),
+  images_cdn_url: System.fetch_env!("CDN_URL")
 
 config :ex_aws, :hackney_opts,
   follow_redirect: true,
   recv_timeout: 30_000
-
-# Manual activities
-config :omega_bravera,
-       :enable_manual_activities,
-       not is_nil(System.get_env("ENABLE_MANUAL_ACTIVITIES"))
 
 # Mobile App Links Setup
 config :omega_bravera,
@@ -90,3 +90,9 @@ config :omega_bravera,
       ]
     ]
   ]
+
+# FCM setup
+config :pigeon, :fcm,
+  fcm_default: %{
+    key: System.fetch_env!("FCM_KEY")
+  }

@@ -1,20 +1,22 @@
-FROM bitwalker/alpine-elixir-phoenix:latest as phx-builder
+# syntax = docker/dockerfile:experimental
+FROM plangora/alpine-elixir-phoenix:otp-23.3.2-elixir-1.11.3 as phx-builder
 
-ENV PORT=4000 MIX_ENV=prod
+ENV PORT=5000 MIX_ENV=prod
 
 ADD . .
 
 # Run frontend build, compile, and digest assets, and set default to own the directory
-RUN mix deps.get && cd assets/ && \
+RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-build-secrets && \
+    mix deps.get && cd assets/ && \
 		npm install && \
     npm run deploy && \
     cd - && \
-    mix do compile, phx.digest, release --env docker
+    mix do compile, phx.digest, release
 
-FROM bitwalker/alpine-erlang:21.3.8
+FROM plangora/alpine-erlang:23.3.2
 
-EXPOSE 4000
-ENV PORT=4000 MIX_ENV=prod
+EXPOSE 5000
+ENV PORT=5000 MIX_ENV=prod
 
 COPY --from=phx-builder /opt/app/_build/prod/rel/omega_bravera/ /opt/app/
 RUN chown -R default /opt/app/
@@ -22,4 +24,4 @@ RUN apk --update add imagemagick file
 
 USER default
 
-CMD ["/opt/app/bin/omega_bravera", "foreground"]
+CMD ["/opt/app/bin/omega_bravera", "start"]
