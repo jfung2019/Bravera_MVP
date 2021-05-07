@@ -45,7 +45,7 @@ staging_deploy:
   variables:
     POSTGRES_ENABLED: "false"
     KUBE_INGRESS_BASE_DOMAIN: "new-staging.bravera.co"
-    AUTO_DEVOPS_DEPLOY_DEBUG: "true"
+    ROLLOUT_RESOURCE_TYPE: deployment
   script:
     - auto-deploy check_kube_domain
     - auto-deploy download_chart
