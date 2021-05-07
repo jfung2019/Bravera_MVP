@@ -37,7 +37,7 @@ build_staging:
       fi
     - /build/build.sh
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "feature/updateForContainer"'
+    - if: '$CI_COMMIT_REF_NAME == "staging"'
 
 staging_deploy:
   extends: .auto-deploy
@@ -53,11 +53,11 @@ staging_deploy:
     - auto-deploy initialize_tiller
     - auto-deploy create_secret
     - auto-deploy deploy
-  environment: staging
-#    name: staging
-#    url: https://staging.bravera.co/
+  environment:
+    name: staging
+    url: https://staging.bravera.co/
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "feature/updateForContainer"'
+    - if: '$CI_COMMIT_REF_NAME == "staging"'
 
 production:
   stage: deploy
