@@ -1988,6 +1988,11 @@ defmodule OmegaBravera.Accounts do
 
   def get_partner_user!(id), do: Repo.get!(PartnerUser, id)
 
+  def get_partner_user(id, preloads \\ []) do
+    from(p in PartnerUser, where: p.id == ^id, preload: ^preloads)
+    |> Repo.one()
+  end
+
   def partner_user_auth(username, password) do
     with {:ok, partner_user} <- get_partner_user_by_email_or_username(username),
          do: verify_partner_user_password(password, partner_user)
@@ -2101,11 +2106,22 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  Markes a partner user as their email verified.
+  Mark a partner user as their email verified.
   """
   @spec verify_partner_user_email(PartnerUser.t()) :: {:ok, PartnerUser.t()}
-  def verify_partner_user_email(%PartnerUser{} = partner_user),
-    do: update_partner_user(partner_user, %{email_verified: true})
+  def verify_partner_user_email(%PartnerUser{} = partner_user) do
+    case update_partner_user(partner_user, %{email_verified: true}) do
+      {:ok, %{id: partner_user_id}} = result ->
+        %{id: partner_user_id}
+        |> OmegaBravera.Accounts.Jobs.PartnerUserVerified.new()
+        |> Oban.insert()
+
+        result
+
+      result ->
+        result
+    end
+  end
 
   @doc """
   Returns the list of organization.
@@ -2460,14 +2476,18 @@ defmodule OmegaBravera.Accounts do
 
   defp broadcast_friend_chat(result), do: result
 
-  defp broadcast_user_unfriended({:ok, %{receiver_id: receiver_id, requester_id: requester_id}} = result) do
-    :ok = @endpoint.broadcast(@user_channel.user_channel(receiver_id), "unfriended", %{
-      id: requester_id
-    })
+  defp broadcast_user_unfriended(
+         {:ok, %{receiver_id: receiver_id, requester_id: requester_id}} = result
+       ) do
+    :ok =
+      @endpoint.broadcast(@user_channel.user_channel(receiver_id), "unfriended", %{
+        id: requester_id
+      })
 
-    :ok = @endpoint.broadcast(@user_channel.user_channel(requester_id), "unfriended", %{
-      id: receiver_id
-    })
+    :ok =
+      @endpoint.broadcast(@user_channel.user_channel(requester_id), "unfriended", %{
+        id: receiver_id
+      })
 
     result
   end
@@ -2483,7 +2503,8 @@ defmodule OmegaBravera.Accounts do
   @doc """
   remove the friendship between 2 users
   """
-  @spec remove_friendship(String.t(), String.t()) :: {:ok, Friend.t()} | {:error, Ecto.Changeset.t()}
+  @spec remove_friendship(String.t(), String.t()) ::
+          {:ok, Friend.t()} | {:error, Ecto.Changeset.t()}
   def remove_friendship(friend_user_id, user_id) do
     find_existing_friend(friend_user_id, user_id)
     |> Repo.delete()
