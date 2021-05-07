@@ -7,7 +7,7 @@ defmodule OmegaBravera.Repo.Migrations.AddBusinessWebsite do
 
   def change do
     alter table("organizations") do
-      add :business_website, :citext
+      add :business_website, :varchar
     end
 
     flush()
@@ -16,7 +16,7 @@ defmodule OmegaBravera.Repo.Migrations.AddBusinessWebsite do
     |> Repo.update_all(set: [business_website: "https://www.bravera.fit/"])
 
     alter table("organizations") do
-      modify :business_website, :citext, null: false
+      modify :business_website, :varchar, null: false
     end
   end
 end
