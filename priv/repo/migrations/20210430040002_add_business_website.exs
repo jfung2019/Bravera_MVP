@@ -9,14 +9,5 @@ defmodule OmegaBravera.Repo.Migrations.AddBusinessWebsite do
     alter table("organizations") do
       add :business_website, :varchar
     end
-
-    flush()
-
-    from(o in "organizations")
-    |> Repo.update_all(set: [business_website: "https://www.bravera.fit/"])
-
-    alter table("organizations") do
-      modify :business_website, :varchar, null: false
-    end
   end
 end
