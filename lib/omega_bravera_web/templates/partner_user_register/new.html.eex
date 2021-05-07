@@ -47,6 +47,15 @@
                     <%= email_input p_user, :email, class: add_error_class(p_user, :email, "form-control"), required: true %>
                     <%= error_tag p_user, :email %>
                 </div>
+                <% end %>
+                <%= inputs_for f, :organization, fn org -> %>
+                <div class="mb-3">
+                    <%= label org, :business_website, gettext("Business Website / URL"), class: "form-label" %>
+                    <%= text_input org, :business_website, class: add_error_class(org, :business_website, "form-control"), required: true %>
+                    <%= error_tag org, :business_website %>
+                </div>
+                <% end %>
+                <%= inputs_for f, :partner_user, fn p_user -> %>
                 <div class="mb-3">
                     <%= label p_user, :password, class: "form-label" %>
                     <%= password_input p_user, :password, class: add_error_class(p_user, :password, "form-control"), required: true %>

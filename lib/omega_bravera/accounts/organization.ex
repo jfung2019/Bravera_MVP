@@ -6,6 +6,7 @@ defmodule OmegaBravera.Accounts.Organization do
   schema "organizations" do
     field :name, :string
     field :business_type, :string
+    field :business_website, :string
     field :member_count, :integer, virtual: true
 
     has_many :groups, OmegaBravera.Groups.Partner
@@ -21,7 +22,8 @@ defmodule OmegaBravera.Accounts.Organization do
   @doc false
   def changeset(organization, attrs) do
     organization
-    |> cast(attrs, [:name, :business_type])
-    |> validate_required([:name, :business_type])
+    |> cast(attrs, [:name, :business_type, :business_website])
+    |> validate_required([:name, :business_type, :business_website])
+    |> EctoCommons.URLValidator.validate_url(:business_website)
   end
 end

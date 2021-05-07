@@ -556,7 +556,11 @@ defmodule OmegaBravera.AccountsTest do
   describe "organization" do
     alias OmegaBravera.Accounts.Organization
 
-    @valid_attrs %{name: "some name", business_type: "type"}
+    @valid_attrs %{
+      name: "some name",
+      business_type: "type",
+      business_website: "https://www.bravera.fit/"
+    }
     @update_attrs %{name: "some updated name"}
     @invalid_attrs %{name: nil}
 
@@ -623,7 +627,13 @@ defmodule OmegaBravera.AccountsTest do
 
     def organization_member_fixture(attrs \\ %{}) do
       {:ok, organization} =
-        Accounts.create_organization(Map.merge(attrs, %{name: "name", business_type: "type"}))
+        Accounts.create_organization(
+          Map.merge(attrs, %{
+            name: "name",
+            business_type: "type",
+            business_website: "https://www.bravera.fit/"
+          })
+        )
 
       location = Fixtures.location_fixture()
 
@@ -661,7 +671,11 @@ defmodule OmegaBravera.AccountsTest do
       location = Fixtures.location_fixture()
 
       assert {:ok, organization} =
-               Accounts.create_organization(%{name: "name", business_type: "type"})
+               Accounts.create_organization(%{
+                 name: "name",
+                 business_type: "type",
+                 business_website: "https://www.bravera.fit/"
+               })
 
       assert {:ok, %OrganizationMember{partner_user: %{email_verified: true}}} =
                Accounts.create_organization_partner_user(%{

@@ -1988,6 +1988,11 @@ defmodule OmegaBravera.Accounts do
 
   def get_partner_user!(id), do: Repo.get!(PartnerUser, id)
 
+  def get_partner_user(id, preloads \\ []) do
+    from(p in PartnerUser, where: p.id == ^id, preload: ^preloads)
+    |> Repo.one()
+  end
+
   def partner_user_auth(username, password) do
     with {:ok, partner_user} <- get_partner_user_by_email_or_username(username),
          do: verify_partner_user_password(password, partner_user)
@@ -2101,11 +2106,22 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  Markes a partner user as their email verified.
+  Mark a partner user as their email verified.
   """
   @spec verify_partner_user_email(PartnerUser.t()) :: {:ok, PartnerUser.t()}
-  def verify_partner_user_email(%PartnerUser{} = partner_user),
-    do: update_partner_user(partner_user, %{email_verified: true})
+  def verify_partner_user_email(%PartnerUser{} = partner_user) do
+    case update_partner_user(partner_user, %{email_verified: true}) do
+      {:ok, %{id: partner_user_id}} = result ->
+        %{id: partner_user_id}
+        |> OmegaBravera.Accounts.Jobs.PartnerUserVerified.new()
+        |> Oban.insert()
+
+        result
+
+      result ->
+        result
+    end
+  end
 
   @doc """
   Returns the list of organization.
