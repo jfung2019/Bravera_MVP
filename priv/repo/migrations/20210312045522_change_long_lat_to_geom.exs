@@ -1,10 +1,6 @@
 defmodule OmegaBravera.Repo.Migrations.ChangeLongLatToGeom do
   use Ecto.Migration
 
-  import Ecto.Query
-
-  alias OmegaBravera.Repo
-
   def change do
     alter table("locations") do
       add :geom, :geography

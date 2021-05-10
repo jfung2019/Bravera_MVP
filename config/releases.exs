@@ -41,3 +41,8 @@ config :pigeon, :fcm,
        fcm_default: %{
          key: System.fetch_env!("FCM_KEY")
        }
+
+# Manual activities
+config :omega_bravera,
+       :enable_manual_activities,
+       not is_nil(System.get_env("ENABLE_MANUAL_ACTIVITIES"))
