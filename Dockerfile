@@ -11,7 +11,7 @@ RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-
 		npm install && \
     npm run deploy && \
     cd - && \
-    mix do compile, phx.digest, release
+    mix do compile, phx.digest, release --env docker
 
 FROM plangora/alpine-erlang:23.3.2
 
