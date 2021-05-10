@@ -10,10 +10,6 @@ config :sendgrid,
 config :omega_bravera, OmegaBravera.Endpoint,
        secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
 
-# Configure your database
-config :omega_bravera, OmegaBravera.Repo,
-       url: System.fetch_env!("DATABASE_URI")
-
 # Strava dev config
 config :strava,
        client_id: System.fetch_env!("STRAVA_CLIENT_ID") |> String.to_integer(),
