@@ -11,7 +11,7 @@ RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-
 		npm install && \
     npm run deploy && \
     cd - && \
-    mix do compile, phx.digest, release --env docker
+    mix do compile, phx.digest, distillery.release --env docker
 
 FROM plangora/alpine-erlang:23.3.2
 
@@ -24,4 +24,4 @@ RUN apk --update add imagemagick file
 
 USER default
 
-CMD ["/opt/app/bin/omega_bravera", "start"]
+CMD ["/opt/app/bin/omega_bravera", "foreground"]
