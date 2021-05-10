@@ -13,7 +13,7 @@ config :omega_bravera, OmegaBravera.Endpoint,
 
 # Configure your database
 config :omega_bravera, OmegaBravera.Repo,
-       url: System.fetch_env!("DATABASE_URL")
+       url: System.fetch_env!("DATABASE_URI")
 
 # Strava dev config
 config :strava,
