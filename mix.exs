@@ -84,6 +84,7 @@ defmodule OmegaBravera.Mixfile do
       {:countries, "~> 1.5"},
       {:pigeon, "~> 1.5.0"},
       {:kadabra, "~> 0.4.4"},
+      {:sentry, "~> 8.0"},
       {:geo_postgis, "~> 3.3"}
     ]
   end

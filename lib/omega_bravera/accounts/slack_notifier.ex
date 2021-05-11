@@ -3,16 +3,18 @@ defmodule OmegaBravera.Accounts.SlackNotifier do
 
   @sales_channel Application.get_env(:omega_bravera, :slack_sales_channel)
 
-  @doc"""
+  @doc """
   send message to slack channel to notify new partner_user
   """
   @spec notify_new_partner_user(PartnerUser.t()) ::
           {:ok, HTTPoison.Response.t()}
           | {:error, HTTPoison.Error.t()}
   def notify_new_partner_user(%PartnerUser{} = partner_user) do
-    payload = %{
-      text: get_partner_user_info(partner_user)
-    } |> Jason.encode!()
+    payload =
+      %{
+        text: get_partner_user_info(partner_user)
+      }
+      |> Jason.encode!()
 
     HTTPoison.post(@sales_channel, payload, [{"Content-Type", "application/json"}])
   end

@@ -3,13 +3,17 @@ use Mix.Config
 config :omega_bravera, OmegaBraveraWeb.Endpoint,
        http: [port: System.get_env("PORT") || 4000],
        url: [host: System.fetch_env!("HOST_URL"), port: 443, scheme: "https"],
-       live_view: [signing_salt: System.fetch_env!("LIVEVIEW_SIGNING_SALT")]
+       live_view: [signing_salt: System.fetch_env!("LIVEVIEW_SIGNING_SALT")],
+       secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
 
 config :sendgrid,
        api_key: System.fetch_env!("SENDGRID_API_KEY")
 
-config :omega_bravera, OmegaBravera.Endpoint,
-       secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
+# Error Tracking
+config :sentry,
+       dsn: System.fetch_env!("SENTRY_DSN"),
+       included_environments: ~w(production staging),
+       environment_name: System.get_env("SENTRY_ENV", "development")
 
 # Strava dev config
 config :strava,

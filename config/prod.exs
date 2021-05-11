@@ -7,7 +7,7 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
   code_reloader: false
 
 # Do not print debug messages in production
-config :logger, level: :debug
+config :logger, level: :info, backends: [Sentry.LoggerBackend]
 
 config :phoenix, :serve_endpoints, true
 
@@ -33,8 +33,7 @@ config :stripy,
   endpoint: "https://api.stripe.com/v1/"
 
 # Guardian config
-config :omega_bravera, OmegaBravera.Guardian,
-  issuer: "Bravera.co"
+config :omega_bravera, OmegaBravera.Guardian, issuer: "Bravera.co"
 
 # S3 Bucket
 config :ex_aws,
