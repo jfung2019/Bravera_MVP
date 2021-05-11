@@ -18,9 +18,6 @@ config :strava,
        access_token: System.fetch_env!("STRAVA_ACCESS_TOKEN"),
        redirect_uri: System.fetch_env!("STRAVA_REDIRECT_URI")
 
-# Stripy dev config
-config :omega_bravera, :stripe_public_key, System.fetch_env!("STRIPE_PUBLIC_KEY")
-
 config :stripy,
        secret_key: System.fetch_env!("STRIPE_SECRET_KEY")
 
@@ -35,7 +32,10 @@ config :ex_aws,
 
 config :omega_bravera,
        images_bucket_name: System.fetch_env!("S3_BUCKET"),
-       images_cdn_url: System.fetch_env!("CDN_URL")
+       images_cdn_url: System.fetch_env!("CDN_URL"),
+       enable_manual_activities: not is_nil(System.get_env("ENABLE_MANUAL_ACTIVITIES")),
+       slack_sales_channel: System.fetch_env!("SLACK_SALES_CHANNEL"),
+       stripe_public_key: System.fetch_env!("STRIPE_PUBLIC_KEY")
 
 # FCM setup
 config :pigeon, :fcm,
@@ -45,5 +45,4 @@ config :pigeon, :fcm,
 
 # Manual activities
 config :omega_bravera,
-       :enable_manual_activities,
-       not is_nil(System.get_env("ENABLE_MANUAL_ACTIVITIES"))
+
