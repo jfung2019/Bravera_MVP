@@ -19,7 +19,12 @@ defmodule OmegaBravera.ActivitiesTest do
   } do
     assert {:ok, _} =
              Activities.create_app_activity(
-               %{"start_date" => start_date, "end_date" => end_date, "type" => "Walk"},
+               %{
+                 "start_date" => start_date,
+                 "end_date" => end_date,
+                 "type" => "Walk",
+                 "source" => "Watch"
+               },
                user.id,
                device.id,
                0
@@ -27,7 +32,12 @@ defmodule OmegaBravera.ActivitiesTest do
 
     assert {:error, _} =
              Activities.create_app_activity(
-               %{"start_date" => start_date, "end_date" => end_date, "type" => "Walk"},
+               %{
+                 "start_date" => start_date,
+                 "end_date" => end_date,
+                 "type" => "Walk",
+                 "source" => "Watch"
+               },
                user.id,
                device.id,
                0
@@ -38,7 +48,8 @@ defmodule OmegaBravera.ActivitiesTest do
                %{
                  "start_date" => Timex.shift(start_date, minutes: 1),
                  "end_date" => Timex.shift(end_date, minutes: 1),
-                 "type" => "Walk"
+                 "type" => "Walk",
+                 "source" => "Watch"
                },
                user.id,
                device.id,
@@ -50,7 +61,8 @@ defmodule OmegaBravera.ActivitiesTest do
                %{
                  "start_date" => end_date,
                  "end_date" => Timex.shift(end_date, minutes: 1),
-                 "type" => "Walk"
+                 "type" => "Walk",
+                 "source" => "Watch"
                },
                user.id,
                device.id,
@@ -65,7 +77,7 @@ defmodule OmegaBravera.ActivitiesTest do
   } do
     assert {:ok, %{end_date: ^start_date}} =
              Activities.create_app_activity(
-               %{"start_date" => start_date, "type" => "Walk"},
+               %{"start_date" => start_date, "type" => "Walk", "source" => "Watch"},
                user.id,
                device.id,
                0

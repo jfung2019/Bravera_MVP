@@ -132,10 +132,10 @@ defmodule OmegaBravera.Offers.Notifier do
     challenge
     |> Repo.preload(:offer)
     |> reward_vendor_redemption_successful_confirmation_email(
-         redeem,
-         redeems_count,
-         template_id
-       )
+      redeem,
+      redeems_count,
+      template_id
+    )
     |> Mail.send()
   end
 
