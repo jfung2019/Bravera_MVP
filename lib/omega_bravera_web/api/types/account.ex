@@ -309,9 +309,6 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   object :strava_user do
     field :athlete_id, non_null(:integer)
-    field :email, non_null(:string)
-    field :firstname, non_null(:string)
-    field :lastname, non_null(:string)
     field :user_id,  non_null(:id)
   end
 end

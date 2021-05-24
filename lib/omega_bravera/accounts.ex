@@ -1318,6 +1318,18 @@ defmodule OmegaBravera.Accounts do
     |> Repo.update()
   end
 
+  def switch_sync_type(user_id, :strava), do: update_user(Accounts.get_user!(user_id), %{sync_type: :device})
+
+  def switch_sync_type(user_id, :device) do
+    case Accounts.get_user_strava(user_id) do
+      nil ->
+        {:error, message: "Please connect to Strava before switching"}
+
+      _strava ->
+        Accounts.update_user(Accounts.get_user!(user_id), %{sync_type: :strava})
+    end
+  end
+
   @doc """
   Enables/disables global push notifications to all of the user's registered devices.
   """
