@@ -271,6 +271,20 @@ defmodule OmegaBravera.Accounts do
     |> Repo.one()
   end
 
+  def remove_all_stravas do
+    Trackers.list_stravas()
+    |> Enum.map(fn %{refresh_token: refresh_token} = strava ->
+      client = Strava.Auth.get_token!(grant_type: "refresh_token", refresh_token: refresh_token)
+      Trackers.update_strava(strava, %{
+        token: client.token.access_token,
+        refresh_token: client.token.refresh_token,
+        token_expires_at: Timex.from_unix(client.token.expires_at)
+      })
+      HTTPoison.post("https://www.strava.com/oauth/deauthorize", %{access_token: client.token.access_token})
+      Trackers.delete_strava(strava)
+    end)
+  end
+
   def get_user_with_everything!(user_id) do
     user = User
 

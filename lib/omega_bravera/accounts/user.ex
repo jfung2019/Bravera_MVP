@@ -11,7 +11,7 @@ defmodule OmegaBravera.Accounts.User do
   alias OmegaBravera.Stripe.StrCustomer
   alias OmegaBravera.Offers.{OfferChallenge, OfferChallengeTeam}
 
-  @required_attributes [:firstname, :lastname, :username, :location_id, :locale, :email]
+  @required_attributes [:firstname, :lastname, :username, :location_id, :locale, :email, :sync_type]
   @allowed_attributes [
     :email,
     :firstname,
@@ -24,7 +24,8 @@ defmodule OmegaBravera.Accounts.User do
     :location_id,
     :locale,
     :referred_by_id,
-    :last_login_datetime
+    :last_login_datetime,
+    :sync_type
   ]
 
   schema "users" do
@@ -35,6 +36,7 @@ defmodule OmegaBravera.Accounts.User do
     field :lastname, :string
     field :username, :string
     field :locale, :string, default: "en"
+    field :sync_type, Ecto.Enum, values: [:device, :strava], default: :device
 
     # Admin section fields
     field :active, :boolean, virtual: true
@@ -123,6 +125,7 @@ defmodule OmegaBravera.Accounts.User do
     |> lowercase_email()
     |> unique_constraint(:email)
     |> add_email_activation_token()
+    |> validate_inclusion(:sync_type, Ecto.Enum.values(__MODULE__, :sync_type))
     |> cast_assoc(:setting, with: &Setting.changeset/2, required: false)
     |> cast_assoc(:credential, with: &Credential.optional_changeset/2, required: false)
   end

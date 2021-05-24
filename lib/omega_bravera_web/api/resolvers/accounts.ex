@@ -6,7 +6,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   require Logger
 
   alias OmegaBravera.Guardian
-  alias OmegaBravera.{Accounts, Locations, Points, Repo, Notifications}
+  alias OmegaBravera.{Accounts, Locations, Points, Repo, Notifications, Trackers}
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   alias OmegaBravera.Accounts.{User, Friend, Tools, Notifier}
 
@@ -321,6 +321,27 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         end
     end
   end
+
+  def get_user_syncing_method(_root, _params, %{context: %{current_user: %{id: user_id, sync_type: sync_type}}}),
+      do: {:ok, %{sync_type: sync_type, strava_connected: not is_nil(Accounts.get_user_strava(user_id))}}
+
+  def connect_to_strava(_root, %{code: code}, %{context: %{current_user: %{id: user_id}}}),
+      do: Trackers.create_strava(user_id, Accounts.Strava.login_changeset(%{"code" => code}))
+
+  def switch_user_sync_type(_root, _params, %{context: %{current_user: %{id: user_id, sync_type: :strava}}}),
+      do: Accounts.update_user(Accounts.get_user!(user_id), %{sync_type: :device})
+
+  def switch_user_sync_type(_root, _params, %{context: %{current_user: %{id: user_id, sync_type: :device}}}) do
+    case Accounts.get_user_strava(user_id) do
+      nil ->
+        {:error, message: "Please connect to Strava before switching"}
+
+      _strava ->
+        Accounts.update_user(Accounts.get_user!(user_id), %{sync_type: :strava})
+    end
+  end
+
+  def switch_user_sync_type(_root, _params, _context), do: {:error, message: "Failed to change"}
 
   def delete_user_pictures(_, _, %{context: %{current_user: %{id: _user_id} = current_user}}) do
     {:ok, %{status: Accounts.delete_user_profile_pictures(current_user)}}

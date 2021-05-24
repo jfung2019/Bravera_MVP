@@ -296,4 +296,22 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :description, non_null(:string)
     field :permitted, non_null(:boolean)
   end
+
+  enum :sync_type do
+    value :device, description: "Sync activities with device, i.e. Google Fit / Apple Health"
+    value :strava, description: "Sync activities with Strava"
+  end
+
+  object :sync_method do
+    field :sync_type, non_null(:sync_type)
+    field :strava_connected, non_null(:boolean)
+  end
+
+  object :strava_user do
+    field :athlete_id, non_null(:integer)
+    field :email, non_null(:string)
+    field :firstname, non_null(:string)
+    field :lastname, non_null(:string)
+    field :user_id,  non_null(:id)
+  end
 end

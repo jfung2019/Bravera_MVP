@@ -7,6 +7,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   alias OmegaBravera.Activity.ActivityAccumulator
 
+  def create(_root, _params, %{context: %{current_user: %{sync_type: :strava}}}),
+      do: {:error, message: "Cannot sync while using Strava as a source"}
+
   def create(_root, %{input: activity_params}, %{
         context: %{current_user: %{id: _user_id} = current_user, device: %{id: device_id}}
       })

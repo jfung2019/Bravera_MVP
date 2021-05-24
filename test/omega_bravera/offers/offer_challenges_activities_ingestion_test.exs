@@ -93,55 +93,6 @@ defmodule OmegaBravera.OfferChallengesActivitiesIngestionTest do
                  true
                )
     end
-
-    test "relevant segment activity will close a bravera segment challenge" do
-      {:ok, start_date} =
-        Timex.Parse.DateTime.Parser.parse("2019-07-08 05:48:39Z", "{ISO:Extended:Z}")
-
-      offer =
-        insert(:offer, %{
-          start_date: Timex.shift(start_date, days: -2),
-          end_date: Timex.shift(Timex.now(), days: 10),
-          payment_amount: Decimal.new(57),
-          offer_challenge_types: ["BRAVERA_SEGMENT"]
-        })
-
-      user = insert(:user)
-
-      insert(:strava, %{
-        athlete_id: 5_535_689,
-        token: "dc218197b9b910a0c4e7e58f2496dd864b63fbff",
-        user: nil,
-        user_id: user.id
-      })
-
-      offer_challenge =
-        insert(:offer_challenge, %{
-          offer: nil,
-          offer_id: offer.id,
-          type: "BRAVERA_SEGMENT",
-          user: nil,
-          user_id: user.id,
-          start_date: Timex.shift(start_date, days: -1),
-          distance_target: 21_202_706
-        })
-
-      use_cassette "segment_activity" do
-        {:ok, strava_activity} =
-          Strava.Activities.get_activity_by_id(
-            Strava.Client.new("dc218197b9b910a0c4e7e58f2496dd864b63fbff"),
-            2_513_839_746,
-            include_all_efforts: true
-          )
-
-        {:ok, activity} = Activities.create_activity(strava_activity, user)
-
-        OmegaBravera.Offers.OfferActivitiesIngestion.start(activity, %{"owner_id" => 5_535_689})
-
-        assert %OfferChallenge{status: "complete"} =
-                 Offers.get_offer_challenge!(offer_challenge.id)
-      end
-    end
   end
 
   describe "process_challenges/2" do
