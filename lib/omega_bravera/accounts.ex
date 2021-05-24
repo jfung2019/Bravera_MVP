@@ -1318,9 +1318,13 @@ defmodule OmegaBravera.Accounts do
     |> Repo.update()
   end
 
-  def switch_sync_type(user_id, :strava), do: update_user(Accounts.get_user!(user_id), %{sync_type: :device})
+  @doc """
+  Switch user's sync_type
+  """
+  @spec switch_sync_type(integer(), atom()) :: {:ok, Strava.t()} | {:error, message: String.t()}
+  def switch_sync_type(user_id, :device), do: update_user(Accounts.get_user!(user_id), %{sync_type: :device})
 
-  def switch_sync_type(user_id, :device) do
+  def switch_sync_type(user_id, :strava) do
     case Accounts.get_user_strava(user_id) do
       nil ->
         {:error, message: "Please connect to Strava before switching"}

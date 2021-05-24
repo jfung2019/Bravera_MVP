@@ -328,7 +328,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   def connect_to_strava(_root, %{code: code}, %{context: %{current_user: %{id: user_id}}}),
       do: Trackers.create_strava(user_id, Accounts.Strava.login_changeset(%{"code" => code}))
 
-  def switch_user_sync_type(_root, _params, %{context: %{current_user: %{id: user_id, sync_type: sync_type}}}),
+  def switch_user_sync_type(_root, %{sync_type: sync_type}, %{context: %{current_user: %{id: user_id}}}),
       do: Accounts.switch_sync_type(user_id, sync_type)
 
   def delete_user_pictures(_, _, %{context: %{current_user: %{id: _user_id} = current_user}}) do

@@ -6,8 +6,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.StravaTest do
   alias OmegaBravera.Fixtures
 
   @switch_user_sync_type """
-  mutation {
-    switchUserSyncType {
+  mutation($syncType: SyncType!) {
+    switchUserSyncType(syncType: $syncType) {
       syncType
       stravaConnected
     }
@@ -25,7 +25,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.StravaTest do
   end
 
   test "Cannot switch to sync with Strava if not connected", %{conn: conn} do
-    response = post(conn, "/api", %{query: @switch_user_sync_type})
+    response = post(conn, "/api", %{query: @switch_user_sync_type, variables: %{"syncType" => "STRAVA"}})
 
     assert %{"errors" => [%{"message" => "Please connect to Strava before switching"}]} = json_response(response, 200)
   end

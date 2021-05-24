@@ -72,8 +72,9 @@ defmodule OmegaBraveraWeb.Api.Schema do
     end
 
     @desc "Switch sync type"
-    field :switch_user_sync_type, non_null(:sync_method) do
+    field :switch_user_sync_type, :sync_method do
       middleware Middleware.Authenticate
+      arg :sync_type, non_null(:sync_type)
       resolve &Resolvers.Accounts.switch_user_sync_type/3
     end
 
