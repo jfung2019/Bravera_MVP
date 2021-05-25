@@ -331,8 +331,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         Accounts.switch_sync_type(user_id, :strava)
         ok_tuple
 
-      result ->
-        result
+      {:error, changeset} ->
+        {:error, message: "Failed to connect to Strava", details: Helper.transform_errors(changeset)}
     end
   end
 
