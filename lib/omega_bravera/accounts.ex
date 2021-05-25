@@ -1326,7 +1326,7 @@ defmodule OmegaBravera.Accounts do
   def switch_sync_type(user_id, :strava) do
     case Accounts.get_user_strava(user_id) do
       nil ->
-        {:error, message: "Please connect to Trackers.Strava before switching"}
+        {:error, message: "Please connect to Strava before switching"}
 
       _strava ->
         Accounts.update_user(Accounts.get_user!(user_id), %{sync_type: :strava})
