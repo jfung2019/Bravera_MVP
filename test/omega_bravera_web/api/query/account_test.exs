@@ -89,6 +89,15 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   }
   """
 
+  @get_user_sync_method """
+  query {
+    getUserSyncingMethod {
+      syncType
+      stravaConnected
+    }
+  }
+  """
+
   def credential_fixture() do
     user = insert(:user, %{email: @email})
 
@@ -193,5 +202,18 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
              "description" => "Platform Notifications",
              "permitted" => true
            } in category_list
+  end
+
+  test "can get sync method", %{conn: conn, user: %{sync_type: sync_type}} do
+    response = post(conn, "/api", %{query: @get_user_sync_method})
+
+    assert %{
+      "data" => %{
+        "getUserSyncingMethod" => %{
+          "stravaConnected" => false,
+          "syncType" => "DEVICE"
+        }
+      }
+    } = json_response(response, 200)
   end
 end

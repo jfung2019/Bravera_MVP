@@ -64,6 +64,20 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.save_settings/3
     end
 
+    @desc "Connect to strava"
+    field :connect_to_strava, non_null(:strava_user) do
+      arg :code, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.connect_to_strava/3
+    end
+
+    @desc "Switch sync type"
+    field :switch_user_sync_type, :sync_method do
+      middleware Middleware.Authenticate
+      arg :sync_type, non_null(:sync_type)
+      resolve &Resolvers.Accounts.switch_user_sync_type/3
+    end
+
     @desc "Buy an offer using points"
     field :buy_offer_challenge, :buy_or_create_offer_challenge_result do
       arg :offer_slug, non_null(:string)
@@ -237,6 +251,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :get_user_settings, :user do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.get_user_with_settings/3
+    end
+
+    @desc "Get the syncing method of user"
+    field :get_user_syncing_method, non_null(:sync_method) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.get_user_syncing_method/3
     end
 
     @desc "Get Bravera Leaderboard"
