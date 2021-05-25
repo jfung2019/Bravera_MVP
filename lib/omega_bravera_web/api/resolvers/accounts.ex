@@ -325,8 +325,16 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   def get_user_syncing_method(_root, _params, %{context: %{current_user: %{id: user_id, sync_type: sync_type}}}),
       do: {:ok, %{sync_type: sync_type, strava_connected: not is_nil(Accounts.get_user_strava(user_id))}}
 
-  def connect_to_strava(_root, %{code: code}, %{context: %{current_user: %{id: user_id}}}),
-      do: Trackers.create_strava(user_id, Accounts.Strava.login_changeset(%{"code" => code}))
+  def connect_to_strava(_root, %{code: code}, %{context: %{current_user: %{id: user_id}}}) do
+    case Trackers.create_strava(user_id, Accounts.Strava.login_changeset(%{"code" => code})) do
+      {:ok, _strava} = ok_tuple ->
+        Accounts.switch_sync_type(user_id, :strava)
+        ok_tuple
+
+      result ->
+        result
+    end
+  end
 
   def switch_user_sync_type(_root, %{sync_type: sync_type}, %{context: %{current_user: %{id: user_id}}}),
       do: Accounts.switch_sync_type(user_id, sync_type)
