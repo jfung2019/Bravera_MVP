@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential, Notifications}
+  alias OmegaBravera.{Repo, Accounts, Points, Accounts.Credential, Notifications, Activity.Activities}
 
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
@@ -15,6 +15,20 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
       emailVerified
       firstname
       lastname
+    }
+  }
+  """
+
+  @user_profile_with_last_login_data """
+  query {
+    userProfileWithLastLoginData {
+      lastLoginTotalPoints
+      lastLoginTotalKilometers
+      userProfile {
+        id
+        totalPoints
+        totalKilometers
+      }
     }
   }
   """
@@ -138,6 +152,57 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
            } = json_response(response, 200)
   end
 
+  @tag :skip # TODO: remove this after finishing the api
+  test  "can get user_profile with last login kms and points", %{conn: conn, user: %{id: user_id} = user} do
+    now = Timex.now()
+
+    {:ok, activity1} =
+      Activities.create_activity(
+        %Strava.DetailedActivity{
+          id: 1,
+          start_date: Timex.shift(now, days: -60),
+          type: "Run",
+          distance: Decimal.new(5000)
+        },
+        user
+      )
+
+    Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user))
+
+    {:ok, activity2} =
+      Activities.create_activity(
+        %Strava.DetailedActivity{
+          id: 2,
+          start_date: Timex.shift(now, hours: -2),
+          type: "Walk",
+          distance: Decimal.new(20000)
+        },
+        user
+      )
+
+    Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
+
+    Accounts.update_user(user, %{last_login_datetime: Timex.now()})
+
+    response = post(conn, "/api", %{query: @user_profile_with_last_login_data})
+
+    user_id_string = to_string(user_id)
+
+    assert %{
+      "data" => %{
+        "userProfileWithLastLoginData" => %{
+          "lastLoginTotalKilometers" => 0.0,
+          "lastLoginTotalPoints" => 50.0,
+          "userProfile" => %{
+            "id" => ^user_id_string,
+            "totalKilometers" => 25.0,
+            "totalPoints" => 130.0
+          }
+        }
+      }
+    } = json_response(response, 200)
+  end
+
   test "can refresh token", %{conn: conn, user: %{firstname: first_name}} do
     response = post(conn, "/api", %{query: @refresh_token_query})
 
@@ -204,7 +269,7 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
            } in category_list
   end
 
-  test "can get sync method", %{conn: conn, user: %{sync_type: sync_type}} do
+  test "can get sync method", %{conn: conn} do
     response = post(conn, "/api", %{query: @get_user_sync_method})
 
     assert %{

@@ -577,7 +577,7 @@ defmodule OmegaBravera.Accounts do
         from(
           a in ActivityAccumulator,
           where: a.user_id == ^user_id,
-          where: not is_nil(a.device_id) and is_nil(a.strava_id)
+          where: not is_nil(a.device_id) or not is_nil(a.strava_id)
         ),
         :sum,
         :distance
@@ -629,6 +629,36 @@ defmodule OmegaBravera.Accounts do
               list_length(completed_challenges)
         }
     }
+  end
+
+  @doc """
+  Get the total kms and total points based on last_login_datetime
+  """
+  @spec last_sync_kms_points(integer(), String.t()) :: map()
+  def last_sync_kms_points(user_id, last_sync) do
+    last_sync_total_points =
+      Repo.aggregate(
+        from(
+          p in Point,
+          where: p.user_id == ^user_id, #and p.inserted_at <= u.last_login_datetime,
+          select: coalesce(p.value, 0.0)
+        ),
+        :sum,
+        :value
+      ) || Decimal.from_float(0.0)
+
+    last_sync_total_kilometers =
+      Repo.aggregate(
+        from(
+          a in ActivityAccumulator,
+          where: a.user_id == ^user_id, #and a.inserted_at <= u.last_login_datetime,
+          where: not is_nil(a.device_id) or not is_nil(a.strava_id)
+        ),
+        :sum,
+        :distance
+      ) || Decimal.from_float(0.0)
+
+    %{last_sync_total_points: last_sync_total_points, last_sync_total_kilometers: last_sync_total_kilometers}
   end
 
   defp list_length(list) when is_nil(list) == true, do: 0
