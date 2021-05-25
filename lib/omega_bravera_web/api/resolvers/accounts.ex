@@ -332,7 +332,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         ok_tuple
 
       {:error, changeset} ->
-        {:error, message: "Failed to connect to Strava", details: Helper.transform_errors(changeset)}
+        {:error, message: "Failed to connect to Strava", details: Helpers.transform_errors(changeset)}
     end
   end
 
