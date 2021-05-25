@@ -1320,8 +1320,8 @@ defmodule OmegaBravera.Accounts do
   @doc """
   Switch user's sync_type
   """
-  @spec switch_sync_type(integer(), atom()) :: {:ok, Trackers.Strava.t()} | {:error, message: String.t()}
-  def switch_sync_type(user_id, :device), do: update_user(Accounts.get_user!(user_id), %{sync_type: :device})
+  @spec switch_sync_type(integer(), atom()) :: {:ok, Strava.t()} | {:error, message: String.t()}
+  def switch_sync_type(user_id, :device), do: update_user(Accounts.get_user!(user_id), %{sync_type: :device}) |> get_sync_update()
 
   def switch_sync_type(user_id, :strava) do
     case Accounts.get_user_strava(user_id) do
@@ -1330,8 +1330,25 @@ defmodule OmegaBravera.Accounts do
 
       _strava ->
         Accounts.update_user(Accounts.get_user!(user_id), %{sync_type: :strava})
+        |> get_sync_update()
     end
   end
+
+  @spec get_sync_update(tuple()) :: tuple()
+  defp get_sync_update({:ok, %{id: user_id}}) do
+    result =
+      from(
+        u in User,
+        left_join: s in assoc(u, :strava),
+        where: u.id == ^user_id,
+        select: %{sync_type: u.sync_type, strava_connected: not is_nil(s.id)}
+      )
+      |> Repo.one()
+
+    {:ok, result}
+  end
+
+  defp get_sync_update(result), do: result
 
   @doc """
   Enables/disables global push notifications to all of the user's registered devices.
