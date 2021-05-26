@@ -74,7 +74,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :strava do
-    field :athlete_id, :integer
+    field :athlete_id, :id
     field :strava_profile_picture, :string
   end
 
