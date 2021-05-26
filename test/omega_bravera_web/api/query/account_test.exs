@@ -19,11 +19,11 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   }
   """
 
-  @user_profile_with_last_login_data """
-  query {
-    userProfileWithLastLoginData {
-      lastLoginTotalPoints
-      lastLoginTotalKilometers
+  @user_profile_with_last_sync_data """
+  query($lastSync: String!) {
+    userProfileWithLastSyncData(lastSync: $lastSync) {
+      lastSyncTotalPoints
+      lastSyncTotalKilometers
       userProfile {
         id
         totalPoints
@@ -152,7 +152,6 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
            } = json_response(response, 200)
   end
 
-  @tag :skip # TODO: remove this after finishing the api
   test  "can get user_profile with last login kms and points", %{conn: conn, user: %{id: user_id} = user} do
     now = Timex.now()
 
@@ -182,17 +181,20 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
 
     Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
 
-    Accounts.update_user(user, %{last_login_datetime: Timex.now()})
+    last_sync =
+      now
+      |> Timex.shift(hours: -4)
+      |> DateTime.to_iso8601()
 
-    response = post(conn, "/api", %{query: @user_profile_with_last_login_data})
+    response = post(conn, "/api", %{query: @user_profile_with_last_sync_data, variables: %{"lastSync" => last_sync}})
 
     user_id_string = to_string(user_id)
 
     assert %{
       "data" => %{
-        "userProfileWithLastLoginData" => %{
-          "lastLoginTotalKilometers" => 0.0,
-          "lastLoginTotalPoints" => 50.0,
+        "userProfileWithLastSyncData" => %{
+          "lastSyncTotalKilometers" => 5.0,
+          "lastSyncTotalPoints" => 50.0,
           "userProfile" => %{
             "id" => ^user_id_string,
             "totalKilometers" => 25.0,

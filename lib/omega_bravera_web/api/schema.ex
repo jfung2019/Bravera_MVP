@@ -333,8 +333,8 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.user_profile/3
     end
 
-    @desc "Get logged in user profile with last login total kms and points"
-    field :user_profile_with_last_sync_data, :last_login_data_user_profile do
+    @desc "Get logged in user profile with total kms and points from last sync time"
+    field :user_profile_with_last_sync_data, :last_sync_data_user_profile do
       arg :last_sync, non_null(:string)
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.user_profile_with_last_sync_data/3
