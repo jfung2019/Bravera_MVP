@@ -2686,6 +2686,7 @@ defmodule OmegaBravera.Accounts do
       on: mtd.user_id == u.id,
       where: u.id == ^user_id,
       group_by: [u.id, ttd.distance, wtd.distance, mtd.distance],
+      preload: [:strava],
       select: %{
         u
         | total_kilometers_today: coalesce(ttd.distance, 0),

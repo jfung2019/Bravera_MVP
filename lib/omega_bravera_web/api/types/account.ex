@@ -74,6 +74,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :strava do
+    field :athlete_id, :integer
     field :strava_profile_picture, :string
   end
 
@@ -83,6 +84,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :firstname, :string
     field :lastname, :string
     field :username, :string
+    field :sync_type, non_null(:sync_type)
     field :email_permissions, list_of(:string)
 
     field :total_points, non_null(:decimal),
@@ -144,6 +146,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :id, non_null(:id)
     field :firstname, :string
     field :lastname, :string
+    field :sync_type, non_null(:sync_type)
     field :username, non_null(:string)
 
     field :total_points, non_null(:decimal),
@@ -226,6 +229,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :leaderboard_user do
     field :id, non_null(:id)
     field :username, non_null(:string)
+    field :sync_type, non_null(:sync_type)
     field :profile_picture, :string
     field :strava, :strava
     field :total_points, :decimal

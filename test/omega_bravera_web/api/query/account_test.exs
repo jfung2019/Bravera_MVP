@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts, Points, Accounts.Credential, Notifications, Activity.Activities}
+  alias OmegaBravera.{Repo, Accounts, Points, Accounts.Credential, Notifications, Activity.Activities, Trackers}
 
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
@@ -28,6 +28,9 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
         id
         totalPoints
         totalKilometers
+        strava {
+          athleteId
+        }
       }
     }
   }
@@ -155,6 +158,8 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   test  "can get user_profile with last login kms and points", %{conn: conn, user: %{id: user_id} = user} do
     now = Timex.now()
 
+    Trackers.create_strava(user_id, %{firstname: "first", lastname: "last", athlete_id: 1234, token: "abc"})
+
     {:ok, activity1} =
       Activities.create_activity(
         %Strava.DetailedActivity{
@@ -198,7 +203,10 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
           "userProfile" => %{
             "id" => ^user_id_string,
             "totalKilometers" => 25.0,
-            "totalPoints" => 130.0
+            "totalPoints" => 130.0,
+            "strava" => %{
+              "athleteId" => 1234
+            }
           }
         }
       }
