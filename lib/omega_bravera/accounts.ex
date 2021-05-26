@@ -26,7 +26,6 @@ defmodule OmegaBravera.Accounts do
     Money.Donation,
     Trackers,
     Points.Point,
-    Trackers.Strava,
     Challenges.NGOChal,
     Challenges.Team,
     Challenges.TeamMembers,
@@ -45,7 +44,7 @@ defmodule OmegaBravera.Accounts do
   }
 
   def get_all_athlete_ids() do
-    query = from(s in Strava, select: s.athlete_id)
+    query = from(s in Trackers.Strava, select: s.athlete_id)
     query |> Repo.all()
   end
 
@@ -61,7 +60,7 @@ defmodule OmegaBravera.Accounts do
 
   def get_user_by_athlete_id(athlete_id) do
     from(u in User,
-      join: s in Strava,
+      join: s in Trackers.Strava,
       on: s.athlete_id == ^athlete_id,
       where: u.id == s.user_id
     )
@@ -80,12 +79,12 @@ defmodule OmegaBravera.Accounts do
   end
 
   def get_strava_by_athlete_id(athlete_id) do
-    from(s in Strava, where: s.athlete_id == ^athlete_id) |> Repo.one()
+    from(s in Trackers.Strava, where: s.athlete_id == ^athlete_id) |> Repo.one()
   end
 
   def get_strava_challengers(athlete_id) do
     team_challengers =
-      from(s in Strava,
+      from(s in Trackers.Strava,
         where: s.athlete_id == ^athlete_id,
         join: nc in NGOChal,
         where: nc.status == "active",
@@ -105,7 +104,7 @@ defmodule OmegaBravera.Accounts do
       |> Repo.all()
 
     single_challengers =
-      from(s in Strava,
+      from(s in Trackers.Strava,
         where: s.athlete_id == ^athlete_id,
         join: nc in NGOChal,
         where: s.user_id == nc.user_id and nc.status == "active",
@@ -124,7 +123,7 @@ defmodule OmegaBravera.Accounts do
 
   def get_strava_challengers_for_offers(athlete_id) do
     team_challengers =
-      from(s in Strava,
+      from(s in Trackers.Strava,
         where: s.athlete_id == ^athlete_id,
         join: oc in OfferChallenge,
         where: oc.status == "active",
@@ -144,7 +143,7 @@ defmodule OmegaBravera.Accounts do
       |> Repo.all()
 
     single_challengers =
-      from(s in Strava,
+      from(s in Trackers.Strava,
         where: s.athlete_id == ^athlete_id,
         join: oc in OfferChallenge,
         where: s.user_id == oc.user_id and oc.status == "active",
@@ -267,7 +266,7 @@ defmodule OmegaBravera.Accounts do
 
   # TODO Optimize the preload below
   def get_user_strava(user_id) do
-    from(s in Strava, where: s.user_id == ^user_id)
+    from(s in Trackers.Strava, where: s.user_id == ^user_id)
     |> Repo.one()
   end
 
@@ -1414,7 +1413,7 @@ defmodule OmegaBravera.Accounts do
     strava_status =
       if not is_nil(user.strava) do
         user.strava
-        |> Strava.delete_strava_profile_picture_changeset()
+        |> Trackers.Strava.delete_strava_profile_picture_changeset()
         |> Repo.update()
         |> case do
           {:ok, _} -> true
