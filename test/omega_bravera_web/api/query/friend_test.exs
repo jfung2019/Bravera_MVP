@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts, Fixtures}
+  alias OmegaBravera.{Accounts, Fixtures, Trackers}
 
   @list_friends """
   query($keyword: String, $first: Integer!) {
@@ -63,6 +63,7 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
       user {
         id
         username
+        syncType
         profilePicture
         totalKilometersToday
         totalKilometersThisWeek
@@ -72,10 +73,14 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
         groups {
           name
         }
+        strava {
+          athleteId
+        }
       }
       friend {
         id
         username
+        syncType
         profilePicture
         totalKilometersToday
         totalKilometersThisWeek
@@ -84,6 +89,9 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
         insertedAt
         groups {
           name
+        }
+        strava {
+          athleteId
         }
       }
     }
@@ -201,6 +209,8 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
 
     Accounts.accept_friend_request(friend)
 
+    Trackers.create_strava(user2_id, %{firstname: "first", lastname: "last", athlete_id: 1234, token: "abc"})
+
     response =
       post(conn, "/api", %{query: @compare_with_friend, variables: %{"friendUserId" => user2_id}})
 
@@ -210,7 +220,7 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
     assert %{
              "data" => %{
                "compareWithFriend" => %{
-                 "friend" => %{"id" => ^user2_id_string},
+                 "friend" => %{"id" => ^user2_id_string, "strava" => %{"athleteId" => "1234"}},
                  "user" => %{"id" => ^user1_id_string}
                }
              }

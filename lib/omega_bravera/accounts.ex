@@ -369,7 +369,6 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       select: %{
         u
         | total_points_this_week: coalesce(p.value, 0),
@@ -392,7 +391,6 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       select: %{
         u
         | total_points_this_month: coalesce(p.value, 0),
@@ -411,7 +409,6 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       select: %{
         u
         | total_points: coalesce(p.value, 0),
@@ -439,7 +436,6 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       where: u.id in ^members(partner_id),
       select: %{
         u
@@ -463,7 +459,6 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       where: u.id in ^members(partner_id),
       select: %{
         u
@@ -483,7 +478,6 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       where: u.id in ^members(partner_id),
       select: %{
         u
@@ -610,7 +604,6 @@ defmodule OmegaBravera.Accounts do
       from(
         u in User,
         where: u.id == ^user_id,
-        preload: [:strava]
       )
       |> Repo.one()
 
