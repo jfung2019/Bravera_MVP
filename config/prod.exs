@@ -7,7 +7,7 @@ config :omega_bravera, OmegaBraveraWeb.Endpoint,
   code_reloader: false
 
 # Do not print debug messages in production
-config :logger, level: :info, backends: [Sentry.LoggerBackend]
+config :logger, level: :info, backends: [Sentry.LoggerBackend, :console]
 
 config :phoenix, :serve_endpoints, true
 
