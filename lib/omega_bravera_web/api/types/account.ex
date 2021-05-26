@@ -29,6 +29,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :user_locked do
     field :username, non_null(:string)
     field :profile_picture, :string
+    field :sync_type, non_null(:sync_type)
     field :strava, :strava, resolve: dataloader(OmegaBravera.Accounts)
   end
 

@@ -205,7 +205,7 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
             "totalKilometers" => 25.0,
             "totalPoints" => 130.0,
             "strava" => %{
-              "athleteId" => 1234
+              "athleteId" => "1234"
             }
           }
         }

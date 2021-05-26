@@ -220,7 +220,7 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
     assert %{
              "data" => %{
                "compareWithFriend" => %{
-                 "friend" => %{"id" => ^user2_id_string, "strava" => %{"athleteId" => 1234}},
+                 "friend" => %{"id" => ^user2_id_string, "strava" => %{"athleteId" => "1234"}},
                  "user" => %{"id" => ^user1_id_string}
                }
              }
