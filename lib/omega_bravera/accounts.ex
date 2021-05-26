@@ -575,8 +575,7 @@ defmodule OmegaBravera.Accounts do
       Repo.aggregate(
         from(
           a in ActivityAccumulator,
-          where: a.user_id == ^user_id,
-          where: not is_nil(a.device_id) or not is_nil(a.strava_id)
+          where: a.user_id == ^user_id
         ),
         :sum,
         :distance
@@ -633,7 +632,7 @@ defmodule OmegaBravera.Accounts do
   @doc """
   Get the total kms and total points based on last_sync time (in iso8601 format)
   """
-  @spec last_sync_kms_points(integer(), String.t()) :: map()
+  @spec last_sync_kms_points(term(), String.t()) :: map()
   def last_sync_kms_points(user_id, last_sync) do
     {:ok, sync_time, _} = DateTime.from_iso8601(last_sync)
     last_sync_total_points =
@@ -651,8 +650,7 @@ defmodule OmegaBravera.Accounts do
       Repo.aggregate(
         from(
           a in ActivityAccumulator,
-          where: a.user_id == ^user_id and a.start_date <= ^sync_time,
-          where: not is_nil(a.device_id) or not is_nil(a.strava_id)
+          where: a.user_id == ^user_id and a.start_date <= ^sync_time
         ),
         :sum,
         :distance
