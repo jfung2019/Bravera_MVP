@@ -125,6 +125,12 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   connection(node_type: :user_profile)
 
+  object :last_sync_data_user_profile do
+    field :user_profile, non_null(:user_profile)
+    field :last_sync_total_points, non_null(:decimal)
+    field :last_sync_total_kilometers, non_null(:decimal)
+  end
+
   object :user_profile_locked do
     field :id, non_null(:id)
     field :username, :string
