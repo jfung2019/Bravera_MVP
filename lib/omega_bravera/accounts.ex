@@ -11,7 +11,7 @@ defmodule OmegaBravera.Accounts do
   @organization_max_points 1000
   @endpoint OmegaBraveraWeb.Endpoint
   @user_channel OmegaBraveraWeb.UserChannel
-
+  require Logger
   alias OmegaBravera.{
     Repo,
     Accounts,
@@ -273,14 +273,19 @@ defmodule OmegaBravera.Accounts do
   def remove_all_stravas do
     Trackers.list_stravas()
     |> Enum.map(fn %{refresh_token: refresh_token} = strava ->
-      client = Strava.Auth.get_token!(grant_type: "refresh_token", refresh_token: refresh_token)
-      Trackers.update_strava(strava, %{
-        token: client.token.access_token,
-        refresh_token: client.token.refresh_token,
-        token_expires_at: Timex.from_unix(client.token.expires_at)
-      })
-      HTTPoison.post("https://www.strava.com/oauth/deauthorize", %{access_token: client.token.access_token})
-      Trackers.delete_strava(strava)
+      try do
+        client = Strava.Auth.get_token!(grant_type: "refresh_token", refresh_token: refresh_token)
+        Trackers.update_strava(strava, %{
+          token: client.token.access_token,
+          refresh_token: client.token.refresh_token,
+          token_expires_at: Timex.from_unix(client.token.expires_at)
+        })
+        HTTPoison.post("https://www.strava.com/oauth/deauthorize", %{access_token: client.token.access_token})
+      rescue
+        error -> Logger.warn("Problem: #{inspect(error)}")
+      after
+        Trackers.delete_strava(strava)
+      end
     end)
   end
 
