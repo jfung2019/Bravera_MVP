@@ -3,7 +3,7 @@
   dependencies: []
 
 test:
-  image: plangora/alpine-elixir-phoenix:otp-23.3.3-elixir-1.11.3
+  image: plangora/alpine-elixir-phoenix:otp-24.0.1-elixir-1.12.0
   services:
   - postgis/postgis:13-master
   variables:

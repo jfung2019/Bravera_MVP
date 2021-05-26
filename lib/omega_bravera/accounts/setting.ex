@@ -11,8 +11,8 @@ defmodule OmegaBravera.Accounts.Setting do
     # Useless and should be removed. -Sherief
     field :location, :string
     field :weight, :decimal, default: nil
-    field :weight_fraction, :decimal, virtual: true, default: 0
-    field :weight_whole, :integer, virtual: true, default: 0.0
+    field :weight_fraction, :decimal, virtual: true, default: 0.0
+    field :weight_whole, :integer, virtual: true, default: 0
     field :date_of_birth, :date
     field :gender, :string, default: nil
     belongs_to :user, User
