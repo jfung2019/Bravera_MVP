@@ -248,7 +248,7 @@ defmodule OmegaBravera.Points.PointsTest do
           Accounts.get_user_with_todays_points(user.id)
         )
 
-      updated_user_with_points = Accounts.get_user_with_todays_points(user)
+      updated_user_with_points = Accounts.get_user_with_todays_points(user.id)
       assert updated_user_with_points.todays_points == Decimal.new(80)
       assert %{errors: [_, id: {"User reached max points for today", []}]} = reason
     end

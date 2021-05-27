@@ -1,7 +1,7 @@
 defmodule OmegaBravera.Activity.Queue do
   alias OmegaBravera.Accounts.User
   alias OmegaBravera.Activity.Activities
-  alias OmegaBravera.{Accounts, Points}
+  alias OmegaBravera.Points
   use GenServer
 
   require Logger
