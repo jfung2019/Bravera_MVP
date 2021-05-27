@@ -101,9 +101,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
       is_nil(offer_redeem) ->
         Logger.error(
-          "OfferChallengeController.send_qr_code: Redeem for challenge #{
-            inspect(offer_challenge.id)
-          } not found, will render 404."
+          "OfferChallengeController.send_qr_code: Redeem for challenge #{inspect(offer_challenge.id)} not found, will render 404."
         )
 
         render_404(conn)
@@ -356,9 +354,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
                   {:error, reason} ->
                     Logger.info(
-                      "OfferChallengeController: could not create redeem, reason: #{
-                        inspect(reason.errors)
-                      }"
+                      "OfferChallengeController: could not create redeem, reason: #{inspect(reason.errors)}"
                     )
                 end
 
@@ -372,9 +368,7 @@ defmodule OmegaBraveraWeb.Offer.OfferChallengeController do
 
               {:error, reason} ->
                 Logger.info(
-                  "OfferChallengeController: add team member to team, reason: #{
-                    inspect(reason.errors)
-                  }"
+                  "OfferChallengeController: add team member to team, reason: #{inspect(reason.errors)}"
                 )
 
                 conn

@@ -39,9 +39,7 @@ defmodule OmegaBravera.Offers.OfferChallengeActivitiesM2m do
       types ->
         if not Enum.member?(types, activity_type) do
           Logger.info(
-            "Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{
-              activity_type
-            }"
+            "Challenge activity type: #{challenge_activity_type} is not same as Activity type: #{activity_type}"
           )
 
           add_error(changeset, :activity_id, "Activity type not allowed")

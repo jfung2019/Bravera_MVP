@@ -19,6 +19,7 @@ defmodule OmegaBravera.Activity.Processor do
     case Activities.create_activity(strava_activity, strava.user) do
       {:ok, activity} ->
         Logger.info("ActivityProcessor: Saved a new activity for user #{strava.user.id}")
+        Points.add_points_to_user_from_activity(activity)
 
         Task.Supervisor.start_child(
           TaskSupervisor,
@@ -38,9 +39,7 @@ defmodule OmegaBravera.Activity.Processor do
 
       {:error, reason} ->
         Logger.info(
-          "ActivityProcessor: I received a new activity from Strava but could not save it. Reason: #{
-            inspect(reason)
-          }"
+          "ActivityProcessor: I received a new activity from Strava but could not save it. Reason: #{inspect(reason)}"
         )
     end
   end

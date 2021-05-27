@@ -18,7 +18,7 @@ defmodule OmegaBravera.Points.PointsTest do
 
     {:ok, user} = Accounts.create_user(attrs)
 
-    {:ok, user: Accounts.get_user_with_todays_points(user)}
+    {:ok, user: Accounts.get_user_with_todays_points(user.id)}
   end
 
   describe "create points from activity data" do
@@ -120,7 +120,7 @@ defmodule OmegaBravera.Points.PointsTest do
           user_id: user.id
         })
 
-      Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user))
+      Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user.id))
 
       activity2 =
         insert(:activity_accumulator, %{
@@ -132,7 +132,7 @@ defmodule OmegaBravera.Points.PointsTest do
           user_id: user.id
         })
 
-      Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
+      Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user.id))
 
       activity3 =
         insert(:activity_accumulator, %{
@@ -145,9 +145,9 @@ defmodule OmegaBravera.Points.PointsTest do
           user_id: user.id
         })
 
-      Points.create_points_from_activity(activity3, Accounts.get_user_with_todays_points(user))
+      Points.create_points_from_activity(activity3, Accounts.get_user_with_todays_points(user.id))
 
-      updated_user_with_points = Accounts.get_user_with_todays_points(user)
+      updated_user_with_points = Accounts.get_user_with_todays_points(user.id)
 
       assert updated_user_with_points.todays_points ==
                Decimal.from_float(80.00) |> Decimal.round(2)
@@ -168,7 +168,10 @@ defmodule OmegaBravera.Points.PointsTest do
         })
 
       {:ok, point1} =
-        Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user))
+        Points.create_points_from_activity(
+          activity1,
+          Accounts.get_user_with_todays_points(user.id)
+        )
 
       point1
       |> Ecto.Changeset.change(
@@ -187,7 +190,10 @@ defmodule OmegaBravera.Points.PointsTest do
         })
 
       {:ok, point2} =
-        Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
+        Points.create_points_from_activity(
+          activity2,
+          Accounts.get_user_with_todays_points(user.id)
+        )
 
       point2
       |> Ecto.Changeset.change(inserted_at: DateTime.truncate(Timex.shift(now, days: 5), :second))
@@ -204,9 +210,9 @@ defmodule OmegaBravera.Points.PointsTest do
           user_id: user.id
         })
 
-      Points.create_points_from_activity(activity3, Accounts.get_user_with_todays_points(user))
+      Points.create_points_from_activity(activity3, Accounts.get_user_with_todays_points(user.id))
 
-      user_with_points = Accounts.get_user_with_todays_points(user)
+      user_with_points = Accounts.get_user_with_todays_points(user.id)
       assert user_with_points.todays_points == Decimal.new(50) |> Decimal.round(2)
     end
 
@@ -223,7 +229,7 @@ defmodule OmegaBravera.Points.PointsTest do
           user_id: user.id
         })
 
-      Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user))
+      Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user.id))
 
       activity2 =
         insert(:activity_accumulator, %{
@@ -237,9 +243,12 @@ defmodule OmegaBravera.Points.PointsTest do
         })
 
       {:error, reason} =
-        Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user))
+        Points.create_points_from_activity(
+          activity2,
+          Accounts.get_user_with_todays_points(user.id)
+        )
 
-      updated_user_with_points = Accounts.get_user_with_todays_points(user)
+      updated_user_with_points = Accounts.get_user_with_todays_points(user.id)
       assert updated_user_with_points.todays_points == Decimal.new(80)
       assert %{errors: [_, id: {"User reached max points for today", []}]} = reason
     end
