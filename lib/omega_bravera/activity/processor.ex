@@ -19,7 +19,7 @@ defmodule OmegaBravera.Activity.Processor do
     case Activities.create_activity(strava_activity, strava.user) do
       {:ok, activity} ->
         Logger.info("ActivityProcessor: Saved a new activity for user #{strava.user.id}")
-        Points.add_points_to_user_from_activity(activity)
+        OmegaBravera.Points.add_points_to_user_from_activity(activity)
 
         Task.Supervisor.start_child(
           TaskSupervisor,
