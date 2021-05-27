@@ -23,8 +23,8 @@ defmodule OmegaBravera.Points do
   Adds points to a user using an activity.
   """
   @spec add_points_to_user_from_activity(OmegaBravera.Activity.ActivityAccumulator.t()) :: :ok
-  def add_points_to_user_from_activity(activity) do
-    user_with_points = Accounts.get_user_with_todays_points(activity.user_id, activity.start_date)
+  def add_points_to_user_from_activity(%{user_id: user_id} = activity) do
+    user_with_points = Accounts.get_user_with_todays_points(user_id, activity.start_date)
 
     case Points.create_points_from_activity(activity, user_with_points) do
       {:ok, _point} ->
@@ -32,7 +32,6 @@ defmodule OmegaBravera.Points do
           "Activity Create Queue: Successfully created points for activity: #{activity.id}"
         )
 
-        user_id = value.user.id
         # TODO: Find a way to make this a trigger
         Absinthe.Subscription.publish(
           OmegaBraveraWeb.Endpoint,
