@@ -42,9 +42,8 @@ defmodule OmegaBravera.DailyDigest.Notifier do
        }) do
     "In the past 24h we've had #{length(s)} signups, #{length(dn)} new donors, #{length(nc)} new Challenges, " <>
       "out of which, #{length(cnu)} is by new users. " <>
-      "We've also had #{length(cwm)} challenges with completed milestones out of which #{
-        length(cc)
-      } reached completion. " <> "Attached are the relevant CSV files for the new entries"
+      "We've also had #{length(cwm)} challenges with completed milestones out of which #{length(cc)} reached completion. " <>
+      "Attached are the relevant CSV files for the new entries"
   end
 
   defp add_csv_attachment(email, params, type) do

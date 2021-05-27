@@ -40,6 +40,7 @@ defmodule OmegaBraveraWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Jason
   )
+
   plug Sentry.PlugContext
 
   plug Plug.MethodOverride

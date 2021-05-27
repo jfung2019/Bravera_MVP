@@ -30,39 +30,12 @@ defmodule OmegaBravera.Activity.Queue do
 
     case result do
       {:ok, activity} ->
-        user_with_points = Accounts.get_user_with_todays_points(value.user, activity.start_date)
-
         Logger.info(
-          "Activity Create Queue: Successfully created user_id: #{inspect(value.user.id)} #{
-            inspect(value.user.firstname)
-          }'s activity: #{inspect(activity)}"
+          "Activity Create Queue: Successfully created user_id: #{inspect(value.user.id)} #{inspect(value.user.firstname)}'s activity: #{inspect(activity)}"
         )
 
         # Add reward points if activity is eligible.
-        case Points.create_points_from_activity(activity, user_with_points) do
-          {:ok, _point} ->
-            Logger.info(
-              "Activity Create Queue: Successfully created points for activity: #{activity.id}"
-            )
-
-            user_id = value.user.id
-            # TODO: Find a way to make this a trigger
-            Absinthe.Subscription.publish(
-              OmegaBraveraWeb.Endpoint,
-              %{
-                balance: Points.total_points(user_id),
-                history: Points.user_points_history_summary(user_id)
-              },
-              live_points: user_id
-            )
-
-          {:error, reason} ->
-            Logger.warn(
-              "Activity Create Queue: Could not create points for activity, reason: #{
-                inspect(reason)
-              }"
-            )
-        end
+        Points.add_points_to_user_from_activity(activity)
 
       {:error, changeset} ->
         Logger.warn(

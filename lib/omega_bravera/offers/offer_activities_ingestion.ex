@@ -59,9 +59,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       )
       when distance > 0 do
     Logger.info(
-      "Offers:ActivityIngestion: Processing #{inspect(challenge.type)} challenge: #{
-        inspect(challenge.id)
-      }"
+      "Offers:ActivityIngestion: Processing #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}"
     )
 
     {status, _challenge, _activity} =
@@ -71,24 +69,18 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       |> notify_participant_of_activity(send_emails)
 
     Logger.info(
-      "Offers:ActivityIngestion: Processing has finished for #{inspect(challenge.type)} challenge: #{
-        inspect(challenge.id)
-      }"
+      "Offers:ActivityIngestion: Processing has finished for #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}"
     )
 
     if status == :ok do
       Logger.info(
-        "Offers:ActivityIngestion: Processing was successful for #{inspect(challenge.type)} challenge: #{
-          inspect(challenge.id)
-        }"
+        "Offers:ActivityIngestion: Processing was successful for #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}"
       )
 
       {:ok, :challenge_updated}
     else
       Logger.info(
-        "Offers:ActivityIngestion: Processing was not successful for #{inspect(challenge.type)} challenge: #{
-          inspect(challenge.id)
-        }"
+        "Offers:ActivityIngestion: Processing was not successful for #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}"
       )
 
       {:error, :activity_not_processed}
@@ -111,9 +103,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
         {:error, changeset} ->
           Logger.warn(
-            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{
-              inspect(changeset.errors)
-            }"
+            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{inspect(changeset.errors)}"
           )
 
           {:error, challenge, nil}
@@ -131,9 +121,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
         {:error, changeset} ->
           Logger.warn(
-            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{
-              inspect(changeset.errors)
-            }"
+            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{inspect(changeset.errors)}"
           )
 
           {:error, challenge, nil}
@@ -200,9 +188,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
         if Notifier.send_reward_completion_email(challenge, tm, offer_redeem) != :ok do
           Logger.error(
-            "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem for team member: #{
-              inspect(tm)
-            }"
+            "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem for team member: #{inspect(tm)}"
           )
         end
       end)
@@ -224,9 +210,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
       if Notifier.send_reward_completion_email(challenge, challenge.user, offer_redeem) != :ok do
         Logger.error(
-          "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem. for challenge owner: #{
-            inspect(challenge.user)
-          }"
+          "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem. for challenge owner: #{inspect(challenge.user)}"
         )
       end
     end

@@ -86,7 +86,7 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
         0
       )
 
-    Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user1))
+    Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user1.id))
 
     {:ok, activity2} =
       Activities.create_app_activity(
@@ -101,7 +101,7 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
         0
       )
 
-    Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user1))
+    Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user1.id))
 
     {:ok, activity3} =
       Activities.create_app_activity(
@@ -116,7 +116,7 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
         0
       )
 
-    Points.create_points_from_activity(activity3, Accounts.get_user_with_todays_points(user1))
+    Points.create_points_from_activity(activity3, Accounts.get_user_with_todays_points(user1.id))
 
     {:ok, activity4} =
       Activities.create_app_activity(
@@ -131,7 +131,7 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
         0
       )
 
-    Points.create_points_from_activity(activity4, Accounts.get_user_with_todays_points(user2))
+    Points.create_points_from_activity(activity4, Accounts.get_user_with_todays_points(user2.id))
 
     {:ok, activity5} =
       Activities.create_app_activity(
@@ -146,7 +146,7 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
         0
       )
 
-    Points.create_points_from_activity(activity5, Accounts.get_user_with_todays_points(user2))
+    Points.create_points_from_activity(activity5, Accounts.get_user_with_todays_points(user2.id))
 
     {:ok, activity6} =
       Activities.create_app_activity(
@@ -161,7 +161,7 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
         0
       )
 
-    Points.create_points_from_activity(activity6, Accounts.get_user_with_todays_points(user2))
+    Points.create_points_from_activity(activity6, Accounts.get_user_with_todays_points(user2.id))
 
     {:ok, conn: conn, user1: user1, user2: user2, partner: partner}
   end

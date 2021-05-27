@@ -12,6 +12,7 @@ defmodule OmegaBravera.Accounts do
   @endpoint OmegaBraveraWeb.Endpoint
   @user_channel OmegaBraveraWeb.UserChannel
   require Logger
+
   alias OmegaBravera.{
     Repo,
     Accounts,
@@ -275,12 +276,16 @@ defmodule OmegaBravera.Accounts do
     |> Enum.map(fn %{refresh_token: refresh_token} = strava ->
       try do
         client = Strava.Auth.get_token!(grant_type: "refresh_token", refresh_token: refresh_token)
+
         Trackers.update_strava(strava, %{
           token: client.token.access_token,
           refresh_token: client.token.refresh_token,
           token_expires_at: Timex.from_unix(client.token.expires_at)
         })
-        HTTPoison.post("https://www.strava.com/oauth/deauthorize", %{access_token: client.token.access_token})
+
+        HTTPoison.post("https://www.strava.com/oauth/deauthorize", %{
+          access_token: client.token.access_token
+        })
       rescue
         error -> Logger.warn("Problem: #{inspect(error)}")
       after
@@ -608,7 +613,7 @@ defmodule OmegaBravera.Accounts do
     user =
       from(
         u in User,
-        where: u.id == ^user_id,
+        where: u.id == ^user_id
       )
       |> Repo.one()
 
@@ -633,6 +638,7 @@ defmodule OmegaBravera.Accounts do
   @spec last_sync_kms_points(term(), String.t()) :: map()
   def last_sync_kms_points(user_id, last_sync) do
     {:ok, sync_time, _} = DateTime.from_iso8601(last_sync)
+
     last_sync_total_points =
       Repo.aggregate(
         from(
@@ -654,7 +660,10 @@ defmodule OmegaBravera.Accounts do
         :distance
       ) || Decimal.from_float(0.0)
 
-    %{last_sync_total_points: last_sync_total_points, last_sync_total_kilometers: last_sync_total_kilometers}
+    %{
+      last_sync_total_points: last_sync_total_points,
+      last_sync_total_kilometers: last_sync_total_kilometers
+    }
   end
 
   defp list_length(list) when is_nil(list) == true, do: 0
@@ -1244,7 +1253,7 @@ defmodule OmegaBravera.Accounts do
     ])
   end
 
-  def get_user_with_todays_points(%User{id: user_id}, start_date \\ Timex.now()) do
+  def get_user_with_todays_points(user_id, start_date \\ Timex.now()) do
     now = start_date
 
     user =
@@ -1348,7 +1357,8 @@ defmodule OmegaBravera.Accounts do
   Switch user's sync_type
   """
   @spec switch_sync_type(integer(), atom()) :: {:ok, Strava.t()} | {:error, message: String.t()}
-  def switch_sync_type(user_id, :device), do: update_user(Accounts.get_user!(user_id), %{sync_type: :device}) |> get_sync_update()
+  def switch_sync_type(user_id, :device),
+    do: update_user(Accounts.get_user!(user_id), %{sync_type: :device}) |> get_sync_update()
 
   def switch_sync_type(user_id, :strava) do
     case Accounts.get_user_strava(user_id) do

@@ -72,9 +72,7 @@ defmodule OmegaBravera.Donations.Notifier do
     |> Email.add_substitution("-participantName-", challenge.user.firstname)
     |> Email.add_substitution(
       "-donorPledge-",
-      "#{OmegaBraveraWeb.ViewHelpers.currency_to_symbol(challenge.default_currency)}#{
-        pledged_amount(pledges)
-      }"
+      "#{OmegaBraveraWeb.ViewHelpers.currency_to_symbol(challenge.default_currency)}#{pledged_amount(pledges)}"
     )
     |> Email.add_substitution("-challengeURL-", "")
     |> Email.put_from("admin@bravera.co", "Bravera")

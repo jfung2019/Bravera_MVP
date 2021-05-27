@@ -209,7 +209,12 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
 
     Accounts.accept_friend_request(friend)
 
-    Trackers.create_strava(user2_id, %{firstname: "first", lastname: "last", athlete_id: 1234, token: "abc"})
+    Trackers.create_strava(user2_id, %{
+      firstname: "first",
+      lastname: "last",
+      athlete_id: 1234,
+      token: "abc"
+    })
 
     response =
       post(conn, "/api", %{query: @compare_with_friend, variables: %{"friendUserId" => user2_id}})

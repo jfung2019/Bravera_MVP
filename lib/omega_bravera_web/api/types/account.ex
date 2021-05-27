@@ -320,6 +320,6 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   object :strava_user do
     field :athlete_id, non_null(:integer)
-    field :user_id,  non_null(:id)
+    field :user_id, non_null(:id)
   end
 end
