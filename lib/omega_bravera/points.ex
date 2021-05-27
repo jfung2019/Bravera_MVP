@@ -36,8 +36,8 @@ defmodule OmegaBravera.Points do
         Absinthe.Subscription.publish(
           OmegaBraveraWeb.Endpoint,
           %{
-            balance: Points.total_points(user_id),
-            history: Points.user_points_history_summary(user_id)
+            balance: total_points(user_id),
+            history: user_points_history_summary(user_id)
           },
           live_points: user_id
         )
