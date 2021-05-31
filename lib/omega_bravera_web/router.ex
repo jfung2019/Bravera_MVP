@@ -220,6 +220,7 @@ defmodule OmegaBraveraWeb.Router do
   pipeline :org_authenticated do
     plug Guardian.AuthPipeline
     plug OmegaBraveraWeb.OrgAuth
+    plug OmegaBraveraWeb.CheckBlockedOrg
   end
 
   scope "/organization", OmegaBraveraWeb do
@@ -232,7 +233,7 @@ defmodule OmegaBraveraWeb.Router do
     resources "/password", PartnerUserPasswordController, except: [:delete], param: "reset_token"
     resources "/register", PartnerUserRegisterController, only: [:new, :create]
     get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
-
+    get "/blocked", OrgPanelDashboardController, :blocked
     scope "/" do
       pipe_through [:org_authenticated]
       get "/dashboard", OrgPanelDashboardController, :index

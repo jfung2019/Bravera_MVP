@@ -8,6 +8,7 @@ defmodule OmegaBravera.Accounts.Organization do
     field :business_type, :string
     field :business_website, :string
     field :member_count, :integer, virtual: true
+    field :blocked_on, :utc_datetime
 
     has_many :groups, OmegaBravera.Groups.Partner
     has_many :group_members, through: [:groups, :members]
