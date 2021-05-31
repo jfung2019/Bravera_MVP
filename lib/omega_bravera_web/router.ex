@@ -178,6 +178,7 @@ defmodule OmegaBraveraWeb.Router do
       get "/offers/:slug/statement", AdminPanelOfferController, :statement
       get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
       get "/view-as-org/:id", AdminPanelOrganizationController, :view_as
+      put "/block_org/:id", AdminPanelOrganizationController, :block
       resources "/organizations", AdminPanelOrganizationController
       resources "/organization_members", AdminPanelOrganizationMemberController
 

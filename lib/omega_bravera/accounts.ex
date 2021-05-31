@@ -2287,6 +2287,15 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
+  Block or unblock an organization's access to admin panel
+  """
+  def block_or_unblock_org(%Organization{blocked_on: nil} = organization),
+      do: update_organization(organization, %{blocked_on: Timex.now()})
+
+  def block_or_unblock_org(%Organization{} = organization),
+      do: update_organization(organization, %{blocked_on: nil})
+
+  @doc """
   Deletes a organization.
 
   ## Examples

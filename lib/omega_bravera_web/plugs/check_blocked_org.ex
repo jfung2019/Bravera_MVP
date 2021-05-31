@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.CheckBlockedOrg do
       _ ->
         conn
         |> Plug.Conn.halt()
-        |> Phoenix.Controller.redirect(conn, Routes.org_panel_dashboard_path(conn, :blocked))
+        |> Phoenix.Controller.redirect(to: Routes.org_panel_dashboard_path(conn, :blocked))
     end
   end
 end
