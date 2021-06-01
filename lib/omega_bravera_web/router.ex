@@ -235,6 +235,7 @@ defmodule OmegaBraveraWeb.Router do
     resources "/register", PartnerUserRegisterController, only: [:new, :create]
     get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
     get "/blocked", OrgPanelDashboardController, :blocked
+
     scope "/" do
       pipe_through [:org_authenticated]
       get "/dashboard", OrgPanelDashboardController, :index

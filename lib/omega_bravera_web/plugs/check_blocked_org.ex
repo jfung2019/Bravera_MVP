@@ -6,6 +6,7 @@ defmodule OmegaBraveraWeb.CheckBlockedOrg do
     case OmegaBravera.Accounts.get_organization!(organization_id) do
       %{blocked_on: nil} ->
         conn
+
       _ ->
         conn
         |> Plug.Conn.halt()

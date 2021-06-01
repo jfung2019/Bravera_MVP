@@ -20,7 +20,10 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
     with {:ok, admin_user} <-
            Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(admin_user, %{}),
-         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+         do:
+           {:ok,
+            conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token),
+            admin_user: admin_user}
   end
 
   describe "index" do
@@ -112,7 +115,7 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
   describe "view as organization" do
     setup [:create_partner_user]
 
-    test "view aws organization's admin", %{conn: conn, organization: organization} do
+    test "view as organization's admin", %{conn: conn, organization: organization} do
       conn = get(conn, Routes.admin_panel_organization_path(conn, :view_as, organization))
       assert redirected_to(conn) == Routes.org_panel_dashboard_path(conn, :index)
     end
@@ -133,6 +136,25 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
       conn = Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)
       conn = get(conn, Routes.org_panel_dashboard_path(conn, :view_as))
       assert redirected_to(conn) == Routes.org_panel_dashboard_path(conn, :index)
+    end
+  end
+
+  describe "block organization" do
+    setup [:create_partner_user]
+
+    test "can block organization's access to org panel", %{
+      conn: conn,
+      admin_user: admin_user,
+      organization: organization,
+      partner_user: partner_user
+    } do
+      # block organization
+      put(conn, Routes.admin_panel_organization_path(conn, :block, organization))
+      {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(partner_user, %{})
+      conn = Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)
+      conn = get(conn, Routes.org_panel_dashboard_path(conn, :index))
+      # blocked page
+      assert redirected_to(conn) == Routes.org_panel_dashboard_path(conn, :blocked)
     end
   end
 
