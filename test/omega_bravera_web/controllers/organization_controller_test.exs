@@ -22,8 +22,7 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(admin_user, %{}),
          do:
            {:ok,
-            conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token),
-            admin_user: admin_user}
+            conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
   describe "index" do
@@ -144,7 +143,6 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
 
     test "can block organization's access to org panel", %{
       conn: conn,
-      admin_user: admin_user,
       organization: organization,
       partner_user: partner_user
     } do
@@ -155,6 +153,20 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
       conn = get(conn, Routes.org_panel_dashboard_path(conn, :index))
       # blocked page
       assert redirected_to(conn) == Routes.org_panel_dashboard_path(conn, :blocked)
+    end
+
+    test "can unblock organization", %{
+      conn: conn,
+      organization: organization,
+      partner_user: partner_user
+    } do
+      {:ok, organization} = Accounts.block_or_unblock_org(organization)
+      # unblock organization
+      put(conn, Routes.admin_panel_organization_path(conn, :block, organization))
+      {:ok, token, _} = OmegaBravera.Guardian.encode_and_sign(partner_user, %{})
+      conn = Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)
+      conn = get(conn, Routes.org_panel_dashboard_path(conn, :index))
+      assert html_response(conn, 200) =~ "Dashboard"
     end
   end
 
