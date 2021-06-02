@@ -2286,14 +2286,20 @@ defmodule OmegaBravera.Accounts do
     |> Repo.update()
   end
 
+  def update_organization_block_on(%Organization{} = organization, attrs) do
+    organization
+    |> Organization.block_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Block or unblock an organization's access to admin panel
   """
   def block_or_unblock_org(%Organization{blocked_on: nil} = organization),
-    do: update_organization(organization, %{blocked_on: Timex.now()})
+    do: update_organization_block_on(organization, %{blocked_on: Timex.now()})
 
   def block_or_unblock_org(%Organization{} = organization),
-    do: update_organization(organization, %{blocked_on: nil})
+    do: update_organization_block_on(organization, %{blocked_on: nil})
 
   @doc """
   Deletes a organization.
