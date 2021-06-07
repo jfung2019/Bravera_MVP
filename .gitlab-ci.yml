@@ -100,4 +100,4 @@ production:
     name: staging
     url: https://www.bravera.co/
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "staging"'
+    - if: '$CI_COMMIT_REF_NAME == "master"'
