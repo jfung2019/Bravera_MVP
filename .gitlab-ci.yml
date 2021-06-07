@@ -97,7 +97,7 @@ production:
     - auto-deploy create_secret
     - auto-deploy deploy
   environment:
-    name: staging
+    name: production
     url: https://www.bravera.co/
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
