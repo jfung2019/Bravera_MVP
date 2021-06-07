@@ -3,7 +3,7 @@ defmodule OmegaBravera.Repo.Migrations.CreateOfferLocationOfferGps do
 
   import Ecto.Query
 
-  alias OmegaBravera.{Repo, Offers.Offer, Offers.OfferLocation}
+  alias OmegaBravera.{Repo, Offers.OfferLocation}
 
   def change do
     create table("offer_locations", primary_key: false) do

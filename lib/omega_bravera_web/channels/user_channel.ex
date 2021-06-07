@@ -6,7 +6,7 @@ defmodule OmegaBraveraWeb.UserChannel do
   @user_channel_prefix "user_channel:"
   @view OmegaBraveraWeb.GroupView
   @pm_view OmegaBraveraWeb.PrivateChatView
-  import Phoenix.View, only: [render_many: 3, render_one: 3, render_many: 4]
+  import Phoenix.View, only: [render_many: 3, render_one: 3, render_many: 4, render_one: 4]
 
   @moduledoc """
   This channel is used to send notifications when users are connected
@@ -84,6 +84,18 @@ defmodule OmegaBraveraWeb.UserChannel do
     group_ids = Enum.reject(socket.assigns.group_ids, fn id -> id == group_id end)
     push(socket, event, %{group: render_one(group, @view, "show_group.json")})
     {:noreply, assign(socket, :group_ids, group_ids)}
+  end
+
+  def handle_info(%{event: "unfriended" = event, payload: %{id: user_id}}, socket) do
+    user = Accounts.get_user!(user_id)
+    push(socket, event, %{user: render_one(user, @view, "show_user.json", as: :user)})
+
+    {:noreply,
+     assign(
+       socket,
+       :friend_ids,
+       Enum.reject(socket.assigns.friend_ids, fn id -> id == user_id end)
+     )}
   end
 
   def handle_info(%{event: event, payload: payload}, socket) do

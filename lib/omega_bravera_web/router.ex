@@ -177,6 +177,8 @@ defmodule OmegaBraveraWeb.Router do
       resources "/offer-partners", AdminPanelOfferPartnerController, only: [:create, :delete]
       get "/offers/:slug/statement", AdminPanelOfferController, :statement
       get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
+      get "/view-as-org/:id", AdminPanelOrganizationController, :view_as
+      put "/block_org/:id", AdminPanelOrganizationController, :block
       resources "/organizations", AdminPanelOrganizationController
       resources "/organization_members", AdminPanelOrganizationMemberController
 
@@ -193,7 +195,7 @@ defmodule OmegaBraveraWeb.Router do
     end
 
     scope "/" do
-      pipe_through [:admin_authenticated]
+      pipe_through [:admin_authenticated, :super_admin_authenticated]
 
       scope "/" do
         pipe_through [:admin_liveview]
@@ -219,6 +221,7 @@ defmodule OmegaBraveraWeb.Router do
   pipeline :org_authenticated do
     plug Guardian.AuthPipeline
     plug OmegaBraveraWeb.OrgAuth
+    plug OmegaBraveraWeb.CheckBlockedOrg
   end
 
   scope "/organization", OmegaBraveraWeb do
@@ -231,6 +234,7 @@ defmodule OmegaBraveraWeb.Router do
     resources "/password", PartnerUserPasswordController, except: [:delete], param: "reset_token"
     resources "/register", PartnerUserRegisterController, only: [:new, :create]
     get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
+    get "/blocked", OrgPanelDashboardController, :blocked
 
     scope "/" do
       pipe_through [:org_authenticated]
@@ -266,6 +270,7 @@ defmodule OmegaBraveraWeb.Router do
       resources "/claim-ids", OrgPanelOfferVendorController, except: [:delete]
       resources "/rewards", OrgPanelOfferRewardController, except: [:delete]
       get "/guides", OrgPanelDashboardController, :guides
+      get "/admin-logged-in", OrgPanelDashboardController, :view_as
     end
   end
 

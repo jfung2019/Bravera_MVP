@@ -3,16 +3,16 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-use Mix.Config
+import Config
 
 # General application configuration
 config :omega_bravera,
   ecto_repos: [OmegaBravera.Repo],
   cookie_age: 2 * 7 * 24 * 60 * 60,
   # Set ENV
-  env: Mix.env(),
+  env: config_env(),
   # GA Key
-  google_analytics_id: Map.get(System.get_env(), "GOOGLE_ANALYTICS_ID", "UA-123069307-1"),
+  google_analytics_id: System.get_env("GOOGLE_ANALYTICS_ID", "UA-123069307-1"),
   # Manual activities
   enable_manual_activities: false,
   upload_manager: OmegaBravera.UploadManager

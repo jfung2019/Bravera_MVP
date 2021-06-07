@@ -46,7 +46,7 @@ defmodule OmegaBravera.Mixfile do
       {:jason, "~> 1.1"},
       {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 4.0"},
-      {:guardian, "~> 1.0"},
+      {:guardian, "~> 2.1"},
       {:timex, "~> 3.1"},
       {:strava, "~> 1.0"},
       {:stripy, "~> 1.0"},
@@ -84,6 +84,7 @@ defmodule OmegaBravera.Mixfile do
       {:countries, "~> 1.5"},
       {:pigeon, "~> 1.5.0"},
       {:kadabra, "~> 0.4.4"},
+      {:sentry, "~> 8.0"},
       {:geo_postgis, "~> 3.3"}
     ]
   end

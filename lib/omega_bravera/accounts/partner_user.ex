@@ -19,6 +19,8 @@ defmodule OmegaBravera.Accounts.PartnerUser do
     field :reset_token_created, :utc_datetime
     field :accept_terms, :boolean, virtual: true, default: false
     belongs_to :location, OmegaBravera.Locations.Location
+    has_many :organization_members, OmegaBravera.Accounts.OrganizationMember
+    has_many :organizations, through: [:organization_members, :organization]
 
     timestamps()
   end

@@ -6,7 +6,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
   require Logger
 
   alias OmegaBravera.Guardian
-  alias OmegaBravera.{Accounts, Locations, Points, Repo, Notifications}
+  alias OmegaBravera.{Accounts, Locations, Points, Repo, Notifications, Trackers}
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
   alias OmegaBravera.Accounts.{User, Friend, Tools, Notifier}
 
@@ -154,6 +154,17 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       ),
       do: {:ok, Accounts.api_user_profile(id)}
 
+  def user_profile_with_last_sync_data(_root, %{last_sync: last_sync}, %{
+        context: %{current_user: %{id: user_id}}
+      }) do
+    {:ok,
+     Map.put(
+       Accounts.last_sync_kms_points(user_id, last_sync),
+       :user_profile,
+       Accounts.api_user_profile(user_id)
+     )}
+  end
+
   def get_leaderboard(_root, _args, _info),
     do:
       {:ok,
@@ -256,9 +267,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
               {:error, reason} ->
                 Logger.error(
-                  "API Password Recovery: could not create new credential, reason: #{
-                    inspect(reason)
-                  }"
+                  "API Password Recovery: could not create new credential, reason: #{inspect(reason)}"
                 )
 
                 {:error, message: "Something went wrong while trying to reset your password."}
@@ -309,9 +318,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
 
             {:error, changeset} ->
               Logger.error(
-                "API Password Recovery: could not update credential, reason: #{
-                  inspect(changeset.errors)
-                }"
+                "API Password Recovery: could not update credential, reason: #{inspect(changeset.errors)}"
               )
 
               {:error,
@@ -321,6 +328,30 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         end
     end
   end
+
+  def get_user_syncing_method(_root, _params, %{
+        context: %{current_user: %{id: user_id, sync_type: sync_type}}
+      }),
+      do:
+        {:ok,
+         %{sync_type: sync_type, strava_connected: not is_nil(Accounts.get_user_strava(user_id))}}
+
+  def connect_to_strava(_root, %{code: code}, %{context: %{current_user: %{id: user_id}}}) do
+    case Trackers.create_strava(user_id, Accounts.Strava.login_changeset(%{"code" => code})) do
+      {:ok, _strava} = ok_tuple ->
+        Accounts.switch_sync_type(user_id, :strava)
+        ok_tuple
+
+      {:error, changeset} ->
+        {:error,
+         message: "Failed to connect to Strava", details: Helpers.transform_errors(changeset)}
+    end
+  end
+
+  def switch_user_sync_type(_root, %{sync_type: sync_type}, %{
+        context: %{current_user: %{id: user_id}}
+      }),
+      do: Accounts.switch_sync_type(user_id, sync_type)
 
   def delete_user_pictures(_, _, %{context: %{current_user: %{id: _user_id} = current_user}}) do
     {:ok, %{status: Accounts.delete_user_profile_pictures(current_user)}}
@@ -500,6 +531,16 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         Accounts.reject_friend_request(
           Accounts.get_friend_by_receiver_id_requester_id(receiver_id, requester_id)
         )
+
+  def unfriend_user(_root, %{user_id: friend_user_id}, %{context: %{current_user: %{id: user_id}}}) do
+    case Accounts.remove_friendship(friend_user_id, user_id) do
+      {:ok, _unfriended} ->
+        {:ok, %{unfriended_user_id: friend_user_id}}
+
+      _ ->
+        {:error, message: "Could not unfriend user"}
+    end
+  end
 
   def list_friends(_root, args, %{context: %{current_user: %{id: user_id}}}),
     do: Accounts.list_accepted_friends(user_id, Map.get(args, :keyword), args)

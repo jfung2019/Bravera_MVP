@@ -73,9 +73,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       {:ok, :challenge_updated}
     else
       Logger.info(
-        "ActivityIngestion: Processing was not successful for km challenge: #{
-          inspect(challenge.id)
-        }"
+        "ActivityIngestion: Processing was not successful for km challenge: #{inspect(challenge.id)}"
       )
 
       {:error, :activity_not_processed}
@@ -101,24 +99,18 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
       |> charge_donations(send_emails)
 
     Logger.info(
-      "ActivityIngestion: Processing has finished for milestone challenge: #{
-        inspect(challenge.id)
-      }"
+      "ActivityIngestion: Processing has finished for milestone challenge: #{inspect(challenge.id)}"
     )
 
     if status == :ok and Enum.all?(donations, &match?(%Donation{status: "charged"}, &1)) do
       Logger.info(
-        "ActivityIngestion: Processing was successful for milestone challenge: #{
-          inspect(challenge.id)
-        }"
+        "ActivityIngestion: Processing was successful for milestone challenge: #{inspect(challenge.id)}"
       )
 
       {:ok, :challenge_updated}
     else
       Logger.info(
-        "ActivityIngestion: Processing was not successful for milestone challenge: #{
-          inspect(challenge.id)
-        }"
+        "ActivityIngestion: Processing was not successful for milestone challenge: #{inspect(challenge.id)}"
       )
 
       {:error, :activity_not_processed}
@@ -135,9 +127,7 @@ defmodule OmegaBravera.Challenges.ActivitiesIngestion do
 
         {:error, changeset} ->
           Logger.warn(
-            "ActivityIngestion: activity could not be saved. Changeset errors: #{
-              inspect(changeset.errors)
-            }"
+            "ActivityIngestion: activity could not be saved. Changeset errors: #{inspect(changeset.errors)}"
           )
 
           {:error, challenge, nil}

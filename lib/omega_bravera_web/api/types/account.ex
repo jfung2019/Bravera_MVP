@@ -13,7 +13,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :locale, :string
     field :email_verified, non_null(:boolean)
     field :profile_picture, :string
-    field :strava, :strava
+    field :strava, :strava, resolve: dataloader(OmegaBravera.Accounts)
     field :total_points, :decimal
     field :total_points_this_week, :decimal
     field :total_points_this_month, :decimal
@@ -29,7 +29,8 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :user_locked do
     field :username, non_null(:string)
     field :profile_picture, :string
-    field :strava, :strava
+    field :sync_type, non_null(:sync_type)
+    field :strava, :strava, resolve: dataloader(OmegaBravera.Accounts)
   end
 
   object :notification_token do
@@ -74,6 +75,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   object :strava do
+    field :athlete_id, :id
     field :strava_profile_picture, :string
   end
 
@@ -83,6 +85,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :firstname, :string
     field :lastname, :string
     field :username, :string
+    field :sync_type, non_null(:sync_type)
     field :email_permissions, list_of(:string)
 
     field :total_points, non_null(:decimal),
@@ -100,7 +103,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :total_challenges, non_null(:integer)
     field :offer_challenges_map, :offer_challenges_map
     field :profile_picture, :string
-    field :strava, :strava
+    field :strava, :strava, resolve: dataloader(OmegaBravera.Accounts)
 
     field :future_redeems, list_of(:redeem),
       resolve: fn _parent, %{source: %{id: user_id}} ->
@@ -125,6 +128,12 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   connection(node_type: :user_profile)
 
+  object :last_sync_data_user_profile do
+    field :user_profile, non_null(:user_profile)
+    field :last_sync_total_points, non_null(:decimal)
+    field :last_sync_total_kilometers, non_null(:decimal)
+  end
+
   object :user_profile_locked do
     field :id, non_null(:id)
     field :username, :string
@@ -138,6 +147,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :id, non_null(:id)
     field :firstname, :string
     field :lastname, :string
+    field :sync_type, non_null(:sync_type)
     field :username, non_null(:string)
 
     field :total_points, non_null(:decimal),
@@ -151,7 +161,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :total_kilometers_this_week, non_null(:decimal)
     field :total_kilometers_this_month, non_null(:decimal)
     field :profile_picture, :string
-    field :strava, :strava
+    field :strava, :strava, resolve: dataloader(OmegaBravera.Accounts)
 
     field :inserted_at, non_null(:date)
     field :groups, list_of(non_null(:partner)), resolve: dataloader(OmegaBravera.Groups)
@@ -220,8 +230,9 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   object :leaderboard_user do
     field :id, non_null(:id)
     field :username, non_null(:string)
+    field :sync_type, non_null(:sync_type)
     field :profile_picture, :string
-    field :strava, :strava
+    field :strava, :strava, resolve: dataloader(OmegaBravera.Accounts)
     field :total_points, :decimal
     field :total_points_this_week, :decimal
     field :total_points_this_month, :decimal
@@ -282,6 +293,10 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :status, non_null(:friend_status)
   end
 
+  object :unfriend_result do
+    field :unfriended_user_id, non_null(:id)
+  end
+
   object :friend_compare do
     field :user, non_null(:user_profile)
     field :friend, non_null(:friend_profile)
@@ -291,5 +306,20 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :title, non_null(:string)
     field :description, non_null(:string)
     field :permitted, non_null(:boolean)
+  end
+
+  enum :sync_type do
+    value :device, description: "Sync activities with device, i.e. Google Fit / Apple Health"
+    value :strava, description: "Sync activities with Strava"
+  end
+
+  object :sync_method do
+    field :sync_type, non_null(:sync_type)
+    field :strava_connected, non_null(:boolean)
+  end
+
+  object :strava_user do
+    field :athlete_id, non_null(:integer)
+    field :user_id, non_null(:id)
   end
 end

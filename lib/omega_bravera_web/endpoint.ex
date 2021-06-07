@@ -1,4 +1,5 @@
 defmodule OmegaBraveraWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :omega_bravera
   use Absinthe.Phoenix.Endpoint
 
@@ -39,6 +40,8 @@ defmodule OmegaBraveraWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Jason
   )
+
+  plug Sentry.PlugContext
 
   plug Plug.MethodOverride
   plug Plug.Head

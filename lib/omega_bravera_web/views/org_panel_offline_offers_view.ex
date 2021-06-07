@@ -15,9 +15,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersView do
         end
       end)
 
-    "Finished: #{stats[:complete]} <br /> Expired: #{stats[:expired]} <br /> Live: #{
-      stats[:active]
-    }"
+    "Finished: #{stats[:complete]} <br /> Expired: #{stats[:expired]} <br /> Live: #{stats[:active]}"
   end
 
   def get_total_redeems_value(offer_redeems) do

@@ -64,6 +64,20 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.save_settings/3
     end
 
+    @desc "Connect to strava"
+    field :connect_to_strava, non_null(:strava_user) do
+      arg :code, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.connect_to_strava/3
+    end
+
+    @desc "Switch sync type"
+    field :switch_user_sync_type, :sync_method do
+      middleware Middleware.Authenticate
+      arg :sync_type, non_null(:sync_type)
+      resolve &Resolvers.Accounts.switch_user_sync_type/3
+    end
+
     @desc "Buy an offer using points"
     field :buy_offer_challenge, :buy_or_create_offer_challenge_result do
       arg :offer_slug, non_null(:string)
@@ -205,6 +219,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.reject_friend_request/3
     end
+
+    @desc "unfriend user"
+    field :unfriend_user, :unfriend_result do
+      arg :user_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.unfriend_user/3
+    end
   end
 
   query do
@@ -230,6 +251,12 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :get_user_settings, :user do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.get_user_with_settings/3
+    end
+
+    @desc "Get the syncing method of user"
+    field :get_user_syncing_method, non_null(:sync_method) do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.get_user_syncing_method/3
     end
 
     @desc "Get Bravera Leaderboard"
@@ -304,6 +331,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :user_profile, :user_profile do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.user_profile/3
+    end
+
+    @desc "Get logged in user profile with total kms and points from last sync time"
+    field :user_profile_with_last_sync_data, :last_sync_data_user_profile do
+      arg :last_sync, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.user_profile_with_last_sync_data/3
     end
 
     @desc "Get profile picture upload URL"

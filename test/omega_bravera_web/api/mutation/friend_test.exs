@@ -5,6 +5,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
 
   alias OmegaBravera.{Accounts, Fixtures}
 
+  @user_channel OmegaBraveraWeb.UserChannel
+
   @create_friend_request """
   mutation($receiverId: ID!) {
     createFriendRequest(receiverId: $receiverId) {
@@ -42,6 +44,14 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
         firstname
         lastname
       }
+    }
+  }
+  """
+
+  @unfriend_user """
+  mutation($userId: ID!) {
+    unfriendUser(userId: $userId) {
+      unfriendedUserId
     }
   }
   """
@@ -129,5 +139,25 @@ defmodule OmegaBraveraWeb.Api.Mutation.FriendTest do
                }
              }
            } = json_response(response, 200)
+  end
+
+  test "can unfriend user", %{conn: conn, user1: %{id: user1_id}, user2: %{id: user2_id}} do
+    Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
+    user1_channel = @user_channel.user_channel(user1_id)
+    :ok = @endpoint.subscribe(user1_channel)
+    user2_channel = @user_channel.user_channel(user2_id)
+    :ok = @endpoint.subscribe(user2_channel)
+    response = post(conn, "/api", %{query: @unfriend_user, variables: %{"userId" => user2_id}})
+
+    user2_id_string = to_string(user2_id)
+
+    assert %{
+             "data" => %{
+               "unfriendUser" => %{"unfriendedUserId" => ^user2_id_string}
+             }
+           } = json_response(response, 200)
+
+    assert_received %{topic: ^user2_channel, event: "unfriended", payload: %{id: ^user1_id}}
+    assert_received %{topic: ^user1_channel, event: "unfriended", payload: %{id: ^user2_id}}
   end
 end

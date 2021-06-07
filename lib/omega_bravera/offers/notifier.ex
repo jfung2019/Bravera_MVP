@@ -103,7 +103,7 @@ defmodule OmegaBravera.Offers.Notifier do
         %OfferChallenge{} = challenge,
         %{
           invitee_name: invitee_name,
-          token: token,
+          token: _token,
           email: email
         },
         template_id
@@ -220,7 +220,7 @@ defmodule OmegaBravera.Offers.Notifier do
   def points_reward_email(
         %OfferChallenge{} = challenge,
         %User{} = user,
-        %OfferRedeem{} = offer_redeem,
+        %OfferRedeem{} = _offer_redeem,
         template_id
       ) do
     Email.build()
@@ -270,7 +270,7 @@ defmodule OmegaBravera.Offers.Notifier do
   def reward_completion_email(
         %OfferChallenge{} = challenge,
         %User{} = user,
-        %OfferRedeem{} = offer_redeem,
+        %OfferRedeem{} = _offer_redeem,
         template_id
       ) do
     Email.build()
