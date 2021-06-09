@@ -32,8 +32,8 @@
                 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
                 if(!isSafari) {
-                    let url = "<%= Routes.page_url(@conn, :open_app) %>";
-                    window.location.replace(`unilinks://open-app${window.location.pathname}${window.location.search}`);
+                    let url = "<%= Routes.url(@conn) %>".replace("http://", "").replace("https://", "");
+                    window.location.replace(`unilinks://${url}${window.location.pathname}${window.location.search}`);
                 } else {
                     window.location.replace(`braveralink://open-app${window.location.pathname}${window.location.search}`);
                 }
