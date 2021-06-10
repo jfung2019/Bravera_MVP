@@ -59,14 +59,14 @@
                 <br/>
                 <p><%= gettext("To help, we’ve added prompts and hyperlinks throughout to help you on your way.") %></p>
                 <br/>
-                <p><%= gettext("If you’ve not done so already, please also download the Bravera app so you can get familiar with what you’re creating will look like! Search ‘Bravera’ on the App Store or on Google Play.") %></p>
+                <p><%= gettext("Helpful hint: Download the Bravera app from the App Store or Google Play to get a feel how people will experience what you’re building here. ") %></p>
                 <br/>
-                <p><%= gettext("Thank you for creating your account. We look forward to seeing what you’re gonna build!") %></p>
+                <p><%= gettext("Click ‘Get Started’ below to begin. ") %></p>
                 <br/>
                 <p><%= gettext("Team Bravera") %></p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="showDashboardIntro()"><%= gettext("Got it! Thanks!") %></button>
+                <button class="btn btn-primary" onclick="showDashboardIntro()"><%= gettext("Get Started") %></button>
             </div>
         </div>
     </div>
