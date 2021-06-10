@@ -26,7 +26,7 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :location_id, gettext("Location (Where are you based?)"), class: "control-label" %>
+    <%= label f, :location_id, gettext("Location"), class: "control-label" %>
     <%= select(f, :location_id, generate_locations(@locations), class: "form-control")%>
     <%= error_tag f, :location_id %>
   </div>
