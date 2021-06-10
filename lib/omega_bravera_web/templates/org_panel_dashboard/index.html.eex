@@ -54,8 +54,10 @@
             <div class="modal-body">
                 <p><%= gettext("We hope the experience is convenient and easy. As this is your first time here, we will take you through the steps to: ") %></p>
                 <br/>
-                <p><%= gettext("- Create your first Group 
-                                - Create (or add) your first offers") %></p>
+                <ul>
+					<li><%= gettext("Create your first Group ") %></li>
+					<li><%= gettext("Create (or add) your first offers ") %></li>
+				</ul>
                 <br/>
                 <p><%= gettext("To help, we’ve added prompts and hyperlinks throughout to help you on your way.") %></p>
                 <br/>
