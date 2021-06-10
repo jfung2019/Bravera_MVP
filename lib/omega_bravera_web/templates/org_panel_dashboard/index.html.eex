@@ -76,22 +76,21 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><%= gettext("You’re now on ‘Dashboard’.") %></h5>
+                <h5 class="modal-title"><%= gettext("This is your Dashboard") %></h5>
             </div>
             <div class="modal-body">
-                <p><%= gettext("The dashboard will help you understand how your groups and rewards are performing ‘at a glance’. There is no data / info here yet. So, let’s get you started.") %></p>
+                <p><%= gettext("When you’ve created Groups and added Offers, your dashboard will help you understand how your groups and rewards are performing ‘at a glance’.") %></p>
                 <br/>
                 <p>
                     <strong><%= gettext("VERY IMPORTANT: ") %></strong>
-                    <%= gettext("By clicking ‘Get Me Started’ below, you’ll start a guided process to create a group, add offers and rewards, and then save your first draft.") %>
+                    <%= gettext("There is no data / info here yet.") %>
                 </p>
                 <br/>
-                <p><%= gettext("The guide only gets activated once. So, please sit through it (maybe go get a coffee). It’ll take approx. 5 minutes!") %></p>
+                <p><%= gettext("So, let's create your first Group.") %></p>
                 <br/>
-                <p><%= gettext("Team Bravera") %></p>
             </div>
             <div class="modal-footer">
-                <%= link gettext("Get Me Started"), to: Routes.org_panel_partner_path(@conn, :index), class: "btn btn-primary" %>
+                <%= link gettext("Next"), to: Routes.org_panel_partner_path(@conn, :index), class: "btn btn-primary" %>
             </div>
         </div>
     </div>
