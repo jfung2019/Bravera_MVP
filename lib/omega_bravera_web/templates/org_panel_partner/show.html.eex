@@ -111,7 +111,7 @@
 		<small class="text-muted">
 			(<span class="text-danger"><%= gettext("After creating your own Offers click ‘Add’ to add them to the Group. If you’d like to see existing rewards available to select click ‘See Catalogue’ below.
 ") %></span>
-			<a href="http://bit.ly/BraveraHK-Admin-Offers" target="_blank"><%= gettext("See Catalogue") %></a>).
+			<a href="https://linktr.ee/braverarewards " target="_blank"><%= gettext("See Catalogue") %></a>).
 		</small>
 		<div class="row">
 			<%= form_for @conn, Routes.org_panel_offer_partner_path(@conn, :create), fn f -> %>
