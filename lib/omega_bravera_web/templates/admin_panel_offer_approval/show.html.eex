@@ -41,7 +41,7 @@
                     <td><%= @offer.vendor.id %></td>
                 </tr>
                 <tr>
-                    <td><%= gettext("Location") %></td>
+                    <td><%= gettext("Location (Where are you based?)") %></td>
                     <td><%= @offer.location.name_en %></td>
                 </tr>
                 <% else %>

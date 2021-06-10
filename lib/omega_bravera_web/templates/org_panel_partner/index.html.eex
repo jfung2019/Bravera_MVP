@@ -47,15 +47,12 @@
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title"><%= gettext("Create your first ‘Group’") %></h5>
+				<h5 class="modal-title"><%= gettext("Group") %></h5>
 			</div>
 			<div class="modal-body">
 				<p><%= gettext("Here you can create and edit Group details.") %></p>
-				<br/>
 					<p><%= gettext("Name, Description, Images, Restruction (Pin code entry), Location, etc.") %></p>
-				<br/>
 				<p><%= gettext("After creating a Group you will be able to create and add Offers to a Group (that comes later).") %></p>
-				<br/>
 				<p><%= gettext("Click ‘Got it’ to continue.") %></p>
 			</div>
 			<div class="modal-footer">

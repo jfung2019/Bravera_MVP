@@ -36,7 +36,7 @@
         </div>
 
         <div class="form-group">
-            <%= label p, :location_id, gettext("Location"), class: "control-label" %>
+            <%= label p, :location_id, gettext("Location (Where are you based?)"), class: "control-label" %>
             <%= select p, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), prompt: "", class: add_error_class(p, :contact_number, "form-control chosen") %>
             <%= error_tag p, :location_id %>
         </div>
