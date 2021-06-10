@@ -52,16 +52,11 @@
 			<div class="modal-body">
 				<p><%= gettext("Here you can create and edit Group details.") %></p>
 				<br/>
-				<ul>
-					<li><%= gettext("See offers inside your group") %></li>
-					<li><%= gettext("Earn rewards") %></li>
-					<li><%= gettext("Enter your private chat group") %></li>
-					<li><%= gettext("Enter your private leaderboard") %></li>
-				</ul>
+					<p><%= gettext("Name, Description, Images, Restruction (Pin code entry), Location, etc.") %></p>
 				<br/>
-				<p><%= gettext("Optional: If your Group is also a business or organisation (e.g. retail store, club etc), you will have the opportunity to add a physical address to create a pin on the Bravera in-app map.") %></p>
+				<p><%= gettext("After creating a Group you will be able to create and add Offers to a Group (that comes later).") %></p>
 				<br/>
-				<p><%= gettext("Click ‘Got it’ below and then Create your first ‘Group’.") %></p>
+				<p><%= gettext("Click ‘Got it’ to continue.") %></p>
 			</div>
 			<div class="modal-footer">
 				<%= link gettext("Got it"), to: Routes.org_panel_partner_path(@conn, :new), class: "btn btn-primary" %>
