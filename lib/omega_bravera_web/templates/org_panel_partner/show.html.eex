@@ -41,7 +41,7 @@
 		<%= link gettext("Edit Group Details"), to: Routes.org_panel_partner_path(@conn, :edit, @partner), class: "btn btn-warning mb-4" %>
 		<div class="mb-2">
 			<h3><span class="fa fa-map-marker"></span> <%= gettext("Group Location (optional)") %></h3>
-			<small class="text-muted"><%= gettext("(If you’d like your group to have a pin on the Bravera ‘Near Me’ map section, this is where you add the details. This is useful if you want people to ‘come to you’ (e.g. you’re a business or organisation). If you don’t need this. No need to add details)") %></small>
+			<small class="text-muted"><%= gettext("(Optional: If you want your Group to be discoverable to others on the map inside the Bravera app. Follow the instructions on how to copy and paste the GPS coordinates from Google Maps).") %></small>
 		</div>
 		<%= if @partner.location do %>
 		<%= link gettext("Edit Location"), to: Routes.org_panel_partner_org_panel_partner_location_path(@conn, :edit, @partner, @partner.location), class: "btn btn-warning" %>
