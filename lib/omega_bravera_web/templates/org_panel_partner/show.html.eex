@@ -177,18 +177,19 @@
 			<div class="modal-body">
 				<strong><%= gettext("On the next page you can: ") %></strong>
 				<ul>
-					<li>
-					<strong><%= gettext("1) Edit the Group details ") %></strong>
-					</li>
-					<li><%= gettext("Go back and edit the Group ") %></li>
-					<li>
+					<br>
+					<strong><%= gettext("1) Edit the Group details ") %></strong>	
+					<br>				
+					<li><%= gettext("Go back and edit the Group ") %></li>			
+					<br>		
 					<strong><%= gettext("2) Add a Location") %></strong>
-					</li>
-					<li><%= gettext("Place a PIN on the map inside Bravera app using Google Map GPS coordinates (optional).") %></li>
-					<li>
+					<br>
+					<li><%= gettext("Place a PIN on the map inside Bravera app using Google Map GPS coordinates (optional).") %></li>					
+					<br>
 					<strong><%= gettext("3) Add / create a Group Offer") %></strong>
-					</li>
+					<br>
 					<li><%= gettext("Create your own Offers / Rewards. Or, request existing from our list. ") %></li>
+					<br>
 				</ul>
 			</div>
 			<div class="modal-footer">
