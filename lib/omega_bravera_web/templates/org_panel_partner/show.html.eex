@@ -68,6 +68,9 @@
 		<div>
 			<h2><span class="fa fa-trophy"></span> <%= gettext("Your Offers") %></h2>
 			<small class="text-muted"><%= gettext("(Below you can add offers you’ve created to your group)") %></small>
+			<br>
+			<br>
+			<button class="btn btn-primary ml-2" onclick="$('#create_offer').modal('show');"><%= gettext("Create an Offer") %></button>
 		</div>
 		<%= if length(@partner.offers) > 0 do %>
 		<table class="table">
@@ -109,8 +112,7 @@
 		<hr>
 		<h2><span class="fa fa-plus-square"></span> <%= gettext("Add an Offer") %></h2>
 		<small class="text-muted">
-			(<span class="text-danger"><%= gettext("After creating your own Offers click ‘Add’ to add them to the Group. If you’d like to see existing rewards available to select click ‘See Catalogue’ below.
-") %></span>
+			(<span class="text-danger"><%= gettext("After creating your own Offers click ‘Add’ to add them to the Group. If you’d like to see existing rewards available to select click ‘See Catalogue’ below.") %></span>
 			<a href="https://linktr.ee/braverarewards " target="_blank"><%= gettext("See Catalogue") %></a>).
 		</small>
 		<div class="row">
@@ -130,7 +132,7 @@
 			<% else %>
 				<%= submit gettext("Add"), class: "btn btn-primary", disabled: true %>
 			<% end %>
-			<button class="btn btn-primary ml-2" onclick="$('#create_offer').modal('show');"><%= gettext("Create an Offer") %></button>
+			<a href="https://linktr.ee/braverarewards" class="btn btn-primary ml-2">Show Catalogue</a>
 		</div>
 	</div>
 </div>
