@@ -17,9 +17,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <p><%= gettext("Great. You’ve created your first Group. ") %></p>
-                <br>
                 <p><%= gettext("Next, you’ll be asked to add images to the Group. ") %></p>
-                <br>
                 <p><%= gettext("You can go back and Edit the Group, or you can Add Images.") %></p>
             </div>
             <div class="modal-footer">

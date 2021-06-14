@@ -53,16 +53,12 @@
             </div>
             <div class="modal-body">
                 <p><%= gettext("We hope the experience is convenient and easy. As this is your first time here, we will take you through the steps to: ") %></p>
-                <br/>
                 <ul>
 					<li><%= gettext("Create your first Group ") %></li>
 					<li><%= gettext("Create (or add) your first offers ") %></li>
 				</ul>
-                <br/>
                 <p><%= gettext("To help, we’ve added prompts and hyperlinks throughout to help you on your way.") %></p>
-                <br/>
                 <p><%= gettext("Helpful hint: Download the Bravera app from the App Store or Google Play to get a feel how people will experience what you’re building here. ") %></p>
-                <br/>
                 <p><%= gettext("Click ‘Get Started’ below to begin. ") %></p>
                 <br/>
                 <p><%= gettext("Team Bravera") %></p>
