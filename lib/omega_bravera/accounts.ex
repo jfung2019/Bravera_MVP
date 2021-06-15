@@ -370,12 +370,11 @@ defmodule OmegaBravera.Accounts do
 
   def api_get_leaderboard_this_week() do
     now = Timex.now()
-    beginning = Timex.beginning_of_week(now)
-    end_of_week = Timex.end_of_week(now)
+    seven_days_ago = Timex.shift(now, days: -7)
 
     from(
       u in User,
-      left_join: a in subquery(activity_query(beginning, end_of_week)),
+      left_join: a in subquery(activity_query(seven_days_ago, now)),
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
@@ -392,12 +391,11 @@ defmodule OmegaBravera.Accounts do
 
   def api_get_leaderboard_this_month() do
     now = Timex.now()
-    beginning = Timex.beginning_of_month(now)
-    end_of_month = Timex.end_of_month(now)
+    thirty_days_ago = Timex.shift(now, days: -30)
 
     from(
       u in User,
-      left_join: a in subquery(activity_query(beginning, end_of_month)),
+      left_join: a in subquery(activity_query(thirty_days_ago, now)),
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
@@ -437,12 +435,11 @@ defmodule OmegaBravera.Accounts do
 
   def api_get_leaderboard_of_partner_this_week(partner_id) do
     now = Timex.now()
-    beginning = Timex.beginning_of_week(now)
-    end_of_week = Timex.end_of_week(now)
+    seven_days_ago = Timex.shift(now, days: -7)
 
     from(
       u in User,
-      left_join: a in subquery(activity_query(beginning, end_of_week)),
+      left_join: a in subquery(activity_query(seven_days_ago, now)),
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
@@ -460,12 +457,11 @@ defmodule OmegaBravera.Accounts do
 
   def api_get_leaderboard_of_partner_this_month(partner_id) do
     now = Timex.now()
-    beginning = Timex.beginning_of_month(now)
-    end_of_month = Timex.end_of_month(now)
+    thirty_days_ago = Timex.shift(now, days: -30)
 
     from(
       u in User,
-      left_join: a in subquery(activity_query(beginning, end_of_month)),
+      left_join: a in subquery(activity_query(thirty_days_ago, now)),
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
