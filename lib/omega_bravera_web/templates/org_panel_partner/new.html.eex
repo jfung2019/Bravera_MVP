@@ -16,15 +16,14 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <p><%= gettext("Great. Details have been added to your Group.") %></p>
-                <br>
-                <p><%= gettext("The Next step will be to add images before saving and submitting a draft to an admin to approve.") %></p>
-                <br>
-                <p><%= gettext("Do you want to continue adding images or edit the Group details?") %></p>
+                <p><%= gettext("Great. You’ve created your first Group. ") %></p>
+                <p><%= gettext("Next, you’ll be asked to add images to the Group. ") %></p>
+                <p><%= gettext("You can go back and Edit the Group, or you can Add Images.") %></p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="$('#first_5_groups_submit_btn').click()"><%= gettext("Add Images") %></button>
-                <button class="btn btn-primary" onclick="redirectToEditGroup()"><%= gettext("Edit Group Details") %></button>
+                <button class="btn btn-primary" onclick="$('#first_5_groups_submit_btn').click()"><%= gettext("Save & Add Images") %></button>
+                <button class="btn btn-primary" onclick="redirectToEditGroup()"><%= gettext("Go Back & Edit 
+") %></button>
             </div>
         </div>
     </div>
