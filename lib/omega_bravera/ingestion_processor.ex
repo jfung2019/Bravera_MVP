@@ -81,7 +81,7 @@ defmodule OmegaBravera.IngestionProcessor do
   end
 
   def terminate(reason, state) do
-    Logger.warn("IngestionProcessor: Processer is going down: #{inspect(reason)}")
+    Logger.error("IngestionProcessor: Processer is going down: #{inspect(reason)}")
     {:shutdown, state}
   end
 

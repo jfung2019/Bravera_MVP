@@ -3,7 +3,15 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential, Notifications}
+  alias OmegaBravera.{
+    Repo,
+    Accounts,
+    Points,
+    Accounts.Credential,
+    Notifications,
+    Activity.Activities,
+    Trackers
+  }
 
   @email "sheriefalaa.w@gmail.com"
   @password "strong passowrd"
@@ -15,6 +23,23 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
       emailVerified
       firstname
       lastname
+    }
+  }
+  """
+
+  @user_profile_with_last_sync_data """
+  query($lastSync: String!) {
+    userProfileWithLastSyncData(lastSync: $lastSync) {
+      lastSyncTotalPoints
+      lastSyncTotalKilometers
+      userProfile {
+        id
+        totalPoints
+        totalKilometers
+        strava {
+          athleteId
+        }
+      }
     }
   }
   """
@@ -89,6 +114,15 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   }
   """
 
+  @get_user_sync_method """
+  query {
+    getUserSyncingMethod {
+      syncType
+      stravaConnected
+    }
+  }
+  """
+
   def credential_fixture() do
     user = insert(:user, %{email: @email})
 
@@ -124,6 +158,76 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
                "userProfile" => %{
                  "firstname" => ^first_name,
                  "lastname" => ^last_name
+               }
+             }
+           } = json_response(response, 200)
+  end
+
+  test "can get user_profile with last login kms and points", %{
+    conn: conn,
+    user: %{id: user_id} = user
+  } do
+    now = Timex.now()
+
+    Trackers.create_strava(user_id, %{
+      firstname: "first",
+      lastname: "last",
+      athlete_id: 1234,
+      token: "abc"
+    })
+
+    {:ok, activity1} =
+      Activities.create_activity(
+        %Strava.DetailedActivity{
+          id: 1,
+          start_date: Timex.shift(now, days: -60),
+          type: "Run",
+          distance: Decimal.new(5000)
+        },
+        user
+      )
+
+    Points.create_points_from_activity(activity1, Accounts.get_user_with_todays_points(user.id))
+
+    {:ok, activity2} =
+      Activities.create_activity(
+        %Strava.DetailedActivity{
+          id: 2,
+          start_date: Timex.shift(now, hours: -2),
+          type: "Walk",
+          distance: Decimal.new(20000)
+        },
+        user
+      )
+
+    Points.create_points_from_activity(activity2, Accounts.get_user_with_todays_points(user.id))
+
+    last_sync =
+      now
+      |> Timex.shift(hours: -4)
+      |> DateTime.to_iso8601()
+
+    response =
+      post(conn, "/api", %{
+        query: @user_profile_with_last_sync_data,
+        variables: %{"lastSync" => last_sync}
+      })
+
+    user_id_string = to_string(user_id)
+
+    assert %{
+             "data" => %{
+               "userProfileWithLastSyncData" => %{
+                 "lastSyncTotalKilometers" => 5.0,
+                 "lastSyncTotalPoints" => 50.0,
+                 "userProfile" => %{
+                   "id" => ^user_id_string,
+                   "totalKilometers" => 25.0,
+                   "totalPoints" => 130.0,
+                   "strava" => %{
+                     "athleteId" => "1234"
+                   }
+                 }
                }
              }
            } = json_response(response, 200)
@@ -193,5 +297,18 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
              "description" => "Platform Notifications",
              "permitted" => true
            } in category_list
+  end
+
+  test "can get sync method", %{conn: conn} do
+    response = post(conn, "/api", %{query: @get_user_sync_method})
+
+    assert %{
+             "data" => %{
+               "getUserSyncingMethod" => %{
+                 "stravaConnected" => false,
+                 "syncType" => "DEVICE"
+               }
+             }
+           } = json_response(response, 200)
   end
 end

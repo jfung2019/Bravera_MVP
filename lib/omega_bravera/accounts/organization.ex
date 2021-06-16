@@ -8,6 +8,7 @@ defmodule OmegaBravera.Accounts.Organization do
     field :business_type, :string
     field :business_website, :string
     field :member_count, :integer, virtual: true
+    field :blocked_on, :utc_datetime
 
     has_many :groups, OmegaBravera.Groups.Partner
     has_many :group_members, through: [:groups, :members]
@@ -25,5 +26,10 @@ defmodule OmegaBravera.Accounts.Organization do
     |> cast(attrs, [:name, :business_type, :business_website])
     |> validate_required([:name, :business_type, :business_website])
     |> EctoCommons.URLValidator.validate_url(:business_website)
+  end
+
+  def block_changeset(organization, attrs) do
+    organization
+    |> cast(attrs, [:blocked_on])
   end
 end

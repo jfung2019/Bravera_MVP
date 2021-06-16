@@ -18,31 +18,12 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       "Offers:ActivityIngestion: Checking if athlete has devices or segment challenges..."
     )
 
-    user = Accounts.get_user_by_athlete_id(athlete_id)
+    case Accounts.get_user_by_athlete_id(athlete_id) do
+      %{sync_type: :strava} ->
+        OmegaBravera.Offers.OfferAppActivitiesIngestion.start(activity)
 
-    if not is_nil(user) do
-      segment_challenges_count = Accounts.get_num_of_segment_challenges_by_user_id(user.id)
-
-      if Accounts.user_has_device?(user.id) do
-        Logger.info(
-          "Offers:ActivityIngestion: User has a device and segment challenge of count #{
-            segment_challenges_count
-          }"
-        )
-
-        if segment_challenges_count > 0 do
-          OmegaBravera.Offers.OfferAppActivitiesIngestion.start(activity)
-        else
-          Logger.info(
-            "Offers:ActivityIngestion: User has a device, but 0 segment challenges, terminating."
-          )
-        end
-      else
-        # User has no devices
-        athlete_id
-        |> Accounts.get_strava_challengers_for_offers()
-        |> process_challenges(activity)
-      end
+      _ ->
+        Logger.info("Offers:ActivityIngestion: User not found or is syncing through device")
     end
   end
 
@@ -78,9 +59,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       )
       when distance > 0 do
     Logger.info(
-      "Offers:ActivityIngestion: Processing #{inspect(challenge.type)} challenge: #{
-        inspect(challenge.id)
-      }"
+      "Offers:ActivityIngestion: Processing #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}"
     )
 
     {status, _challenge, _activity} =
@@ -90,24 +69,18 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
       |> notify_participant_of_activity(send_emails)
 
     Logger.info(
-      "Offers:ActivityIngestion: Processing has finished for #{inspect(challenge.type)} challenge: #{
-        inspect(challenge.id)
-      }"
+      "Offers:ActivityIngestion: Processing has finished for #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}"
     )
 
     if status == :ok do
       Logger.info(
-        "Offers:ActivityIngestion: Processing was successful for #{inspect(challenge.type)} challenge: #{
-          inspect(challenge.id)
-        }"
+        "Offers:ActivityIngestion: Processing was successful for #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}"
       )
 
       {:ok, :challenge_updated}
     else
       Logger.info(
-        "Offers:ActivityIngestion: Processing was not successful for #{inspect(challenge.type)} challenge: #{
-          inspect(challenge.id)
-        }"
+        "Offers:ActivityIngestion: Processing was not successful for #{inspect(challenge.type)} challenge: #{inspect(challenge.id)}"
       )
 
       {:error, :activity_not_processed}
@@ -130,9 +103,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
         {:error, changeset} ->
           Logger.warn(
-            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{
-              inspect(changeset.errors)
-            }"
+            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{inspect(changeset.errors)}"
           )
 
           {:error, challenge, nil}
@@ -150,9 +121,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
         {:error, changeset} ->
           Logger.warn(
-            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{
-              inspect(changeset.errors)
-            }"
+            "Offers:ActivityIngestion: activity could not be saved. Changeset errors: #{inspect(changeset.errors)}"
           )
 
           {:error, challenge, nil}
@@ -219,9 +188,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
         if Notifier.send_reward_completion_email(challenge, tm, offer_redeem) != :ok do
           Logger.error(
-            "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem for team member: #{
-              inspect(tm)
-            }"
+            "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem for team member: #{inspect(tm)}"
           )
         end
       end)
@@ -243,9 +210,7 @@ defmodule OmegaBravera.Offers.OfferActivitiesIngestion do
 
       if Notifier.send_reward_completion_email(challenge, challenge.user, offer_redeem) != :ok do
         Logger.error(
-          "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem. for challenge owner: #{
-            inspect(challenge.user)
-          }"
+          "OfferActivitiesIngestion: could not send reward email. I did not find OfferRedeem. for challenge owner: #{inspect(challenge.user)}"
         )
       end
     end

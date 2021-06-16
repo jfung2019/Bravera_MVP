@@ -178,6 +178,7 @@ defmodule OmegaBraveraWeb.Router do
       get "/offers/:slug/statement", AdminPanelOfferController, :statement
       get "/offers/:slug/statement/monthly/", AdminPanelOfferController, :export_statement
       get "/view-as-org/:id", AdminPanelOrganizationController, :view_as
+      put "/block_org/:id", AdminPanelOrganizationController, :block
       resources "/organizations", AdminPanelOrganizationController
       resources "/organization_members", AdminPanelOrganizationMemberController
 
@@ -220,6 +221,7 @@ defmodule OmegaBraveraWeb.Router do
   pipeline :org_authenticated do
     plug Guardian.AuthPipeline
     plug OmegaBraveraWeb.OrgAuth
+    plug OmegaBraveraWeb.CheckBlockedOrg
   end
 
   scope "/organization", OmegaBraveraWeb do
@@ -232,6 +234,7 @@ defmodule OmegaBraveraWeb.Router do
     resources "/password", PartnerUserPasswordController, except: [:delete], param: "reset_token"
     resources "/register", PartnerUserRegisterController, only: [:new, :create]
     get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
+    get "/blocked", OrgPanelDashboardController, :blocked
 
     scope "/" do
       pipe_through [:org_authenticated]

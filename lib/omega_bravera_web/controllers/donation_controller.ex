@@ -152,9 +152,7 @@ defmodule OmegaBraveraWeb.DonationController do
         case Processor.charge_donation(pledge) do
           {:ok, %Donation{status: "charged"} = charged_donation} ->
             Logger.info(
-              "DonationProcessor: Successfully charged follow-on-donation. Amount: #{
-                inspect(charged_donation.charged_amount)
-              }"
+              "DonationProcessor: Successfully charged follow-on-donation. Amount: #{inspect(charged_donation.charged_amount)}"
             )
 
             conn
@@ -166,9 +164,7 @@ defmodule OmegaBraveraWeb.DonationController do
 
           {:error, reason} ->
             Logger.error(
-              "DonationProcessor: Could not charge follow-on-donation. Reason: #{
-                inspect(reason.errors)
-              }"
+              "DonationProcessor: Could not charge follow-on-donation. Reason: #{inspect(reason.errors)}"
             )
 
             conn

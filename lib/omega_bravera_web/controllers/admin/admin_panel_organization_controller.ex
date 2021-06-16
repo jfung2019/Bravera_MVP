@@ -76,4 +76,15 @@ defmodule OmegaBraveraWeb.AdminPanelOrganizationController do
       _ -> redirect(conn, to: Routes.admin_panel_organization_path(conn, :index))
     end
   end
+
+  def block(conn, %{"id" => id}) do
+    organization = Accounts.get_organization!(id)
+    {:ok, _org} = Accounts.block_or_unblock_org(organization)
+
+    mes = if is_nil(organization.blocked_on), do: "blocked", else: "unblocked"
+
+    conn
+    |> put_flash(:info, "Users associated to #{organization.name} is now #{mes}.")
+    |> redirect(to: Routes.admin_panel_organization_path(conn, :index))
+  end
 end

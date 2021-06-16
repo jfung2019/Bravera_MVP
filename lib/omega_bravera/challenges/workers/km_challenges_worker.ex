@@ -26,9 +26,7 @@ defmodule OmegaBravera.Challenges.KmChallengesWorker do
         Challenges.Notifier.send_donor_milestone_email(donation)
 
         Logger.info(
-          "KmChallengesWorker: Successfully charged km challenge. Amount: #{
-            inspect(charged_donation.charged_amount)
-          }"
+          "KmChallengesWorker: Successfully charged km challenge. Amount: #{inspect(charged_donation.charged_amount)}"
         )
 
       {:error, reason} ->

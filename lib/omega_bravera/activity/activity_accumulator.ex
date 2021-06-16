@@ -8,7 +8,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   alias OmegaBravera.Offers.OfferChallengeActivitiesM2m
   alias OmegaBravera.Challenges.NgoChallengeActivitiesM2m
 
-  @banned_sources ["garmin", "connect"]
+  @banned_sources ["garmin", "connect", "empty"]
 
   schema "activities_accumulator" do
     field :strava_id, :integer
@@ -147,16 +147,10 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   def verify_allowed_source(changeset) do
     source = get_field(changeset, :source)
 
-    if not is_nil(source) do
-      source = String.downcase(source)
-
-      if !Enum.member?(@banned_sources, source) do
-        put_change(changeset, :source, source)
-      else
-        add_error(changeset, :source, "#{source} is not allowed.")
-      end
+    if is_nil(source) or Enum.member?(@banned_sources, String.downcase(source)) do
+      add_error(changeset, :source, "#{source} is not allowed.")
     else
-      put_change(changeset, :source, "empty")
+      changeset
     end
   end
 

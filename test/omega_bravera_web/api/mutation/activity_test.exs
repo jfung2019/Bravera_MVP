@@ -104,7 +104,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
              "data" => %{"createActivity" => nil},
              "errors" => [
                %{
-                 "details" => %{"source" => ["connect is not allowed."]},
+                 "details" => %{"source" => ["Connect is not allowed."]},
                  "locations" => [%{"column" => _, "line" => _}],
                  "message" => "Could not create activity",
                  "path" => ["createActivity"]

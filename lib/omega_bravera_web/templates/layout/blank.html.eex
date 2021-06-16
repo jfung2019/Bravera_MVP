@@ -30,12 +30,12 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-                let url = "<%= Routes.page_url(@conn, :open_app) %>";
 
                 if(!isSafari) {
-                    window.location.replace(url.replace("https", "unilinks"));
+                    let url = "<%= Routes.url(@conn) %>".replace("http://", "").replace("https://", "");
+                    window.location.replace(`unilinks://${url}${window.location.pathname}${window.location.search}`);
                 } else {
-                    window.location.replace("braveralink://open-app");
+                    window.location.replace(`braveralink://open-app${window.location.pathname}${window.location.search}`);
                 }
             });
         </script>

@@ -22,9 +22,7 @@ defmodule OmegaBravera.ExchangeRateSyncer do
           cond do
             body["balance_transaction"] ->
               Logger.info(fn ->
-                "Exchange Rate Syncer: Stripe get charge successful. Charge Exchange Rate: #{
-                  inspect(body["balance_transaction"])
-                }"
+                "Exchange Rate Syncer: Stripe get charge successful. Charge Exchange Rate: #{inspect(body["balance_transaction"])}"
               end)
 
               donation_updated =
@@ -41,17 +39,13 @@ defmodule OmegaBravera.ExchangeRateSyncer do
 
                 {:error, reason} ->
                   Logger.info(fn ->
-                    "Exchange Rate Syncer: failed to update donation with exchange rate. Reason: #{
-                      inspect(reason)
-                    }"
+                    "Exchange Rate Syncer: failed to update donation with exchange rate. Reason: #{inspect(reason)}"
                   end)
               end
 
             body["error"] ->
               Logger.error(fn ->
-                "Exchange Rate Syncer: Stripe get charge failed: #{
-                  inspect(body["error"]["message"])
-                }"
+                "Exchange Rate Syncer: Stripe get charge failed: #{inspect(body["error"]["message"])}"
               end)
 
               :error

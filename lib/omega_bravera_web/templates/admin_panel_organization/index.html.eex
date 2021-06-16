@@ -19,7 +19,7 @@
         <tr>
           <td><%= organization.name %></td>
           <td><%= organization.business_type %></td>
-          <td><%= link organization.business_website, to: organization.business_website, target: "_blank" %></td>
+          <td><%= if not is_nil(organization.business_website), do: link organization.business_website, to: organization.business_website, target: "_blank" %></td>
           <td><%= organization.member_count %></td>
           <td><%= render_datetime(organization.inserted_at) %></td>
           <td><%= render_datetime(organization.updated_at) %></td>
@@ -27,6 +27,7 @@
             <%= link gettext("View As"), to: Routes.admin_panel_organization_path(@conn, :view_as, organization), class: "btn btn-info" %>
             <%= link gettext("Details"), to: Routes.admin_panel_organization_path(@conn, :show, organization), class: "btn btn-primary" %>
             <%= link gettext("Edit"), to: Routes.admin_panel_organization_path(@conn, :edit, organization), class: "btn btn-warning btn-xs" %>
+            <%= link (if is_nil(organization.blocked_on), do: gettext("Block"), else: gettext("Unblock")), to: Routes.admin_panel_organization_path(@conn, :block, organization), method: :put, class: "btn btn-secondary" %>
             <%= link gettext("Delete"), to: Routes.admin_panel_organization_path(@conn, :delete, organization), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
           </td>
         </tr>

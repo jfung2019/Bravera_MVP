@@ -3,7 +3,7 @@ defmodule OmegaBravera.Points do
   Points Context.
   """
   import Ecto.Query
-
+  require Logger
   alias OmegaBravera.{Repo, Accounts}
   alias OmegaBravera.Points.{Point, Notifier}
 
@@ -17,6 +17,38 @@ defmodule OmegaBravera.Points do
     %Point{}
     |> Point.activity_points_changeset(activity, user_with_points)
     |> Repo.insert()
+  end
+
+  @doc """
+  Adds points to a user using an activity.
+  """
+  @spec add_points_to_user_from_activity(OmegaBravera.Activity.ActivityAccumulator.t()) :: :ok
+  def add_points_to_user_from_activity(%{user_id: user_id} = activity) do
+    user_with_points = Accounts.get_user_with_todays_points(user_id, activity.start_date)
+
+    case create_points_from_activity(activity, user_with_points) do
+      {:ok, _point} ->
+        Logger.info(
+          "Activity Create Queue: Successfully created points for activity: #{activity.id}"
+        )
+
+        # TODO: Find a way to make this a trigger
+        Absinthe.Subscription.publish(
+          OmegaBraveraWeb.Endpoint,
+          %{
+            balance: total_points(user_id),
+            history: user_points_history_summary(user_id)
+          },
+          live_points: user_id
+        )
+
+      {:error, reason} ->
+        Logger.warn(
+          "Activity Create Queue: Could not create points for activity, reason: #{inspect(reason)}"
+        )
+    end
+
+    :ok
   end
 
   def create_bonus_points(attrs \\ %{}) do

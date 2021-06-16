@@ -15,9 +15,9 @@ defmodule OmegaBraveraWeb.OrgPanelDashboardController do
     )
   end
 
-  def guides(conn, _param) do
-    render(conn, "guides.html")
-  end
+  def blocked(conn, _params), do: render(conn, "blocked.html")
+
+  def guides(conn, _param), do: render(conn, "guides.html")
 
   def view_as(conn, _param) do
     with admin_id <- Plug.Conn.get_session(conn, :admin_logged_in),

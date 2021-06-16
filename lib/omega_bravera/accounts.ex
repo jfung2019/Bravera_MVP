@@ -11,6 +11,7 @@ defmodule OmegaBravera.Accounts do
   @organization_max_points 1000
   @endpoint OmegaBraveraWeb.Endpoint
   @user_channel OmegaBraveraWeb.UserChannel
+  require Logger
 
   alias OmegaBravera.{
     Repo,
@@ -26,7 +27,6 @@ defmodule OmegaBravera.Accounts do
     Money.Donation,
     Trackers,
     Points.Point,
-    Trackers.Strava,
     Challenges.NGOChal,
     Challenges.Team,
     Challenges.TeamMembers,
@@ -45,7 +45,7 @@ defmodule OmegaBravera.Accounts do
   }
 
   def get_all_athlete_ids() do
-    query = from(s in Strava, select: s.athlete_id)
+    query = from(s in Trackers.Strava, select: s.athlete_id)
     query |> Repo.all()
   end
 
@@ -61,7 +61,7 @@ defmodule OmegaBravera.Accounts do
 
   def get_user_by_athlete_id(athlete_id) do
     from(u in User,
-      join: s in Strava,
+      join: s in Trackers.Strava,
       on: s.athlete_id == ^athlete_id,
       where: u.id == s.user_id
     )
@@ -80,12 +80,12 @@ defmodule OmegaBravera.Accounts do
   end
 
   def get_strava_by_athlete_id(athlete_id) do
-    from(s in Strava, where: s.athlete_id == ^athlete_id) |> Repo.one()
+    from(s in Trackers.Strava, where: s.athlete_id == ^athlete_id) |> Repo.one()
   end
 
   def get_strava_challengers(athlete_id) do
     team_challengers =
-      from(s in Strava,
+      from(s in Trackers.Strava,
         where: s.athlete_id == ^athlete_id,
         join: nc in NGOChal,
         where: nc.status == "active",
@@ -105,7 +105,7 @@ defmodule OmegaBravera.Accounts do
       |> Repo.all()
 
     single_challengers =
-      from(s in Strava,
+      from(s in Trackers.Strava,
         where: s.athlete_id == ^athlete_id,
         join: nc in NGOChal,
         where: s.user_id == nc.user_id and nc.status == "active",
@@ -124,7 +124,7 @@ defmodule OmegaBravera.Accounts do
 
   def get_strava_challengers_for_offers(athlete_id) do
     team_challengers =
-      from(s in Strava,
+      from(s in Trackers.Strava,
         where: s.athlete_id == ^athlete_id,
         join: oc in OfferChallenge,
         where: oc.status == "active",
@@ -144,7 +144,7 @@ defmodule OmegaBravera.Accounts do
       |> Repo.all()
 
     single_challengers =
-      from(s in Strava,
+      from(s in Trackers.Strava,
         where: s.athlete_id == ^athlete_id,
         join: oc in OfferChallenge,
         where: s.user_id == oc.user_id and oc.status == "active",
@@ -267,8 +267,31 @@ defmodule OmegaBravera.Accounts do
 
   # TODO Optimize the preload below
   def get_user_strava(user_id) do
-    from(s in Strava, where: s.user_id == ^user_id)
+    from(s in Trackers.Strava, where: s.user_id == ^user_id)
     |> Repo.one()
+  end
+
+  def remove_all_stravas do
+    Trackers.list_stravas()
+    |> Enum.map(fn %{refresh_token: refresh_token} = strava ->
+      try do
+        client = Strava.Auth.get_token!(grant_type: "refresh_token", refresh_token: refresh_token)
+
+        Trackers.update_strava(strava, %{
+          token: client.token.access_token,
+          refresh_token: client.token.refresh_token,
+          token_expires_at: Timex.from_unix(client.token.expires_at)
+        })
+
+        HTTPoison.post("https://www.strava.com/oauth/deauthorize", %{
+          access_token: client.token.access_token
+        })
+      rescue
+        error -> Logger.warn("Problem: #{inspect(error)}")
+      after
+        Trackers.delete_strava(strava)
+      end
+    end)
   end
 
   def get_user_with_everything!(user_id) do
@@ -347,16 +370,14 @@ defmodule OmegaBravera.Accounts do
 
   def api_get_leaderboard_this_week() do
     now = Timex.now()
-    beginning = Timex.beginning_of_week(now)
-    end_of_week = Timex.end_of_week(now)
+    seven_days_ago = Timex.shift(now, days: -7)
 
     from(
       u in User,
-      left_join: a in subquery(activity_query(beginning, end_of_week)),
+      left_join: a in subquery(activity_query(seven_days_ago, now)),
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       select: %{
         u
         | total_points_this_week: coalesce(p.value, 0),
@@ -370,16 +391,14 @@ defmodule OmegaBravera.Accounts do
 
   def api_get_leaderboard_this_month() do
     now = Timex.now()
-    beginning = Timex.beginning_of_month(now)
-    end_of_month = Timex.end_of_month(now)
+    thirty_days_ago = Timex.shift(now, days: -30)
 
     from(
       u in User,
-      left_join: a in subquery(activity_query(beginning, end_of_month)),
+      left_join: a in subquery(activity_query(thirty_days_ago, now)),
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       select: %{
         u
         | total_points_this_month: coalesce(p.value, 0),
@@ -398,7 +417,6 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       select: %{
         u
         | total_points: coalesce(p.value, 0),
@@ -417,16 +435,14 @@ defmodule OmegaBravera.Accounts do
 
   def api_get_leaderboard_of_partner_this_week(partner_id) do
     now = Timex.now()
-    beginning = Timex.beginning_of_week(now)
-    end_of_week = Timex.end_of_week(now)
+    seven_days_ago = Timex.shift(now, days: -7)
 
     from(
       u in User,
-      left_join: a in subquery(activity_query(beginning, end_of_week)),
+      left_join: a in subquery(activity_query(seven_days_ago, now)),
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       where: u.id in ^members(partner_id),
       select: %{
         u
@@ -441,16 +457,14 @@ defmodule OmegaBravera.Accounts do
 
   def api_get_leaderboard_of_partner_this_month(partner_id) do
     now = Timex.now()
-    beginning = Timex.beginning_of_month(now)
-    end_of_month = Timex.end_of_month(now)
+    thirty_days_ago = Timex.shift(now, days: -30)
 
     from(
       u in User,
-      left_join: a in subquery(activity_query(beginning, end_of_month)),
+      left_join: a in subquery(activity_query(thirty_days_ago, now)),
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       where: u.id in ^members(partner_id),
       select: %{
         u
@@ -470,7 +484,6 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
-      preload: [:strava],
       where: u.id in ^members(partner_id),
       select: %{
         u
@@ -562,8 +575,7 @@ defmodule OmegaBravera.Accounts do
       Repo.aggregate(
         from(
           a in ActivityAccumulator,
-          where: a.user_id == ^user_id,
-          where: not is_nil(a.device_id) and is_nil(a.strava_id)
+          where: a.user_id == ^user_id
         ),
         :sum,
         :distance
@@ -597,8 +609,7 @@ defmodule OmegaBravera.Accounts do
     user =
       from(
         u in User,
-        where: u.id == ^user_id,
-        preload: [:strava]
+        where: u.id == ^user_id
       )
       |> Repo.one()
 
@@ -614,6 +625,40 @@ defmodule OmegaBravera.Accounts do
             list_length(live_challenges) + list_length(expired_challenges) +
               list_length(completed_challenges)
         }
+    }
+  end
+
+  @doc """
+  Get the total kms and total points based on last_sync time (in iso8601 format)
+  """
+  @spec last_sync_kms_points(term(), String.t()) :: map()
+  def last_sync_kms_points(user_id, last_sync) do
+    {:ok, sync_time, _} = DateTime.from_iso8601(last_sync)
+
+    last_sync_total_points =
+      Repo.aggregate(
+        from(
+          p in Point,
+          where: p.user_id == ^user_id and p.inserted_at <= ^sync_time,
+          select: coalesce(p.value, 0.0)
+        ),
+        :sum,
+        :value
+      ) || Decimal.from_float(0.0)
+
+    last_sync_total_kilometers =
+      Repo.aggregate(
+        from(
+          a in ActivityAccumulator,
+          where: a.user_id == ^user_id and a.start_date <= ^sync_time
+        ),
+        :sum,
+        :distance
+      ) || Decimal.from_float(0.0)
+
+    %{
+      last_sync_total_points: last_sync_total_points,
+      last_sync_total_kilometers: last_sync_total_kilometers
     }
   end
 
@@ -1204,7 +1249,7 @@ defmodule OmegaBravera.Accounts do
     ])
   end
 
-  def get_user_with_todays_points(%User{id: user_id}, start_date \\ Timex.now()) do
+  def get_user_with_todays_points(user_id, start_date \\ Timex.now()) do
     now = start_date
 
     user =
@@ -1305,6 +1350,40 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
+  Switch user's sync_type
+  """
+  @spec switch_sync_type(integer(), atom()) :: {:ok, Strava.t()} | {:error, message: String.t()}
+  def switch_sync_type(user_id, :device),
+    do: update_user(Accounts.get_user!(user_id), %{sync_type: :device}) |> get_sync_update()
+
+  def switch_sync_type(user_id, :strava) do
+    case Accounts.get_user_strava(user_id) do
+      nil ->
+        {:error, message: "Please connect to Strava before switching"}
+
+      _strava ->
+        Accounts.update_user(Accounts.get_user!(user_id), %{sync_type: :strava})
+        |> get_sync_update()
+    end
+  end
+
+  @spec get_sync_update(tuple()) :: tuple()
+  defp get_sync_update({:ok, %{id: user_id}}) do
+    result =
+      from(
+        u in User,
+        left_join: s in assoc(u, :strava),
+        where: u.id == ^user_id,
+        select: %{sync_type: u.sync_type, strava_connected: not is_nil(s.id)}
+      )
+      |> Repo.one()
+
+    {:ok, result}
+  end
+
+  defp get_sync_update(result), do: result
+
+  @doc """
   Enables/disables global push notifications to all of the user's registered devices.
   """
   def enable_push_notifications(%User{} = user, attrs) do
@@ -1367,7 +1446,7 @@ defmodule OmegaBravera.Accounts do
     strava_status =
       if not is_nil(user.strava) do
         user.strava
-        |> Strava.delete_strava_profile_picture_changeset()
+        |> Trackers.Strava.delete_strava_profile_picture_changeset()
         |> Repo.update()
         |> case do
           {:ok, _} -> true
@@ -2202,6 +2281,21 @@ defmodule OmegaBravera.Accounts do
     |> Organization.changeset(attrs)
     |> Repo.update()
   end
+
+  def update_organization_block_on(%Organization{} = organization, attrs) do
+    organization
+    |> Organization.block_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Block or unblock an organization's access to admin panel
+  """
+  def block_or_unblock_org(%Organization{blocked_on: nil} = organization),
+    do: update_organization_block_on(organization, %{blocked_on: Timex.now()})
+
+  def block_or_unblock_org(%Organization{} = organization),
+    do: update_organization_block_on(organization, %{blocked_on: nil})
 
   @doc """
   Deletes a organization.

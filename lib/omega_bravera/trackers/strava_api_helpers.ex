@@ -45,9 +45,7 @@ defmodule OmegaBravera.Trackers.StravaApiHelpers do
         case Trackers.update_strava(athlete, attrs) do
           {:ok, _} ->
             Logger.info(
-              "StravaHelpers: Successfully refreshed token for strava athlete: #{
-                athlete.firstname
-              } #{athlete.lastname} #{athlete.athlete_id}"
+              "StravaHelpers: Successfully refreshed token for strava athlete: #{athlete.firstname} #{athlete.lastname} #{athlete.athlete_id}"
             )
 
           {:error, reason} ->
