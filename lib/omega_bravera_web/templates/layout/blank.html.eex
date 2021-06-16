@@ -30,13 +30,15 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
+                let url;
                 if(!isSafari) {
-                    let url = "<%= Routes.url(@conn) %>".replace("http://", "").replace("https://", "");
-                    window.location.replace(`unilinks://${url}${window.location.pathname}${window.location.search}`);
+                    url = "<%= Routes.url(@conn) %>".replace("http://", "").replace("https://", "");
+                    url = `unilinks://${url}${window.location.pathname}${window.location.search}`;
                 } else {
-                    window.location.replace(`braveralink://open-app${window.location.pathname}${window.location.search}`);
+                    url = `braveralink://open-app${window.location.pathname}${window.location.search}`;
                 }
+                document.getElementById('link').href = url;
+                window.location.replace(url);
             });
         </script>
     </body>
