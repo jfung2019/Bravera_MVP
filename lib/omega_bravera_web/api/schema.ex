@@ -157,6 +157,14 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Activity.create/3
     end
 
+    @desc "Create Bravera Pedometer activity"
+    field :create_pedometer_activity, :activity do
+      arg :step_count, non_null(:integer)
+      arg :start_date, non_null(:date)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Activity.create_pedometer_activity/3
+    end
+
     @desc "Vote for a partner"
     field :vote_partner, list_of(non_null(:partner_vote)) do
       arg :partner_id, non_null(:id)

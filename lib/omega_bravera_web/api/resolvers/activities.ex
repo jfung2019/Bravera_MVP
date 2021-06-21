@@ -2,10 +2,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
   import OmegaBraveraWeb.Gettext
   require Logger
 
-  alias OmegaBravera.Activity.Queue
   alias OmegaBravera.Offers.OfferAppActivitiesIngestion
   alias OmegaBraveraWeb.Api.Resolvers.Helpers
-  alias OmegaBravera.Activity.ActivityAccumulator
+  alias OmegaBravera.Activity.{ActivityAccumulator, Activities, Queue}
 
   def create(_root, _params, %{context: %{current_user: %{sync_type: :strava}}}),
     do: {:error, message: "Cannot sync while using Strava as a source"}
@@ -45,4 +44,19 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
   defp create_activity_result({:error, %Ecto.Changeset{} = changeset}) do
     {:error, message: "Could not create activity", details: Helpers.transform_errors(changeset)}
   end
+
+  def create_pedometer_activity(_root, %{step_count: _count, start_date: _date} = attrs, %{
+        context: %{current_user: %{id: user_id}, device: %{id: device_id}}
+      }) do
+    case Activities.create_bravera_pedometer_activity(attrs, user_id, device_id) do
+      {:ok, %{activity: activity}} ->
+        {:ok, activity}
+
+      _ ->
+        {:error, message: "Could not create pedometer activity"}
+    end
+  end
+
+  def create_pedometer_activity(_root, _params, _context),
+    do: {:error, message: "Not enough parameters to create pedometer activity"}
 end
