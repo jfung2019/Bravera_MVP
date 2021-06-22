@@ -2691,17 +2691,15 @@ defmodule OmegaBravera.Accounts do
     now = Timex.now()
     beginning_of_day = Timex.beginning_of_day(now)
     end_of_day = Timex.end_of_day(now)
-    beginning_of_week = Timex.beginning_of_week(now)
-    end_of_week = Timex.end_of_week(now)
-    beginning_of_month = Timex.beginning_of_month(now)
-    end_of_month = Timex.end_of_month(now)
+    seven_days_ago = Timex.shift(now, days: -7)
+    thirty_days_ago = Timex.shift(now, days: -30)
 
     from(u in User,
       left_join: ttd in subquery(activity_query(beginning_of_day, end_of_day)),
       on: ttd.user_id == u.id,
-      left_join: wtd in subquery(activity_query(beginning_of_week, end_of_week)),
+      left_join: wtd in subquery(activity_query(seven_days_ago, now)),
       on: wtd.user_id == u.id,
-      left_join: mtd in subquery(activity_query(beginning_of_month, end_of_month)),
+      left_join: mtd in subquery(activity_query(thirty_days_ago, now)),
       on: mtd.user_id == u.id,
       where: u.id == ^user_id,
       group_by: [u.id, ttd.distance, wtd.distance, mtd.distance],
