@@ -46,7 +46,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
   end
 
   def create_pedometer_activity(_root, %{step_count: _count, start_date: _date} = attrs, %{
-        context: %{current_user: %{id: user_id, sync_type: :strava}, device: %{id: device_id}}
+        context: %{current_user: %{id: user_id, sync_type: :device}, device: %{id: device_id}}
       }) do
     case Activities.create_bravera_pedometer_activity(attrs, user_id, device_id) do
       {:ok, %{activity: activity}} ->
