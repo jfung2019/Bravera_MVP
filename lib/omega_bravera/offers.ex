@@ -1279,6 +1279,11 @@ defmodule OmegaBravera.Offers do
   """
   def get_offer_redeems!(id), do: Repo.get!(OfferRedeem, id)
 
+  def get_offer_redeems!(id, preloads) do
+    from(o in OfferRedeem, where: o.id == ^id, preload: ^preloads)
+    |> Repo.one!()
+  end
+
   @doc """
   Creates a offer_redeems.
 
@@ -1344,6 +1349,31 @@ defmodule OmegaBravera.Offers do
     |> OfferRedeem.redeem_reward_changeset(offer_challenge, offer, vendor, attrs)
     |> Repo.update()
   end
+
+  @doc """
+  Confirm online offer is redeemed and add bonus points for user
+  """
+  @spec confirm_online_offer_redeem(OfferRedeem.t()) :: tuple
+  def confirm_online_offer_redeem(offer_redeem) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:redeem, OfferRedeem.changeset(offer_redeem,  %{status: "redeemed"}))
+    |> Ecto.Multi.run(:point, fn _repo, %{redeem: %{id: redeem_id, user_id: user_id}} ->
+      Points.create_bonus_points(%{user_id: user_id, source: :redeem, value: Points.Point.get_redeem_back_points()})
+      |> notify_user_for_reward_points(redeem_id)
+    end)
+    |> Repo.transaction()
+  end
+
+  @spec notify_user_for_reward_points(tuple, term) :: tuple
+  defp notify_user_for_reward_points({:ok, _point} = result, redeem_id) do
+    %{"redeem_id" => redeem_id}
+    |> OmegaBravera.Offers.Jobs.NotifyUserPointsRewarded.new()
+    |> Oban.insert()
+
+    result
+  end
+
+  defp notify_user_for_reward_points(result, _redeem_id), do: result
 
   @doc """
   Deletes a OfferRedeem.
