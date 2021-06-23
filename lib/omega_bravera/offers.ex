@@ -1312,6 +1312,14 @@ defmodule OmegaBravera.Offers do
   end
 
   @doc """
+  Get offer_redeem by offer_challenge's slug and user_id
+  """
+  def get_offer_redeem_by_slug_user_id(offer_challenge_slug, user_id) do
+    from(r in OfferRedeem, left_join: o in assoc(r, :offer_challenge), where: o.slug == ^offer_challenge_slug and r.user_id == ^user_id)
+    |> Repo.one()
+  end
+
+  @doc """
   Updates a offer_redeems.
 
   ## Examples
