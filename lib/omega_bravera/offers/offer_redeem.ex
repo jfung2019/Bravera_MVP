@@ -28,12 +28,12 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   end
 
   # Should remove vendor_id?, token, and status.
-  @allowed_atributes [:offer_reward_id, :vendor_id, :token, :status, :expired_at]
+  @allowed_attributes [:offer_reward_id, :vendor_id, :token, :status, :expired_at]
 
   @doc false
   def changeset(%__MODULE__{} = offer_redeems, attrs \\ %{}) do
     offer_redeems
-    |> cast(attrs, @allowed_atributes)
+    |> cast(attrs, @allowed_attributes)
     |> validate_inclusion(:status, @valid_statuses)
   end
 
@@ -44,7 +44,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
         attrs \\ %{}
       ) do
     offer_redeems
-    |> cast(attrs, @allowed_atributes)
+    |> cast(attrs, @allowed_attributes)
     |> put_change(:offer_id, offer_id)
     |> put_change(:user_id, user_id)
     |> put_change(:vendor_id, vendor_id)
@@ -83,7 +83,7 @@ defmodule OmegaBravera.Offers.OfferRedeem do
   # Used only in the migration. Should be disgraded after we migrate prod db.
   def update_changeset(%__MODULE__{} = offer_redeem, attrs \\ %{}) do
     offer_redeem
-    |> cast(attrs, @allowed_atributes)
+    |> cast(attrs, @allowed_attributes)
   end
 
   def redeem_reward_changeset(nil, _, _) do
