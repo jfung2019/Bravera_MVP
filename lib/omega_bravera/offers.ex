@@ -1320,7 +1320,10 @@ defmodule OmegaBravera.Offers do
   Get offer_redeem by offer_challenge's slug and user_id
   """
   def get_offer_redeem_by_slug_user_id(offer_challenge_slug, user_id) do
-    from(r in OfferRedeem, left_join: o in assoc(r, :offer_challenge), where: o.slug == ^offer_challenge_slug and r.user_id == ^user_id)
+    from(r in OfferRedeem,
+      left_join: o in assoc(r, :offer_challenge),
+      where: o.slug == ^offer_challenge_slug and r.user_id == ^user_id
+    )
     |> Repo.one()
   end
 
@@ -1356,9 +1359,13 @@ defmodule OmegaBravera.Offers do
   @spec confirm_online_offer_redeem(OfferRedeem.t()) :: tuple
   def confirm_online_offer_redeem(offer_redeem) do
     Ecto.Multi.new()
-    |> Ecto.Multi.update(:redeem, OfferRedeem.changeset(offer_redeem,  %{status: "redeemed"}))
+    |> Ecto.Multi.update(:redeem, OfferRedeem.changeset(offer_redeem, %{status: "redeemed"}))
     |> Ecto.Multi.run(:point, fn _repo, %{redeem: %{id: redeem_id, user_id: user_id}} ->
-      Points.create_bonus_points(%{user_id: user_id, source: :redeem, value: Points.Point.get_redeem_back_points()})
+      Points.create_bonus_points(%{
+        user_id: user_id,
+        source: :redeem,
+        value: Points.Point.get_redeem_back_points()
+      })
       |> notify_user_for_reward_points(redeem_id)
     end)
     |> Repo.transaction()

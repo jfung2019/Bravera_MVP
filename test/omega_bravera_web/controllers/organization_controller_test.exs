@@ -20,9 +20,7 @@ defmodule OmegaBraveraWeb.OrganizationControllerTest do
     with {:ok, admin_user} <-
            Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(admin_user, %{}),
-         do:
-           {:ok,
-            conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
+         do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end
 
   describe "index" do
