@@ -216,12 +216,12 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
   def convert_steps_to_distance(changeset) do
     step_count = get_field(changeset, :step_count)
 
-    distance =
-      (step_count / @steps_for_1km)
-      |> Decimal.from_float()
-      |> Decimal.round(3)
-
     if step_count != nil do
+      distance =
+        (step_count / @steps_for_1km)
+        |> Decimal.from_float()
+        |> Decimal.round(3)
+
       put_change(changeset, :distance, distance)
     else
       changeset
