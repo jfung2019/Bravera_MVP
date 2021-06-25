@@ -311,6 +311,9 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   enum :sync_type do
     value :device, description: "Sync activities with device, i.e. Google Fit / Apple Health"
     value :strava, description: "Sync activities with Strava"
+
+    value :pedometer,
+      description: "Sync activities with Bravera Pedometer, only available on Android"
   end
 
   object :sync_method do

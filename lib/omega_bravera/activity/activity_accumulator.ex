@@ -23,6 +23,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     field :calories, :decimal, default: 0
     field :activity_json, :map
     field :source, :string, default: nil
+    field :step_count, :integer
 
     # App activities only.
     field :end_date, :utc_datetime
@@ -44,6 +45,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     timestamps(type: :utc_datetime)
   end
 
+  @steps_for_1km 1350
   @meters_per_km 1000
   @km_per_hour Decimal.from_float(3.6)
   @required_attributes [
@@ -144,6 +146,28 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap)
   end
 
+  def create_bravera_pedometer_activity(activity_attrs, user_id, device_id) do
+    %__MODULE__{}
+    |> cast(activity_attrs, [:step_count, :start_date])
+    |> use_start_date_for_end_date()
+    |> put_change(:user_id, user_id)
+    |> put_change(:device_id, device_id)
+    |> put_change(:source, "bravera_pedometer")
+    |> put_change(:type, "Walk")
+    |> convert_steps_to_distance()
+    |> validate_required([
+      :user_id,
+      :device_id,
+      :type,
+      :source,
+      :step_count,
+      :start_date,
+      :end_date,
+      :distance
+    ])
+    |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap)
+  end
+
   def verify_allowed_source(changeset) do
     source = get_field(changeset, :source)
 
@@ -184,6 +208,21 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
 
     if get_field(changeset, :end_date) == nil and start_date != nil do
       put_change(changeset, :end_date, start_date)
+    else
+      changeset
+    end
+  end
+
+  def convert_steps_to_distance(changeset) do
+    step_count = get_field(changeset, :step_count)
+
+    if step_count != nil do
+      distance =
+        (step_count / @steps_for_1km)
+        |> Decimal.from_float()
+        |> Decimal.round(3)
+
+      put_change(changeset, :distance, distance)
     else
       changeset
     end
