@@ -85,6 +85,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.OfferChallenges.buy/3
     end
 
+    @desc "Confirm claiming online offer reward"
+    field :claim_online_offer_reward, :redeem do
+      arg :offer_challenge_slug, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.OfferRedeems.claim_online_offer_reward/3
+    end
+
     @desc "Create a challenge"
     field :earn_offer_challenge, :buy_or_create_offer_challenge_result do
       arg :offer_slug, non_null(:string)
