@@ -1,6 +1,6 @@
 defmodule OmegaBravera.Offers.Jobs.NotifyUserPointsRewarded do
   use Oban.Worker, queue: :default, max_attempts: 1
-  alias OmegaBravera.{Accounts, Offers, Offers.Notifier}
+  alias OmegaBravera.{Accounts, Offers}
 
   @impl Oban.Worker
   def perform(%{"redeem_id" => redeem_id}, _job) do

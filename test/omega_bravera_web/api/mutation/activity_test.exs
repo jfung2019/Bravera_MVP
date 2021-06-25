@@ -23,6 +23,19 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
   }
   """
 
+  @create_pedometer_activity """
+  mutation($stepCount: Integer!, $startDate: Date!) {
+    createPedometerActivity(stepCount: $stepCount, startDate: $startDate) {
+      id
+      stepCount
+      distance
+      startDate
+      source
+      type
+    }
+  }
+  """
+
   def credential_fixture() do
     user = insert(:user, %{email: @email})
 
@@ -196,6 +209,37 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
                  "path" => ["createActivity"]
                }
              ]
+           } = json_response(response, 200)
+  end
+
+  test "can create pedometer activity", %{token: token} do
+    conn =
+      build_conn()
+      |> put_req_header("authorization", "Bearer #{token}")
+
+    now =
+      Timex.now()
+      |> DateTime.truncate(:second)
+      |> DateTime.to_iso8601()
+
+    response =
+      post(conn, "/api", %{
+        query: @create_pedometer_activity,
+        variables: %{"stepCount" => 10, "startDate" => now}
+      })
+
+    distance = Float.round(10 / 1350, 3)
+
+    assert %{
+             "data" => %{
+               "createPedometerActivity" => %{
+                 "distance" => ^distance,
+                 "source" => "bravera_pedometer",
+                 "startDate" => ^now,
+                 "stepCount" => 10,
+                 "type" => "Walk"
+               }
+             }
            } = json_response(response, 200)
   end
 end

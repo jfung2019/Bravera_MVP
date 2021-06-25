@@ -152,8 +152,8 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     |> use_start_date_for_end_date()
     |> put_change(:user_id, user_id)
     |> put_change(:device_id, device_id)
-    |> put_change(:source, :bravera_pedometer)
-    |> put_change(:type, :bravera_pedometer)
+    |> put_change(:source, "bravera_pedometer")
+    |> put_change(:type, "Walk")
     |> convert_steps_to_distance()
     |> validate_required([
       :user_id,

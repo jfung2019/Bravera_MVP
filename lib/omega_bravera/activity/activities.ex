@@ -34,12 +34,12 @@ defmodule OmegaBravera.Activity.Activities do
   end
 
   def create_bravera_pedometer_activity(activity_attrs, user_id, device_id) do
-    Ecto.multi().new()
-    |> Ecto.multi().insert(
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(
       :activity,
       ActivityAccumulator.create_bravera_pedometer_activity(activity_attrs, user_id, device_id)
     )
-    |> Ecto.multi().run(:point, fn _repo, %{activity: activity} ->
+    |> Ecto.Multi.run(:point, fn _repo, %{activity: activity} ->
       OmegaBravera.Points.add_points_to_user_from_activity(activity)
     end)
     |> Repo.transaction()

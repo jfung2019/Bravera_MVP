@@ -52,6 +52,11 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
       {:ok, %{activity: activity}} ->
         {:ok, activity}
 
+      {:error, _, %Ecto.Changeset{} = changeset, _} ->
+        {:error,
+         message: "Could not create pedometer activity",
+         details: Helpers.transform_errors(changeset)}
+
       _ ->
         {:error, message: "Could not create pedometer activity"}
     end
