@@ -1353,9 +1353,6 @@ defmodule OmegaBravera.Accounts do
   Switch user's sync_type
   """
   @spec switch_sync_type(integer(), atom()) :: {:ok, Strava.t()} | {:error, message: String.t()}
-  def switch_sync_type(user_id, :device),
-    do: update_user(Accounts.get_user!(user_id), %{sync_type: :device}) |> get_sync_update()
-
   def switch_sync_type(user_id, :strava) do
     case Accounts.get_user_strava(user_id) do
       nil ->
@@ -1366,6 +1363,9 @@ defmodule OmegaBravera.Accounts do
         |> get_sync_update()
     end
   end
+
+  def switch_sync_type(user_id, sync_type),
+      do: update_user(Accounts.get_user!(user_id), %{sync_type: sync_type}) |> get_sync_update()
 
   @spec get_sync_update(tuple()) :: tuple()
   defp get_sync_update({:ok, %{id: user_id}}) do
