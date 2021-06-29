@@ -19,7 +19,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       challenge
       |> manual_activity_blocked_email(template_id)
@@ -44,7 +44,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       challenge
       |> challenge_activated_email(template_id)
@@ -69,7 +69,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       challenge
       |> pre_registration_challenge_signup_email(template_id)
@@ -107,7 +107,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       challenge
       |> challenge_signup_email(template_id)
@@ -146,7 +146,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       challenge
       |> activity_completed_email(activity, template_id)
@@ -202,7 +202,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       challenge
       |> participant_milestone_email(template_id)
@@ -226,7 +226,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       challenge
       |> participant_inactivity_email(template_id)
@@ -273,7 +273,7 @@ defmodule OmegaBravera.Challenges.Notifier do
     if not is_nil(sendgrid_email) and
          user_subscribed_in_category?(
            challenge.user.subscribed_email_categories,
-           sendgrid_email.category.id
+           sendgrid_email.category
          ) do
       challenge
       |> team_member_invite_email(team_member, template_id)
@@ -311,7 +311,7 @@ defmodule OmegaBravera.Challenges.Notifier do
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       challenge
       |> team_owner_member_added_notification_email(user, template_id)

@@ -379,7 +379,12 @@ defmodule OmegaBravera.Notifications do
   @doc """
   Checks if a user is in an email category so they can receive the email.
   """
-  def user_subscribed_in_category?(user_subscribed_categories, email_category_id) do
+  @spec user_subscribed_in_category?(list, %EmailCategory{}) :: bool
+  def user_subscribed_in_category?(_user_subscribed_categories, %{title: "Platform Notifications"}), do: true
+
+  def user_subscribed_in_category?([], _email_category), do: true
+
+  def user_subscribed_in_category?(user_subscribed_categories, %{id: email_category_id}) do
     # if user_subscribed_categories is empty, it means that user is subscribed in all email_categories.
     if Enum.empty?(user_subscribed_categories) do
       true

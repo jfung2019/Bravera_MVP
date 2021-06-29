@@ -31,7 +31,7 @@ defmodule OmegaBravera.Donations.Notifier do
 
     if user_subscribed_in_category?(
          challenge.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       challenge
       |> participant_email(donor, pledges, template_id)
