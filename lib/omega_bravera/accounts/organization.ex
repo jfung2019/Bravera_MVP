@@ -25,7 +25,7 @@ defmodule OmegaBravera.Accounts.Organization do
     organization
     |> cast(attrs, [:name, :business_type, :business_website])
     |> validate_required([:name, :business_type, :business_website])
-    |> EctoCommons.URLValidator.validate_url(:business_website)
+    |> EctoCommons.URLValidator.validate_url(:business_website, checks: [:empty])
   end
 
   def block_changeset(organization, attrs) do
