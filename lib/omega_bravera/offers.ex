@@ -413,16 +413,17 @@ defmodule OmegaBravera.Offers do
   Gets an offer if it's allowed by the user, or else return `:not_authorized`.
   """
   def get_allowed_offer_by_slug_and_user_id(slug, user_id) do
-    devices =
+    %{devices: devices, sync_type: sync_type} =
       from(u in User,
         left_join: d in assoc(u, :devices),
         where: u.id == ^user_id and d.active == true,
         group_by: u.id,
-        select: count(d.id)
+        select: %{devices: count(d.id), sync_type: u.sync_type}
       )
       |> Repo.one()
 
-    if devices <= 0 or devices == nil do
+    # if using a device, then should verify that they have a device.
+    if sync_type == :device and (devices <= 0 or devices == nil) do
       :no_active_device
     else
       return_value =
