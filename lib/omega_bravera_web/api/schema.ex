@@ -85,6 +85,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.OfferChallenges.buy/3
     end
 
+    @desc "Confirm claiming online offer reward"
+    field :claim_online_offer_reward, :redeem do
+      arg :offer_challenge_slug, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.OfferRedeems.claim_online_offer_reward/3
+    end
+
     @desc "Create a challenge"
     field :earn_offer_challenge, :buy_or_create_offer_challenge_result do
       arg :offer_slug, non_null(:string)
@@ -155,6 +162,14 @@ defmodule OmegaBraveraWeb.Api.Schema do
       arg :input, non_null(:save_activity_input)
       middleware Middleware.Authenticate
       resolve &Resolvers.Activity.create/3
+    end
+
+    @desc "Create Bravera Pedometer activity"
+    field :create_pedometer_activity, :activity do
+      arg :step_count, non_null(:integer)
+      arg :start_date, non_null(:date)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Activity.create_pedometer_activity/3
     end
 
     @desc "Vote for a partner"

@@ -59,7 +59,7 @@ defmodule OmegaBravera.Accounts.Notifier do
 
     if user_subscribed_in_category?(
          credential.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       credential
       |> app_password_reset_email(template_id)
@@ -83,7 +83,7 @@ defmodule OmegaBravera.Accounts.Notifier do
 
     if user_subscribed_in_category?(
          credential.user.subscribed_email_categories,
-         sendgrid_email.category.id
+         sendgrid_email.category
        ) do
       credential
       |> password_reset_email(template_id)

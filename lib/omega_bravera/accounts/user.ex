@@ -44,7 +44,7 @@ defmodule OmegaBravera.Accounts.User do
     field :lastname, :string
     field :username, :string
     field :locale, :string, default: "en"
-    field :sync_type, Ecto.Enum, values: [:device, :strava], default: :device
+    field :sync_type, Ecto.Enum, values: [:device, :strava, :pedometer], default: :device
 
     # Admin section fields
     field :active, :boolean, virtual: true

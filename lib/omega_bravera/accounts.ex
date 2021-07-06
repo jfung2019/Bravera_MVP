@@ -1353,9 +1353,6 @@ defmodule OmegaBravera.Accounts do
   Switch user's sync_type
   """
   @spec switch_sync_type(integer(), atom()) :: {:ok, Strava.t()} | {:error, message: String.t()}
-  def switch_sync_type(user_id, :device),
-    do: update_user(Accounts.get_user!(user_id), %{sync_type: :device}) |> get_sync_update()
-
   def switch_sync_type(user_id, :strava) do
     case Accounts.get_user_strava(user_id) do
       nil ->
@@ -1366,6 +1363,9 @@ defmodule OmegaBravera.Accounts do
         |> get_sync_update()
     end
   end
+
+  def switch_sync_type(user_id, sync_type),
+      do: update_user(Accounts.get_user!(user_id), %{sync_type: sync_type}) |> get_sync_update()
 
   @spec get_sync_update(tuple()) :: tuple()
   defp get_sync_update({:ok, %{id: user_id}}) do
@@ -2691,17 +2691,15 @@ defmodule OmegaBravera.Accounts do
     now = Timex.now()
     beginning_of_day = Timex.beginning_of_day(now)
     end_of_day = Timex.end_of_day(now)
-    beginning_of_week = Timex.beginning_of_week(now)
-    end_of_week = Timex.end_of_week(now)
-    beginning_of_month = Timex.beginning_of_month(now)
-    end_of_month = Timex.end_of_month(now)
+    seven_days_ago = Timex.shift(now, days: -7)
+    thirty_days_ago = Timex.shift(now, days: -30)
 
     from(u in User,
       left_join: ttd in subquery(activity_query(beginning_of_day, end_of_day)),
       on: ttd.user_id == u.id,
-      left_join: wtd in subquery(activity_query(beginning_of_week, end_of_week)),
+      left_join: wtd in subquery(activity_query(seven_days_ago, now)),
       on: wtd.user_id == u.id,
-      left_join: mtd in subquery(activity_query(beginning_of_month, end_of_month)),
+      left_join: mtd in subquery(activity_query(thirty_days_ago, now)),
       on: mtd.user_id == u.id,
       where: u.id == ^user_id,
       group_by: [u.id, ttd.distance, wtd.distance, mtd.distance],

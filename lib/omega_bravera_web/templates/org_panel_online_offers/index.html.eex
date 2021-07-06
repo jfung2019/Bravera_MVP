@@ -12,7 +12,6 @@
     <%= case @offers do %>
       <% [] -> %>
         <div class="d-flex justify-content-center align-items-center mt-3">
-          <p><%= gettext("No data yet. Hint: for help on launching a Group and / or Offer you can go to “Launch Guides / Templates” on the main navigation.") %></p>
         </div>
       <% _ -> %>
         <table class="table mt-3 table-striped">
