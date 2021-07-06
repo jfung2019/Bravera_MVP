@@ -127,6 +127,7 @@
     <%= img_tag Routes.static_path(@conn, "/images/org/offer/claim_countdown.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
+  <%= if @organization.account_type == :full do %>
   <div class="d-flex">
     <div class="form-group col-9 p-0">
       <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
@@ -142,6 +143,7 @@
     <%= img_tag Routes.static_path(@conn, "/images/org/offer/allow_challenge.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
+
   <div id="enable_take_challenge_fields">
     <div class="form-group">
       <%= label f, :time_limit, gettext("Time Limit"), class: "control-label" %>
@@ -154,6 +156,7 @@
       <%= error_tag f, :time_limit %>
     </div>
   </div>
+  <% end %>
 
   <div class="form-group">
     <%= submit "Save", class: "btn btn-primary" %>

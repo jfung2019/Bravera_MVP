@@ -1365,7 +1365,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   def switch_sync_type(user_id, sync_type),
-      do: update_user(Accounts.get_user!(user_id), %{sync_type: sync_type}) |> get_sync_update()
+    do: update_user(Accounts.get_user!(user_id), %{sync_type: sync_type}) |> get_sync_update()
 
   @spec get_sync_update(tuple()) :: tuple()
   defp get_sync_update({:ok, %{id: user_id}}) do
@@ -2245,6 +2245,18 @@ defmodule OmegaBravera.Accounts do
 
   """
   def get_organization!(id), do: Repo.get!(Organization, id)
+
+  @doc """
+  get organization by partner_user_id
+  """
+  def get_organization_by_partner_user!(partner_user_id) do
+    from(o in Organization,
+      left_join: om in assoc(o, :organization_members),
+      where: om.partner_user_id == ^partner_user_id,
+      limit: 1
+    )
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a organization.

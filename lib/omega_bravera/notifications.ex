@@ -381,7 +381,8 @@ defmodule OmegaBravera.Notifications do
   if user_subscribed_categories is empty, it means that user is subscribed in all email_categories.
   """
   @spec user_subscribed_in_category?(list, %EmailCategory{}) :: bool
-  def user_subscribed_in_category?(_user_subscribed_categories, %{title: "Platform Notifications"}), do: true
+  def user_subscribed_in_category?(_user_subscribed_categories, %{title: "Platform Notifications"}),
+      do: true
 
   def user_subscribed_in_category?([], _email_category), do: true
 

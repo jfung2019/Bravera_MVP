@@ -23,6 +23,7 @@ defmodule OmegaBraveraWeb.OrgAuth do
           !is_nil(org_id) and org_id in organization_ids ->
             conn
             |> assign(:organization_id, org_id)
+            |> assign(:organization, Accounts.get_organization!(org_id))
             |> assign(:current_partner_user, partner_user)
 
           true ->
@@ -31,6 +32,7 @@ defmodule OmegaBraveraWeb.OrgAuth do
             conn
             |> Plug.Conn.put_session(:organization_id, organization_id)
             |> assign(:organization_id, organization_id)
+            |> assign(:organization, Accounts.get_organization!(organization_id))
             |> assign(:current_partner_user, partner_user)
         end
 
