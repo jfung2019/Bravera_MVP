@@ -135,35 +135,7 @@
 	</div>
 </div>
 
-<div class="modal fade" id="create_offer" tabindex="-1" role="dialog" aria-labelledby="create_offer_modal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title"><%= gettext("There are two types of offers.") %></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<strong><span class="fa fa-cart-arrow-down"></span> <%= gettext("Online Offer") %></strong>
-				<p><%= gettext("Create an offer where rewards are claimed online (ecommerce, online lucky draw etc).") %></p>
-				<br>
-				<strong><span class="fa fa-credit-card"></span> <%= gettext("Offline Offer") %></strong>
-				<p><%= gettext("An offer claimed ‘in-person’ by having a QR code scanned and verified before a reward is issued.") %></p>
-				<br>
-				<p><%= gettext("What kind would you like to create today?") %></p>
-			</div>
-			<div class="modal-footer">
-				<%= link to: Routes.org_panel_online_offers_path(@conn, :index), class: "btn btn-primary" do %>
-				<span class="fa fa-cart-arrow-down"></span> <%= gettext("Online Offers") %>
-				<% end %>
-				<%= link to: Routes.org_panel_offline_offers_path(@conn, :index), class: "btn btn-primary" do %>
-				<span class="fa fa-credit-card"></span> <%= gettext("Offline Offers") %>
-				<% end %>
-			</div>
-		</div>
-	</div>
-</div>
+<%= render(OmegaBraveraWeb.SharedView, "offer_types_modal.html", assigns) %>
 
 <div class="modal fade" id="first_group" tabindex="-1" role="dialog" aria-labelledby="first_group_modal" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">

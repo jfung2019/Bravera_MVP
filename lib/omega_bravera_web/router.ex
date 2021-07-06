@@ -244,7 +244,9 @@ defmodule OmegaBraveraWeb.Router do
     scope "/merchant" do
       pipe_through [:merchant_section]
 
-      resources "/register", PartnerUserRegisterController, only: [:new, :create], as: :merchant_register
+      resources "/register", PartnerUserRegisterController,
+        only: [:new, :create],
+        as: :merchant_register
     end
 
     scope "/" do

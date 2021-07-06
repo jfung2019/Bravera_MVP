@@ -58,3 +58,9 @@
     <% end %>
   </div>
 </div>
+
+<%= render(OmegaBraveraWeb.SharedView, "offer_types_modal.html", assigns) %>
+
+<%= if assigns[:new_merchant] do %>
+<script>$('#create_offer').modal('show');</script>
+<% end %>

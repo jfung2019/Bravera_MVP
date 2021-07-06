@@ -17,7 +17,8 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
     render(conn, "index.html",
       offers: results.offers,
       paginate: results.paginate,
-      offer_type: :online_offers
+      offer_type: :online_offers,
+      new_merchant: check_merchant_has_offers(conn)
     )
   end
 
@@ -123,4 +124,13 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
     )
     |> send_resp(200, csv)
   end
+
+  defp check_merchant_has_offers(%{assigns: %{organization: %{id: org_id, account_type: :merchant}}}) do
+    case Offers.list_offers_by_organization(org_id) do
+      [] -> true
+      _ ->  false
+    end
+  end
+
+  defp check_merchant_has_offers(_conn), do: nil
 end
