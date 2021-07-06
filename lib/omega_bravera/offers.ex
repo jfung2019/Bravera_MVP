@@ -415,15 +415,15 @@ defmodule OmegaBravera.Offers do
   def get_allowed_offer_by_slug_and_user_id(slug, user_id) do
     %{devices: devices, sync_type: sync_type} =
       from(u in User,
-        left_join: d in assoc(u, :devices),
-        where: u.id == ^user_id and d.active == true,
+        left_join: d in assoc(u, :devices), on: d.active == true,
+        where: u.id == ^user_id,
         group_by: u.id,
-        select: %{devices: count(d.id), sync_type: u.sync_type}
+        select: %{id: u.id, devices: coalesce(count(d.id), 0), sync_type: u.sync_type}
       )
       |> Repo.one()
 
     # if using a device, then should verify that they have a device.
-    if sync_type == :device and (devices <= 0 or devices == nil) do
+    if sync_type == :device and devices <= 0 do
       :no_active_device
     else
       return_value =
