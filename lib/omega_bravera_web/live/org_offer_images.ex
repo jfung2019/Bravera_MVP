@@ -74,7 +74,7 @@ defmodule OmegaBraveraWeb.OrgOfferImages do
       ) do
     case Offers.update_offer(offer, %{images: images}) do
       {:ok, updated_offer} ->
-        redirect_to_offer_path(updated_offer)
+        redirect_to_offer_path(socket, updated_offer)
     end
   end
 
