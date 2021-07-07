@@ -195,6 +195,32 @@ defmodule OmegaBravera.Offers.Offer do
     end
   end
 
+  def check_merchant_start_end_date(changeset) do
+    case changeset do
+      %{changes: %{start_date: start_date, end_date: end_date}} ->
+        check_duration(changeset, start_date, end_date)
+
+      %{changes: %{start_date: start_date}, data: %{end_date: end_date}} ->
+        check_duration(changeset, start_date, end_date)
+
+      %{changes: %{end_date: end_date}, data: %{start_date: start_date}} ->
+        check_duration(changeset, start_date, end_date)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp check_duration(changeset, start_date, end_date) do
+    cond do
+      Timex.diff(end_date, start_date, :days) < 90 ->
+        add_error(changeset, :end_date, "Sorry. Minimum offer listing must be 90 days. You can request a shorter time after submission, if necessary.")
+
+      true ->
+        changeset
+    end
+  end
+
   def available_offer_types, do: Ecto.Enum.values(__MODULE__, :offer_type)
 
   def available_approval_status, do: Ecto.Enum.values(__MODULE__, :approval_status)

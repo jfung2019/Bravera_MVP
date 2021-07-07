@@ -18,7 +18,7 @@
 
       <div class="form-group">
         <%= label f, :start_date, "Start Date", class: "control-label" %>
-        <br/>
+        <br>
         <small class="text-muted form-text"><%= gettext("(Offer will be live after the start date displayed below.)") %></small>
         <small class="text-muted form-text"><strong class="text-uppercase"><%= gettext("Important") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your time zone versus GMT/UTC. We like") %> <a href="http://bit.ly/World-Time-Buddy" target="_blank"><%= gettext("this tool") %></a></small>
         <%= datetime_builder(f, :start_date, class: "form-control") %>
@@ -27,7 +27,7 @@
 
       <div class="form-group">
         <%= label f, :end_date, "End Date", class: "control-label" %>
-        <br/>
+        <br>
         <small class="text-muted form-text">
           <%= gettext("(An offer will ‘end’ on this date. It will ‘disappear’. ") %>
           <a href="http://bit.ly/Offer-End-Dates" target="_blank"><%= gettext("Click here") %></a>
@@ -35,6 +35,7 @@
         </small>
         <small class="text-muted form-text"><strong class="text-uppercase"><%= gettext("Important") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your time zone versus GMT/UTC. We like") %> <a href="http://bit.ly/World-Time-Buddy" target="_blank"><%= gettext("this tool") %></a></small>
         <%= datetime_builder(f, :end_date, class: "form-control") %>
+        <br>
         <%= error_tag f, :end_date %>
       </div>
     </div>

@@ -669,13 +669,35 @@ defmodule OmegaBravera.Offers do
   def create_org_online_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.org_online_offer_changeset(attrs)
+    |> check_org_merchant()
     |> Repo.insert()
   end
 
   def create_org_offline_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.org_offline_offer_changeset(attrs)
+    |> check_org_merchant()
     |> Repo.insert()
+  end
+
+  @doc """
+  check if the organization is a merchant
+  if yes, check that start and end dates are at least 90days apart
+  """
+  def check_org_merchant(%{changes: %{organization_id: org_id}} = changeset),
+      do: do_check_org_merchant(changeset, org_id)
+
+  def check_org_merchant(%{data: %{organization_id: org_id}} = changeset),
+      do: do_check_org_merchant(changeset, org_id)
+
+  defp do_check_org_merchant(changeset, org_id) do
+    case OmegaBravera.Accounts.get_organization!(org_id) do
+      %{account_type: :merchant} ->
+        Offer.check_merchant_start_end_date(changeset)
+
+      _ ->
+        changeset
+    end
   end
 
   def create_offer_approval(attrs \\ %{}) do
@@ -744,12 +766,14 @@ defmodule OmegaBravera.Offers do
   def update_org_online_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.org_online_offer_changeset(attrs)
+    |> check_org_merchant()
     |> Repo.update()
   end
 
   def update_org_offline_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.org_offline_offer_changeset(attrs)
+    |> check_org_merchant()
     |> Repo.update()
   end
 
