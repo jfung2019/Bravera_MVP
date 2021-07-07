@@ -13,7 +13,6 @@ defmodule OmegaBraveraWeb.MerchantConstraint do
         conn
         |> get_allowed_path()
         |> Enum.map(&String.starts_with?(conn.request_path, &1))
-        |> IO.inspect()
         |> handle_access_constraint(conn)
     end
   end

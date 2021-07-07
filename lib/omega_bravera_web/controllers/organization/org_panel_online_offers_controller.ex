@@ -18,7 +18,8 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
       offers: results.offers,
       paginate: results.paginate,
       offer_type: :online_offers,
-      new_merchant: check_merchant_has_offers(conn)
+      new_merchant: check_merchant_has_offers(conn),
+      review_offer_slug: Map.get(params, "review_offer_slug")
     )
   end
 
@@ -125,10 +126,25 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
     |> send_resp(200, csv)
   end
 
-  defp check_merchant_has_offers(%{assigns: %{organization: %{id: org_id, account_type: :merchant}}}) do
+  def review(conn, %{"slug" => slug}) do
+    offer = Offers.get_offer_by_slug(slug)
+    OmegaBravera.Groups.submit_offer_partner_for_approval(offer)
+
+    case offer.offer_type do
+      :online ->
+        redirect(conn, to: Routes.org_panel_online_offers_path(conn, :index))
+
+      _ ->
+        redirect(conn, to: Routes.org_panel_offline_offers_path(conn, :index))
+    end
+  end
+
+  defp check_merchant_has_offers(%{
+         assigns: %{organization: %{id: org_id, account_type: :merchant}}
+       }) do
     case Offers.list_offers_by_organization(org_id) do
       [] -> true
-      _ ->  false
+      _ -> false
     end
   end
 

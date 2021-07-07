@@ -64,3 +64,9 @@
 <%= if assigns[:new_merchant] do %>
 <script>$('#create_offer').modal('show');</script>
 <% end %>
+
+<%= render(OmegaBraveraWeb.SharedView, "submit_review_modal.html", assigns) %>
+
+<%= if not is_nil(assigns[:review_offer_slug]) do %>
+<script>$("#add_offer").modal("show");</script>
+<% end %>

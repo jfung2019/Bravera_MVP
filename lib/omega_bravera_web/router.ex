@@ -264,6 +264,7 @@ defmodule OmegaBraveraWeb.Router do
         resources "/", OrgPanelOnlineOffersController, param: "slug"
         get "/:slug/statement", OrgPanelOnlineOffersController, :statement
         get "/:slug/statement/monthly/", OrgPanelOnlineOffersController, :export_statement
+        post "/:slug/review", OrgPanelOnlineOffersController, :review
       end
 
       scope "/offline-offers" do

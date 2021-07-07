@@ -175,46 +175,4 @@
 	<script>$("#first_group").modal("show");</script>
 <% end %>
 
-<div class="modal fade" id="add_offer" tabindex="-1" role="dialog" aria-labelledby="add_offer_modal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title"><%= gettext("GREAT!") %></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<p><%= gettext("Offer added! If you click ‘submit’ it will be passed to an administrator for review before being accepted and launched.") %></p>
-				<br>
-				<p><%= gettext("Would you like to confirm your submission?") %></p>
-			</div>
-			<div class="modal-footer">
-				<%= link gettext("Edit"), to: Routes.org_panel_online_offers_path(@conn, :index), class: "btn btn-primary" %>
-				<button class="btn btn-primary" onclick="$('#add_offer_btn').click();"><%= gettext("Submit") %></button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="modal fade" id="offer_approved_group_not" tabindex="-1" role="dialog" aria-labelledby="offer_approved_group_not_modal" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title"><%= gettext("GREAT!") %></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<p><%= gettext("Offer added! If you click ‘submit’ it will be passed to an administrator for review before being accepted and launched.") %></p>
-				<br>
-				<p><%= gettext("Would you like to confirm your submission?") %></p>
-			</div>
-			<div class="modal-footer">
-				<%= link gettext("Edit"), to: Routes.org_panel_online_offers_path(@conn, :index), class: "btn btn-primary" %>
-				<button class="btn btn-primary" onclick="$('#add_offer_btn').click();"><%= gettext("Submit") %></button>
-			</div>
-		</div>
-	</div>
-</div>
+<%= render(OmegaBraveraWeb.SharedView, "submit_review_modal.html", assigns) %>
