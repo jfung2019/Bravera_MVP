@@ -221,6 +221,12 @@ defmodule OmegaBravera.Offers.Offer do
     end
   end
 
+  def check_merchant_can_update(%{data: %{approval_status: :approved}} = changeset, :merchant) do
+    add_error(changeset, :non_editable, "Sorry. You cannot edit this offer anymore because it has been approved.")
+  end
+
+  def check_merchant_can_update(changeset, _org_account_type), do: changeset
+
   def available_offer_types, do: Ecto.Enum.values(__MODULE__, :offer_type)
 
   def available_approval_status, do: Ecto.Enum.values(__MODULE__, :approval_status)

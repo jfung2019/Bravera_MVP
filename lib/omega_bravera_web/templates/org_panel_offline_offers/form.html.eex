@@ -5,6 +5,8 @@
     </div>
   <% end %>
 
+  <%= error_tag f, :non_editable %>
+
   <div class="d-flex">
     <div class="form-group col-9 p-0">
       <%= label f, :vendor_id, gettext("Claim ID"), class: "control-label" %>

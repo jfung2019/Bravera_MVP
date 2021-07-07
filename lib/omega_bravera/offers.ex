@@ -694,9 +694,10 @@ defmodule OmegaBravera.Offers do
     case OmegaBravera.Accounts.get_organization!(org_id) do
       %{account_type: :merchant} ->
         Offer.check_merchant_start_end_date(changeset)
+        |> Offer.check_merchant_can_update(:merchant)
 
-      _ ->
-        changeset
+      %{account_type: type} ->
+        Offer.check_merchant_can_update(changeset, type)
     end
   end
 

@@ -5,6 +5,8 @@
     </div>
   <% end %>
 
+  <%= error_tag f, :non_editable %>
+
   <div class="d-flex">
     <div class="col-9 p-0">
       <div class="form-group">
