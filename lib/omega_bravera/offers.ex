@@ -680,16 +680,14 @@ defmodule OmegaBravera.Offers do
     |> Repo.insert()
   end
 
-  @doc """
-  check if the organization is a merchant
-  if yes, check that start and end dates are at least 90days apart
-  """
-  def check_org_merchant(%{changes: %{organization_id: org_id}} = changeset),
+  @spec check_org_merchant(Ecto.Changeset.t()) :: Ecto.Changeset.t()
+  defp check_org_merchant(%{changes: %{organization_id: org_id}} = changeset),
       do: do_check_org_merchant(changeset, org_id)
 
-  def check_org_merchant(%{data: %{organization_id: org_id}} = changeset),
+  defp check_org_merchant(%{data: %{organization_id: org_id}} = changeset),
       do: do_check_org_merchant(changeset, org_id)
 
+  @spec do_check_org_merchant(Ecto.Changeset.t(), term) :: Ecto.Changeset.t()
   defp do_check_org_merchant(changeset, org_id) do
     case OmegaBravera.Accounts.get_organization!(org_id) do
       %{account_type: :merchant} ->
@@ -708,11 +706,9 @@ defmodule OmegaBravera.Offers do
           changeset
           |> Ecto.Changeset.apply_changes()
 
-        {:ok, _offer} =
-          get_offer!(offer_approval.offer_id)
-          |> update_offer(%{
-            approval_status: offer_approval.status
-          })
+        offer = get_offer!(offer_approval.offer_id, [:organization])
+        update_params = check_start_end_date(offer, %{approval_status: offer_approval.status})
+        {:ok, _offer} = update_offer(offer, update_params)
 
         {:ok, changeset}
 
@@ -724,6 +720,22 @@ defmodule OmegaBravera.Offers do
   def change_offer_approval(%OfferApproval{} = offer_approval, attr \\ %{}) do
     OfferApproval.changeset(offer_approval, attr)
   end
+
+  @spec check_start_end_date(Offer.t(), map) :: map
+  defp check_start_end_date(%{organization: %{account_type: :merchant}} = offer, params) do
+    now = Timex.now()
+    cond do
+      Timex.diff(offer.start_date, now) < 0 ->
+        params
+        |> Map.put(:start_date, now)
+        |> Map.put(:end_date, Timex.shift(now, days: Timex.diff(offer.end_date, offer.start_date, :days)))
+
+      true ->
+        params
+    end
+  end
+
+  defp check_start_end_date(_offer, params), do: params
 
   @doc """
   Updates a offer.
