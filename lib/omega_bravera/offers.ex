@@ -373,12 +373,14 @@ defmodule OmegaBravera.Offers do
   @doc """
   Gets an offer by the offer slug.
   """
-  def get_offer_by_slug(nil, _preloads), do: nil
-
   def get_offer_by_slug(
         slug,
         preloads \\ [:offer_challenges, :offer_locations, :offer_gps_coordinates]
-      ) do
+      )
+
+  def get_offer_by_slug(nil, _preloads), do: nil
+
+  def get_offer_by_slug(slug, preloads) do
     from(o in Offer,
       where: o.slug == ^slug,
       left_join: offer_challenges in assoc(o, :offer_challenges),
@@ -417,7 +419,8 @@ defmodule OmegaBravera.Offers do
   def get_allowed_offer_by_slug_and_user_id(slug, user_id) do
     %{devices: devices, sync_type: sync_type} =
       from(u in User,
-        left_join: d in assoc(u, :devices), on: d.active == true,
+        left_join: d in assoc(u, :devices),
+        on: d.active == true,
         where: u.id == ^user_id,
         group_by: u.id,
         select: %{id: u.id, devices: coalesce(count(d.id), 0), sync_type: u.sync_type}
@@ -684,21 +687,15 @@ defmodule OmegaBravera.Offers do
   end
 
   @spec check_org_merchant(Ecto.Changeset.t()) :: Ecto.Changeset.t()
-  defp check_org_merchant(%{changes: %{organization_id: org_id}} = changeset),
-      do: do_check_org_merchant(changeset, org_id)
-
-  defp check_org_merchant(%{data: %{organization_id: org_id}} = changeset),
-      do: do_check_org_merchant(changeset, org_id)
-
-  @spec do_check_org_merchant(Ecto.Changeset.t(), term) :: Ecto.Changeset.t()
-  defp do_check_org_merchant(changeset, org_id) do
-    case OmegaBravera.Accounts.get_organization!(org_id) do
-      %{account_type: :merchant} ->
-        Offer.check_merchant_start_end_date(changeset)
-        |> Offer.check_merchant_can_update(:merchant)
-
-      %{account_type: type} ->
-        Offer.check_merchant_can_update(changeset, type)
+  defp check_org_merchant(changeset) do
+    with org_id <- Ecto.Changeset.get_field(changeset, :organization_id),
+         false <- is_nil(org_id),
+         %{account_type: :merchant} <- OmegaBravera.Accounts.get_organization!(org_id) do
+      Offer.check_merchant_start_end_date(changeset)
+      |> Offer.check_merchant_can_update(:merchant)
+    else
+      _ ->
+        changeset
     end
   end
 
@@ -727,11 +724,15 @@ defmodule OmegaBravera.Offers do
   @spec check_start_end_date(Offer.t(), map) :: map
   defp check_start_end_date(%{organization: %{account_type: :merchant}} = offer, params) do
     now = Timex.now()
+
     cond do
       Timex.diff(offer.start_date, now) < 0 ->
         params
         |> Map.put(:start_date, now)
-        |> Map.put(:end_date, Timex.shift(now, days: Timex.diff(offer.end_date, offer.start_date, :days)))
+        |> Map.put(
+          :end_date,
+          Timex.shift(now, days: Timex.diff(offer.end_date, offer.start_date, :days))
+        )
 
       true ->
         params

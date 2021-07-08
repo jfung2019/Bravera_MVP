@@ -24,6 +24,7 @@ defmodule OmegaBraveraWeb.MerchantConstraint do
       Routes.org_panel_offer_reward_path(conn, :index),
       "/organization/offers/"
     ]
+
     if not is_nil(Map.get(conn.assigns, :admin_logged_in)) do
       [Routes.org_panel_dashboard_path(conn, :view_as) | paths]
     else

@@ -38,7 +38,13 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
           case OmegaBravera.Accounts.get_organization!(org_id) do
             %{account_type: :merchant} ->
               review_offer = Offers.get_offer!(offer_id)
-              redirect(conn, to: Routes.org_panel_offer_reward_path(conn, :index, review_offer_slug: review_offer.slug))
+
+              redirect(conn,
+                to:
+                  Routes.org_panel_offer_reward_path(conn, :index,
+                    review_offer_slug: review_offer.slug
+                  )
+              )
 
             _ ->
               redirect(conn, to: Routes.org_panel_offer_reward_path(conn, :index))

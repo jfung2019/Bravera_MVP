@@ -66,14 +66,22 @@ defmodule OmegaBraveraWeb.OrgOfferImages do
 
   def handle_event("undo-delete", _, socket), do: {:noreply, assign(socket, to_delete: nil)}
 
-  def handle_event("save-images", _, %{assigns: %{images: images, offer: offer, organization: organization}} = socket) do
+  def handle_event(
+        "save-images",
+        _,
+        %{assigns: %{images: images, offer: offer, organization: organization}} = socket
+      ) do
     case Offers.update_offer(offer, %{images: images}) do
       {:ok, updated_offer} ->
         redirect_to_offer_path(socket, updated_offer, organization)
     end
   end
 
-  def redirect_to_offer_path(socket, %{approval_status: :pending, offer_type: :online, slug: slug}, %{account_type: :merchant}),
+  def redirect_to_offer_path(
+        socket,
+        %{approval_status: :pending, offer_type: :online, slug: slug},
+        %{account_type: :merchant}
+      ),
       do:
         {:noreply,
          redirect(socket,

@@ -196,33 +196,28 @@ defmodule OmegaBravera.Offers.Offer do
   end
 
   def check_merchant_start_end_date(changeset) do
-    case changeset do
-      %{changes: %{start_date: start_date, end_date: end_date}} ->
-        check_duration(changeset, start_date, end_date)
-
-      %{changes: %{start_date: start_date}, data: %{end_date: end_date}} ->
-        check_duration(changeset, start_date, end_date)
-
-      %{changes: %{end_date: end_date}, data: %{start_date: start_date}} ->
-        check_duration(changeset, start_date, end_date)
-
+    with start_date <- get_field(changeset, :start_date),
+         end_date <- get_field(changeset, :end_date),
+         false <- is_nil(start_date),
+         false <- is_nil(end_date),
+         true <- Timex.diff(end_date, start_date, :days) < 90 do
+      add_error(
+        changeset,
+        :end_date,
+        "Sorry. Minimum offer listing must be 90 days. You can request a shorter time after submission, if necessary."
+      )
+    else
       _ ->
         changeset
     end
   end
 
-  defp check_duration(changeset, start_date, end_date) do
-    cond do
-      Timex.diff(end_date, start_date, :days) < 90 ->
-        add_error(changeset, :end_date, "Sorry. Minimum offer listing must be 90 days. You can request a shorter time after submission, if necessary.")
-
-      true ->
-        changeset
-    end
-  end
-
   def check_merchant_can_update(%{data: %{approval_status: :approved}} = changeset, :merchant) do
-    add_error(changeset, :non_editable, "Sorry. You cannot edit this offer anymore because it has been approved.")
+    add_error(
+      changeset,
+      :non_editable,
+      "Sorry. You cannot edit this offer anymore because it has been approved."
+    )
   end
 
   def check_merchant_can_update(changeset, _org_account_type), do: changeset
