@@ -196,10 +196,8 @@ defmodule OmegaBravera.Offers.Offer do
   end
 
   def check_merchant_start_end_date(changeset) do
-    with start_date <- get_field(changeset, :start_date),
-         end_date <- get_field(changeset, :end_date),
-         false <- is_nil(start_date),
-         false <- is_nil(end_date),
+    with %{} = start_date <- get_field(changeset, :start_date),
+         %{} = end_date <- get_field(changeset, :end_date),
          true <- Timex.diff(end_date, start_date, :days) < 90 do
       add_error(
         changeset,

@@ -36,8 +36,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
   end
 
   def create(%{assigns: %{organization_id: org_id}} = conn, %{"offer" => offer_params}) do
-    case Offers.create_org_offline_offer(Map.put(offer_params, "organization_id", org_id))
-         |> IO.inspect() do
+    case Offers.create_org_offline_offer(Map.put(offer_params, "organization_id", org_id)) do
       {:ok, offer} ->
         conn
         |> put_flash(:info, "Offer created successfully.")
