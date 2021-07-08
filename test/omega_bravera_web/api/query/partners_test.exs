@@ -68,8 +68,8 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
   """
 
   @search_groups """
-  query($keyword: String, $global: Boolean!, $first: Integer!) {
-    searchGroupsPaginated(keyword: $keyword, global: $global, first: $first) {
+  query($keyword: String, $global: Boolean!, $first: Integer!, $myGroup: Boolean) {
+    searchGroupsPaginated(keyword: $keyword, global: $global, first: $first, myGroup: $myGroup) {
       edges {
         node {
           id
@@ -113,7 +113,7 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
     {:ok,
      conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"),
      partner: partner,
-     location: location}
+     location: location, user: user}
   end
 
   test "can get partner locations, partner and their offers", %{conn: conn} do
@@ -136,28 +136,63 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
              json_response(response, 200)
   end
 
-  test "can search live partners by keyword", %{conn: conn, location: location} do
-    OmegaBravera.Groups.create_partner(%{
-      images: [],
-      introduction: "intro",
-      name: "second",
-      short_description: "des",
-      approval_status: :approved,
-      location_id: location.id
-    })
+  describe "searchGroupsPaginated" do
+    setup %{location: location} do
+      {:ok, partner2} =
+        OmegaBravera.Groups.create_partner(%{
+          images: [],
+          introduction: "intro",
+          name: "second",
+          short_description: "des",
+          approval_status: :approved,
+          location_id: location.id
+        })
 
-    response =
-      post(conn, "/api", %{
-        query: @search_groups,
-        variables: %{"keyword" => "on", "global" => false, "first" => 10}
-      })
+      {:ok, partner3} =
+        OmegaBravera.Groups.create_partner(%{
+          images: [],
+          introduction: "intro",
+          name: "third",
+          short_description: "des",
+          approval_status: :approved,
+          location_id: location.id
+        })
 
-    assert %{
-             "data" => %{
-               "searchGroupsPaginated" => %{
-                 "edges" => [%{"node" => %{"name" => "second"}}]
+      %{partner2: partner2, partner3: partner3}
+    end
+
+    test "can search live partners by keyword", %{conn: conn} do
+      response =
+        post(conn, "/api", %{
+          query: @search_groups,
+          variables: %{"keyword" => "on", "global" => false, "first" => 10}
+        })
+
+      assert %{
+               "data" => %{
+                 "searchGroupsPaginated" => %{
+                   "edges" => [%{"node" => %{"name" => "second"}}]
+                 }
                }
-             }
-           } = json_response(response, 200)
+             } = json_response(response, 200)
+    end
+
+    test "can get live partners that user is a member of", %{conn: conn, partner3: partner3, user: user} do
+      OmegaBravera.Groups.join_partner(partner3.id, user.id)
+
+      response =
+        post(conn, "/api", %{
+          query: @search_groups,
+          variables: %{"global" => false, "first" => 10, "myGroup" => true}
+        })
+
+      assert %{
+               "data" => %{
+                 "searchGroupsPaginated" => %{
+                   "edges" => [%{"node" => %{"name" => "third"}}]
+                 }
+               }
+             } = json_response(response, 200)
+    end
   end
 end

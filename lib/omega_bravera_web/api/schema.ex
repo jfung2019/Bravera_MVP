@@ -445,6 +445,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     connection field :search_groups_paginated, node_type: :partner do
       arg :keyword, :string
       arg :global, non_null(:boolean)
+      arg :my_group, :boolean
       middleware Middleware.Authenticate
       resolve &Resolvers.Groups.search_groups_paginated/3
     end

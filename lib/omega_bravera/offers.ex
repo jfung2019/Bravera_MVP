@@ -415,7 +415,8 @@ defmodule OmegaBravera.Offers do
   def get_allowed_offer_by_slug_and_user_id(slug, user_id) do
     %{devices: devices, sync_type: sync_type} =
       from(u in User,
-        left_join: d in assoc(u, :devices), on: d.active == true,
+        left_join: d in assoc(u, :devices),
+        on: d.active == true,
         where: u.id == ^user_id,
         group_by: u.id,
         select: %{id: u.id, devices: coalesce(count(d.id), 0), sync_type: u.sync_type}
