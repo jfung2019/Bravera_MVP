@@ -66,48 +66,23 @@ defmodule OmegaBraveraWeb.OrgOfferImages do
 
   def handle_event("undo-delete", _, socket), do: {:noreply, assign(socket, to_delete: nil)}
 
-  def handle_event(
-        "save-images",
-        _,
-        %{assigns: %{images: images, offer: offer, organization: %{account_type: :merchant}}} =
-          socket
-      ) do
+  def handle_event("save-images", _, %{assigns: %{images: images, offer: offer, organization: organization}} = socket) do
     case Offers.update_offer(offer, %{images: images}) do
       {:ok, updated_offer} ->
-        redirect_to_offer_path(socket, updated_offer)
+        redirect_to_offer_path(socket, updated_offer, organization)
     end
   end
 
-  def handle_event("save-images", _, %{assigns: %{images: images, offer: offer}} = socket) do
-    case Offers.update_offer(offer, %{images: images}) do
-      {:ok, updated_offer} ->
-        case updated_offer.offer_type do
-          :online ->
-            {:noreply, redirect(socket, to: Routes.org_panel_partner_path(socket, :index))}
-
-          _ ->
-            {:noreply, redirect(socket, to: Routes.org_panel_offer_reward_path(socket, :new))}
-        end
-    end
-  end
-
-  def redirect_to_offer_path(socket, %{approval_status: :pending, offer_type: :online, slug: slug}),
+  def redirect_to_offer_path(socket, %{approval_status: :pending, offer_type: :online, slug: slug}, %{account_type: :merchant}),
       do:
         {:noreply,
          redirect(socket,
            to: Routes.org_panel_online_offers_path(socket, :index, review_offer_slug: slug)
          )}
 
-  def redirect_to_offer_path(socket, %{approval_status: :pending, offer_type: :in_store, slug: slug}),
-      do:
-        {:noreply,
-         redirect(socket,
-           to: Routes.org_panel_offline_offers_path(socket, :index, review_offer_slug: slug)
-         )}
-
-  def redirect_to_offer_path(socket, %{offer_type: :online}),
+  def redirect_to_offer_path(socket, %{offer_type: :online}, _organization),
     do: {:noreply, redirect(socket, to: Routes.org_panel_online_offers_path(socket, :index))}
 
-  def redirect_to_offer_path(socket, %{offer_type: :in_store}),
-    do: {:noreply, redirect(socket, to: Routes.org_panel_offline_offers_path(socket, :index))}
+  def redirect_to_offer_path(socket, %{offer_type: :in_store}, _organization),
+    do: {:noreply, redirect(socket, to: Routes.org_panel_offer_reward_path(socket, :new))}
 end

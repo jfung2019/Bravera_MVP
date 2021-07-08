@@ -20,8 +20,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
 
     render(conn, "index.html",
       offers: results.offers,
-      paginate: results.paginate,
-      review_offer_slug: Map.get(params, "review_offer_slug")
+      paginate: results.paginate
     )
   end
 
@@ -37,7 +36,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
   end
 
   def create(%{assigns: %{organization_id: org_id}} = conn, %{"offer" => offer_params}) do
-    case Offers.create_org_offline_offer(Map.put(offer_params, "organization_id", org_id)) do
+    case Offers.create_org_offline_offer(Map.put(offer_params, "organization_id", org_id)) |> IO.inspect() do
       {:ok, offer} ->
         conn
         |> put_flash(:info, "Offer created successfully.")

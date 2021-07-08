@@ -13,11 +13,16 @@
                 <p><%= gettext("Would you like to confirm your submission?") %></p>
             </div>
             <div class="modal-footer">
-                <%= link gettext("Edit"), to: Routes.org_panel_online_offers_path(@conn, :index), class: "btn btn-primary" %>
-                <%= if assigns[:review_offer_slug] do %>
-                <%= link gettext("Submit"), to: Routes.org_panel_online_offers_path(@conn, :review, @review_offer_slug), method: :post, class: "btn btn-primary" %>
+                <%= if assigns[:review_offer] do %>
+                    <%= if @review_offer.offer_type == :online do %>
+                        <%= link gettext("Edit"), to: Routes.org_panel_online_offers_path(@conn, :edit, @review_offer.slug), class: "btn btn-primary" %>
+                    <% else %>
+                        <%= link gettext("Edit"), to: Routes.org_panel_offline_offers_path(@conn, :edit, @review_offer.slug), class: "btn btn-primary" %>
+                    <% end %>
+                    <%= link gettext("Submit"), to: Routes.org_panel_online_offers_path(@conn, :review, @review_offer.slug), method: :post, class: "btn btn-primary" %>
                 <% else %>
-                <button class="btn btn-primary" onclick="$('#add_offer_btn').click();"><%= gettext("Submit") %></button>
+                    <%= link gettext("Edit"), to: Routes.org_panel_online_offers_path(@conn, :index), class: "btn btn-primary" %>
+                    <button class="btn btn-primary" onclick="$('#add_offer_btn').click();"><%= gettext("Submit") %></button>
                 <% end %>
             </div>
         </div>

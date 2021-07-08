@@ -373,6 +373,8 @@ defmodule OmegaBravera.Offers do
   @doc """
   Gets an offer by the offer slug.
   """
+  def get_offer_by_slug(nil, _preloads), do: nil
+
   def get_offer_by_slug(
         slug,
         preloads \\ [:offer_challenges, :offer_locations, :offer_gps_coordinates]

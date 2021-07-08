@@ -17,9 +17,8 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
     render(conn, "index.html",
       offers: results.offers,
       paginate: results.paginate,
-      offer_type: :online_offers,
       new_merchant: check_merchant_has_offers(conn),
-      review_offer_slug: Map.get(params, "review_offer_slug")
+      review_offer: Offers.get_offer_by_slug(Map.get(params, "review_offer_slug"), [])
     )
   end
 
