@@ -172,12 +172,20 @@ defmodule OmegaBravera.Groups do
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
-  def search_groups_paginated(user_id, keyword, global, location_id, pagination_args) do
+  def search_groups_paginated(
+        user_id,
+        keyword,
+        global,
+        location_id,
+        pagination_args,
+        find_my_group
+      ) do
     search = "%#{keyword}%"
 
     list_partners_with_membership_query(user_id)
     |> where([p], ilike(p.name, ^search))
     |> search_location(global, location_id)
+    |> search_my_group(find_my_group, user_id)
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
   end
 
@@ -188,6 +196,16 @@ defmodule OmegaBravera.Groups do
   end
 
   defp search_location(query, true, _location_id), do: query
+
+  defp search_my_group(query, true, user_id) do
+    from(q in query,
+      left_join: m in assoc(q, :members),
+      on: m.user_id == ^user_id,
+      where: not is_nil(m.id)
+    )
+  end
+
+  defp search_my_group(query, _find_my_group, _user_id), do: query
 
   def total_groups() do
     from(p in Partner, select: count(p.id))

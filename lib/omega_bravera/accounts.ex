@@ -1365,7 +1365,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   def switch_sync_type(user_id, sync_type),
-      do: update_user(Accounts.get_user!(user_id), %{sync_type: sync_type}) |> get_sync_update()
+    do: update_user(Accounts.get_user!(user_id), %{sync_type: sync_type}) |> get_sync_update()
 
   @spec get_sync_update(tuple()) :: tuple()
   defp get_sync_update({:ok, %{id: user_id}}) do
