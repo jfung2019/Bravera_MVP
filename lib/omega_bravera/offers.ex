@@ -376,7 +376,11 @@ defmodule OmegaBravera.Offers do
   def get_offer_by_slug(
         slug,
         preloads \\ [:offer_challenges, :offer_locations, :offer_gps_coordinates]
-      ) do
+      )
+
+  def get_offer_by_slug(nil, _preloads), do: nil
+
+  def get_offer_by_slug(slug, preloads) do
     from(o in Offer,
       where: o.slug == ^slug,
       left_join: offer_challenges in assoc(o, :offer_challenges),
@@ -671,13 +675,28 @@ defmodule OmegaBravera.Offers do
   def create_org_online_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.org_online_offer_changeset(attrs)
+    |> check_org_merchant()
     |> Repo.insert()
   end
 
   def create_org_offline_offer(attrs \\ %{}) do
     %Offer{}
     |> Offer.org_offline_offer_changeset(attrs)
+    |> check_org_merchant()
     |> Repo.insert()
+  end
+
+  @spec check_org_merchant(Ecto.Changeset.t()) :: Ecto.Changeset.t()
+  defp check_org_merchant(changeset) do
+    with org_id <- Ecto.Changeset.get_field(changeset, :organization_id),
+         false <- is_nil(org_id),
+         %{account_type: :merchant} <- OmegaBravera.Accounts.get_organization!(org_id) do
+      Offer.check_merchant_start_end_date(changeset)
+      |> Offer.check_merchant_can_update(:merchant)
+    else
+      _ ->
+        changeset
+    end
   end
 
   def create_offer_approval(attrs \\ %{}) do
@@ -687,11 +706,9 @@ defmodule OmegaBravera.Offers do
           changeset
           |> Ecto.Changeset.apply_changes()
 
-        {:ok, _offer} =
-          get_offer!(offer_approval.offer_id)
-          |> update_offer(%{
-            approval_status: offer_approval.status
-          })
+        offer = get_offer!(offer_approval.offer_id, [:organization])
+        update_params = check_start_end_date(offer, %{approval_status: offer_approval.status})
+        {:ok, _offer} = update_offer(offer, update_params)
 
         {:ok, changeset}
 
@@ -703,6 +720,26 @@ defmodule OmegaBravera.Offers do
   def change_offer_approval(%OfferApproval{} = offer_approval, attr \\ %{}) do
     OfferApproval.changeset(offer_approval, attr)
   end
+
+  @spec check_start_end_date(Offer.t(), map) :: map
+  defp check_start_end_date(%{organization: %{account_type: :merchant}} = offer, params) do
+    now = Timex.now()
+
+    cond do
+      Timex.diff(offer.start_date, now) < 0 ->
+        params
+        |> Map.put(:start_date, now)
+        |> Map.put(
+          :end_date,
+          Timex.shift(now, days: Timex.diff(offer.end_date, offer.start_date, :days))
+        )
+
+      true ->
+        params
+    end
+  end
+
+  defp check_start_end_date(_offer, params), do: params
 
   @doc """
   Updates a offer.
@@ -746,12 +783,14 @@ defmodule OmegaBravera.Offers do
   def update_org_online_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.org_online_offer_changeset(attrs)
+    |> check_org_merchant()
     |> Repo.update()
   end
 
   def update_org_offline_offer(%Offer{} = offer, attrs) do
     offer
     |> Offer.org_offline_offer_changeset(attrs)
+    |> check_org_merchant()
     |> Repo.update()
   end
 

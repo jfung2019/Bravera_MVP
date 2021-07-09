@@ -136,6 +136,26 @@ defmodule OmegaBravera.OffersTest do
       assert {:error, %Ecto.Changeset{}} = Offers.create_offer(@invalid_attrs)
     end
 
+    test "create offer with merchant changeset return error when start and end date too close" do
+      {:ok, org} =
+        OmegaBravera.Accounts.create_organization(%{
+          name: "test",
+          business_type: "test",
+          business_website: "website.com",
+          account_type: :merchant
+        })
+
+      params =
+        @valid_attrs
+        |> Map.put(:organization_id, org.id)
+        |> Map.put(:online_url, "http://website.com")
+        |> Map.put(:online_code, "123")
+        |> Map.put(:redemption_days, 10)
+
+      assert {:error, %Ecto.Changeset{errors: [end_date: _error]}} =
+               Offers.create_org_online_offer(params)
+    end
+
     test "update_offer/2 with valid data updates the offer" do
       offer = offer_fixture()
       assert {:ok, %Offer{} = offer} = Offers.update_offer(offer, @update_attrs)

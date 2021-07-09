@@ -5,6 +5,8 @@
     </div>
   <% end %>
 
+  <%= error_tag f, :non_editable %>
+
   <div class="d-flex">
     <div class="form-group col-9 p-0">
       <%= label f, :vendor_id, gettext("Claim ID"), class: "control-label" %>
@@ -36,6 +38,7 @@
         <small class="text-muted form-text"><%= gettext("(Offer will be live after the start date displayed below.)") %></small>
         <small class="text-muted form-text"><strong class="text-uppercase"><%= gettext("Important") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your time zone versus GMT/UTC. We like") %> <a href="http://bit.ly/World-Time-Buddy" target="_blank"><%= gettext("this tool") %></a></small>
         <%= datetime_builder(f, :start_date, class: "form-control") %>
+        <br>
         <%= error_tag f, :start_date %>
       </div>
 
@@ -49,6 +52,7 @@
         </small>
         <small class="text-muted form-text"><strong class="text-uppercase"><%= gettext("Important") %>:</strong> <%= gettext("Based on GMT/UTC. Please check your time zone versus GMT/UTC. We like") %> <a href="http://bit.ly/World-Time-Buddy" target="_blank"><%= gettext("this tool") %></a></small>
         <%= datetime_builder(f, :end_date, class: "form-control") %>
+        <br>
         <%= error_tag f, :end_date %>
       </div>
     </div>
@@ -117,6 +121,7 @@
     <%= img_tag Routes.static_path(@conn, "/images/org/offer/claim_countdown.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
+  <%= if @organization.account_type == :full do %>
   <div class="d-flex">
     <div class="form-group col-9 p-0">
       <%= label f, :take_challenge, gettext("Allow challenges"), class: "control-label" %>
@@ -144,6 +149,7 @@
       <%= error_tag f, :time_limit %>
     </div>
   </div>
+  <% end %>
 
   <div class="form-group">
     <%= submit "Save", class: "btn btn-primary" %>

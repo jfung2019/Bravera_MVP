@@ -195,6 +195,31 @@ defmodule OmegaBravera.Offers.Offer do
     end
   end
 
+  def check_merchant_start_end_date(changeset) do
+    with %{} = start_date <- get_field(changeset, :start_date),
+         %{} = end_date <- get_field(changeset, :end_date),
+         true <- Timex.diff(end_date, start_date, :days) < 90 do
+      add_error(
+        changeset,
+        :end_date,
+        "Sorry. Minimum offer listing must be 90 days. You can request a shorter time after submission, if necessary."
+      )
+    else
+      _ ->
+        changeset
+    end
+  end
+
+  def check_merchant_can_update(%{data: %{approval_status: :approved}} = changeset, :merchant) do
+    add_error(
+      changeset,
+      :non_editable,
+      "Sorry. You cannot edit this offer anymore because it has been approved."
+    )
+  end
+
+  def check_merchant_can_update(changeset, _org_account_type), do: changeset
+
   def available_offer_types, do: Ecto.Enum.values(__MODULE__, :offer_type)
 
   def available_approval_status, do: Ecto.Enum.values(__MODULE__, :approval_status)

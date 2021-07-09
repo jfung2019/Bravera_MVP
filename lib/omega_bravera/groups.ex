@@ -790,7 +790,7 @@ defmodule OmegaBravera.Groups do
     |> Repo.insert()
   end
 
-  defp submit_offer_partner_for_approval(%{id: offer_id} = offer) do
+  def submit_offer_partner_for_approval(%{id: offer_id} = offer) do
     OmegaBravera.Accounts.get_partner_user_email_by_offer(offer_id)
     |> Notifier.customer_offer_modified_email(offer)
   end

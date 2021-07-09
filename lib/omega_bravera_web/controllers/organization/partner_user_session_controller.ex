@@ -4,9 +4,12 @@ defmodule OmegaBraveraWeb.PartnerUserSessionController do
   alias OmegaBravera.Accounts
 
   def new(conn, _params) do
-    case Guardian.Plug.current_resource(conn) do
-      %Accounts.PartnerUser{} ->
-        redirect(conn, to: Routes.org_panel_dashboard_path(conn, :index))
+    with %Accounts.PartnerUser{id: partner_user_id} <- Guardian.Plug.current_resource(conn),
+         %{account_type: :full} <- Accounts.get_organization_by_partner_user!(partner_user_id) do
+      redirect(conn, to: Routes.org_panel_dashboard_path(conn, :index))
+    else
+      %{account_type: :merchant} ->
+        redirect(conn, to: Routes.org_panel_online_offers_path(conn, :index))
 
       _ ->
         render(conn, "new.html")

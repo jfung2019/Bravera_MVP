@@ -10,7 +10,8 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
     render(conn, "index.html",
       offer_rewards: results.offer_rewards,
       paginate: results.paginate,
-      new_reward: new_reward
+      new_reward: new_reward,
+      review_offer: Offers.get_offer_by_slug(Map.get(params, "review_offer_slug"), [])
     )
   end
 
@@ -30,10 +31,25 @@ defmodule OmegaBraveraWeb.OrgPanelOfferRewardController do
         "offer_reward" => offer_reward_params
       }) do
     case Offers.create_offer_reward(offer_reward_params) do
-      {:ok, _sendgrid_email} ->
+      {:ok, %{offer_id: offer_id}} ->
         conn
         |> put_flash(:info, "Reward created successfully!")
-        |> redirect(to: Routes.org_panel_offer_reward_path(conn, :index))
+        |> then(fn conn ->
+          case OmegaBravera.Accounts.get_organization!(org_id) do
+            %{account_type: :merchant} ->
+              review_offer = Offers.get_offer!(offer_id)
+
+              redirect(conn,
+                to:
+                  Routes.org_panel_offer_reward_path(conn, :index,
+                    review_offer_slug: review_offer.slug
+                  )
+              )
+
+            _ ->
+              redirect(conn, to: Routes.org_panel_offer_reward_path(conn, :index))
+          end
+        end)
 
       {:error, %Ecto.Changeset{} = changeset} ->
         offers = Offers.list_offers_by_organization(org_id)

@@ -221,7 +221,12 @@ defmodule OmegaBraveraWeb.Router do
   pipeline :org_authenticated do
     plug Guardian.AuthPipeline
     plug OmegaBraveraWeb.OrgAuth
+    plug OmegaBraveraWeb.MerchantConstraint
     plug OmegaBraveraWeb.CheckBlockedOrg
+  end
+
+  pipeline :merchant_section do
+    plug OmegaBraveraWeb.MerchantSection
   end
 
   scope "/organization", OmegaBraveraWeb do
@@ -235,6 +240,14 @@ defmodule OmegaBraveraWeb.Router do
     resources "/register", PartnerUserRegisterController, only: [:new, :create]
     get "/activate/:email_activation_token", PartnerUserSessionController, :activate_email
     get "/blocked", OrgPanelDashboardController, :blocked
+
+    scope "/merchant" do
+      pipe_through [:merchant_section]
+
+      resources "/register", PartnerUserRegisterController,
+        only: [:new, :create],
+        as: :merchant_register
+    end
 
     scope "/" do
       pipe_through [:org_authenticated]
@@ -251,6 +264,7 @@ defmodule OmegaBraveraWeb.Router do
         resources "/", OrgPanelOnlineOffersController, param: "slug"
         get "/:slug/statement", OrgPanelOnlineOffersController, :statement
         get "/:slug/statement/monthly/", OrgPanelOnlineOffersController, :export_statement
+        post "/:slug/review", OrgPanelOnlineOffersController, :review
       end
 
       scope "/offline-offers" do

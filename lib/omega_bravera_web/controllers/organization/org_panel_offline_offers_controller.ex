@@ -17,7 +17,11 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
 
   def index(%{assigns: %{organization_id: org_id}} = conn, params) do
     results = Offers.paginate_offers("in_store", org_id, params)
-    render(conn, "index.html", offers: results.offers, paginate: results.paginate)
+
+    render(conn, "index.html",
+      offers: results.offers,
+      paginate: results.paginate
+    )
   end
 
   def show(%{assigns: %{organization_id: org_id}} = conn, %{"slug" => slug}) do

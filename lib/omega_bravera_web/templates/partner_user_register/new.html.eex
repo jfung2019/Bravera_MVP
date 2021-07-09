@@ -54,6 +54,7 @@
                     <%= text_input org, :business_website, class: add_error_class(org, :business_website, "form-control"), required: true %>
                     <%= error_tag org, :business_website %>
                 </div>
+                <%= hidden_input org, :account_type, value: assigns[:account_type] %>
                 <% end %>
                 <%= inputs_for f, :partner_user, fn p_user -> %>
                 <div class="mb-3">

@@ -43,9 +43,9 @@
               <td><%= render_datetime(offer.inserted_at) %></td>
               <td><%= render_datetime(offer.updated_at) %></td>
               <td class="text-center">
-                <%= link gettext("Statement"), to: Routes.org_panel_offline_offers_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs mb-2"%>
-                <%= link gettext("Edit"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer), class: "btn btn-warning btn-xs mb-2"%>
-                <%= link "Images", to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), class: "btn btn-info btn-xs mb-2"%>
+                <%= link gettext("Statement"), to: Routes.org_panel_offline_offers_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs mb-2" %>
+                <%= button gettext("Edit"), to: Routes.org_panel_offline_offers_path(@conn, :edit, offer), method: :get, class: "btn btn-warning btn-xs mb-2", disabled: @organization.account_type == :merchant and offer.approval_status == :approved %>
+                <%= button gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), method: :get, class: "btn btn-info btn-xs mb-2", disabled: @organization.account_type == :merchant and offer.approval_status == :approved %>
               </td>
               <td class="text-center">
                 <%= if offer.approval_status == :approved do %>
