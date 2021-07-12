@@ -24,4 +24,22 @@ defmodule OmegaBraveraWeb.Api.Types.Activity do
     field :source, :string
     field :type, :string
   end
+
+  enum :insight_period do
+    value :weekly
+    value :monthly
+    value :yearly
+  end
+
+  object :activity_insight_result do
+    field :distance_by_date, list_of(non_null(:distance_by_date))
+    field :average_distance, non_null(:float)
+    field :total_distance, non_null(:float)
+    field :distance_compare, non_null(:float)
+  end
+
+  object :distance_by_date do
+    field :date, non_null(:date)
+    field :distance, non_null(:float)
+  end
 end

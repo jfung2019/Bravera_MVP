@@ -496,6 +496,14 @@ defmodule OmegaBraveraWeb.Api.Schema do
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.compare_with_friend/3
     end
+
+    @desc "Get activity insight (weekly, monthly or yearly)"
+    field :get_activity_insight, :activity_insight_result do
+      arg :period, non_null(:insight_period)
+      arg :date, non_null(:date)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Activity.get_activity_insight/3
+    end
   end
 
   subscription do

@@ -64,4 +64,9 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Activity do
 
   def create_pedometer_activity(_root, _params, _context),
     do: {:error, message: "Not matching parameters to create pedometer activity"}
+
+  def get_activity_insight(_root, %{period: period, date: date}, %{
+        context: %{current_user: %{id: user_id}}
+      }),
+      do: Activities.get_activity_insight(period, date, user_id)
 end
