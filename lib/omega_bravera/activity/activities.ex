@@ -96,10 +96,14 @@ defmodule OmegaBravera.Activity.Activities do
        distance_by_date: activities,
        average_distance: this_period_average,
        total_distance: this_period_distance,
-       distance_compare:
-         (this_period_average - last_period_average) / last_period_average * 100
+       distance_compare: calculate_distance_compare(this_period_average, last_period_average)
      }}
   end
+
+  def calculate_distance_compare(_distance, 0), do: 0.0
+
+  def calculate_distance_compare(this_period_average, last_period_average),
+      do: (this_period_average - last_period_average) / last_period_average * 100
 
   defp get_total_distance_over_period(period_beginning, period_end, user_id) do
     from(a in ActivityAccumulator,
