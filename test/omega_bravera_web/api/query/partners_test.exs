@@ -113,7 +113,8 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
     {:ok,
      conn: Plug.Conn.put_req_header(conn, "authorization", "Bearer #{auth_token}"),
      partner: partner,
-     location: location, user: user}
+     location: location,
+     user: user}
   end
 
   test "can get partner locations, partner and their offers", %{conn: conn} do
@@ -177,7 +178,11 @@ defmodule OmegaBraveraWeb.Api.Query.GroupsTest do
              } = json_response(response, 200)
     end
 
-    test "can get live partners that user is a member of", %{conn: conn, partner3: partner3, user: user} do
+    test "can get live partners that user is a member of", %{
+      conn: conn,
+      partner3: partner3,
+      user: user
+    } do
       OmegaBravera.Groups.join_partner(partner3.id, user.id)
 
       response =
