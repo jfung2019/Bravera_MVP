@@ -15,6 +15,7 @@ defmodule OmegaBraveraWeb.Api.Query.PointsTest do
         history {
           posValue
           negValue
+          distance
           insertedAt
           updatedAt
         }

@@ -72,6 +72,9 @@ defmodule OmegaBravera.Activity.Activities do
     |> Repo.one()
   end
 
+  @doc """
+  get the activity insight for a user in a period (weekly, monthly, yearly)
+  """
   def get_activity_insight(period, date, user_id) do
     %{period_beginning: period_beginning, period_end: period_end} =
       get_insight_period(date, period)
@@ -80,22 +83,21 @@ defmodule OmegaBravera.Activity.Activities do
       get_last_insight_period(date, period)
 
     activities =
-      distance_summary(period, user_id, period_beginning, period_end)
+      distance_summary_query(period, user_id, period_beginning, period_end)
       |> Repo.all()
 
     this_period_distance = get_total_distance_over_period(period_beginning, period_end, user_id)
-
-    last_period_distance =
-      get_total_distance_over_period(last_period_beginning, last_period_end, user_id)
+    last_period_distance = get_total_distance_over_period(last_period_beginning, last_period_end, user_id)
+    this_period_average = this_period_distance / (Timex.diff(period_end, period_beginning, :days) + 1)
+    last_period_average = last_period_distance / (Timex.diff(last_period_end, last_period_beginning, :days) + 1)
 
     {:ok,
      %{
        distance_by_date: activities,
-       average_distance:
-         this_period_distance / (Timex.diff(period_end, period_beginning, :days) + 1),
+       average_distance: this_period_average,
        total_distance: this_period_distance,
        distance_compare:
-         (this_period_distance - last_period_distance) / last_period_distance * 100
+         (this_period_average - last_period_average) / last_period_average * 100
      }}
   end
 
@@ -138,7 +140,7 @@ defmodule OmegaBravera.Activity.Activities do
     |> get_insight_period(period)
   end
 
-  defp distance_summary(:yearly, user_id, period_beginning, period_end) do
+  defp distance_summary_query(:yearly, user_id, period_beginning, period_end) do
     from(a in ActivityAccumulator,
       right_join:
         period in fragment(
@@ -153,12 +155,12 @@ defmodule OmegaBravera.Activity.Activities do
       order_by: period.date,
       select: %{
         date: fragment("?::date", period.date),
-        distance: coalesce(sum(a.distance), 0.0)
+        distance: fragment("? / (date_part('days', date_trunc('month', ?) + '1 MONTH'::INTERVAL - '1 DAY'::INTERVAL))", coalesce(sum(a.distance), 0.0), period.date)
       }
     )
   end
 
-  defp distance_summary(_period, user_id, period_beginning, period_end) do
+  defp distance_summary_query(_period, user_id, period_beginning, period_end) do
     from(a in ActivityAccumulator,
       right_join:
         period in fragment(
