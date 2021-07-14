@@ -87,9 +87,15 @@ defmodule OmegaBravera.Activity.Activities do
       |> Repo.all()
 
     this_period_distance = get_total_distance_over_period(period_beginning, period_end, user_id)
-    last_period_distance = get_total_distance_over_period(last_period_beginning, last_period_end, user_id)
-    this_period_average = this_period_distance / (Timex.diff(period_end, period_beginning, :days) + 1)
-    last_period_average = last_period_distance / (Timex.diff(last_period_end, last_period_beginning, :days) + 1)
+
+    last_period_distance =
+      get_total_distance_over_period(last_period_beginning, last_period_end, user_id)
+
+    this_period_average =
+      this_period_distance / (Timex.diff(period_end, period_beginning, :days) + 1)
+
+    last_period_average =
+      last_period_distance / (Timex.diff(last_period_end, last_period_beginning, :days) + 1)
 
     {:ok,
      %{
@@ -100,10 +106,13 @@ defmodule OmegaBravera.Activity.Activities do
      }}
   end
 
-  def calculate_distance_compare(_distance, 0), do: 0.0
-
-  def calculate_distance_compare(this_period_average, last_period_average),
-      do: (this_period_average - last_period_average) / last_period_average * 100
+  def calculate_distance_compare(this_period_average, last_period_average) do
+    if last_period_average > 0 do
+      (this_period_average - last_period_average) / last_period_average * 100
+    else
+      0.0
+    end
+  end
 
   defp get_total_distance_over_period(period_beginning, period_end, user_id) do
     from(a in ActivityAccumulator,
@@ -159,7 +168,12 @@ defmodule OmegaBravera.Activity.Activities do
       order_by: period.date,
       select: %{
         date: fragment("?::date", period.date),
-        distance: fragment("? / (date_part('days', date_trunc('month', ?) + '1 MONTH'::INTERVAL - '1 DAY'::INTERVAL))", coalesce(sum(a.distance), 0.0), period.date)
+        distance:
+          fragment(
+            "? / (date_part('days', date_trunc('month', ?) + '1 MONTH'::INTERVAL - '1 DAY'::INTERVAL))",
+            coalesce(sum(a.distance), 0.0),
+            period.date
+          )
       }
     )
   end
