@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferApprovalController do
 
   def show(conn, %{"slug" => slug}) do
     render(conn, "show.html",
-      offer: Offers.get_offer_by_slug(slug, [:vendor, :offer_rewards, :organization, :location]),
+      offer: Offers.get_offer_by_slug(slug, [:vendor, :offer_rewards, :organization]),
       changeset: Offers.change_offer_approval(%OfferApproval{})
     )
   end
@@ -18,7 +18,7 @@ defmodule OmegaBraveraWeb.AdminPanelOfferApprovalController do
 
       {:error, changeset} ->
         render(conn, "show.html",
-          offer: Offers.get_offer!(id, [:vendor, :offer_rewards, :organization, :location]),
+          offer: Offers.get_offer!(id, [:vendor, :offer_rewards, :organization]),
           changeset: changeset
         )
     end

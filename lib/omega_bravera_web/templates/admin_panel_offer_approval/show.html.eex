@@ -40,10 +40,6 @@
                     <td><%= gettext("Claim ID") %></td>
                     <td><%= @offer.vendor.id %></td>
                 </tr>
-                <tr>
-                    <td><%= gettext("Location") %></td>
-                    <td><%= @offer.location.name_en %></td>
-                </tr>
                 <% else %>
                 <tr>
                     <td><%= gettext("Redirect URL Address") %></td>
