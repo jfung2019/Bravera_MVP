@@ -2,7 +2,7 @@ defmodule OmegaBraveraWeb.PartnerUserRegisterController do
   use OmegaBraveraWeb, :controller
   alias OmegaBravera.Accounts
 
-  plug :assign_available_options when action in [:edit, :new]
+  plug :assign_available_options when action in [:new]
 
   def new(conn, _params) do
     with %Accounts.PartnerUser{id: partner_user_id} <- Guardian.Plug.current_resource(conn),
