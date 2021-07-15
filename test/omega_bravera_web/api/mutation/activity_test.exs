@@ -36,9 +36,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
   }
   """
 
-  def credential_fixture() do
-    user = insert(:user, %{email: @email})
-
+  def credential_fixture(user) do
     credential_attrs = %{
       password: @password,
       password_confirmation: @password
@@ -52,11 +50,12 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
   end
 
   setup do
-    credential = credential_fixture()
+    user = insert(:user, %{email: @email})
+    credential = credential_fixture(user)
     device = insert(:device, %{active: true, user_id: credential.user_id})
     token = Auth.generate_device_token(device.uuid)
     {:ok, user_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-    {:ok, token: token, user_token: user_token}
+    {:ok, token: token, user_token: user_token, user: user}
   end
 
   test "api/create_activity can create activity", %{token: token} do
@@ -212,7 +211,9 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
            } = json_response(response, 200)
   end
 
-  test "can create pedometer activity", %{token: token} do
+  test "can create pedometer activity", %{token: token, user: user} do
+    OmegaBravera.Accounts.update_user(user, %{sync_type: :pedometer})
+
     conn =
       build_conn()
       |> put_req_header("authorization", "Bearer #{token}")
