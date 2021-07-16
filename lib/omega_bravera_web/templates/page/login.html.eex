@@ -5,7 +5,7 @@
       <%= gettext("Log in") %>
     </h1>
 
-    <p class="mt-3 mb-3 text-muted"><%= gettext("By logging in to Bravera you agree to our ") %><a href="https://www.bravera.fit/terms" target="_blank" rel="noreferrer noopener"><%= gettext("Cookies & Privacy Policy") %></a></p>
+    <p class="mt-3 mb-3 text-muted"><%= gettext("By logging in to Bravera you agree to our ") %><a href="https://www.bravera.fit/terms-of-use" target="_blank" rel="noreferrer noopener"><%= gettext("Cookies & Privacy Policy") %></a></p>
 
     <div class="mb-3">
       <%= if is_nil(@team_invitation) do %>
