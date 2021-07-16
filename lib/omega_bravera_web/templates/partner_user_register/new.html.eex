@@ -72,9 +72,9 @@
                         <%= checkbox p_user, :accept_terms, class: add_error_class(p_user, :accept_terms, "form-check-input"), required: true %>
                         <%= label p_user, :accept_terms,  class: "form-check-label" do %>
                         <%= gettext("I accept the ") %>
-                        <%= link gettext("Terms of Use"), to: "https://www.bravera.fit/terms", target: "_blank" %>
+                        <%= link gettext("Terms of Use"), to: "https://www.bravera.fit/terms-of-use", target: "_blank" %>
                         <%= gettext(" and ") %>
-                        <%= link gettext("Privacy Policy"), to: "https://www.bravera.fit/privacy/", target: "_blank" %>
+                        <%= link gettext("Privacy Policy"), to: "https://www.bravera.fit/privacy-policy", target: "_blank" %>
                         <% end %>
                         <%= error_tag p_user, :accept_terms %>
                     </div>
