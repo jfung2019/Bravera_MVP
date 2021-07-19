@@ -774,6 +774,7 @@ defmodule OmegaBravera.Offers do
           else
             offer_approval
           end
+
         OmegaBravera.Accounts.get_partner_user_email_by_offer(updated_offer.id)
         |> Notifier.notify_customer_offer_email(offer_approval, updated_offer)
 

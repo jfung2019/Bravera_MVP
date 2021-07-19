@@ -590,7 +590,7 @@ defmodule OmegaBravera.Accounts do
       Repo.aggregate(
         from(
           a in ActivityAccumulator,
-          where: a.user_id == ^user_id and fragment("?::date = now()::date", a.start_date),
+          where: a.user_id == ^user_id and fragment("?::date = now()::date", a.start_date)
         ),
         :sum,
         :distance
@@ -598,8 +598,8 @@ defmodule OmegaBravera.Accounts do
 
     total_kms_today =
       if is_nil(total_kms_today),
-         do: Decimal.from_float(0.0),
-         else: total_kms_today
+        do: Decimal.from_float(0.0),
+        else: total_kms_today
 
     live_challenges = user_live_challenges(user_id)
 
