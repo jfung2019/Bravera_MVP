@@ -131,6 +131,25 @@
     <%= img_tag Routes.static_path(@conn, "/images/org/offer/claim_countdown.png"), class: "col-3", style: "object-fit: contain;" %>
   </div>
 
+  <div class="form-group">
+    <div id="multi_locations_container">
+      <label class="control-label"><%= gettext("Locations") %></label>
+      <%= inputs_for f, :offer_locations, fn offer_loc -> %>
+        <div class="row mb-2 px-3">
+          <%= select offer_loc, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: add_error_class(offer_loc, :location_id, "form-control col-10") %>
+          <%= if offer_loc.data.id do %>
+            <span class="ml-2">
+              <%= label offer_loc, :remove, "Remove?", class: "control-label" %>
+              <%= checkbox offer_loc, :remove %>
+            </span>
+          <% end %>
+        </div>
+        <%= error_tag offer_loc, :location_id %>
+      <% end %>
+    </div>
+    <a class="btn btn-primary ml-2 fa fa-plus" id="offer_add_location"></a>
+  </div>
+
   <%= if @organization.account_type == :full do %>
   <div class="d-flex">
     <div class="form-group col-9 p-0">
@@ -166,3 +185,9 @@
     <%= submit "Save", class: "btn btn-primary" %>
   </div>
 <% end %>
+
+<div id="location_options" class="d-none">
+  <%= for location <- @available_locations do %>
+  <option value="<%= location.id %>"><%= location.name_en %></option>
+  <% end %>
+</div>

@@ -11,6 +11,8 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
     Offers.OfferChallenge
   }
 
+  plug :assign_available_options when action in [:edit, :new]
+
   def index(conn, params) do
     results = Offers.paginate_offers("online", get_session(conn, :organization_id), params)
 
@@ -44,6 +46,7 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
+        |> assign_available_options(nil)
         |> render("new.html", changeset: changeset)
     end
   end
@@ -92,6 +95,7 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
+        |> assign_available_options(nil)
         |> render("edit.html", offer: offer, changeset: changeset)
     end
   end
@@ -148,4 +152,9 @@ defmodule OmegaBraveraWeb.OrgPanelOnlineOffersController do
   end
 
   defp check_merchant_has_offers(_conn), do: nil
+
+  defp assign_available_options(conn, _opts) do
+    conn
+    |> assign(:available_locations, OmegaBravera.Locations.list_locations())
+  end
 end
