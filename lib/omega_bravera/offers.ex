@@ -768,6 +768,12 @@ defmodule OmegaBravera.Offers do
       # If org and from pending to approved or denied
       {:pending, {:ok, %{approval_status: status} = updated_offer} = result}
       when status in [:approved, :denied] ->
+        offer_approval =
+          if is_nil(offer_approval) do
+            %OfferApproval{status: status, message: ""}
+          else
+            offer_approval
+          end
         OmegaBravera.Accounts.get_partner_user_email_by_offer(updated_offer.id)
         |> Notifier.notify_customer_offer_email(offer_approval, updated_offer)
 
