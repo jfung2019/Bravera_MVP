@@ -3,8 +3,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferApprovalController do
   alias OmegaBravera.{Offers, Offers.OfferApproval}
 
   def show(conn, %{"slug" => slug}) do
+    preloads = [:vendor, :offer_rewards, :organization, :offer_gps_coordinates, offer_locations: [:location]]
     render(conn, "show.html",
-      offer: Offers.get_offer_by_slug(slug, [:vendor, :offer_rewards, :organization]),
+      offer: Offers.get_offer_by_slug(slug, preloads),
       changeset: Offers.change_offer_approval(%OfferApproval{})
     )
   end

@@ -22,7 +22,7 @@
 
     <body class="gray-background pt-3 admin-section" x-data="{modal: false}">
         <div class="text-center">
-            <p class="alert alert-success text-x-large" role="alert"><%= get_flash(@conn, :info) %></p>
+            <p class="alert alert-success text-x-large" role="alert"><%= get_flash(@conn, :info) |> raw() %></p>
             <p class="alert alert-danger text-x-large" role="alert"><%= get_flash(@conn, :error) %></p>
         </div>
         <section class="container-fluid flex-grow px-0 px-sm-3">

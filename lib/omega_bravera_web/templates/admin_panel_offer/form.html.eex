@@ -161,6 +161,7 @@
     <%= select f, :offer_type, @available_offer_types, class: add_error_class(f, :offer_type, "form-control"), id: "offer_type" %>
     <%= error_tag f, :offer_type %>
   </div>
+
   <div class="form-group">
     <div id="multi_locations_container">
       <label class="control-label"><%= gettext("Locations") %></label>

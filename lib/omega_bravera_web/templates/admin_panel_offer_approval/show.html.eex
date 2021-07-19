@@ -16,6 +16,18 @@
                     <td><%= @offer.offer_type %></td>
                 </tr>
                 <tr>
+                    <td><%= gettext("Start Date") %></td>
+                    <td><%= @offer.start_date %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("End Date") %></td>
+                    <td><%= @offer.end_date %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Days") %></td>
+                    <td><%= Timex.diff(@offer.end_date, @offer.start_date, :days) %></td>
+                </tr>
+                <tr>
                     <td><%= gettext("Description") %></td>
                     <td><%= {:safe, @offer.desc} %></td>
                 </tr>
@@ -38,7 +50,17 @@
                 <%= if @offer.offer_type == :in_store do %>
                 <tr>
                     <td><%= gettext("Claim ID") %></td>
-                    <td><%= @offer.vendor.id %></td>
+                    <td><%= @offer.vendor.vendor_id %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("GPS Coordinates") %></td>
+                    <td>
+                        <ul>
+                        <%= for coordinate <- @offer.offer_gps_coordinates do %>
+                            <li><%= "#{coordinate.address} (#{elem(coordinate.geom.coordinates, 1)}, #{elem(coordinate.geom.coordinates, 0)})" %></li>
+                        <% end %>
+                        </ul>
+                    </td>
                 </tr>
                 <% else %>
                 <tr>
@@ -48,6 +70,16 @@
                 <tr>
                     <td><%= gettext("Online Promotion / Discount code") %></td>
                     <td><%= @offer.online_code %></td>
+                </tr>
+                <tr>
+                    <td><%= gettext("Locations") %></td>
+                    <td>
+                        <ul>
+                            <%= for offer_location <- @offer.offer_locations do %>
+                            <li><%= offer_location.location.name_en %></li>
+                            <% end %>
+                        </ul>
+                    </td>
                 </tr>
                 <% end %>
                 <tr>
