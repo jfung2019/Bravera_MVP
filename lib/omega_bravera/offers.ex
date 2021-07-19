@@ -709,7 +709,7 @@ defmodule OmegaBravera.Offers do
 
         offer = get_offer!(offer_approval.offer_id, [:organization])
         update_params = check_start_end_date(offer, %{approval_status: offer_approval.status})
-        {:ok, _offer} = update_offer(offer, update_params)
+        {:ok, _offer} = update_offer(offer, update_params, offer_approval)
 
         {:ok, changeset}
 
@@ -754,7 +754,7 @@ defmodule OmegaBravera.Offers do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_offer(%Offer{} = offer, attrs) do
+  def update_offer(%Offer{} = offer, attrs, offer_approval \\ nil) do
     result =
       offer
       |> Offer.changeset(attrs)
@@ -769,10 +769,7 @@ defmodule OmegaBravera.Offers do
       {:pending, {:ok, %{approval_status: status} = updated_offer} = result}
       when status in [:approved, :denied] ->
         OmegaBravera.Accounts.get_partner_user_email_by_offer(updated_offer.id)
-        |> Notifier.notify_customer_offer_email(
-          %OfferApproval{status: status, message: ""},
-          updated_offer
-        )
+        |> Notifier.notify_customer_offer_email(offer_approval, updated_offer)
 
         result
 
