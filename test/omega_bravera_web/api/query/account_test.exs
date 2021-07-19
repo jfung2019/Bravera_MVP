@@ -23,6 +23,7 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
       emailVerified
       firstname
       lastname
+      totalKilometersToday
     }
   }
   """
@@ -157,7 +158,8 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
              "data" => %{
                "userProfile" => %{
                  "firstname" => ^first_name,
-                 "lastname" => ^last_name
+                 "lastname" => ^last_name,
+                 "totalKilometersToday" => 0.0
                }
              }
            } = json_response(response, 200)
