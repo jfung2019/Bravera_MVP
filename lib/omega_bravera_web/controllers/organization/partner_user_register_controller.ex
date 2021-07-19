@@ -25,7 +25,7 @@ defmodule OmegaBraveraWeb.PartnerUserRegisterController do
         conn
         |> put_flash(
           :info,
-          "Account created! Please check your inbox and click the link we sent to verify your account email."
+          "Account created! <span class='text-danger'>Please check your inbox</span> (including spam folders) and click the link we sent to verify your account email."
         )
         |> redirect(to: Routes.partner_user_session_path(conn, :new))
 

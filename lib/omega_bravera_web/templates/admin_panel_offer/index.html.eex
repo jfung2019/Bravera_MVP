@@ -30,6 +30,7 @@
       <thead>
         <tr>
           <th><%= gettext("Name") %></th>
+          <th><%= gettext("Organization") %></th>
           <th><%= gettext("Claim ID") %></th>
           <th><%= gettext("Participants") %></th>
           <th><%= gettext("Engagements") %></th>
@@ -45,6 +46,7 @@
       <%= for offer <- @offers do %>
         <tr>
           <td><%= offer.name %></td>
+          <td><%= if is_nil(offer.organization), do: "N/A", else: offer.organization.name %></td>
           <td><%= if !is_nil(offer.vendor), do: offer.vendor.vendor_id %></td>
           <td><%= offer.unique_participants %></td>
           <td><%= length(offer.offer_challenges) %></td>

@@ -289,6 +289,7 @@ defmodule OmegaBravera.Offers do
     list_offers_preload_query([
       :vendor,
       :offer_challenges,
+      :organization,
       offer_redeems: [:offer_reward]
     ])
     |> Turbo.Ecto.turbo(params, entry_name: "offers")
