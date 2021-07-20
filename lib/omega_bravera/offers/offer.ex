@@ -214,7 +214,7 @@ defmodule OmegaBravera.Offers.Offer do
     add_error(
       changeset,
       :non_editable,
-      "Sorry. You cannot edit this offer anymore because it has been approved."
+      "Sorry. You cannot edit this offer anymore because it has been approved. To request changes please contact support@bravera.co."
     )
   end
 
