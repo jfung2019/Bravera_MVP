@@ -134,6 +134,7 @@
   <div class="form-group">
     <div id="multi_locations_container">
       <label class="control-label"><%= gettext("Locations") %></label>
+      <small class="form-text text-muted"><%= gettext("Which country (or countries) can your reward be claimed and delivered?") %></small>
       <%= inputs_for f, :offer_locations, fn offer_loc -> %>
         <div class="row mb-2 px-3">
           <%= select offer_loc, :location_id, Enum.map(@available_locations, &{&1.name_en, &1.id}), class: add_error_class(offer_loc, :location_id, "form-control col-10") %>

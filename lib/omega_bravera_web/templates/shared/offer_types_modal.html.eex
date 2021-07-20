@@ -6,7 +6,7 @@ offline_path = if assigns[:new_merchant], do: Routes.org_panel_offline_offers_pa
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><%= gettext("There are two types of offers.") %></h5>
+                <h5 class="modal-title"><%= gettext("What kind of offer would you like to create?") %></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

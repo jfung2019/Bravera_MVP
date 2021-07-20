@@ -17,11 +17,11 @@
                 </tr>
                 <tr>
                     <td><%= gettext("Start Date") %></td>
-                    <td><%= @offer.start_date %></td>
+                    <td><%= render_datetime(@offer.start_date) %></td>
                 </tr>
                 <tr>
                     <td><%= gettext("End Date") %></td>
-                    <td><%= @offer.end_date %></td>
+                    <td><%= render_datetime(@offer.end_date) %></td>
                 </tr>
                 <tr>
                     <td><%= gettext("Days") %></td>

@@ -123,17 +123,21 @@
 
   <div class="form-group">
     <div id="multi_gps_coordinates_container">
-      <label class="control-label"><%= gettext("GPS Locations") %></label>
+      <label class="control-label"><%= gettext("Map Location") %></label>
+      <small class="form-text text-muted">
+        <%= gettext("(offline: If your Offer is ‘offline’ then it is likely a physical / fixed location and can be added to the Bravera offers map for users to find. Follow the instructions on adding GPS coordinates from Google Maps ") %>
+        <a href="http://google.com" target="_blank"><%= gettext("here") %></a>)
+      </small>
       <%= inputs_for f, :offer_gps_coordinates, fn offer_coord -> %>
         <div class="row mb-2 px-3 py-1 border">
           <div class="col-10">
             <%= label offer_coord, :address, class: "control-label" %>
             <%= text_input offer_coord, :address, class: add_error_class(offer_coord, :address, "form-control col-10") %>
             <%= error_tag offer_coord, :address %>
-            <%= label offer_coord, :latitude, class: "control-label" %>
+            <%= label offer_coord, :latitude, gettext("Latitude Coordinates"), class: "control-label" %>
             <%= text_input offer_coord, :latitude, class: add_error_class(offer_coord, :address, "form-control col-10"), value: if is_nil(offer_coord.data.geom), do: offer_coord.data.latitude, else: elem(offer_coord.data.geom.coordinates, 1) %>
             <%= error_tag offer_coord, :latitude %>
-            <%= label offer_coord, :longitude, class: "control-label" %>
+            <%= label offer_coord, :longitude, gettext("Longitude coordinates"), class: "control-label" %>
             <%= text_input offer_coord, :longitude, class: add_error_class(offer_coord, :address, "form-control col-10"), value: if is_nil(offer_coord.data.geom), do: offer_coord.data.longitude, else: elem(offer_coord.data.geom.coordinates, 0) %>
             <%= error_tag offer_coord, :longitude %>
           </div>

@@ -32,17 +32,17 @@
 </div>
 
 <div class="modal fade" id="register_popup" tabindex="-1" role="dialog" aria-labelledby="register_popup_modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 35rem;">
         <div class="modal-content">
             <div class="modal-header">
-                <p><%= gettext("Which type of account do you want to register as?") %></p>
+                <p><%= gettext("What kind of account do you want to create?") %></p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-footer">
-                <%= link gettext("Organization"), to: Routes.partner_user_register_path(@conn, :new), class: "btn btn-primary"%>
-                <%= link gettext("Merchant"), to: Routes.merchant_register_path(@conn, :new), class: "btn btn-primary" %>
+                <%= link gettext("Team Engagement Console"), to: Routes.partner_user_register_path(@conn, :new), class: "btn btn-primary"%>
+                <%= link gettext("Merchant Reward Console"), to: Routes.merchant_register_path(@conn, :new), class: "btn btn-primary" %>
             </div>
         </div>
     </div>

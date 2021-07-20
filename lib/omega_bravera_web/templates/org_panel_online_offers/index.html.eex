@@ -38,8 +38,8 @@
               <td><%= render_datetime(offer.updated_at) %></td>
               <td class="text-center">
                 <%= link gettext("Statement"), to: Routes.org_panel_online_offers_path(@conn, :statement, offer), class: "btn btn-secondary btn-xs mb-2" %>
-                <%= button gettext("Edit"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer), method: :get, class: "btn btn-warning btn-xs mb-2", disabled: @organization.account_type == :merchant and offer.approval_status == :approved %>
-                <%= button gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), method: :get, class: "btn btn-info btn-xs mb-2", disabled: @organization.account_type == :merchant and offer.approval_status == :approved %>
+                <%= button gettext("Edit"), to: Routes.org_panel_online_offers_path(@conn, :edit, offer), method: :get, class: "btn btn-warning btn-xs mb-2" %>
+                <%= button gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgOfferImages, offer), method: :get, class: "btn btn-info btn-xs mb-2" %>
               </td>
               <td class="text-center">
                 <%= if offer.approval_status == :approved do %>

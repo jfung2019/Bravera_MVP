@@ -48,11 +48,11 @@ $(function () {
         $("#multi_gps_coordinates_container").append(
             `<div class="row mb-2 px-3 border py-1"><div class="col">
                 <label>Address</label>
-                <input class="form-control col-10" type="text" id="${address_input_id}" name="${address_input_name}" placeholder="GPS coordinate address ${gps_coordinate_index+1}">
-                <label>Latitude</label>
-                <input class="form-control col-10" type="text" id="${latitude_input_id}" name="${latitude_input_name}" placeholder="GPS coordinate latitude ${gps_coordinate_index+1}">
-                <label>Longitude</label>
-                <input class="form-control col-10" type="text" id="${longitude_input_id}" name="${longitude_input_name}" placeholder="GPS coordinate longitude ${gps_coordinate_index+1}">  
+                <input class="form-control col-10" type="text" id="${address_input_id}" name="${address_input_name}" placeholder="Write the physical address">
+                <label>Latitude Coordinates</label>
+                <input class="form-control col-10" type="text" id="${latitude_input_id}" name="${latitude_input_name}" placeholder="Google Maps GPS Latitude Coordinates">
+                <label>Longitude Coordinates</label>
+                <input class="form-control col-10" type="text" id="${longitude_input_id}" name="${longitude_input_name}" placeholder="Google Maps GPS Longitude Coordinates">
             </div></div>`)
         gps_coordinate_index += 1;
     });
