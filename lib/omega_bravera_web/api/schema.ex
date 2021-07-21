@@ -279,10 +279,17 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.get_leaderboard/3
     end
 
-    @desc "Get Bravera Leaderboard"
+    @desc "Get Partner Leaderboard"
     field :get_partner_leaderboard, :leaderboard_result do
       arg :partner_id, non_null(:id)
+      middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.get_partner_leaderboard/3
+    end
+
+    @desc "Get Friend Leaderboard"
+    field :get_friend_leaderboard, :leaderboard_result do
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.get_friend_leaderboard/3
     end
 
     @desc "Get latest device sync datetime"

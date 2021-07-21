@@ -174,6 +174,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
          all_time: Accounts.api_get_leaderboard_all_time()
        }}
 
+  def get_friend_leaderboard(_root, _args, %{context: %{current_user: %{id: user_id}}}),
+    do:
+      {:ok,
+       %{
+         this_week: Accounts.api_get_friend_leaderboard_this_week(user_id),
+         this_month: Accounts.api_get_friend_leaderboard_this_month(user_id),
+         all_time: Accounts.api_get_friend_leaderboard_all_time(user_id)
+       }}
+
   def get_partner_leaderboard(_root, %{partner_id: partner_id}, _info),
     do:
       {:ok,
