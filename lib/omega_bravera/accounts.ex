@@ -425,17 +425,29 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
-  def api_get_leaderboard_this_week() do
+  @doc"""
+  get Bravera leaderboard of this week
+  """
+  @spec api_get_leaderboard_this_week :: [User.t()]
+  def api_get_leaderboard_this_week do
     api_get_leaderboard_this_week_query()
     |> Repo.all()
   end
 
-  def api_get_leaderboard_this_month() do
+  @doc"""
+  get Bravera leaderboard of this month
+  """
+  @spec api_get_leaderboard_this_month :: [User.t()]
+  def api_get_leaderboard_this_month do
     api_get_leaderboard_this_month_query()
     |> Repo.all()
   end
 
-  def api_get_leaderboard_all_time() do
+  @doc"""
+  get overall Bravera leaderboard
+  """
+  @spec api_get_leaderboard_all_time :: [User.t()]
+  def api_get_leaderboard_all_time do
     api_get_leaderboard_all_time_query()
     |> Repo.all()
   end
@@ -448,18 +460,30 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
+  @doc"""
+  get user's friends leaderboard of this month
+  """
+  @spec api_get_friend_leaderboard_this_week(String.t()) :: [User.t()]
   def api_get_friend_leaderboard_this_week(user_id) do
     api_get_leaderboard_this_week_query()
     |> filter_query_with_user_friend(user_id)
     |> Repo.all()
   end
 
+  @doc"""
+  get user's friends leaderboard of this month
+  """
+  @spec api_get_friend_leaderboard_this_month(String.t()) :: [User.t()]
   def api_get_friend_leaderboard_this_month(user_id) do
     api_get_leaderboard_this_month_query()
     |> filter_query_with_user_friend(user_id)
     |> Repo.all()
   end
 
+  @doc"""
+  get overall user's friends leaderboard
+  """
+  @spec api_get_friend_leaderboard_all_time(String.t()) :: [User.t()]
   def api_get_friend_leaderboard_all_time(user_id) do
     api_get_leaderboard_all_time_query()
     |> filter_query_with_user_friend(user_id)
@@ -471,18 +495,30 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @doc"""
+  get user's joined group leaderboard of this week
+  """
+  @spec api_get_leaderboard_of_partner_this_week(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_week(partner_id) do
     api_get_leaderboard_this_week_query()
     |> where([u], u.id in ^members(partner_id))
     |> Repo.all()
   end
 
+  @doc"""
+  get user's joined group leaderboard of this month
+  """
+  @spec api_get_leaderboard_of_partner_this_month(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_month(partner_id) do
     api_get_leaderboard_this_month_query()
     |> where([u], u.id in ^members(partner_id))
     |> Repo.all()
   end
 
+  @doc"""
+  get overall user's joined group leaderboard
+  """
+  @spec api_get_leaderboard_of_partner_all_time(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_all_time(partner_id) do
     api_get_leaderboard_all_time_query()
     |> where([u], u.id in ^members(partner_id))
