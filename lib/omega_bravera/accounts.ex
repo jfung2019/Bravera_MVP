@@ -368,7 +368,7 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
-  def api_get_leaderboard_this_week() do
+  defp api_get_leaderboard_this_week_query do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
 
@@ -386,10 +386,9 @@ defmodule OmegaBravera.Accounts do
       group_by: [u.id, p.value, a.distance],
       order_by: [desc_nulls_last: a.distance]
     )
-    |> Repo.all()
   end
 
-  def api_get_leaderboard_this_month() do
+  defp api_get_leaderboard_this_month_query do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
 
@@ -407,10 +406,9 @@ defmodule OmegaBravera.Accounts do
       group_by: [u.id, p.value, a.distance],
       order_by: [desc_nulls_last: a.distance]
     )
-    |> Repo.all()
   end
 
-  def api_get_leaderboard_all_time() do
+  defp api_get_leaderboard_all_time_query do
     from(
       u in User,
       left_join: a in subquery(activity_query()),
@@ -425,6 +423,70 @@ defmodule OmegaBravera.Accounts do
       group_by: [u.id, p.value, a.distance],
       order_by: [desc_nulls_last: a.distance]
     )
+  end
+
+  @doc"""
+  get Bravera leaderboard of this week
+  """
+  @spec api_get_leaderboard_this_week :: [User.t()]
+  def api_get_leaderboard_this_week do
+    api_get_leaderboard_this_week_query()
+    |> Repo.all()
+  end
+
+  @doc"""
+  get Bravera leaderboard of this month
+  """
+  @spec api_get_leaderboard_this_month :: [User.t()]
+  def api_get_leaderboard_this_month do
+    api_get_leaderboard_this_month_query()
+    |> Repo.all()
+  end
+
+  @doc"""
+  get overall Bravera leaderboard
+  """
+  @spec api_get_leaderboard_all_time :: [User.t()]
+  def api_get_leaderboard_all_time do
+    api_get_leaderboard_all_time_query()
+    |> Repo.all()
+  end
+
+  defp filter_query_with_user_friend(query, user_id) do
+    from(q in query,
+      left_join: f in Friend,
+      on: f.receiver_id == q.id or f.requester_id == q.id,
+      where: f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id)
+    )
+  end
+
+  @doc"""
+  get user's friends leaderboard of this month
+  """
+  @spec api_get_friend_leaderboard_this_week(String.t()) :: [User.t()]
+  def api_get_friend_leaderboard_this_week(user_id) do
+    api_get_leaderboard_this_week_query()
+    |> filter_query_with_user_friend(user_id)
+    |> Repo.all()
+  end
+
+  @doc"""
+  get user's friends leaderboard of this month
+  """
+  @spec api_get_friend_leaderboard_this_month(String.t()) :: [User.t()]
+  def api_get_friend_leaderboard_this_month(user_id) do
+    api_get_leaderboard_this_month_query()
+    |> filter_query_with_user_friend(user_id)
+    |> Repo.all()
+  end
+
+  @doc"""
+  get overall user's friends leaderboard
+  """
+  @spec api_get_friend_leaderboard_all_time(String.t()) :: [User.t()]
+  def api_get_friend_leaderboard_all_time(user_id) do
+    api_get_leaderboard_all_time_query()
+    |> filter_query_with_user_friend(user_id)
     |> Repo.all()
   end
 
@@ -433,66 +495,33 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @doc"""
+  get user's joined group leaderboard of this week
+  """
+  @spec api_get_leaderboard_of_partner_this_week(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_week(partner_id) do
-    now = Timex.now()
-    seven_days_ago = Timex.shift(now, days: -7)
-
-    from(
-      u in User,
-      left_join: a in subquery(activity_query(seven_days_ago, now)),
-      on: a.user_id == u.id,
-      left_join: p in subquery(point_query()),
-      on: p.user_id == u.id,
-      where: u.id in ^members(partner_id),
-      select: %{
-        u
-        | total_points_this_week: coalesce(p.value, 0),
-          total_kilometers_this_week: coalesce(a.distance, 0)
-      },
-      group_by: [u.id, p.value, a.distance],
-      order_by: [desc_nulls_last: a.distance]
-    )
+    api_get_leaderboard_this_week_query()
+    |> where([u], u.id in ^members(partner_id))
     |> Repo.all()
   end
 
+  @doc"""
+  get user's joined group leaderboard of this month
+  """
+  @spec api_get_leaderboard_of_partner_this_month(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_month(partner_id) do
-    now = Timex.now()
-    thirty_days_ago = Timex.shift(now, days: -30)
-
-    from(
-      u in User,
-      left_join: a in subquery(activity_query(thirty_days_ago, now)),
-      on: a.user_id == u.id,
-      left_join: p in subquery(point_query()),
-      on: p.user_id == u.id,
-      where: u.id in ^members(partner_id),
-      select: %{
-        u
-        | total_points_this_month: coalesce(p.value, 0),
-          total_kilometers_this_month: coalesce(a.distance, 0)
-      },
-      group_by: [u.id, p.value, a.distance],
-      order_by: [desc_nulls_last: a.distance]
-    )
+    api_get_leaderboard_this_month_query()
+    |> where([u], u.id in ^members(partner_id))
     |> Repo.all()
   end
 
+  @doc"""
+  get overall user's joined group leaderboard
+  """
+  @spec api_get_leaderboard_of_partner_all_time(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_all_time(partner_id) do
-    from(
-      u in User,
-      left_join: a in subquery(activity_query()),
-      on: a.user_id == u.id,
-      left_join: p in subquery(point_query()),
-      on: p.user_id == u.id,
-      where: u.id in ^members(partner_id),
-      select: %{
-        u
-        | total_points: coalesce(p.value, 0),
-          total_kilometers: coalesce(a.distance, 0)
-      },
-      group_by: [u.id, p.value, a.distance],
-      order_by: [desc_nulls_last: a.distance]
-    )
+    api_get_leaderboard_all_time_query()
+    |> where([u], u.id in ^members(partner_id))
     |> Repo.all()
   end
 
