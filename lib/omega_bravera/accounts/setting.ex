@@ -27,6 +27,12 @@ defmodule OmegaBravera.Accounts.Setting do
     |> assemble_weight()
   end
 
+  def gdpr_delete_changeset(setting) do
+    setting
+    |> cast(%{}, [])
+    |> put_change(:date_of_birth, nil)
+  end
+
   defp get_weight_whole_number(), do: Enum.to_list(30..130)
 
   defp get_weight_fraction(),

@@ -343,6 +343,20 @@ defmodule OmegaBravera.Accounts do
     end
   end
 
+  @doc """
+  set user as deleted
+  remove first_name, last_name, dob, location, email, profile_picture
+  """
+  def gdpr_delete_user(user_id) do
+    Multi.new()
+    |> Multi.update(:delete_user, User.gdpr_delete_changeset(get_user!(user_id)))
+    |> Multi.update(
+      :delete_user_setting,
+      Accounts.Setting.gdpr_delete_changeset(get_setting_by_user_id(user_id))
+    )
+    |> Repo.transaction()
+  end
+
   defp point_query do
     from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
   end
@@ -378,6 +392,7 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
+      where: not is_nil(u.email),
       select: %{
         u
         | total_points_this_week: coalesce(p.value, 0),
@@ -398,6 +413,7 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
+      where: not is_nil(u.email),
       select: %{
         u
         | total_points_this_month: coalesce(p.value, 0),
@@ -415,6 +431,7 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
+      where: not is_nil(u.email),
       select: %{
         u
         | total_points: coalesce(p.value, 0),
@@ -425,7 +442,7 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
-  @doc"""
+  @doc """
   get Bravera leaderboard of this week
   """
   @spec api_get_leaderboard_this_week :: [User.t()]
@@ -434,7 +451,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get Bravera leaderboard of this month
   """
   @spec api_get_leaderboard_this_month :: [User.t()]
@@ -443,7 +460,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get overall Bravera leaderboard
   """
   @spec api_get_leaderboard_all_time :: [User.t()]
@@ -460,7 +477,7 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
-  @doc"""
+  @doc """
   get user's friends leaderboard of this month
   """
   @spec api_get_friend_leaderboard_this_week(String.t()) :: [User.t()]
@@ -470,7 +487,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get user's friends leaderboard of this month
   """
   @spec api_get_friend_leaderboard_this_month(String.t()) :: [User.t()]
@@ -480,7 +497,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get overall user's friends leaderboard
   """
   @spec api_get_friend_leaderboard_all_time(String.t()) :: [User.t()]
@@ -495,7 +512,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get user's joined group leaderboard of this week
   """
   @spec api_get_leaderboard_of_partner_this_week(String.t()) :: [User.t()]
@@ -505,7 +522,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get user's joined group leaderboard of this month
   """
   @spec api_get_leaderboard_of_partner_this_month(String.t()) :: [User.t()]
@@ -515,7 +532,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get overall user's joined group leaderboard
   """
   @spec api_get_leaderboard_of_partner_all_time(String.t()) :: [User.t()]
@@ -1744,6 +1761,11 @@ defmodule OmegaBravera.Accounts do
   """
   def get_setting!(id), do: Repo.get!(Setting, id)
 
+  def get_setting_by_user_id(user_id) do
+    from(s in Setting, where: s.user_id == ^user_id)
+    |> Repo.one()
+  end
+
   @doc """
   Creates a setting.
 
@@ -2701,7 +2723,7 @@ defmodule OmegaBravera.Accounts do
       on: f.receiver_id == u.id or f.requester_id == u.id,
       where:
         f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id) and
-          u.id != ^user_id and ilike(u.username, ^search),
+          u.id != ^user_id and not is_nil(u.email) and ilike(u.username, ^search),
       order_by: [u.username]
     )
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
@@ -2712,7 +2734,10 @@ defmodule OmegaBravera.Accounts do
   """
   @spec list_friend_requests(integer()) :: [Friend.t()]
   def list_friend_requests(user_id) do
-    from(f in Friend, where: f.status == :pending and f.receiver_id == ^user_id)
+    from(f in Friend,
+      left_join: requester in assoc(f, :requester),
+      where: f.status == :pending and f.receiver_id == ^user_id and not is_nil(requester.email)
+    )
     |> Repo.all()
   end
 
@@ -2730,7 +2755,7 @@ defmodule OmegaBravera.Accounts do
           (f.requester_id == u.id and f.receiver_id == ^user_id),
       where:
         u.id != ^user_id and ilike(u.username, ^search) and
-          (is_nil(f.id) or f.status != :accepted),
+          (is_nil(f.id) or f.status != :accepted) and not is_nil(u.email),
       order_by: u.username,
       select: %{
         u
@@ -2800,7 +2825,7 @@ defmodule OmegaBravera.Accounts do
           (pm.from_user_id == ^user_id and pm.to_user_id == u.id),
       where:
         f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id) and
-          u.id != ^user_id,
+          u.id != ^user_id and not is_nil(u.email),
       preload: [
         private_chat_messages:
           {message, [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]}

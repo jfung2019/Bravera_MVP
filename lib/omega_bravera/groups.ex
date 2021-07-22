@@ -722,18 +722,20 @@ defmodule OmegaBravera.Groups do
       left_join: u in assoc(m, :user),
       left_lateral_join:
         last_messages in subquery(
-          from(ChatMessage,
-            where: [group_id: parent_as(:group).id],
-            order_by: [desc: :inserted_at],
+          from(cm in ChatMessage,
+            left_join: u in assoc(cm, :user),
+            where: cm.group_id == parent_as(:group).id and not is_nil(u.email),
+            order_by: [desc: cm.inserted_at],
             limit: ^message_count,
-            select: [:id]
+            select: cm.id
           )
         ),
       on: last_messages.id == me.id and not is_nil(last_messages.id),
       left_lateral_join:
         muted in subquery(
           from(m in Member,
-            where: m.user_id == ^user_id and parent_as(:group).id == m.partner_id,
+            left_join: u in assoc(m, :user),
+            where: m.user_id == ^user_id and parent_as(:group).id == m.partner_id and not is_nil(u.email),
             select: %{partner_id: m.partner_id, mute_notification: m.mute_notification}
           )
         ),
@@ -758,18 +760,20 @@ defmodule OmegaBravera.Groups do
       left_join: u in assoc(m, :user),
       left_lateral_join:
         last_messages in subquery(
-          from(ChatMessage,
-            where: [group_id: parent_as(:group).id],
-            order_by: [desc: :inserted_at],
+          from(cm in ChatMessage,
+            left_join: u in assoc(cm, :user),
+            where: cm.group_id == parent_as(:group).id and not is_nil(u.email),
+            order_by: [desc: cm.inserted_at],
             limit: ^message_count,
-            select: [:id]
+            select: cm.id
           )
         ),
       on: last_messages.id == me.id and not is_nil(last_messages.id),
       left_lateral_join:
         muted in subquery(
           from(m in Member,
-            where: m.user_id == ^user_id and m.partner_id == ^partner_id,
+            left_join: u in assoc(m, :user),
+            where: m.user_id == ^user_id and m.partner_id == ^partner_id and not is_nil(u.email),
             select: %{partner_id: m.partner_id, mute_notification: m.mute_notification}
           )
         ),

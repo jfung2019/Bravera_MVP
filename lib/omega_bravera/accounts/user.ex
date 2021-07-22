@@ -170,6 +170,16 @@ defmodule OmegaBravera.Accounts.User do
     |> changeset(attrs, @allowed_attributes ++ [:daily_points_limit])
   end
 
+  def gdpr_delete_changeset(user) do
+    user
+    |> delete_profile_picture_changeset()
+    |> put_change(:firstname, nil)
+    |> put_change(:lastname, nil)
+    |> put_change(:email, nil)
+    |> put_change(:location_id, nil)
+    |> put_change(:username, "")
+  end
+
   def email_changed(%Ecto.Changeset{} = changeset, %__MODULE__{} = user) do
     new_email = get_field(changeset, :email)
 

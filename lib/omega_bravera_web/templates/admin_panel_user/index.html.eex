@@ -52,6 +52,7 @@
 					<div class="d-flex">
 						<%= link gettext("Details"), to: Routes.admin_panel_user_path(@conn, :show, user), class: "btn btn-primary btn-xs" %>&nbsp;
 						<%= link gettext("Edit"), to: Routes.admin_panel_user_path(@conn, :edit, user), class: "btn btn-warning btn-xs"%>
+						<%= link gettext("Delete"), to: Routes.admin_panel_user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
 					</div>
 				</td>
 			</tr>
