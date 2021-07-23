@@ -3,10 +3,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.BuyOfferChallengeTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential, Fixtures}
+  alias OmegaBravera.Fixtures
 
   @email "sheriefalaa.w@gmail.com"
-  @password "strong passowrd"
+
   @query """
   mutation($offerSlug: String!){
     buyOfferChallenge(offerSlug: $offerSlug){
@@ -26,17 +26,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.BuyOfferChallengeTest do
       user_id: user.id
     })
 
-    credential_attrs = %{
-      password: @password,
-      password_confirmation: @password
-    }
-
-    {:ok, credential} =
-      Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
-      |> Repo.insert()
-
-    credential
-    |> Repo.preload(:user)
+    Fixtures.credential_fixture(user.id)
   end
 
   test "buy/3 will not allow reward purchase without sufficiant points in user's balance" do

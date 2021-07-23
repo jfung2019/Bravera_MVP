@@ -15,8 +15,8 @@ defmodule OmegaBraveraWeb.UserControllerTest do
       gender: "Male"
     },
     credential: %{
-      password: "testtest",
-      password_confirmation: "testtest"
+      password: "Test@test",
+      password_confirmation: "Test@test"
     }
   }
   @invalid_attrs %{email: nil, firstname: nil, lastname: nil}

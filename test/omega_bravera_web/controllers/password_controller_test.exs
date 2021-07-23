@@ -70,8 +70,8 @@ defmodule OmegaBraveraWeb.PasswordControllerTest do
         })
 
       attrs = %{
-        "password" => "testing",
-        "password_confirmation" => "testing"
+        "password" => "Test@ing",
+        "password_confirmation" => "Test@ing"
       }
 
       conn = put(conn, password_path(conn, :update, updated_credential, credential: attrs))
