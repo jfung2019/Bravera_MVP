@@ -93,6 +93,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
         {:ok, Points.total_points(user_id)}
       end
 
+    field :total_points_today, non_null(:decimal)
     field :total_points_this_week, non_null(:decimal)
     field :total_rewards, non_null(:integer)
     field :total_kilometers, non_null(:decimal)

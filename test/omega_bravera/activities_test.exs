@@ -83,4 +83,16 @@ defmodule OmegaBravera.ActivitiesTest do
                0
              )
   end
+
+  test "cannot create Strava activity if user is not syncing with Strava", %{user: user} do
+    strava_activity = %Strava.DetailedActivity{
+      distance: 1,
+      start_date: Timex.now(),
+      type: "walk",
+      id: 123
+    }
+
+    assert {:error, %Ecto.Changeset{errors: [source: {"user not syncing with strava", []}]}} =
+             Activities.create_activity(strava_activity, user)
+  end
 end
