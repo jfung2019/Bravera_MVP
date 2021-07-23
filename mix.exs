@@ -85,7 +85,8 @@ defmodule OmegaBravera.Mixfile do
       {:pigeon, "~> 1.5.0"},
       {:kadabra, "~> 0.4.4"},
       {:sentry, "~> 8.0"},
-      {:geo_postgis, "~> 3.3"}
+      {:geo_postgis, "~> 3.3"},
+      {:password_validator, "~> 0.4"}
     ]
   end
 

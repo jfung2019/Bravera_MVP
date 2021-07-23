@@ -425,7 +425,7 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
-  @doc"""
+  @doc """
   get Bravera leaderboard of this week
   """
   @spec api_get_leaderboard_this_week :: [User.t()]
@@ -434,7 +434,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get Bravera leaderboard of this month
   """
   @spec api_get_leaderboard_this_month :: [User.t()]
@@ -443,7 +443,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get overall Bravera leaderboard
   """
   @spec api_get_leaderboard_all_time :: [User.t()]
@@ -460,7 +460,7 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
-  @doc"""
+  @doc """
   get user's friends leaderboard of this month
   """
   @spec api_get_friend_leaderboard_this_week(String.t()) :: [User.t()]
@@ -470,7 +470,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get user's friends leaderboard of this month
   """
   @spec api_get_friend_leaderboard_this_month(String.t()) :: [User.t()]
@@ -480,7 +480,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get overall user's friends leaderboard
   """
   @spec api_get_friend_leaderboard_all_time(String.t()) :: [User.t()]
@@ -495,7 +495,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get user's joined group leaderboard of this week
   """
   @spec api_get_leaderboard_of_partner_this_week(String.t()) :: [User.t()]
@@ -505,7 +505,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get user's joined group leaderboard of this month
   """
   @spec api_get_leaderboard_of_partner_this_month(String.t()) :: [User.t()]
@@ -515,7 +515,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get overall user's joined group leaderboard
   """
   @spec api_get_leaderboard_of_partner_all_time(String.t()) :: [User.t()]

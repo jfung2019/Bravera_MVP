@@ -17,8 +17,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.SignupTest do
       "gender" => "robot"
     },
     "credential" => %{
-      "password" => "dev123",
-      "passwordConfirm" => "dev123"
+      "password" => "Dev@1234",
+      "passwordConfirm" => "Dev@1234"
     }
   }
 
