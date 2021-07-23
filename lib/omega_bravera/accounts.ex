@@ -1302,6 +1302,11 @@ defmodule OmegaBravera.Accounts do
   """
   def get_user!(id, preloads \\ []), do: Repo.get!(User, id) |> Repo.preload(preloads)
 
+  def get_not_deleted_user!(id) do
+    from(u in User, where: u.id == ^id and not is_nil(u.email))
+    |> Repo.one!()
+  end
+
   @doc """
   Gets a user by their email address.
   """
