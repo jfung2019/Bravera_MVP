@@ -3,10 +3,9 @@ defmodule OmegaBraveraWeb.Api.Query.PointsTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential}
+  alias OmegaBravera.Fixtures
 
   @email "sheriefalaa.w@gmail.com"
-  @password "strong passowrd"
 
   @points_balance_query """
     query {
@@ -33,24 +32,9 @@ defmodule OmegaBraveraWeb.Api.Query.PointsTest do
   }
   """
 
-  def credential_fixture() do
-    user = insert(:user, %{email: @email})
-
-    credential_attrs = %{
-      password: @password,
-      password_confirmation: @password
-    }
-
-    {:ok, credential} =
-      Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
-      |> Repo.insert()
-
-    credential
-    |> Repo.preload(:user)
-  end
-
   setup %{conn: conn} do
-    credential = credential_fixture()
+    user = insert(:user, %{email: @email})
+    credential = Fixtures.credential_fixture(user.id)
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
 
     {:ok,

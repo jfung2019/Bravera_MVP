@@ -3,10 +3,9 @@ defmodule OmegaBraveraWeb.Api.Query.OfferRedeemTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential}
+  alias OmegaBravera.Fixtures
 
   @email "sheriefalaa.w@gmail.com"
-  @password "strong passowrd"
 
   @query """
   query {
@@ -27,17 +26,7 @@ defmodule OmegaBraveraWeb.Api.Query.OfferRedeemTest do
 
   setup %{conn: conn} do
     user = insert(:user, %{email: @email})
-
-    credential_attrs = %{
-      password: @password,
-      password_confirmation: @password
-    }
-
-    {:ok, credential} =
-      Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
-      |> Repo.insert()
-
-    credential = credential |> Repo.preload(:user)
+    credential = Fixtures.credential_fixture(user.id)
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
     {:ok, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}
   end

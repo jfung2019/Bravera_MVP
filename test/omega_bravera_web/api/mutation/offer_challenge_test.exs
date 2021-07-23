@@ -3,10 +3,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.OfferChallengeTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential}
+  alias OmegaBravera.Fixtures
 
   @email "sheriefalaa.w@gmail.com"
-  @password "strong passowrd"
+
   @query """
   mutation ($offer_challenge: OfferChallengeCreateInput!) {
     createOfferChallenge(input: $offer_challenge){
@@ -21,17 +21,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.OfferChallengeTest do
 
   def credential_fixture() do
     user = insert(:user, %{email: @email})
-
-    credential_attrs = %{
-      password: @password,
-      password_confirmation: @password
-    }
-
-    {:ok, credential} =
-      Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
-      |> Repo.insert()
-
-    credential |> Repo.preload(:user)
+    Fixtures.credential_fixture(user.id)
   end
 
   test "create/3 requires a user login to create offer challenge" do

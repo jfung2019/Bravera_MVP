@@ -149,7 +149,7 @@ defmodule OmegaBravera.AccountsTest do
                  lastname: "some lastname",
                  location_id: 1,
                  accept_terms: true,
-                 credential: %{password: "testtest", password_confirmation: "testtest"}
+                 credential: %{password: "Test@test", password_confirmation: "Test@test"}
                })
 
       assert_enqueued(worker: Accounts.Jobs.NoActivityAfterSignup, queue: :email)
@@ -454,7 +454,7 @@ defmodule OmegaBravera.AccountsTest do
   end
 
   describe "email_password_auth/2" do
-    @password "strong password"
+    @password "Dev@1234"
 
     def credential_fixture() do
       user = insert(:user)
