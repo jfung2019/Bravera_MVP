@@ -91,6 +91,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       activity_json: StravaParser.strava_activity_to_map(strava_activity),
       source: "strava"
     })
+    |> validate_strava_sync_type(user)
     |> use_start_date_for_end_date()
     |> validate_required(@required_attributes)
     |> foreign_key_constraint(:user_id)
@@ -227,4 +228,9 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       changeset
     end
   end
+
+  def validate_strava_sync_type(changeset, %{sync_type: :strava}), do: changeset
+
+  def validate_strava_sync_type(changeset, _user),
+    do: add_error(changeset, :source, "user not syncing with strava")
 end

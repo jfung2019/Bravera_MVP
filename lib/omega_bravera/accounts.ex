@@ -425,7 +425,7 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
-  @doc"""
+  @doc """
   get Bravera leaderboard of this week
   """
   @spec api_get_leaderboard_this_week :: [User.t()]
@@ -434,7 +434,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get Bravera leaderboard of this month
   """
   @spec api_get_leaderboard_this_month :: [User.t()]
@@ -443,7 +443,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get overall Bravera leaderboard
   """
   @spec api_get_leaderboard_all_time :: [User.t()]
@@ -460,7 +460,7 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
-  @doc"""
+  @doc """
   get user's friends leaderboard of this month
   """
   @spec api_get_friend_leaderboard_this_week(String.t()) :: [User.t()]
@@ -470,7 +470,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get user's friends leaderboard of this month
   """
   @spec api_get_friend_leaderboard_this_month(String.t()) :: [User.t()]
@@ -480,7 +480,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get overall user's friends leaderboard
   """
   @spec api_get_friend_leaderboard_all_time(String.t()) :: [User.t()]
@@ -495,7 +495,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get user's joined group leaderboard of this week
   """
   @spec api_get_leaderboard_of_partner_this_week(String.t()) :: [User.t()]
@@ -505,7 +505,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get user's joined group leaderboard of this month
   """
   @spec api_get_leaderboard_of_partner_this_month(String.t()) :: [User.t()]
@@ -515,7 +515,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @doc"""
+  @doc """
   get overall user's joined group leaderboard
   """
   @spec api_get_leaderboard_of_partner_all_time(String.t()) :: [User.t()]
@@ -630,6 +630,16 @@ defmodule OmegaBravera.Accounts do
         do: Decimal.from_float(0.0),
         else: total_kms_today
 
+    total_points_today =
+      Repo.aggregate(
+        from(p in Point,
+          where: p.user_id == ^user_id and fragment("?::date = now()::date", p.inserted_at),
+          select: coalesce(p.value, 0.0)
+        ),
+        :sum,
+        :value
+      ) || Decimal.from_float(0.0)
+
     live_challenges = user_live_challenges(user_id)
 
     expired_challenges = expired_challenges(user_id)
@@ -662,6 +672,7 @@ defmodule OmegaBravera.Accounts do
       | total_rewards: total_rewards,
         total_kilometers: total_kms_offers,
         total_kilometers_today: total_kms_today,
+        total_points_today: total_points_today,
         offer_challenges_map: %{
           live: live_challenges,
           expired: expired_challenges,

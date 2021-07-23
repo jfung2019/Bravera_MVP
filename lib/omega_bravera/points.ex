@@ -6,6 +6,7 @@ defmodule OmegaBravera.Points do
   require Logger
   alias OmegaBravera.{Repo, Accounts}
   alias OmegaBravera.Points.{Point, Notifier}
+  alias OmegaBravera.Activity.ActivityAccumulator
 
   @doc """
   Creates a changeset from a Point struct.
@@ -87,14 +88,15 @@ defmodule OmegaBravera.Points do
   def user_points_history_summary(user_id) do
     from(
       p in Point,
-      left_join: a in assoc(p, :activity),
+      left_join: a in ActivityAccumulator,
+      on: a.user_id == ^user_id and fragment("?::date = ?::date", p.inserted_at, a.start_date),
       where: p.user_id == ^user_id,
       order_by: [desc: fragment("CAST(? AS DATE)", p.inserted_at)],
       group_by: fragment("CAST(? AS DATE)", p.inserted_at),
       select: %{
         neg_value: fragment("sum(case when ? < 0 then ? else 0 end)", p.value, p.value),
         pos_value: fragment("sum(case when ? > 0 then ? else 0 end)", p.value, p.value),
-        distance: coalesce(sum(a.distance), 0),
+        distance: fragment("coalesce(sum(?) / count(distinct ?), 0)", a.distance, p.id),
         inserted_at: fragment("CAST(? AS DATE)", p.inserted_at)
       }
     )

@@ -178,6 +178,9 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
       token: "abc"
     })
 
+    Accounts.switch_sync_type(user_id, :strava)
+    user = Accounts.get_user!(user_id)
+
     {:ok, activity1} =
       Activities.create_activity(
         %Strava.DetailedActivity{
