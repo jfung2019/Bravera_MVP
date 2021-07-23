@@ -45,6 +45,11 @@ defmodule OmegaBraveraWeb.Admin.UserControllerTest do
       conn = get(conn, admin_panel_user_path(conn, :show, user))
       assert html_response(conn, 200) =~ "#{user.firstname} #{user.lastname}"
     end
+
+    test "gdpr delete user", %{conn: conn, user: user} do
+      conn = delete(conn, admin_panel_user_path(conn, :delete, user))
+      assert redirected_to(conn) == admin_panel_user_path(conn, :index)
+    end
   end
 
   defp create_user(_) do

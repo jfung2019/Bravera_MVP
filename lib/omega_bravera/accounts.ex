@@ -350,10 +350,20 @@ defmodule OmegaBravera.Accounts do
   def gdpr_delete_user(user_id) do
     Multi.new()
     |> Multi.update(:delete_user, User.gdpr_delete_changeset(get_user!(user_id)))
-    |> Multi.update(
-      :delete_user_setting,
-      Accounts.Setting.gdpr_delete_changeset(get_setting_by_user_id(user_id))
-    )
+    |> Multi.run(:delete_user_setting, fn repo, _result ->
+      get_setting_by_user_id(user_id)
+      |> then(fn setting ->
+        case setting do
+          nil ->
+            {:ok, :no_setting}
+
+          setting ->
+            setting
+            |> Accounts.Setting.gdpr_delete_changeset()
+            |> repo.update
+        end
+      end)
+    end)
     |> Repo.transaction()
   end
 
@@ -2886,7 +2896,7 @@ defmodule OmegaBravera.Accounts do
         f.status == :accepted and
           ((f.receiver_id == ^user_id and f.requester_id == ^to_user_id) or
              (f.requester_id == ^user_id and f.receiver_id == ^to_user_id)) and
-          u.id != ^user_id and u.id == ^to_user_id,
+          u.id != ^user_id and u.id == ^to_user_id and not is_nil(u.email),
       preload: [
         private_chat_messages:
           {message, [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]}

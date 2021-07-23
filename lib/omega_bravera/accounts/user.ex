@@ -174,11 +174,13 @@ defmodule OmegaBravera.Accounts.User do
   def gdpr_delete_changeset(user) do
     user
     |> delete_profile_picture_changeset()
-    |> put_change(:firstname, nil)
-    |> put_change(:lastname, nil)
-    |> put_change(:email, nil)
-    |> put_change(:location_id, nil)
-    |> put_change(:username, "")
+    |> change(%{
+      firstname: nil,
+      lastname: nil,
+      email: nil,
+      location_id: nil,
+      username: "deleted"
+    })
   end
 
   def email_changed(%Ecto.Changeset{} = changeset, %__MODULE__{} = user) do

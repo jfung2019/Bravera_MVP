@@ -131,11 +131,26 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
            } = json_response(response, 200)
   end
 
+  test "will not list friend of deleted user", %{
+    conn: conn,
+    user1: %{id: user1_id},
+    user2: %{id: user2_id}
+  } do
+    {:ok, friend} =
+      Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
+
+    Accounts.accept_friend_request(friend)
+    {:ok, _result} = Accounts.gdpr_delete_user(user2_id)
+
+    response = post(conn, "/api", %{query: @list_friends, variables: %{"first" => 3}})
+
+    assert %{"data" => %{"listFriends" => %{"edges" => []}}} = json_response(response, 200)
+  end
+
   test "can list friend requests", %{conn: conn, user1: %{id: user1_id}, user2: %{id: user2_id}} do
     Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
 
-    response =
-      post(conn, "/api", %{query: @list_friend_requests, variables: %{"requesterId" => user2_id}})
+    response = post(conn, "/api", %{query: @list_friend_requests})
 
     user2_id_string = to_string(user2_id)
 
@@ -151,13 +166,24 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
            } = json_response(response, 200)
   end
 
+  test "will not list friend request of deleted user", %{
+    conn: conn,
+    user1: %{id: user1_id},
+    user2: %{id: user2_id}
+  } do
+    Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
+    {:ok, _result} = Accounts.gdpr_delete_user(user2_id)
+
+    response = post(conn, "/api", %{query: @list_friend_requests})
+
+    assert %{"data" => %{"listFriendRequests" => []}} = json_response(response, 200)
+  end
+
   test "can list possible users for sending friend request", %{
     conn: conn,
     user2: %{id: user2_id},
     user3: %{id: user3_id}
   } do
-    Accounts.create_friend_request(%{receiver_id: user3_id, requester_id: user2_id})
-
     response = post(conn, "/api", %{query: @list_possible_friends, variables: %{"first" => 3}})
 
     user2_id_string = to_string(user2_id)
@@ -168,6 +194,29 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
                "listPossibleFriends" => %{
                  "edges" => [
                    %{"node" => %{"id" => ^user2_id_string, "friendStatus" => "stranger"}},
+                   %{"node" => %{"id" => ^user3_id_string, "friendStatus" => "stranger"}}
+                 ]
+               }
+             }
+           } = json_response(response, 200)
+  end
+
+  test "will not list deleted user for sending friend request", %{
+    conn: conn,
+    user2: %{id: user2_id},
+    user3: %{id: user3_id}
+  } do
+    Accounts.create_friend_request(%{receiver_id: user3_id, requester_id: user2_id})
+    {:ok, _result} = Accounts.gdpr_delete_user(user2_id)
+
+    response = post(conn, "/api", %{query: @list_possible_friends, variables: %{"first" => 3}})
+
+    user3_id_string = to_string(user3_id)
+
+    assert %{
+             "data" => %{
+               "listPossibleFriends" => %{
+                 "edges" => [
                    %{"node" => %{"id" => ^user3_id_string, "friendStatus" => "stranger"}}
                  ]
                }

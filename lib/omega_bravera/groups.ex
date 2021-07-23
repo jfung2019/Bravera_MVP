@@ -711,6 +711,14 @@ defmodule OmegaBravera.Groups do
     |> Repo.all()
   end
 
+  defp filter_messages_query do
+    from(cm in ChatMessage,
+      left_join: u in assoc(cm, :user),
+      where: not is_nil(u.email),
+      preload: [:user, reply_to_message: :user]
+    )
+  end
+
   @doc """
   Get the partners joined by the user, along with the latest 10 messages.
   """
@@ -735,13 +743,13 @@ defmodule OmegaBravera.Groups do
         muted in subquery(
           from(m in Member,
             left_join: u in assoc(m, :user),
-            where: m.user_id == ^user_id and parent_as(:group).id == m.partner_id and not is_nil(u.email),
+            where: m.user_id == ^user_id and parent_as(:group).id == m.partner_id,
             select: %{partner_id: m.partner_id, mute_notification: m.mute_notification}
           )
         ),
       on: muted.partner_id == p.id,
       where: m.user_id == ^user_id and p.approval_status == :approved,
-      preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u],
+      preload: [chat_messages: ^filter_messages_query(), users: u],
       select: %{p | is_muted: not is_nil(muted.mute_notification)}
     )
     |> Repo.all()
@@ -773,13 +781,13 @@ defmodule OmegaBravera.Groups do
         muted in subquery(
           from(m in Member,
             left_join: u in assoc(m, :user),
-            where: m.user_id == ^user_id and m.partner_id == ^partner_id and not is_nil(u.email),
+            where: m.user_id == ^user_id and m.partner_id == ^partner_id,
             select: %{partner_id: m.partner_id, mute_notification: m.mute_notification}
           )
         ),
       on: muted.partner_id == p.id,
       where: p.id == ^partner_id and p.approval_status == :approved,
-      preload: [chat_messages: {me, [:user, reply_to_message: :user]}, users: u],
+      preload: [chat_messages: ^filter_messages_query(), users: u],
       select: %{p | is_muted: not is_nil(muted.mute_notification)}
     )
     |> Repo.one()
