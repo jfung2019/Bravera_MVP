@@ -250,6 +250,19 @@ defmodule OmegaBravera.GroupsTest do
     test "change_chat_message/1 returns a chat_message changeset", %{chat_message: chat_message} do
       assert %Ecto.Changeset{} = Groups.change_chat_message(chat_message)
     end
+
+    test "will not show message from deleted user", %{
+      user: %{id: user_id},
+      partner: %{id: partner_id}
+    } do
+      {:ok, _member} = Groups.join_partner(partner_id, user_id)
+      user2 = Fixtures.user_fixture(email: "user2@email.com")
+      {:ok, _result} = OmegaBravera.Accounts.gdpr_delete_user(user2.id)
+      Fixtures.group_chat_message_fixture(%{group_id: partner_id, user_id: user2.id})
+
+      assert [%{chat_messages: [%{user_id: ^user_id}]}] =
+               Groups.list_joined_partners_with_chat_messages(user_id)
+    end
   end
 
   describe "group_chat_message" do

@@ -34,4 +34,18 @@ defmodule OmegaBraveraWeb.AdminPanelUserController do
         |> render("edit.html", user: user, changeset: changeset)
     end
   end
+
+  def delete(conn, %{"id" => user_id}) do
+    case Accounts.gdpr_delete_user(user_id) do
+      {:ok, _result} ->
+        conn
+        |> put_flash(:info, "User deleted successfully.")
+        |> redirect(to: Routes.admin_panel_user_path(conn, :index))
+
+      _ ->
+        conn
+        |> put_flash(:error, "User not deleted.")
+        |> redirect(to: Routes.admin_panel_user_path(conn, :index))
+    end
+  end
 end

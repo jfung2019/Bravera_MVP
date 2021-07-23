@@ -24,33 +24,28 @@ defmodule OmegaBraveraWeb.Api.Context do
   end
 
   defp get_user_device(token) do
-    case Guardian.decode_and_verify(token) do
-      {:ok, %{"sub" => "user:" <> id}} ->
-        try do
-          {:ok, Accounts.get_user!(id), nil}
-        rescue
-          exception ->
-            Logger.warn(
-              "API Context: Got valid token, but non-existing user in db. #{inspect(exception)}"
-            )
+    try do
+      with {:ok, %{"sub" => "user:" <> id}} <- Guardian.decode_and_verify(token),
+           %{} = user <- Accounts.get_not_deleted_user!(id) do
+        {:ok, user, nil}
+      else
+        _ ->
+          with {:ok, {:device_uuid, device_uuid}} <- Auth.decrypt_token(token),
+               %{} = device <- Devices.get_device_by_uuid(device_uuid),
+               %{} = user <- Accounts.get_not_deleted_user!(device.user_id) do
+            {:ok, user, device}
+          else
+            _ ->
+              :error
+          end
+      end
+    rescue
+      exception ->
+        Logger.warn(
+          "API Context: Got valid token, but non-existing or deleted user in db. #{inspect(exception)}"
+        )
 
-            :error
-        end
-
-      _ ->
-        case Auth.decrypt_token(token) do
-          {:ok, {:device_uuid, device_uuid}} ->
-            case Devices.get_device_by_uuid(device_uuid) do
-              nil ->
-                :error
-
-              device ->
-                {:ok, Accounts.get_user!(device.user_id), device}
-            end
-
-          _ ->
-            :error
-        end
+        :error
     end
   end
 end

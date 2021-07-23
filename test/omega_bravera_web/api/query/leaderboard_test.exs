@@ -47,6 +47,28 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
   }
   """
 
+  @get_leaderboard """
+  query {
+    getLeaderboard {
+      thisWeek{
+        id
+        totalPointsThisWeek
+        totalKilometersThisWeek
+      }
+      thisMonth{
+        id
+        totalPointsThisMonth
+        totalKilometersThisMonth
+      }
+      allTime{
+        id
+        totalPoints
+        totalKilometers
+      }
+    }
+  }
+  """
+
   setup %{conn: conn} do
     {:ok, %{id: location_id}} =
       Locations.create_location(%{
@@ -83,6 +105,15 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
         location_id: location_id
       })
 
+    {:ok, user4} =
+      Accounts.create_user(%{
+        firstname: "user",
+        lastname: "4",
+        email: "user4@email.com",
+        email_verified: true,
+        location_id: location_id
+      })
+
     {:ok, partner} =
       Groups.create_partner(%{
         name: "partner1",
@@ -112,6 +143,7 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
      user1: user1,
      user2: user2,
      user3: user3,
+     user4: user4,
      partner: partner}
   end
 
@@ -141,6 +173,43 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
     assert %{
              "data" => %{
                "getFriendLeaderboard" => %{
+                 "allTime" => all_time_list,
+                 "thisMonth" => this_month_list,
+                 "thisWeek" => this_week_list
+               }
+             }
+           } = json_response(conn, 200)
+
+    assert {3, 3, 3} = {length(all_time_list), length(this_month_list), length(this_week_list)}
+  end
+
+  test "can get Bravera leaderboard", %{conn: conn} do
+    conn = post(conn, "/api", %{query: @get_leaderboard})
+
+    assert %{
+             "data" => %{
+               "getLeaderboard" => %{
+                 "allTime" => all_time_list,
+                 "thisMonth" => this_month_list,
+                 "thisWeek" => this_week_list
+               }
+             }
+           } = json_response(conn, 200)
+
+    assert {4, 4, 4} = {length(all_time_list), length(this_month_list), length(this_week_list)}
+  end
+
+  test "can get Bravera leaderboard without gdpr deleted user", %{
+    conn: conn,
+    user4: %{id: user4_id}
+  } do
+    {:ok, _result} = Accounts.gdpr_delete_user(user4_id)
+
+    conn = post(conn, "/api", %{query: @get_leaderboard})
+
+    assert %{
+             "data" => %{
+               "getLeaderboard" => %{
                  "allTime" => all_time_list,
                  "thisMonth" => this_month_list,
                  "thisWeek" => this_week_list

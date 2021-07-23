@@ -278,6 +278,23 @@ defmodule OmegaBravera.AccountsTest do
       assert {:ok, %{email_verified: true}} = Accounts.activate_user_email(user)
       assert_enqueued(worker: Accounts.Jobs.AfterEmailVerify, queue: :email)
     end
+
+    test "gdpr delete user", %{user: %{id: user_id}} do
+      {:ok, _setting} =
+        Accounts.create_setting(%{date_of_birth: Timex.now(), gender: "Other", user_id: user_id})
+
+      assert {:ok,
+              %{
+                delete_user: %{
+                  firstname: nil,
+                  lastname: nil,
+                  username: "deleted",
+                  email: nil,
+                  location_id: nil
+                },
+                delete_user_setting: %{date_of_birth: nil}
+              }} = Accounts.gdpr_delete_user(user_id)
+    end
   end
 
   describe "settings" do
@@ -730,6 +747,34 @@ defmodule OmegaBravera.AccountsTest do
     test "change_organization_member/1 returns a organization_member changeset" do
       organization_member = organization_member_fixture()
       assert %Ecto.Changeset{} = Accounts.change_organization_member(organization_member)
+    end
+  end
+
+  describe "friend chat messages" do
+    setup do
+      user = insert(:user)
+      user2 = insert(:user, %{email: "user2@email.com"})
+      user3 = insert(:user, %{email: "use3@email.com"})
+
+      {:ok, friend} =
+        Accounts.create_friend_request(%{receiver_id: user.id, requester_id: user2.id})
+
+      {:ok, friend2} =
+        Accounts.create_friend_request(%{receiver_id: user.id, requester_id: user3.id})
+
+      Accounts.accept_friend_request(friend)
+      Accounts.accept_friend_request(friend2)
+
+      {:ok, user: user, user2: user2, user3: user3}
+    end
+
+    test "won't get friend chat messages of deleted user", %{
+      user: user,
+      user2: %{id: user2_id},
+      user3: user3
+    } do
+      {:ok, _result} = OmegaBravera.Accounts.gdpr_delete_user(user3.id)
+      assert [%{id: ^user2_id}] = Accounts.list_accepted_friends_with_chat_messages(user.id)
     end
   end
 end

@@ -343,6 +343,30 @@ defmodule OmegaBravera.Accounts do
     end
   end
 
+  @doc """
+  set user as deleted
+  remove first_name, last_name, dob, location, email, profile_picture
+  """
+  def gdpr_delete_user(user_id) do
+    Multi.new()
+    |> Multi.update(:delete_user, User.gdpr_delete_changeset(get_user!(user_id)))
+    |> Multi.run(:delete_user_setting, fn repo, _result ->
+      get_setting_by_user_id(user_id)
+      |> then(fn setting ->
+        case setting do
+          nil ->
+            {:ok, :no_setting}
+
+          setting ->
+            setting
+            |> Accounts.Setting.gdpr_delete_changeset()
+            |> repo.update
+        end
+      end)
+    end)
+    |> Repo.transaction()
+  end
+
   defp point_query do
     from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
   end
@@ -378,6 +402,7 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
+      where: not is_nil(u.email),
       select: %{
         u
         | total_points_this_week: coalesce(p.value, 0),
@@ -398,6 +423,7 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
+      where: not is_nil(u.email),
       select: %{
         u
         | total_points_this_month: coalesce(p.value, 0),
@@ -415,6 +441,7 @@ defmodule OmegaBravera.Accounts do
       on: a.user_id == u.id,
       left_join: p in subquery(point_query()),
       on: p.user_id == u.id,
+      where: not is_nil(u.email),
       select: %{
         u
         | total_points: coalesce(p.value, 0),
@@ -1275,6 +1302,11 @@ defmodule OmegaBravera.Accounts do
   """
   def get_user!(id, preloads \\ []), do: Repo.get!(User, id) |> Repo.preload(preloads)
 
+  def get_not_deleted_user!(id) do
+    from(u in User, where: u.id == ^id and not is_nil(u.email))
+    |> Repo.one!()
+  end
+
   @doc """
   Gets a user by their email address.
   """
@@ -1754,6 +1786,11 @@ defmodule OmegaBravera.Accounts do
 
   """
   def get_setting!(id), do: Repo.get!(Setting, id)
+
+  def get_setting_by_user_id(user_id) do
+    from(s in Setting, where: s.user_id == ^user_id)
+    |> Repo.one()
+  end
 
   @doc """
   Creates a setting.
@@ -2712,7 +2749,7 @@ defmodule OmegaBravera.Accounts do
       on: f.receiver_id == u.id or f.requester_id == u.id,
       where:
         f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id) and
-          u.id != ^user_id and ilike(u.username, ^search),
+          u.id != ^user_id and not is_nil(u.email) and ilike(u.username, ^search),
       order_by: [u.username]
     )
     |> Relay.Connection.from_query(&Repo.all/1, pagination_args)
@@ -2723,7 +2760,10 @@ defmodule OmegaBravera.Accounts do
   """
   @spec list_friend_requests(integer()) :: [Friend.t()]
   def list_friend_requests(user_id) do
-    from(f in Friend, where: f.status == :pending and f.receiver_id == ^user_id)
+    from(f in Friend,
+      left_join: requester in assoc(f, :requester),
+      where: f.status == :pending and f.receiver_id == ^user_id and not is_nil(requester.email)
+    )
     |> Repo.all()
   end
 
@@ -2741,7 +2781,7 @@ defmodule OmegaBravera.Accounts do
           (f.requester_id == u.id and f.receiver_id == ^user_id),
       where:
         u.id != ^user_id and ilike(u.username, ^search) and
-          (is_nil(f.id) or f.status != :accepted),
+          (is_nil(f.id) or f.status != :accepted) and not is_nil(u.email),
       order_by: u.username,
       select: %{
         u
@@ -2811,7 +2851,7 @@ defmodule OmegaBravera.Accounts do
           (pm.from_user_id == ^user_id and pm.to_user_id == u.id),
       where:
         f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id) and
-          u.id != ^user_id,
+          u.id != ^user_id and not is_nil(u.email),
       preload: [
         private_chat_messages:
           {message, [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]}
@@ -2861,7 +2901,7 @@ defmodule OmegaBravera.Accounts do
         f.status == :accepted and
           ((f.receiver_id == ^user_id and f.requester_id == ^to_user_id) or
              (f.requester_id == ^user_id and f.receiver_id == ^to_user_id)) and
-          u.id != ^user_id and u.id == ^to_user_id,
+          u.id != ^user_id and u.id == ^to_user_id and not is_nil(u.email),
       preload: [
         private_chat_messages:
           {message, [:from_user, :to_user, reply_to_message: [:from_user, :to_user]]}
