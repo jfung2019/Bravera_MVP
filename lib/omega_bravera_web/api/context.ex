@@ -32,7 +32,7 @@ defmodule OmegaBraveraWeb.Api.Context do
         _ ->
           with {:ok, {:device_uuid, device_uuid}} <- Auth.decrypt_token(token),
                %{} = device <- Devices.get_device_by_uuid(device_uuid),
-               %{} = user <- Accounts.get_not_deleted_user!(id) do
+               %{} = user <- Accounts.get_not_deleted_user!(device.user_id) do
             {:ok, user, device}
           else
             _ ->
