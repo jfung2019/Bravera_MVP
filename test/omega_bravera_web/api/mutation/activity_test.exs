@@ -3,11 +3,11 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential}
+  alias OmegaBravera.Fixtures
   alias OmegaBraveraWeb.Api.Auth
 
   @email "sheriefalaa.w@gmail.com"
-  @password "strong passowrd"
+
   @query """
   mutation($distance: Decimal!, $start_date: Date!, $end_date: Date!, $source: String!, $type: String!) {
    createActivity(input: {distance: $distance, startDate: $start_date, endDate: $end_date, source: $source, type: $type}) {
@@ -36,22 +36,9 @@ defmodule OmegaBraveraWeb.Api.Mutation.ActivityTest do
   }
   """
 
-  def credential_fixture(user) do
-    credential_attrs = %{
-      password: @password,
-      password_confirmation: @password
-    }
-
-    {:ok, credential} =
-      Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
-      |> Repo.insert()
-
-    credential |> Repo.preload(:user)
-  end
-
   setup do
     user = insert(:user, %{email: @email})
-    credential = credential_fixture(user)
+    credential = Fixtures.credential_fixture(user.id)
     device = insert(:device, %{active: true, user_id: credential.user_id})
     token = Auth.generate_device_token(device.uuid)
     {:ok, user_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)

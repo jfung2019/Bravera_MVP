@@ -647,6 +647,16 @@ defmodule OmegaBravera.Accounts do
         do: Decimal.from_float(0.0),
         else: total_kms_today
 
+    total_points_today =
+      Repo.aggregate(
+        from(p in Point,
+          where: p.user_id == ^user_id and fragment("?::date = now()::date", p.inserted_at),
+          select: coalesce(p.value, 0.0)
+        ),
+        :sum,
+        :value
+      ) || Decimal.from_float(0.0)
+
     live_challenges = user_live_challenges(user_id)
 
     expired_challenges = expired_challenges(user_id)
@@ -679,6 +689,7 @@ defmodule OmegaBravera.Accounts do
       | total_rewards: total_rewards,
         total_kilometers: total_kms_offers,
         total_kilometers_today: total_kms_today,
+        total_points_today: total_points_today,
         offer_challenges_map: %{
           live: live_challenges,
           expired: expired_challenges,

@@ -10,6 +10,14 @@ defmodule OmegaBravera.Accounts.Credential do
     :password_confirmation
   ]
 
+  @password_opts [
+    length: [min: 8, messages: [too_short: "Password has to be as least 8 characters long."]],
+    character_set: [
+      upper_case: [1, :infinity],
+      special: [1, :infinity]
+    ]
+  ]
+
   @derive {Phoenix.Param, key: :reset_token}
   schema "credentials" do
     field :password_hash, :string
@@ -50,7 +58,7 @@ defmodule OmegaBravera.Accounts.Credential do
     credential
     |> cast(attrs, @create_attrs)
     |> validate_confirmation(:password)
-    |> validate_length(:password, min: 6)
+    |> PasswordValidator.validate(:password, @password_opts)
     |> put_password_hash()
   end
 

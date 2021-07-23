@@ -3,10 +3,10 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Accounts.Credential, Repo}
+  alias OmegaBravera.Fixtures
 
   @email "sheriefalaa.w@gmail.com"
-  @password "strong passowrd"
+
   @get_offers_images_query_by_slug """
   query ($slug: String!){
     getOffer(slug: $slug) {
@@ -18,24 +18,9 @@ defmodule OmegaBraveraWeb.Api.Query.OfferTest do
   }
   """
 
-  def credential_fixture() do
-    user = insert(:user, %{email: @email})
-
-    credential_attrs = %{
-      password: @password,
-      password_confirmation: @password
-    }
-
-    {:ok, credential} =
-      Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
-      |> Repo.insert()
-
-    credential
-    |> Repo.preload(:user)
-  end
-
   setup %{conn: conn} do
-    credential = credential_fixture()
+    user = insert(:user, %{email: @email})
+    credential = Fixtures.credential_fixture(user.id)
     offer = insert(:offer, %{target: 15, images: ["url1", "url2"], image: "url3"})
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
     {:ok, offer: offer, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}

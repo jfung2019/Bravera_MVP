@@ -5,7 +5,7 @@ defmodule OmegaBraveraWeb.UserSessionControllerTest do
 
   alias OmegaBravera.{Repo, Accounts.Credential}
 
-  @password "strong passowrd"
+  @password "Dev@1234"
 
   def credential_fixture() do
     user = insert(:user)

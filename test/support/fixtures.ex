@@ -28,8 +28,8 @@ defmodule OmegaBravera.Fixtures do
 
   def credential_fixture(user_id) do
     credential_attrs = %{
-      password: "testies123",
-      password_confirmation: "testies123"
+      password: "Testies@123",
+      password_confirmation: "Testies@123"
     }
 
     {:ok, credential} =

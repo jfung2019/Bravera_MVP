@@ -3,10 +3,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.ResendEmailSignupTest do
 
   import OmegaBravera.Factory
 
-  alias OmegaBravera.{Repo, Accounts.Credential}
+  alias OmegaBravera.Fixtures
 
   @email "sheriefalaa.w@gmail.com"
-  @password "strong passowrd"
+
   @mutation """
   mutation {
     resendWelcomeEmail {
@@ -17,18 +17,7 @@ defmodule OmegaBraveraWeb.Api.Mutation.ResendEmailSignupTest do
   """
   def credential_fixture() do
     user = insert(:user, %{email: @email, email_activation_token: "test123"})
-
-    credential_attrs = %{
-      password: @password,
-      password_confirmation: @password
-    }
-
-    {:ok, credential} =
-      Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
-      |> Repo.insert()
-
-    credential
-    |> Repo.preload(:user)
+    Fixtures.credential_fixture(user.id)
   end
 
   test "resend welcome email", %{conn: conn} do

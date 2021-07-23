@@ -4,17 +4,16 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   import OmegaBravera.Factory
 
   alias OmegaBravera.{
-    Repo,
     Accounts,
     Points,
-    Accounts.Credential,
     Notifications,
     Activity.Activities,
-    Trackers
+    Trackers,
+    Fixtures
   }
 
   @email "sheriefalaa.w@gmail.com"
-  @password "strong passowrd"
+
   @query """
   query {
     userProfile {
@@ -124,28 +123,11 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
   }
   """
 
-  def credential_fixture() do
-    user = insert(:user, %{email: @email})
-
-    credential_attrs = %{
-      password: @password,
-      password_confirmation: @password
-    }
-
-    {:ok, credential} =
-      Credential.changeset(%Credential{user_id: user.id}, credential_attrs)
-      |> Repo.insert()
-
-    credential
-    |> Repo.preload(:user)
-  end
-
   setup %{conn: conn} do
-    credential = credential_fixture()
+    user = insert(:user, %{email: @email})
+    credential = Fixtures.credential_fixture(user.id)
     {:ok, auth_token, _} = OmegaBravera.Guardian.encode_and_sign(credential.user)
-
-    {:ok,
-     user: credential.user, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}
+    {:ok, user: user, conn: put_req_header(conn, "authorization", "Bearer #{auth_token}")}
   end
 
   test "user_profile can get all of the users info", %{
@@ -177,6 +159,9 @@ defmodule OmegaBraveraWeb.Api.Query.AccountTest do
       athlete_id: 1234,
       token: "abc"
     })
+
+    Accounts.switch_sync_type(user_id, :strava)
+    user = Accounts.get_user!(user_id)
 
     {:ok, activity1} =
       Activities.create_activity(
