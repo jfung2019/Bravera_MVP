@@ -88,15 +88,28 @@ defmodule OmegaBravera.Points do
   def user_points_history_summary(user_id) do
     from(
       p in Point,
-      left_join: a in ActivityAccumulator,
-      on: a.user_id == ^user_id and fragment("?::date = ?::date", p.inserted_at, a.start_date),
+      as: :point,
+      left_lateral_join:
+        aa in subquery(
+          from(a in ActivityAccumulator,
+            where:
+              a.user_id == ^user_id and
+                fragment("?::date = ?::date", parent_as(:point).inserted_at, a.start_date),
+            group_by: fragment("?::date", a.start_date),
+            select: %{
+              distance: coalesce(sum(a.distance), 0),
+              start_date: fragment("?::date", a.start_date)
+            }
+          )
+        ),
+      on: fragment("?::date = ?::date", p.inserted_at, aa.start_date),
       where: p.user_id == ^user_id,
       order_by: [desc: fragment("CAST(? AS DATE)", p.inserted_at)],
-      group_by: fragment("CAST(? AS DATE)", p.inserted_at),
+      group_by: [fragment("CAST(? AS DATE)", p.inserted_at), aa.distance],
       select: %{
         neg_value: fragment("sum(case when ? < 0 then ? else 0 end)", p.value, p.value),
         pos_value: fragment("sum(case when ? > 0 then ? else 0 end)", p.value, p.value),
-        distance: fragment("coalesce(sum(?) / count(distinct ?), 0)", a.distance, p.id),
+        distance: aa.distance,
         inserted_at: fragment("CAST(? AS DATE)", p.inserted_at)
       }
     )
