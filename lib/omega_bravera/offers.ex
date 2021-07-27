@@ -582,7 +582,11 @@ defmodule OmegaBravera.Offers do
       )
       |> Repo.all()
 
-    ([organization_statement_headers()] ++ rows)
+    headers =
+      OmegaBravera.Accounts.get_organization!(organization_id)
+      |> organization_statement_headers()
+
+    (headers ++ rows)
     |> CSV.encode()
     |> Enum.to_list()
     |> to_string()
@@ -1289,14 +1293,25 @@ defmodule OmegaBravera.Offers do
   @doc """
   Headers for Statement.
   """
-  def organization_statement_headers,
-    do: [
-      "Alias/Username",
+  def organization_statement_headers(org) do
+    headers = [
       "Challenge Creation",
       "Challenge Completed Date",
       "Redeemed Date",
       "Reward Name"
     ]
+
+    first_header =
+      case org.account_type do
+        :merchant ->
+          "Transaction ID"
+
+        _ ->
+          "Alias/Username"
+      end
+
+    [first_header | headers]
+  end
 
   @doc """
   Lists all expired offer redeems for a user

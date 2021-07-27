@@ -98,7 +98,7 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
     end
   end
 
-  def statement(%{assigns: %{organization_id: org_id}} = conn, %{"slug" => slug}) do
+  def statement(%{assigns: %{organization: org}} = conn, %{"slug" => slug}) do
     now = Timex.now()
 
     conn
@@ -106,8 +106,8 @@ defmodule OmegaBraveraWeb.OrgPanelOfflineOffersController do
     |> render("statement.html",
       years: (now.year - 5)..now.year,
       offer_slug: slug,
-      headers: Offers.organization_statement_headers(),
-      offer_redeems: Offers.list_offer_redeems_for_offer_statement_by_organization(slug, org_id)
+      headers: Offers.organization_statement_headers(org),
+      offer_redeems: Offers.list_offer_redeems_for_offer_statement_by_organization(slug, org.id)
     )
   end
 
