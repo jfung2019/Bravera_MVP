@@ -45,6 +45,8 @@ defmodule OmegaBravera.Accounts.User do
     field :username, :string
     field :locale, :string, default: "en"
     field :sync_type, Ecto.Enum, values: [:device, :strava, :pedometer], default: :device
+    field :new_email, :string
+    field :new_email_verification_code, :string
 
     # Admin section fields
     field :active, :boolean, virtual: true
@@ -200,6 +202,46 @@ defmodule OmegaBravera.Accounts.User do
   def update_profile_picture_changeset(user, attrs) do
     user
     |> cast(attrs, [:profile_picture])
+  end
+
+  def update_email_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:new_email])
+    |> validate_required([:new_email])
+    |> EctoCommons.EmailValidator.validate_email(:new_email)
+    |> new_email_changed()
+  end
+
+  def confirm_update_email_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:new_email_verification_code])
+    |> validate_required([:new_email_verification_code])
+    |> change_new_email(user)
+  end
+
+  def new_email_changed(%Ecto.Changeset{} = changeset) do
+    case changeset do
+      %{valid?: true, changes: %{new_email: _email}} ->
+        put_change(changeset, :new_email_verification_code, gen_user_activate_email_token())
+
+      _ ->
+        changeset
+    end
+  end
+
+  def change_new_email(%Ecto.Changeset{} = changeset, %__MODULE__{} = user) do
+    input_code = get_field(changeset, :new_email_verification_code)
+
+    cond do
+      input_code == user.new_email_verification_code ->
+        changeset
+        |> put_change(:email, get_field(changeset, :new_email))
+        |> put_change(:new_email_verification_code, nil)
+        |> put_change(:new_email, nil)
+
+      true ->
+        add_error(changeset, :new_email_verification_code, "The verification code is incorrect.")
+    end
   end
 
   def add_referred_by(changeset, referral) when is_nil(referral), do: changeset

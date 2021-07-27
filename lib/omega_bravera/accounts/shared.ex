@@ -35,4 +35,14 @@ defmodule OmegaBravera.Accounts.Shared do
 
     to_string(code) |> binary_part(0, length)
   end
+
+  def password_opt do
+    [
+      length: [min: 8, messages: [too_short: "Password has to be as least 8 characters long."]],
+      character_set: [
+        upper_case: [1, :infinity],
+        special: [1, :infinity]
+      ]
+    ]
+  end
 end

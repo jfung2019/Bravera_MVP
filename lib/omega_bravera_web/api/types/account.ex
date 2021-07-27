@@ -60,12 +60,11 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
   end
 
   input_object :user_settings_input do
-    field :email, non_null(:string)
+    field :username, non_null(:string)
     field :firstname, non_null(:string)
     field :lastname, non_null(:string)
     field :locale, non_null(:string)
     field :location_id, non_null(:integer)
-    field :credential, :credential
     field :setting, non_null(:setting_input)
   end
 
