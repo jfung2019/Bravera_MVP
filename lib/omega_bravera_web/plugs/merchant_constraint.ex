@@ -22,7 +22,8 @@ defmodule OmegaBraveraWeb.MerchantConstraint do
       Routes.org_panel_offline_offers_path(conn, :index),
       Routes.org_panel_offer_vendor_path(conn, :index),
       Routes.org_panel_offer_reward_path(conn, :index),
-      "/organization/offers/"
+      "/organization/offers/",
+      Routes.org_panel_dashboard_path(conn, :guides)
     ]
 
     if not is_nil(Map.get(conn.assigns, :admin_logged_in)) do
