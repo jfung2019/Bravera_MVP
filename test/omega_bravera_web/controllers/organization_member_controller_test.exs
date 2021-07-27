@@ -41,8 +41,8 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
             partner_user: %{
               username: "name",
               email: "iu@email.com",
-              password_confirmation: "123456",
-              password: "123456",
+              password_confirmation: "Test@123456",
+              password: "Test@123456",
               business_type: "type",
               first_name: "First Name",
               last_name: "Last Name",
@@ -103,8 +103,8 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
           partner_user: %{
             username: "name2",
             email: "iu@email.com",
-            password: "123456",
-            password_confirmation: "123456"
+            password: "Test@123456",
+            password_confirmation: "Test@123456"
           }
         )
 
@@ -172,8 +172,8 @@ defmodule OmegaBraveraWeb.OrganizationMemberControllerTest do
       partner_user: %{
         username: "name",
         email: "iu@email.com",
-        password: "123456",
-        password_confirmation: "123456",
+        password: "Test@123456",
+        password_confirmation: "Test@123456",
         first_name: "First Name",
         last_name: "Last Name",
         location_id: location.id,

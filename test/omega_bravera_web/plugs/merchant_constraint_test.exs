@@ -10,8 +10,8 @@ defmodule OmegaBraveraWeb.MerchantConstraintTest do
         "partner_user" => %{
           "username" => "test",
           "email" => "test@email.com",
-          "password" => "123456",
-          "password_confirmation" => "123456",
+          "password" => "Test@123456",
+          "password_confirmation" => "Test@123456",
           "email_verified" => true,
           "location_id" => location.id,
           "first_name" => "first",
