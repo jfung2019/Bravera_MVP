@@ -28,7 +28,8 @@
         <% else %>
         <div>
             <h3><%= gettext("Promote your offer") %></h3>
-            <p><%= gettext("Invite existing customers to get involved with your promotion on Bravera by using the introduction email below (or copy into social media). Customers (existing and new) will love the added gamification and innovative new offer! Simply") %></p>
+            <p><%= gettext("Invite existing customers to get involved with your promotion on Bravera by using the introduction email below (or copy into social media). Customers (existing and new) will love the added gamification and innovative new offer!") %></p>
+            <p><%= gettext("Simply copy and paste the message below and add details where you see any <brackets>.") %></p>
             <p><%= gettext("Hi everybody!") %></p>
             <p><%= gettext("Are you ready to earn discounts in exchange for walking?") %></p>
             <p><%= gettext("Believe it or not, you can get fitter and save money doing it, while at the same time create friendly competition with friends.") %></p>
