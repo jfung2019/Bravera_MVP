@@ -2,6 +2,7 @@
     <div class="card-body">
         <h1><span class="fa fa-list"></span> <%= gettext("Launch Guides/ Templates") %></h1>
         <hr>
+        <%= if @organization.account_type == :full do %>
         <div id="invite_member" class="my-3">
             <h3><%= gettext("Inviting Members to your Group(s)") %></h3>
             <p><%= gettext("Invite members to join your Live Group that has activated / live Offers.") %></p>
@@ -24,6 +25,34 @@
             <p><%= gettext("(Note: this is a private group, please don’t share the PIN!)") %></p>
             <p><%= gettext("I’m waiting for you to join and we can have some fun moving for rewards!\"") %></p>
         </div>
+        <% else %>
+        <div>
+            <h3><%= gettext("Promote your offer") %></h3>
+            <p><%= gettext("Invite existing customers to get involved with your promotion on Bravera by using the introduction email below (or copy into social media). Customers (existing and new) will love the added gamification and innovative new offer! Simply") %></p>
+            <p><%= gettext("Hi everybody!") %></p>
+            <p><%= gettext("Are you ready to earn discounts in exchange for walking?") %></p>
+            <p><%= gettext("Believe it or not, you can get fitter and save money doing it, while at the same time create friendly competition with friends.") %></p>
+            <p><%= gettext("Introducing our offer with Bravera app! And it is free to download and use.") %></p>
+            <p><%= gettext("Starting on <insert date> until <insert end date> we are offering <insert offer> in exchange for walking points!") %></p>
+            <p><%= gettext("Follow the instructions on how to set-up (important), put on your comfy walking / running shoes, and get involved.") %></p>
+            <p>
+                <span class="text-danger"><%= gettext("(important!)") %></span>
+                <%= gettext(" - For iOS users - ") %>
+                <a href="https://sites.google.com/bravera.co/gonerunners-ios/home" target="_blank"><%= gettext("follow these instructions") %></a>
+            </p>
+            <p>
+                <span class="text-danger"><%= gettext("(important!)") %></span>
+                <%= gettext(" - For Android users - ") %>
+                <a href="https://sites.google.com/bravera.co/guides-for-droid-users/home" target="_blank"><%= gettext("follow these instructions") %></a>
+            </p>
+            <p><%= gettext("How to find our offer") %></p>
+            <p><%= gettext("STEP 1: Scroll through or search for <Offer Name> inside the Home/Offers section.") %></p>
+            <p><%= gettext("STEP 2: Check to see if you’ve got enough points to unlock (hint: you can also earn points by inviting Friends with your referral code - to help unlock rewards sooner).") %></p>
+            <p><%= gettext("Looking forward to rewarding you for moving more!") %></p>
+            <p><%= gettext("Thanks!") %></p>
+            <p><%= gettext("{Business / Admin  name}") %></p>
+        </div>
+        <% end %>
         <hr>
         <div id="brand_claim_instruct" class="my-3">
             <h3><%= gettext("Brand Assets & Offline Claim Instructions") %></h3>
