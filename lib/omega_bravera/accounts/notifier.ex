@@ -52,6 +52,39 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.add_to(user.email)
   end
 
+  def send_user_confirm_email_change(%User{} = user) do
+    Email.build()
+    |> Email.put_template("d-231a4a314cf34c24b0d6143df6205ad8")
+    |> Email.add_dynamic_template_data("firstName", User.full_name(user))
+    |> Email.add_dynamic_template_data("code", user.new_email_verification_code)
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(user.new_email)
+    |> Mail.send()
+  end
+
+  def send_user_email_changed(%User{} = user, old_email) do
+    Email.build()
+    |> Email.put_template("d-f6fd5fd68121479ca099e40e0441100e")
+    |> Email.add_dynamic_template_data("firstName", User.full_name(user))
+    |> Email.add_dynamic_template_data("oldEmail", old_email)
+    |> Email.add_dynamic_template_data("newEmail", user.email)
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(user.email)
+    |> Mail.send()
+  end
+
+  def send_password_changed(%User{} = user) do
+    Email.build()
+    |> Email.put_template("d-b8ef105beeec4f66aa38bf1d252b1311")
+    |> Email.add_dynamic_template_data("firstName", User.full_name(user))
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(user.email)
+    |> Mail.send()
+  end
+
   def send_app_password_reset_email(%Credential{} = credential) do
     template_id = "ab8b34b3-7d10-40be-b732-e375cc14a8ab"
     sendgrid_email = Notifications.get_sendgrid_email_by_sendgrid_id(template_id)

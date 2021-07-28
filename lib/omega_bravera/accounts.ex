@@ -1447,8 +1447,8 @@ defmodule OmegaBravera.Accounts do
     |> Repo.update()
     |> then(fn result ->
       case result do
-        {:ok, %{new_email: new_email, new_email_verification_code: code}} ->
-          # TODO: send code to new email
+        {:ok, updated_user} ->
+          Notifier.send_user_confirm_email_change(updated_user)
           result
 
         _ ->
@@ -1468,8 +1468,8 @@ defmodule OmegaBravera.Accounts do
     |> Repo.update()
     |> then(fn result ->
       case result do
-        {:ok, %{email: email}} ->
-          # TODO: send email changed email to user.email
+        {:ok, updated_user} ->
+          Notifier.send_user_email_changed(updated_user, user.email)
           result
 
         _ ->
@@ -1488,6 +1488,16 @@ defmodule OmegaBravera.Accounts do
         update_user(user, %{
           credential: %{password: new_pw, password_confirmation: new_pw_confirm}
         })
+        |> then(fn result ->
+          case result do
+            {:ok, updated_user} ->
+              Notifier.send_password_changed(updated_user)
+              result
+
+            _ ->
+              result
+          end
+        end)
 
       true ->
         {:error, :wrong_old_password}
