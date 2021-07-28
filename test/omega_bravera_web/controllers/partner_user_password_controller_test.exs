@@ -100,8 +100,8 @@ defmodule OmegaBraveraWeb.PartnerUserPasswordControllerTest do
       partner_user = Accounts.reset_partner_user_password(partner_user)
 
       attrs = %{
-        "password" => "testing",
-        "password_confirmation" => "testing"
+        "password" => "Test@ing1",
+        "password_confirmation" => "Test@ing1"
       }
 
       conn =

@@ -118,7 +118,7 @@ defmodule OmegaBravera.Accounts.PartnerUser do
   defp validate_password(%{changes: %{password: _}} = changeset) do
     changeset
     |> validate_required([:password, :password_confirmation])
-    |> validate_length(:password, min: 6, max: 100)
+    |> PasswordValidator.validate(:password, password_opt())
     |> validate_confirmation(:password)
     |> put_pass_hash()
   end

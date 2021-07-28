@@ -64,6 +64,29 @@ defmodule OmegaBraveraWeb.Api.Schema do
       resolve &Resolvers.Accounts.save_settings/3
     end
 
+    @desc "Change User Email"
+    field :change_user_email, :user do
+      arg :new_email, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.change_user_email/3
+    end
+
+    @desc "Confirm update user email"
+    field :confirm_update_email, :user do
+      arg :new_email_verification_code, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.confirm_update_email/3
+    end
+
+    @desc "Change User password"
+    field :update_password, :user do
+      arg :old_password, non_null(:string)
+      arg :new_password, non_null(:string)
+      arg :new_password_confirm, non_null(:string)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.update_password/3
+    end
+
     @desc "Connect to strava"
     field :connect_to_strava, non_null(:strava_user) do
       arg :code, non_null(:string)

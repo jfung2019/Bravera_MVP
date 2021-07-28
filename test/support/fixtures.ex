@@ -97,8 +97,8 @@ defmodule OmegaBravera.Fixtures do
         first_name: "First Name",
         last_name: "Last Name",
         contact_number: "00000000",
-        password_confirmation: "pass1234",
-        password: "pass1234"
+        password_confirmation: "Pass@1234",
+        password: "Pass@1234"
       })
       |> Accounts.create_partner_user()
 

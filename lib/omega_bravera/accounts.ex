@@ -1438,6 +1438,73 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
+  put new email to user and generate verification code to confirm
+  """
+  @spec update_user_email(User.t(), map) :: tuple
+  def update_user_email(%User{} = user, attrs) do
+    user
+    |> User.update_email_changeset(attrs)
+    |> Repo.update()
+    |> then(fn result ->
+      case result do
+        {:ok, updated_user} ->
+          Notifier.send_user_confirm_email_change(updated_user)
+          result
+
+        _ ->
+          result
+      end
+    end)
+  end
+
+  @doc """
+  check if new_email_verification_code is correct
+  if correct update email to use the new email
+  """
+  @spec confirm_update_user_email(User.t(), map) :: tuple
+  def confirm_update_user_email(%User{} = user, attrs) do
+    user
+    |> User.confirm_update_email_changeset(attrs)
+    |> Repo.update()
+    |> then(fn result ->
+      case result do
+        {:ok, updated_user} ->
+          Notifier.send_user_email_changed(updated_user, user.email)
+          result
+
+        _ ->
+          result
+      end
+    end)
+  end
+
+  @doc """
+  update user password
+  """
+  @spec update_user_password(User.t(), String.t(), String.t(), String.t()) :: tuple
+  def update_user_password(%User{} = user, old_pw, new_pw, new_pw_confirm) do
+    cond do
+      checkpw(old_pw, user.credential.password_hash) ->
+        update_user(user, %{
+          credential: %{password: new_pw, password_confirmation: new_pw_confirm}
+        })
+        |> then(fn result ->
+          case result do
+            {:ok, updated_user} ->
+              Notifier.send_password_changed(updated_user)
+              result
+
+            _ ->
+              result
+          end
+        end)
+
+      true ->
+        {:error, :wrong_old_password}
+    end
+  end
+
+  @doc """
   Switch user's sync_type
   """
   @spec switch_sync_type(integer(), atom()) :: {:ok, Strava.t()} | {:error, message: String.t()}

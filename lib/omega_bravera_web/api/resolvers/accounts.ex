@@ -223,6 +223,49 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
+  def change_user_email(_root, params, %{context: %{current_user: %{id: id}}}) do
+    case Accounts.update_user_email(Accounts.get_user!(id), params) do
+      {:ok, _user} ->
+        {:ok, Accounts.get_user_with_account_settings(id)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:error, message: "Could not change email", details: Helpers.transform_errors(changeset)}
+    end
+  end
+
+  def confirm_update_email(_root, params, %{context: %{current_user: %{id: id}}}) do
+    case Accounts.confirm_update_user_email(Accounts.get_user!(id), params) do
+      {:ok, _user} ->
+        {:ok, Accounts.get_user_with_account_settings(id)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:error, message: "Could not change email", details: Helpers.transform_errors(changeset)}
+    end
+  end
+
+  def update_password(
+        _root,
+        %{old_password: old_pw, new_password: new_pw, new_password_confirm: new_pw_confirm},
+        %{context: %{current_user: %{id: id}}}
+      ) do
+    case Accounts.update_user_password(
+           Accounts.get_user!(id, [:credential]),
+           old_pw,
+           new_pw,
+           new_pw_confirm
+         ) do
+      {:ok, _user} ->
+        {:ok, Accounts.get_user_with_account_settings(id)}
+
+      {:error, :wrong_old_password} ->
+        {:error, message: "The old password is incorrect."}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:error,
+         message: "Could not change password", details: Helpers.transform_errors(changeset)}
+    end
+  end
+
   def verify_reset_token(_, %{reset_token: reset_token}, _) do
     case Accounts.get_credential_by_token(reset_token) do
       nil ->
