@@ -71,7 +71,7 @@ defmodule OmegaBravera.Accounts.Notifier do
     |> Email.add_dynamic_template_data("newEmail", user.email)
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
-    |> Email.add_to(user.email)
+    |> Email.add_to(old_email)
     |> Mail.send()
   end
 
