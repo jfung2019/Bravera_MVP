@@ -6,8 +6,8 @@ defmodule OmegaBraveraWeb.Api.Mutation.UpdateEmailPasswordTest do
   alias OmegaBravera.{Accounts, Fixtures}
 
   @change_user_email """
-  mutation($newEmail: String!) {
-    changeUserEmail(newEmail: $newEmail) {
+  mutation($newEmail: String!, $password: String!) {
+    changeUserEmail(newEmail: $newEmail, password: $password) {
       id
       email
     }
@@ -44,7 +44,10 @@ defmodule OmegaBraveraWeb.Api.Mutation.UpdateEmailPasswordTest do
     new_email = "new@email.com"
 
     response =
-      post(conn, "/api", %{query: @change_user_email, variables: %{"newEmail" => new_email}})
+      post(conn, "/api", %{
+        query: @change_user_email,
+        variables: %{"newEmail" => new_email, "password" => "Testies@123"}
+      })
 
     assert %{"data" => %{"changeUserEmail" => %{"email" => ^email}}} =
              json_response(response, 200)
@@ -64,12 +67,26 @@ defmodule OmegaBraveraWeb.Api.Mutation.UpdateEmailPasswordTest do
   end
 
   test "return error if email is invalid or code is incorrect", %{conn: conn, user: user} do
-    response = post(conn, "/api", %{query: @change_user_email, variables: %{"newEmail" => "123"}})
+    response =
+      post(conn, "/api", %{
+        query: @change_user_email,
+        variables: %{"newEmail" => "c@email.com", "password" => "password"}
+      })
+
+    assert %{"errors" => [%{"message" => "The password is incorrect."}]} =
+             json_response(response, 200)
+
+    response =
+      post(conn, "/api", %{
+        query: @change_user_email,
+        variables: %{"newEmail" => "123", "password" => "Testies@123"}
+      })
 
     assert %{"errors" => [%{"details" => %{"new_email" => ["is not a valid email"]}}]} =
              json_response(response, 200)
 
-    {:ok, _user} = Accounts.update_user_email(user, %{new_email: "c@email.com"})
+    user = Accounts.get_user!(user.id, [:credential])
+    {:ok, _user} = Accounts.update_user_email(user, "Testies@123", "c@email.com")
 
     response =
       post(conn, "/api", %{
