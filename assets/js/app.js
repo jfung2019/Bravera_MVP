@@ -31,6 +31,7 @@ import "./donations";
 import "./payments";
 import "./offer_form";
 import "./group_form"
+import "./password_requirement"
 
 Dropzone.autoDiscover = false;
 const Hooks = {

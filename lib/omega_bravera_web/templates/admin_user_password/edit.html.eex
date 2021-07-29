@@ -10,12 +10,12 @@
           <div class="form-group">
             <p><%= gettext("Account") %>: <strong><%= @admin_user.email %></strong> </p>
             <%= label f, :password, gettext("New password"), class: "control-label" %>
-            <%= password_input f, :password, class: add_error_class(f, :password, "form-control"), required: "" %>
-            <%= error_tag f, :password %>
+            <%= password_input f, :password, class: add_error_class(f, :password, "form-control"), required: true, id: "password_field" %>
+            <%= render(OmegaBraveraWeb.SharedView, "password_requirement.html", assigns) %>
           </div>
           <div class="form-group">
-            <%= label f, :password_confirmation, gettext("New password"), class: "control-label" %>
-            <%= password_input f, :password_confirmation, class: add_error_class(f, :password_confirmation, "form-control"), required: "" %>
+            <%= label f, :password_confirmation, gettext("New password confirmation"), class: "control-label" %>
+            <%= password_input f, :password_confirmation, class: add_error_class(f, :password_confirmation, "form-control"), required: true %>
             <%= error_tag f, :password_confirmation %>
           </div>
 
