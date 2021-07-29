@@ -36,11 +36,8 @@ defmodule OmegaBraveraWeb.AdminUserPasswordController do
 
       {:error, :token_expired} ->
         conn
-        |> put_flash(
-          :error,
-          gettext("Password reset token expired")
-          |> redirect(to: Routes.admin_user_password_path(conn, :new))
-        )
+        |> put_flash(:error, gettext("Password reset token expired"))
+        |> redirect(to: Routes.admin_user_password_path(conn, :new))
 
       {:error, :user_not_found} ->
         conn
