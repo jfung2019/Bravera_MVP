@@ -3,8 +3,8 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
 
   alias OmegaBravera.Accounts
 
-  @create_attrs %{email: "some@email.com", password: "pass1234"}
-  @update_attrs %{email: "some.updated@email.com", password: "notpass1234"}
+  @create_attrs %{email: "some@email.com", password: "Test@1234"}
+  @update_attrs %{email: "some.updated@email.com", password: "Notpass@1234"}
   @invalid_attrs %{email: nil, password: nil}
 
   def fixture(:admin_user) do
@@ -14,7 +14,7 @@ defmodule OmegaBraveraWeb.AdminUserControllerTest do
 
   setup %{conn: conn} do
     with {:ok, admin_user} <-
-           Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
+           Accounts.create_admin_user(%{email: "god@god.com", password: "Test@1234"}),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(admin_user, %{}),
          do: {:ok, conn: Plug.Conn.put_req_header(conn, "authorization", "bearer: " <> token)}
   end

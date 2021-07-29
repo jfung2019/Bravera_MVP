@@ -380,7 +380,7 @@ defmodule OmegaBravera.AccountsTest do
   describe "admin_users" do
     test "create_admin_user/1 with valid data creates a admin_user" do
       assert {:ok, %AdminUser{} = admin_user} =
-               Accounts.create_admin_user(%{email: "some@email.com", password: "pass1234"})
+               Accounts.create_admin_user(%{email: "some@email.com", password: "Pass@1234"})
 
       assert admin_user.email == "some@email.com"
     end
@@ -438,7 +438,7 @@ defmodule OmegaBravera.AccountsTest do
 
   describe "authenticat_admin_user_by_email_and_pass/2" do
     @email "user@localhost.com"
-    @pass "123456"
+    @pass "Test@123"
 
     alias OmegaBravera.Accounts.AdminUser
 

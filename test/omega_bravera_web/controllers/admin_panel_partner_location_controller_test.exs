@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.AdminPanelPartnerLocationControllerTest do
 
   setup %{conn: conn} do
     with {:ok, admin_user} <-
-           Accounts.create_admin_user(%{email: "god@god.com", password: "test1234"}),
+           Accounts.create_admin_user(%{email: "god@god.com", password: "Test@1234"}),
          {:ok, token, _} <- OmegaBravera.Guardian.encode_and_sign(admin_user, %{}),
          do:
            {:ok,

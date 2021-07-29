@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.AdminUserSessionControllerTest do
 
   alias OmegaBravera.Fixtures
 
-  @create_attrs %{email: "some@email.com", password: "pass1234"}
+  @create_attrs %{email: "some@email.com", password: "Pass@1234"}
 
   describe "new admin_user" do
     test "renders form", %{conn: conn} do
