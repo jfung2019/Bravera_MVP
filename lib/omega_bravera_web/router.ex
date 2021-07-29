@@ -136,6 +136,10 @@ defmodule OmegaBraveraWeb.Router do
       only: [:new, :create, :delete],
       singleton: true
 
+    resources "/reset-password", AdminUserPasswordController,
+      except: [:index, :delete],
+      param: "reset_token"
+
     scope "/" do
       pipe_through [:super_admin_authenticated]
       get "/dashboard", AdminUserPageController, :index

@@ -5,6 +5,7 @@ defmodule OmegaBravera.Accounts.Notifier do
     Accounts.User,
     Accounts.Credential,
     Accounts.PartnerUser,
+    Accounts.AdminUser,
     Groups.GroupApproval,
     Groups.Partner,
     Offers.Offer,
@@ -140,6 +141,16 @@ defmodule OmegaBravera.Accounts.Notifier do
     )
     |> Email.add_substitution("-UserName-", username)
     |> Email.add_substitution("-FirstName-", first_name)
+    |> Email.put_from("admin@bravera.co", "Bravera")
+    |> Email.add_bcc("admin@bravera.co")
+    |> Email.add_to(email)
+    |> Mail.send()
+  end
+
+  def send_password_reset_email(%AdminUser{email: email, reset_token: reset_token}) do
+    Email.build()
+    |> Email.put_template("d-53ab0b0bf04746b9868756afd4575107")
+    |> Email.add_dynamic_template_data("resetLink", Routes.admin_user_password_url(Endpoint, :edit, reset_token))
     |> Email.put_from("admin@bravera.co", "Bravera")
     |> Email.add_bcc("admin@bravera.co")
     |> Email.add_to(email)
