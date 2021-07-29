@@ -11,6 +11,7 @@
             <div class="form-group">
               <%= password_input f, :password, placeholder: "Password", class: "form-control" %>
             </div>
+			<%= link gettext("Forgot Password"), to: Routes.admin_user_password_path(@conn, :new) %>
             <%= submit "Log in", class: "btn btn-primary pull-right" %>
           <% end %>
   			</div>

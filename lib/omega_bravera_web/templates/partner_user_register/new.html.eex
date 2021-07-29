@@ -59,8 +59,8 @@
                 <%= inputs_for f, :partner_user, fn p_user -> %>
                 <div class="mb-3">
                     <%= label p_user, :password, class: "form-label" %>
-                    <%= password_input p_user, :password, class: add_error_class(p_user, :password, "form-control"), required: true %>
-                    <%= error_tag p_user, :password %>
+                    <%= password_input p_user, :password, class: add_error_class(p_user, :password, "form-control"), required: true, id: "password_field" %>
+                    <%= render(OmegaBraveraWeb.SharedView, "password_requirement.html", assigns) %>
                 </div>
                 <div class="mb-3">
                     <%= label p_user, :password_confirmation, class: "form-label" %>

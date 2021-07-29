@@ -6,9 +6,9 @@
 
         <h2 class="mt-4"><%= gettext("Password reset") %></h2>
         <p><%= gettext("Please enter a new password for your account.") %></p>
-        <%= form_for @changeset, Routes.partner_user_password_path(@conn, :update, @token), [method: "put"], fn f -> %>
+        <%= form_for @changeset, Routes.admin_user_password_path(@conn, :update, @reset_token), [method: "put"], fn f -> %>
           <div class="form-group">
-            <p><%= gettext("Account") %>: <strong><%= @partner_user.email %></strong> </p>
+            <p><%= gettext("Account") %>: <strong><%= @admin_user.email %></strong> </p>
             <%= label f, :password, gettext("New password"), class: "control-label" %>
             <%= password_input f, :password, class: add_error_class(f, :password, "form-control"), required: true, id: "password_field" %>
             <%= render(OmegaBraveraWeb.SharedView, "password_requirement.html", assigns) %>

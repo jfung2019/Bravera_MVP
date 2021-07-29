@@ -26,4 +26,6 @@ defmodule OmegaBravera.Accounts.Tools do
   end
 
   def expired?(datetime), do: Timex.after?(Timex.now(), Timex.shift(datetime, days: 1))
+
+  def expired_2_hours?(datetime), do: Timex.after?(Timex.now(), Timex.shift(datetime, hours: 2))
 end

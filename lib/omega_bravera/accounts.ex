@@ -2059,6 +2059,29 @@ defmodule OmegaBravera.Accounts do
     |> Repo.update()
   end
 
+  def find_admin_user_by_email(email) do
+    from(u in AdminUser, where: fragment("lower(?) = ?", u.email, ^email))
+    |> Repo.one()
+  end
+
+  def find_admin_user_by_reset_token(reset_token) do
+    from(u in AdminUser, where: u.reset_token == ^reset_token)
+    |> Repo.one()
+    |> then(fn admin_user ->
+      case admin_user do
+        nil ->
+          {:error, :user_not_found}
+
+        admin_user ->
+          if Tools.expired_2_hours?(admin_user.reset_token_created) do
+            {:error, :token_expired}
+          else
+            {:ok, admin_user}
+          end
+      end
+    end)
+  end
+
   @doc """
   Returns a user in an :ok tuple if user is found by email and correct password.
   Otherwise an error tuple is returned.
@@ -2066,9 +2089,7 @@ defmodule OmegaBravera.Accounts do
   def authenticate_admin_user_by_email_and_pass(email, given_pass) do
     email = String.downcase(email)
 
-    user =
-      from(u in AdminUser, where: fragment("lower(?) = ?", u.email, ^email))
-      |> Repo.one()
+    user = find_admin_user_by_email(email)
 
     cond do
       user && Comeonin.Bcrypt.checkpw(given_pass, user.password_hash) ->
@@ -2081,6 +2102,31 @@ defmodule OmegaBravera.Accounts do
         Comeonin.Bcrypt.dummy_checkpw()
         {:error, :not_found}
     end
+  end
+
+  def send_reset_password_token(%AdminUser{} = admin_user) do
+    admin_user
+    |> AdminUser.reset_token_changeset()
+    |> Repo.update()
+    |> then(fn result ->
+      case result do
+        {:ok, updated_admin} ->
+          Notifier.send_password_reset_email(updated_admin)
+          result
+
+        _ ->
+          result
+      end
+    end)
+  end
+
+  def admin_user_reset_password_changeset(%AdminUser{} = admin_user, attrs \\ %{}),
+    do: AdminUser.reset_password_changeset(admin_user, attrs)
+
+  def reset_admin_user_password(%AdminUser{} = admin_user, attrs) do
+    admin_user
+    |> AdminUser.reset_password_changeset(attrs)
+    |> Repo.update()
   end
 
   def get_opt_in_ngo_mailing_list(id) do

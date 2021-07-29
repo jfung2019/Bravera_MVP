@@ -62,7 +62,7 @@ defmodule OmegaBravera.Fixtures do
   def admin_user_fixture(attrs \\ %{}) do
     {:ok, admin_user} =
       attrs
-      |> Enum.into(%{email: "some@email.com", password: "pass1234"})
+      |> Enum.into(%{email: "some@email.com", password: "Pass@1234"})
       |> Accounts.create_admin_user()
 
     admin_user
