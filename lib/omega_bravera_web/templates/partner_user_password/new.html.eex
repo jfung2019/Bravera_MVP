@@ -9,7 +9,7 @@
       <div class="card">
         <div class="card-body">
             <h2 class="mt-4"><%= gettext("Forgot Password")%></h2>
-          <%= form_for @changeset, @action, fn f -> %>
+          <%= form_for @changeset, @action, [method: :post], fn f -> %>
           <div class="form-group">
             <%= label f, :email, gettext("Enter your account username or email"), class: "control-label" %>
             <%= text_input f, :email, class: "form-control", required: "" %>
