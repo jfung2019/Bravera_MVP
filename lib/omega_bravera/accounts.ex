@@ -1440,21 +1440,27 @@ defmodule OmegaBravera.Accounts do
   @doc """
   put new email to user and generate verification code to confirm
   """
-  @spec update_user_email(User.t(), map) :: tuple
-  def update_user_email(%User{} = user, attrs) do
-    user
-    |> User.update_email_changeset(attrs)
-    |> Repo.update()
-    |> then(fn result ->
-      case result do
-        {:ok, updated_user} ->
-          Notifier.send_user_confirm_email_change(updated_user)
-          result
+  @spec update_user_email(User.t(), String.t(), String.t()) :: tuple
+  def update_user_email(%User{} = user, password, new_email) do
+    cond do
+      checkpw(password, user.credential.password_hash) ->
+        user
+        |> User.update_email_changeset(%{new_email: new_email})
+        |> Repo.update()
+        |> then(fn result ->
+          case result do
+            {:ok, updated_user} ->
+              Notifier.send_user_confirm_email_change(updated_user)
+              result
 
-        _ ->
-          result
-      end
-    end)
+            _ ->
+              result
+          end
+        end)
+
+      true ->
+        {:error, :wrong_password}
+    end
   end
 
   @doc """

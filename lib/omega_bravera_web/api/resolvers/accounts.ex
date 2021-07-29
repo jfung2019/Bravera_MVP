@@ -223,10 +223,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  def change_user_email(_root, params, %{context: %{current_user: %{id: id}}}) do
-    case Accounts.update_user_email(Accounts.get_user!(id), params) do
+  def change_user_email(_root, %{password: password, new_email: new_email}, %{
+        context: %{current_user: %{id: id}}
+      }) do
+    case Accounts.update_user_email(Accounts.get_user!(id, [:credential]), password, new_email) do
       {:ok, _user} ->
         {:ok, Accounts.get_user_with_account_settings(id)}
+
+      {:error, :wrong_password} ->
+        {:error, message: "The password is incorrect."}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:error, message: "Could not change email", details: Helpers.transform_errors(changeset)}

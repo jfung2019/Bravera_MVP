@@ -67,6 +67,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     @desc "Change User Email"
     field :change_user_email, :user do
       arg :new_email, non_null(:string)
+      arg :password, non_null(:string)
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.change_user_email/3
     end
