@@ -6,6 +6,8 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
     Offers.OfferVendor
   }
 
+  plug :assign_available_options when action in [:new, :edit]
+
   def index(conn, params) do
     results = Offers.paginate_offer_vendors(Guardian.Plug.current_resource(conn), params)
     render(conn, "index.html", offer_vendors: results.offer_vendors, paginate: results.paginate)
@@ -24,7 +26,9 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
         |> redirect(to: Routes.admin_panel_offer_vendor_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        conn
+        |> assign_available_options(nil)
+        |> render("new.html", changeset: changeset)
     end
   end
 
@@ -47,7 +51,14 @@ defmodule OmegaBraveraWeb.AdminPanelOfferVendorController do
         |> redirect(to: Routes.admin_panel_offer_vendor_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", offer_vendor: offer_vendor, changeset: changeset)
+        conn
+        |> assign_available_options(nil)
+        |> render("edit.html", offer_vendor: offer_vendor, changeset: changeset)
     end
+  end
+
+  def assign_available_options(conn, _opts) do
+    conn
+    |> assign(:available_org, OmegaBravera.Accounts.list_organization_options())
   end
 end
