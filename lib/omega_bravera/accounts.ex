@@ -350,19 +350,8 @@ defmodule OmegaBravera.Accounts do
   def gdpr_delete_user(user_id) do
     Multi.new()
     |> Multi.update(:delete_user, User.gdpr_delete_changeset(get_user!(user_id)))
-    |> Multi.run(:delete_user_setting, fn repo, _result ->
-      get_setting_by_user_id(user_id)
-      |> then(fn setting ->
-        case setting do
-          nil ->
-            {:ok, :no_setting}
-
-          setting ->
-            setting
-            |> Accounts.Setting.gdpr_delete_changeset()
-            |> repo.update
-        end
-      end)
+    |> Multi.delete_all(:delete_user_setting, fn _result ->
+      from(s in Accounts.Setting, where: s.user_id == ^user_id)
     end)
     |> Repo.transaction()
   end
@@ -1859,11 +1848,6 @@ defmodule OmegaBravera.Accounts do
 
   """
   def get_setting!(id), do: Repo.get!(Setting, id)
-
-  def get_setting_by_user_id(user_id) do
-    from(s in Setting, where: s.user_id == ^user_id)
-    |> Repo.one()
-  end
 
   @doc """
   Creates a setting.

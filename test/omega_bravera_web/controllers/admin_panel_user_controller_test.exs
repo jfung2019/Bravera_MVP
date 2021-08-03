@@ -7,7 +7,11 @@ defmodule OmegaBraveraWeb.Admin.UserControllerTest do
     email: "test@test.com",
     firstname: "some firstname",
     lastname: "some lastname",
-    location_id: 1
+    location_id: 1,
+    setting: %{
+      date_of_birth: DateTime.truncate(Timex.now(), :second),
+      gender: "Male"
+    }
   }
 
   @tracker_create_attrs %{
