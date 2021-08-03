@@ -292,7 +292,7 @@ defmodule OmegaBravera.AccountsTest do
                   email: nil,
                   location_id: nil
                 },
-                delete_user_setting: %{date_of_birth: nil}
+                delete_user_setting: {1, nil}
               }} = Accounts.gdpr_delete_user(user_id)
     end
   end
