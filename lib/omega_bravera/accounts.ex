@@ -444,27 +444,30 @@ defmodule OmegaBravera.Accounts do
   @doc """
   get Bravera leaderboard of this week
   """
-  @spec api_get_leaderboard_this_week :: [User.t()]
-  def api_get_leaderboard_this_week do
+  @spec api_get_leaderboard_this_week(UUID.t()) :: [User.t()]
+  def api_get_leaderboard_this_week(authenticated_user_id) do
     api_get_leaderboard_this_week_query()
+    |> annotate_is_friend(authenticated_user_id)
     |> Repo.all()
   end
 
   @doc """
   get Bravera leaderboard of this month
   """
-  @spec api_get_leaderboard_this_month :: [User.t()]
-  def api_get_leaderboard_this_month do
+  @spec api_get_leaderboard_this_month(UUID.t()) :: [User.t()]
+  def api_get_leaderboard_this_month(authenticated_user_id) do
     api_get_leaderboard_this_month_query()
+    |> annotate_is_friend(authenticated_user_id)
     |> Repo.all()
   end
 
   @doc """
   get overall Bravera leaderboard
   """
-  @spec api_get_leaderboard_all_time :: [User.t()]
-  def api_get_leaderboard_all_time do
+  @spec api_get_leaderboard_all_time(UUID.t()) :: [User.t()]
+  def api_get_leaderboard_all_time(authenticated_user_id) do
     api_get_leaderboard_all_time_query()
+    |> annotate_is_friend(authenticated_user_id)
     |> Repo.all()
   end
 
@@ -473,6 +476,24 @@ defmodule OmegaBravera.Accounts do
       left_join: f in Friend,
       on: f.receiver_id == q.id or f.requester_id == q.id,
       where: f.status == :accepted and (f.receiver_id == ^user_id or f.requester_id == ^user_id)
+    )
+  end
+
+  defp annotate_is_friend(query, user_id) do
+    from(q in subquery(query),
+      join: f in Friend,
+      on: f.receiver_id == q.id or f.requester_id == q.id,
+      select: %{
+        q
+        | is_friend:
+            fragment(
+              "'accepted' = ? and (? or ?) and not ?",
+              f.status,
+              f.requester_id == ^user_id,
+              f.receiver_id == ^user_id,
+              q.id == ^user_id
+            )
+      }
     )
   end
 
@@ -2807,8 +2828,8 @@ defmodule OmegaBravera.Accounts do
   """
   @spec remove_friendship(String.t(), String.t()) ::
           {:ok, Friend.t()} | {:error, Ecto.Changeset.t()}
-  def remove_friendship(friend_user_id, user_id) do
-    find_existing_friend(friend_user_id, user_id)
+  def remove_friendship(user_id, user_id) do
+    find_existing_friend(user_id, user_id)
     |> Repo.delete()
     |> broadcast_user_unfriended()
   end
@@ -2919,6 +2940,28 @@ defmodule OmegaBravera.Accounts do
         | total_kilometers_today: coalesce(ttd.distance, 0),
           total_kilometers_this_week: coalesce(wtd.distance, 0),
           total_kilometers_this_month: coalesce(mtd.distance, 0)
+      }
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  get only today's distance for a certain user.
+  """
+  @spec get_user_todays_distance(integer()) :: User.t()
+  def get_user_todays_distance(user_id) do
+    now = Timex.now()
+    beginning_of_day = Timex.beginning_of_day(now)
+    end_of_day = Timex.end_of_day(now)
+
+    from(u in User,
+      left_join: ttd in subquery(activity_query(beginning_of_day, end_of_day)),
+      on: ttd.user_id == u.id,
+      where: u.id == ^user_id,
+      group_by: [u.id, ttd.distance],
+      select: %{
+        u
+        | total_kilometers_today: coalesce(ttd.distance, 0)
       }
     )
     |> Repo.one()
