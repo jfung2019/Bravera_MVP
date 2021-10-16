@@ -50,6 +50,14 @@ defmodule OmegaBraveraWeb do
   def live_view do
     quote do
       use Phoenix.LiveView
+      import Phoenix.HTML.Link
+      alias OmegaBraveraWeb.Router.Helpers, as: Routes
+    end
+  end
+
+  def live_component do
+    quote do
+      use Phoenix.LiveComponent
       alias OmegaBraveraWeb.Router.Helpers, as: Routes
     end
   end

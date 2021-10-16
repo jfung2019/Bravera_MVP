@@ -279,6 +279,8 @@ defmodule OmegaBraveraWeb.Router do
 
       scope "/" do
         pipe_through [:org_liveview]
+
+        live "/groups/:id/leaderboards", OrgGroupLeaderboards
         live "/offers/:slug/images", OrgOfferImages
         live "/groups/:id/images", OrgPartnerImages
       end
