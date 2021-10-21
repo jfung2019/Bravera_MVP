@@ -30,11 +30,13 @@ import "./init_html_editor";
 import "./donations";
 import "./payments";
 import "./offer_form";
-import "./group_form"
-import "./password_requirement"
+import "./group_form";
+import "./password_requirement";
+import chartHook from "./barchart"
 
 Dropzone.autoDiscover = false;
 const Hooks = {
+  chartHook: chartHook,
   dropzone: {
     mounted() {
       const _this = this;
