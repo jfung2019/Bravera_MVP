@@ -232,7 +232,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
     field :username, non_null(:string)
     field :sync_type, non_null(:sync_type)
     field :profile_picture, :string
-    field :is_friend, :boolean
+    field :is_friend, non_null(:boolean)
     field :strava, :strava, resolve: dataloader(OmegaBravera.Accounts)
     field :total_points, :decimal
     field :total_points_this_week, :decimal
