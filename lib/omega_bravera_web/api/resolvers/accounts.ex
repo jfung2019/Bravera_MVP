@@ -624,19 +624,13 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
     end
   end
 
-  def compare_with_non_friend(_root, %{friend_user_id: friend_user_id}, %{
+  def compare_with_non_friend(_root, %{non_friend_user_id: non_friend_user_id}, %{
         context: %{current_user: %{id: user_id}}
       }) do
-    case Accounts.find_existing_friend(friend_user_id, user_id) do
-      %Friend{status: :accepted} ->
-        {:ok,
-         %{
-           user: Accounts.get_user_todays_distance(user_id),
-           friend: Accounts.get_user_todays_distance(friend_user_id)
-         }}
-
-      _ ->
-        {:error, message: "It seems you are not a friend with this user."}
-    end
+    {:ok,
+     %{
+       user: Accounts.get_user_todays_distance(user_id),
+       friend: Accounts.get_user_todays_distance(non_friend_user_id)
+     }}
   end
 end
