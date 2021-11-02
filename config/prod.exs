@@ -26,7 +26,7 @@ config :omega_bravera, Oban,
 
 # Configure your database
 config :omega_bravera, OmegaBravera.Repo,
-  pool_size: 20,
+  pool_size: 30,
   type: OmegaBravera.PostgresTypes
 
 config :stripy,

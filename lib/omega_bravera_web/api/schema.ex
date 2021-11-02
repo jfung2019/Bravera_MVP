@@ -300,12 +300,15 @@ defmodule OmegaBraveraWeb.Api.Schema do
 
     @desc "Get Bravera Leaderboard"
     field :get_leaderboard, :leaderboard_result do
+      middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.get_leaderboard/3
     end
 
     @desc "Get Partner Leaderboard"
     field :get_partner_leaderboard, :leaderboard_result do
       arg :partner_id, non_null(:id)
+
+      middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.get_partner_leaderboard/3
     end
 
@@ -518,6 +521,13 @@ defmodule OmegaBraveraWeb.Api.Schema do
       arg :keyword, :string
       middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.list_possible_friends/3
+    end
+
+    @desc "Compare with non-friend"
+    field :compare_with_non_friend, non_null(:friend_compare) do
+      arg :non_friend_user_id, non_null(:id)
+      middleware Middleware.Authenticate
+      resolve &Resolvers.Accounts.compare_with_non_friend/3
     end
 
     @desc "Compare with friend"
