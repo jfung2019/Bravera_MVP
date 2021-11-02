@@ -25,7 +25,7 @@
 					<%= link gettext("Members"), to: Routes.org_panel_partner_org_panel_partner_member_path(@conn, :index, partner), class: "btn btn-secondary" %>
 					<%= link gettext("Details"), to: Routes.org_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
 					<%= link gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgPartnerImages, partner), class: "btn btn-info" %>
-					<%= link gettext("Leaderboards"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgGroupLeaderboards, partner.id), class: "btn btn-danger" %>
+					<%= link gettext("Leaderboards"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgGroupLeaderboardsLive, partner.id), class: "btn btn-danger" %>
 				</td>
 				<td class="text-center" style="width: 10%;">
 					<%= if partner.approval_status == :approved do %>
