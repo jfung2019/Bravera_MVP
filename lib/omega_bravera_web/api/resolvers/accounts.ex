@@ -590,7 +590,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         )
 
   def unfriend_user(_root, %{user_id: friend_user_id}, %{context: %{current_user: %{id: user_id}}}) do
-    case Accounts.remove_friendship(friend_user_id, user_id) do
+    case Accounts.remove_friendship(String.to_integer(friend_user_id), user_id) do
       {:ok, _unfriended} ->
         {:ok, %{unfriended_user_id: friend_user_id}}
 

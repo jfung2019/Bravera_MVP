@@ -2948,10 +2948,10 @@ defmodule OmegaBravera.Accounts do
   @doc """
   remove the friendship between 2 users
   """
-  @spec remove_friendship(String.t(), String.t()) ::
+  @spec remove_friendship(integer(), integer()) ::
           {:ok, Friend.t()} | {:error, Ecto.Changeset.t()}
-  def remove_friendship(user_id, user_id) do
-    find_existing_friend(user_id, user_id)
+  def remove_friendship(friend_user_id, user_id) do
+    find_existing_friend(friend_user_id, user_id)
     |> Repo.delete()
     |> broadcast_user_unfriended()
   end
