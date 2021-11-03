@@ -165,13 +165,13 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
      )}
   end
 
-  def get_leaderboard(_root, _args, _info),
+  def get_leaderboard(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do:
       {:ok,
        %{
-         this_week: Accounts.api_get_leaderboard_this_week(),
-         this_month: Accounts.api_get_leaderboard_this_month(),
-         all_time: Accounts.api_get_leaderboard_all_time()
+         this_week: Accounts.api_get_leaderboard_this_week(user_id),
+         this_month: Accounts.api_get_leaderboard_this_month(user_id),
+         all_time: Accounts.api_get_leaderboard_all_time(user_id)
        }}
 
   def get_friend_leaderboard(_root, _args, %{context: %{current_user: %{id: user_id}}}),
@@ -590,7 +590,7 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
         )
 
   def unfriend_user(_root, %{user_id: friend_user_id}, %{context: %{current_user: %{id: user_id}}}) do
-    case Accounts.remove_friendship(friend_user_id, user_id) do
+    case Accounts.remove_friendship(String.to_integer(friend_user_id), user_id) do
       {:ok, _unfriended} ->
         {:ok, %{unfriended_user_id: friend_user_id}}
 
@@ -622,5 +622,15 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       _ ->
         {:error, message: "It seems you are not a friend with this user."}
     end
+  end
+
+  def compare_with_non_friend(_root, %{non_friend_user_id: non_friend_user_id}, %{
+        context: %{current_user: %{id: user_id}}
+      }) do
+    {:ok,
+     %{
+       user: Accounts.get_user_todays_distance(user_id),
+       friend: Accounts.get_user_todays_distance(non_friend_user_id)
+     }}
   end
 end

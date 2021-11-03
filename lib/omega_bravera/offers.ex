@@ -253,8 +253,8 @@ defmodule OmegaBravera.Offers do
       offer in Offer,
       right_join: p in assoc(offer, :partners),
       right_join: m in assoc(p, :members),
-      left_join: ol in assoc(offer, :offer_locations),
       on: m.user_id == ^user_id,
+      left_join: ol in assoc(offer, :offer_locations),
       where:
         offer.end_date > ^now and not is_nil(m.id) and offer.approval_status == :approved and
           ilike(offer.name, ^search) and ol.location_id == ^location_id
@@ -272,9 +272,9 @@ defmodule OmegaBravera.Offers do
       offer in Offer,
       right_join: p in assoc(offer, :partners),
       right_join: m in assoc(p, :members),
+      on: m.user_id == ^user_id,
       left_join: ol in assoc(offer, :offer_locations),
       left_join: oc in assoc(offer, :offer_gps_coordinates),
-      on: m.user_id == ^user_id,
       where:
         offer.end_date > ^now and not is_nil(m.id) and offer.approval_status == :approved and
           ilike(offer.name, ^search) and

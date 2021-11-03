@@ -47,6 +47,18 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
   }
   """
 
+  @get_leaderboard_is_friend """
+  query {
+    getLeaderboard {
+      thisWeek{
+        id
+        username
+        isFriend
+      }
+    }
+  }
+  """
+
   @get_leaderboard """
   query {
     getLeaderboard {
@@ -145,6 +157,27 @@ defmodule OmegaBraveraWeb.Api.Query.LeaderboardTest do
      user3: user3,
      user4: user4,
      partner: partner}
+  end
+
+  test "has isFriend field", %{conn: conn, user1: user1, user2: user2, user3: user3} do
+    conn = post(conn, "/api", %{query: @get_leaderboard_is_friend})
+
+    assert %{
+             "data" => %{
+               "getLeaderboard" => %{
+                 "thisWeek" => this_week_list
+               }
+             }
+           } = json_response(conn, 200)
+
+    # Assert that user 1 is a friend to user2 and user3
+    assert %{"isFriend" => true} =
+             leaderboard_user3 =
+             Enum.find(this_week_list, %{}, fn u -> u["username"] == user3.username end)
+
+    assert %{"isFriend" => true} =
+             leaderboard_user2 =
+             Enum.find(this_week_list, %{}, fn u -> u["username"] == user2.username end)
   end
 
   test "can get partner's leaderboard", %{conn: conn, partner: %{id: partner_id}} do
