@@ -44,7 +44,7 @@
         <tbody>
         <%= for redeem <- @offer_redeems do %>
         <tr>
-          <td data-title="<%= Enum.at(@headers, 0) %>"><%= if @organization.account.type == :merchant, do: redeem.id, else: redeem.user.username %></td>
+          <td data-title="<%= Enum.at(@headers, 0) %>"><%= if @organization.account_type == :merchant, do: redeem.id, else: redeem.user.username %></td>
           <td data-title="<%= Enum.at(@headers, 1) %>"><%= render_datetime(redeem.offer_challenge.inserted_at) %></td>
           <td data-title="<%= Enum.at(@headers, 2) %>"><%= if redeem.offer_challenge.status == "complete", do: render_datetime(redeem.offer_challenge.updated_at) %></td>
           <td data-title="<%= Enum.at(@headers, 3) %>"><%= redeemed_date(redeem) %></td>
