@@ -629,8 +629,8 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       }) do
     {:ok,
      %{
-       user: Accounts.get_user_todays_distance(user_id),
-       friend: Accounts.get_user_todays_distance(non_friend_user_id)
+       user: Accounts.get_user_todays_distance(user_id, user_id),
+       friend: Accounts.get_user_todays_distance(non_friend_user_id, user_id)
      }}
   end
 end

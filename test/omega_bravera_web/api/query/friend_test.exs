@@ -98,6 +98,49 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
   }
   """
 
+  @compare_with_non_friend """
+  query($nonFriendUserId: ID!) {
+    compareWithNonFriend(nonFriendUserId: $nonFriendUserId) {
+      user {
+        id
+        username
+        friendStatus
+        syncType
+        profilePicture
+        totalKilometersToday
+        totalKilometersThisWeek
+        totalKilometersThisMonth
+        totalPoints
+        insertedAt
+        groups {
+          name
+        }
+        strava {
+          athleteId
+        }
+      }
+      friend {
+        id
+        username
+        friendStatus
+        syncType
+        profilePicture
+        totalKilometersToday
+        totalKilometersThisWeek
+        totalKilometersThisMonth
+        totalPoints
+        insertedAt
+        groups {
+          name
+        }
+        strava {
+          athleteId
+        }
+      }
+    }
+  }
+  """
+
   setup %{conn: conn} do
     user1 = insert(:user)
     user2 = insert(:user, %{email: "user2@email.com"})
@@ -287,5 +330,21 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
 
     assert %{"errors" => [%{"message" => "It seems you are not a friend with this user."}]} =
              json_response(response, 200)
+  end
+
+  test "can compare with non-friend", %{conn: conn, user1: %{id: user1_id}, user2: %{id: user2_id}} do
+    response =
+      post(conn, "/api", %{query: @compare_with_non_friend, variables: %{"nonFriendUserId" => user2_id}})
+
+    user1_id_string = to_string(user1_id)
+    user2_id_string = to_string(user2_id)
+    assert %{
+             "data" => %{
+               "compareWithNonFriend" => %{
+                 "friend" => %{"id" => ^user2_id_string, "friendStatus" => "stranger"},
+                 "user" => %{"id" => ^user1_id_string}
+               }
+             }
+           } = json_response(response, 200)
   end
 end
