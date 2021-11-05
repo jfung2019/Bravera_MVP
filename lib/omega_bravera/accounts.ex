@@ -3070,8 +3070,8 @@ defmodule OmegaBravera.Accounts do
   @doc """
   get only today's distance for a certain user.
   """
-  @spec get_user_todays_distance(integer()) :: User.t()
-  def get_user_todays_distance(user_id) do
+  @spec get_user_todays_distance(integer(), integer()) :: User.t()
+  def get_user_todays_distance(user_id, user_id) do
     now = Timex.now()
     beginning_of_day = Timex.beginning_of_day(now)
     end_of_day = Timex.end_of_day(now)
@@ -3087,6 +3087,32 @@ defmodule OmegaBravera.Accounts do
       }
     )
     |> Repo.one()
+  end
+
+  def get_user_todays_distance(user_id, current_user_id) do
+    now = Timex.now()
+    beginning_of_day = Timex.beginning_of_day(now)
+    end_of_day = Timex.end_of_day(now)
+
+    from(u in User,
+      left_join: ttd in subquery(activity_query(beginning_of_day, end_of_day)),
+      on: ttd.user_id == u.id,
+      left_join: f in Friend,
+      on:
+        (f.receiver_id == u.id and f.requester_id == ^current_user_id) or
+          (f.requester_id == u.id and f.receiver_id == ^current_user_id),
+      where: u.id == ^user_id,
+      group_by: [u.id, ttd.distance, f.id],
+      select: %{
+        u
+        | total_kilometers_today: coalesce(ttd.distance, 0),
+          is_friend: fragment("CASE WHEN ? THEN 'f' ELSE 't' END", is_nil(f.id) or f.status == :pending),
+          friend_status: fragment("CASE WHEN ? THEN 'stranger' WHEN ? THEN 'pending' ELSE 'accepted' END", is_nil(f.id), f.status == :pending)
+      }
+    )
+    |> Repo.one()
+    # hack to go from string to atom
+    |> Map.update!(:friend_status, &String.to_existing_atom/1)
   end
 
   @doc """

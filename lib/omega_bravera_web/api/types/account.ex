@@ -270,6 +270,7 @@ defmodule OmegaBraveraWeb.Api.Types.Account do
 
   enum :friend_status do
     value :pending, description: "Friend request pending accept/reject"
+    value :stranger, description: "No friend request has been made"
 
     value :accepted,
       description: "Friend request accepted"

@@ -2,7 +2,6 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardSearchComponent do
   use OmegaBraveraWeb, :live_component
 
   def render(assigns) do
-
     ~L"""
       <button
         type="button"
