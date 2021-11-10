@@ -12,20 +12,11 @@ defmodule OmegaBravera.Activity.Queue do
   def handle_call(:dequeue, _from, [value | state]) do
     Logger.info("Activity Create Queue: creating activity...")
 
-    # Get the number of activities at specific time to confirm there are no duplicate activities by date.
-    number_of_duplicates =
-      Activities.get_user_activities_at_time(
-        value.activity_params,
-        value.user.id,
-        value.device_id
-      )
-
     result =
       Activities.create_app_activity(
         value.activity_params,
         value.user.id,
-        value.device_id,
-        number_of_duplicates
+        value.device_id
       )
 
     case result do
