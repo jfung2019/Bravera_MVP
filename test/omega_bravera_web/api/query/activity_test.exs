@@ -130,8 +130,7 @@ defmodule OmegaBraveraWeb.Api.Query.ActivityTest do
         source: "test"
       },
       user2.id,
-      device.id,
-      0
+      device.id
     )
 
     # weekly
@@ -144,8 +143,7 @@ defmodule OmegaBraveraWeb.Api.Query.ActivityTest do
         source: "test"
       },
       user.id,
-      device.id,
-      0
+      device.id
     )
 
     Activities.create_app_activity(
@@ -157,8 +155,7 @@ defmodule OmegaBraveraWeb.Api.Query.ActivityTest do
         source: "test"
       },
       user.id,
-      device.id,
-      0
+      device.id
     )
 
     # activity for last week
@@ -171,8 +168,7 @@ defmodule OmegaBraveraWeb.Api.Query.ActivityTest do
         source: "test"
       },
       user.id,
-      device.id,
-      0
+      device.id
     )
 
     # last month activity
@@ -185,8 +181,7 @@ defmodule OmegaBraveraWeb.Api.Query.ActivityTest do
         source: "test"
       },
       user.id,
-      device.id,
-      0
+      device.id
     )
 
     # last year activity
@@ -199,8 +194,7 @@ defmodule OmegaBraveraWeb.Api.Query.ActivityTest do
         source: "test"
       },
       user.id,
-      device.id,
-      0
+      device.id
     )
   end
 end
