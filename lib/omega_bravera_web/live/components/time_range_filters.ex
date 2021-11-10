@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.TimeRangeFilters do
 
   def render(assigns) do
     ~L"""
-    <button class="btn btn-info"
+    <button class="btn admin-btn-bg rounded"
       type="button"
       phx-click="time_range_changed"
       phx-value-filter="week"
@@ -11,7 +11,7 @@ defmodule OmegaBraveraWeb.TimeRangeFilters do
     7 Days
     </button>
 
-    <button class="btn btn-danger"
+    <button class="btn admin-btn-bg rounded"
       type="button"
       phx-click="time_range_changed"
       phx-value-filter="month"
@@ -19,7 +19,7 @@ defmodule OmegaBraveraWeb.TimeRangeFilters do
     Month
     </button>
 
-    <button class="btn btn-success"
+    <button class="btn admin-btn-bg rounded"
       type="button"
       phx-click="time_range_changed"
       phx-value-filter="alltime"

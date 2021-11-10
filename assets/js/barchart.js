@@ -56,7 +56,7 @@ const chartHook = {
       })
     }
 
-    const config = {
+    const configSync = {
         type: "bar", //bar, horizontalBar, pie, line, doughnut, radar, polarArea
         plugins: [{
           afterDraw: chart => {      
@@ -121,7 +121,139 @@ const chartHook = {
           }
         }
     }
-    var myChart = new Chart(document.getElementById("myChart"), config);
+    const configSocial = {
+      type: "bar", //bar, horizontalBar, pie, line, doughnut, radar, polarArea
+      plugins: [{
+        afterDraw: chart => {      
+          var ctx = chart.ctx; 
+          var xAxis = chart.scales['x-axis-0'];
+          var yAxis = chart.scales['y-axis-0'];
+          xAxis.ticks.forEach((value, index) => {  
+            var x = xAxis.getPixelForTick(index);      
+            var image = new Image();
+            image.src = images[index],
+            ctx.drawImage(image, x - 12, yAxis.bottom + 10);
+          });      
+        }
+      }],
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Data',
+          labels: labels,
+          data: values,
+          backgroundColor: backgroundColor,
+          barPercentage: 0.8, // width of bar
+        }]
+      },
+      options: {
+        responsive: true,
+        legend: {
+          display: false
+        },    
+        tooltips: {
+          callbacks: {
+            label: function(tooltipItem, data) {
+                var dataset = data.datasets[tooltipItem.datasetIndex];
+                var index = tooltipItem.index;
+                var getUserIndex = dataset.labels[index];
+                var userIndex = dataset.labels.indexOf(getUserIndex);
+                return '#' + (userIndex + 1) + ' | Sync Activity: ' + dataset.data[index];
+            }
+          }
+        },
+        scales: {
+          yAxes: [{ 
+            ticks: {
+              beginAtZero: true
+            }
+          }],
+          xAxes: [{
+            ticks: {
+              padding: 40
+            }   
+          }],
+        },
+        plugins: {
+          labels: {
+            // Calculates the percentage number of each bar
+            render: function (args) {  
+              //let max = 100; //Custom maximum value
+              // return Math.round(args.value * 100 / max ) + '%'; // show real percentage
+              return ''; // dont show percentage
+            }
+          }
+        }
+      }
+  }
+    const config = {
+      type: "bar", //bar, horizontalBar, pie, line, doughnut, radar, polarArea
+      plugins: [{
+        afterDraw: chart => {      
+          var ctx = chart.ctx; 
+          var xAxis = chart.scales['x-axis-0'];
+          var yAxis = chart.scales['y-axis-0'];
+          xAxis.ticks.forEach((value, index) => {  
+            var x = xAxis.getPixelForTick(index);      
+            var image = new Image();
+            image.src = images[index],
+            ctx.drawImage(image, x - 12, yAxis.bottom + 10);
+          });      
+        }
+      }],
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Data',
+          labels: labels,
+          data: values,
+          backgroundColor: backgroundColor,
+          barPercentage: 0.8, // width of bar
+        }]
+      },
+      options: {
+        responsive: true,
+        legend: {
+          display: false
+        },    
+        tooltips: {
+          callbacks: {
+            label: function(tooltipItem, data) {
+                var dataset = data.datasets[tooltipItem.datasetIndex];
+                var index = tooltipItem.index;
+                var getUserIndex = dataset.labels[index];
+                var userIndex = dataset.labels.indexOf(getUserIndex);
+                return '#' + (userIndex + 1) + ' | Sync Activity: ' + dataset.data[index];
+            }
+          }
+        },
+        scales: {
+          yAxes: [{ 
+            ticks: {
+              beginAtZero: true
+            }
+          }],
+          xAxes: [{
+            ticks: {
+              padding: 40
+            }   
+          }],
+        },
+        plugins: {
+          labels: {
+            // Calculates the percentage number of each bar
+            render: function (args) {  
+              //let max = 100; //Custom maximum value
+              // return Math.round(args.value * 100 / max ) + '%'; // show real percentage
+              return ''; // dont show percentage
+            }
+          }
+        }
+      }
+  }
+    var myChart = new Chart(document.getElementById("myChartDistance"), config);
+    var myChart = new Chart(document.getElementById("myChartSync"), configSync);
+    var myChart = new Chart(document.getElementById("myChartSocial"), configSocial);
     //filter array: label, images, values
     //array.filter
     //create new arrays 

@@ -858,6 +858,59 @@ div.team-form {
 }
 
 .admin-section {
+    .admin-btn-bg-container{
+      width: 290px; margin-left: 4rem !important;
+    }
+    .search-bar{
+      width: 15vw;
+    }
+    .search-bar-container{
+      max-width: 100%; 
+      margin-left: 6rem !important;
+    }
+    @media only screen and (min-width: 1400px) {
+      .search-bar{
+        width: 25vw;
+      }
+    }
+    @media only screen and (min-width: 1693px) {
+      .search-bar{
+        width: 28vw;
+      }
+    }
+    @media only screen and (max-width: 991px) {
+      .search-bar{
+        width: 25vw;
+      }
+      .search-bar-container{
+        margin-left: 0 !important;
+        width: 50vw;
+        background-color: none !important;
+      }
+    }
+    @media only screen and (max-width: 767px) {
+      .admin-btn-bg-container{
+        width: 290px; 
+        margin-left: 0rem !important;
+      }
+    }
+   .admin-btn-bg{
+    background-color: none;
+   }
+   .admin-legend-color{
+    color: #333333 !important;
+   }
+   .admin-btn-bg:hover {
+    background-color: $bravera-red; /* Green */
+    color: white;
+  }
+  .admin-btn-bg:focus {
+    background-color: $bravera-red; /* Green */
+    color: white;
+  }
+   .admin-btn-bg-container{
+    background-color: #33333324;
+   }
   .admin-nav-menu {
     background-color: $bravera-red;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
