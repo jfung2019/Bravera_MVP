@@ -125,7 +125,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     |> check_constraint(:strava_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:challenge_id)
-    |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap)
+    |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap, message: "Duplicate activity")
   end
 
   def create_bravera_app_activity(
@@ -142,7 +142,7 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     |> validate_required([:user_id, :device_id, :type])
     |> check_constraint(:admin_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> check_constraint(:strava_id, name: :strava_id_or_admin_id_or_device_id_required)
-    |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap)
+    |> exclusion_constraint(:id, name: :start_and_end_date_no_overlap, message: "Duplicate activity")
   end
 
   def create_bravera_pedometer_activity(activity_attrs, user_id, device_id) do

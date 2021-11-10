@@ -81,8 +81,7 @@ defmodule OmegaBraveraWeb.Api.Query.DeviceTest do
                  type: "Walk"
                },
                device.user_id,
-               device.id,
-               nil
+               device.id
              )
 
     conn = build_conn() |> put_req_header("authorization", "Bearer #{token}")
