@@ -23,12 +23,11 @@ defmodule OmegaBravera.Activity.Activities do
     from(a in ActivityAccumulator, where: a.id == ^id) |> Repo.one()
   end
 
-  def create_app_activity(activity_attrs, user_id, device_id, user_activities) do
+  def create_app_activity(activity_attrs, user_id, device_id) do
     ActivityAccumulator.create_bravera_app_activity(
       activity_attrs,
       user_id,
-      device_id,
-      user_activities
+      device_id
     )
     |> Repo.insert()
   end
