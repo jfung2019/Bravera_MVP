@@ -752,95 +752,33 @@ defmodule OmegaBravera.Accounts do
       |> Repo.all()
 
   def api_user_profile(user_id) do
-    total_rewards =
-      Repo.aggregate(
-        from(ofr in OfferRedeem, where: ofr.status == "redeemed" and ofr.user_id == ^user_id),
-        :count,
-        :id
-      )
-
-    total_kms_offers =
-      Repo.aggregate(
-        from(
-          a in ActivityAccumulator,
-          where: a.user_id == ^user_id
-        ),
-        :sum,
-        :distance
-      )
-
-    total_kms_offers =
-      if is_nil(total_kms_offers),
-        do: Decimal.from_float(0.0),
-        else: total_kms_offers
-
-    total_kms_today =
-      Repo.aggregate(
-        from(
-          a in ActivityAccumulator,
-          where: a.user_id == ^user_id and fragment("?::date = now()::date", a.start_date)
-        ),
-        :sum,
-        :distance
-      )
-
-    total_kms_today =
-      if is_nil(total_kms_today),
-        do: Decimal.from_float(0.0),
-        else: total_kms_today
-
-    total_points_today =
-      Repo.aggregate(
-        from(p in Point,
-          where: p.user_id == ^user_id and fragment("?::date = now()::date", p.inserted_at),
-          select: coalesce(p.value, 0.0)
-        ),
-        :sum,
-        :value
-      ) || Decimal.from_float(0.0)
-
-    live_challenges = user_live_challenges(user_id)
-
-    expired_challenges = expired_challenges(user_id)
-
-    completed_challenges =
-      from(oc in OfferChallenge,
-        where: oc.status == "complete" and oc.user_id == ^user_id,
-        left_join: a in OfferChallengeActivitiesM2m,
-        on: oc.id == a.offer_challenge_id,
-        left_join: ac in ActivityAccumulator,
-        on: a.activity_id == ac.id,
-        group_by: oc.id,
-        order_by: [desc: :updated_at],
-        select: %{
-          oc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
-        }
-      )
-      |> Repo.all()
-
     user =
       from(
         u in User,
-        where: u.id == ^user_id
+        left_join: total_kms in assoc(u, :activities),
+        left_join: total_kms_today in assoc(u, :activities),
+        on: fragment("?::date = now()::date", total_kms_today.start_date),
+        left_join: total_points_today in Point,
+        on:
+          total_points_today.user_id == ^user_id and
+            fragment("?::date = now()::date", total_points_today.inserted_at),
+        where: u.id == ^user_id,
+        group_by: u.id,
+        select: %{
+          u
+          | total_rewards: 0,
+            total_kilometers: coalesce(sum(total_kms.distance), 0.0),
+            total_kilometers_today: coalesce(sum(total_kms_today.distance), 0.0),
+            total_points_today: coalesce(sum(total_points_today.value), 0.0),
+            offer_challenges_map: %{
+              live: [],
+              expired: [],
+              completed: [],
+              total: 0
+            }
+        }
       )
       |> Repo.one()
-
-    %{
-      user
-      | total_rewards: total_rewards,
-        total_kilometers: total_kms_offers,
-        total_kilometers_today: total_kms_today,
-        total_points_today: total_points_today,
-        offer_challenges_map: %{
-          live: live_challenges,
-          expired: expired_challenges,
-          completed: completed_challenges,
-          total:
-            list_length(live_challenges) + list_length(expired_challenges) +
-              list_length(completed_challenges)
-        }
-    }
   end
 
   @doc """
@@ -3106,8 +3044,14 @@ defmodule OmegaBravera.Accounts do
       select: %{
         u
         | total_kilometers_today: coalesce(ttd.distance, 0),
-          is_friend: fragment("CASE WHEN ? THEN 'f' ELSE 't' END", is_nil(f.id) or f.status == :pending),
-          friend_status: fragment("CASE WHEN ? THEN 'stranger' WHEN ? THEN 'pending' ELSE 'accepted' END", is_nil(f.id), f.status == :pending)
+          is_friend:
+            fragment("CASE WHEN ? THEN 'f' ELSE 't' END", is_nil(f.id) or f.status == :pending),
+          friend_status:
+            fragment(
+              "CASE WHEN ? THEN 'stranger' WHEN ? THEN 'pending' ELSE 'accepted' END",
+              is_nil(f.id),
+              f.status == :pending
+            )
       }
     )
     |> Repo.one()
