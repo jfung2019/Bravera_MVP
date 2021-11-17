@@ -753,6 +753,7 @@ defmodule OmegaBravera.Accounts do
 
   def api_user_profile(user_id) do
     coalesced_sum = Decimal.from_float(0.0)
+
     user =
       from(
         u in User,
@@ -780,40 +781,6 @@ defmodule OmegaBravera.Accounts do
         }
       )
       |> Repo.one()
-  end
-
-  @doc """
-  Get the total kms and total points based on last_sync time (in iso8601 format)
-  """
-  @spec last_sync_kms_points(term(), String.t()) :: map()
-  def last_sync_kms_points(user_id, last_sync) do
-    {:ok, sync_time, _} = DateTime.from_iso8601(last_sync)
-
-    last_sync_total_points =
-      Repo.aggregate(
-        from(
-          p in Point,
-          where: p.user_id == ^user_id and p.inserted_at <= ^sync_time,
-          select: coalesce(p.value, 0.0)
-        ),
-        :sum,
-        :value
-      ) || Decimal.from_float(0.0)
-
-    last_sync_total_kilometers =
-      Repo.aggregate(
-        from(
-          a in ActivityAccumulator,
-          where: a.user_id == ^user_id and a.start_date <= ^sync_time
-        ),
-        :sum,
-        :distance
-      ) || Decimal.from_float(0.0)
-
-    %{
-      last_sync_total_points: last_sync_total_points,
-      last_sync_total_kilometers: last_sync_total_kilometers
-    }
   end
 
   defp list_length(list) when is_nil(list) == true, do: 0

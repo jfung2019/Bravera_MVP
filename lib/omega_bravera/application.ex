@@ -21,8 +21,15 @@ defmodule OmegaBravera.Application do
     :telemetry.attach_many(
       "oban-logger",
       [[:oban, :started], [:oban, :success], [:oban, :failure]],
-      &OmegaBravera.ObanLogger.handle_event/4,
+      &OmegaBravera.Logger.Oban.handle_event/4,
       []
+    )
+
+    :telemetry.attach(
+      "ecto-logger",
+      [:omega_bravera, :repo, :query],
+      &OmegaBravera.Logger.Ecto.handle_event/4,
+      %{}
     )
 
     children =
