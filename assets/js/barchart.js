@@ -259,7 +259,7 @@ const chartHook = {
     //create new arrays 
     //for loop
     
-    document.getElementById("filter").addEventListener("click", function() {
+    //document.getElementById("filter").addEventListener("click", function() {
       // filter array
       // const filterResult = myChart.data.datasets[0].labels.filter(data => data.includes('J'));
       
@@ -275,9 +275,9 @@ const chartHook = {
       //   myChart.data.datasets[0].labels.indexOf(filterResult[i]);
       //   console.log(myChart.data.datasets[0].labels.indexOf(filterResult[i]));
       // }
-      updateChart ();
-      console.log('update');
-    });
+    //   updateChart ();
+    //   console.log('update');
+    // });
   }
 };
 
