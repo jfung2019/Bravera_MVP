@@ -758,11 +758,18 @@ defmodule OmegaBravera.Accounts do
       u in User,
       left_join: total_kms in assoc(u, :activities),
       left_join: total_kms_today in assoc(u, :activities),
-      on: fragment("?::date = now()::date", total_kms_today.start_date),
+      on:
+        fragment(
+          "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
+          total_kms_today.start_date
+        ),
       left_join: total_points_today in Point,
       on:
         total_points_today.user_id == ^user_id and
-          fragment("?::date = now()::date", total_points_today.inserted_at),
+          fragment(
+            "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
+            total_points_today.inserted_at
+          ),
       where: u.id == ^user_id,
       group_by: u.id,
       select: %{
