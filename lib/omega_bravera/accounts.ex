@@ -752,6 +752,7 @@ defmodule OmegaBravera.Accounts do
       |> Repo.all()
 
   def api_user_profile(user_id) do
+    coalesced_sum = Decimal.from_float(0.0)
     user =
       from(
         u in User,
@@ -767,9 +768,9 @@ defmodule OmegaBravera.Accounts do
         select: %{
           u
           | total_rewards: 0,
-            total_kilometers: coalesce(sum(total_kms.distance), 0.0),
-            total_kilometers_today: coalesce(sum(total_kms_today.distance), 0.0),
-            total_points_today: coalesce(sum(total_points_today.value), 0.0),
+            total_kilometers: coalesce(sum(total_kms.distance), ^coalesced_sum),
+            total_kilometers_today: coalesce(sum(total_kms_today.distance), ^coalesced_sum),
+            total_points_today: coalesce(sum(total_points_today.value), ^coalesced_sum),
             offer_challenges_map: %{
               live: [],
               expired: [],
