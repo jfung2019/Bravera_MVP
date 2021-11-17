@@ -41,7 +41,7 @@
 					<%= link gettext("Details"), to: Routes.admin_panel_partner_path(@conn, :show, partner), class: "btn btn-primary" %>
 					<%= link gettext("Edit"), to: Routes.admin_panel_partner_path(@conn, :edit, partner), class: "btn btn-warning" %>
 					<%= link gettext("Images"), to: Routes.live_path(@conn, OmegaBraveraWeb.AdminPartnerImages, partner), class: "btn btn-info" %>
-          <%= link gettext("Leaderboards"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgGroupLeaderboards, partner.id), class: "btn btn-danger" %>
+          <%= link gettext("Leaderboards"), to: Routes.live_path(@conn, OmegaBraveraWeb.OrgGroupLeaderboardsLive, partner.id), class: "btn btn-danger" %>
 				</td>
 				<td class="text-center" style="width: 10%;">
 					<%= case partner.approval_status do %>
