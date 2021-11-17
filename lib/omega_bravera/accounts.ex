@@ -1390,15 +1390,9 @@ defmodule OmegaBravera.Accounts do
           p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and
             p.inserted_at <= ^Timex.end_of_day(now),
         group_by: u.id,
-        select: %{u | todays_points: sum(p.value)}
+        select: %{u | todays_points: coalesce(sum(p.value), 0)}
       )
       |> Repo.one!()
-
-    if is_nil(user.todays_points) do
-      %{user | todays_points: 0}
-    else
-      user
-    end
   end
 
   @doc """
