@@ -9,11 +9,11 @@ defmodule OmegaBravera.Logger.Oban do
   end
 
   def handle_event([:oban, :started], measure, meta, _) do
-    Logger.warn("[Oban] :started #{meta.worker} at #{measure.start_time}")
+    Logger.info("[Oban] :started #{meta.worker} at #{measure.start_time}")
   end
 
   def handle_event([:oban, event], measure, meta, _) do
     duration = System.convert_time_unit(measure.duration, :native, :millisecond)
-    Logger.warn("[Oban] #{event} #{meta.worker} ran in #{duration}ms")
+    Logger.info("[Oban] #{event} #{meta.worker} ran in #{duration}ms")
   end
 end

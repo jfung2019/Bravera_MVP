@@ -754,37 +754,33 @@ defmodule OmegaBravera.Accounts do
   def api_user_profile(user_id) do
     coalesced_sum = Decimal.from_float(0.0)
 
-    user =
-      from(
-        u in User,
-        left_join: total_kms in assoc(u, :activities),
-        left_join: total_kms_today in assoc(u, :activities),
-        on: fragment("?::date = now()::date", total_kms_today.start_date),
-        left_join: total_points_today in Point,
-        on:
-          total_points_today.user_id == ^user_id and
-            fragment("?::date = now()::date", total_points_today.inserted_at),
-        where: u.id == ^user_id,
-        group_by: u.id,
-        select: %{
-          u
-          | total_rewards: 0,
-            total_kilometers: coalesce(sum(total_kms.distance), ^coalesced_sum),
-            total_kilometers_today: coalesce(sum(total_kms_today.distance), ^coalesced_sum),
-            total_points_today: coalesce(sum(total_points_today.value), ^coalesced_sum),
-            offer_challenges_map: %{
-              live: [],
-              expired: [],
-              completed: [],
-              total: 0
-            }
-        }
-      )
-      |> Repo.one()
+    from(
+      u in User,
+      left_join: total_kms in assoc(u, :activities),
+      left_join: total_kms_today in assoc(u, :activities),
+      on: fragment("?::date = now()::date", total_kms_today.start_date),
+      left_join: total_points_today in Point,
+      on:
+        total_points_today.user_id == ^user_id and
+          fragment("?::date = now()::date", total_points_today.inserted_at),
+      where: u.id == ^user_id,
+      group_by: u.id,
+      select: %{
+        u
+        | total_rewards: 0,
+          total_kilometers: coalesce(sum(total_kms.distance), ^coalesced_sum),
+          total_kilometers_today: coalesce(sum(total_kms_today.distance), ^coalesced_sum),
+          total_points_today: coalesce(sum(total_points_today.value), ^coalesced_sum),
+          offer_challenges_map: %{
+            live: [],
+            expired: [],
+            completed: [],
+            total: 0
+          }
+      }
+    )
+    |> Repo.one()
   end
-
-  defp list_length(list) when is_nil(list) == true, do: 0
-  defp list_length(list), do: length(list)
 
   def preload_active_offer_challenges(user) do
     user

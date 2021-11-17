@@ -3,8 +3,9 @@ defmodule OmegaBravera.Logger.Ecto do
 
   def handle_event([:omega_bravera, :repo, :query], %{query_time: time}, %{query: query}, _config) do
     time = System.convert_time_unit(time, :native, :millisecond)
+
     if time > 300 do
-      Logger.error("Query time: #{time}ms with query: #{query}")
+      Logger.warn("Query time: #{time}ms with query: #{query}")
     end
   end
 

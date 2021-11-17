@@ -32,6 +32,13 @@ defmodule OmegaBravera.Application do
       %{}
     )
 
+    :telemetry.attach(
+      "absinthe-logger",
+      [:absinthe, :resolve, :field, :stop],
+      &OmegaBravera.Logger.Absinthe.handle_event/4,
+      %{}
+    )
+
     children =
       case Application.get_env(:omega_bravera, :env) do
         :prod ->
