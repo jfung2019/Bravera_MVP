@@ -756,13 +756,23 @@ defmodule OmegaBravera.Accounts do
 
     from(
       u in User,
+      as: :user,
       left_join: total_kms in assoc(u, :activities),
-      left_join: total_kms_today in assoc(u, :activities),
-      on:
-        fragment(
-          "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
-          total_kms_today.start_date
+      left_lateral_join:
+        total_kms_today in subquery(
+          from(a in OmegaBravera.Activity.ActivityAccumulator,
+            where:
+              a.user_id ==
+                parent_as(:user).id and
+                  fragment(
+                    "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
+                    a.start_date
+                  ),
+            group_by: a.user_id,
+            select: %{user_id: a.user_id, distance: sum(a.distance)}
+          )
         ),
+      on: total_kms_today.user_id == u.id,
       left_join: total_points_today in Point,
       on:
         total_points_today.user_id == ^user_id and
@@ -771,12 +781,12 @@ defmodule OmegaBravera.Accounts do
             total_points_today.inserted_at
           ),
       where: u.id == ^user_id,
-      group_by: u.id,
+      group_by: [u.id, total_kms_today.distance],
       select: %{
         u
         | total_rewards: 0,
           total_kilometers: coalesce(sum(total_kms.distance), ^coalesced_sum),
-          total_kilometers_today: coalesce(sum(total_kms_today.distance), ^coalesced_sum),
+          total_kilometers_today: coalesce(total_kms_today.distance, ^coalesced_sum),
           total_points_today: coalesce(sum(total_points_today.value), ^coalesced_sum),
           offer_challenges_map: %{
             live: [],
@@ -1381,18 +1391,17 @@ defmodule OmegaBravera.Accounts do
   def get_user_with_todays_points(user_id, start_date \\ Timex.now()) do
     now = start_date
 
-    user =
-      from(
-        u in User,
-        where: u.id == ^user_id,
-        left_join: p in Point,
-        on:
-          p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and
-            p.inserted_at <= ^Timex.end_of_day(now),
-        group_by: u.id,
-        select: %{u | todays_points: coalesce(sum(p.value), 0)}
-      )
-      |> Repo.one!()
+    from(
+      u in User,
+      where: u.id == ^user_id,
+      left_join: p in Point,
+      on:
+        p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and
+          p.inserted_at <= ^Timex.end_of_day(now),
+      group_by: u.id,
+      select: %{u | todays_points: coalesce(sum(p.value), 0)}
+    )
+    |> Repo.one!()
   end
 
   @doc """

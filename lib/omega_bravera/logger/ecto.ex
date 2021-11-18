@@ -1,7 +1,12 @@
 defmodule OmegaBravera.Logger.Ecto do
   require Logger
 
-  def handle_event([:omega_bravera, :repo, :query], %{query_time: time}, %{query: query, params: params}, _config) do
+  def handle_event(
+        [:omega_bravera, :repo, :query],
+        %{query_time: time},
+        %{query: query, params: params},
+        _config
+      ) do
     time = System.convert_time_unit(time, :native, :millisecond)
 
     if time > 300 do
