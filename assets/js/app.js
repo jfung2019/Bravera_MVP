@@ -30,11 +30,15 @@ import "./init_html_editor";
 import "./donations";
 import "./payments";
 import "./offer_form";
-import "./group_form"
-import "./password_requirement"
+import "./group_form";
+import "./password_requirement";
+import distanceChartHook from "./distance_chart"
+import socialChartHook from "./social_chart"
 
 Dropzone.autoDiscover = false;
 const Hooks = {
+  distanceChartHook: distanceChartHook,
+  socialChartHook: socialChartHook,
   dropzone: {
     mounted() {
       const _this = this;

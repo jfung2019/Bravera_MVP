@@ -38,6 +38,7 @@ defmodule OmegaBravera.Accounts do
     Offers.OfferChallengeActivitiesM2m,
     Activity.ActivityAccumulator,
     Groups.Member,
+    Groups.ChatMessage,
     Accounts.Organization,
     Accounts.OrganizationMember,
     Accounts.Friend,
@@ -621,6 +622,48 @@ defmodule OmegaBravera.Accounts do
 
   defp members(partner_id) do
     from(m in Member, where: m.partner_id == ^partner_id, select: m.user_id)
+    |> Repo.all()
+  end
+
+  def get_leaderboad_partner_messages_this_week(partner_id) do
+    now = Timex.now()
+    seven_days_ago = Timex.shift(now, days: -7)
+
+    from(
+      u in User,
+      left_join: cm in ChatMessage,
+      on: u.id == cm.user_id,
+      where: cm.group_id == ^partner_id and cm.inserted_at >= ^seven_days_ago,
+      group_by: u.id,
+      select: %{user: u, message_count: count(cm.id)}
+    )
+    |> Repo.all()
+  end
+
+  def get_leaderboad_partner_messages_this_month(partner_id) do
+    now = Timex.now()
+    seven_days_ago = Timex.shift(now, days: -31)
+
+    from(
+      u in User,
+      left_join: cm in ChatMessage,
+      on: u.id == cm.user_id,
+      where: cm.group_id == ^partner_id and cm.inserted_at >= ^seven_days_ago,
+      group_by: u.id,
+      select: %{user: u, message_count: count(cm.id)}
+    )
+    |> Repo.all()
+  end
+
+  def get_leaderboad_partner_messages_all_time(partner_id) do
+    from(
+      u in User,
+      left_join: cm in ChatMessage,
+      on: u.id == cm.user_id,
+      where: cm.group_id == ^partner_id,
+      group_by: u.id,
+      select: %{user: u, message_count: count(cm.id)}
+    )
     |> Repo.all()
   end
 

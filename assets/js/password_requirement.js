@@ -7,10 +7,12 @@ const special_char = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/
 
 $(function () {
     const password_field = $("#password_field")
-    checkPassword(password_field.val())
-    password_field.keyup(function () {
-        checkPassword($(this).val())
-    })
+    if(password_field.val() !== undefined && password_field.val() !== null) {
+      checkPassword(password_field.val())
+      password_field.keyup(function () {
+          checkPassword($(this).val())
+      })
+    }
 })
 
 function checkPassword(password) {

@@ -114,7 +114,7 @@
           </div>
         </div>
       <% end %>
-        <div class="<%= if logged_in?(@conn) && is_admin?(@conn), do: "col-lg-10", else: "col"%>">
+        <div class="<%= if logged_in?(@conn) && is_admin?(@conn), do: "col-lg-10 px-0", else: "col"%>">
           <%= @inner_content %>
         </div>
       </div>

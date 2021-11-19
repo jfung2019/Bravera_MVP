@@ -42,3 +42,6 @@ npm-debug.log
 
 #emacs org mode - simon
 todo.org
+
+# Local seeder
+priv/repo/local_seeder.exs
