@@ -231,6 +231,10 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
     end)
   end
 
+  defp paginate({}, _current_page) do
+    []
+  end
+
   defp paginate(data, current_page) do
     data
     |> elem(current_page)
@@ -257,15 +261,15 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
       }
     end)
 
-    1..20
-    |> Enum.map(fn index ->
-      %{
-        name: "user_" <> to_string(index),
-        value: index,
-        image: "https://picsum.photos/30/30?random=4",
-        backgroundColor: "#ffb9b2"
-      }
-    end)
+    # 1..20
+    # |> Enum.map(fn index ->
+    #   %{
+    #     name: "user_" <> to_string(index),
+    #     value: index,
+    #     image: "https://picsum.photos/30/30?random=4",
+    #     backgroundColor: "#ffb9b2"
+    #   }
+    # end)
   end
 
   defp get_social_data(data) do
@@ -279,15 +283,15 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
       }
     end)
 
-    1..20
-    |> Enum.map(fn index ->
-      %{
-        name: "user_" <> to_string(index),
-        value: index,
-        image: "https://picsum.photos/30/30?random=4",
-        backgroundColor: "#ffb9b2"
-      }
-    end)
+    # 1..20
+    # |> Enum.map(fn index ->
+    #   %{
+    #     name: "user_" <> to_string(index),
+    #     value: index,
+    #     image: "https://picsum.photos/30/30?random=4",
+    #     backgroundColor: "#ffb9b2"
+    #   }
+    # end)
   end
 
   def render(assigns) do
@@ -307,10 +311,10 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
             </div>
           </div>
           <div class="col-lg-6 col-md-12 col-sm-6 py-1">
-            <form phx-submit="distance_search" class="form-inline search-bar-container p-1 my-1 my-lg-1 bg-white" style="">
+           <!-- <form phx-submit="distance_search" class="form-inline search-bar-container p-1 my-1 my-lg-1 bg-white" style="">
               <input name="search_input" class="form-control mr-2 search-bar" type="search" placeholder="Search by Alias" aria-label="Search">
               <button class="btn btn-primary my-1 my-sm-0" type="submit">Search</button>
-            </form>
+            </form> -->
           </div>
         </div>
         <div class="card">
@@ -363,10 +367,10 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
             </div>
           </div>
           <div class="col-lg-6 col-md-12 col-sm-6 py-1">
-            <form phx-submit="social_search" class="form-inline search-bar-container p-1 my-1 my-lg-1 bg-white" style="">
+            <!-- <form phx-submit="social_search" class="form-inline search-bar-container p-1 my-1 my-lg-1 bg-white" style="">
               <input name="search_input" class="form-control mr-2 search-bar" placeholder="Search by Alias" aria-label="Search">
               <button class="btn btn-primary my-1 my-sm-0" type="submit">Search</button>
-            </form>
+            </form> -->
           </div>
         </div>
         <div class="card">
@@ -376,7 +380,7 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
               <nav aria-label="Page navigation example">
                 <ul class="pagination">
                   <li class="page-item">
-                    <a phx-click="paginate_social" phx-value-page="1" class="page-link" href="#">First</a>
+                    <a phx-click="paginate_social" phx-value-page="0" class="page-link" href="#">First</a>
                   </li>
                   <li class="page-item">
                     <a phx-click="paginate_social_previous" class="page-link" href="#" aria-label="Previous">
