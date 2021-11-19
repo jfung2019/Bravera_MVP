@@ -125,14 +125,16 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     |> check_constraint(:strava_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> foreign_key_constraint(:user_id)
     |> unique_constraint(:challenge_id)
-    |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap)
+    |> exclusion_constraint(:start_date,
+      name: :start_and_end_date_no_overlap,
+      message: "Duplicate activity"
+    )
   end
 
   def create_bravera_app_activity(
         activity_attrs,
         user_id,
-        device_id,
-        number_of_activities_at_time
+        device_id
       ) do
     %__MODULE__{}
     |> cast(activity_attrs, [:distance, :start_date, :end_date, :source, :type])
@@ -141,10 +143,12 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
     |> put_change(:device_id, device_id)
     |> verify_allowed_source()
     |> validate_required([:user_id, :device_id, :type])
-    |> verify_not_duplicate(number_of_activities_at_time)
     |> check_constraint(:admin_id, name: :strava_id_or_admin_id_or_device_id_required)
     |> check_constraint(:strava_id, name: :strava_id_or_admin_id_or_device_id_required)
-    |> exclusion_constraint(:start_date, name: :start_and_end_date_no_overlap)
+    |> exclusion_constraint(:id,
+      name: :start_and_end_date_no_overlap,
+      message: "Duplicate activity"
+    )
   end
 
   def create_bravera_pedometer_activity(activity_attrs, user_id, device_id) do
@@ -178,12 +182,6 @@ defmodule OmegaBravera.Activity.ActivityAccumulator do
       changeset
     end
   end
-
-  def verify_not_duplicate(changeset, number_of_activities_at_time)
-      when not is_nil(number_of_activities_at_time) and number_of_activities_at_time > 0,
-      do: add_error(changeset, :id, "Duplicate activity")
-
-  def verify_not_duplicate(changeset, _number_of_activities_at_time), do: changeset
 
   defp to_km(nil), do: nil
 

@@ -332,12 +332,20 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
              json_response(response, 200)
   end
 
-  test "can compare with non-friend", %{conn: conn, user1: %{id: user1_id}, user2: %{id: user2_id}} do
+  test "can compare with non-friend", %{
+    conn: conn,
+    user1: %{id: user1_id},
+    user2: %{id: user2_id}
+  } do
     response =
-      post(conn, "/api", %{query: @compare_with_non_friend, variables: %{"nonFriendUserId" => user2_id}})
+      post(conn, "/api", %{
+        query: @compare_with_non_friend,
+        variables: %{"nonFriendUserId" => user2_id}
+      })
 
     user1_id_string = to_string(user1_id)
     user2_id_string = to_string(user2_id)
+
     assert %{
              "data" => %{
                "compareWithNonFriend" => %{
@@ -348,16 +356,25 @@ defmodule OmegaBraveraWeb.Api.Query.FriendTest do
            } = json_response(response, 200)
   end
 
-  test "can compare with friend using nonfriend", %{conn: conn, user1: %{id: user1_id}, user2: %{id: user2_id}} do
+  test "can compare with friend using nonfriend", %{
+    conn: conn,
+    user1: %{id: user1_id},
+    user2: %{id: user2_id}
+  } do
     {:ok, friend} =
       Accounts.create_friend_request(%{receiver_id: user1_id, requester_id: user2_id})
 
     Accounts.accept_friend_request(friend)
+
     response =
-      post(conn, "/api", %{query: @compare_with_non_friend, variables: %{"nonFriendUserId" => user2_id}})
+      post(conn, "/api", %{
+        query: @compare_with_non_friend,
+        variables: %{"nonFriendUserId" => user2_id}
+      })
 
     user1_id_string = to_string(user1_id)
     user2_id_string = to_string(user2_id)
+
     assert %{
              "data" => %{
                "compareWithNonFriend" => %{

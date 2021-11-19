@@ -795,133 +795,52 @@ defmodule OmegaBravera.Accounts do
       |> Repo.all()
 
   def api_user_profile(user_id) do
-    total_rewards =
-      Repo.aggregate(
-        from(ofr in OfferRedeem, where: ofr.status == "redeemed" and ofr.user_id == ^user_id),
-        :count,
-        :id
-      )
+    coalesced_sum = Decimal.from_float(0.0)
 
-    total_kms_offers =
-      Repo.aggregate(
-        from(
-          a in ActivityAccumulator,
-          where: a.user_id == ^user_id
+    from(
+      u in User,
+      as: :user,
+      left_join: total_kms in assoc(u, :activities),
+      left_lateral_join:
+        total_kms_today in subquery(
+          from(a in OmegaBravera.Activity.ActivityAccumulator,
+            where:
+              a.user_id ==
+                parent_as(:user).id and
+                  fragment(
+                    "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
+                    a.start_date
+                  ),
+            group_by: a.user_id,
+            select: %{user_id: a.user_id, distance: sum(a.distance)}
+          )
         ),
-        :sum,
-        :distance
-      )
-
-    total_kms_offers =
-      if is_nil(total_kms_offers),
-        do: Decimal.from_float(0.0),
-        else: total_kms_offers
-
-    total_kms_today =
-      Repo.aggregate(
-        from(
-          a in ActivityAccumulator,
-          where: a.user_id == ^user_id and fragment("?::date = now()::date", a.start_date)
-        ),
-        :sum,
-        :distance
-      )
-
-    total_kms_today =
-      if is_nil(total_kms_today),
-        do: Decimal.from_float(0.0),
-        else: total_kms_today
-
-    total_points_today =
-      Repo.aggregate(
-        from(p in Point,
-          where: p.user_id == ^user_id and fragment("?::date = now()::date", p.inserted_at),
-          select: coalesce(p.value, 0.0)
-        ),
-        :sum,
-        :value
-      ) || Decimal.from_float(0.0)
-
-    live_challenges = user_live_challenges(user_id)
-
-    expired_challenges = expired_challenges(user_id)
-
-    completed_challenges =
-      from(oc in OfferChallenge,
-        where: oc.status == "complete" and oc.user_id == ^user_id,
-        left_join: a in OfferChallengeActivitiesM2m,
-        on: oc.id == a.offer_challenge_id,
-        left_join: ac in ActivityAccumulator,
-        on: a.activity_id == ac.id,
-        group_by: oc.id,
-        order_by: [desc: :updated_at],
-        select: %{
-          oc
-          | distance_covered: fragment("round(sum(coalesce(?, 0)), 2)", ac.distance)
-        }
-      )
-      |> Repo.all()
-
-    user =
-      from(
-        u in User,
-        where: u.id == ^user_id
-      )
-      |> Repo.one()
-
-    %{
-      user
-      | total_rewards: total_rewards,
-        total_kilometers: total_kms_offers,
-        total_kilometers_today: total_kms_today,
-        total_points_today: total_points_today,
-        offer_challenges_map: %{
-          live: live_challenges,
-          expired: expired_challenges,
-          completed: completed_challenges,
-          total:
-            list_length(live_challenges) + list_length(expired_challenges) +
-              list_length(completed_challenges)
-        }
-    }
+      on: total_kms_today.user_id == u.id,
+      left_join: total_points_today in Point,
+      on:
+        total_points_today.user_id == ^user_id and
+          fragment(
+            "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
+            total_points_today.inserted_at
+          ),
+      where: u.id == ^user_id,
+      group_by: [u.id, total_kms_today.distance],
+      select: %{
+        u
+        | total_rewards: 0,
+          total_kilometers: coalesce(sum(total_kms.distance), ^coalesced_sum),
+          total_kilometers_today: coalesce(total_kms_today.distance, ^coalesced_sum),
+          total_points_today: coalesce(sum(total_points_today.value), ^coalesced_sum),
+          offer_challenges_map: %{
+            live: [],
+            expired: [],
+            completed: [],
+            total: 0
+          }
+      }
+    )
+    |> Repo.one()
   end
-
-  @doc """
-  Get the total kms and total points based on last_sync time (in iso8601 format)
-  """
-  @spec last_sync_kms_points(term(), String.t()) :: map()
-  def last_sync_kms_points(user_id, last_sync) do
-    {:ok, sync_time, _} = DateTime.from_iso8601(last_sync)
-
-    last_sync_total_points =
-      Repo.aggregate(
-        from(
-          p in Point,
-          where: p.user_id == ^user_id and p.inserted_at <= ^sync_time,
-          select: coalesce(p.value, 0.0)
-        ),
-        :sum,
-        :value
-      ) || Decimal.from_float(0.0)
-
-    last_sync_total_kilometers =
-      Repo.aggregate(
-        from(
-          a in ActivityAccumulator,
-          where: a.user_id == ^user_id and a.start_date <= ^sync_time
-        ),
-        :sum,
-        :distance
-      ) || Decimal.from_float(0.0)
-
-    %{
-      last_sync_total_points: last_sync_total_points,
-      last_sync_total_kilometers: last_sync_total_kilometers
-    }
-  end
-
-  defp list_length(list) when is_nil(list) == true, do: 0
-  defp list_length(list), do: length(list)
 
   def preload_active_offer_challenges(user) do
     user
@@ -1515,24 +1434,17 @@ defmodule OmegaBravera.Accounts do
   def get_user_with_todays_points(user_id, start_date \\ Timex.now()) do
     now = start_date
 
-    user =
-      from(
-        u in User,
-        where: u.id == ^user_id,
-        left_join: p in Point,
-        on:
-          p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and
-            p.inserted_at <= ^Timex.end_of_day(now),
-        group_by: u.id,
-        select: %{u | todays_points: sum(p.value)}
-      )
-      |> Repo.one!()
-
-    if is_nil(user.todays_points) do
-      %{user | todays_points: 0}
-    else
-      user
-    end
+    from(
+      u in User,
+      where: u.id == ^user_id,
+      left_join: p in Point,
+      on:
+        p.user_id == ^user_id and p.inserted_at >= ^Timex.beginning_of_day(now) and
+          p.inserted_at <= ^Timex.end_of_day(now),
+      group_by: u.id,
+      select: %{u | todays_points: coalesce(sum(p.value), 0)}
+    )
+    |> Repo.one!()
   end
 
   @doc """

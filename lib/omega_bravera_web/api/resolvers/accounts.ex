@@ -154,17 +154,6 @@ defmodule OmegaBraveraWeb.Api.Resolvers.Accounts do
       ),
       do: {:ok, Accounts.api_user_profile(id)}
 
-  def user_profile_with_last_sync_data(_root, %{last_sync: last_sync}, %{
-        context: %{current_user: %{id: user_id}}
-      }) do
-    {:ok,
-     Map.put(
-       Accounts.last_sync_kms_points(user_id, last_sync),
-       :user_profile,
-       Accounts.api_user_profile(user_id)
-     )}
-  end
-
   def get_leaderboard(_root, _args, %{context: %{current_user: %{id: user_id}}}),
     do:
       {:ok,

@@ -26,8 +26,7 @@ defmodule OmegaBravera.ActivitiesTest do
                  "source" => "Watch"
                },
                user.id,
-               device.id,
-               0
+               device.id
              )
 
     assert {:error, _} =
@@ -39,8 +38,7 @@ defmodule OmegaBravera.ActivitiesTest do
                  "source" => "Watch"
                },
                user.id,
-               device.id,
-               0
+               device.id
              )
 
     assert {:error, _} =
@@ -52,8 +50,7 @@ defmodule OmegaBravera.ActivitiesTest do
                  "source" => "Watch"
                },
                user.id,
-               device.id,
-               0
+               device.id
              )
 
     assert {:ok, _} =
@@ -65,8 +62,7 @@ defmodule OmegaBravera.ActivitiesTest do
                  "source" => "Watch"
                },
                user.id,
-               device.id,
-               0
+               device.id
              )
   end
 
@@ -79,8 +75,7 @@ defmodule OmegaBravera.ActivitiesTest do
              Activities.create_app_activity(
                %{"start_date" => start_date, "type" => "Walk", "source" => "Watch"},
                user.id,
-               device.id,
-               0
+               device.id
              )
   end
 
