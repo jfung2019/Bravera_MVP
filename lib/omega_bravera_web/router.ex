@@ -189,7 +189,6 @@ defmodule OmegaBraveraWeb.Router do
       scope "/" do
         pipe_through [:admin_liveview]
         live "/offers/:slug/images", AdminOfferImages
-        live "/groups/:id/leaderboards", OrgGroupLeaderboardsLive
       end
 
       resources "/group_approvals", AdminPanelGroupApprovalController, only: [:show, :create]
@@ -259,6 +258,7 @@ defmodule OmegaBraveraWeb.Router do
       get "/dashboard", OrgPanelDashboardController, :index
 
       resources "/groups", OrgPanelPartnerController, except: [:delete] do
+        live "/:id/leaderboards", OrgGroupLeaderboardsLive
         resources "/locations", OrgPanelPartnerLocationController, except: [:index]
         resources "/members", OrgPanelPartnerMemberController, only: [:index, :delete]
       end
