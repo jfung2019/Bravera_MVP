@@ -28,6 +28,7 @@
           <th><%= gettext("Email") %></th>
           <th><%= gettext("Name") %></th>
           <th><%= gettext("Alias") %></th>
+          <th><%= gettext("Joined UTC") %></th>
           <th class="text-center"><strong><%= gettext("Action") %></strong></th>
         </tr>
         </thead>
@@ -38,6 +39,7 @@
           <td><%= member.user.email %></td>
           <td><%= "#{member.user.firstname} #{member.user.lastname}" %></td>
           <td><%= member.user.username %></td>
+          <td><%= member.user.inserted_at %></td>
           <td class="text-center"><%= link gettext("Remove member"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :delete, @partner_id, member), method: :delete, class: "btn btn-danger", data_confirm: "Are you sure?" %></td>
         </tr>
         <% end %>
