@@ -627,7 +627,7 @@ defmodule OmegaBravera.Groups do
   end
 
   def list_partner_members_query(partner_id) do
-    from(m in Member, where: m.partner_id == ^partner_id, preload: [user: [:strava]])
+    from(m in Member, where: m.partner_id == ^partner_id, preload: [user: [:strava]], order_by: [asc: m.inserted_at])
   end
 
   @doc """

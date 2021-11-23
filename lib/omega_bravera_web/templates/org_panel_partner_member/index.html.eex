@@ -13,6 +13,8 @@
         <tr>
           <th><%= gettext("Profile Pic") %></th>
           <th><%= gettext("Alias/Username") %></th>
+          <th><%= gettext("Full Name") %></th>
+          <th><%= gettext("Joined UTC") %></th>
           <th class="text-center"><%= gettext("Action") %></th>
         </tr>
         </thead>
@@ -21,6 +23,8 @@
         <tr>
           <td><%= img_tag(profile_picture_or_default(member.user, Routes.static_path(@conn, "/images/profile_default.jpeg")), class: "thumbnail img-fluid rounded-circle border", style: "max-height: 50px;") %></td>
           <td><%= member.user.username %></td>
+          <td><%= "#{member.user.firstname} #{member.user.lastname}" %></td>
+          <td><%= render_datetime(member.inserted_at) %></td>
           <td class="text-center"><%= link gettext("Remove member"), to: Routes.org_panel_partner_org_panel_partner_member_path(@conn, :delete, @partner_id, member), method: :delete, class: "btn btn-danger", data_confirm: "Are you sure?" %></td>
         </tr>
         <% end %>
