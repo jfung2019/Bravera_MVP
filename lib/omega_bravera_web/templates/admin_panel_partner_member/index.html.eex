@@ -39,7 +39,7 @@
           <td><%= member.user.email %></td>
           <td><%= "#{member.user.firstname} #{member.user.lastname}" %></td>
           <td><%= member.user.username %></td>
-          <td><%= member.user.inserted_at %></td>
+          <td><%= render_datetime(member.inserted_at) %></td>
           <td class="text-center"><%= link gettext("Remove member"), to: Routes.admin_panel_partner_admin_panel_partner_member_path(@conn, :delete, @partner_id, member), method: :delete, class: "btn btn-danger", data_confirm: "Are you sure?" %></td>
         </tr>
         <% end %>
