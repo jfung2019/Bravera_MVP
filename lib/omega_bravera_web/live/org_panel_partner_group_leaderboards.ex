@@ -8,13 +8,13 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
   def mount(%{"id" => partner_id}, session, socket) do
     distance_data =
       partner_id
-      |> Accounts.api_get_leaderboard_of_partner_all_time()
+      |> Accounts.api_get_leaderboard_of_partner_this_week()
       |> get_distance_data()
       |> format_paginate()
 
     social_data =
       partner_id
-      |> Accounts.get_leaderboad_partner_messages_all_time()
+      |> Accounts.get_leaderboad_partner_messages_this_week()
       |> get_social_data()
       |> format_paginate()
 
@@ -255,7 +255,7 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
     |> Enum.map(fn %User{} = user ->
       %{
         name: user.username,
-        value: user.total_kilometers,
+        value: Decimal.to_float(user.total_kilometers),
         image: user.profile_picture,
         backgroundColor: "#ffb9b2"
       }
