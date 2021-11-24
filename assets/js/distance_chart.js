@@ -19,8 +19,15 @@ const distanceChartHook = {
 					xAxis.ticks.forEach((value, index) => {
 						var x = xAxis.getPixelForTick(index);
 						var image = new Image();
+						var imageSize = 30;
 						image.src = distanceImages[index],
-							ctx.drawImage(image, x - 12, yAxis.bottom + 10);
+						ctx.save();
+						ctx.beginPath();
+						ctx.arc(x, yAxis.bottom + 25, 15, 0, Math.PI * 2, false);
+						ctx.clip();
+						ctx.drawImage(image, x - 12, yAxis.bottom + 10);
+						ctx.drawImage(image, x - 15, yAxis.bottom + 12, imageSize, imageSize);
+						ctx.restore();
 					});
 				}
 			}],

@@ -894,24 +894,24 @@ div.team-form {
         margin-left: 0rem !important;
       }
     }
-   .admin-btn-bg{
-    background-color: none;
-   }
-   .admin-legend-color{
-    color: #333333 !important;
-   }
-   .admin-btn-bg:hover {
-    background-color: $bravera-red; /* Green */
-    color: white;
-  }
-  .admin-btn-bg:focus {
-    background-color: $bravera-red; /* Green */
-    color: white;
-  }
-   .admin-btn-bg-container{
-    background-color: #33333324;
-   }
-  .admin-nav-menu {
+    .admin-legend-color{
+      color: #333333 !important;
+    }
+   .btn-primary, .btn-primary:visited {
+    background-color: #dddada !important;
+    border-color: #dddada !important;
+    color: black;
+    }
+    .active, .btn-primary:hover {
+        background-color: $bravera-red !important;
+        color: white;
+        outline: none !important;
+        box-shadow: none;
+    }
+    .admin-btn-bg-container{
+      background-color: #dddada;
+    }
+    .admin-nav-menu {
     background-color: $bravera-red;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
     h6 {

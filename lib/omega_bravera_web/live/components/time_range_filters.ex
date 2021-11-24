@@ -3,29 +3,22 @@ defmodule OmegaBraveraWeb.TimeRangeFilters do
 
   def render(assigns) do
     ~L"""
-    <button class="btn admin-btn-bg rounded"
-      type="button"
-      phx-click=<%="time_range_changed_" <> assigns.for %>
-      phx-value-filter="week"
-    >
-    7 Days
-    </button>
-
-    <button class="btn admin-btn-bg rounded"
-      type="button"
-      phx-click=<%="time_range_changed_" <> assigns.for %>
-      phx-value-filter="month"
-    >
-    Month
-    </button>
-
-    <button class="btn admin-btn-bg rounded"
-      type="button"
-      phx-click=<%="time_range_changed_" <> assigns.for %>
-      phx-value-filter="alltime"
-    >
-    All time
-    </button>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-primary rounded active" style="margin-left: 3px; margin-right: 3px;"><input type="radio" autocomplete="off" checked phx-click=<%="time_range_changed_"<> assigns.for %>
+      phx-value-filter="week">7 Days</label>
+      <label class="btn btn-primary rounded">
+        <input type="radio" phx-click=<%="time_range_changed_" <> assigns.for %>
+        phx-value-filter="month"
+      >
+      Month
+      </label>
+      <label class="btn btn-primary rounded" style="margin-left: 3px; margin-right: 3px;">
+        <input type="radio" phx-click=<%="time_range_changed_" <> assigns.for %>
+        phx-value-filter="alltime"
+      >
+      All time
+      </label>
+    </div>
     """
   end
 end
