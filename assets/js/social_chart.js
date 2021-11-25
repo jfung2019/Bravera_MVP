@@ -19,7 +19,7 @@ const socialChartHook = {
 						var x = xAxis.getPixelForTick(index);
 						var image = new Image();
 						var imageSize = 30;
-						image.src = distanceImages[index],
+						image.src = socialImages[index],
 						ctx.save();
 						ctx.beginPath();
 						ctx.arc(x, yAxis.bottom + 25, 15, 0, Math.PI * 2, false);
