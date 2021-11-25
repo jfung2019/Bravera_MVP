@@ -4,7 +4,7 @@ defmodule OmegaBraveraWeb.TimeRangeFilters do
   def render(assigns) do
     ~L"""
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
-      <label class="btn btn-primary rounded active" style="margin-left: 3px; margin-right: 3px;"><input type="radio" autocomplete="off" checked phx-click=<%="time_range_changed_"<> assigns.for %>
+      <label class="btn btn-primary rounded active" style="margin-left: 3px; margin-right: 3px;"><input type="radio" phx-click=<%="time_range_changed_"<> assigns.for %>
       phx-value-filter="week">7 Days</label>
       <label class="btn btn-primary rounded">
         <input type="radio" phx-click=<%="time_range_changed_" <> assigns.for %>
