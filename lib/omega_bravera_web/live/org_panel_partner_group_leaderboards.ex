@@ -253,12 +253,9 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
   defp get_distance_data(data, key) do
     data
     |> Enum.map(fn %User{} = user ->
-        value = Map.get(user, key)
-        IO.inspect(user)
-        IO.puts(key)
       %{
         name: user.username,
-        value: Decimal.to_float(value),
+        value: Decimal.to_float(Map.get(user, key)),
         image: user.profile_picture,
         backgroundColor: "#ffb9b2"
       }
