@@ -859,7 +859,7 @@ div.team-form {
 
 .admin-section {
     .admin-btn-bg-container{
-      width: 290px; margin-left: 4rem !important;
+      width: 305px; margin-left: 4rem !important;
     }
     .search-bar{
       width: 15vw;
@@ -890,7 +890,7 @@ div.team-form {
     }
     @media only screen and (max-width: 767px) {
       .admin-btn-bg-container{
-        width: 290px; 
+        width: 305px; 
         margin-left: 0rem !important;
       }
     }
@@ -909,6 +909,7 @@ div.team-form {
         box-shadow: none;
     }
     .admin-btn-bg-container{
+      width: 305px; 
       background-color: #dddada;
     }
     .admin-nav-menu {

@@ -311,10 +311,10 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
             </div>
           </div>
           <div class="col-lg-6 col-md-12 col-sm-6 py-1">
-           <!-- <form phx-submit="distance_search" class="form-inline search-bar-container p-1 my-1 my-lg-1 bg-white" style="">
+            <form phx-submit="distance_search" class="form-inline search-bar-container p-1 my-1 my-lg-1 bg-white" style="">
               <input name="search_input" class="form-control mr-2 search-bar" type="search" placeholder="Search by Alias" aria-label="Search">
               <button class="btn btn-primary my-1 my-sm-0" type="submit">Search</button>
-            </form> -->
+            </form>
           </div>
         </div>
         <div class="card">
@@ -367,10 +367,10 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
             </div>
           </div>
           <div class="col-lg-6 col-md-12 col-sm-6 py-1">
-            <!-- <form phx-submit="social_search" class="form-inline search-bar-container p-1 my-1 my-lg-1 bg-white" style="">
+            <form phx-submit="social_search" class="form-inline search-bar-container p-1 my-1 my-lg-1 bg-white" style="">
               <input name="search_input" class="form-control mr-2 search-bar" placeholder="Search by Alias" aria-label="Search">
               <button class="btn btn-primary my-1 my-sm-0" type="submit">Search</button>
-            </form> -->
+            </form>
           </div>
         </div>
         <div class="card">
