@@ -797,8 +797,8 @@ defmodule OmegaBravera.Accounts do
         u
         | total_rewards: 0,
           total_kilometers: coalesce(sum(total_kms.distance), ^coalesced_sum),
-          total_kilometers_today: total_kms_today.distance,
-          total_points_today: total_points_today.value,
+          total_kilometers_today: coalesce(total_kms_today.distance, ^coalesced_sum),
+          total_points_today: coalesce(total_points_today.value, ^coalesced_sum),
           offer_challenges_map: %{
             live: [],
             expired: [],
