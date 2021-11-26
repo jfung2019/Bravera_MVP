@@ -23,7 +23,7 @@ const distanceChartHook = {
 						image.src = distanceImages[index],
 						ctx.save();
 						ctx.beginPath();
-						ctx.arc(x, yAxis.bottom + 25, 15, 0, Math.PI * 2, false);
+						ctx.arc(x, yAxis.bottom + 25, 13, 0, Math.PI * 2, false);
 						ctx.clip();
 						ctx.drawImage(image, x - 15, yAxis.bottom + 12, imageSize, imageSize);
 						ctx.restore();
