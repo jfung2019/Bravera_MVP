@@ -9,7 +9,7 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
     distance_data =
       partner_id
       |> Accounts.api_get_leaderboard_of_partner_this_week()
-      |> get_distance_data()
+      |> get_distance_data(:total_kilometers_this_week)
       |> format_paginate()
 
     social_data =
@@ -196,19 +196,19 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
         "week" ->
           socket.assigns.partner_id
           |> Accounts.api_get_leaderboard_of_partner_this_week()
-          |> get_distance_data()
+          |> get_distance_data(:total_kilometers_this_week)
           |> format_paginate()
 
         "month" ->
           socket.assigns.partner_id
           |> Accounts.api_get_leaderboard_of_partner_this_month()
-          |> get_distance_data()
+          |> get_distance_data(:total_kilometers_this_month)
           |> format_paginate()
 
         "alltime" ->
           socket.assigns.partner_id
           |> Accounts.api_get_leaderboard_of_partner_all_time()
-          |> get_distance_data()
+          |> get_distance_data(:total_kilometers)
           |> format_paginate()
       end
 
@@ -250,26 +250,19 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
     tuple_size(data)
   end
 
-  defp get_distance_data(data) do
+  defp get_distance_data(data, key) do
     data
     |> Enum.map(fn %User{} = user ->
+        value = Map.get(user, key)
+        IO.inspect(user)
+        IO.puts(key)
       %{
         name: user.username,
-        value: Decimal.to_float(user.total_kilometers),
+        value: Decimal.to_float(value),
         image: user.profile_picture,
         backgroundColor: "#ffb9b2"
       }
     end)
-
-    # 1..20
-    # |> Enum.map(fn index ->
-    #   %{
-    #     name: "user_" <> to_string(index),
-    #     value: index,
-    #     image: "https://picsum.photos/30/30?random=4",
-    #     backgroundColor: "#ffb9b2"
-    #   }
-    # end)
   end
 
   defp get_social_data(data) do
@@ -282,16 +275,6 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
         backgroundColor: "#ffb9b2"
       }
     end)
-
-    # 1..20
-    # |> Enum.map(fn index ->
-    #   %{
-    #     name: "user_" <> to_string(index),
-    #     value: index,
-    #     image: "https://picsum.photos/30/30?random=4",
-    #     backgroundColor: "#ffb9b2"
-    #   }
-    # end)
   end
 
   def render(assigns) do
