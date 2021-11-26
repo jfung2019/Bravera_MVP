@@ -764,30 +764,41 @@ defmodule OmegaBravera.Accounts do
             where:
               a.user_id ==
                 parent_as(:user).id and
-                  fragment(
-                    "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
-                    a.start_date
-                  ),
+                fragment(
+                  "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
+                  a.start_date
+                ),
             group_by: a.user_id,
-            select: %{user_id: a.user_id, distance: sum(a.distance)}
+            select: %{user_id: a.user_id, distance: coalesce(sum(a.distance), ^coalesced_sum)}
           )
         ),
       on: total_kms_today.user_id == u.id,
-      left_join: total_points_today in Point,
-      on:
-        total_points_today.user_id == ^user_id and
-          fragment(
-            "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
-            total_points_today.inserted_at
-          ),
+      left_lateral_join:
+        total_points_today in subquery(
+          from(
+            p in Point,
+            where:
+              p.user_id == parent_as(:user).id and
+                fragment(
+                  "? BETWEEN DATE_TRUNC('day', NOW()) AND DATE_TRUNC('day', NOW() + INTERVAL '1 DAY - 1 SECOND')",
+                  p.inserted_at
+                ),
+            group_by: p.user_id,
+            select: %{
+              user_id: p.user_id,
+              value: coalesce(sum(p.value), ^coalesced_sum)
+            }
+          )
+        ),
+      on: total_points_today.user_id == u.id,
       where: u.id == ^user_id,
-      group_by: [u.id, total_kms_today.distance],
+      group_by: [u.id, total_kms_today.distance, total_points_today.value],
       select: %{
         u
         | total_rewards: 0,
           total_kilometers: coalesce(sum(total_kms.distance), ^coalesced_sum),
-          total_kilometers_today: coalesce(total_kms_today.distance, ^coalesced_sum),
-          total_points_today: coalesce(sum(total_points_today.value), ^coalesced_sum),
+          total_kilometers_today: total_kms_today.distance,
+          total_points_today: total_points_today.value,
           offer_challenges_map: %{
             live: [],
             expired: [],
