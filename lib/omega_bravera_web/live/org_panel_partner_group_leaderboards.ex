@@ -3,7 +3,7 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
   alias OmegaBravera.Accounts
   alias OmegaBravera.Accounts.User
 
-  @per_page 3
+  @per_page 10
 
   def mount(%{"id" => partner_id}, session, socket) do
     distance_data =
