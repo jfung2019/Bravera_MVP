@@ -94,11 +94,11 @@ defmodule OmegaBravera.Points do
           from(a in ActivityAccumulator,
             where:
               a.user_id == ^user_id and
-                fragment("?::date = ?::date", parent_as(:point).inserted_at, a.start_date),
-            group_by: fragment("?::date", a.start_date),
+                fragment("? BETWEEN DATE_TRUNC('day', ?) AND DATE_TRUNC('day', ?) + INTERVAL '1 DAY - 1 SECOND'", a.start_date, parent_as(:point).inserted_at, parent_as(:point).inserted_at),
+            group_by: fragment("DATE_TRUNC('day', ?)", a.start_date),
             select: %{
               distance: coalesce(sum(a.distance), 0),
-              start_date: fragment("?::date", a.start_date)
+              start_date: fragment("DATE_TRUNC('day', ?)", a.start_date)
             }
           )
         ),
