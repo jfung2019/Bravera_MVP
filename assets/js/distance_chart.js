@@ -10,8 +10,6 @@ const distanceChartHook = {
 		var backgroundColor = []
 			
 		let distanceJson = JSON.parse(this.el.dataset.json);
-    console.log(distanceJson);
-
 			var labels = distanceJson.map(function (index){
 				return index.name;
 			})
