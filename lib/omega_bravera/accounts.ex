@@ -511,6 +511,9 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
+  @doc """
+  get Bravera orginisation dashboard piechart for 7 days user details for the group longest.
+  """
   def get_dashboard_org_week_longest(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
@@ -537,6 +540,10 @@ defmodule OmegaBravera.Accounts do
     )
     |> Repo.all()
   end
+
+  @doc """
+  get Bravera orginisation dashboard piechart for 7 days user details for the group long.
+  """
   def get_dashboard_org_week_long(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
@@ -557,13 +564,16 @@ defmodule OmegaBravera.Accounts do
         u
         | distance: coalesce(a.distance, 0)
       },
-      where: a.distance >=36 and a.distance <50,
+      where: a.distance >= 36 and a.distance < 50,
       group_by: [u.id, a.distance],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
   end
 
+  @doc """
+  get Bravera orginisation dashboard piechart for 7 days user details for the group moderate.
+  """
   def get_dashboard_org_week_moderate(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
@@ -591,6 +601,9 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @doc """
+  get Bravera orginisation dashboard piechart for 7 days user details for the group low.
+  """
   def get_dashboard_org_week_low(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
@@ -600,13 +613,14 @@ defmodule OmegaBravera.Accounts do
       left_lateral_join: a in subquery(activity_query(seven_days_ago, now)),
       on: a.user_id == u.id,
       where:
-        u.id in subquery(
-          from(o in Organization,
-            left_join: m in assoc(o, :group_members),
-            where: o.id == ^organization_id,
-            select: m.user_id
-          )
-        ) and not is_nil(u.email) and (not is_nil(a.distance) and a.distance >= 0 and a.distance < 20) or is_nil(a.distance),
+        (u.id in subquery(
+           from(o in Organization,
+             left_join: m in assoc(o, :group_members),
+             where: o.id == ^organization_id,
+             select: m.user_id
+           )
+         ) and not is_nil(u.email) and
+           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 20)) or is_nil(a.distance),
       select: %{
         u
         | distance: coalesce(a.distance, 0)
@@ -615,9 +629,11 @@ defmodule OmegaBravera.Accounts do
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
-    |> IO.inspect()
   end
 
+  @doc """
+  get Bravera orginisation dashboard piechart for 30 days user details for the group longest.
+  """
   def get_dashboard_org_month_longest(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
@@ -645,6 +661,9 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @doc """
+  get Bravera orginisation dashboard piechart for 30 days user details for the group long.
+  """
   def get_dashboard_org_month_long(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
@@ -665,13 +684,16 @@ defmodule OmegaBravera.Accounts do
         u
         | distance: coalesce(a.distance, 0)
       },
-      where: a.distance >= 141 and  a.distance < 200,
+      where: a.distance >= 141 and a.distance < 200,
       group_by: [u.id, a.distance],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
   end
 
+  @doc """
+  get Bravera orginisation dashboard piechart for 30 days user details for the group moderate.
+  """
   def get_dashboard_org_month_moderate(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
@@ -692,13 +714,16 @@ defmodule OmegaBravera.Accounts do
         u
         | distance: coalesce(a.distance, 0)
       },
-      where: a.distance >= 61 and  a.distance < 140,
+      where: a.distance >= 61 and a.distance < 140,
       group_by: [u.id, a.distance],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
   end
 
+  @doc """
+  get Bravera orginisation dashboard piechart for 30 days user details for the group low.
+  """
   def get_dashboard_org_month_low(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
@@ -708,13 +733,14 @@ defmodule OmegaBravera.Accounts do
       left_lateral_join: a in subquery(activity_query(thirty_days_ago, now)),
       on: a.user_id == u.id,
       where:
-        u.id in subquery(
-          from(o in Organization,
-            left_join: m in assoc(o, :group_members),
-            where: o.id == ^organization_id,
-            select: m.user_id
-          )
-        ) and not is_nil(u.email) and (not is_nil(a.distance) and a.distance >= 0 and a.distance < 80) or is_nil(a.distance),
+        (u.id in subquery(
+           from(o in Organization,
+             left_join: m in assoc(o, :group_members),
+             where: o.id == ^organization_id,
+             select: m.user_id
+           )
+         ) and not is_nil(u.email) and
+           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 80)) or is_nil(a.distance),
       select: %{
         u
         | distance: coalesce(a.distance, 0)
@@ -725,8 +751,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @doc """
+  get Bravera orginisation dashboard piechart for all time user details for the group longest.
+  """
   def get_dashboard_org_all_time_longest(organization_id) do
-
     from(
       u in User,
       left_lateral_join: a in subquery(activity_query()),
@@ -750,9 +778,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-
+  @doc """
+  get Bravera orginisation dashboard piechart for all time user details for the group long.
+  """
   def get_dashboard_org_all_time_long(organization_id) do
-
     from(
       u in User,
       left_lateral_join: a in subquery(activity_query()),
@@ -776,8 +805,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @doc """
+  get Bravera orginisation dashboard piechart for all time user details for the group moderate.
+  """
   def get_dashboard_org_all_time_moderate(organization_id) do
-
     from(
       u in User,
       left_lateral_join: a in subquery(activity_query()),
@@ -801,8 +832,11 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @spec get_dashboard_org_all_time_low(integer()) :: any
+  @doc """
+  get Bravera orginisation dashboard piechart for all time user details for the group low.
+  """
   def get_dashboard_org_all_time_low(organization_id) do
-
     from(
       u in User,
       left_lateral_join: a in subquery(activity_query()),
@@ -814,7 +848,8 @@ defmodule OmegaBravera.Accounts do
             where: o.id == ^organization_id,
             select: m.user_id
           )
-        ) and not is_nil(u.email) and (not is_nil(a.distance) and a.distance >= 1000 and a.distance < 3000),
+        ) and not is_nil(u.email) and
+          (not is_nil(a.distance) and a.distance >= 1000 and a.distance < 3000),
       select: %{
         u
         | distance: coalesce(a.distance, 0)
@@ -825,6 +860,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @spec get_dashboard_org_all_time_group(integer()) :: any
+  @doc """
+  get Bravera orginisation dashboard piechart for all time.
+  """
   def get_dashboard_org_all_time_group(organization_id) do
     from(
       t in subquery(
@@ -833,13 +872,13 @@ defmodule OmegaBravera.Accounts do
           left_lateral_join: a in subquery(activity_query()),
           on: a.user_id == u.id,
           where:
-            u.id in subquery(
-              from(o in Organization,
-                left_join: m in assoc(o, :group_members),
-                where: o.id == ^organization_id,
-                select: m.user_id
-              )
-            ) and not is_nil(u.email) and not is_nil(a.distance) or is_nil(a.distance),
+            (u.id in subquery(
+               from(o in Organization,
+                 left_join: m in assoc(o, :group_members),
+                 where: o.id == ^organization_id,
+                 select: m.user_id
+               )
+             ) and not is_nil(u.email) and not is_nil(a.distance)) or is_nil(a.distance),
           select: %{
             distance: coalesce(a.distance, 0),
             user_id: u.id
@@ -849,15 +888,35 @@ defmodule OmegaBravera.Accounts do
         )
       ),
       select: %{
-        total_user_count_group_longest: fragment("SUM(CASE WHEN ? >= 8000 THEN 1 ELSE 0 END)", t.distance),
-        total_user_count_group_long: fragment("SUM(CASE WHEN ? >= 5000 AND ? <8000 THEN 1 ELSE 0 END)", t.distance, t.distance),
-        total_user_count_group_moderate: fragment("SUM(CASE WHEN ? >= 3000 AND ? <5000 THEN 1 ELSE 0 END)", t.distance, t.distance),
-        total_user_count_group_low: fragment("SUM(CASE WHEN ? >= 1000 AND ? <3000 THEN 1 ELSE 0 END)", t.distance, t.distance)
+        total_user_count_group_longest:
+          fragment("SUM(CASE WHEN ? >= 8000 THEN 1 ELSE 0 END)", t.distance),
+        total_user_count_group_long:
+          fragment(
+            "SUM(CASE WHEN ? >= 5000 AND ? <8000 THEN 1 ELSE 0 END)",
+            t.distance,
+            t.distance
+          ),
+        total_user_count_group_moderate:
+          fragment(
+            "SUM(CASE WHEN ? >= 3000 AND ? <5000 THEN 1 ELSE 0 END)",
+            t.distance,
+            t.distance
+          ),
+        total_user_count_group_low:
+          fragment(
+            "SUM(CASE WHEN ? >= 1000 AND ? <3000 THEN 1 ELSE 0 END)",
+            t.distance,
+            t.distance
+          )
       }
     )
     |> Repo.one()
   end
 
+  @spec get_dashboard_org_week_group(integer()) :: any
+  @doc """
+  get Bravera orginisation dashboard piechart of this week.
+  """
   def get_dashboard_org_week_group(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
@@ -869,13 +928,13 @@ defmodule OmegaBravera.Accounts do
           left_lateral_join: a in subquery(activity_query(seven_days_ago, now)),
           on: a.user_id == u.id,
           where:
-            u.id in subquery(
-              from(o in Organization,
-                left_join: m in assoc(o, :group_members),
-                where: o.id == ^organization_id,
-                select: m.user_id
-              )
-            ) and not is_nil(u.email) and not is_nil(a.distance) or is_nil(a.distance),
+            (u.id in subquery(
+               from(o in Organization,
+                 left_join: m in assoc(o, :group_members),
+                 where: o.id == ^organization_id,
+                 select: m.user_id
+               )
+             ) and not is_nil(u.email) and not is_nil(a.distance)) or is_nil(a.distance),
           select: %{
             distance: coalesce(a.distance, 0),
             user_id: u.id
@@ -885,15 +944,23 @@ defmodule OmegaBravera.Accounts do
         )
       ),
       select: %{
-        total_user_count_group_longest: fragment("SUM(CASE WHEN ? >= 50 THEN 1 ELSE 0 END)", t.distance),
-        total_user_count_group_long: fragment("SUM(CASE WHEN ? >= 36 AND ? < 50 THEN 1 ELSE 0 END)", t.distance, t.distance),
-        total_user_count_group_moderate: fragment("SUM(CASE WHEN ? >= 21 AND ? < 35 THEN 1 ELSE 0 END)", t.distance, t.distance),
-        total_user_count_group_low:      fragment("SUM(CASE WHEN ? >= 0 AND ? < 20 THEN 1 ELSE 0 END)", t.distance, t.distance)
+        total_user_count_group_longest:
+          fragment("SUM(CASE WHEN ? >= 50 THEN 1 ELSE 0 END)", t.distance),
+        total_user_count_group_long:
+          fragment("SUM(CASE WHEN ? >= 36 AND ? < 50 THEN 1 ELSE 0 END)", t.distance, t.distance),
+        total_user_count_group_moderate:
+          fragment("SUM(CASE WHEN ? >= 21 AND ? < 35 THEN 1 ELSE 0 END)", t.distance, t.distance),
+        total_user_count_group_low:
+          fragment("SUM(CASE WHEN ? >= 0 AND ? < 20 THEN 1 ELSE 0 END)", t.distance, t.distance)
       }
     )
     |> Repo.one()
   end
 
+  @spec get_dashboard_org_month_group(integer()) :: any
+  @doc """
+  get Bravera orginisation dashboard piechart of this month.
+  """
   def get_dashboard_org_month_group(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
@@ -905,13 +972,13 @@ defmodule OmegaBravera.Accounts do
           left_lateral_join: a in subquery(activity_query(thirty_days_ago, now)),
           on: a.user_id == u.id,
           where:
-            u.id in subquery(
-              from(o in Organization,
-                left_join: m in assoc(o, :group_members),
-                where: o.id == ^organization_id,
-                select: m.user_id
-              )
-            ) and not is_nil(u.email) and not is_nil(a.distance) or is_nil(a.distance),
+            (u.id in subquery(
+               from(o in Organization,
+                 left_join: m in assoc(o, :group_members),
+                 where: o.id == ^organization_id,
+                 select: m.user_id
+               )
+             ) and not is_nil(u.email) and not is_nil(a.distance)) or is_nil(a.distance),
           select: %{
             u
             | distance: coalesce(a.distance, 0)
@@ -921,10 +988,14 @@ defmodule OmegaBravera.Accounts do
         )
       ),
       select: %{
-        total_user_count_group_longest: fragment("SUM(CASE WHEN ? >= 200 THEN 1 ELSE 0 END)", t.distance),
-        total_user_count_group_long: fragment("SUM(CASE WHEN ? >= 141 AND ? <200 THEN 1 ELSE 0 END)", t.distance, t.distance),
-        total_user_count_group_moderate: fragment("SUM(CASE WHEN ? >= 61 AND ? <140 THEN 1 ELSE 0 END)", t.distance, t.distance),
-        total_user_count_group_low: fragment("SUM(CASE WHEN ? >= 0 AND ? <80 THEN 1 ELSE 0 END)", t.distance, t.distance)
+        total_user_count_group_longest:
+          fragment("SUM(CASE WHEN ? >= 200 THEN 1 ELSE 0 END)", t.distance),
+        total_user_count_group_long:
+          fragment("SUM(CASE WHEN ? >= 141 AND ? <200 THEN 1 ELSE 0 END)", t.distance, t.distance),
+        total_user_count_group_moderate:
+          fragment("SUM(CASE WHEN ? >= 61 AND ? <140 THEN 1 ELSE 0 END)", t.distance, t.distance),
+        total_user_count_group_low:
+          fragment("SUM(CASE WHEN ? >= 0 AND ? <80 THEN 1 ELSE 0 END)", t.distance, t.distance)
       }
     )
     |> Repo.one()
@@ -1044,6 +1115,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @spec get_leaderboad_partner_messages_this_week(integer()) :: any
   def get_leaderboad_partner_messages_this_week(partner_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
@@ -1059,6 +1131,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @spec get_leaderboad_partner_messages_this_month(integer()) :: any
   def get_leaderboad_partner_messages_this_month(partner_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -31)
@@ -1074,6 +1147,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @spec get_leaderboad_partner_messages_all_time(integer()) :: any()
   def get_leaderboad_partner_messages_all_time(partner_id) do
     from(
       u in User,

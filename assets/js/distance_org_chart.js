@@ -9,18 +9,10 @@ const distanceChartOrgHook = {
     let group_long = distanceJson.total_user_count_group_long;
     let group_moderate = distanceJson.total_user_count_group_moderate;
     let group_low = distanceJson.total_user_count_group_low;
-    console.log(distanceJson)
-    // console.log(`g333: is ${distanceJson[Object.keys(distanceJson)[0]].total_user_count_group_long}`);
-
-    console.log(`total_user_count_group_longest: ${group_longest}`)
-    console.log(`total_user_count_group_long: ${group_long}`)
-    console.log(`total_user_count_group_moderate: ${group_moderate}`)
-    console.log(`total_user_count_group_low: ${group_low}`)
 
     var labels = ['data group 1', 'data group 2','data group 3','data group 4']
     var values = [group_longest, group_long, group_moderate, group_low]
     var backgroundColor = ['#E53D4C', '#3D4EE5', '#CDF4AE', '#FFF1CC']  // red, blue, lime green, white yellow
-    console.log(values)
 
 		const config = {
       type: 'doughnut',
@@ -72,17 +64,9 @@ const distanceChartOrgHook = {
           var value = chartData.datasets[0].data[idx];
           var color = chartData.datasets[0].backgroundColor[idx];
           if (idx == 0) {
-            console.log(`You Clicked group 1 longest`);
-            // console.log(`You Clicked ${color}: ${label} with ${value}`);
           }else if (idx == 1) {
-            console.log(`You Clicked group 2 long`);
-            // console.log(`You Clicked ${color}: ${label} with ${value}`);
           }else if (idx == 2) {
-            console.log(`You Clicked group 3 moderate`);
-            // console.log(`You Clicked ${color}: ${label} with ${value}`);
           }else{
-            console.log(`You Clicked group 4 low`);
-            // console.log(`You Clicked ${color}: ${label} with ${value}`);
           }
         }
       }
@@ -97,15 +81,9 @@ const distanceChartOrgHook = {
     let group_moderate = distanceJson.total_user_count_group_moderate;
     let group_low = distanceJson.total_user_count_group_low;
 
-    console.log(`total_user_count_group_longest: ${group_longest}`)
-    console.log(`total_user_count_group_long: ${group_long}`)
-    console.log(`total_user_count_group_moderate: ${group_moderate}`)
-    console.log(`total_user_count_group_low: ${group_low}`)
-
     var labels = ['data group 1', 'data group 2','data group 3','data group 4']
     var values = [group_longest, group_long, group_moderate, group_low]
     var backgroundColor = ['#E53D4C', '#3D4EE5', '#CDF4AE', '#FFF1CC']
-    console.log(values)
 
 		const config = {
       type: 'doughnut',

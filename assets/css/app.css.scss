@@ -939,7 +939,6 @@ div.team-form {
         }
       }
     }
-
   }
   .btn.btn-outline-primary {
     border-color: $bravera-red;
@@ -961,20 +960,20 @@ div.team-form {
 // END OF ADMIN SECTION
 
 //  ORG DASHBOARD
-  .label-group-filter .active{
-    background-color: #DC5551 !important;
-    color: white;
-    cursor: pointer;
-    .canvas-text-muted{
-    color: white !important;
-    }
-  }
- .canvas-button:hover{
+.label-group-filter .active{
   background-color: #DC5551 !important;
   color: white;
   cursor: pointer;
   .canvas-text-muted{
-  color: white !important;
+    color: white !important;
+  }
+}
+.canvas-button:hover{
+  background-color: #DC5551 !important;
+  color: white;
+  cursor: pointer;
+  .canvas-text-muted{
+    color: white !important;
   }
 }
 .canvas-button{

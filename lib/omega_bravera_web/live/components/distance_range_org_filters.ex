@@ -10,12 +10,12 @@ defmodule OmegaBraveraWeb.DistanceRangeOrgFilters do
                 <span class="">
                     <span id="demo" style="font-size: 16px; font-style: normal; line-height: 18.75px;">
                     <%= case @org_users_distance_filter do %>
-                    <% "week" -> %>
-                    Longest: 50+ km
-                    <% "month" -> %>
-                    Longest: 200+ km
-                    <% "alltime" -> %>
-                    Longest: 8,000+ km
+                        <% "week" -> %>
+                        Longest: 50+ km
+                        <% "month" -> %>
+                        Longest: 200+ km
+                        <% "alltime" -> %>
+                        Longest: 8,000+ km
                     <% end %>
                     </span>
                     <small class="canvas-text-muted">
@@ -27,12 +27,12 @@ defmodule OmegaBraveraWeb.DistanceRangeOrgFilters do
                 <span class="dot" style="height: 16px; width:16px; background-color: #3D4EE5; border-radius: 50%; display: inline-block;"></span>
                 <span style="font-size: 16px; font-style: normal; line-height: 18.75px;">
                 <%= case @org_users_distance_filter do %>
-                <% "week" -> %>
-                Long: 36 - 50km
-                <% "month" -> %>
-                Long: 141 - 200km
-                <% "alltime" -> %>
-                Long: 5,000+ km
+                    <% "week" -> %>
+                    Long: 36 - 50km
+                    <% "month" -> %>
+                    Long: 141 - 200km
+                    <% "alltime" -> %>
+                    Long: 5,000+ km
                 <% end %>
                 </span>
                 <small class="canvas-text-muted">
@@ -44,11 +44,11 @@ defmodule OmegaBraveraWeb.DistanceRangeOrgFilters do
                 <span style="font-size: 16px; font-style: normal; line-height: 18.75px;">
                 <%= case @org_users_distance_filter do %>
                 <% "week" -> %>
-                Moderate: 21 - 35km
-                <% "month" -> %>
-                Moderate: 61 - 140km
-                <% "alltime" -> %>
-                Moderate: 3,000+ km
+                    Moderate: 21 - 35km
+                    <% "month" -> %>
+                    Moderate: 61 - 140km
+                    <% "alltime" -> %>
+                    Moderate: 3,000+ km
                 <% end %>
                 </span>
                 <small class="canvas-text-muted">
@@ -59,12 +59,12 @@ defmodule OmegaBraveraWeb.DistanceRangeOrgFilters do
               <span class="dot" style="height: 16px; width:16px; background-color: #FFF1CC; border-radius: 50%; display: inline-block;"></span>
                 <span style="font-size: 16px; font-style: normal; line-height: 18.75px;">
                 <%= case @org_users_distance_filter do %>
-                <% "week" -> %>
-                Low: 0 - 20km
-                <% "month" -> %>
-                Low: 0 - 80km
-                <% "alltime" -> %>
-                Low: 1,000+ km
+                    <% "week" -> %>
+                    Low: 0 - 20km
+                    <% "month" -> %>
+                    Low: 0 - 80km
+                    <% "alltime" -> %>
+                    Low: 1,000+ km
                 <% end %>
                 </span>
                 <small class="canvas-text-muted">

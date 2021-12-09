@@ -2,103 +2,219 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
   use OmegaBraveraWeb, :live_view
   alias OmegaBravera.Accounts
 
-#   @per_page 10
+  #   @per_page 10
 
   def mount(_params, %{"organization_id" => organization_id}, socket) do
-    # IO.inspect(organization_id)
-    org_users_group_distance =
-        Accounts.get_dashboard_org_week_group(organization_id)
+    org_users_group_distance = Accounts.get_dashboard_org_week_group(organization_id)
 
-    org_users_distance =
-        Accounts.get_dashboard_org_week_longest(organization_id)
+    org_users_distance = Accounts.get_dashboard_org_week_longest(organization_id)
 
     # current_page = 0
 
     socket =
       socket
-      |> assign(org_users_group_distance: %{
+      |> assign(
+        org_users_group_distance: %{
           encoded: Jason.encode!(org_users_group_distance)
-          },
-          org_users_distance: org_users_distance,
-          org_users_distance_filter: "week",
-          org_users_distance_details_filter: "longest",
-          organization_id: organization_id
+        },
+        org_users_distance: org_users_distance,
+        org_users_distance_filter: "week",
+        org_users_distance_details_filter: "longest",
+        organization_id: organization_id
       )
 
     {:ok, socket}
   end
 
-#   def handle_event("time_range_changed_org_distance", %{"filter" => "week"}, %{assigns: %{organization_id: organization_id}}= socket) do
-#     {:ok, assign(socket, : Accounts.get_dashboard_org_week_group_query(organization_id))}
-#   end
+  #   def handle_event("time_range_changed_org_distance", %{"filter" => "week"}, %{assigns: %{organization_id: organization_id}}= socket) do
+  #     {:ok, assign(socket, : Accounts.get_dashboard_org_week_group_query(organization_id))}
+  #   end
 
   def handle_event("time_range_changed_org_distance", %{"filter" => duration}, socket) do
     org_users_group_distance =
       case duration do
         "week" ->
-        socket.assigns.organization_id
-        |> Accounts.get_dashboard_org_week_group()
+          socket.assigns.organization_id
+          |> Accounts.get_dashboard_org_week_group()
 
         "month" ->
-        socket.assigns.organization_id
-        |> Accounts.get_dashboard_org_month_group()
+          socket.assigns.organization_id
+          |> Accounts.get_dashboard_org_month_group()
 
         "alltime" ->
-        socket.assigns.organization_id
-        |> Accounts.get_dashboard_org_all_time_group()
+          socket.assigns.organization_id
+          |> Accounts.get_dashboard_org_all_time_group()
       end
 
     {:noreply,
      socket
      |> assign(
-        org_users_group_distance: %{
-            encoded: Jason.encode!(org_users_group_distance)
-            },
-        org_users_distance_filter: duration
+       org_users_group_distance: %{
+         encoded: Jason.encode!(org_users_group_distance)
+       },
+       org_users_distance_filter: duration
      )}
   end
 
   # week
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "longest"}, %{assigns: %{org_users_distance_filter: "week", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_week_longest(organization_id), org_users_distance_details_filter: "longest")}
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "longest"},
+        %{assigns: %{org_users_distance_filter: "week", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_week_longest(organization_id),
+       org_users_distance_details_filter: "longest"
+     )}
   end
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "long"}, %{assigns: %{org_users_distance_filter: "week", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_week_long(organization_id), org_users_distance_details_filter: "long")}
+
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "long"},
+        %{assigns: %{org_users_distance_filter: "week", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_week_long(organization_id),
+       org_users_distance_details_filter: "long"
+     )}
   end
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "moderate"}, %{assigns: %{org_users_distance_filter: "week", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_week_moderate(organization_id), org_users_distance_details_filter: "moderate")}
+
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "moderate"},
+        %{assigns: %{org_users_distance_filter: "week", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_week_moderate(organization_id),
+       org_users_distance_details_filter: "moderate"
+     )}
   end
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "low"}, %{assigns: %{org_users_distance_filter: "week", organization_id: organization_id} }= socket) do
+
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "low"},
+        %{assigns: %{org_users_distance_filter: "week", organization_id: organization_id}} =
+          socket
+      ) do
     IO.puts("CALLED!")
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_week_low(organization_id), org_users_distance_details_filter: "low")}
+
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_week_low(organization_id),
+       org_users_distance_details_filter: "low"
+     )}
   end
 
   # month
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "longest"}, %{assigns: %{org_users_distance_filter: "month", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_month_longest(organization_id), org_users_distance_details_filter: "longest")}
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "longest"},
+        %{assigns: %{org_users_distance_filter: "month", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_month_longest(organization_id),
+       org_users_distance_details_filter: "longest"
+     )}
   end
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "long"}, %{assigns: %{org_users_distance_filter: "month", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_month_long(organization_id), org_users_distance_details_filter: "long")}
+
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "long"},
+        %{assigns: %{org_users_distance_filter: "month", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_month_long(organization_id),
+       org_users_distance_details_filter: "long"
+     )}
   end
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "moderate"}, %{assigns: %{org_users_distance_filter: "month", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_month_moderate(organization_id), org_users_distance_details_filter: "moderate")}
+
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "moderate"},
+        %{assigns: %{org_users_distance_filter: "month", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_month_moderate(organization_id),
+       org_users_distance_details_filter: "moderate"
+     )}
   end
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "low"}, %{assigns: %{org_users_distance_filter: "month", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_month_low(organization_id), org_users_distance_details_filter: "low")}
+
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "low"},
+        %{assigns: %{org_users_distance_filter: "month", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_month_low(organization_id),
+       org_users_distance_details_filter: "low"
+     )}
   end
 
   # alltime
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "longest"}, %{assigns: %{org_users_distance_filter: "alltime", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_all_time_longest(organization_id), org_users_distance_details_filter: "longest")}
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "longest"},
+        %{assigns: %{org_users_distance_filter: "alltime", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_all_time_longest(organization_id),
+       org_users_distance_details_filter: "longest"
+     )}
   end
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "long"}, %{assigns: %{org_users_distance_filter: "alltime", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_all_time_long(organization_id), org_users_distance_details_filter: "long")}
+
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "long"},
+        %{assigns: %{org_users_distance_filter: "alltime", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_all_time_long(organization_id),
+       org_users_distance_details_filter: "long"
+     )}
   end
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "moderate"}, %{assigns: %{org_users_distance_filter: "alltime", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_all_time_moderate(organization_id), org_users_distance_details_filter: "moderate")}
+
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "moderate"},
+        %{assigns: %{org_users_distance_filter: "alltime", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_all_time_moderate(organization_id),
+       org_users_distance_details_filter: "moderate"
+     )}
   end
-  def handle_event("distance_range_changed_org_distance_details", %{"filter" => "low"}, %{assigns: %{org_users_distance_filter: "alltime", organization_id: organization_id} }= socket) do
-    {:noreply, assign(socket, org_users_distance: Accounts.get_dashboard_org_all_time_low(organization_id), org_users_distance_details_filter: "low")}
+
+  def handle_event(
+        "distance_range_changed_org_distance_details",
+        %{"filter" => "low"},
+        %{assigns: %{org_users_distance_filter: "alltime", organization_id: organization_id}} =
+          socket
+      ) do
+    {:noreply,
+     assign(socket,
+       org_users_distance: Accounts.get_dashboard_org_all_time_low(organization_id),
+       org_users_distance_details_filter: "low"
+     )}
   end
 
   def render(assigns) do
