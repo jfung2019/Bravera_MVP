@@ -3,7 +3,7 @@
         <h1><span class="fa fa-dashboard"></span> <%= gettext("Dashboard") %></h1>
         <small class="text-muted">(<%= gettext("A quick snapshot of what’s going on in your groups. ") %><a href="http://bit.ly/Cadmin-Dashboard" target="_blank"><%= gettext("Click here") %></a> <%= (" for more details") %>)</small>
         <div class="row">
-            <div class="col-6">
+            <div class="col-lg-6 col-md-12 col-sm-12">
                 <table class="table">
                     <tbody>
                         <tr>
@@ -40,6 +40,11 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <!-- Pie Chart -->
+            <div class="col-lg-6 mt-sm-0 mt-md-2 mt-lg-n4">
+                <%# rendering here %>
+                <%= live_render(@conn, OmegaBraveraWeb.OrgDashboardChartLive) %>
             </div>
         </div>
     </div>
@@ -101,6 +106,9 @@
     function showDashboardIntro() {
         $("#first_time").modal("hide");
         $("#dashboard_intro").modal("show");
+    }
+    function updateLabel(){
+        document.getElementById("demo").innerHTML = 'New Phrase';
     }
 </script>
 

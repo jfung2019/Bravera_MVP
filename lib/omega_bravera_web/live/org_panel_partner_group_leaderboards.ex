@@ -28,22 +28,28 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
         current_page: current_page,
         encoded: Jason.encode!(paginate(distance_data, current_page))
       })
-      |> assign(social_pagination: %{
-        total_pages: get_total_pages(social_data),
-        current_page: current_page,
-        encoded: Jason.encode!(paginate(social_data, current_page))
-      },
-      distance_data: distance_data,
-      social_data: social_data,
-      distance_search: "",
-      social_search: "",
-      distance_filter: "week",
-      social_filter: "week")
+      |> assign(
+        social_pagination: %{
+          total_pages: get_total_pages(social_data),
+          current_page: current_page,
+          encoded: Jason.encode!(paginate(social_data, current_page))
+        },
+        distance_data: distance_data,
+        social_data: social_data,
+        distance_search: "",
+        social_search: "",
+        distance_filter: "week",
+        social_filter: "week"
+      )
 
     {:ok, socket}
   end
 
-  def handle_event("social_search", %{"search_input" => input},  %{assigns: %{social_data: social_data}} = socket) do
+  def handle_event(
+        "social_search",
+        %{"search_input" => input},
+        %{assigns: %{social_data: social_data}} = socket
+      ) do
     social_data =
       social_data
       |> search(input)
@@ -51,14 +57,22 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
 
     {:noreply,
      socket
-     |> assign(social_pagination: %{
-       total_pages: get_total_pages(social_data),
-       current_page: 0,
-       encoded: Jason.encode!(paginate(social_data, 0))
-     }, social_data: social_data, social_search: input)}
+     |> assign(
+       social_pagination: %{
+         total_pages: get_total_pages(social_data),
+         current_page: 0,
+         encoded: Jason.encode!(paginate(social_data, 0))
+       },
+       social_data: social_data,
+       social_search: input
+     )}
   end
 
-  def handle_event("distance_search", %{"search_input" => input}, %{assigns: %{distance_data: distance_data}} = socket) do
+  def handle_event(
+        "distance_search",
+        %{"search_input" => input},
+        %{assigns: %{distance_data: distance_data}} = socket
+      ) do
     distance_data =
       distance_data
       |> search(input)
@@ -66,17 +80,24 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
 
     {:noreply,
      socket
-     |> assign(distance_pagination: %{
-       total_pages: get_total_pages(distance_data),
-       current_page: 0,
-       encoded: Jason.encode!(paginate(distance_data, 0))
-     }, distance_data: distance_data, distance_search: input)}
+     |> assign(
+       distance_pagination: %{
+         total_pages: get_total_pages(distance_data),
+         current_page: 0,
+         encoded: Jason.encode!(paginate(distance_data, 0))
+       },
+       distance_data: distance_data,
+       distance_search: input
+     )}
   end
 
-  def handle_event("paginate_social_next", _params, %{assigns: %{social_pagination: current_pagination}} = socket) do
-    current_pagination =
-      current_pagination
-       socket.assigns.social_pagination
+  def handle_event(
+        "paginate_social_next",
+        _params,
+        %{assigns: %{social_pagination: current_pagination}} = socket
+      ) do
+    current_pagination = current_pagination
+    socket.assigns.social_pagination
 
     if current_pagination.current_page >= current_pagination.total_pages - 1 do
       {:noreply, socket}
@@ -86,16 +107,20 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
       {:noreply,
        socket
        |> assign(:social_pagination, %{
-         current_pagination | current_page: previous_page,
-         encoded: Jason.encode!(paginate(socket.assigns.social_data, previous_page))
+         current_pagination
+         | current_page: previous_page,
+           encoded: Jason.encode!(paginate(socket.assigns.social_data, previous_page))
        })}
     end
   end
 
-  def handle_event("paginate_social_previous", _params, %{assigns: %{social_pagination: current_pagination}} = socket) do
-    current_pagination =
-      current_pagination
-      socket.assigns.social_pagination
+  def handle_event(
+        "paginate_social_previous",
+        _params,
+        %{assigns: %{social_pagination: current_pagination}} = socket
+      ) do
+    current_pagination = current_pagination
+    socket.assigns.social_pagination
 
     if current_pagination.current_page <= 0 do
       {:noreply, socket}
@@ -105,28 +130,32 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
       {:noreply,
        socket
        |> assign(:social_pagination, %{
-         current_pagination | current_page: previous_page,
-         encoded: Jason.encode!(paginate(socket.assigns.social_data, previous_page))
-         })}
+         current_pagination
+         | current_page: previous_page,
+           encoded: Jason.encode!(paginate(socket.assigns.social_data, previous_page))
+       })}
     end
   end
 
   def handle_event("paginate_social", %{"page" => page}, socket) do
-    {page, _} =
-      Integer.parse(page)
+    {page, _} = Integer.parse(page)
 
     {:noreply,
      socket
      |> assign(:social_pagination, %{
-       socket.assigns.social_pagination | current_page: page,
-       encoded: Jason.encode!(paginate(socket.assigns.social_data, page))
-       })}
+       socket.assigns.social_pagination
+       | current_page: page,
+         encoded: Jason.encode!(paginate(socket.assigns.social_data, page))
+     })}
   end
 
-  def handle_event("paginate_distance_next", _params, %{assigns: %{distance_pagination: current_pagination}} = socket) do
-    current_pagination =
-      current_pagination
-      socket.assigns.distance_pagination
+  def handle_event(
+        "paginate_distance_next",
+        _params,
+        %{assigns: %{distance_pagination: current_pagination}} = socket
+      ) do
+    current_pagination = current_pagination
+    socket.assigns.distance_pagination
 
     if current_pagination.current_page >= current_pagination.total_pages - 1 do
       {:noreply, socket}
@@ -136,16 +165,20 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
       {:noreply,
        socket
        |> assign(:distance_pagination, %{
-         current_pagination | current_page: previous_page,
-         encoded: Jason.encode!(paginate(socket.assigns.distance_data, previous_page))
-         })}
+         current_pagination
+         | current_page: previous_page,
+           encoded: Jason.encode!(paginate(socket.assigns.distance_data, previous_page))
+       })}
     end
   end
 
-  def handle_event("paginate_distance_previous", _params, %{assigns: %{distance_pagination: current_pagination}} = socket) do
-    current_pagination =
-      current_pagination
-      socket.assigns.distance_pagination
+  def handle_event(
+        "paginate_distance_previous",
+        _params,
+        %{assigns: %{distance_pagination: current_pagination}} = socket
+      ) do
+    current_pagination = current_pagination
+    socket.assigns.distance_pagination
 
     if current_pagination.current_page <= 0 do
       {:noreply, socket}
@@ -155,22 +188,23 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
       {:noreply,
        socket
        |> assign(:distance_pagination, %{
-         current_pagination | current_page: previous_page,
-         encoded: Jason.encode!(paginate(socket.assigns.distance_data, previous_page))
-         })}
+         current_pagination
+         | current_page: previous_page,
+           encoded: Jason.encode!(paginate(socket.assigns.distance_data, previous_page))
+       })}
     end
   end
 
   def handle_event("paginate_distance", %{"page" => page}, socket) do
-    {page, _} =
-      Integer.parse(page)
+    {page, _} = Integer.parse(page)
 
     {:noreply,
      socket
      |> assign(:distance_pagination, %{
-       socket.assigns.distance_pagination | current_page: page,
-       encoded: Jason.encode!(paginate(socket.assigns.distance_data, page))
-       })}
+       socket.assigns.distance_pagination
+       | current_page: page,
+         encoded: Jason.encode!(paginate(socket.assigns.distance_data, page))
+     })}
   end
 
   def handle_event("time_range_changed_social", %{"filter" => duration}, socket) do
@@ -197,12 +231,15 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
 
     {:noreply,
      socket
-     |> assign(social_pagination: %{
-       total_pages: get_total_pages(social_data),
-       current_page: 0,
-       encoded: Jason.encode!(paginate(social_data, 0))
-     }, social_data: social_data, social_filter: duration)
-    }
+     |> assign(
+       social_pagination: %{
+         total_pages: get_total_pages(social_data),
+         current_page: 0,
+         encoded: Jason.encode!(paginate(social_data, 0))
+       },
+       social_data: social_data,
+       social_filter: duration
+     )}
   end
 
   def handle_event("time_range_changed_distance", %{"filter" => duration}, socket) do
@@ -229,11 +266,15 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
 
     {:noreply,
      socket
-     |> assign(distance_pagination: %{
-       total_pages: get_total_pages(distance_data),
-       current_page: 0,
-       encoded: Jason.encode!(paginate(distance_data, 0))
-     }, distance_data: distance_data, distance_filter: duration)}
+     |> assign(
+       distance_pagination: %{
+         total_pages: get_total_pages(distance_data),
+         current_page: 0,
+         encoded: Jason.encode!(paginate(distance_data, 0))
+       },
+       distance_data: distance_data,
+       distance_filter: duration
+     )}
   end
 
   defp search(data, term) do
