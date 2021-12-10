@@ -93,7 +93,7 @@
                 <% end %>
                 <div class="<%= if assigns[:current_partner_user], do: "col-lg-10", else: "col"%>">
                     <%= if assigns[:admin_logged_in]do %>
-                    <div class="view-as-org-indication">
+                    <div class="view-as-org-indication" style="margin-top: -15px">
                         <%= link gettext("Back to Admin"), to: Routes.org_panel_dashboard_path(@conn, :view_as) %>
                     </div>
                     <% end %>

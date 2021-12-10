@@ -382,6 +382,27 @@ defmodule OmegaBravera.Accounts do
     )
   end
 
+  defp last_activity_query(start_date, end_date) do
+    from(a in ActivityAccumulator,
+      select: %{distance: coalesce(sum(a.distance), 0), user_id: a.user_id, end_date: max(a.end_date)},
+      group_by: a.user_id,
+      where:
+        a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+          not is_nil(a.device_id) and is_nil(a.strava_id) and a.start_date >= ^start_date and
+          a.start_date <= ^end_date
+    )
+  end
+
+  defp last_activity_query do
+    from(a in ActivityAccumulator,
+      select: %{distance: sum(a.distance), user_id: a.user_id, end_date: max(a.end_date)},
+      group_by: a.user_id,
+      where:
+        a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+          not is_nil(a.device_id) and is_nil(a.strava_id)
+    )
+  end
+
   defp api_get_leaderboard_this_week_query(user_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
@@ -520,7 +541,7 @@ defmodule OmegaBravera.Accounts do
 
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query(seven_days_ago, now)),
+      left_lateral_join: a in subquery(last_activity_query(seven_days_ago, now)),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -530,12 +551,9 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
+        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
       where: a.distance > 50,
-      group_by: [u.id, a.distance],
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -550,7 +568,7 @@ defmodule OmegaBravera.Accounts do
 
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query(seven_days_ago, now)),
+      left_lateral_join: a in subquery(last_activity_query(seven_days_ago, now)),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -560,12 +578,9 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
+        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
       where: a.distance >= 36 and a.distance < 50,
-      group_by: [u.id, a.distance],
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -580,7 +595,7 @@ defmodule OmegaBravera.Accounts do
 
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query(seven_days_ago, now)),
+      left_lateral_join: a in subquery(last_activity_query(seven_days_ago, now)),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -590,12 +605,9 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
+        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
       where: a.distance >= 21 and a.distance < 35,
-      group_by: [u.id, a.distance],
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -610,22 +622,19 @@ defmodule OmegaBravera.Accounts do
 
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query(seven_days_ago, now)),
+      left_lateral_join: a in subquery(last_activity_query(seven_days_ago, now)),
       on: a.user_id == u.id,
       where:
-        (u.id in subquery(
-           from(o in Organization,
-             left_join: m in assoc(o, :group_members),
-             where: o.id == ^organization_id,
-             select: m.user_id
-           )
-         ) and not is_nil(u.email) and
-           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 20)) or is_nil(a.distance),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
-      group_by: [u.id, a.distance],
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email) and
+          (not is_nil(a.distance) and a.distance >= 0 and a.distance < 20),
+          select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -640,7 +649,7 @@ defmodule OmegaBravera.Accounts do
 
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query(thirty_days_ago, now)),
+      left_lateral_join: a in subquery(last_activity_query(thirty_days_ago, now)),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -650,12 +659,9 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
+        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
       where: a.distance > 200,
-      group_by: [u.id, a.distance],
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -670,7 +676,7 @@ defmodule OmegaBravera.Accounts do
 
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query(thirty_days_ago, now)),
+      left_lateral_join: a in subquery(last_activity_query(thirty_days_ago, now)),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -680,12 +686,9 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
+        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
       where: a.distance >= 141 and a.distance < 200,
-      group_by: [u.id, a.distance],
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -700,7 +703,7 @@ defmodule OmegaBravera.Accounts do
 
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query(thirty_days_ago, now)),
+      left_lateral_join: a in subquery(last_activity_query(thirty_days_ago, now)),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -710,12 +713,9 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
+        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
       where: a.distance >= 61 and a.distance < 140,
-      group_by: [u.id, a.distance],
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -730,22 +730,19 @@ defmodule OmegaBravera.Accounts do
 
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query(thirty_days_ago, now)),
+      left_lateral_join: a in subquery(last_activity_query(thirty_days_ago, now)),
       on: a.user_id == u.id,
       where:
-        (u.id in subquery(
-           from(o in Organization,
-             left_join: m in assoc(o, :group_members),
-             where: o.id == ^organization_id,
-             select: m.user_id
-           )
-         ) and not is_nil(u.email) and
-           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 80)) or is_nil(a.distance),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
-      group_by: [u.id, a.distance],
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email) and
+          (not is_nil(a.distance) and a.distance >= 0 and a.distance < 80),
+          select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -757,7 +754,7 @@ defmodule OmegaBravera.Accounts do
   def get_dashboard_org_all_time_longest(organization_id) do
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query()),
+      left_lateral_join: a in subquery(last_activity_query()),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -767,12 +764,9 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
+        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
       where: a.distance >= 8000,
-      group_by: [u.id, a.distance],
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -784,7 +778,7 @@ defmodule OmegaBravera.Accounts do
   def get_dashboard_org_all_time_long(organization_id) do
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query()),
+      left_lateral_join: a in subquery(last_activity_query()),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -794,12 +788,9 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
+      select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
       where: a.distance >= 5000 and a.distance < 8000,
-      group_by: [u.id, a.distance],
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -811,7 +802,7 @@ defmodule OmegaBravera.Accounts do
   def get_dashboard_org_all_time_moderate(organization_id) do
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query()),
+      left_lateral_join: a in subquery(last_activity_query()),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -821,12 +812,9 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
+        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
       where: a.distance >= 3000 and a.distance < 5000,
-      group_by: [u.id, a.distance],
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -839,7 +827,7 @@ defmodule OmegaBravera.Accounts do
   def get_dashboard_org_all_time_low(organization_id) do
     from(
       u in User,
-      left_lateral_join: a in subquery(activity_query()),
+      left_lateral_join: a in subquery(last_activity_query()),
       on: a.user_id == u.id,
       where:
         u.id in subquery(
@@ -850,11 +838,8 @@ defmodule OmegaBravera.Accounts do
           )
         ) and not is_nil(u.email) and
           (not is_nil(a.distance) and a.distance >= 1000 and a.distance < 3000),
-      select: %{
-        u
-        | distance: coalesce(a.distance, 0)
-      },
-      group_by: [u.id, a.distance],
+          select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
     |> Repo.all()
@@ -872,13 +857,13 @@ defmodule OmegaBravera.Accounts do
           left_lateral_join: a in subquery(activity_query()),
           on: a.user_id == u.id,
           where:
-            (u.id in subquery(
-               from(o in Organization,
-                 left_join: m in assoc(o, :group_members),
-                 where: o.id == ^organization_id,
-                 select: m.user_id
-               )
-             ) and not is_nil(u.email) and not is_nil(a.distance)) or is_nil(a.distance),
+            u.id in subquery(
+              from(o in Organization,
+                left_join: m in assoc(o, :group_members),
+                where: o.id == ^organization_id,
+                select: m.user_id
+              )
+            ) and not is_nil(u.email) and not is_nil(a.distance),
           select: %{
             distance: coalesce(a.distance, 0),
             user_id: u.id
@@ -928,13 +913,13 @@ defmodule OmegaBravera.Accounts do
           left_lateral_join: a in subquery(activity_query(seven_days_ago, now)),
           on: a.user_id == u.id,
           where:
-            (u.id in subquery(
-               from(o in Organization,
-                 left_join: m in assoc(o, :group_members),
-                 where: o.id == ^organization_id,
-                 select: m.user_id
-               )
-             ) and not is_nil(u.email) and not is_nil(a.distance)) or is_nil(a.distance),
+            u.id in subquery(
+              from(o in Organization,
+                left_join: m in assoc(o, :group_members),
+                where: o.id == ^organization_id,
+                select: m.user_id
+              )
+            ) and not is_nil(u.email) and not is_nil(a.distance),
           select: %{
             distance: coalesce(a.distance, 0),
             user_id: u.id
@@ -972,13 +957,13 @@ defmodule OmegaBravera.Accounts do
           left_lateral_join: a in subquery(activity_query(thirty_days_ago, now)),
           on: a.user_id == u.id,
           where:
-            (u.id in subquery(
-               from(o in Organization,
-                 left_join: m in assoc(o, :group_members),
-                 where: o.id == ^organization_id,
-                 select: m.user_id
-               )
-             ) and not is_nil(u.email) and not is_nil(a.distance)) or is_nil(a.distance),
+            u.id in subquery(
+              from(o in Organization,
+                left_join: m in assoc(o, :group_members),
+                where: o.id == ^organization_id,
+                select: m.user_id
+              )
+            ) and not is_nil(u.email) and not is_nil(a.distance),
           select: %{
             u
             | distance: coalesce(a.distance, 0)

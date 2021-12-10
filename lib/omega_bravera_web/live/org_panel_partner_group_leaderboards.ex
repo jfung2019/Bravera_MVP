@@ -331,7 +331,7 @@ defmodule OmegaBraveraWeb.OrgGroupLeaderboardsLive do
 
   def render(assigns) do
     ~L"""
-    <div class="container-fluid">
+    <div class="container-fluid" style="margin-top: 25px;">
      <!-- section 1: Distance-->
       <div class="wrapper">
         <div class="row mb-4 mt-2">
