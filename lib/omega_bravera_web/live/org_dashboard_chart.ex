@@ -497,7 +497,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
     <div class="row mb-4 mt-2">
         <div class="col-lg-8 col-md-8 col-sm-12">
           <small class="text-muted">
-              <p>Based on your user’s daily average during the timeframe selected. Data only includes user who synced during that timeframe. Click on the chart or the legend to view the list of users.</p>
+              <p>Based on your user’s daily average during the timeframe selected. Data only includes user who synced during that timeframe. Click on the legend to view the list of users.</p>
           </small>
           <%# Canvas from liveview %>
           <canvas id="myChartOrgDistance" width="100" height="50" phx-hook="distanceChartOrgHook" data-json="<%= @org_users_group_distance.encoded %>"></canvas>
@@ -525,7 +525,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
             <tr>
               <td><%= user.username %></td>
               <td><%= user.distance %></td>
-              <td> null </td>
+              <td><%= user.last_activity %></td>
             </tr>
             <% end %>
           </tbody>
