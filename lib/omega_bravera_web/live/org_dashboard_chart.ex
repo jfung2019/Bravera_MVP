@@ -36,32 +36,6 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
     {:ok, socket}
   end
 
-  # def handle_event("time_range_changed_org_distance", %{"filter" => duration}, socket) do
-  #   org_users_group_distance =
-  #     case duration do
-  #       "week" ->
-  #         socket.assigns.organization_id
-  #         |> Accounts.get_dashboard_org_week_group()
-
-  #       "month" ->
-  #         socket.assigns.organization_id
-  #         |> Accounts.get_dashboard_org_month_group()
-
-  #       "alltime" ->
-  #         socket.assigns.organization_id
-  #         |> Accounts.get_dashboard_org_all_time_group()
-  #     end
-
-  #   {:noreply,
-  #    socket
-  #    |> assign(
-  #      org_users_group_distance: %{
-  #        encoded: Jason.encode!(org_users_group_distance)
-  #      },
-  #      org_users_distance_filter: duration
-  #    )}
-  # end
-
   def handle_event("time_range_changed_org_distance", %{"filter" => "week"}, %{assigns: %{organization_id: organization_id}}= socket) do
 
     org_users_distance =
