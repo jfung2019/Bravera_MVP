@@ -95,7 +95,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_month_longest()
+      |> Accounts.get_dashboard_org_all_time_longest()
       |> format_paginate()
 
     {:noreply,
