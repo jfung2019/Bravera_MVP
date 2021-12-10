@@ -384,7 +384,11 @@ defmodule OmegaBravera.Accounts do
 
   defp last_activity_query(start_date, end_date) do
     from(a in ActivityAccumulator,
-      select: %{distance: coalesce(sum(a.distance), 0), user_id: a.user_id, end_date: max(a.end_date)},
+      select: %{
+        distance: coalesce(sum(a.distance), 0),
+        user_id: a.user_id,
+        end_date: max(a.end_date)
+      },
       group_by: a.user_id,
       where:
         a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
@@ -551,7 +555,11 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       where: a.distance > 50,
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -578,7 +586,11 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       where: a.distance >= 36 and a.distance < 50,
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -605,7 +617,11 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       where: a.distance >= 21 and a.distance < 35,
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -633,7 +649,11 @@ defmodule OmegaBravera.Accounts do
           )
         ) and not is_nil(u.email) and
           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 20),
-          select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
@@ -659,7 +679,11 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       where: a.distance > 200,
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -686,7 +710,11 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       where: a.distance >= 141 and a.distance < 200,
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -713,7 +741,11 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       where: a.distance >= 61 and a.distance < 140,
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -741,7 +773,11 @@ defmodule OmegaBravera.Accounts do
           )
         ) and not is_nil(u.email) and
           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 80),
-          select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
@@ -764,7 +800,11 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       where: a.distance >= 8000,
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -788,7 +828,11 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-      select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       where: a.distance >= 5000 and a.distance < 8000,
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -812,7 +856,11 @@ defmodule OmegaBravera.Accounts do
             select: m.user_id
           )
         ) and not is_nil(u.email),
-        select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       where: a.distance >= 3000 and a.distance < 5000,
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -838,7 +886,11 @@ defmodule OmegaBravera.Accounts do
           )
         ) and not is_nil(u.email) and
           (not is_nil(a.distance) and a.distance >= 1000 and a.distance < 3000),
-          select: %{username: u.username, distance: coalesce(a.distance, 0), last_activity: a.end_date},
+      select: %{
+        username: u.username,
+        distance: coalesce(a.distance, 0),
+        last_activity: a.end_date
+      },
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
     )
