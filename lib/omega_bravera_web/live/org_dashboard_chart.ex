@@ -36,67 +36,82 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
     {:ok, socket}
   end
 
-  def handle_event("time_range_changed_org_distance", %{"filter" => "week"}, %{assigns: %{organization_id: organization_id}}= socket) do
-
+  def handle_event(
+        "time_range_changed_org_distance",
+        %{"filter" => "week"},
+        %{assigns: %{organization_id: organization_id}} = socket
+      ) do
     org_users_distance =
       organization_id
       |> Accounts.get_dashboard_org_week_longest()
       |> format_paginate()
 
-    {:noreply, assign(socket,
-           org_users_group_distance: %{
-             encoded: Jason.encode!(Accounts.get_dashboard_org_week_group(organization_id))
-           },
-           user_pagination: %{
-            total_pages: get_total_pages(org_users_distance),
-            current_page: 0,
-            org_users_distance_data: paginate(org_users_distance, 0)
-          },
-          org_users_distance: org_users_distance,
-          org_users_distance_details_filter: "longest",
-          org_users_distance_filter: "week")}
+    {:noreply,
+     assign(socket,
+       org_users_group_distance: %{
+         encoded: Jason.encode!(Accounts.get_dashboard_org_week_group(organization_id))
+       },
+       user_pagination: %{
+         total_pages: get_total_pages(org_users_distance),
+         current_page: 0,
+         org_users_distance_data: paginate(org_users_distance, 0)
+       },
+       org_users_distance: org_users_distance,
+       org_users_distance_details_filter: "longest",
+       org_users_distance_filter: "week"
+     )}
   end
 
-  def handle_event("time_range_changed_org_distance", %{"filter" => "month"}, %{assigns: %{organization_id: organization_id}}= socket) do
-
+  def handle_event(
+        "time_range_changed_org_distance",
+        %{"filter" => "month"},
+        %{assigns: %{organization_id: organization_id}} = socket
+      ) do
     org_users_distance =
       organization_id
       |> Accounts.get_dashboard_org_month_longest()
       |> format_paginate()
 
-    {:noreply, assign(socket,
-           org_users_group_distance: %{
-             encoded: Jason.encode!(Accounts.get_dashboard_org_month_group(organization_id))
-           },
-           user_pagination: %{
-            total_pages: get_total_pages(org_users_distance),
-            current_page: 0,
-            org_users_distance_data: paginate(org_users_distance, 0)
-          },
-          org_users_distance: org_users_distance,
-          org_users_distance_details_filter: "longest",
-          org_users_distance_filter: "month")}
+    {:noreply,
+     assign(socket,
+       org_users_group_distance: %{
+         encoded: Jason.encode!(Accounts.get_dashboard_org_month_group(organization_id))
+       },
+       user_pagination: %{
+         total_pages: get_total_pages(org_users_distance),
+         current_page: 0,
+         org_users_distance_data: paginate(org_users_distance, 0)
+       },
+       org_users_distance: org_users_distance,
+       org_users_distance_details_filter: "longest",
+       org_users_distance_filter: "month"
+     )}
   end
 
-  def handle_event("time_range_changed_org_distance", %{"filter" => "alltime"}, %{assigns: %{organization_id: organization_id}}= socket) do
-
+  def handle_event(
+        "time_range_changed_org_distance",
+        %{"filter" => "alltime"},
+        %{assigns: %{organization_id: organization_id}} = socket
+      ) do
     org_users_distance =
       organization_id
       |> Accounts.get_dashboard_org_month_longest()
       |> format_paginate()
 
-    {:noreply, assign(socket,
-           org_users_group_distance: %{
-             encoded: Jason.encode!(Accounts.get_dashboard_org_all_time_group(organization_id))
-           },
-           user_pagination: %{
-            total_pages: get_total_pages(org_users_distance),
-            current_page: 0,
-            org_users_distance_data: paginate(org_users_distance, 0)
-          },
-          org_users_distance: org_users_distance,
-          org_users_distance_details_filter: "longest",
-          org_users_distance_filter: "alltime")}
+    {:noreply,
+     assign(socket,
+       org_users_group_distance: %{
+         encoded: Jason.encode!(Accounts.get_dashboard_org_all_time_group(organization_id))
+       },
+       user_pagination: %{
+         total_pages: get_total_pages(org_users_distance),
+         current_page: 0,
+         org_users_distance_data: paginate(org_users_distance, 0)
+       },
+       org_users_distance: org_users_distance,
+       org_users_distance_details_filter: "longest",
+       org_users_distance_filter: "alltime"
+     )}
   end
 
   # week
