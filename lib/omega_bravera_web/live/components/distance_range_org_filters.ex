@@ -8,7 +8,7 @@ defmodule OmegaBraveraWeb.DistanceRangeOrgFilters do
             <li class="canvas-button p-2 <%= if @filter == "longest", do: " active" %>" phx-click="<%= "distance_range_changed_" <> @for %>" phx-value-filter="longest">
                 <span class="dot" style="height: 16px; width:16px; background-color: #C50718; border-radius: 50%; display: inline-block;"></span>
                 <span class="">
-                    <span id="demo" style="font-size: 16px; font-style: normal; line-height: 18.75px;">
+                    <span style="font-size: 16px; font-style: normal; line-height: 18.75px;">
                     <%= case @org_users_distance_filter do %>
                         <% "week" -> %>
                         Longest: 50+ km
