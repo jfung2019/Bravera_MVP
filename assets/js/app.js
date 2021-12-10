@@ -34,7 +34,7 @@ import "./group_form";
 import "./password_requirement";
 import distanceChartHook from "./distance_chart"
 import socialChartHook from "./social_chart"
-import distanceChartOrgHook from "./distance_org_Chart";
+import distanceChartOrgHook from "./distance_org_chart";
 
 Dropzone.autoDiscover = false;
 const Hooks = {

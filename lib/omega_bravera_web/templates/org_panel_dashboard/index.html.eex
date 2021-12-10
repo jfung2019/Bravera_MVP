@@ -107,9 +107,6 @@
         $("#first_time").modal("hide");
         $("#dashboard_intro").modal("show");
     }
-    function updateLabel(){
-        document.getElementById("demo").innerHTML = 'New Phrase';
-    }
 </script>
 
 <div class="modal fade" id="new_group_offer_approved" tabindex="-1" role="dialog" aria-labelledby="new_group_offer_approved_modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
