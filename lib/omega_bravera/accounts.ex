@@ -558,7 +558,7 @@ defmodule OmegaBravera.Accounts do
       select: %{
         username: u.username,
         distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
-        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI'", a.end_date)
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance > 50,
       group_by: [u.id, a.distance, a.end_date],
