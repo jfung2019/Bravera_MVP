@@ -557,8 +557,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI'", a.end_date)
       },
       where: a.distance > 50,
       group_by: [u.id, a.distance, a.end_date],
@@ -588,8 +588,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 36 and a.distance < 50,
       group_by: [u.id, a.distance, a.end_date],
@@ -619,8 +619,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 21 and a.distance < 35,
       group_by: [u.id, a.distance, a.end_date],
@@ -651,8 +651,8 @@ defmodule OmegaBravera.Accounts do
           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 20),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -681,8 +681,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance > 200,
       group_by: [u.id, a.distance, a.end_date],
@@ -712,8 +712,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 141 and a.distance < 200,
       group_by: [u.id, a.distance, a.end_date],
@@ -743,8 +743,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 61 and a.distance < 140,
       group_by: [u.id, a.distance, a.end_date],
@@ -775,8 +775,8 @@ defmodule OmegaBravera.Accounts do
           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 80),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -802,8 +802,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 8000,
       group_by: [u.id, a.distance, a.end_date],
@@ -830,8 +830,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 5000 and a.distance < 8000,
       group_by: [u.id, a.distance, a.end_date],
@@ -858,8 +858,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 3000 and a.distance < 5000,
       group_by: [u.id, a.distance, a.end_date],
@@ -888,8 +888,8 @@ defmodule OmegaBravera.Accounts do
           (not is_nil(a.distance) and a.distance >= 1000 and a.distance < 3000),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -952,7 +952,7 @@ defmodule OmegaBravera.Accounts do
 
   @spec get_dashboard_org_week_group(integer()) :: any
   @doc """
-  get Bravera orginisation dashboard piechart of this week.
+  Gets Bravera organization dashboard pie chart of this week.
   """
   def get_dashboard_org_week_group(organization_id) do
     now = Timex.now()
@@ -1018,7 +1018,7 @@ defmodule OmegaBravera.Accounts do
             ) and not is_nil(u.email) and not is_nil(a.distance),
           select: %{
             u
-            | distance: coalesce(a.distance, 0)
+            | distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0))
           },
           group_by: [u.id, a.distance],
           order_by: [asc_nulls_last: a.distance]
