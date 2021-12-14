@@ -537,9 +537,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for 7 days user details for the group longest.
+  get user details of the week for the group longest (week, longest: 50+km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_week_longest(organization_id) do
+  @spec get_user_details_dashboard_org_week_longest(User.t()) :: integer()
+  def get_user_details_dashboard_org_week_longest(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
 
@@ -557,8 +558,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance > 50,
       group_by: [u.id, a.distance, a.end_date],
@@ -568,9 +569,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for 7 days user details for the group long.
+  get user details of the week for the group long (week, long: 36 to 50km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_week_long(organization_id) do
+  @spec get_user_details_dashboard_org_week_long(User.t()) :: integer()
+  def get_user_details_dashboard_org_week_long(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
 
@@ -588,8 +590,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 36 and a.distance < 50,
       group_by: [u.id, a.distance, a.end_date],
@@ -599,9 +601,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for 7 days user details for the group moderate.
+  get user details of the week for the group moderate (week, moderate: 21 to 35km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_week_moderate(organization_id) do
+  @spec get_user_details_dashboard_org_week_moderate(User.t()) :: integer()
+  def get_user_details_dashboard_org_week_moderate(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
 
@@ -619,8 +622,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 21 and a.distance < 35,
       group_by: [u.id, a.distance, a.end_date],
@@ -630,9 +633,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for 7 days user details for the group low.
+  get user details of the week for the group low (week, low: 0 to 20km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_week_low(organization_id) do
+  @spec get_user_details_dashboard_org_week_low(User.t()) :: integer()
+  def get_user_details_dashboard_org_week_low(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
 
@@ -651,8 +655,8 @@ defmodule OmegaBravera.Accounts do
           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 20),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -661,9 +665,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for 30 days user details for the group longest.
+  get user details of the month for the group longest (month, longest: 200+km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_month_longest(organization_id) do
+  @spec get_user_details_dashboard_org_month_longest(User.t()) :: integer()
+  def get_user_details_dashboard_org_month_longest(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
 
@@ -681,8 +686,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance > 200,
       group_by: [u.id, a.distance, a.end_date],
@@ -692,9 +697,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for 30 days user details for the group long.
+  get user details of the month for the group long (month, long: 141 to 200km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_month_long(organization_id) do
+  @spec get_user_details_dashboard_org_month_long(User.t()) :: integer()
+  def get_user_details_dashboard_org_month_long(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
 
@@ -712,8 +718,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 141 and a.distance < 200,
       group_by: [u.id, a.distance, a.end_date],
@@ -723,9 +729,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for 30 days user details for the group moderate.
+  get user details of the month for the group moderate (month, moderate: 61 to 140km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_month_moderate(organization_id) do
+  @spec get_user_details_dashboard_org_month_moderate(User.t()) :: integer()
+  def get_user_details_dashboard_org_month_moderate(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
 
@@ -743,8 +750,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 61 and a.distance < 140,
       group_by: [u.id, a.distance, a.end_date],
@@ -754,9 +761,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for 30 days user details for the group low.
+  get user details of the month for the group low (month, low: 0 to 80km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_month_low(organization_id) do
+  @spec get_user_details_dashboard_org_month_low(User.t()) :: integer()
+  def get_user_details_dashboard_org_month_low(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
 
@@ -775,8 +783,8 @@ defmodule OmegaBravera.Accounts do
           (not is_nil(a.distance) and a.distance >= 0 and a.distance < 80),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -785,9 +793,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for all time user details for the group longest.
+  get user details of all time for the group longest (all time, longest: 8000+ km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_all_time_longest(organization_id) do
+  @spec get_user_details_dashboard_org_all_time_longest(User.t()) :: integer()
+  def get_user_details_dashboard_org_all_time_longest(organization_id) do
     from(
       u in User,
       left_lateral_join: a in subquery(last_activity_query()),
@@ -802,8 +811,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 8000,
       group_by: [u.id, a.distance, a.end_date],
@@ -813,8 +822,9 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for all time user details for the group long.
+  get user details of all time for the group long (all time, long: 5000+ km) within the joined organization for the doughnut chart in dashboard.
   """
+  @spec get_dashboard_org_all_time_long(User.t()) :: integer()
   def get_dashboard_org_all_time_long(organization_id) do
     from(
       u in User,
@@ -830,8 +840,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 5000 and a.distance < 8000,
       group_by: [u.id, a.distance, a.end_date],
@@ -841,9 +851,10 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera orginisation dashboard piechart for all time user details for the group moderate.
+  get user details of all time for the group moderate (all time, moderate: 3000+ km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_all_time_moderate(organization_id) do
+  @spec get_user_details_dashboard_org_all_time_moderate(User.t()) :: integer()
+  def get_user_details_dashboard_org_all_time_moderate(organization_id) do
     from(
       u in User,
       left_lateral_join: a in subquery(last_activity_query()),
@@ -858,8 +869,8 @@ defmodule OmegaBravera.Accounts do
         ) and not is_nil(u.email),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       where: a.distance >= 3000 and a.distance < 5000,
       group_by: [u.id, a.distance, a.end_date],
@@ -868,11 +879,11 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @spec get_dashboard_org_all_time_low(integer()) :: any
   @doc """
-  get Bravera orginisation dashboard piechart for all time user details for the group low.
+  get user details of all time for the group low (all time, low: 1000+ km) within the joined organization for the doughnut chart in dashboard.
   """
-  def get_dashboard_org_all_time_low(organization_id) do
+  @spec get_user_details_dashboard_org_all_time_low(User.t()) :: integer()
+  def get_user_details_dashboard_org_all_time_low(organization_id) do
     from(
       u in User,
       left_lateral_join: a in subquery(last_activity_query()),
@@ -888,8 +899,8 @@ defmodule OmegaBravera.Accounts do
           (not is_nil(a.distance) and a.distance >= 1000 and a.distance < 3000),
       select: %{
         username: u.username,
-        distance: coalesce(a.distance, 0),
-        last_activity: a.end_date
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
       },
       group_by: [u.id, a.distance, a.end_date],
       order_by: [desc_nulls_last: a.distance]
@@ -897,10 +908,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  @spec get_dashboard_org_all_time_group(integer()) :: any
   @doc """
-  get Bravera orginisation dashboard piechart for all time.
+  count and get the number of users that meets specific amount of distance for all time and grouped them accordingly (there are 4 groups in total) for the doughnut chart within the joined organization.
   """
+  @spec get_dashboard_org_all_time_group(integer()) :: integer()
   def get_dashboard_org_all_time_group(organization_id) do
     from(
       t in subquery(
@@ -950,10 +961,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.one()
   end
 
-  @spec get_dashboard_org_week_group(integer()) :: any
   @doc """
-  get Bravera orginisation dashboard piechart of this week.
+  count and get the number of users that meets specific amount of distance for 7 days and grouped them accordingly (there are 4 groups in total) for the doughnut chart within the joined organization.
   """
+  @spec get_dashboard_org_week_group(integer()) :: integer()
   def get_dashboard_org_week_group(organization_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
@@ -994,10 +1005,10 @@ defmodule OmegaBravera.Accounts do
     |> Repo.one()
   end
 
-  @spec get_dashboard_org_month_group(integer()) :: any
   @doc """
-  get Bravera orginisation dashboard piechart of this month.
+  count and get the number of users that meets specific amount of distance for 30 days and grouped them accordingly (there are 4 groups in total) for the doughnut chart within the joined organization.
   """
+  @spec get_dashboard_org_month_group(integer()) :: integer()
   def get_dashboard_org_month_group(organization_id) do
     now = Timex.now()
     thirty_days_ago = Timex.shift(now, days: -30)
@@ -1017,8 +1028,8 @@ defmodule OmegaBravera.Accounts do
               )
             ) and not is_nil(u.email) and not is_nil(a.distance),
           select: %{
-            u
-            | distance: coalesce(a.distance, 0)
+            distance: coalesce(a.distance, 0),
+            user_id: u.id
           },
           group_by: [u.id, a.distance],
           order_by: [asc_nulls_last: a.distance]
