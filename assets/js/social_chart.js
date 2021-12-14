@@ -168,7 +168,7 @@ const socialChartHook = {
 						label: function (tooltipItem, data) {
 							var dataset = data.datasets[tooltipItem.datasetIndex];
 							var index = tooltipItem.index;
-							return 'Distance: ' + dataset.data[index];
+							return 'Activity: ' + dataset.data[index];
 						}
 					}
 				},

@@ -11,7 +11,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
 
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_week_longest()
+      |> Accounts.get_user_details_dashboard_org_week_longest()
       |> format_paginate()
 
     current_page = 0
@@ -43,7 +43,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_week_longest()
+      |> Accounts.get_user_details_dashboard_org_week_longest()
       |> format_paginate()
 
     {:noreply,
@@ -69,7 +69,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_month_longest()
+      |> Accounts.get_user_details_dashboard_org_month_longest()
       |> format_paginate()
 
     {:noreply,
@@ -95,7 +95,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_all_time_longest()
+      |> Accounts.get_user_details_dashboard_org_all_time_longest()
       |> format_paginate()
 
     {:noreply,
@@ -127,7 +127,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_week_longest()
+      |> Accounts.get_user_details_dashboard_org_week_longest()
       |> format_paginate()
 
     {:noreply,
@@ -150,7 +150,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_week_long()
+      |> Accounts.get_user_details_dashboard_org_week_long()
       |> format_paginate()
 
     {:noreply,
@@ -173,7 +173,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_week_moderate()
+      |> Accounts.get_user_details_dashboard_org_week_moderate()
       |> format_paginate()
 
     {:noreply,
@@ -196,7 +196,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_week_low()
+      |> Accounts.get_user_details_dashboard_org_week_low()
       |> format_paginate()
 
     {:noreply,
@@ -220,7 +220,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_month_longest()
+      |> Accounts.get_user_details_dashboard_org_month_longest()
       |> format_paginate()
 
     {:noreply,
@@ -243,7 +243,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_month_long()
+      |> Accounts.get_user_details_dashboard_org_month_long()
       |> format_paginate()
 
     {:noreply,
@@ -266,7 +266,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_month_moderate()
+      |> Accounts.get_user_details_dashboard_org_month_moderate()
       |> format_paginate()
 
     {:noreply,
@@ -289,7 +289,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_month_low()
+      |> Accounts.get_user_details_dashboard_org_month_low()
       |> format_paginate()
 
     {:noreply,
@@ -313,7 +313,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_all_time_longest()
+      |> Accounts.get_user_details_dashboard_org_all_time_longest()
       |> format_paginate()
 
     {:noreply,
@@ -359,7 +359,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_all_time_moderate()
+      |> Accounts.get_user_details_dashboard_org_all_time_moderate()
       |> format_paginate()
 
     {:noreply,
@@ -382,7 +382,7 @@ defmodule OmegaBraveraWeb.OrgDashboardChartLive do
       ) do
     org_users_distance =
       organization_id
-      |> Accounts.get_dashboard_org_all_time_low()
+      |> Accounts.get_user_details_dashboard_org_all_time_low()
       |> format_paginate()
 
     {:noreply,
