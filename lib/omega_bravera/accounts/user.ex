@@ -220,6 +220,11 @@ defmodule OmegaBravera.Accounts.User do
     |> change_new_email(user)
   end
 
+  def verify_email_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:email_activation_token, :email_verified])
+  end
+
   def new_email_changed(%Ecto.Changeset{} = changeset) do
     case changeset do
       %{valid?: true, changes: %{new_email: _email}} ->
