@@ -1652,10 +1652,16 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  Activates a user's account by setting the user's `email_verified` field to true.
+  Activates a user's account by setting the user's `email_verified` field to true
+  and clearing out the existing token so we have less of a chance of users having
+  the same verification code.
   """
+  @spec activate_user_email(User.t()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def activate_user_email(%User{} = user) do
-    case update_user(user, %{email_verified: true}) do
+    changeset =
+      User.verify_email_changeset(user, %{email_verified: true, email_activation_token: nil})
+
+    case Repo.update(changeset) do
       {:ok, _user} = return_tuple ->
         %{user_id: user.id}
         |> Jobs.AfterEmailVerify.new()
