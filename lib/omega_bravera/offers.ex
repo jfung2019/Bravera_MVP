@@ -1310,7 +1310,7 @@ defmodule OmegaBravera.Offers do
           "Alias/Username"
       end
 
-    [first_header | headers]
+    [[first_header | headers]]
   end
 
   @doc """
