@@ -1243,6 +1243,7 @@ defmodule OmegaBravera.Accounts do
       on: u.id == cm.user_id,
       where: cm.group_id == ^partner_id and cm.inserted_at >= ^seven_days_ago,
       group_by: u.id,
+      order_by: [desc_nulls_last: count(cm.id)],
       select: %{user: u, message_count: count(cm.id)}
     )
     |> Repo.all()
@@ -1259,6 +1260,7 @@ defmodule OmegaBravera.Accounts do
       on: u.id == cm.user_id,
       where: cm.group_id == ^partner_id and cm.inserted_at >= ^seven_days_ago,
       group_by: u.id,
+      order_by: [desc_nulls_last: count(cm.id)],
       select: %{user: u, message_count: count(cm.id)}
     )
     |> Repo.all()
@@ -1272,6 +1274,7 @@ defmodule OmegaBravera.Accounts do
       on: u.id == cm.user_id,
       where: cm.group_id == ^partner_id,
       group_by: u.id,
+      order_by: [desc_nulls_last: count(cm.id)],
       select: %{user: u, message_count: count(cm.id)}
     )
     |> Repo.all()
@@ -1726,7 +1729,7 @@ defmodule OmegaBravera.Accounts do
         groups: fragment("TO_CHAR(?, '999,999')", count(g.id, :distinct)),
         offers: fragment("TO_CHAR(?, '999,999')", count(of.id, :distinct)),
         total_distance: fragment("TO_CHAR(?, '999,999 KM')", td.distance),
-        distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", coalesce(sum(wd.distance), 0) ),
+        distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", coalesce(sum(wd.distance), 0)),
         unlocked_rewards:
           fragment(
             "TO_CHAR(?, '999,999')",
