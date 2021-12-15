@@ -1729,7 +1729,7 @@ defmodule OmegaBravera.Accounts do
         groups: fragment("TO_CHAR(?, '999,999')", count(g.id, :distinct)),
         offers: fragment("TO_CHAR(?, '999,999')", count(of.id, :distinct)),
         total_distance: fragment("TO_CHAR(?, '999,999 KM')", td.distance),
-        distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", wd.distance),
+        distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", coalesce(sum(wd.distance), 0)),
         unlocked_rewards:
           fragment(
             "TO_CHAR(?, '999,999')",
