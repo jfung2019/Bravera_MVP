@@ -345,7 +345,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  set user as deleted
+  Set user as deleted
   remove first_name, last_name, dob, location, email, profile_picture
   """
   def gdpr_delete_user(user_id) do
@@ -375,6 +375,31 @@ defmodule OmegaBravera.Accounts do
   defp activity_query do
     from(a in ActivityAccumulator,
       select: %{distance: sum(a.distance), user_id: a.user_id},
+      group_by: a.user_id,
+      where:
+        a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+          not is_nil(a.device_id) and is_nil(a.strava_id)
+    )
+  end
+
+  defp last_activity_query(start_date, end_date) do
+    from(a in ActivityAccumulator,
+      select: %{
+        distance: coalesce(sum(a.distance), 0),
+        user_id: a.user_id,
+        end_date: max(a.end_date)
+      },
+      group_by: a.user_id,
+      where:
+        a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
+          not is_nil(a.device_id) and is_nil(a.strava_id) and a.start_date >= ^start_date and
+          a.start_date <= ^end_date
+    )
+  end
+
+  defp last_activity_query do
+    from(a in ActivityAccumulator,
+      select: %{distance: sum(a.distance), user_id: a.user_id, end_date: max(a.end_date)},
       group_by: a.user_id,
       where:
         a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
@@ -464,8 +489,8 @@ defmodule OmegaBravera.Accounts do
       where: not is_nil(u.email),
       select: %{
         u
-        | total_points_this_week: coalesce(p.value, 0),
-          total_kilometers_this_week: coalesce(a.distance, 0)
+        | total_points_this_week: fragment("ROUND(?, 2)", coalesce(p.value, 0)),
+          total_kilometers_this_week: fragment("ROUND(?, 2)", coalesce(a.distance, 0))
       },
       group_by: [u.id, p.value, a.distance],
       order_by: [desc_nulls_last: a.distance]
@@ -485,8 +510,8 @@ defmodule OmegaBravera.Accounts do
       where: not is_nil(u.email),
       select: %{
         u
-        | total_points_this_month: coalesce(p.value, 0),
-          total_kilometers_this_month: coalesce(a.distance, 0)
+        | total_points_this_month: fragment("ROUND(?, 2)", coalesce(p.value, 0)),
+          total_kilometers_this_month: fragment("ROUND(?, 2)", coalesce(a.distance, 0))
       },
       group_by: [u.id, p.value, a.distance],
       order_by: [desc_nulls_last: a.distance]
@@ -503,8 +528,8 @@ defmodule OmegaBravera.Accounts do
       where: not is_nil(u.email),
       select: %{
         u
-        | total_points: coalesce(p.value, 0),
-          total_kilometers: coalesce(a.distance, 0)
+        | total_points: fragment("ROUND(?, 2)", coalesce(p.value, 0)),
+          total_kilometers: fragment("ROUND(?, 2)", coalesce(a.distance, 0))
       },
       group_by: [u.id, p.value, a.distance],
       order_by: [desc_nulls_last: a.distance]
@@ -512,7 +537,589 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera leaderboard of this week.
+  Get user details of the week for the group longest (week, longest: 50+km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_week_longest(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_week_longest(organization_id) do
+    now = Timex.now()
+    seven_days_ago = Timex.shift(now, days: -7)
+
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query(seven_days_ago, now)),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      where: a.distance > 50,
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of the week for the group long (week, long: 36 to 50km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_week_long(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_week_long(organization_id) do
+    now = Timex.now()
+    seven_days_ago = Timex.shift(now, days: -7)
+
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query(seven_days_ago, now)),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      where: a.distance >= 36 and a.distance < 50,
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of the week for the group moderate (week, moderate: 21 to 35km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_week_moderate(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_week_moderate(organization_id) do
+    now = Timex.now()
+    seven_days_ago = Timex.shift(now, days: -7)
+
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query(seven_days_ago, now)),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      where: a.distance >= 21 and a.distance < 35,
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of the week for the group low (week, low: 0 to 20km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_week_low(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_week_low(organization_id) do
+    now = Timex.now()
+    seven_days_ago = Timex.shift(now, days: -7)
+
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query(seven_days_ago, now)),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email) and
+          (not is_nil(a.distance) and a.distance >= 0 and a.distance < 20),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of the month for the group longest (month, longest: 200+km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_month_longest(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_month_longest(organization_id) do
+    now = Timex.now()
+    thirty_days_ago = Timex.shift(now, days: -30)
+
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query(thirty_days_ago, now)),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      where: a.distance > 200,
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of the month for the group long (month, long: 141 to 200km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_month_long(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_month_long(organization_id) do
+    now = Timex.now()
+    thirty_days_ago = Timex.shift(now, days: -30)
+
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query(thirty_days_ago, now)),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      where: a.distance >= 141 and a.distance < 200,
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of the month for the group moderate (month, moderate: 61 to 140km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_month_moderate(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_month_moderate(organization_id) do
+    now = Timex.now()
+    thirty_days_ago = Timex.shift(now, days: -30)
+
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query(thirty_days_ago, now)),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      where: a.distance >= 61 and a.distance < 140,
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of the month for the group low (month, low: 0 to 80km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_month_low(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_month_low(organization_id) do
+    now = Timex.now()
+    thirty_days_ago = Timex.shift(now, days: -30)
+
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query(thirty_days_ago, now)),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email) and
+          (not is_nil(a.distance) and a.distance >= 0 and a.distance < 80),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of all time for the group longest (all time, longest: 8000+ km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_all_time_longest(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_all_time_longest(organization_id) do
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query()),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      where: a.distance >= 8000,
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of all time for the group long (all time, long: 5000+ km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_dashboard_org_all_time_long(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_dashboard_org_all_time_long(organization_id) do
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query()),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      where: a.distance >= 5000 and a.distance < 8000,
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of all time for the group moderate (all time, moderate: 3000+ km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_all_time_moderate(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_all_time_moderate(organization_id) do
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query()),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      where: a.distance >= 3000 and a.distance < 5000,
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Get user details of all time for the group low (all time, low: 1000+ km) within the joined organization for the doughnut chart in dashboard.
+  """
+  @spec get_user_details_dashboard_org_all_time_low(String.t()) :: %{
+          username: String.t(),
+          distance: integer(),
+          last_activity: String.t()
+        }
+  def get_user_details_dashboard_org_all_time_low(organization_id) do
+    from(
+      u in User,
+      left_lateral_join: a in subquery(last_activity_query()),
+      on: a.user_id == u.id,
+      where:
+        u.id in subquery(
+          from(o in Organization,
+            left_join: m in assoc(o, :group_members),
+            where: o.id == ^organization_id,
+            select: m.user_id
+          )
+        ) and not is_nil(u.email) and
+          (not is_nil(a.distance) and a.distance >= 1000 and a.distance < 3000),
+      select: %{
+        username: u.username,
+        distance: fragment("ROUND(?, 2)", coalesce(a.distance, 0)),
+        last_activity: fragment("TO_CHAR(?, 'YYYY-MM-DD HH:MI')", a.end_date)
+      },
+      group_by: [u.id, a.distance, a.end_date],
+      order_by: [desc_nulls_last: a.distance]
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Count and get the number of users that meets specific amount of distance for all time and
+  grouped them accordingly (there are 4 groups in total) for the doughnut chart within the joined organization.
+  """
+  @spec get_dashboard_org_all_time_group(String.t()) ::
+          %{
+            total_user_count_group_longest: integer(),
+            total_user_count_group_long: integer(),
+            total_user_count_group_moderate: integer(),
+            total_user_count_group_low: integer()
+          }
+  def get_dashboard_org_all_time_group(organization_id) do
+    from(
+      t in subquery(
+        from(
+          u in User,
+          left_lateral_join: a in subquery(activity_query()),
+          on: a.user_id == u.id,
+          where:
+            u.id in subquery(
+              from(o in Organization,
+                left_join: m in assoc(o, :group_members),
+                where: o.id == ^organization_id,
+                select: m.user_id
+              )
+            ) and not is_nil(u.email) and not is_nil(a.distance),
+          select: %{
+            distance: coalesce(a.distance, 0),
+            user_id: u.id
+          },
+          group_by: [u.id, a.distance],
+          order_by: [asc_nulls_last: a.distance]
+        )
+      ),
+      select: %{
+        total_user_count_group_longest:
+          fragment("SUM(CASE WHEN ? >= 8000 THEN 1 ELSE 0 END)", t.distance),
+        total_user_count_group_long:
+          fragment(
+            "SUM(CASE WHEN ? >= 5000 AND ? <8000 THEN 1 ELSE 0 END)",
+            t.distance,
+            t.distance
+          ),
+        total_user_count_group_moderate:
+          fragment(
+            "SUM(CASE WHEN ? >= 3000 AND ? <5000 THEN 1 ELSE 0 END)",
+            t.distance,
+            t.distance
+          ),
+        total_user_count_group_low:
+          fragment(
+            "SUM(CASE WHEN ? >= 1000 AND ? <3000 THEN 1 ELSE 0 END)",
+            t.distance,
+            t.distance
+          )
+      }
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  Count and get the number of users that meets specific amount of distance for 7 days and
+  grouped them accordingly (there are 4 groups in total) for the doughnut chart within the joined organization.
+  """
+  @spec get_dashboard_org_week_group(String.t()) ::
+          %{
+            total_user_count_group_longest: integer(),
+            total_user_count_group_long: integer(),
+            total_user_count_group_moderate: integer(),
+            total_user_count_group_low: integer()
+          }
+  def get_dashboard_org_week_group(organization_id) do
+    now = Timex.now()
+    seven_days_ago = Timex.shift(now, days: -7)
+
+    from(
+      t in subquery(
+        from(
+          u in User,
+          left_lateral_join: a in subquery(activity_query(seven_days_ago, now)),
+          on: a.user_id == u.id,
+          where:
+            u.id in subquery(
+              from(o in Organization,
+                left_join: m in assoc(o, :group_members),
+                where: o.id == ^organization_id,
+                select: m.user_id
+              )
+            ) and not is_nil(u.email) and not is_nil(a.distance),
+          select: %{
+            distance: coalesce(a.distance, 0),
+            user_id: u.id
+          },
+          group_by: [u.id, a.distance],
+          order_by: [asc_nulls_last: a.distance]
+        )
+      ),
+      select: %{
+        total_user_count_group_longest:
+          fragment("SUM(CASE WHEN ? >= 50 THEN 1 ELSE 0 END)", t.distance),
+        total_user_count_group_long:
+          fragment("SUM(CASE WHEN ? >= 36 AND ? < 50 THEN 1 ELSE 0 END)", t.distance, t.distance),
+        total_user_count_group_moderate:
+          fragment("SUM(CASE WHEN ? >= 21 AND ? < 35 THEN 1 ELSE 0 END)", t.distance, t.distance),
+        total_user_count_group_low:
+          fragment("SUM(CASE WHEN ? >= 0 AND ? < 20 THEN 1 ELSE 0 END)", t.distance, t.distance)
+      }
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  Count and get the number of users that meets specific amount of distance for 30 days and
+  grouped them accordingly (there are 4 groups in total) for the doughnut chart within the joined organization.
+  """
+  @spec get_dashboard_org_month_group(String.t()) ::
+          %{
+            total_user_count_group_longest: integer(),
+            total_user_count_group_long: integer(),
+            total_user_count_group_moderate: integer(),
+            total_user_count_group_low: integer()
+          }
+  def get_dashboard_org_month_group(organization_id) do
+    now = Timex.now()
+    thirty_days_ago = Timex.shift(now, days: -30)
+
+    from(
+      t in subquery(
+        from(
+          u in User,
+          left_lateral_join: a in subquery(activity_query(thirty_days_ago, now)),
+          on: a.user_id == u.id,
+          where:
+            u.id in subquery(
+              from(o in Organization,
+                left_join: m in assoc(o, :group_members),
+                where: o.id == ^organization_id,
+                select: m.user_id
+              )
+            ) and not is_nil(u.email) and not is_nil(a.distance),
+          select: %{
+            distance: coalesce(a.distance, 0),
+            user_id: u.id
+          },
+          group_by: [u.id, a.distance],
+          order_by: [asc_nulls_last: a.distance]
+        )
+      ),
+      select: %{
+        total_user_count_group_longest:
+          fragment("SUM(CASE WHEN ? >= 200 THEN 1 ELSE 0 END)", t.distance),
+        total_user_count_group_long:
+          fragment("SUM(CASE WHEN ? >= 141 AND ? <200 THEN 1 ELSE 0 END)", t.distance, t.distance),
+        total_user_count_group_moderate:
+          fragment("SUM(CASE WHEN ? >= 61 AND ? <140 THEN 1 ELSE 0 END)", t.distance, t.distance),
+        total_user_count_group_low:
+          fragment("SUM(CASE WHEN ? >= 0 AND ? <80 THEN 1 ELSE 0 END)", t.distance, t.distance)
+      }
+    )
+    |> Repo.one()
+  end
+
+  @doc """
+  Get Bravera leaderboard of this week.
   """
   @spec api_get_leaderboard_this_week() :: [User.t()]
   def api_get_leaderboard_this_week() do
@@ -521,7 +1128,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera leaderboard of this month.
+  Get Bravera leaderboard of this month.
   """
   @spec api_get_leaderboard_this_month() :: [User.t()]
   def api_get_leaderboard_this_month() do
@@ -530,7 +1137,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get overall Bravera leaderboard.
+  Get overall Bravera leaderboard.
   """
   @spec api_get_leaderboard_all_time() :: [User.t()]
   def api_get_leaderboard_all_time() do
@@ -539,7 +1146,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera leaderboard of this week annotated with is_friend.
+  Get Bravera leaderboard of this week annotated with is_friend.
   """
   @spec api_get_leaderboard_this_week(UUID.t()) :: [User.t()]
   def api_get_leaderboard_this_week(authenticated_user_id) do
@@ -548,7 +1155,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get Bravera leaderboard of this month annotated with is_friend.
+  Get Bravera leaderboard of this month annotated with is_friend.
   """
   @spec api_get_leaderboard_this_month(UUID.t()) :: [User.t()]
   def api_get_leaderboard_this_month(authenticated_user_id) do
@@ -557,7 +1164,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get overall Bravera leaderboard annotated with is_friend.
+  Get overall Bravera leaderboard annotated with is_friend.
   """
   @spec api_get_leaderboard_all_time(UUID.t()) :: [User.t()]
   def api_get_leaderboard_all_time(authenticated_user_id) do
@@ -591,7 +1198,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get user's friends leaderboard of this month
+  Get user's friends leaderboard of this month
   """
   @spec api_get_friend_leaderboard_this_week(String.t()) :: [User.t()]
   def api_get_friend_leaderboard_this_week(user_id) do
@@ -601,7 +1208,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get user's friends leaderboard of this month
+  Get user's friends leaderboard of this month
   """
   @spec api_get_friend_leaderboard_this_month(String.t()) :: [User.t()]
   def api_get_friend_leaderboard_this_month(user_id) do
@@ -611,7 +1218,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get overall user's friends leaderboard
+  Get overall user's friends leaderboard
   """
   @spec api_get_friend_leaderboard_all_time(String.t()) :: [User.t()]
   def api_get_friend_leaderboard_all_time(user_id) do
@@ -625,6 +1232,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @spec get_leaderboad_partner_messages_this_week(integer()) :: any
   def get_leaderboad_partner_messages_this_week(partner_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -7)
@@ -640,6 +1248,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @spec get_leaderboad_partner_messages_this_month(integer()) :: any
   def get_leaderboad_partner_messages_this_month(partner_id) do
     now = Timex.now()
     seven_days_ago = Timex.shift(now, days: -31)
@@ -655,6 +1264,7 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
+  @spec get_leaderboad_partner_messages_all_time(integer()) :: any()
   def get_leaderboad_partner_messages_all_time(partner_id) do
     from(
       u in User,
@@ -668,7 +1278,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get user's joined group leaderboard of this week
+  Get user's joined group leaderboard of this week
   """
   @spec api_get_leaderboard_of_partner_this_week(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_week(partner_id) do
@@ -678,7 +1288,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get user's joined group leaderboard of this month
+  Get user's joined group leaderboard of this month
   """
   @spec api_get_leaderboard_of_partner_this_month(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_month(partner_id) do
@@ -688,7 +1298,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get overall user's joined group leaderboard
+  Get overall user's joined group leaderboard
   """
   @spec api_get_leaderboard_of_partner_all_time(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_all_time(partner_id) do
@@ -698,7 +1308,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get user's joined group leaderboard of this week
+  Get user's joined group leaderboard of this week
   """
   @spec api_get_leaderboard_of_partner_this_week(String.t(), String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_week(authenticated_user_id, partner_id) do
@@ -708,7 +1318,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get user's joined group leaderboard of this month
+  Get user's joined group leaderboard of this month
   """
   @spec api_get_leaderboard_of_partner_this_month(String.t(), String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_month(authenticated_user_id, partner_id) do
@@ -718,7 +1328,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get overall user's joined group leaderboard
+  Get overall user's joined group leaderboard
   """
   @spec api_get_leaderboard_of_partner_all_time(String.t(), String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_all_time(authenticated_user_id, partner_id) do
@@ -1116,7 +1726,7 @@ defmodule OmegaBravera.Accounts do
         groups: fragment("TO_CHAR(?, '999,999')", count(g.id, :distinct)),
         offers: fragment("TO_CHAR(?, '999,999')", count(of.id, :distinct)),
         total_distance: fragment("TO_CHAR(?, '999,999 KM')", td.distance),
-        distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", wd.distance),
+        distance_this_week: fragment("TO_CHAR(?, '999,999 KM')", coalesce(sum(wd.distance), 0) ),
         unlocked_rewards:
           fragment(
             "TO_CHAR(?, '999,999')",
@@ -1385,7 +1995,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  paginate users based on login user type
+  Paginate users based on login user type
   """
   def paginate_users(%AdminUser{}, params) do
     Turbo.Ecto.turbo(list_users_for_admin_query(), params, entry_name: "users")
@@ -1536,7 +2146,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  put new email to user and generate verification code to confirm
+  Put new email to user and generate verification code to confirm
   """
   @spec update_user_email(User.t(), String.t(), String.t()) :: tuple
   def update_user_email(%User{} = user, password, new_email) do
@@ -1562,7 +2172,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  check if new_email_verification_code is correct
+  Check if new_email_verification_code is correct
   if correct update email to use the new email
   """
   @spec confirm_update_user_email(User.t(), map) :: tuple
@@ -2558,7 +3168,7 @@ defmodule OmegaBravera.Accounts do
   def get_organization!(id), do: Repo.get!(Organization, id)
 
   @doc """
-  get organization by partner_user_id
+  Get organization by partner_user_id
   """
   def get_organization_by_partner_user!(partner_user_id) do
     from(o in Organization,
@@ -2799,7 +3409,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  list new members joined yesterday
+  List new members joined yesterday
   """
   @spec list_orgs_with_new_members :: [Organization.t()]
   def list_orgs_with_new_members do
@@ -2814,7 +3424,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  list new group members of org
+  List new group members of org
   """
   @spec list_new_group_members_of_org(String.t()) :: [Member.t()]
   def list_new_group_members_of_org(org_id) do
@@ -2830,7 +3440,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  create friend request
+  Create friend request
   """
   @spec create_friend_request(map()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
   def create_friend_request(%{receiver_id: receiver_id, requester_id: requester_id} = attrs) do
@@ -2856,7 +3466,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  accept friend request
+  Accept friend request
   """
   @spec accept_friend_request(Friend.t()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
   def accept_friend_request(%Friend{} = friend) do
@@ -2912,13 +3522,13 @@ defmodule OmegaBravera.Accounts do
   defp broadcast_user_unfriended(result), do: result
 
   @doc """
-  reject friend request
+  Reject friend request
   """
   @spec reject_friend_request(Friend.t()) :: {:ok, Friend.t()} | {:error, %Ecto.Changeset{}}
   def reject_friend_request(%Friend{} = friend), do: Repo.delete(friend)
 
   @doc """
-  remove the friendship between 2 users
+  Remove the friendship between 2 users
   """
   @spec remove_friendship(integer(), integer()) ::
           {:ok, Friend.t()} | {:error, Ecto.Changeset.t()}
@@ -2929,7 +3539,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  mute or unmute receiver's notification
+  Mute or unmute receiver's notification
   """
   def mute_receiver_notification(friend, attrs \\ %{}) do
     friend
@@ -2938,7 +3548,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  mute or unmute requester's notification
+  Mute or unmute requester's notification
   """
   def mute_requester_notification(friend, attrs \\ %{}) do
     friend
@@ -2947,7 +3557,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get friend by receiver_id and requester_id
+  Get friend by receiver_id and requester_id
   """
   @spec get_friend_by_receiver_id_requester_id(integer(), integer()) :: Friend.t() | nil
   def get_friend_by_receiver_id_requester_id(receiver_id, requester_id) do
@@ -2956,7 +3566,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  list and search accepted friends
+  List and search accepted friends
   """
   @spec list_accepted_friends(integer(), String.t(), map()) :: [User.t()]
   def list_accepted_friends(user_id, keyword, pagination_args) do
@@ -2974,7 +3584,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  list friend requests
+  List friend requests
   """
   @spec list_friend_requests(integer()) :: [Friend.t()]
   def list_friend_requests(user_id) do
@@ -2986,7 +3596,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  search and list users that can send friend request to
+  Search and list users that can send friend request to
   """
   @spec list_possible_friends(integer(), String.t(), map()) :: [User.t()]
   def list_possible_friends(user_id, keyword, pagination_args) do
@@ -3010,7 +3620,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get information of the given user for comparison
+  Get information of the given user for comparison
   """
   @spec get_user_for_comparison(integer()) :: User.t()
   def get_user_for_comparison(user_id) do
@@ -3040,7 +3650,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  get only today's distance for a certain user.
+  Get only today's distance for a certain user.
   """
   @spec get_user_todays_distance(integer(), integer()) :: User.t()
   def get_user_todays_distance(user_id, user_id) do
@@ -3094,7 +3704,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  list all friends with chat messages
+  List all friends with chat messages
   """
   @spec list_accepted_friends_with_chat_messages(integer(), integer()) :: [User.t()]
   def list_accepted_friends_with_chat_messages(user_id, limit \\ 10) do
@@ -3193,7 +3803,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  create new private_chat_message
+  Create new private_chat_message
   """
   @spec create_private_chat_message(map()) ::
           {:ok, PrivateChatMessage.t()} | {:error, Ecto.Changeset.t()}
@@ -3204,7 +3814,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  update private message
+  Update private message
   """
   @spec update_private_message(PrivateChatMessage.t(), map()) ::
           {:ok, PrivateChatMessage.t()} | {:error, Ecto.Changeset.t()}
@@ -3215,7 +3825,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   @doc """
-  delete private message
+  Delete private message
   """
   @spec delete_private_message(PrivateChatMessage.t()) ::
           {:ok, PrivateChatMessage.t()} | {:error, Ecto.Changeset.t()}

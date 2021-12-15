@@ -73,6 +73,7 @@ defmodule OmegaBravera.Accounts.User do
     field :total_kilometers_today, :decimal, virtual: true, default: Decimal.new(0)
     field :total_kilometers_this_week, :decimal, virtual: true, default: Decimal.new(0)
     field :total_kilometers_this_month, :decimal, virtual: true, default: Decimal.new(0)
+    field :distance, :decimal, virtual: true, default: Decimal.new(0)
 
     field :offer_challenges_map, :map,
       virtual: true,

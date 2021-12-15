@@ -898,15 +898,20 @@ div.team-form {
       color: #333333 !important;
     }
    .btn-primary, .btn-primary:visited {
-    background-color: #dddada !important;
-    border-color: #dddada !important;
-    color: black;
+      background-color: #dddada !important;
+      border-color: #dddada !important;
+      color: black;
+    }
+    .search-button .btn-primary, .btn-primary:visited {
+      background-color: #007bff !important;
+      border-color: #dddada !important;
+      color: white;
     }
     .filterNav .active, .btn-primary:hover {
-        background-color: $bravera-red !important;
-        color: white;
-        outline: none !important;
-        box-shadow: none;
+      background-color: $bravera-red !important;
+      color: white;
+      outline: none !important;
+      box-shadow: none;
     }
     .admin-btn-bg-container{
       width: 305px; 
@@ -934,7 +939,6 @@ div.team-form {
         }
       }
     }
-
   }
   .btn.btn-outline-primary {
     border-color: $bravera-red;
@@ -954,6 +958,42 @@ div.team-form {
   }
 }
 // END OF ADMIN SECTION
+
+//  ORG DASHBOARD
+.label-group-filter .active{
+  background-color: #DC5551 !important;
+  color: white;
+  cursor: pointer;
+  .canvas-text-muted{
+    color: white !important;
+  }
+}
+.canvas-button:hover{
+  background-color: #DC5551 !important;
+  color: white;
+  cursor: pointer;
+  .canvas-text-muted{
+    color: white !important;
+  }
+}
+.canvas-button{
+  padding-left: 10px !important;
+  padding-top: 10px !important;
+  cursor: pointer;
+  .canvas-text-muted{
+    color: #6c757d !important;
+  }
+}
+thead tr{
+  background-color: white !important;
+}
+.canvas-result-table tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+.canvas-result-table tr:nth-child(even) {
+  background-color: white;
+}
+//  END ORG DASHBOARD
 
 @import "~dropzone/dist/dropzone.css";
 .dropzone {
