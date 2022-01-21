@@ -274,7 +274,9 @@ defmodule OmegaBravera.AccountsTest do
     test "verifying a users email will enqueue a job to send an email 3 days later", %{user: user} do
       assert {:ok, %{email_verified: false, email_activation_token: token} = user} =
                Accounts.update_user(user, %{email_verified: false})
+
       assert token != nil
+
       assert {:ok, %{email_verified: true, email_activation_token: nil}} =
                Accounts.activate_user_email(user)
 

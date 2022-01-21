@@ -357,8 +357,22 @@ defmodule OmegaBravera.Accounts do
     |> Repo.transaction()
   end
 
-  defp point_query do
-    from(p in Point, select: %{value: sum(p.value), user_id: p.user_id}, group_by: p.user_id)
+  def point_query do
+    from(ua in "user_agg",
+      as: :user_agg,
+      left_lateral_join:
+        p in subquery(
+          from(p in Point,
+            select: %{value: sum(p.value), user_id: p.user_id},
+            where:
+              p.user_id == parent_as(:user_agg).user_id and
+                p.inserted_at > parent_as(:user_agg).points_date,
+            group_by: p.user_id
+          )
+        ),
+      on: p.user_id == ua.user_id,
+      select: %{value: coalesce(ua.points_value, 0) + coalesce(p.value, 0), user_id: ua.user_id}
+    )
   end
 
   defp activity_query(start_date, end_date) do
@@ -373,13 +387,7 @@ defmodule OmegaBravera.Accounts do
   end
 
   defp activity_query do
-    from(a in ActivityAccumulator,
-      select: %{distance: sum(a.distance), user_id: a.user_id},
-      group_by: a.user_id,
-      where:
-        a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
-          not is_nil(a.device_id) and is_nil(a.strava_id)
-    )
+    from(a in "user_agg", select: %{distance: coalesce(a.distance, 0), user_id: a.user_id})
   end
 
   defp last_activity_query(start_date, end_date) do
@@ -1227,10 +1235,8 @@ defmodule OmegaBravera.Accounts do
     |> Repo.all()
   end
 
-  defp members(partner_id) do
-    from(m in Member, where: m.partner_id == ^partner_id, select: m.user_id)
-    |> Repo.all()
-  end
+  defp members(partner_id),
+    do: from(m in Member, where: m.partner_id == ^partner_id, select: m.user_id)
 
   @spec get_leaderboad_partner_messages_this_week(integer()) :: any
   def get_leaderboad_partner_messages_this_week(partner_id) do
@@ -1286,7 +1292,7 @@ defmodule OmegaBravera.Accounts do
   @spec api_get_leaderboard_of_partner_this_week(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_week(partner_id) do
     api_get_leaderboard_this_week_query()
-    |> where([u], u.id in ^members(partner_id))
+    |> where([u], u.id in subquery(members(partner_id)))
     |> Repo.all()
   end
 
@@ -1296,7 +1302,7 @@ defmodule OmegaBravera.Accounts do
   @spec api_get_leaderboard_of_partner_this_month(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_this_month(partner_id) do
     api_get_leaderboard_this_month_query()
-    |> where([u], u.id in ^members(partner_id))
+    |> where([u], u.id in subquery(members(partner_id)))
     |> Repo.all()
   end
 
@@ -1306,7 +1312,7 @@ defmodule OmegaBravera.Accounts do
   @spec api_get_leaderboard_of_partner_all_time(String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_all_time(partner_id) do
     api_get_leaderboard_all_time_query()
-    |> where([u], u.id in ^members(partner_id))
+    |> where([u], u.id in subquery(members(partner_id)))
     |> Repo.all()
   end
 
@@ -1336,7 +1342,7 @@ defmodule OmegaBravera.Accounts do
   @spec api_get_leaderboard_of_partner_all_time(String.t(), String.t()) :: [User.t()]
   def api_get_leaderboard_of_partner_all_time(authenticated_user_id, partner_id) do
     api_get_leaderboard_all_time_query(authenticated_user_id)
-    |> where([u], u.id in ^members(partner_id))
+    |> where([u], u.id in subquery(members(partner_id)))
     |> Repo.all()
   end
 
