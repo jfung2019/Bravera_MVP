@@ -308,7 +308,7 @@ defmodule OmegaBraveraWeb.Api.Schema do
     field :get_partner_leaderboard, :leaderboard_result do
       arg :partner_id, non_null(:id)
 
-      middleware Middleware.Authenticate
+      #      middleware Middleware.Authenticate
       resolve &Resolvers.Accounts.get_partner_leaderboard/3
     end
 

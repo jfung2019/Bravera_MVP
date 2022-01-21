@@ -20,6 +20,7 @@ config :omega_bravera, Oban,
     {"0 1 * * *", OmegaBravera.Notifications.Jobs.NotifyDaysNoActivity},
     {"0 0 * * *", OmegaBravera.Notifications.Jobs.NotifyExpiringReward},
     {"* * * * *", OmegaBravera.Offers.Jobs.ExpireOfferRedeem},
+    {"0 * * * *", OmegaBravera.Accounts.Jobs.RefreshUserAgg},
     {"0 8 */3 * *", OmegaBravera.Notifications.Jobs.NotifyNewGroupMembers},
     {"0 0 * * *", OmegaBravera.Groups.Jobs.NotifyOrgAdminNewGrpMemberJoined}
   ]
