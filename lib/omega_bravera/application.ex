@@ -14,8 +14,8 @@ defmodule OmegaBravera.Application do
       OmegaBraveraWeb.Endpoint,
       OmegaBravera.IngestionSupervisor,
       {Absinthe.Subscription, [OmegaBraveraWeb.Endpoint]},
-      {Task.Supervisor, name: OmegaBravera.TaskSupervisor}
-      #      {Oban, Application.get_env(:omega_bravera, Oban)}
+      {Task.Supervisor, name: OmegaBravera.TaskSupervisor},
+      {Oban, Application.get_env(:omega_bravera, Oban)}
     ]
 
     :telemetry.attach_many(
@@ -39,19 +39,19 @@ defmodule OmegaBravera.Application do
       %{}
     )
 
-    #    children =
-    #      case Application.get_env(:omega_bravera, :env) do
-    #        :prod ->
-    #          [
-    #            pre_registration_challenges_activator(),
-    #            signups_worker_spec(),
-    #            inactive_challenges_spec(),
-    #            challenge_expirer_spec() | children
-    #          ]
-    #
-    #        _ ->
-    #          children
-    #      end
+    children =
+      case Application.get_env(:omega_bravera, :env) do
+        :prod ->
+          [
+            pre_registration_challenges_activator(),
+            signups_worker_spec(),
+            inactive_challenges_spec(),
+            challenge_expirer_spec() | children
+          ]
+
+        _ ->
+          children
+      end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
