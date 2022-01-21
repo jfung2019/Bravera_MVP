@@ -3,7 +3,10 @@ defmodule OmegaBravera.Accounts.Jobs.RefreshUserAgg do
 
   @impl Oban.Worker
   def perform(_args, _job) do
-    OmegaBravera.Repo.query!("REFRESH MATERIALIZED VIEW CONCURRENTLY user_agg;")
+    OmegaBravera.Repo.query!("REFRESH MATERIALIZED VIEW CONCURRENTLY user_agg;", [],
+      timeout: :infinity
+    )
+
     :ok
   end
 end
