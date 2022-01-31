@@ -1774,10 +1774,8 @@ defmodule OmegaBravera.Accounts do
       on: aa_month.user_id == u.id,
       left_lateral_join:
         aa_total in subquery(
-          from(aa in OmegaBravera.Activity.ActivityAccumulator,
-            group_by: aa.user_id,
-            where: not is_nil(aa.device_id) and is_nil(aa.strava_id),
-            select: %{distance: coalesce(sum(aa.distance), 0), user_id: aa.user_id}
+          from(aa in "user_agg",
+            select: %{distance: coalesce(aa.distance, 0), user_id: aa.user_id}
           )
         ),
       on: aa_total.user_id == u.id,
