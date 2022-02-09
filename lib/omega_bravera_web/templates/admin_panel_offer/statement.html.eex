@@ -20,11 +20,9 @@
         </select>
         <select class="custom-select" name="year" required>
           <option value="">Year</option>
-          <option value='2017'>2017</option>
-          <option value='2018'>2018</option>
-          <option value='2019'>2019</option>
-          <option value='2020'>2020</option>
-          <option value='2021'>2021</option>
+          <%= for year <- (2017..Date.utc_today().year) do %>
+            <option value="<%= year %>"><%= year %></option>
+          <% end %>
         </select>
       </div>
       <div class="col-1">
