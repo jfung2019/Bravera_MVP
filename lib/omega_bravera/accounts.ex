@@ -379,10 +379,7 @@ defmodule OmegaBravera.Accounts do
     from(a in ActivityAccumulator,
       select: %{distance: coalesce(sum(a.distance), 0), user_id: a.user_id},
       group_by: a.user_id,
-      where:
-        a.type in ^OmegaBravera.Activity.ActivityOptions.points_allowed_activities() and
-          not is_nil(a.device_id) and is_nil(a.strava_id) and a.start_date >= ^start_date and
-          a.start_date <= ^end_date
+      where: fragment("? BETWEEN ? AND ?", a.start_date, ^start_date, ^end_date)
     )
   end
 
@@ -1419,7 +1416,7 @@ defmodule OmegaBravera.Accounts do
     from(
       u in User,
       as: :user,
-      left_join: total_kms in assoc(u, :activities),
+      left_join: total_kms in "user_agg", on: u.id == total_kms.user_id,
       left_lateral_join:
         total_kms_today in subquery(
           from(a in OmegaBravera.Activity.ActivityAccumulator,
@@ -1454,11 +1451,11 @@ defmodule OmegaBravera.Accounts do
         ),
       on: total_points_today.user_id == u.id,
       where: u.id == ^user_id,
-      group_by: [u.id, total_kms_today.distance, total_points_today.value],
+      group_by: [u.id, total_kms_today.distance, total_points_today.value, total_kms.distance],
       select: %{
         u
         | total_rewards: 0,
-          total_kilometers: coalesce(sum(total_kms.distance), ^coalesced_sum),
+          total_kilometers: coalesce(total_kms.distance, ^coalesced_sum),
           total_kilometers_today: coalesce(total_kms_today.distance, ^coalesced_sum),
           total_points_today: coalesce(total_points_today.value, ^coalesced_sum),
           offer_challenges_map: %{
