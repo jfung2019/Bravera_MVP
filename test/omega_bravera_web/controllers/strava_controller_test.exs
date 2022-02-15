@@ -22,17 +22,9 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
     location_id: 1
   }
 
-  def fixture(:strava) do
-    {:ok, strava} = Trackers.create_strava(1, @create_attrs)
-    strava
-  end
-
-  def fixture(:user) do
-    {:ok, user} = Accounts.create_user(@user_create_attrs)
-    user
-  end
-
   describe "strava webhook" do
+    setup [:create_user, :create_strava]
+
     test "returns a proper response when doing the hub challenge", %{conn: conn} do
       secret = "super_secret"
 
@@ -45,6 +37,26 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
                "hub.challenge" => secret,
                "hub.verify_token" => "STRAVA"
              }
+    end
+
+    test "removes strava record and sets user to device sync after receiving webhook of not authorized",
+         %{conn: conn, strava: %{athlete_id: athlete_id, user_id: user_id}} do
+      Accounts.switch_sync_type(user_id, :strava)
+      conn =
+        conn
+        |> post(Routes.strava_path(conn, :post_webhook_callback), %{
+          "aspect_type" => "update",
+          "event_time" => 1,
+          "object_id" => athlete_id,
+          "object_type" => "athlete",
+          "owner_id" => athlete_id,
+          "subscription_id" => 1,
+          "updates" => %{"authorized" => "false"}
+        })
+
+      assert %{"status" => 200} = json_response(conn, 200)
+      assert is_nil(Trackers.get_strava_with_athlete_id(athlete_id))
+      assert %{sync_type: :device} = Accounts.get_user!(user_id)
     end
   end
 
@@ -100,7 +112,12 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
   end
 
   defp create_user(_) do
-    user = fixture(:user)
+    {:ok, user} = Accounts.create_user(@user_create_attrs)
     {:ok, user: user}
+  end
+
+  defp create_strava(%{user: %{id: user_id}}) do
+    {:ok, strava} = Trackers.create_strava(user_id, @create_attrs)
+    {:ok, strava: strava}
   end
 end

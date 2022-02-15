@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:experimental
-FROM plangora/alpine-elixir-phoenix:otp-24.1.4-elixir-1.12.3 as phx-builder
+FROM plangora/alpine-elixir-phoenix:otp-24.2.1-elixir-1.13.2 as phx-builder
 
 ENV PORT=5000 MIX_ENV=prod
 
@@ -13,7 +13,7 @@ RUN --mount=type=secret,id=auto-devops-build-secrets . /run/secrets/auto-devops-
     cd - && \
     mix do compile, phx.digest, distillery.release --env docker
 
-FROM plangora/alpine-erlang:24.1.4
+FROM plangora/alpine-erlang:24.2.1
 
 EXPOSE 5000
 ENV PORT=5000 MIX_ENV=prod

@@ -1416,7 +1416,8 @@ defmodule OmegaBravera.Accounts do
     from(
       u in User,
       as: :user,
-      left_join: total_kms in "user_agg", on: u.id == total_kms.user_id,
+      left_join: total_kms in "user_agg",
+      on: u.id == total_kms.user_id,
       left_lateral_join:
         total_kms_today in subquery(
           from(a in OmegaBravera.Activity.ActivityAccumulator,

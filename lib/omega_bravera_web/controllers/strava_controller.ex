@@ -10,6 +10,25 @@ defmodule OmegaBraveraWeb.StravaController do
     IngestionSupervisor
   }
 
+  def post_webhook_callback(conn, %{
+        "aspect_type" => "update",
+        "object_id" => athlete_id,
+        "object_type" => "athlete",
+        "owner_id" => athlete_id,
+        "updates" => %{"authorized" => "false"}
+      }) do
+    case Trackers.get_strava_with_athlete_id(athlete_id, []) do
+      nil ->
+        :ok
+
+      strava ->
+        Trackers.delete_strava(strava)
+        Accounts.switch_sync_type(strava.user_id, :device)
+    end
+
+    render(conn, "webhook_callback.json", status: 200)
+  end
+
   def post_webhook_callback(conn, params) do
     # Start activity ingestion supervisor for challenges.
     IngestionSupervisor.start_processing(params)
