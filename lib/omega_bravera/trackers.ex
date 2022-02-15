@@ -148,12 +148,15 @@ defmodule OmegaBravera.Trackers do
           {:ok, any()}
           | {:error, any()}
           | {:error, Ecto.Multi.name(), any(), %{required(Ecto.Multi.name()) => any()}}
-  def delete_strava_reset_user_sync_type(%Strava{user_id: user_id} = strava) do
+  def delete_strava_reset_user_sync_type(
+        %Strava{user: %OmegaBravera.Accounts.User{} = user} = strava
+      ) do
     Ecto.Multi.new()
     |> Ecto.Multi.delete(:strava, strava)
-    |> Ecto.Multi.run(:switch_sync_type, fn _repo, _ ->
-      OmegaBravera.Accounts.switch_sync_type(user_id, :device)
-    end)
+    |> Ecto.Multi.update(
+      :switch_sync_type,
+      OmegaBravera.Accounts.User.update_changeset(user, %{sync_type: :device})
+    )
     |> Repo.transaction()
   end
 

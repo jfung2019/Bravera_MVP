@@ -17,14 +17,17 @@ defmodule OmegaBraveraWeb.StravaController do
         "owner_id" => athlete_id,
         "updates" => %{"authorized" => "false"}
       }) do
-    case Trackers.get_strava_with_athlete_id(athlete_id, []) do
+    case Trackers.get_strava_with_athlete_id(athlete_id, [:user]) do
       nil ->
         Logger.info("Athlete revoked Bravera but not found: #{athlete_id}")
         :ok
 
       strava ->
         Trackers.delete_strava_reset_user_sync_type(strava)
-        Logger.info("Athlete revoked Bravera and successfully removed from database: #{athlete_id}")
+
+        Logger.info(
+          "Athlete revoked Bravera and successfully removed from database: #{athlete_id}"
+        )
     end
 
     render(conn, "webhook_callback.json", status: 200)
