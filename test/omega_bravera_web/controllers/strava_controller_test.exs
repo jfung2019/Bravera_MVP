@@ -42,6 +42,7 @@ defmodule OmegaBraveraWeb.StravaControllerTest do
     test "removes strava record and sets user to device sync after receiving webhook of not authorized",
          %{conn: conn, strava: %{athlete_id: athlete_id, user_id: user_id}} do
       Accounts.switch_sync_type(user_id, :strava)
+
       conn =
         conn
         |> post(Routes.strava_path(conn, :post_webhook_callback), %{

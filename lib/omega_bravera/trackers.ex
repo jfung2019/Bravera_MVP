@@ -142,6 +142,22 @@ defmodule OmegaBravera.Trackers do
   end
 
   @doc """
+  Removes the Strava connection and resets the user to use device sync type.
+  """
+  @spec delete_strava_reset_user_sync_type(Strava.t()) ::
+          {:ok, any()}
+          | {:error, any()}
+          | {:error, Ecto.Multi.name(), any(), %{required(Ecto.Multi.name()) => any()}}
+  def delete_strava_reset_user_sync_type(%Strava{user_id: user_id} = strava) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete(:strava, strava)
+    |> Ecto.Multi.run(:switch_sync_type, fn _repo, _ ->
+      OmegaBravera.Accounts.switch_sync_type(user_id, :device)
+    end)
+    |> Repo.transaction()
+  end
+
+  @doc """
   Returns an `%Ecto.Changeset{}` for tracking strava changes.
 
   ## Examples
